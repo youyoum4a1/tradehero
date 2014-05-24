@@ -10,18 +10,24 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.LiveDTOCache;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.news.key.NewsItemListKey;
+import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
-import com.tradehero.th.persistence.news.SecurityNewsCache;
+import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +37,23 @@ import timber.log.Timber;
 /**
  * Display a ListView of News object for a given SecurityId - It uses
  * the NewsHeadlineCache to get or fetch the news from an abstract provider as needed. In case the
- * news are not in the cache, the download is done in the background using the `fetchNewsTask`
+ * news are not in the cache, the download is done in the background using the `fetchSecurityTask`
  * AsyncTask. The task is cancelled when the fragment is paused.
  */
-public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<PaginatedDTO<NewsItemDTO>>
+public class NewsHeadlineFragment
+        extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
-    @Inject SecurityNewsCache newsTitleCache;
+    @Inject SecurityCompactCache securityCompactCache;
+    @Inject NewsItemCompactListCacheNew newsTitleCache;
 
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
 
-    private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> fetchNewsTask;
+    private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
+    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> fetchSecurityTask;
     private NewsHeadlineAdapter adapter;
+    private PaginatedDTO<NewsItemCompactDTO> paginatedNews;
 
     public static final String TEST_KEY = "News-Test";
     public static long start = 0;
@@ -52,6 +62,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+        newsCacheListener = createNewsCacheListener();
         start = System.currentTimeMillis();
     }
 
@@ -102,6 +113,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
     @Override public void onDestroyView()
     {
         detachFetchTask();
+        newsTitleCache.unregister(newsCacheListener);
 
         if (listView != null)
         {
@@ -113,16 +125,33 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
         super.onDestroyView();
     }
 
-    @Override protected LiveDTOCache<SecurityId, PaginatedDTO<NewsItemDTO>> getInfoCache()
+    @Override public void onDestroy()
     {
-        return newsTitleCache;
+        newsCacheListener = null;
+        super.onDestroy();
+    }
+
+    @Override protected LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    {
+        return securityCompactCache;
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
 
+        fetchSecurity(securityId);
         if (this.securityId != null)
+        {
+            fetchSecurityNews();
+        }
+    }
+
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
+        value = securityCompactDTO;
+
+        if (this.value != null)
         {
             fetchSecurityNews();
         }
@@ -130,11 +159,18 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
 
     protected void detachFetchTask()
     {
-        if (fetchNewsTask != null)
+        if (fetchSecurityTask != null)
         {
-            fetchNewsTask.setListener(null);
+            fetchSecurityTask.setListener(null);
         }
-        fetchNewsTask = null;
+        fetchSecurityTask = null;
+    }
+
+    protected void fetchSecurity(SecurityId securityId)
+    {
+        detachFetchTask();
+        fetchSecurityTask = getInfoCache().getOrFetch(securityId, this);
+        fetchSecurityTask.execute();
     }
 
     private void fetchSecurityNews()
@@ -142,8 +178,9 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
         Timber.d("%s fetchSecurityNews,consume: %s",TEST_KEY,(System.currentTimeMillis() - start));
         detachFetchTask();
 
-        fetchNewsTask = newsTitleCache.getOrFetch(securityId, true, this);
-        fetchNewsTask.execute();
+        NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
+        newsTitleCache.register(listKey, newsCacheListener);
+        newsTitleCache.getOrFetchAsync(listKey, false);
     }
 
     @Override public void display()
@@ -154,25 +191,34 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
         showNewsList();
     }
 
-    @Override
-    public void onErrorThrown(SecurityId key, Throwable error)
+    @Override public void onErrorThrown(SecurityId securityId, Throwable error)
     {
-        super.onErrorThrown(key, error);
-        showNewsList();
+        super.onErrorThrown(securityId, error);
+    }
+
+    public void linkWith(PaginatedDTO<NewsItemCompactDTO> news, boolean andDisplay)
+    {
+        paginatedNews = news;
+
+        if (andDisplay)
+        {
+            displayNewsListView();
+            showNewsList();
+        }
     }
 
     public void displayNewsListView()
     {
-        if (!isDetached() && adapter != null)
+        if (!isDetached() && adapter != null && paginatedNews != null)
         {
-            List<NewsItemDTO> data = value.getData();
+            List<NewsItemCompactDTO> data = paginatedNews.getData();
             List<NewsItemDTOKey> newsItemDTOKeyList = new ArrayList<>();
 
             if (data != null)
             {
-                for (NewsItemDTO newsItemDTO : data)
+                for (NewsItemCompactDTO newsItemDTO : data)
                 {
-                    newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
+                    newsItemDTOKeyList.add(newsItemDTO.createDTOKey());
                 }
             }
 
@@ -201,12 +247,28 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<Paginated
         return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 
-    @Override public void onDestroy()
+    protected DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> createNewsCacheListener()
     {
-        if (newsTitleCache != null)
+        return new NewsHeadlineNewsListListener();
+    }
+
+    protected class NewsHeadlineNewsListListener implements DTOCacheNew.HurriedListener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
+    {
+        @Override public void onPreCachedDTOReceived(NewsItemListKey key,
+                PaginatedDTO<NewsItemCompactDTO> value)
         {
-            newsTitleCache.invalidateAll();
+            linkWith(value, true);
         }
-        super.onDestroy();
+
+        @Override public void onDTOReceived(NewsItemListKey key,
+                PaginatedDTO<NewsItemCompactDTO> value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(NewsItemListKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_security_info);
+        }
     }
 }

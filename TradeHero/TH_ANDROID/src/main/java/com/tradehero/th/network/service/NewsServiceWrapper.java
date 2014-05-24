@@ -1,5 +1,12 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
+import com.tradehero.th.api.news.key.NewsItemListInterestKey;
+import com.tradehero.th.api.news.key.NewsItemListKey;
+import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
+import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
+import com.tradehero.th.api.news.key.NewsItemListSocialKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
@@ -9,7 +16,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 
 @Singleton public class NewsServiceWrapper
 {
@@ -24,21 +30,162 @@ import retrofit.RetrofitError;
         this.newsServiceAsync = newsServiceAsync;
     }
 
-    public MiddleCallback<PaginatedDTO<NewsItemDTO>> getSecurityNews(int securityId, int page, int perPage, Callback<PaginatedDTO<NewsItemDTO>> callback)
+    public PaginatedDTO<CountryLanguagePairDTO> getCountryLanguagePairs()
     {
-        MiddleCallback<PaginatedDTO<NewsItemDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getSecuritiesNewsList(securityId, page, perPage, middleCallback);
+        return newsServiceSync.getCountryLanguagePairs();
+    }
+
+    public MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback)
+    {
+        MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        newsServiceAsync.getCountryLanguagePairs(middleCallback);
         return middleCallback;
     }
 
-    public PaginatedDTO<NewsItemDTO> getSecurityNews(int securityId, int page, int perPage)
+    public PaginatedDTO<NewsItemCategoryDTO> getNewsCategories()
     {
-        return newsServiceSync.getSecuritiesNewsList(securityId, page, perPage);
+        return newsServiceSync.getCategories();
     }
 
-    public PaginatedDTO<NewsItemDTO> getSecurityNews(int securityId)
+    public MiddleCallback<PaginatedDTO<NewsItemCategoryDTO>> getNewsCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback)
     {
-        return getSecurityNews(securityId, 0, 42);
+        MiddleCallback<PaginatedDTO<NewsItemCategoryDTO>>
+                middleCallback = new BaseMiddleCallback<>(callback);
+        newsServiceAsync.getCategories(middleCallback);
+        return middleCallback;
+    }
+
+    public PaginatedDTO<NewsItemCompactDTO> getNews(NewsItemListKey key)
+    {
+        if (key instanceof NewsItemListGlobalKey)
+        {
+            return getGlobalNews((NewsItemListGlobalKey) key);
+        }
+        else if (key instanceof NewsItemListRegionalKey)
+        {
+            return getRegionalNews((NewsItemListRegionalKey) key);
+        }
+        else if (key instanceof NewsItemListSocialKey)
+        {
+            return getSocialNews((NewsItemListSocialKey) key);
+        }
+        else if (key instanceof NewsItemListInterestKey)
+        {
+            return getOfInterest((NewsItemListInterestKey) key);
+        }
+        else if (key instanceof NewsItemListSecurityKey)
+        {
+            return getSecurityNews((NewsItemListSecurityKey) key);
+        }
+        else
+        {
+            throw new IllegalStateException("Unhandled type " + key.getClass());
+        }
+    }
+
+    public MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> getNews(
+            NewsItemListKey key,
+            Callback<PaginatedDTO<NewsItemCompactDTO>> callback)
+    {
+        if (key instanceof NewsItemListGlobalKey)
+        {
+            return getGlobalNews((NewsItemListGlobalKey) key, callback);
+        }
+        else if (key instanceof NewsItemListRegionalKey)
+        {
+            return getRegionalNews((NewsItemListRegionalKey) key, callback);
+        }
+        else if (key instanceof NewsItemListSocialKey)
+        {
+            return getSocialNews((NewsItemListSocialKey) key, callback);
+        }
+        else if (key instanceof NewsItemListInterestKey)
+        {
+            return getOfInterest((NewsItemListInterestKey) key, callback);
+        }
+        else if (key instanceof NewsItemListSecurityKey)
+        {
+            return getSecurityNews((NewsItemListSecurityKey) key, callback);
+        }
+        else
+        {
+            throw new IllegalStateException("Unhandled type " + key.getClass());
+        }
+    }
+
+    public PaginatedDTO<NewsItemCompactDTO> getRegionalNews(NewsItemListRegionalKey key)
+    {
+        return newsServiceSync.getRegional(key.countryCode, key.languageCode, key.page, key.perPage);
+    }
+
+    public MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> getRegionalNews(
+            NewsItemListRegionalKey key,
+            Callback<PaginatedDTO<NewsItemCompactDTO>> callback)
+    {
+        MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        newsServiceAsync.getRegional(key.countryCode, key.languageCode, key.page, key.perPage,
+                middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> getGlobalNews(
+            NewsItemListGlobalKey key,
+            Callback<PaginatedDTO<NewsItemCompactDTO>> callback)
+    {
+
+        MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        newsServiceAsync.getGlobal(key.page, key.perPage, middleCallback);
+        return middleCallback;
+    }
+
+    public PaginatedDTO<NewsItemCompactDTO> getGlobalNews(NewsItemListGlobalKey key)
+    {
+        return newsServiceSync.getGlobal(key.page, key.perPage);
+    }
+
+    public MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> getSocialNews(
+            NewsItemListSocialKey key,
+            Callback<PaginatedDTO<NewsItemCompactDTO>> callback)
+    {
+
+        MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        newsServiceAsync.getSocial(key.categoryId, key.page, key.perPage, middleCallback);
+        return middleCallback;
+    }
+
+    public PaginatedDTO<NewsItemCompactDTO> getSocialNews(NewsItemListSocialKey key)
+    {
+        return newsServiceSync.getSocial(key.categoryId, key.page, key.perPage);
+    }
+
+    public PaginatedDTO<NewsItemCompactDTO> getOfInterest(NewsItemListInterestKey key)
+    {
+        return newsServiceSync.getOfInterest(key.page, key.perPage);
+    }
+
+    public MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> getOfInterest(
+            NewsItemListInterestKey key,
+            Callback<PaginatedDTO<NewsItemCompactDTO>> callback)
+    {
+        MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        newsServiceAsync.getOfInterest(key.page, key.perPage, middleCallback);
+        return middleCallback;
+    }
+
+    public PaginatedDTO<NewsItemCompactDTO> getSecurityNews(NewsItemListSecurityKey key)
+    {
+        return newsServiceSync.getSecuritiesNewsList(key.securityIntegerId.key, key.page,
+                key.perPage);
+    }
+
+    public MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> getSecurityNews(
+            NewsItemListSecurityKey key,
+            Callback<PaginatedDTO<NewsItemCompactDTO>> callback)
+    {
+        MiddleCallback<PaginatedDTO<NewsItemCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        newsServiceAsync.getSecuritiesNewsList(key.securityIntegerId.key, key.page, key.perPage,
+                middleCallback);
+        return middleCallback;
     }
 
     public NewsItemDTO getSecurityNewsDetail(long newsId)
@@ -52,155 +199,4 @@ import retrofit.RetrofitError;
         newsServiceAsync.getNewsDetails(newsId, middleCallback);
         return middleCallback;
     }
-
-    /**
-     * countries
-     */
-    public MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback)
-    {
-        MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getCountryLanguagePairs(middleCallback);
-        return middleCallback;
-    }
-
-    /**
-     * countries
-     */
-    public PaginatedDTO<CountryLanguagePairDTO> getCountryLanguagePairs()
-    {
-        return newsServiceSync.getCountryLanguagePairs();
-    }
-
-    /**
-     * social categories
-     */
-    public MiddleCallback<PaginatedDTO<NewsItemCategoryDTO>> getNewsCategories(Callback<PaginatedDTO<NewsItemCategoryDTO>> callback)
-    {
-        MiddleCallback<PaginatedDTO<NewsItemCategoryDTO>>
-                middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getCategories(middleCallback);
-        return middleCallback;
-    }
-
-    /**
-     * social categories
-     */
-    public PaginatedDTO<NewsItemCategoryDTO> getNewsCategories()
-    {
-        return newsServiceSync.getCategories();
-    }
-
-    /**
-     * news of specific region
-     */
-    public MiddleCallback<PaginatedDTO<NewsItemDTO>> getRegionalNews(
-            String countryCode,
-            String languageCode,
-            int page/*    = 1*/,
-            int perPage/* = 42*/,
-            Callback<PaginatedDTO<NewsItemDTO>> callback)
-    {
-        MiddleCallback<PaginatedDTO<NewsItemDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getRegional(countryCode, languageCode, page, perPage, middleCallback);
-        return middleCallback;
-    }
-
-    /**
-     * news of specific region
-     */
-    public PaginatedDTO<NewsItemDTO> getRegionalNews(
-            String countryCode,
-            String languageCode,
-            int page/*    = 1*/,
-            int perPage/* = 42*/
-    ) throws RetrofitError
-    {
-        return newsServiceSync.getRegional(countryCode, languageCode, page, perPage);
-    }
-
-    //    public MiddleCallbackPaginationNewsItem getGlobal(int page, int perPage, Callback<PaginatedDTO<NewsItemDTO>> callback)
-    //    {
-    //
-    //    }
-
-    /**
-     * global news
-     */
-    public MiddleCallback<PaginatedDTO<NewsItemDTO>> getGlobalNews(
-            int page/*    = 1*/,
-            int perPage/* = 42*/,
-            Callback<PaginatedDTO<NewsItemDTO>> callback) throws RetrofitError
-    {
-
-        MiddleCallback<PaginatedDTO<NewsItemDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getGlobal(page, perPage, middleCallback);
-        return middleCallback;
-    }
-
-    /**
-     * global news
-     */
-    public PaginatedDTO<NewsItemDTO> getGlobalNews(
-            int page/*    = 1*/,
-            int perPage/* = 42*/
-    ) throws RetrofitError
-    {
-        return newsServiceSync.getGlobal(page, perPage);
-    }
-
-    /**
-     * news from social media
-     */
-    public MiddleCallback<PaginatedDTO<NewsItemDTO>> getSocialNews(
-            int categoryId,
-            int page/*        = 1*/,
-            int perPage/*     = 42*/,
-            Callback<PaginatedDTO<NewsItemDTO>> callback)
-    {
-
-        MiddleCallback<PaginatedDTO<NewsItemDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getSocial(categoryId, page, perPage, middleCallback);
-        return middleCallback;
-    }
-
-    /**
-     *
-     * @param categoryId
-     * @param page
-     * @param perPage
-     * @return
-     */
-    public PaginatedDTO<NewsItemDTO> getSocialNews(
-            int categoryId,
-            int page/*        = 1*/,
-            int perPage/*     = 42*/
-    )
-    {
-        return newsServiceSync.getSocial(categoryId, page, perPage);
-    }
-
-    /**
-     * my headlines
-     */
-    public MiddleCallback<PaginatedDTO<NewsItemDTO>> getOfInterest(
-            int page/*    = 1*/,
-            int perPage/* = 42*/,
-            Callback<PaginatedDTO<NewsItemDTO>> callback)
-    {
-        MiddleCallback<PaginatedDTO<NewsItemDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getOfInterest(page, perPage, middleCallback);
-        return middleCallback;
-    }
-
-    /**
-     * my headlines
-     */
-    public PaginatedDTO<NewsItemDTO> getOfInterest(
-            int page/*    = 1*/,
-            int perPage/* = 42*/)
-    {
-        return newsServiceSync.getOfInterest(page, perPage);
-    }
-
-    // please write your own for all async method inside NewsServiceAsync
 }
