@@ -2,6 +2,7 @@ package com.tradehero.th.network.retrofit;
 
 import android.content.Context;
 import com.tradehero.th.models.push.DeviceTokenHelper;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.utils.Constants;
@@ -32,15 +33,18 @@ public class RequestHeaders implements RequestInterceptor
         {
             buildAuthorizationHeader(request);
         }
+        request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
         request.addHeader(Constants.TH_CLIENT_TYPE, String.valueOf(DeviceTokenHelper.getDeviceType().getServerValue()));
     }
 
     private void buildAuthorizationHeader(RequestFacade request)
     {
-        request.addHeader(Constants.TH_CLIENT_VERSION, version);
-        request.addHeader(Constants.AUTHORIZATION, mainCredentialsPreference.getCredentials().getAuthHeaderParameter());
-        //request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
-        //Timber.d("buildAuthorizationHeader AUTHORIZATION: %s",THUser.getAuthHeader());
+        request.addHeader(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
+    }
+
+    public String createTypedAuthParameters(CredentialsDTO credentialsDTO)
+    {
+        return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
     }
 }
