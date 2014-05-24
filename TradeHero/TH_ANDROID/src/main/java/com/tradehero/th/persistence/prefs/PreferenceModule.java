@@ -27,6 +27,9 @@ public class PreferenceModule
 {
     @Deprecated
     private static final String PREF_CURRENT_SESSION_TOKEN_KEY = "PREF_CURRENT_SESSION_TOKEN_KEY";
+    @Deprecated
+    private static final String PREF_CURRENT_AUTHENTICATION_TYPE_KEY = "PREF_CURRENT_AUTHENTICATION_TYPE_KEY";
+
     private static final String PREF_MAIN_CREDENTIALS_KEY = "PREF_MAIN_CREDENTIALS_KEY";
     private static final String PREF_SAVED_CREDENTIALS_KEY = "PREF_SAVED_CREDENTIALS_KEY";
     private static final String PREF_RESET_HELP_SCREENS = "PREF_RESET_HELP_SCREENS";
@@ -38,13 +41,15 @@ public class PreferenceModule
         MainCredentialsPreference newPrefs = new MainCredentialsPreference(credentialsDTOFactory, sharedPreferences, PREF_MAIN_CREDENTIALS_KEY, null);
 
         { // TODO remove eventually. This is for transitioning the old credentials
-            StringPreference oldPrefs = new StringPreference(sharedPreferences, PREF_CURRENT_SESSION_TOKEN_KEY, null);
-            CredentialsDTO oldCredentials = new CredentialsDTOFactory().createFromOldSessionToken(oldPrefs);
+            StringPreference oldTypePrefs = new StringPreference(sharedPreferences, PREF_CURRENT_AUTHENTICATION_TYPE_KEY, null);
+            StringPreference oldTokenPrefs = new StringPreference(sharedPreferences, PREF_CURRENT_SESSION_TOKEN_KEY, null);
+            CredentialsDTO oldCredentials = new CredentialsDTOFactory().createFromOldSessionToken(oldTypePrefs.get(), oldTokenPrefs);
             if (oldCredentials != null)
             {
                 newPrefs.setCredentials(oldCredentials);
             }
-            oldPrefs.delete();
+            oldTypePrefs.delete();
+            oldTokenPrefs.delete();
         }
         return newPrefs;
     }

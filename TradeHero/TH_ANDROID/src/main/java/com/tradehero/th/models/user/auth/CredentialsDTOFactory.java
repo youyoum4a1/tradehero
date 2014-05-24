@@ -60,20 +60,18 @@ public class CredentialsDTOFactory
     }
 
     @Deprecated
-    public CredentialsDTO createFromOldSessionToken(StringPreference oldStringPref)
+    public CredentialsDTO createFromOldSessionToken(String oldType, StringPreference oldTokenPref)
     {
-        if (oldStringPref != null)
+        if (oldType != null && oldTokenPref != null)
         {
-            String authToken = oldStringPref.get();
+            String authToken = oldTokenPref.get();
             if (authToken != null && !TextUtils.isEmpty(authToken))
             {
-                String[] elements = authToken.split(" ");
-                if (elements.length == 2)
+                switch(oldType)
                 {
-                    if (elements[0].equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
-                    {
+                    case EmailCredentialsDTO.EMAIL_AUTH_TYPE:
                         String decoded = new String(
-                            Base64.decode(elements[0].getBytes(), Base64.NO_WRAP));
+                                Base64.decode(authToken.getBytes(), Base64.NO_WRAP));
                         if (!TextUtils.isEmpty(decoded))
                         {
                             String[] emailPass = decoded.split(":");
@@ -82,7 +80,7 @@ public class CredentialsDTOFactory
                                 return new EmailCredentialsDTO(emailPass[0], emailPass[1]);
                             }
                         }
-                    }
+                        break;
                 }
             }
         }
