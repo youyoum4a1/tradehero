@@ -1,5 +1,8 @@
 package com.tradehero.th.models.user.auth;
 
+import android.text.TextUtils;
+import android.util.Base64;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.form.UserFormFactory;
 import java.text.ParseException;
 import javax.inject.Inject;
@@ -54,5 +57,35 @@ public class CredentialsDTOFactory
                 throw new IllegalArgumentException("Unhandled type " + type);
         }
         return created;
+    }
+
+    @Deprecated
+    public CredentialsDTO createFromOldSessionToken(StringPreference oldStringPref)
+    {
+        if (oldStringPref != null)
+        {
+            String authToken = oldStringPref.get();
+            if (authToken != null && !TextUtils.isEmpty(authToken))
+            {
+                String[] elements = authToken.split(" ");
+                if (elements.length == 2)
+                {
+                    if (elements[0].equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
+                    {
+                        String decoded = new String(
+                            Base64.decode(elements[0].getBytes(), Base64.NO_WRAP));
+                        if (!TextUtils.isEmpty(decoded))
+                        {
+                            String[] emailPass = decoded.split(":");
+                            if (emailPass.length == 2)
+                            {
+                                return new EmailCredentialsDTO(emailPass[0], emailPass[1]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

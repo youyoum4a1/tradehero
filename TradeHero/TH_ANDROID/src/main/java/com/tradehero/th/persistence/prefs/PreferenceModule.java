@@ -6,6 +6,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
@@ -24,21 +25,28 @@ import javax.inject.Singleton;
 )
 public class PreferenceModule
 {
-    private static final String PREF_CURRENT_AUTHENTICATION_TYPE_KEY = "PREF_CURRENT_AUTHENTICATION_TYPE_KEY";
+    @Deprecated
+    private static final String PREF_CURRENT_SESSION_TOKEN_KEY = "PREF_CURRENT_SESSION_TOKEN_KEY";
     private static final String PREF_MAIN_CREDENTIALS_KEY = "PREF_MAIN_CREDENTIALS_KEY";
     private static final String PREF_SAVED_CREDENTIALS_KEY = "PREF_SAVED_CREDENTIALS_KEY";
     private static final String PREF_RESET_HELP_SCREENS = "PREF_RESET_HELP_SCREENS";
     private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_PUSH_IDENTIFIER_SENT_FLAG";
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
 
-    @Provides @Singleton @AuthenticationType StringPreference provideCurrentAuthenticationType(SharedPreferences sharedPreferences)
-    {
-        return new StringPreference(sharedPreferences, PREF_CURRENT_AUTHENTICATION_TYPE_KEY, null);
-    }
-
     @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
-        return new MainCredentialsPreference(credentialsDTOFactory, sharedPreferences, PREF_MAIN_CREDENTIALS_KEY, null);
+        MainCredentialsPreference newPrefs = new MainCredentialsPreference(credentialsDTOFactory, sharedPreferences, PREF_MAIN_CREDENTIALS_KEY, null);
+
+        { // TODO remove eventually. This is for transitioning the old credentials
+            StringPreference oldPrefs = new StringPreference(sharedPreferences, PREF_CURRENT_SESSION_TOKEN_KEY, null);
+            CredentialsDTO oldCredentials = new CredentialsDTOFactory().createFromOldSessionToken(oldPrefs);
+            if (oldCredentials != null)
+            {
+                newPrefs.setCredentials(oldCredentials);
+            }
+            oldPrefs.delete();
+        }
+        return newPrefs;
     }
 
     @Provides @Singleton @SavedCredentials StringPreference provideMainCredentialsPreference(MainCredentialsPreference mainCredentialsPreference)
