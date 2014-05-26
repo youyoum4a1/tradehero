@@ -217,7 +217,7 @@ public class TrendingFragment extends SecurityListFragment
                 | ActionBar.DISPLAY_SHOW_HOME
                 | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.trending_header);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         actionBar.setHomeButtonEnabled(true);
         inflater.inflate(R.menu.menu_search_button, menu);
 

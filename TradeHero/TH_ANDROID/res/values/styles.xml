@@ -143,7 +143,7 @@
 
   <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"
       parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
-    <item name="android:textColor">@color/white</item>
+    <item name="android:textColor">@color/black</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.Menu"

@@ -237,7 +237,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(getString(R.string.settings));
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
     }
     //</editor-fold>
 
