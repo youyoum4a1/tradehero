@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
+import timber.log.Timber;
 
 public class StoreItemHasFurther extends RelativeLayout
 {
@@ -74,7 +75,14 @@ public class StoreItemHasFurther extends RelativeLayout
     {
         if (icon != null)
         {
-            icon.setImageResource(iconResId);
+            try
+            {
+                icon.setImageResource(iconResId);
+            }
+            catch (OutOfMemoryError e)
+            {
+                Timber.e(e, "");
+            }
         }
     }
 }

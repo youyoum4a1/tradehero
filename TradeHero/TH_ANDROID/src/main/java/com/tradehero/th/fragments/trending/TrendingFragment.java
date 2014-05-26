@@ -99,6 +99,7 @@ public class TrendingFragment extends SecurityListFragment
     private BaseWebViewFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
     private Set<Integer> enrollmentScreenOpened = new HashSet<>();
+    private Runnable handleCompetitionRunnable;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -243,6 +244,8 @@ public class TrendingFragment extends SecurityListFragment
         detachProviderListTask();
         detachExchangeListFetchTask();
         detachUserFetchTask();
+        removeCallbacksIfCan(handleCompetitionRunnable);
+
         this.onFilterTypeChangedListener = null;
 
         if (filterSelectorView != null)
@@ -283,6 +286,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onDestroy()
     {
+        handleCompetitionRunnable = null;
         exchangeListTypeCacheListener = null;
         userProfileFetchListener = null;
         thIntentPassedListener = null;
@@ -594,17 +598,34 @@ public class TrendingFragment extends SecurityListFragment
             if (providerDTO != null && enrollmentScreenOpened != null && !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerId.key))
             {
                 enrollmentScreenOpened.add(providerId.key);
-                postIfCan(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        if (!isDetached())
-                        {
-                            handleCompetitionItemClicked(providerDTO);
-                        }
-                    }
-                });
+
+                removeCallbacksIfCan(handleCompetitionRunnable);
+                handleCompetitionRunnable = createHandleCompetitionRunnable(providerDTO);
+                postIfCan(handleCompetitionRunnable);
                 return;
+            }
+        }
+    }
+
+    private Runnable createHandleCompetitionRunnable(ProviderDTO providerDTO)
+    {
+        return new TrendingFragmentHandleCompetitionRunnable(providerDTO);
+    }
+
+    private class TrendingFragmentHandleCompetitionRunnable implements Runnable
+    {
+        private final ProviderDTO providerDTO;
+
+        private TrendingFragmentHandleCompetitionRunnable(ProviderDTO providerDTO)
+        {
+            this.providerDTO = providerDTO;
+        }
+
+        @Override public void run()
+        {
+            if (!isDetached())
+            {
+                handleCompetitionItemClicked(providerDTO);
             }
         }
     }

@@ -284,7 +284,7 @@ public class HeroListItemView extends RelativeLayout
         {
             return Country.valueOf(country).logoId;
         }
-        catch (IllegalArgumentException ex)
+        catch (IllegalArgumentException|NullPointerException ex)
         {
             return defaultResId;
         }

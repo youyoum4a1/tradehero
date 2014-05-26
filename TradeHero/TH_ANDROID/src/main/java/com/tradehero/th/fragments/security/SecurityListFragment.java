@@ -195,6 +195,15 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     abstract public int getSecurityIdListLoaderId();
 
+    protected void removeCallbacksIfCan(final Runnable runnable)
+    {
+        View fragmentView = getView();
+        if (runnable != null && fragmentView != null)
+        {
+            fragmentView.removeCallbacks(runnable);
+        }
+    }
+
     protected void postIfCan(final Runnable runnable)
     {
         View fragmentView = getView();

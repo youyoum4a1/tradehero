@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THProductDetail;
+import timber.log.Timber;
 
 public class StoreProductDetailView<
         ProductIdentifierType extends ProductIdentifier,
@@ -56,7 +57,14 @@ public class StoreProductDetailView<
         {
             if (skuDetails != null)
             {
-                icDeliverable.setImageResource(skuDetails.getIconResId());
+                try
+                {
+                    icDeliverable.setImageResource(skuDetails.getIconResId());
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, "");
+                }
             }
         }
     }
@@ -80,7 +88,14 @@ public class StoreProductDetailView<
             if (skuDetails != null)
             {
                 icRibbon.setVisibility(skuDetails.getHasRibbon() ? VISIBLE : GONE);
-                icRibbon.setImageResource(skuDetails.getIconRibbonResId());
+                try
+                {
+                    icRibbon.setImageResource(skuDetails.getIconRibbonResId());
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, "");
+                }
             }
         }
     }
