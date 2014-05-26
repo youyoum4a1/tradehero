@@ -111,10 +111,10 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
         View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.sharing_translation_dialog_layout, null);
+                .inflate(R.layout.sharing_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News);
-        ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
+        ((ShareDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News);
+        ((ShareDialogLayout) contentView).setMenuClickedListener(createShareDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
@@ -231,19 +231,13 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         ((DashboardActivity) getContext()).getDashboardNavigator().pushFragment(SettingsFragment.class, args);
     }
 
-    protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
+    protected ShareDialogLayout.OnShareMenuClickedListener createShareDialogMenuClickedListener()
     {
         return new NewsHeadlineViewDialogMenuClickedListener();
     }
 
-    private class NewsHeadlineViewDialogMenuClickedListener implements NewsDialogLayout.OnMenuClickedListener
+    private class NewsHeadlineViewDialogMenuClickedListener implements ShareDialogLayout.OnShareMenuClickedListener
     {
-        @Override public void onTranslationRequestedClicked()
-        {
-            // TODO better
-            THToast.show("Temp click for translation");
-        }
-
         @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
         {
             pushSettingsForConnect(socialShareFormDTO);
