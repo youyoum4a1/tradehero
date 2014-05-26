@@ -5,7 +5,7 @@ import com.tradehero.th.api.share.SocialShareFormDTO;
 public class WeChatDTO implements SocialShareFormDTO
 {
     public int id;
-    public int type;
+    public WeChatMessageType type;
     public String title;
     public String imageURL;
 
@@ -14,14 +14,14 @@ public class WeChatDTO implements SocialShareFormDTO
     {
     }
 
-    public WeChatDTO(int id, int type, String title)
+    public WeChatDTO(int id, WeChatMessageType type, String title)
     {
         this.id = id;
         this.type = type;
         this.title = title;
     }
 
-    public WeChatDTO(int id, int type, String title, String imageURL)
+    public WeChatDTO(int id, WeChatMessageType type, String title, String imageURL)
     {
         this.id = id;
         this.type = type;

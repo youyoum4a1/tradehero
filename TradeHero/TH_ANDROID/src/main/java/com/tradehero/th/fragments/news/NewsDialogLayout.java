@@ -26,6 +26,7 @@ import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.TimelineItemShareFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -65,7 +66,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject Provider<SocialSharer> socialSharerProvider;
 
-    private int mShareType;
+    private WeChatMessageType mShareType;
     private OnMenuClickedListener menuClickedListener;
     private SocialSharer currentSocialSharer;
 
@@ -171,7 +172,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         if (position == 0)
         {
             shareFormDTO = createWeChatShareDTO();
-            // TODO add sharedListener
+            // TODO add sharedListener?
         }
         else
         {
@@ -191,7 +192,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
                     throw new IllegalArgumentException("Unhandled position " + position);
             }
             shareFormDTO = createTimelineItemShareFormDTO(socialNetwork);
-            sharedListener = createSharedListener(socialNetwork);
+            sharedListener = createDiscussionSharedListener(socialNetwork);
         }
         detachSocialSharer();
         currentSocialSharer = socialSharerProvider.get();
@@ -214,7 +215,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
                 new TimelineItemShareRequestDTO(socialNetwork));
     }
 
-    private SocialSharer.OnSharedListener createSharedListener(
+    private SocialSharer.OnSharedListener createDiscussionSharedListener(
             final SocialNetworkEnum socialNetworkEnum)
     {
         return new SocialSharer.OnSharedListener()
@@ -273,21 +274,21 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         this.dialogCallback = listener;
     }
 
-    public void setNewsData(NewsItemCompactDTO newsItemCompactDTO, int shareType)
+    public void setNewsData(NewsItemCompactDTO newsItemCompactDTO, WeChatMessageType shareType)
     {
         this.description = newsItemCompactDTO.description;
         this.title = null;
         setNewsData((AbstractDiscussionCompactDTO) newsItemCompactDTO, shareType);
     }
 
-    public void setNewsData(NewsItemDTO newsItemDTO, int shareType)
+    public void setNewsData(NewsItemDTO newsItemDTO, WeChatMessageType shareType)
     {
         this.description = newsItemDTO.description;
         this.title = newsItemDTO.text;
         setNewsData((AbstractDiscussionCompactDTO) newsItemDTO, shareType);
     }
 
-    public void setNewsData(AbstractDiscussionCompactDTO abstractDiscussionDTO, int shareType)
+    public void setNewsData(AbstractDiscussionCompactDTO abstractDiscussionDTO, WeChatMessageType shareType)
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         this.id = abstractDiscussionDTO.id;

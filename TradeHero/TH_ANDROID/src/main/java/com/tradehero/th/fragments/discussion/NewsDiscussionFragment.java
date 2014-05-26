@@ -211,7 +211,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO,
-                WeChatMessageType.CreateDiscussion.getValue());
+                WeChatMessageType.CreateDiscussion);
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);

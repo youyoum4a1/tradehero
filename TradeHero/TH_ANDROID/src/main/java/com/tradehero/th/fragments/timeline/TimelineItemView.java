@@ -440,7 +440,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     {
                         weChatDTO.imageURL = firstMediaWithLogo.url;
                     }
-                    weChatDTO.type = WeChatMessageType.Timeline.getValue();
+                    weChatDTO.type = WeChatMessageType.Timeline;
                     socialSharerLazy.get().share(weChatDTO, null); // TODO proper callback?
                     return true;
             }

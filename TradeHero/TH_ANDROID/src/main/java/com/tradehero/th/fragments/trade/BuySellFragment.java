@@ -1689,7 +1689,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             WeChatDTO weChatDTO = new WeChatDTO();
             weChatDTO.id = securityCompactDTO.id;
-            weChatDTO.type = WeChatMessageType.Trade.getValue();
+            weChatDTO.type = WeChatMessageType.Trade;
             if (isMyUrlOk())
             {
                 weChatDTO.imageURL = securityCompactDTO.imageBlobUrl;

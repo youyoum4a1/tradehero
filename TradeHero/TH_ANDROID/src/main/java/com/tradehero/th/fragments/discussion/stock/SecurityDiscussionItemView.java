@@ -152,7 +152,7 @@ public class SecurityDiscussionItemView
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(discussionDTO,
-                WeChatMessageType.Discussion.getValue());
+                WeChatMessageType.Discussion);
         ((NewsDialogLayout) contentView).setMenuClickedListener(
                 createNewsDialogMenuClickedListener());
         THDialog.showUpDialog(getContext(), contentView, callback);

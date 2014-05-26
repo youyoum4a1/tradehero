@@ -110,7 +110,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News.getValue());
+        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News);
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getContext(), contentView, callback);
