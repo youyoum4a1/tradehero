@@ -1,13 +1,20 @@
 package com.tradehero.th.network.share;
 
 import android.content.Intent;
+import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.share.DiscussionShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.TimelineItemShareFormDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import javax.inject.Inject;
@@ -18,19 +25,28 @@ import retrofit.client.Response;
 public class SocialSharerImpl implements SocialSharer
 {
     private final CurrentActivityHolder currentActivityHolder;
+    private final CurrentUserId currentUserId;
+    private final UserProfileCache userProfileCache;
     private final DiscussionServiceWrapper discussionServiceWrapper;
     private OnSharedListener sharedListener;
+    private UserProfileDTO currentUserProfile;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharerImpl(
             CurrentActivityHolder currentActivityHolder,
+            CurrentUserId currentUserId,
+            UserProfileCache userProfileCache,
             DiscussionServiceWrapper discussionServiceWrapper)
     {
         this.currentActivityHolder = currentActivityHolder;
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
         this.discussionServiceWrapper = discussionServiceWrapper;
+        fetchUserProfile();
     }
     //</editor-fold>
 
+    //<editor-fold desc="Shared Listener">
     @Override public void setSharedListener(OnSharedListener sharedListener)
     {
         this.sharedListener = sharedListener;
@@ -53,6 +69,7 @@ public class SocialSharerImpl implements SocialSharer
             sharedListenerCopy.onShareFailed(shareFormDTO, throwable);
         }
     }
+    //</editor-fold>
 
     @Override public void share(SocialShareFormDTO shareFormDTO, OnSharedListener sharedListener)
     {
@@ -79,6 +96,8 @@ public class SocialSharerImpl implements SocialSharer
                 timelineItemShareFormDTO.discussionListKey,
                 timelineItemShareFormDTO.timelineItemShareRequestDTO,
                 createDiscussionCallback(timelineItemShareFormDTO));
+
+        // TODO add check that it is able to share
     }
 
     public void share(WeChatDTO weChatDTO)
@@ -126,4 +145,33 @@ public class SocialSharerImpl implements SocialSharer
             notifySharedFailedListener(shareFormDTO, retrofitError);
         }
     }
+
+    //<editor-fold desc="User Profile">
+    protected void fetchUserProfile()
+    {
+        // Here we do not care about keeping the task because the listener already provides
+        // the intermediation
+        userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), createProfileListener()).execute();
+    }
+
+    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createProfileListener()
+    {
+        return new SocialSharerUserProfileListener();
+    }
+
+    protected class SocialSharerUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value,
+                boolean fromCache)
+        {
+            currentUserProfile = value;
+            // TODO something?
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_user_profile);
+        }
+    }
+    //</editor-fold>
 }
