@@ -310,7 +310,15 @@ public class ProfileInfoView extends LinearLayout
     {
         if (newImagePath != null)
         {
-            displayProfileImage(bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath));
+            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
+            if (decoded != null)
+            {
+                displayProfileImage(decoded);
+            }
+            else
+            {
+                displayDefaultProfileImage();
+            }
         }
         else if (userBaseDTO != null)
         {
