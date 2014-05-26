@@ -27,6 +27,9 @@
   <color name="btn_twitter_color_end">#419aff</color>
   <color name="btn_linkedin_color_light">#1c8fcf</color>
   <color name="btn_linkedin_color_dark">#0274b4</color>
+  <color name="btn_weibo_color_start">#ff2300</color>
+  <color name="btn_weibo_color_end">#da0330</color>
+
   <color name="gray_2">#A0AFAFAF</color>
   <color name="text_gray_normal">#aaaaaa</color>
   <color name="gray_normal">#aaaaaa</color>

@@ -91,6 +91,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
@@ -349,6 +350,7 @@ import javax.inject.Singleton;
 
                         SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
+                        FriendsInvitationFragment.class
                 },
         staticInjections =
                 {

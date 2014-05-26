@@ -32,6 +32,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -307,6 +308,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             case R.id.btn_search:
                 pushSearchFragment();
                 return true;
+
+            case R.id.btn_add:
+                pushInvitaionFragment();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -438,6 +443,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.PEOPLE.name());
         getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
     }
+
+    private void pushInvitaionFragment()
+    {
+        Bundle args = new Bundle();
+        getNavigator().pushFragment(FriendsInvitationFragment.class, args);
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
