@@ -204,11 +204,11 @@
     <item name="android:layout_weight">1</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textColor">@color/tab_scroll_color</item>
-    <item name="android:textStyle">bold</item>
     <item name="android:singleLine">true</item>
     <item name="android:ellipsize">middle</item>
     <item name="android:layout_marginLeft">5dp</item>
     <item name="android:layout_marginRight">5dp</item>
+    <item name="android:background">@color/white</item>
   </style>
 
   <style name="TH.Time_Text">
@@ -234,6 +234,7 @@
     <item name="android:textColor">@color/btn_twitter_color_end</item>
     <item name="android:gravity">center</item>
     <item name="android:background">@drawable/security_btn_buy</item>
+    <item name="android:textSize">12sp</item>
   </style>
 
   <style name="TH.UserNameTitle">

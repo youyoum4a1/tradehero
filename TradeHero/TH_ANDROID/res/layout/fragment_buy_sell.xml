@@ -162,14 +162,12 @@
           android:id="@+id/btn_add_trigger"
           style="@style/TH.Btn_BuySell_Action"
           android:text="@string/stock_alert_add_alert"
-          android:background="@color/button_yellow"
           />
 
       <Button
           android:id="@+id/btn_add_watch_list"
           style="@style/TH.Btn_BuySell_Action"
           android:text="@string/watchlist_add_title"
-          android:background="@color/gray_normal"
           />
 
     </LinearLayout>
