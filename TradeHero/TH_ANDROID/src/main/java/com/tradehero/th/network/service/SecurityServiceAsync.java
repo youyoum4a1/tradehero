@@ -64,10 +64,10 @@ interface SecurityServiceAsync
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @GET("/securities/{exchange}/{securitySymbol}")
+    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}")
     void getSecurity(
             @Path("exchange") String exchange,
-            @Path("securitySymbol") String securitySymbol,
+            @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol,
             Callback<SecurityPositionDetailDTO> callback);
     //</editor-fold>
 
