@@ -286,6 +286,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         actionBar.setTitle(getString(R.string.dashboard_community));
         actionBar.setHomeButtonEnabled(true);
         actionBar.setLogo(R.drawable.icon_menu);
+
+        MenuItem item = menu.findItem(R.id.btn_add);
+        if (item != null)
+        {
+            item.setEnabled(true);
+            item.setVisible(true);
+        }
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

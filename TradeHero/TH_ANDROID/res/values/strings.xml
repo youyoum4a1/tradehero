@@ -10,7 +10,8 @@
   <string name="leaderboard_empty">Start trading now to be the first trader on this leaderboard
   </string>
   <string name="action_search">Search</string>
-  <string name="update">Update</string>
+  <string name="action_invite">Invite Friends</string>
+    <string name="update">Update</string>
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>

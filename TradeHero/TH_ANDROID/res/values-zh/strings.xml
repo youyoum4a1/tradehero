@@ -9,6 +9,7 @@
   <string name="action_menu_about">关于</string>
   <string name="leaderboard_empty">开始交易并成为第一个上此英雄榜的人吧</string>
   <string name="action_search">搜索</string>
+  <string name="action_invite">邀请好友</string>
   <string name="update">更新</string>
   <string name="empty_video_list">当前没有任何学习视频</string>
   <string name="loading_required_information">读取所需信息中</string>
