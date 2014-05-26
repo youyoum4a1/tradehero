@@ -1,7 +1,9 @@
 package com.tradehero.th.api.form;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FacebookUserFormDTO extends UserFormDTO
 {
-    // facebook
-    public String facebook_access_token;
+    @JsonProperty("facebook_access_token")
+    public String accessToken;
 }

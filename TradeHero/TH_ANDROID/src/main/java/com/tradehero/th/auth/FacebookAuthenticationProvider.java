@@ -16,6 +16,7 @@ import com.facebook.android.FacebookError;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,7 +33,7 @@ import timber.log.Timber;
 @Singleton
 public class FacebookAuthenticationProvider implements THAuthenticationProvider
 {
-    private final DateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+    public static final DateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
     public static final String ACCESS_TOKEN_KEY =  "access_token";
     public static final String EXPIRATION_DATE_KEY = "expiration_date";
 
@@ -208,7 +209,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
 
     @Override public String getAuthType()
     {
-        return SocialAuthenticationProvider.FACEBOOK_AUTH_TYPE;
+        return FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE;
     }
 
     @Override public String getAuthHeader()

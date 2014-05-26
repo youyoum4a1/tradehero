@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
@@ -25,26 +23,25 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.misc.exception.THException.ExceptionCode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
+import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
+import com.tradehero.th.models.user.auth.CredentialsSetPreference;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.ForDeviceToken;
-import com.tradehero.th.persistence.prefs.SavedCredentials;
-import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
+import java.text.ParseException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import javax.inject.Inject;
 import org.json.JSONException;
-import org.json.JSONObject;
 import timber.log.Timber;
 
 public class THUser
@@ -53,11 +50,11 @@ public class THUser
     private static THAuthenticationProvider authenticator;
     private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
 
-    private static HashMap<String, JSONCredentials> credentials;
+    private static CredentialsDTO currentCredentials;
+    private static HashMap<String, CredentialsDTO> typedCredentials;
 
-    @Inject @SessionToken static StringPreference currentSessionToken;
-    @Inject @AuthenticationType public /* TODO, remove public */ static StringPreference currentAuthenticationType;
-    @Inject @SavedCredentials static StringSetPreference savedCredentials;
+    @Inject static MainCredentialsPreference mainCredentialsPreference;
+    @Inject static CredentialsSetPreference credentialsSetPreference;
     @Inject static CurrentUserId currentUserId;
 
     @Inject static Lazy<SharedPreferences> sharedPreferences;
@@ -68,27 +65,16 @@ public class THUser
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
     @Inject @ForDeviceToken String deviceToken;
+    @Inject static CredentialsDTOFactory credentialsDTOFactory;
 
     public static void initialize()
     {
-        credentials = new HashMap<>();
-        loadCredentialsToUserDefaults();
-    }
-
-    private static void loadCredentialsToUserDefaults()
-    {
-        for (String token : savedCredentials.get())
+        typedCredentials = new HashMap<>();
+        for (CredentialsDTO credentialsDTO : credentialsSetPreference.getCredentials())
         {
-            try
-            {
-                JSONCredentials json = new JSONCredentials(token);
-                credentials.put(json.getString(UserFormFactory.KEY_TYPE), json);
-            }
-            catch (JSONException e)
-            {
-                Timber.e("Unable to parse [%s] to JSON", token, e);
-            }
+            typedCredentials.put(credentialsDTO.getAuthType(), credentialsDTO);
         }
+        currentCredentials = mainCredentialsPreference.getCredentials();
     }
 
     public static void logInWithAsync(String authType, LogInCallback callback)
@@ -103,26 +89,35 @@ public class THUser
 
     private static void logInWithAsync(final THAuthenticationProvider authenticator, final LogInCallback callback)
     {
-        JSONCredentials savedTokens = credentials.get(authenticator.getAuthType());
-        if (savedTokens != null)
+        CredentialsDTO savedCredentials = typedCredentials.get(authenticator.getAuthType());
+        if (savedCredentials != null)
         {
             callback.onStart();
-            if (authenticator.restoreAuthentication(savedTokens))
+            JSONCredentials jsonCredentials = null;
+            try
             {
-                if (callback.onSocialAuthDone(savedTokens))
+                jsonCredentials = savedCredentials.createJSON();
+                if (authenticator.restoreAuthentication(jsonCredentials))
                 {
-                    logInAsyncWithJson(savedTokens, callback);
+                    if (callback.onSocialAuthDone(jsonCredentials))
+                    {
+                        logInAsyncWithJson(savedCredentials, callback);
+                    }
+                    return;
                 }
-                return;
+            }
+            catch (JSONException e)
+            {
+                Timber.e(e, "Failed to convert credentials %s", savedCredentials);
             }
         }
         THAuthenticationProvider.THAuthenticationCallback outerCallback = createCallbackForLogInWithAsync (callback);
         authenticator.authenticate(outerCallback);
     }
 
-    public static void logInAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
+    public static void logInAsyncWithJson(final CredentialsDTO credentialsDTO, final LogInCallback callback)
     {
-        UserFormDTO userFormDTO = UserFormFactory.create(json);
+        UserFormDTO userFormDTO = credentialsDTO.createUserFormDTO();
         if (userFormDTO == null)
         {
             // input error, unable to parse as json data
@@ -133,7 +128,8 @@ public class THUser
         {
             userFormDTO.deviceToken = DeviceTokenHelper.getDeviceToken();
         }
-        Timber.d("APID: %s,authenticationMode :%s", userFormDTO.deviceToken,/*PushManager.shared().getAPID()*/ authenticationMode);
+        Timber.d("APID: %s,authenticationMode :%s", userFormDTO.deviceToken,/*PushManager.shared().getAPID()*/
+                authenticationMode);
         //userFormDTO.deviceToken = DeviceTokenHelper.getDeviceToken();//PushManager.shared().getAPID();
 
         if (authenticationMode == null)
@@ -148,14 +144,14 @@ public class THUser
                 userServiceWrapper.get().signUpWithEmail(
                         authenticator.getAuthHeader(),
                         userFormDTO,
-                        createCallbackForSignUpAsyncWithJson(json, callback));
+                        createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
                 break;
             case SignUp:
                 Timber.d("SignUp Auth Header "+authenticator.getAuthHeader());
                 userServiceWrapper.get().signUp(
                         authenticator.getAuthHeader(),
                         userFormDTO,
-                        createCallbackForSignUpAsyncWithJson(json, callback));
+                        createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
                 break;
             case SignIn:
                 LoginFormDTO loginFormDTO = new LoginFormDTO(
@@ -163,7 +159,7 @@ public class THUser
                         DeviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
                         VersionUtils.getVersionId(Application.context()));
                 // TODO save middle callback?
-                sessionServiceWrapper.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(json, callback));
+                sessionServiceWrapper.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(credentialsDTO, callback));
                 break;
         }
     }
@@ -182,13 +178,14 @@ public class THUser
                 try
                 {
                     json.put(UserFormFactory.KEY_TYPE, authenticator.getAuthType());
+                    if (callback.onSocialAuthDone(json))
+                    {
+                        logInAsyncWithJson(credentialsDTOFactory.create(json), callback);
+                    }
                 }
-                catch (JSONException ex)
+                catch (JSONException|ParseException ex)
                 {
-                }
-                if (callback.onSocialAuthDone(json))
-                {
-                    logInAsyncWithJson(json, callback);
+                    Timber.e(ex, "Failed to onsuccess");
                 }
             }
 
@@ -204,14 +201,14 @@ public class THUser
         };
     }
 
-    private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
+    private static THCallback<UserProfileDTO> createCallbackForSignUpAsyncWithJson(final CredentialsDTO credentialsDTO, final LogInCallback callback)
     {
         return new THCallback<UserProfileDTO>()
         {
             @Override public void success(UserProfileDTO userProfileDTO, THResponse response)
             {
                 currentUserId.set(userProfileDTO.id);
-                saveCredentialsToUserDefaults(json);
+                saveCredentialsToUserDefaults(credentialsDTO);
 
                 UserLoginDTO userLoginDTO = new UserLoginDTO();
                 userLoginDTO.profileDTO = userProfileDTO;
@@ -226,7 +223,7 @@ public class THUser
         };
     }
 
-    private static THCallback<UserLoginDTO> createCallbackForSignInAsyncWithJson(final JSONCredentials json, final LogInCallback callback)
+    private static THCallback<UserLoginDTO> createCallbackForSignInAsyncWithJson(final CredentialsDTO credentialsDTO, final LogInCallback callback)
     {
         return new THCallback<UserLoginDTO>()
         {
@@ -235,7 +232,7 @@ public class THUser
                 UserProfileDTO userProfileDTO = userLoginDTO.profileDTO;
                 userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
                 currentUserId.set(userProfileDTO.id);
-                saveCredentialsToUserDefaults(json);
+                saveCredentialsToUserDefaults(credentialsDTO);
 
                 callback.done(userLoginDTO, null);
             }
@@ -285,56 +282,40 @@ public class THUser
     }
 
     /**
-     * @param json json data is from social media
+     * @param credentialsDTO json data is from social media
      */
-    public static void saveCredentialsToUserDefaults(JSONCredentials json)
+    public static void saveCredentialsToUserDefaults(CredentialsDTO credentialsDTO)
     {
-        if (credentials == null)
-        {
-            Timber.d("saveCredentialsToUserDefaults: Credentials were null");
-            return;
-        }
+        Timber.d("%d authentication tokens loaded", typedCredentials.size());
 
-        Timber.d("%d authentication tokens loaded", credentials.size());
+        currentCredentials = credentialsDTO;
+        mainCredentialsPreference.setCredentials(credentialsDTO);
+        typedCredentials.put(credentialsDTO.getAuthType(), credentialsDTO);
+        credentialsSetPreference.replaceOrAddCredentials(credentialsDTO);
 
-        try
-        {
-            currentAuthenticationType.set(json.getString(UserFormFactory.KEY_TYPE));
-            credentials.put(currentAuthenticationType.get(), json);
-        }
-        catch (JSONException ex)
-        {
-            Timber.e("JSON (%s) does not have type", json.toString(), ex);
-            return;
-        }
-
-        Set<String> toSave = new HashSet<>();
-        for (JSONCredentials entry : credentials.values())
-        {
-            toSave.add(entry.toString());
-        }
-        savedCredentials.set(toSave);
-
-        THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType.get());
-        currentSessionToken.set(currentProvider.getAuthHeaderParameter());
+        THAuthenticationProvider currentProvider = authenticationProviders.get(credentialsDTO.getAuthType());
     }
 
     public static void clearCurrentUser()
     {
-        currentSessionToken.delete();
-        userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+        typedCredentials.clear();
         dtoCacheUtil.get().clearUserRelatedCaches();
         currentUserId.delete();
-        credentials.clear();
         VisitedFriendListPrefs.clearVisitedIdList();
 
-        THAuthenticationProvider currentProvider = authenticationProviders.get(currentAuthenticationType.get());
-        if (currentProvider != null)
+        if (currentCredentials != null)
         {
-            currentProvider.deauthenticate();
+            THAuthenticationProvider currentProvider = authenticationProviders.get(currentCredentials.getAuthType());
+            if (currentProvider != null)
+            {
+                currentProvider.deauthenticate();
+            }
         }
 
         // clear all preferences
+        currentCredentials = null;
+        mainCredentialsPreference.delete();
+        credentialsSetPreference.delete();
         SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
         prefEditor.clear();
         prefEditor.commit();
@@ -345,27 +326,27 @@ public class THUser
         THUser.authenticationMode = authenticationMode;
     }
 
-    public static JSONObject currentCredentials()
+    public static CredentialsDTO getCurrentCredentials()
     {
-        return credentials.get(currentAuthenticationType.get());
+        return currentCredentials;
     }
 
     public static String getAuthHeader()
     {
-        return currentAuthenticationType.get() + " " + currentSessionToken.get();
+        return String.format("%1$s %2$s", currentCredentials.getAuthType(), currentCredentials.getAuthHeaderParameter());
     }
 
     public static void removeCredential(String authenticationHeader)
     {
-        if (credentials == null)
+        if (typedCredentials == null)
         {
             Timber.d("saveCredentialsToUserDefaults: Credentials were null");
             return;
         }
 
-        Timber.d("%d authentication tokens loaded", credentials.size());
+        Timber.d("%d authentication tokens loaded", typedCredentials.size());
 
-        credentials.remove(authenticationHeader);
-        savedCredentials.delete();
+        typedCredentials.remove(authenticationHeader);
+        credentialsSetPreference.delete();
     }
 }

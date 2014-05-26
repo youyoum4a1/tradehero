@@ -15,6 +15,7 @@ import com.sina.weibo.sdk.exception.WeiboException;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
@@ -71,9 +72,8 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
     }
 
     @Override
-    public String getAuthType()
-    {
-        return WEIBO_AUTH_TYPE;
+    public String getAuthType() {
+        return WeiboCredentialsDTO.WEIBO_AUTH_TYPE;
     }
 
     @Override public String getAuthHeader()
