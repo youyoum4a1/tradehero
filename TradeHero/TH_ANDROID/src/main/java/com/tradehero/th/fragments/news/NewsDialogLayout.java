@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,6 +30,13 @@ import com.tradehero.th.api.share.TimelineItemShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
+import com.tradehero.th.models.share.FacebookShareDestination;
+import com.tradehero.th.models.share.LinkedInShareDestination;
+import com.tradehero.th.models.share.ShareDestination;
+import com.tradehero.th.models.share.ShareDestinationFactory;
+import com.tradehero.th.models.share.TwitterShareDestination;
+import com.tradehero.th.models.share.WeChatShareDestination;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.network.share.SocialSharer;
@@ -65,6 +73,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
 
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject Provider<SocialSharer> socialSharerProvider;
+    @Inject ShareDestinationFactory shareDestinationFactory;
 
     private WeChatMessageType mShareType;
     private OnMenuClickedListener menuClickedListener;
@@ -126,9 +135,8 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         MyListAdapter adapterForFirst =
                 new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,
                         dataForFirst);
-        MyListAdapter adapterForSecond =
-                new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,
-                        dataForSecond);
+        BaseAdapter adapterForSecond =
+                new ShareDestinationSetAdapter(getContext(), shareDestinationFactory.getAllShareDestinations());
         listViewOptions.setAdapter(adapterForFirst);
         listViewSharingOptions.setAdapter(adapterForSecond);
         listViewOptions.setDividerHeight(1);
@@ -165,11 +173,11 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         titleSwitcher.setDisplayedChild(SHARE_MENU_ID);
     }
 
-    private void handleShareAction(int position)
+    private void handleShareAction(ShareDestination shareDestination)
     {
         SocialShareFormDTO shareFormDTO;
         SocialSharer.OnSharedListener sharedListener = null;
-        if (position == 0)
+        if (shareDestination instanceof WeChatShareDestination)
         {
             shareFormDTO = createWeChatShareDTO();
             // TODO add sharedListener?
@@ -177,19 +185,21 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         else
         {
             SocialNetworkEnum socialNetwork = null;
-            switch (position)
+            if (shareDestination instanceof FacebookShareDestination)
             {
-                case 1:
-                    socialNetwork = SocialNetworkEnum.LN;
-                    break;
-                case 2:
-                    socialNetwork = SocialNetworkEnum.FB;
-                    break;
-                case 3:
-                    socialNetwork = SocialNetworkEnum.TW;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unhandled position " + position);
+                socialNetwork = SocialNetworkEnum.FB;
+            }
+            else if (shareDestination instanceof LinkedInShareDestination)
+            {
+                socialNetwork = SocialNetworkEnum.LN;
+            }
+            else if (shareDestination instanceof TwitterShareDestination)
+            {
+                socialNetwork = SocialNetworkEnum.TW;
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled ShareDestination " + shareDestination.getClass().getName());
             }
             shareFormDTO = createTimelineItemShareFormDTO(socialNetwork);
             sharedListener = createDiscussionSharedListener(socialNetwork);
@@ -269,7 +279,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     @OnItemClick(R.id.news_action_list_sharing_items)
     protected void onShareOptionsItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        handleShareAction(position);
+        handleShareAction((ShareDestination) parent.getItemAtPosition(position));
         dismissDialog();
     }
 
