@@ -36,6 +36,24 @@
         tools:text="200"
         />
 
+    <ImageView
+        android:layout_width="1dp"
+        android:layout_height="fill_parent"
+        android:paddingTop="@dimen/common_margin_4"
+        android:paddingBottom="@dimen/common_margin_4"
+        android:background="@color/gray_normal"/>
+
+    <ImageView
+        android:id="@+id/discussion_action_button_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-3dp"
+        android:layout_marginBottom="-3dp"
+        android:layout_marginLeft="@dimen/timeline_action_buttons_horizontal_padding_big"
+        android:gravity="center_vertical"
+        android:src="@drawable/icn_actions_share"
+        />
+
     <TextView
         android:id="@+id/discussion_action_button_more"
         android:layout_width="0dp"
@@ -50,5 +68,7 @@
         android:paddingTop="@dimen/news_item_action_padding_t_b"
         android:paddingBottom="@dimen/news_item_action_padding_t_b"
         />
+
   </com.tradehero.th.fragments.discussion.DiscussionActionButtonsView>
+
 </merge>

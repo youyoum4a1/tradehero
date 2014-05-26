@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -11,6 +12,7 @@ import com.tradehero.th.R;
 public class DiscussionActionButtonsView extends LinearLayout
 {
     @InjectView(R.id.discussion_action_button_comment_count) TextView comment;
+    @InjectView(R.id.discussion_action_button_share) View shareButton;
     @InjectView(R.id.discussion_action_button_more) TextView more;
 
     //<editor-fold desc="Constructors">

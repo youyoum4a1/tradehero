@@ -1,6 +1,7 @@
-package com.tradehero.th.api.share;
+package com.tradehero.th.api.share.timeline;
 
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 
 public class TimelineItemShareFormDTO implements SocialShareFormDTO
