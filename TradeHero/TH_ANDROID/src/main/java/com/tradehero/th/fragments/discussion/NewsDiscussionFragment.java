@@ -14,6 +14,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.persistence.news.NewsItemCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
@@ -218,6 +220,13 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     }
     //</editor-fold>
 
+    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
+    {
+        Bundle args = new Bundle();
+        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
+        getDashboardNavigator().pushFragment(SettingsFragment.class, args);
+    }
+
     protected void handleTranslationRequested()
     {
         detachTranslationTask();
@@ -262,6 +271,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         @Override public void onTranslationRequestedClicked()
         {
             handleTranslationRequested();
+        }
+
+        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
+        {
+            pushSettingsForConnect(socialShareFormDTO);
         }
 
         @Override public void onShareRequestedClicked()

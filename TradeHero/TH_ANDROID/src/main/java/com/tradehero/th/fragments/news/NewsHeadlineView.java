@@ -13,14 +13,17 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
@@ -221,6 +224,13 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         throw new IllegalStateException("It has no securityId");
     }
 
+    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
+    {
+        Bundle args = new Bundle();
+        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
+        ((DashboardActivity) getContext()).getDashboardNavigator().pushFragment(SettingsFragment.class, args);
+    }
+
     protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
     {
         return new NewsHeadlineViewDialogMenuClickedListener();
@@ -232,6 +242,11 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         {
             // TODO better
             THToast.show("Temp click for translation");
+        }
+
+        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
+        {
+            pushSettingsForConnect(socialShareFormDTO);
         }
 
         @Override public void onShareRequestedClicked()

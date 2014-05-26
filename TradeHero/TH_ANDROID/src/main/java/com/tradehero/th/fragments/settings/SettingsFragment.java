@@ -33,6 +33,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -77,6 +79,8 @@ import timber.log.Timber;
 
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
+    private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
+
     @Inject THBillingInteractor billingInteractor;
     @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
@@ -105,6 +109,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
 
+    private SocialNetworkEnum socialNetworkToConnectTo;
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
     private SocialNetworkEnum currentSocialNetworkConnect;
@@ -118,6 +123,35 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private SettingsUserProfileRetrievedCompleteListener
             currentUserProfileRetrievedMilestoneListener;
     private LogInCallback socialConnectLogInCallback;
+
+    public static void putSocialNetworkToConnect(Bundle args, SocialNetworkEnum socialNetwork)
+    {
+        args.putString(KEY_SOCIAL_NETWORK_TO_CONNECT, socialNetwork.name());
+    }
+
+    public static void putSocialNetworkToConnect(Bundle args, SocialShareFormDTO shareFormDTO)
+    {
+        if (shareFormDTO instanceof TimelineItemShareFormDTO &&
+                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO != null &&
+                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork != null)
+        {
+            putSocialNetworkToConnect(args, ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork);
+        }
+    }
+
+    public static SocialNetworkEnum getSocialNetworkToConnect(Bundle args)
+    {
+        if (args == null)
+        {
+            return null;
+        }
+        String name = args.getString(KEY_SOCIAL_NETWORK_TO_CONNECT);
+        if (name == null)
+        {
+            return null;
+        }
+        return SocialNetworkEnum.valueOf(name);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -144,6 +178,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 }
             }
         };
+
+        this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
     }
 
     private void createSocialConnectLogInCallback()
@@ -267,6 +303,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         super.onResume();
 
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
+        if (socialNetworkToConnectTo != null)
+        {
+            changeSharing(socialNetworkToConnectTo, true);
+            socialNetworkToConnectTo = null;
+        }
     }
 
     private void detachMiddleCallbackUpdateUserProfile()

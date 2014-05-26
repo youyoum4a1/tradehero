@@ -220,6 +220,11 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     {
         return new SocialSharer.OnSharedListener()
         {
+            @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+            {
+                notifyShareConnectRequested(shareFormDTO);
+            }
+
             @Override public void onShared(SocialShareFormDTO shareFormDTO,
                     SocialShareResultDTO socialShareResultDTO)
             {
@@ -319,6 +324,15 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         }
     }
 
+    protected void notifyShareConnectRequested(SocialShareFormDTO shareFormDTO)
+    {
+        OnMenuClickedListener listenerCopy = menuClickedListener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onShareConnectRequested(shareFormDTO);
+        }
+    }
+
     protected void notifyShareClicked()
     {
         OnMenuClickedListener listenerCopy = menuClickedListener;
@@ -331,6 +345,7 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     public static interface OnMenuClickedListener
     {
         void onTranslationRequestedClicked();
+        void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO);
         void onShareRequestedClicked();
     }
 }

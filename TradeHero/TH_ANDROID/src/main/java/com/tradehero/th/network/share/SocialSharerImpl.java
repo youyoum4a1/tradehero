@@ -28,21 +28,25 @@ public class SocialSharerImpl implements SocialSharer
     private final CurrentUserId currentUserId;
     private final UserProfileCache userProfileCache;
     private final DiscussionServiceWrapper discussionServiceWrapper;
+    private final SocialShareVerifier socialShareVerifier;
+
     private OnSharedListener sharedListener;
     private UserProfileDTO currentUserProfile;
+    private SocialShareFormDTO waitingSocialShareFormDTO;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharerImpl(
             CurrentActivityHolder currentActivityHolder,
             CurrentUserId currentUserId,
             UserProfileCache userProfileCache,
-            DiscussionServiceWrapper discussionServiceWrapper)
+            DiscussionServiceWrapper discussionServiceWrapper,
+            SocialShareVerifier socialShareVerifier)
     {
         this.currentActivityHolder = currentActivityHolder;
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
         this.discussionServiceWrapper = discussionServiceWrapper;
-        fetchUserProfile();
+        this.socialShareVerifier = socialShareVerifier;
     }
     //</editor-fold>
 
@@ -50,6 +54,15 @@ public class SocialSharerImpl implements SocialSharer
     @Override public void setSharedListener(OnSharedListener sharedListener)
     {
         this.sharedListener = sharedListener;
+    }
+
+    protected void notifyConnectRequiredListener(SocialShareFormDTO shareFormDTO)
+    {
+        OnSharedListener sharedListenerCopy = sharedListener;
+        if (sharedListenerCopy != null)
+        {
+            sharedListenerCopy.onConnectRequired(shareFormDTO);
+        }
     }
 
     protected void notifySharedListener(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO)
@@ -74,18 +87,64 @@ public class SocialSharerImpl implements SocialSharer
     @Override public void share(SocialShareFormDTO shareFormDTO, OnSharedListener sharedListener)
     {
         setSharedListener(sharedListener);
-        if (shareFormDTO instanceof TimelineItemShareFormDTO)
+        this.waitingSocialShareFormDTO = shareFormDTO;
+        shareWaitingDTOIfCan();
+    }
+
+    protected void shareWaitingDTOIfCan()
+    {
+        if (currentUserProfile == null)
         {
-            share((TimelineItemShareFormDTO) shareFormDTO);
-        }
-        else if (shareFormDTO instanceof WeChatDTO)
-        {
-            share((WeChatDTO) shareFormDTO);
+            fetchUserProfile();
         }
         else
         {
-            throw new IllegalArgumentException("Unhandled type " + shareFormDTO.getClass());
+            try
+            {
+                switch (socialShareVerifier.canShare(currentUserProfile, waitingSocialShareFormDTO))
+                {
+                    case YES:
+                        shareWaitingDTO();
+                        break;
+
+                    case NO:
+                        notifySharedFailedListener(waitingSocialShareFormDTO, new CannotShareException("Cannot share this"));
+                        break;
+
+                    case NEED_AUTH:
+                        notifyConnectRequiredListener(waitingSocialShareFormDTO);
+                        break;
+
+                    case TRY_AND_SEE:
+                        shareWaitingDTO();
+                        break;
+                }
+            }
+            catch (IllegalStateException e)
+            {
+                notifySharedFailedListener(waitingSocialShareFormDTO, e);
+            }
         }
+    }
+
+    protected void shareWaitingDTO()
+    {
+        if (waitingSocialShareFormDTO != null)
+        {
+            if (waitingSocialShareFormDTO instanceof TimelineItemShareFormDTO)
+            {
+                share((TimelineItemShareFormDTO) waitingSocialShareFormDTO);
+            }
+            else if (waitingSocialShareFormDTO instanceof WeChatDTO)
+            {
+                share((WeChatDTO) waitingSocialShareFormDTO);
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled type " + waitingSocialShareFormDTO.getClass());
+            }
+        }
+        waitingSocialShareFormDTO = null;
     }
 
     public void share(TimelineItemShareFormDTO timelineItemShareFormDTO)
@@ -165,7 +224,7 @@ public class SocialSharerImpl implements SocialSharer
                 boolean fromCache)
         {
             currentUserProfile = value;
-            // TODO something?
+            shareWaitingDTOIfCan();
         }
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)

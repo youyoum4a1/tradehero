@@ -10,6 +10,7 @@ public interface SocialSharer
 
     public static interface OnSharedListener
     {
+        void onConnectRequired(SocialShareFormDTO shareFormDTO);
         void onShared(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO);
         void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable);
     }
