@@ -30,7 +30,6 @@ import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.prefs.ForDeviceToken;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -64,7 +63,6 @@ public class THUser
     @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
-    @Inject @ForDeviceToken String deviceToken;
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
 
     public static void initialize()
