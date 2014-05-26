@@ -216,16 +216,19 @@ public class SecurityDiscussionItemView
 
     private void resetUserProfilePicture()
     {
-        cancelProfilePictureRequest();
-        picasso.load(R.drawable.superman_facebook)
-                .transform(userProfilePictureTransformation)
-                .into(discussionUserPicture);
+        if (discussionUserPicture != null)
+        {
+            cancelProfilePictureRequest();
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(userProfilePictureTransformation)
+                    .into(discussionUserPicture);
+        }
     }
 
     private void displayProfilePicture()
     {
         resetUserProfilePicture();
-        if (userBaseDTO.picture != null)
+        if (userBaseDTO.picture != null && discussionUserPicture != null)
         {
             picasso.load(userBaseDTO.picture)
                     .transform(userProfilePictureTransformation)
