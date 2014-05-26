@@ -24,6 +24,7 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
@@ -218,14 +219,16 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     {
         return new SocialSharer.OnSharedListener()
         {
-            @Override public void onShared()
+            @Override public void onShared(SocialShareFormDTO shareFormDTO,
+                    SocialShareResultDTO socialShareResultDTO)
             {
                 THToast.show(String.format(
                         getContext().getString(R.string.timeline_post_to_social_network),
                         socialNetworkEnum.getName()));
             }
 
-            @Override public void onShareFailed(Throwable throwable)
+            @Override public void onShareFailed(SocialShareFormDTO shareFormDTO,
+                    Throwable throwable)
             {
                 THToast.show("Share error " + socialNetworkEnum.getName());
                 Timber.e(throwable, "Share error");

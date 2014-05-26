@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.share.wechat.TrackShareFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.POST;
@@ -11,5 +11,5 @@ public interface WeChatService
     @POST("/users/{userId}/trackshare")
     Response trackShare(
             @Path("userId") int userId,
-            @Body TrackShareFormDTO trackShareFormDTO);
+            @Body WeChatTrackShareFormDTO weChatTrackShareFormDTO);
 }

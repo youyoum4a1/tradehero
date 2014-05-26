@@ -21,7 +21,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.share.wechat.TrackShareFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -212,13 +212,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     private void reportWeChatSuccessShareToServer()
     {
-        TrackShareFormDTO trackShareFormDTO = new TrackShareFormDTO();
-        trackShareFormDTO.msg = WECHAT_SHARE_NEWS_KEY + mMsgNewsId;
-        trackShareFormDTO.type = WECHAT_SHARE_TYPE_VALUE;
+        WeChatTrackShareFormDTO weChatTrackShareFormDTO = new WeChatTrackShareFormDTO();
+        weChatTrackShareFormDTO.msg = WECHAT_SHARE_NEWS_KEY + mMsgNewsId;
+        weChatTrackShareFormDTO.type = WECHAT_SHARE_TYPE_VALUE;
 
         detachTrackShareMiddleCallback();
         trackShareMiddleCallback =
-                weChatServiceWrapper.trackShare(currentUserId.get(), trackShareFormDTO,
+                weChatServiceWrapper.trackShare(currentUserId.get(), weChatTrackShareFormDTO,
                         new TrackShareCallback());
     }
 

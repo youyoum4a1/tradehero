@@ -3,7 +3,9 @@ package com.tradehero.th.network.share;
 import android.content.Intent;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.share.DiscussionShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.TimelineItemShareFormDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.wxapi.WXEntryActivity;
@@ -34,21 +36,21 @@ public class SocialSharerImpl implements SocialSharer
         this.sharedListener = sharedListener;
     }
 
-    protected void notifySharedListener()
+    protected void notifySharedListener(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO)
     {
         OnSharedListener sharedListenerCopy = sharedListener;
         if (sharedListenerCopy != null)
         {
-            sharedListenerCopy.onShared();
+            sharedListenerCopy.onShared(shareFormDTO, socialShareResultDTO);
         }
     }
 
-    protected void notifySharedFailedListener(Throwable throwable)
+    protected void notifySharedFailedListener(SocialShareFormDTO shareFormDTO, Throwable throwable)
     {
         OnSharedListener sharedListenerCopy = sharedListener;
         if (sharedListenerCopy != null)
         {
-            sharedListenerCopy.onShareFailed(throwable);
+            sharedListenerCopy.onShareFailed(shareFormDTO, throwable);
         }
     }
 
@@ -76,7 +78,7 @@ public class SocialSharerImpl implements SocialSharer
         discussionServiceWrapper.share(
                 timelineItemShareFormDTO.discussionListKey,
                 timelineItemShareFormDTO.timelineItemShareRequestDTO,
-                createDiscussionCallback());
+                createDiscussionCallback(timelineItemShareFormDTO));
     }
 
     public void share(WeChatDTO weChatDTO)
@@ -100,21 +102,28 @@ public class SocialSharerImpl implements SocialSharer
         return intent;
     }
 
-    protected Callback<DiscussionDTO> createDiscussionCallback()
+    protected Callback<DiscussionDTO> createDiscussionCallback(SocialShareFormDTO shareFormDTO)
     {
-        return new SocialSharerImplDiscussionCallback();
+        return new SocialSharerImplDiscussionCallback(shareFormDTO);
     }
 
     protected class SocialSharerImplDiscussionCallback implements Callback<DiscussionDTO>
     {
+        private final SocialShareFormDTO shareFormDTO;
+
+        public SocialSharerImplDiscussionCallback(SocialShareFormDTO shareFormDTO)
+        {
+            this.shareFormDTO = shareFormDTO;
+        }
+
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
-            notifySharedListener();
+            notifySharedListener(shareFormDTO, new DiscussionShareResultDTO(discussionDTO));
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            notifySharedFailedListener(retrofitError);
+            notifySharedFailedListener(shareFormDTO, retrofitError);
         }
     }
 }
