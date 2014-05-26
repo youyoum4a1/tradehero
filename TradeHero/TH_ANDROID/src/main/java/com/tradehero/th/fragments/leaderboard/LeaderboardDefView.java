@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -175,19 +174,19 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         switch (dto.id)
         {
             case LeaderboardDefDTO.LEADERBOARD_HERO_ID:
-                return R.drawable.leaderboard_friends;
+                return R.drawable.icn_lb_heroes;
 
             case LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID:
-                return R.drawable.leaderboard_friends;
+                return R.drawable.icn_lb_followers;
 
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
                 return R.drawable.leaderboard_friends;
 
             case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
-                return R.drawable.leaderboard_bysector;
+                return R.drawable.icn_lb_sectors;
 
             case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
-                return R.drawable.leaderboard_byexchange;
+                return R.drawable.icn_lb_exchanges;
 
             case 2:
                 return R.drawable.lb_toptraders;
@@ -250,16 +249,16 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
                 return R.drawable.lb_quarter4;
 
             case 40:
-                return R.drawable.leaderboard_30d;
+                return R.drawable.icn_lb_30d;
 
             case 41:
-                return R.drawable.leaderboard_90d;
+                return R.drawable.icn_lb_90d;
 
             case 49:
-                return R.drawable.leaderboard_most_skilled;
+                return R.drawable.icn_lb_most_skilled;
 
             case 285:
-                return R.drawable.leaderboard_6m;
+                return R.drawable.icn_lb_6m;
 
             default:
                 return 0;
