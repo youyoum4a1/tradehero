@@ -9,7 +9,7 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.share.DiscussionShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.share.TimelineItemShareFormDTO;
+import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -84,9 +84,8 @@ public class SocialSharerImpl implements SocialSharer
     }
     //</editor-fold>
 
-    @Override public void share(SocialShareFormDTO shareFormDTO, OnSharedListener sharedListener)
+    @Override public void share(SocialShareFormDTO shareFormDTO)
     {
-        setSharedListener(sharedListener);
         this.waitingSocialShareFormDTO = shareFormDTO;
         shareWaitingDTOIfCan();
     }
@@ -155,8 +154,6 @@ public class SocialSharerImpl implements SocialSharer
                 timelineItemShareFormDTO.discussionListKey,
                 timelineItemShareFormDTO.timelineItemShareRequestDTO,
                 createDiscussionCallback(timelineItemShareFormDTO));
-
-        // TODO add check that it is able to share
     }
 
     public void share(WeChatDTO weChatDTO)

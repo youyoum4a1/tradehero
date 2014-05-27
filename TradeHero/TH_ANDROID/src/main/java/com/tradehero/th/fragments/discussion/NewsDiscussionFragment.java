@@ -11,24 +11,22 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.news.NewsItemCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.news.NewsDetailFullView;
 import com.tradehero.th.fragments.news.NewsDetailSummaryView;
-import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsTranslationSelfDisplayer;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -44,11 +42,13 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     @Inject NewsItemCache newsItemCache;
     @Inject TranslationCache translationCache;
+    @Inject SocialShareTranslationHelper socialShareTranslationHelper;
 
     @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
 
     @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
     @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
+    @InjectView(R.id.discussion_action_button_more) View buttonMore;
     private DiscussionEditPostFragment discussionEditPostFragment;
 
     @OnClick(R.id.news_start_new_discussion) void onStartNewDiscussion()
@@ -196,27 +196,24 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
             votePair.display(mDetailNewsItemDTO);
             newsDetailSummaryView.display(mDetailNewsItemDTO);
             newsDetailFullView.display(mDetailNewsItemDTO);
+            displayMoreButton();
         }
     }
 
     //<editor-fold desc="Related to share dialog">
-
-    // TODO
-    @OnClick(R.id.discussion_action_button_more) void onActionButtonMoreClicked()
+    protected void displayMoreButton()
     {
-        showShareDialog();
+        buttonMore.setVisibility(socialShareTranslationHelper.canTranslate(mDetailNewsItemDTO) ? View.VISIBLE : View.GONE);
     }
 
-    private void showShareDialog()
+    @OnClick(R.id.discussion_action_button_more) void onActionButtonMoreClicked()
     {
-        View contentView = LayoutInflater.from(getSherlockActivity())
-                .inflate(R.layout.sharing_translation_dialog_layout, null);
-        THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO,
-                WeChatMessageType.CreateDiscussion);
-        ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
-        // TODO find a place to unset this listener
-        THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
+        showNewsDialog();
+    }
+
+    private void showNewsDialog()
+    {
+        socialShareTranslationHelper.shareOrTranslate(mDetailNewsItemDTO);
     }
     //</editor-fold>
 
@@ -258,29 +255,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         @Override public void onErrorThrown(NewsItemDTOKey key, Throwable error)
         {
             THToast.show(new THException(error));
-        }
-    }
-
-    protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
-    {
-        return new NewsDiscussionFragmentDialogMenuClickedListener();
-    }
-
-    private class NewsDiscussionFragmentDialogMenuClickedListener implements NewsDialogLayout.OnMenuClickedListener
-    {
-        @Override public void onTranslationRequestedClicked()
-        {
-            handleTranslationRequested();
-        }
-
-        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
-        {
-            pushSettingsForConnect(socialShareFormDTO);
-        }
-
-        @Override public void onShareRequestedClicked()
-        {
-            // TODO
         }
     }
 }

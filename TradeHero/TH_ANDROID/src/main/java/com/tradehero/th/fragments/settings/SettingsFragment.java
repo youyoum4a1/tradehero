@@ -34,7 +34,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.TimelineItemShareFormDTO;
+import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;

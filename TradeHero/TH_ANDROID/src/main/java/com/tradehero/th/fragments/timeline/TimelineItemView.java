@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.Menu;
@@ -24,15 +23,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
@@ -45,10 +40,10 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
@@ -93,7 +88,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                 break;
             case R.id.discussion_action_button_share:
             case R.id.timeline_action_button_share_wrapper:
-                createAndShowSharePopupMenu();
+                createAndShowSharePopupDialog();
                 break;
             case R.id.discussion_action_button_more:
                 PopupMenu popUpMenu = createActionPopupMenu();
@@ -110,10 +105,9 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Inject Lazy<UserTimelineServiceWrapper> userTimelineServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject LocalyticsSession localyticsSession;
-    @Inject Lazy<SocialSharer> socialSharerLazy;
+    @Inject SocialShareHelper socialShareHelper;
 
     private TimelineItemDTO timelineItemDTO;
-    private PopupMenu sharePopupMenu;
     private MiddleCallback<Response> shareMiddleCallback;
 
     //<editor-fold desc="Constructors">
@@ -345,8 +339,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
                 case R.id.timeline_action_button_share:
                 {
-                    PopupMenu popupMenu = createSharePopupMenu();
-                    popupMenu.show();
+                    createAndShowSharePopupDialog();
                     return true;
                 }
 
@@ -401,80 +394,9 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
-    protected PopupMenu.OnMenuItemClickListener createSharePopupMenuItemClickListener()
+    private void createAndShowSharePopupDialog()
     {
-        return new SharePopupMenuItemClickListener();
-    }
-
-    protected class SharePopupMenuItemClickListener implements PopupMenu.OnMenuItemClickListener
-    {
-        @Override public boolean onMenuItemClick(MenuItem item)
-        {
-            SocialNetworkEnum socialNetworkEnum = null;
-            boolean ableToShare = true;
-
-            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-
-            switch (item.getItemId())
-            {
-                case R.id.timeline_popup_menu_share_facebook:
-                    socialNetworkEnum = SocialNetworkEnum.FB;
-                    ableToShare = userProfileDTO != null && userProfileDTO.fbLinked;
-                    break;
-                case R.id.timeline_popup_menu_share_twitter:
-                    socialNetworkEnum = SocialNetworkEnum.TW;
-                    ableToShare = userProfileDTO != null && userProfileDTO.twLinked;
-                    break;
-                case R.id.timeline_popup_menu_share_linked_in:
-                    socialNetworkEnum = SocialNetworkEnum.LN;
-                    ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
-                    break;
-                case R.id.timeline_popup_menu_share_we_chat:
-                    WeChatDTO weChatDTO = new WeChatDTO();
-                    weChatDTO.id = timelineItemDTO.id;
-                    weChatDTO.title = timelineItemDTO.text;
-                    SecurityMediaDTO firstMediaWithLogo = timelineItemDTO.getFlavorSecurityForDisplay();
-                    if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
-                    {
-                        weChatDTO.imageURL = firstMediaWithLogo.url;
-                    }
-                    weChatDTO.type = WeChatMessageType.Timeline;
-                    socialSharerLazy.get().share(weChatDTO, null); // TODO proper callback?
-                    return true;
-            }
-            if (socialNetworkEnum == null)
-            {
-                return false;
-            }
-
-            if (ableToShare)
-            {
-                detachShareMiddleCallback();
-                shareMiddleCallback = userTimelineServiceWrapper.get().shareTimelineItem(
-                        currentUserId.toUserBaseKey(),
-                        timelineItemDTO.id, new TimelineItemShareRequestDTO(socialNetworkEnum),
-                        createShareRequestCallback(socialNetworkEnum));
-            }
-            else
-            {
-                alertDialogUtil.popWithOkCancelButton(
-                        getContext(),
-                        getContext().getString(R.string.link) + socialNetworkEnum.getName(),
-                        String.format(getContext().getString(R.string.link_description), socialNetworkEnum.getName()),
-                        R.string.link_now,
-                        R.string.later,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override public void onClick(DialogInterface dialog, int which)
-                            {
-                                openSettingScreen();
-                            }
-                        },
-                        null
-                );
-            }
-            return true;
-        }
+        socialShareHelper.share(timelineItemDTO);
     }
 
     private void openSettingScreen()
@@ -510,7 +432,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                 }
                 break;
             case R.id.timeline_action_button_share_wrapper:
-                createAndShowSharePopupMenu();
+                createAndShowSharePopupDialog();
                 break;
         }
     }
@@ -547,24 +469,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         }
         menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(createMonitorPopupMenuItemClickListener());
-        return popupMenu;
-    }
-
-    private void createAndShowSharePopupMenu()
-    {
-        if (sharePopupMenu == null)
-        {
-            sharePopupMenu = createSharePopupMenu();
-        }
-        sharePopupMenu.show();
-    }
-
-    protected PopupMenu createSharePopupMenu()
-    {
-        PopupMenu popupMenu = new PopupMenu(getContext(), more);
-        MenuInflater menuInflater = popupMenu.getMenuInflater();
-        menuInflater.inflate(R.menu.share_popup_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(createSharePopupMenuItemClickListener());
         return popupMenu;
     }
 

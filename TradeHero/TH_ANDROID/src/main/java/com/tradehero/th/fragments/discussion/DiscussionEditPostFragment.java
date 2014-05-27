@@ -400,7 +400,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
             if (mWeChatShareButton.isChecked())
             {
-                socialSharer.share(weChatDTOFactory.createFrom(discussionDTO), null); // Proper callback?
+                socialSharer.share(weChatDTOFactory.createFrom(discussionDTO)); // Proper callback?
             }
 
             isPosted = true;

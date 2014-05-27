@@ -3,14 +3,12 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -19,11 +17,11 @@ import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
@@ -37,9 +35,11 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     @InjectView(R.id.news_title_description) TextView newsDescription;
     @InjectView(R.id.news_title_title) TextView newsTitle;
     @InjectView(R.id.news_source) TextView newsSource;
+    @InjectView(R.id.discussion_action_button_more) View buttonMore;
 
     @Inject NewsItemCompactCacheNew newsItemCompactCache;
     @Inject TranslationCache translationCache;
+    @Inject SocialShareTranslationHelper socialShareHelper;
 
     private NewsItemCompactDTO newsItemDTO;
     private DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
@@ -110,13 +110,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
      */
     @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
-        View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.sharing_dialog_layout, null);
-        THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((ShareDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News);
-        ((ShareDialogLayout) contentView).setMenuClickedListener(createShareDialogMenuClickedListener());
-        // TODO find a place to unset this listener
-        THDialog.showUpDialog(getContext(), contentView, callback);
+        socialShareHelper.shareOrTranslate(newsItemDTO);
     }
     //</editor-fold>
 
@@ -163,6 +157,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
                 displayTitle();
                 displayDescription();
                 displaySource();
+                displayMoreButton();
             }
             else
             {
@@ -203,6 +198,11 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         newsTitle.setText(newsItemDTO.title);
     }
 
+    private void displayMoreButton()
+    {
+        buttonMore.setVisibility(socialShareHelper.canTranslate(newsItemDTO) ? View.VISIBLE : View.GONE);
+    }
+
     private void resetTitle()
     {
         newsTitle.setText(null);
@@ -229,23 +229,5 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         Bundle args = new Bundle();
         SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
         ((DashboardActivity) getContext()).getDashboardNavigator().pushFragment(SettingsFragment.class, args);
-    }
-
-    protected ShareDialogLayout.OnShareMenuClickedListener createShareDialogMenuClickedListener()
-    {
-        return new NewsHeadlineViewDialogMenuClickedListener();
-    }
-
-    private class NewsHeadlineViewDialogMenuClickedListener implements ShareDialogLayout.OnShareMenuClickedListener
-    {
-        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
-        {
-            pushSettingsForConnect(socialShareFormDTO);
-        }
-
-        @Override public void onShareRequestedClicked()
-        {
-            // TODO
-        }
     }
 }

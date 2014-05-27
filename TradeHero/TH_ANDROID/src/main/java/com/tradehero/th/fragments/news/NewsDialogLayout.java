@@ -7,44 +7,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.share.TimelineItemShareFormDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
-import com.tradehero.th.models.share.FacebookShareDestination;
-import com.tradehero.th.models.share.LinkedInShareDestination;
-import com.tradehero.th.models.share.ShareDestination;
-import com.tradehero.th.models.share.ShareDestinationFactory;
-import com.tradehero.th.models.share.TwitterShareDestination;
-import com.tradehero.th.models.share.WeChatShareDestination;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import timber.log.Timber;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 
 public class NewsDialogLayout extends ShareDialogLayout
 {
@@ -94,7 +69,8 @@ public class NewsDialogLayout extends ShareDialogLayout
 
     private void setNewsTitle()
     {
-        newsTitleView.setText(title);
+        newsTitleView.setText(getTitleString());
+        String description = getDescriptionString();
         if (!TextUtils.isEmpty(description))
         {
             newsSubTitleView.setVisibility(View.VISIBLE);
@@ -104,6 +80,46 @@ public class NewsDialogLayout extends ShareDialogLayout
         {
             newsSubTitleView.setVisibility(View.GONE);
         }
+    }
+
+    protected String getTitleString()
+    {
+        if (discussionToShare instanceof NewsItemCompactDTO)
+        {
+            return ((NewsItemCompactDTO) discussionToShare).title;
+        }
+        else if (discussionToShare instanceof NewsItemDTO)
+        {
+            return ((NewsItemDTO) discussionToShare).title;
+        }
+        else if (discussionToShare instanceof DiscussionDTO)
+        {
+            return String.format("%s: %s",
+                    ((DiscussionDTO) discussionToShare).user.displayName,
+                    ((DiscussionDTO) discussionToShare).text);
+        }
+        else if (discussionToShare instanceof AbstractDiscussionDTO)
+        {
+            return ((AbstractDiscussionDTO) discussionToShare).text;
+        }
+        return getContext().getString(R.string.na);
+    }
+
+    protected String getDescriptionString()
+    {
+        if (discussionToShare instanceof NewsItemCompactDTO)
+        {
+            return ((NewsItemCompactDTO) discussionToShare).description;
+        }
+        else if (discussionToShare instanceof NewsItemDTO)
+        {
+            return ((NewsItemDTO) discussionToShare).description;
+        }
+        else if (discussionToShare instanceof AbstractDiscussionDTO)
+        {
+            return "";
+        }
+        return getContext().getString(R.string.na);
     }
 
     @OnClick(R.id.news_action_back)
@@ -132,7 +148,6 @@ public class NewsDialogLayout extends ShareDialogLayout
         else if (position == 1)
         {
             notifyTranslationClicked();
-            dismissDialog();
         }
     }
 
@@ -145,9 +160,9 @@ public class NewsDialogLayout extends ShareDialogLayout
         }
     }
 
-    @Override public void setNewsData(AbstractDiscussionCompactDTO abstractDiscussionDTO, WeChatMessageType shareType)
+    @Override public void setDiscussionToShare(AbstractDiscussionCompactDTO discussionToShare)
     {
-        super.setNewsData(abstractDiscussionDTO, shareType);
+        super.setDiscussionToShare(discussionToShare);
         setNewsTitle();
     }
 
@@ -172,12 +187,12 @@ public class NewsDialogLayout extends ShareDialogLayout
         NewsDialogLayout.OnMenuClickedListener listenerCopy = (OnMenuClickedListener) menuClickedListener;
         if (listenerCopy != null)
         {
-            listenerCopy.onTranslationRequestedClicked();
+            listenerCopy.onTranslationRequestedClicked(discussionToShare);
         }
     }
 
     public static interface OnMenuClickedListener extends OnShareMenuClickedListener
     {
-        void onTranslationRequestedClicked();
+        void onTranslationRequestedClicked(AbstractDiscussionCompactDTO toTranslate);
     }
 }

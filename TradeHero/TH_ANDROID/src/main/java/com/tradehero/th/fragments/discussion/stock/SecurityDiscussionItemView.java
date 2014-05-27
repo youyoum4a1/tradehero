@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.discussion.stock;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,28 +12,22 @@ import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
-import com.tradehero.th.fragments.news.NewsDialogLayout;
-import com.tradehero.th.fragments.news.NewsTranslationSelfDisplayer;
-import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.news.NewsDialogFactory;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import javax.inject.Inject;
 
 public class SecurityDiscussionItemView
@@ -44,10 +37,13 @@ public class SecurityDiscussionItemView
     @InjectView(R.id.discussion_user_picture) ImageView discussionUserPicture;
     @InjectView(R.id.user_profile_name) TextView userProfileName;
     @InjectView(R.id.vote_pair) VotePair discussionVotePair;
+    @InjectView(R.id.discussion_action_button_more) View moreButton;
 
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userProfilePictureTransformation;
     @Inject TranslationCache translationCache;
+    @Inject NewsDialogFactory newsDialogFactory;
+    @Inject SocialShareTranslationHelper socialShareHelper;
 
     private DiscussionDTO discussionDTO;
     private UserBaseDTO userBaseDTO;
@@ -92,6 +88,7 @@ public class SecurityDiscussionItemView
         detachTranslationTask();
         resetView();
         discussionUserPicture.setOnClickListener(null);
+        socialShareHelper.onDetach();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -138,6 +135,7 @@ public class SecurityDiscussionItemView
             {
                 resetView();
             }
+            displayMoreButton();
         }
     }
 
@@ -149,26 +147,19 @@ public class SecurityDiscussionItemView
         getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
     }
 
-    //TODO very bad way
-    @OnClick(R.id.discussion_action_button_more) void showShareDialog()
+    @OnClick(R.id.discussion_action_button_share) void showShareOnlyDialog()
     {
-        View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.sharing_translation_dialog_layout, null);
-        THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(discussionDTO,
-                WeChatMessageType.Discussion);
-        ((NewsDialogLayout) contentView).setMenuClickedListener(
-                createNewsDialogMenuClickedListener());
-        THDialog.showUpDialog(getContext(), contentView, callback);
+        socialShareHelper.share(discussionDTO);
     }
 
-    protected void handleTranslationRequested()
+    protected void displayMoreButton()
     {
-        detachTranslationTask();
-        TranslationKey key = discussionDTO.createTranslationKey("zh");
-        translationTask =
-                new NewsTranslationSelfDisplayer(getContext(), translationCache, null)
-                        .launchTranslation(key);
+        moreButton.setVisibility(socialShareHelper.canTranslate(discussionDTO) ? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick(R.id.discussion_action_button_more) void showShareDialog()
+    {
+        socialShareHelper.shareOrTranslate(discussionDTO);
     }
 
     private void linkWith(UserBaseDTO user, boolean andDisplay)
@@ -261,35 +252,5 @@ public class SecurityDiscussionItemView
     {
         // TODO there has to be a SecurityId here
         throw new IllegalStateException("It has no securityId");
-    }
-
-    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
-    {
-        Bundle args = new Bundle();
-        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
-        ((DashboardActivity) getContext()).getDashboardNavigator().pushFragment(SettingsFragment.class, args);
-    }
-
-    protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
-    {
-        return new SecurityDiscussionItemViewDialogMenuClickedListener();
-    }
-
-    private class SecurityDiscussionItemViewDialogMenuClickedListener implements NewsDialogLayout.OnMenuClickedListener
-    {
-        @Override public void onTranslationRequestedClicked()
-        {
-            handleTranslationRequested();
-        }
-
-        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
-        {
-            pushSettingsForConnect(socialShareFormDTO);
-        }
-
-        @Override public void onShareRequestedClicked()
-        {
-            // TODO
-        }
     }
 }

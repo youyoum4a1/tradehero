@@ -1706,7 +1706,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                         + securityCompactDTO.name + " " + mQuantity + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
-            socialSharerLazy.get().share(weChatDTO, null); // TODO proper callback?
+            socialSharerLazy.get().share(weChatDTO); // TODO proper callback?
         }
     }
 

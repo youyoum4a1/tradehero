@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +13,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListAdapter;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import javax.inject.Inject;
@@ -43,27 +39,6 @@ public class AlertDialogUtil
                 dialog.cancel();
             }
         };
-    }
-
-    public AlertDialog popLinkSocialAccount(final Context context, final SocialNetworkEnum socialNetworkEnum)
-    {
-        return popWithOkCancelButton(
-                context,
-                context.getString(R.string.link, socialNetworkEnum.getName()),
-                context.getString(R.string.link_description, socialNetworkEnum.getName()),
-                R.string.link_now,
-                R.string.later,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        Bundle args = new Bundle();
-                        SettingsFragment.putSocialNetworkToConnect(args, socialNetworkEnum);
-                        ((DashboardActivity) context).getDashboardNavigator().pushFragment(SettingsFragment.class, args);
-                    }
-                },
-                null
-        );
     }
 
     public AlertDialog popWithNegativeButton(final Context context, int titleResId,
