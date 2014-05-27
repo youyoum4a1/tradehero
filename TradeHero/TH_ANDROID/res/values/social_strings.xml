@@ -3,4 +3,16 @@
 
   <string name="social_search_people_hint">Enter a name</string>
 
+  <integer name="share_destination_id_facebook">0</integer>
+  <integer name="share_destination_id_linked">1</integer>
+  <integer name="share_destination_id_twitter">2</integer>
+  <integer name="share_destination_id_wechat">3</integer>
+
+  <integer-array name="ordered_share_destinations">
+    <item>@integer/share_destination_id_facebook</item>
+    <item>@integer/share_destination_id_linked</item>
+    <item>@integer/share_destination_id_twitter</item>
+    <item>@integer/share_destination_id_wechat</item>
+  </integer-array>
+
 </resources>

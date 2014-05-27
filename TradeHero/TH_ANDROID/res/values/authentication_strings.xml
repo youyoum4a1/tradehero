@@ -37,18 +37,6 @@
   <string name="authentication_connecting_to_weibo">Connecting to Weibo</string>
   <string name="wechat">WeChat</string>
 
-  <integer name="share_destination_id_facebook">0</integer>
-  <integer name="share_destination_id_linked">1</integer>
-  <integer name="share_destination_id_twitter">2</integer>
-  <integer name="share_destination_id_wechat">3</integer>
-
-  <integer-array name="ordered_share_destinations">
-    <item>@integer/share_destination_id_facebook</item>
-    <item>@integer/share_destination_id_linked</item>
-    <item>@integer/share_destination_id_twitter</item>
-    <item>@integer/share_destination_id_wechat</item>
-  </integer-array>
-
   <string name="authentication_error_creating_signup_form">There was an error creating the sign-up form</string>
 
 </resources>

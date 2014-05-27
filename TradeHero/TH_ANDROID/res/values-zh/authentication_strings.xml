@@ -33,11 +33,4 @@
   <string name="sina_weibo">微博</string>
   <string name="authentication_connecting_to_weibo">连接微博</string>
 
-  <integer-array name="ordered_share_destinations">
-    <item>@integer/share_destination_id_wechat</item>
-    <item>@integer/share_destination_id_linked</item>
-    <item>@integer/share_destination_id_twitter</item>
-    <item>@integer/share_destination_id_facebook</item>
-  </integer-array>
-
 </resources>

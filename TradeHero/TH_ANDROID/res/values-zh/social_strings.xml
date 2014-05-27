@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <integer-array name="ordered_share_destinations">
+    <item>@integer/share_destination_id_wechat</item>
+    <item>@integer/share_destination_id_linked</item>
+    <item>@integer/share_destination_id_twitter</item>
+    <item>@integer/share_destination_id_facebook</item>
+  </integer-array>
+
+</resources>
