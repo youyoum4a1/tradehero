@@ -16,6 +16,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -221,14 +222,14 @@ public class ShareDialogLayout extends LinearLayout implements THDialog.DialogCa
     public void setNewsData(NewsItemCompactDTO newsItemCompactDTO, WeChatMessageType shareType)
     {
         this.description = newsItemCompactDTO.description;
-        this.title = null;
+        this.title = newsItemCompactDTO.title;
         setNewsData((AbstractDiscussionCompactDTO) newsItemCompactDTO, shareType);
     }
 
     public void setNewsData(NewsItemDTO newsItemDTO, WeChatMessageType shareType)
     {
         this.description = newsItemDTO.description;
-        this.title = newsItemDTO.text;
+        this.title = newsItemDTO.title;
         setNewsData((AbstractDiscussionCompactDTO) newsItemDTO, shareType);
     }
 
@@ -236,6 +237,10 @@ public class ShareDialogLayout extends LinearLayout implements THDialog.DialogCa
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         this.id = abstractDiscussionDTO.id;
+        if (abstractDiscussionDTO instanceof DiscussionDTO)
+        {
+            this.title = ((DiscussionDTO)abstractDiscussionDTO).user.displayName + ": " + ((DiscussionDTO)abstractDiscussionDTO).text;
+        }
         mShareType = shareType;
     }
 

@@ -10,13 +10,13 @@ import com.tradehero.th.api.share.DiscussionShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.TimelineItemShareFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -167,7 +167,7 @@ public class SocialSharerImpl implements SocialSharer
     public Intent createWeChatIntent(WeChatDTO weChatDTO)
     {
         Intent intent = new Intent(currentActivityHolder.getCurrentContext(), WXEntryActivity.class);
-        intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TYPE_KEY, weChatDTO.type);
+        intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TYPE_KEY, weChatDTO.type.getValue());
         intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_ID_KEY, weChatDTO.id);
         if (weChatDTO.title != null)
         {
