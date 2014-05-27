@@ -1,10 +1,10 @@
 package com.tradehero.th.auth;
 
 import android.content.Context;
+
 import java.lang.ref.WeakReference;
 
-public abstract class SocialAuthenticationProvider implements THAuthenticationProvider
-{
+public abstract class SocialAuthenticationProvider implements THAuthenticationProvider {
     protected static final String SCREEN_NAME_KEY = "screen_name";
     protected static final String ID_KEY = "id";
     public static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
@@ -16,41 +16,36 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
     public static final String TWITTER_AUTH_TYPE = "TH-Twitter";
     public static final String LINKEDIN_AUTH_TYPE = "TH-LinkedIn";
     public static final String WEIBO_AUTH_TYPE = "TH-Weibo";
+    public static final String QQ_AUTH_TYPE = "TH-QQ";
     public static final String TRADEHERO_AUTH_TYPE = "Basic";
     public static final String WECHAT_AUTH_TYPE = "TH-Wehat";
 
     protected WeakReference<Context> baseContext;
     protected THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
 
-    public SocialAuthenticationProvider with(Context context)
-    {
+    public SocialAuthenticationProvider with(Context context) {
         baseContext = new WeakReference<>(context);
         return this;
     }
 
-    @Override public void cancel()
-    {
+    @Override
+    public void cancel() {
         handleCancel(this.currentOperationCallback);
     }
 
-    protected void handleCancel(THAuthenticationProvider.THAuthenticationCallback callback)
-    {
-        if ((currentOperationCallback != callback) || (callback == null))
-        {
+    protected void handleCancel(THAuthenticationProvider.THAuthenticationCallback callback) {
+        if ((currentOperationCallback != callback) || (callback == null)) {
             return;
         }
-        try
-        {
+        try {
             callback.onCancel();
-        }
-        finally
-        {
+        } finally {
             currentOperationCallback = null;
         }
     }
 
-    @Override public String getAuthHeader()
-    {
+    @Override
+    public String getAuthHeader() {
         return getAuthType() + " " + getAuthHeaderParameter();
     }
 }

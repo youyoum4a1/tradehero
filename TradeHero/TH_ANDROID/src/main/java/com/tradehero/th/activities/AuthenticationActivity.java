@@ -17,32 +17,20 @@ import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.fragments.authentication.AuthenticationFragment;
-import com.tradehero.th.fragments.authentication.EmailSignInFragment;
-import com.tradehero.th.fragments.authentication.EmailSignInOrUpFragment;
-import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
-import com.tradehero.th.fragments.authentication.SignInFragment;
-import com.tradehero.th.fragments.authentication.SignUpFragment;
-import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
-import com.tradehero.th.fragments.authentication.WelcomeFragment;
+import com.tradehero.th.fragments.authentication.*;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.FacebookUtils;
-import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.*;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Inject;
 import org.json.JSONException;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthenticationActivity extends SherlockFragmentActivity
         implements View.OnClickListener
@@ -59,6 +47,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
+    @Inject
+    Lazy<QQUtils> qqUtils;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
@@ -146,6 +136,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode,resultCode,data);
+
     }
 
     @Override public void onClick(View view)
@@ -186,6 +177,10 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 break;
             case R.id.btn_weibo_signin:
                 authenticateWithWeibo();
+                break;
+
+            case R.id.btn_qq_signin:
+                authenticateWithQQ();
                 break;
 
             case R.id.txt_term_of_service_signin:
@@ -255,6 +250,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         //localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_LinkedIn);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_weibo);
         weiboUtils.get().logIn(this, new SocialAuthenticationCallback("Weibo"));
+    }
+
+    private void authenticateWithQQ() {
+        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
+        qqUtils.get().logIn(this, new SocialAuthenticationCallback("QQ"));
     }
 
     private void authenticateWithLinkedIn()

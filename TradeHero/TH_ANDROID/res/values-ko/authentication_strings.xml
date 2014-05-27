@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="authentication_welcome_new_user">새로운 사용자</string>
-  <string name="authentication_guarantee">트레이드히어로는 사용자의 개인정보를 소중히 여깁니다: 허락없이는 아무것도 피드에 게시되지 않습니다.</string>
-  <string name="authentication_sign_in_tos">사용 약관</string>
-  <string name="authentication_email">이메일</string>
-  <string name="authentication_password">비밀번호</string>
-  <string name="authentication_sign_up">회원가입</string>
-  <string name="authentication_sign_up_with">이메일 주소로 로그인</string>
-  <string name="authentication_sign_up_with_email">이메일 주소로 회원가입</string>
-  <string name="authentication_sign_in">로그인</string>
-  <string name="authentication_sign_in_with_email">이메일 주소로 회원가입</string>
-  <string name="authentication_sign_in_with">아래 계정으로 로그인</string>
-  <string name="authentication_existing_user">기존 사용자</string>
-  <string name="authentication_email_address">이메일 주소</string>
-  <string name="authentication_ask_for_email">이메일 주소를 입력하세요:</string>
-  <string name="authentication_thank_you_message_email">감사합니다! 메일박스를 확인하세요</string>
-  <string name="authentication_confirm">확인</string>
-  <string name="authentication_cancel">@string/cancel</string>
-  <string name="authentication_not_registered">먼저 회원가입을 해주세요</string>
+    <string name="authentication_welcome_new_user">새로운 사용자</string>
+    <string name="authentication_guarantee">트레이드히어로는 사용자의 개인정보를 소중히 여깁니다: 허락없이는 아무것도 피드에 게시되지 않습니다.</string>
+    <string name="authentication_sign_in_tos">사용 약관</string>
+    <string name="authentication_email">이메일</string>
+    <string name="authentication_password">비밀번호</string>
+    <string name="authentication_sign_up">회원가입</string>
+    <string name="authentication_sign_up_with">이메일 주소로 로그인</string>
+    <string name="authentication_sign_up_with_email">이메일 주소로 회원가입</string>
+    <string name="authentication_sign_in">로그인</string>
+    <string name="authentication_sign_in_with_email">이메일 주소로 회원가입</string>
+    <string name="authentication_sign_in_with">아래 계정으로 로그인</string>
+    <string name="authentication_existing_user">기존 사용자</string>
+    <string name="authentication_email_address">이메일 주소</string>
+    <string name="authentication_ask_for_email">이메일 주소를 입력하세요:</string>
+    <string name="authentication_thank_you_message_email">감사합니다! 메일박스를 확인하세요</string>
+    <string name="authentication_confirm">확인</string>
+    <string name="authentication_cancel">@string/cancel</string>
+    <string name="authentication_not_registered">먼저 회원가입을 해주세요</string>
 
-  <string name="authentication_forgot_password">비밀번호 찾기</string>
-  <string name="authentication_forgot_password_email">이메일</string>
+    <string name="authentication_forgot_password">비밀번호 찾기</string>
+    <string name="authentication_forgot_password_email">이메일</string>
 
-  <string name="authentication_connecting_tradehero">%s로 트레이드히어로 사용하기</string>
-  <string name="authentication_connecting_tradehero_only">진행중</string>
-  <string name="facebook">페이스북</string>
-  <string name="authentication_connecting_to_facebook">페이스북에 연결중</string>
-  <string name="linkedin">LinkedIn</string>
-  <string name="authentication_connecting_to_linkedin">LinkedIn에 연결중</string>
-  <string name="twitter">트위터</string>
-  <string name="authentication_twitter_email">이메일</string>
-  <string name="authentication_twitter_connecting">트위터에 연결중</string>
-  <string name="sina_weibo">Weibo</string>
-  <string name="authentication_connecting_to_weibo">Weibo에 연결중</string>
-  <string name="wechat">WeChat</string>
+    <string name="authentication_connecting_tradehero">%s로 트레이드히어로 사용하기</string>
+    <string name="authentication_connecting_tradehero_only">진행중</string>
+    <string name="facebook">페이스북</string>
+    <string name="authentication_connecting_to_facebook">페이스북에 연결중</string>
+    <string name="linkedin">LinkedIn</string>
+    <string name="authentication_connecting_to_linkedin">LinkedIn에 연결중</string>
+    <string name="twitter">트위터</string>
+    <string name="authentication_twitter_email">이메일</string>
+    <string name="authentication_twitter_connecting">트위터에 연결중</string>
+    <string name="sina_weibo">Weibo</string>
+    <string name="tencent_qq">QQ</string>
+    <string name="authentication_connecting_to_weibo">Weibo에 연결중</string>
+    <string name="wechat">WeChat</string>
 
 </resources>
