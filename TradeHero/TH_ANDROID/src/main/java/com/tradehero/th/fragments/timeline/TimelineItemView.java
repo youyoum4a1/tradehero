@@ -24,6 +24,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
@@ -46,12 +48,10 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -136,11 +136,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        init();
-    }
-
-    private void init()
-    {
         ButterKnife.inject(this);
     }
 
@@ -174,13 +169,12 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        init();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachShareMiddleCallback();
-
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -204,7 +198,8 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
-
+        //need do this, cos linkwith is in front of onAttachedToWindow
+        ButterKnife.inject(this);
         if (abstractDiscussionDTO instanceof TimelineItemDTO)
         {
             linkWith((TimelineItemDTO) abstractDiscussionDTO, true);
@@ -256,7 +251,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void displayUserProfilePicture(UserProfileCompactDTO user)
     {
-        if (user.picture != null)
+        if (user.picture != null && picasso != null)
         {
             displayDefaultUserProfilePicture();
             picasso.get()
@@ -269,10 +264,13 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void displayDefaultUserProfilePicture()
     {
-        picasso.get()
-                .load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformation)
-                .into(avatar);
+        if (avatar != null && picasso != null)
+        {
+            picasso.get()
+                    .load(R.drawable.superman_facebook)
+                    .transform(peopleIconTransformation)
+                    .into(avatar);
+        }
     }
 
     private void displayVendorLogo(TimelineItemDTO item)

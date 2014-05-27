@@ -28,6 +28,16 @@ public class WeChatDTO implements SocialShareFormDTO
         this.title = title;
         this.imageURL = imageURL;
     }
+
+    @Override public String toString()
+    {
+        return "WeChatDTO{" +
+                "id=" + id +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", imageURL='" + imageURL + '\'' +
+                '}';
+    }
     //</editor-fold>
 
     // TODO make a put to Bundle method to ease passage to WxEntryActivity

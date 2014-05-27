@@ -89,7 +89,6 @@ public class VotePair extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
     }
@@ -97,7 +96,7 @@ public class VotePair extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
+        ButterKnife.inject(this);
         updateDownVoteVisibility();
     }
 
@@ -140,13 +139,10 @@ public class VotePair extends LinearLayout
             case R.id.timeline_action_button_vote_up:
                 boolean targetVoteUp = voteUp.isChecked();
                 Timber.d("%s onItemClicked voteDirection:%s voteUp checked:%s, content:%s",
-                        discussionDTO.hashCode(),
-                        discussionDTO.voteDirection,
-                        voteUp.isChecked(),
+                        discussionDTO.hashCode(), discussionDTO.voteDirection, voteUp.isChecked(),
                         discussionDTO.text);
                 fakeUpdateForVoteUp(targetVoteUp ? VoteDirection.UpVote : VoteDirection.UnVote);
                 updateVoting(targetVoteUp ? VoteDirection.UpVote : VoteDirection.UnVote);
-
                 break;
             case R.id.timeline_action_button_vote_down:
                 if (voteDown.isChecked())

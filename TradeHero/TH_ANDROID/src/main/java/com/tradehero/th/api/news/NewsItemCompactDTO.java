@@ -20,4 +20,13 @@ public class NewsItemCompactDTO extends AbstractDiscussionCompactDTO
     {
         return new NewsItemDTOKey(id);
     }
+
+    @Override public String toString()
+    {
+        return "NewsItemCompactDTO{" +
+                "title='" + title + '\'' +
+                ", caption='" + caption + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

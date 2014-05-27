@@ -21,6 +21,7 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
@@ -108,7 +109,7 @@ public class SecurityDiscussionItemView
     protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
-
+        ButterKnife.inject(this);
         if (abstractDiscussionDTO instanceof DiscussionDTO)
         {
             discussionDTO = (DiscussionDTO) abstractDiscussionDTO;
@@ -129,7 +130,7 @@ public class SecurityDiscussionItemView
 
         if (andDisplay)
         {
-            if (this.discussionDTO != null)
+            if (this.discussionDTO != null && discussionVotePair != null)
             {
                 discussionVotePair.display(discussionDTO);
             }
@@ -204,7 +205,10 @@ public class SecurityDiscussionItemView
 
     private void resetUserProfileName()
     {
-        userProfileName.setText(null);
+        if (userProfileName != null)
+        {
+            userProfileName.setText(null);
+        }
     }
 
     private void resetUserView()
@@ -216,9 +220,9 @@ public class SecurityDiscussionItemView
 
     private void resetUserProfilePicture()
     {
+        cancelProfilePictureRequest();
         if (discussionUserPicture != null)
         {
-            cancelProfilePictureRequest();
             picasso.load(R.drawable.superman_facebook)
                     .transform(userProfilePictureTransformation)
                     .into(discussionUserPicture);
