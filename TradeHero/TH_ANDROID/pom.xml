@@ -404,6 +404,23 @@
       <systemPath>${project.basedir}/libs/weibosdkcore.jar</systemPath>
     </dependency>
 
+      <dependency>
+          <groupId>com.qqlogin</groupId>
+          <artifactId>qq</artifactId>
+          <version>1.0.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/libs/mta-sdk-1.0.0.jar</systemPath>
+      </dependency>
+
+
+      <dependency>
+          <groupId>com.opensdk</groupId>
+          <artifactId>opensdk</artifactId>
+          <version>1.0.0</version>
+          <scope>system</scope>
+          <systemPath>${project.basedir}/libs/open_sdk.jar</systemPath>
+      </dependency>
+
     <!--<dependency>-->
       <!--<groupId>com.baidu</groupId>-->
       <!--<artifactId>pushSDK</artifactId>-->
