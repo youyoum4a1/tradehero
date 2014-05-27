@@ -8,7 +8,10 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOSetAdapter;
 import com.tradehero.th.models.share.ShareDestination;
+import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
 import java.util.Collection;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class ShareDestinationSetAdapter extends DTOSetAdapter<ShareDestination>
 {
@@ -25,6 +28,16 @@ public class ShareDestinationSetAdapter extends DTOSetAdapter<ShareDestination>
         super(context, objects);
     }
     //</editor-fold>
+
+    @Override protected Set<ShareDestination> createSet(Collection<ShareDestination> objects)
+    {
+        Set<ShareDestination> set = new TreeSet<>(new ShareDestinationIndexResComparator(context.getResources()));
+        if (objects != null)
+        {
+            set.addAll(objects);
+        }
+        return set;
+    }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {

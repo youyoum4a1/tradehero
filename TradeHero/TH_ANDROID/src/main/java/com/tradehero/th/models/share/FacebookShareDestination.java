@@ -11,6 +11,11 @@ public class FacebookShareDestination extends BaseShareDestination
         return R.string.facebook;
     }
 
+    @Override public int getIdResId()
+    {
+        return R.integer.share_destination_id_facebook;
+    }
+
     @Override public SocialNetworkEnum getSocialNetworkEnum()
     {
         return SocialNetworkEnum.FB;

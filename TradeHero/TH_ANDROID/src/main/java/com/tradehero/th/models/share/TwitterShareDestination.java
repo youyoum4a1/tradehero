@@ -11,6 +11,11 @@ public class TwitterShareDestination extends BaseShareDestination
         return R.string.twitter;
     }
 
+    @Override public int getIdResId()
+    {
+        return R.integer.share_destination_id_twitter;
+    }
+
     @Override public SocialNetworkEnum getSocialNetworkEnum()
     {
         return SocialNetworkEnum.TW;
