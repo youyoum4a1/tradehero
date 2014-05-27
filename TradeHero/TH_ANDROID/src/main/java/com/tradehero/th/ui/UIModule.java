@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
+import com.tradehero.th.fragments.social.friend.SocialFriendItemView;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -65,7 +66,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 FollowDialogView.class,
 
-                NotificationClickHandler.class
+                NotificationClickHandler.class,
+                SocialFriendItemView.class,
         },
         complete = false,
         library = true

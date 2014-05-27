@@ -23,7 +23,7 @@
         android:layout_width="50dp"
         android:layout_marginBottom="5dp"
         android:text="@string/buy"
-        android:background="@drawable/btn_buy"
+        android:background="@drawable/blue_rounded_button_selector"
         android:textSize="20sp"
         android:textColor="@color/white"
         />

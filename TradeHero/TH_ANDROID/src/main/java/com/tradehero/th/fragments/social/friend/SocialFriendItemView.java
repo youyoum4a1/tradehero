@@ -1,0 +1,159 @@
+package com.tradehero.th.fragments.social.friend;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.utils.DaggerUtils;
+import org.w3c.dom.Text;
+
+import javax.inject.Inject;
+
+/**
+ * Created by tradehero on 14-5-26.
+ */
+public class SocialFriendItemView extends LinearLayout implements DTOView<UserFriendsDTO> {
+
+    @InjectView(R.id.social_item_logo) ImageView friendLogo;
+    @InjectView(R.id.social_item_title) TextView friendTitle;
+    @InjectView(R.id.social_item_action_btn) TextView actionBtn;
+    @Inject Picasso picasso;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+
+    private UserFriendsDTO userFriendsDTO;
+    private OnElementClickListener onElementClickListener;
+
+    public static interface OnElementClickListener {
+        void onFollowButtonClick(UserFriendsDTO userFriendsDTO);
+        void onInviteButtonClick(UserFriendsDTO userFriendsDTO);
+    }
+
+    public SocialFriendItemView(Context context) {
+        super(context);
+    }
+
+    public SocialFriendItemView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+    }
+
+    public SocialFriendItemView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        ButterKnife.inject(this);
+        DaggerUtils.inject(this);
+    }
+
+    @OnClick(R.id.social_item_action_btn)
+    public void onActionButtonClick(View v)
+    {
+        if (v.getId() == R.id.social_item_action_btn && onElementClickListener != null)
+        {
+            if (isTradeHeroUser())
+            {
+                onElementClickListener.onFollowButtonClick(userFriendsDTO);
+            }
+            else
+            {
+                onElementClickListener.onInviteButtonClick(userFriendsDTO);
+            }
+        }
+    }
+
+    public void setOnElementClickedListener(OnElementClickListener onElementClickListener)
+    {
+        this.onElementClickListener = onElementClickListener;
+    }
+
+    @Override
+    public void display(UserFriendsDTO dto) {
+        this.userFriendsDTO = dto;
+        displayUserIcon();
+        displayTitle();
+        displayActionButton();
+    }
+
+    private void displayUserIcon()
+    {
+        if (userFriendsDTO != null)
+        {
+            //resetUserIcon();
+            displayDefaultUserIcon();
+            picasso.load(userFriendsDTO.getProfilePictureURL())
+                    .placeholder(friendLogo.getDrawable())
+                    .transform(peopleIconTransformation)
+                    .error(R.drawable.superman_facebook)
+                    .into(friendLogo, new Callback()
+                    {
+                        @Override public void onSuccess()
+                        {
+
+                        }
+
+                        @Override public void onError()
+                        {
+                            displayDefaultUserIcon();
+                        }
+                    });
+        }
+        else
+        {
+            displayDefaultUserIcon();
+        }
+    }
+
+    private void displayDefaultUserIcon()
+    {
+        picasso.load(R.drawable.superman_facebook)
+                .transform(peopleIconTransformation)
+                .into(friendLogo);
+    }
+
+    private void displayTitle()
+    {
+        friendTitle.setText(userFriendsDTO.name);
+    }
+
+    private void displayActionButton()
+    {
+        int pL = actionBtn.getPaddingLeft();
+        int pR = actionBtn.getPaddingRight();
+        int pT = actionBtn.getPaddingTop();
+        int pB = actionBtn.getPaddingBottom();
+
+        if (isTradeHeroUser())
+        {
+            actionBtn.setText("Follow");
+            actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
+        }
+        else
+        {
+            actionBtn.setText("Invite");
+            actionBtn.setBackgroundResource(R.drawable.green_rounded_button_selector);
+            //actionBtn.setBackgroundResource(Color.GREEN);
+        }
+        actionBtn.setPadding(pL,pT,pR,pB);
+    }
+
+    private boolean isTradeHeroUser()
+    {
+        return userFriendsDTO.thUserId > 0;
+    }
+}

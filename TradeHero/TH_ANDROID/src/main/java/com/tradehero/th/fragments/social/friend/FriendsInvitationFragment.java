@@ -41,6 +41,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.action_invite));
     }
 
@@ -75,7 +76,9 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
 
     private void pushSocialInvitationFragment(SocialNetworkEnum socialNetwork)
     {
-
+        Class<? extends SocialFriendsFragment> target = socialTypeFactory.findProperTargetFragment(socialNetwork);
+        Bundle bundle = new Bundle();
+        getNavigator().pushFragment(target,bundle);
     }
 
     @Override

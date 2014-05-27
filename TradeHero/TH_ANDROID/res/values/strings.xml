@@ -147,4 +147,5 @@
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
+  <string name="invite_social_friend">Invite %s Friend</string>
 </resources>

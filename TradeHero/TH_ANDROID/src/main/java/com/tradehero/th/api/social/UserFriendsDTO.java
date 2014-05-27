@@ -19,6 +19,8 @@ public class UserFriendsDTO extends ExtendedDTO
 
     public boolean alreadyInvited; //has an invitation been sent already
 
+    public int thUserId;
+
     public UserFriendsDTO()
     {
         super();

@@ -44,6 +44,11 @@
 
   <color name="broadcast_message_item_bg">#dfefff</color>
   <color name="private_message_item_bg">@color/white</color>
+  <color name="light_green">#6ED200</color>
+  <color name="dark_green">#54A700</color>
+  <color name="light_yellow">#FFD000</color>
+  <color name="dark_dark_yellow">#FAB000</color>
+
 
   <string-array name="rangeColors2">
     <item>#FF0C2B</item>
