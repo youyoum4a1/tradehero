@@ -33,6 +33,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -55,8 +57,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
@@ -79,6 +79,8 @@ import timber.log.Timber;
 
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
+    private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
+
     @Inject THBillingInteractor billingInteractor;
     @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
@@ -94,10 +96,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject PushNotificationManager pushNotificationManager;
     @Inject LruMemFileCache lruCache;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
-    @Inject @AuthenticationType StringPreference currentAuthenticationType;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
-    @Inject Lazy<DTOCacheUtil> dtoCacheUtil;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
@@ -109,6 +109,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
 
+    private SocialNetworkEnum socialNetworkToConnectTo;
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
     private SocialNetworkEnum currentSocialNetworkConnect;
@@ -122,6 +123,35 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private SettingsUserProfileRetrievedCompleteListener
             currentUserProfileRetrievedMilestoneListener;
     private LogInCallback socialConnectLogInCallback;
+
+    public static void putSocialNetworkToConnect(Bundle args, SocialNetworkEnum socialNetwork)
+    {
+        args.putString(KEY_SOCIAL_NETWORK_TO_CONNECT, socialNetwork.name());
+    }
+
+    public static void putSocialNetworkToConnect(Bundle args, SocialShareFormDTO shareFormDTO)
+    {
+        if (shareFormDTO instanceof TimelineItemShareFormDTO &&
+                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO != null &&
+                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork != null)
+        {
+            putSocialNetworkToConnect(args, ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork);
+        }
+    }
+
+    public static SocialNetworkEnum getSocialNetworkToConnect(Bundle args)
+    {
+        if (args == null)
+        {
+            return null;
+        }
+        String name = args.getString(KEY_SOCIAL_NETWORK_TO_CONNECT);
+        if (name == null)
+        {
+            return null;
+        }
+        return SocialNetworkEnum.valueOf(name);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -148,6 +178,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 }
             }
         };
+
+        this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
     }
 
     private void createSocialConnectLogInCallback()
@@ -241,7 +273,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(getString(R.string.settings));
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
     }
     //</editor-fold>
 
@@ -271,6 +303,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         super.onResume();
 
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
+        if (socialNetworkToConnectTo != null)
+        {
+            changeSharing(socialNetworkToConnectTo, true);
+            socialNetworkToConnectTo = null;
+        }
     }
 
     private void detachMiddleCallbackUpdateUserProfile()
@@ -548,41 +585,19 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 getString(R.string.key_settings_sharing_facebook));
         if (facebookSharing != null)
         {
-            facebookSharing.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
-                            return changeSharing(SocialNetworkEnum.FB, (boolean) newValue);
-                        }
-                    });
+            facebookSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.FB));
         }
         twitterSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_twitter));
         if (twitterSharing != null)
         {
-            twitterSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeSharing(SocialNetworkEnum.TW, (boolean) newValue);
-                }
-            });
+            twitterSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.TW));
         }
         linkedInSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_linked_in));
         if (linkedInSharing != null)
         {
-            linkedInSharing.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
-                            return changeSharing(SocialNetworkEnum.LN, (boolean) newValue);
-                        }
-                    });
+            linkedInSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.LN));
         }
 
         // notification
@@ -751,6 +766,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return false;
     }
 
+    private Preference.OnPreferenceChangeListener createPreferenceChangeListenerSharing(
+            final SocialNetworkEnum socialNetwork)
+    {
+        return new Preference.OnPreferenceChangeListener()
+        {
+            @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
+                return changeSharing(socialNetwork, (boolean) newValue);
+            }
+        };
+    }
+
     private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
     {
         Timber.d("Sharing is asked to change");
@@ -793,7 +820,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     new SocialNetworkFormDTO(socialNetwork),
                     createSocialDisconnectCallback());
 
-            if (socialNetwork.getAuthenticationHeader().equals(currentAuthenticationType.get()))
+            if (socialNetwork.getAuthenticationHeader().equals(THUser.getCurrentCredentials().getAuthType()))
             {
                 effectSignOut();
             }
@@ -1015,7 +1042,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         {
                             @Override public void onClick(DialogInterface dialogInterface, int i)
                             {
-                                userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
                                 effectSignOut();
                             }
                         });
@@ -1073,10 +1099,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
     {
-
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
-            userProfileCache.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
         }
 
         @Override protected void failure(THException ex)

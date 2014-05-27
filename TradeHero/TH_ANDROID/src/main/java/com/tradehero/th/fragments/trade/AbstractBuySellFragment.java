@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
@@ -28,7 +27,6 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -156,15 +154,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             {
                 notifyOnceMarketClosed();
             }
-        }
-    }
-
-    public void displayExchangeSymbol(ActionBar actionBar)
-    {
-        if (actionBar != null)
-        {
-            actionBar.setTitle(
-                    securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
         }
     }
     //</editor-fold>

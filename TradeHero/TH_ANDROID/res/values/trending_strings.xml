@@ -4,7 +4,8 @@
   <!-- What's Trending -->
   <string name="trending_header">What\'s Trending</string>
   <string name="trending_search_empty_result">Type something to search</string>
-  <string name="trending_search_empty_result_for_stock">Enter a stock name or symbol</string>
+  <string name="trending_search_empty_result_for_stock">Enter a security name or symbol</string>
+  <string name="security_search_action_bar_elements_title">Search Elements</string>
   <string name="trending_search_empty_result_for_people">Please input people\'s name</string>
   <string name="trending_search_no_people_found">No people found</string>
   <string name="trending_search_no_stock_found">No stock found</string>

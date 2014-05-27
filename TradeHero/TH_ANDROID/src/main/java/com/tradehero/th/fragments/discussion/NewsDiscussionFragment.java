@@ -14,7 +14,9 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.news.NewsCache;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.persistence.news.NewsItemCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.translation.TranslationResult;
@@ -26,7 +28,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -40,7 +42,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     private NewsItemDTO mDetailNewsItemDTO;
 
-    @Inject NewsCache newsCache;
+    @Inject NewsItemCache newsItemCache;
     @Inject TranslationCache translationCache;
 
     @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
@@ -132,7 +134,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
         if (newsItemDTOKey != null)
         {
-            NewsItemDTO cachedNews = newsCache.get(newsItemDTOKey);
+            NewsItemDTO cachedNews = newsItemCache.get(newsItemDTOKey);
 
             linkWith(cachedNews, andDisplay);
 
@@ -163,7 +165,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private void fetchNewsDetail(boolean force)
     {
         detachNewsFetchTask();
-        newsFetchTask = newsCache.getOrFetch(newsItemDTOKey, force, createNewsFetchListener());
+        newsFetchTask = newsItemCache.getOrFetch(newsItemDTOKey, force, createNewsFetchListener());
         newsFetchTask.execute();
     }
 
@@ -211,12 +213,19 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO,
-                WeChatMessageType.CreateDiscussion.getType());
+                WeChatMessageType.CreateDiscussion);
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
     //</editor-fold>
+
+    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
+    {
+        Bundle args = new Bundle();
+        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
+        getDashboardNavigator().pushFragment(SettingsFragment.class, args);
+    }
 
     protected void handleTranslationRequested()
     {
@@ -262,6 +271,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         @Override public void onTranslationRequestedClicked()
         {
             handleTranslationRequested();
+        }
+
+        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
+        {
+            pushSettingsForConnect(socialShareFormDTO);
         }
 
         @Override public void onShareRequestedClicked()

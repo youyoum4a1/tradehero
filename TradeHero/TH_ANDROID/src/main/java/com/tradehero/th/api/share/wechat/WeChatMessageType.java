@@ -1,4 +1,4 @@
-package com.tradehero.th.wxapi;
+package com.tradehero.th.api.share.wechat;
 
 import com.tradehero.th.R;
 
@@ -10,12 +10,12 @@ public enum WeChatMessageType
     Timeline(4, R.string.share_to_wechat_timeline_timeline),
     Trade(5, R.string.share_to_wechat_timeline_trade);
 
-    private final int type;
+    private final int value;
     private final int titleResId;
 
-    WeChatMessageType(int type, int titleResId)
+    WeChatMessageType(int value, int titleResId)
     {
-        this.type = type;
+        this.value = value;
         this.titleResId = titleResId;
     }
 
@@ -24,16 +24,16 @@ public enum WeChatMessageType
         return titleResId;
     }
 
-    public int getType()
+    public int getValue()
     {
-        return type;
+        return value;
     }
 
-    static WeChatMessageType fromType(int type)
+    public static WeChatMessageType fromValue(int value)
     {
         for (WeChatMessageType wxType: values())
         {
-            if (wxType.type == type)
+            if (wxType.value == value)
             {
                 return wxType;
             }

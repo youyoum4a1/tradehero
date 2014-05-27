@@ -7,17 +7,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import java.util.Date;
 
-public abstract class AbstractDiscussionDTO extends ExtendedDTO
+public abstract class AbstractDiscussionDTO extends AbstractDiscussionCompactDTO
 {
-    public int id;
-    public Date createdAtUtc;
     public int userId;
     public String text;
-    public int upvoteCount;
-    public int downvoteCount;
-    public int voteDirection; //-1: down, 0: cancel, 1: up
-    public int commentCount;
-    public String langCode;
 
     /**
      * Identifies the stub discussion that this discussion replaces.

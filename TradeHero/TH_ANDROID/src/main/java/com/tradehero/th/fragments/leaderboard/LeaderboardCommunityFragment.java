@@ -285,7 +285,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(getString(R.string.dashboard_community));
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

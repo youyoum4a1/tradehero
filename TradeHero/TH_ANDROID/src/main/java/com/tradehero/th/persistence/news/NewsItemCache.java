@@ -1,7 +1,8 @@
-package com.tradehero.th.api.news;
+package com.tradehero.th.persistence.news;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -10,15 +11,14 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class NewsCache extends StraightDTOCache<NewsItemDTOKey, NewsItemDTO>
+public class NewsItemCache extends StraightDTOCache<NewsItemDTOKey, NewsItemDTO>
 {
     private final Lazy<NewsServiceWrapper> newsServiceWrapper;
     private final Lazy<DiscussionCache> discussionCache;
 
-    @Inject public NewsCache(
+    @Inject public NewsItemCache(
             Lazy<NewsServiceWrapper> newsServiceWrapper,
-            Lazy<DiscussionCache> discussionCache
-            )
+            Lazy<DiscussionCache> discussionCache)
     {
         // Use discussionCache instead, wanted to set the size to 0, but it's not possible
         super(1);

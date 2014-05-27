@@ -57,10 +57,10 @@ public interface SecurityService
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @GET("/securities/{exchange}/{securitySymbol}")
+    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}")
     SecurityPositionDetailDTO getSecurity(
             @Path("exchange") String exchange,
-            @Path("securitySymbol") String securitySymbol);
+            @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol);
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">

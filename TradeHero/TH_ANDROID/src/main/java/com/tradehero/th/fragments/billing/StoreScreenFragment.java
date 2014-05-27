@@ -75,7 +75,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

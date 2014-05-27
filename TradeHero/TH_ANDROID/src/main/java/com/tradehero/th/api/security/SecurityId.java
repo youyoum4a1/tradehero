@@ -26,6 +26,17 @@ public class SecurityId implements Comparable, DTOKey, DTO
     }
     //</editor-fold>
 
+    // When passing the symbol in an API path as the last element of the path,
+    // you have to use this instead of the symbol.
+    public String getPathSafeSymbol()
+    {
+        if (securitySymbol == null)
+        {
+            return null;
+        }
+        return securitySymbol.replace('.', '_');
+    }
+
     @Override public int hashCode()
     {
         return (exchange == null ? 0 : exchange.hashCode()) ^

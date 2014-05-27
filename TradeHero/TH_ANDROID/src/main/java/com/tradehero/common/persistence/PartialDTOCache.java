@@ -52,7 +52,6 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
     }
 
     /**
-     * The listener should be strongly referenced elsewhere
      * @param key
      * @param forceUpdateCache
      * @param initialListener

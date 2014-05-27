@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import java.util.List;
+import timber.log.Timber;
 
 public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
 {
@@ -130,7 +131,14 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
             View imageView = container.findViewById(iconViewResourceId);
             if (imageView != null)
             {
-                ((ImageView) imageView).setImageResource(getIcon(position));
+                try
+                {
+                    ((ImageView) imageView).setImageResource(getIcon(position));
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, "at position %d, text %s", position, getItem(position));
+                }
             }
         }
     }
@@ -142,7 +150,14 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
             View imageView = container.findViewById(iconDropDownResourceId);
             if (imageView != null)
             {
-                ((ImageView) imageView).setImageResource(getDropDownIcon(position));
+                try
+                {
+                    ((ImageView) imageView).setImageResource(getDropDownIcon(position));
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, "at position %d, text %s", position, getItem(position));
+                }
             }
         }
     }

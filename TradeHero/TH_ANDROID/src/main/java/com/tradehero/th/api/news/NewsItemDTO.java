@@ -77,4 +77,23 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     {
         return new NewsItemDTOKey(id);
     }
+
+    @Override public String toString()
+    {
+        return "NewsItemDTO{" +
+                "title='" + title + '\'' +
+                ", caption='" + caption + '\'' +
+                ", description='" + description + '\'' +
+                ", source=" + source +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", url='" + url + '\'' +
+                ", category=" + category +
+                ", textEntities=" + textEntities +
+                ", entities=" + entities +
+                ", categories=" + categories +
+                ", securityIds=" + securityIds +
+                ", message='" + message + '\'' +
+                ", topReferencedSecurity=" + topReferencedSecurity +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package com.tradehero.th.auth;
 import android.content.Context;
 import com.tradehero.th.auth.operator.Twitter;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
@@ -115,7 +116,7 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
 
     @Override public String getAuthType()
     {
-        return SocialAuthenticationProvider.TWITTER_AUTH_TYPE;
+        return TwitterCredentialsDTO.TWITTER_AUTH_TYPE;
     }
 
     @Override public String getAuthHeaderParameter()

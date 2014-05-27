@@ -15,22 +15,26 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsTranslationSelfDisplayer;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.widget.VotePair;
-import com.tradehero.th.wxapi.WeChatMessageType;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import javax.inject.Inject;
 
 public class SecurityDiscussionItemView
@@ -105,7 +109,7 @@ public class SecurityDiscussionItemView
     protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
-
+        ButterKnife.inject(this);
         if (abstractDiscussionDTO instanceof DiscussionDTO)
         {
             discussionDTO = (DiscussionDTO) abstractDiscussionDTO;
@@ -126,7 +130,7 @@ public class SecurityDiscussionItemView
 
         if (andDisplay)
         {
-            if (this.discussionDTO != null)
+            if (this.discussionDTO != null && discussionVotePair != null)
             {
                 discussionVotePair.display(discussionDTO);
             }
@@ -152,7 +156,7 @@ public class SecurityDiscussionItemView
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(discussionDTO,
-                WeChatMessageType.Discussion.getType());
+                WeChatMessageType.Discussion);
         ((NewsDialogLayout) contentView).setMenuClickedListener(
                 createNewsDialogMenuClickedListener());
         THDialog.showUpDialog(getContext(), contentView, callback);
@@ -201,7 +205,10 @@ public class SecurityDiscussionItemView
 
     private void resetUserProfileName()
     {
-        userProfileName.setText(null);
+        if (userProfileName != null)
+        {
+            userProfileName.setText(null);
+        }
     }
 
     private void resetUserView()
@@ -214,15 +221,18 @@ public class SecurityDiscussionItemView
     private void resetUserProfilePicture()
     {
         cancelProfilePictureRequest();
-        picasso.load(R.drawable.superman_facebook)
-                .transform(userProfilePictureTransformation)
-                .into(discussionUserPicture);
+        if (discussionUserPicture != null)
+        {
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(userProfilePictureTransformation)
+                    .into(discussionUserPicture);
+        }
     }
 
     private void displayProfilePicture()
     {
         resetUserProfilePicture();
-        if (userBaseDTO.picture != null)
+        if (userBaseDTO.picture != null && discussionUserPicture != null)
         {
             picasso.load(userBaseDTO.picture)
                     .transform(userProfilePictureTransformation)
@@ -253,6 +263,13 @@ public class SecurityDiscussionItemView
         throw new IllegalStateException("It has no securityId");
     }
 
+    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
+    {
+        Bundle args = new Bundle();
+        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
+        ((DashboardActivity) getContext()).getDashboardNavigator().pushFragment(SettingsFragment.class, args);
+    }
+
     protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
     {
         return new SecurityDiscussionItemViewDialogMenuClickedListener();
@@ -263,6 +280,11 @@ public class SecurityDiscussionItemView
         @Override public void onTranslationRequestedClicked()
         {
             handleTranslationRequested();
+        }
+
+        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
+        {
+            pushSettingsForConnect(socialShareFormDTO);
         }
 
         @Override public void onShareRequestedClicked()
