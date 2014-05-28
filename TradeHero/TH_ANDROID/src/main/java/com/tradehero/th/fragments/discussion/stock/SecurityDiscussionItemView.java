@@ -139,7 +139,10 @@ public class SecurityDiscussionItemView
         }
     }
 
-    @OnClick(R.id.discussion_action_button_comment_count) void onActionButtonCommentCountClicked()
+    @OnClick({
+            R.id.discussion_action_button_comment_count,
+            R.id.discussion_action_button_comment_count_wrapper})
+    void onActionButtonCommentCountClicked()
     {
         Bundle args = new Bundle();
         args.putBundle(SecurityDiscussionCommentFragment.DISCUSSION_KEY_BUNDLE_KEY,

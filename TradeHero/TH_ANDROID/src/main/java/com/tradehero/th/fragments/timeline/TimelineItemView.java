@@ -40,7 +40,7 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.share.SocialShareHelper;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
@@ -61,12 +61,13 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     @InjectView(R.id.discussion_action_button_comment_count) TextView commentCount;
     @InjectView(R.id.discussion_action_button_share) View buttonShare;
-    @InjectView(R.id.discussion_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_more) View buttonMore;
 
     @OnClick({
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
             R.id.timeline_vendor_picture,
+            R.id.discussion_action_button_comment_count_wrapper,
             R.id.discussion_action_button_comment_count,
             R.id.discussion_action_button_share,
             R.id.discussion_action_button_more,
@@ -79,6 +80,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             case R.id.timeline_user_profile_name:
                 openOtherTimeline();
                 break;
+            case R.id.discussion_action_button_comment_count_wrapper:
             case R.id.discussion_action_button_comment_count:
                 openTimelineDiscussion();
                 break;
@@ -105,7 +107,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Inject Lazy<UserTimelineServiceWrapper> userTimelineServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject LocalyticsSession localyticsSession;
-    @Inject SocialShareHelper socialShareHelper;
+    @Inject SocialShareTranslationHelper socialShareHelper;
 
     private TimelineItemDTO timelineItemDTO;
     private MiddleCallback<Response> shareMiddleCallback;
@@ -185,7 +187,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     //<editor-fold desc="Action Buttons">
     private void updateActionButtonsVisibility()
     {
-        // nothing for now
+        buttonMore.setVisibility((socialShareHelper.canTranslate(timelineItemDTO) || canShowStockMenu()) ? View.VISIBLE : View.GONE);
     }
     //</editor-fold>
 
@@ -337,14 +339,8 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     return true;
                 }
 
-                case R.id.timeline_action_button_share:
-                {
-                    createAndShowSharePopupDialog();
-                    return true;
-                }
-
-                case R.id.timeline_action_comment:
-                    openTimelineDiscussion();
+                case R.id.timeline_action_translate:
+                    translate();
                     break;
             }
             return false;
@@ -392,6 +388,11 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             }
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+    }
+
+    private void translate()
+    {
+        socialShareHelper.translate(timelineItemDTO);
     }
 
     private void createAndShowSharePopupDialog()
@@ -460,16 +461,26 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     //<editor-fold desc="Popup dialog">
     private PopupMenu createActionPopupMenu()
     {
-        PopupMenu popupMenu = new PopupMenu(getContext(), more);
+        PopupMenu popupMenu = new PopupMenu(getContext(), buttonMore);
         MenuInflater menuInflater = popupMenu.getMenuInflater();
 
-        if (timelineItemDTO != null && timelineItemDTO.getFlavorSecurityForDisplay() != null)
+        if (canShowStockMenu())
         {
             menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
         }
-        menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
+
+        if (socialShareHelper.canTranslate(timelineItemDTO))
+        {
+            menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
+        }
+
         popupMenu.setOnMenuItemClickListener(createMonitorPopupMenuItemClickListener());
         return popupMenu;
+    }
+
+    protected boolean canShowStockMenu()
+    {
+        return timelineItemDTO != null && timelineItemDTO.getFlavorSecurityForDisplay() != null;
     }
 
     private void updateMonitorMenuView(Menu menu)

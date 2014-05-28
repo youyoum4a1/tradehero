@@ -117,7 +117,10 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     /**
      * TODO this event should be handled by DiscussionActionButtonsView,
      */
-    @OnClick(R.id.discussion_action_button_comment_count) void onActionButtonCommentCountClicked()
+    @OnClick({
+            R.id.discussion_action_button_comment_count_wrapper,
+            R.id.discussion_action_button_comment_count})
+    void onActionButtonCommentCountClicked()
     {
         if (discussionKey != null)
         {

@@ -30,7 +30,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     @InjectView(R.id.timeline_user_profile_name) TextView username;
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
 
-    @InjectView(R.id.discussion_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_more) View more;
     @InjectView(R.id.discussion_action_button_share) @Optional View buttonShare;
 
     @Inject CurrentUserId currentUserId;
@@ -136,12 +136,14 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     }
 
     @Optional @OnClick({
-            R.id.discussion_action_button_comment_count
+            R.id.discussion_action_button_comment_count,
+            R.id.discussion_action_button_comment_count_wrapper
     })
     void onCommentClicked(View view)
     {
         switch (view.getId())
         {
+            case R.id.discussion_action_button_comment_count_wrapper:
             case R.id.discussion_action_button_comment_count:
                 openDiscussion();
                 break;
