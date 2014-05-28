@@ -15,6 +15,7 @@ import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.fragments.timeline.TimelineItemView;
+import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem;
 import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
@@ -65,7 +66,9 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 FollowDialogView.class,
 
-                NotificationClickHandler.class
+                NotificationClickHandler.class,
+
+                UserStatisticView.class
         },
         complete = false,
         library = true
