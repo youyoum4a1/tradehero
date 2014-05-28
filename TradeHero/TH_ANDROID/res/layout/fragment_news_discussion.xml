@@ -9,6 +9,7 @@
     app:listItemLayout="@layout/timeline_discussion_comment_item"
     app:topicLayout="@layout/news_detail_view_header"
     >
+
   <ListView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

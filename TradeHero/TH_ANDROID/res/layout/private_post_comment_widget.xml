@@ -3,6 +3,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
+
   <com.tradehero.th.fragments.social.message.PrivatePostCommentView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -22,6 +23,7 @@
         android:layout_height="@dimen/common_height_40"
         android:layout_alignParentRight="true"
         >
+
       <Button
           android:id="@+id/post_comment_action_submit"
           android:layout_width="wrap_content"
@@ -31,6 +33,7 @@
           android:background="@drawable/authentication_sign_in_button"
           android:gravity="center"
           />
+
       <ProgressBar
           android:id="@+id/post_comment_action_processing"
           android:layout_width="wrap_content"
@@ -49,14 +52,16 @@
         android:layout_toLeftOf="@id/post_comment_action_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text|textMultiLine|textImeMultiLine"
+        android:inputType="text|textMultiLine|textImeMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
         android:hint="@string/timeline_discussion_comment_box_hint"
         android:gravity="left|top"
         android:background="@drawable/et_bg"
         android:layout_marginRight="5dp"
         android:padding="2dp"
         >
+
       <requestFocus />
+
     </EditText>
 
   </com.tradehero.th.fragments.social.message.PrivatePostCommentView>
