@@ -11,6 +11,8 @@ import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.auth.weibo.WeiboAppAuthData;
+import com.tradehero.th.models.share.ShareDestinationFactory;
+import com.tradehero.th.models.share.ShareDestinationFactoryByResources;
 import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.network.share.SocialSharer;
 import dagger.Module;
@@ -99,4 +101,8 @@ public class SocialNetworkModule
         return socialSharerImpl;
     }
 
+    @Provides ShareDestinationFactory providesShareDestinationFactory(ShareDestinationFactoryByResources shareDestinationFactoryByResources)
+    {
+        return shareDestinationFactoryByResources;
+    }
 }

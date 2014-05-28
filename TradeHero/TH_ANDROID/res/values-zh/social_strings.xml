@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <integer-array name="ordered_social_logins">
+    <item>@integer/social_destination_id_weibo</item>
+    <item>@integer/social_destination_id_qq</item>
+    <item>@integer/social_destination_id_linkedin</item>
+    <item>@integer/social_destination_id_twitter</item>
+    <item>@integer/social_destination_id_facebook</item>
+  </integer-array>
+
   <integer-array name="ordered_share_destinations">
-    <item>@integer/share_destination_id_wechat</item>
-    <item>@integer/share_destination_id_linked</item>
-    <item>@integer/share_destination_id_twitter</item>
-    <item>@integer/share_destination_id_facebook</item>
+    <item>@integer/social_destination_id_wechat</item>
+    <item>@integer/social_destination_id_linkedin</item>
+    <item>@integer/social_destination_id_twitter</item>
+    <item>@integer/social_destination_id_facebook</item>
   </integer-array>
 
 </resources>

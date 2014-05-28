@@ -13,7 +13,7 @@ public class WeChatShareDestination extends BaseShareDestination
 
     @Override public int getIdResId()
     {
-        return R.integer.share_destination_id_wechat;
+        return R.integer.social_destination_id_wechat;
     }
 
     @Override public SocialNetworkEnum getSocialNetworkEnum()
