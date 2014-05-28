@@ -1,4 +1,7 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
   <!--
       Base application theme, dependent on API level. This theme is replaced
@@ -265,6 +268,29 @@
     <item name="android:layout_marginLeft">2dp</item>
     <item name="android:checked">false</item>
     <item name="android:gravity">center</item>
+  </style>
+
+  <style name="TH.GaugeView">
+    <item name="android:layout_height">60dp</item>
+    <item name="showText">true</item>
+    <item name="showRanges">true</item>
+    <item name="rangeColors">@array/rangeColors2</item>
+    <item name="showOuterBorder">false</item>
+    <item name="showInnerRim">false</item>
+    <item name="showOuterShadow">false</item>
+    <item name="showOuterRim">false</item>
+    <item name="showNeedle">true</item>
+    <item name="animationDuration">4000</item>
+    <item name="drawCenterIndicator">false</item>
+    <item name="android:layout_marginBottom">10dp</item>
+  </style>
+
+  <style name="TH.NumericalAnimatedTextView">
+    <item name="android:gravity">center</item>
+    <item name="animatedDuration">2500</item>
+    <item name="animatedInterval">50</item>
+    <item name="showAnimation">true</item>
+    <item name="textSize">18sp</item>
   </style>
 
 </resources>

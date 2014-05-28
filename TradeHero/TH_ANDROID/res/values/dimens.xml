@@ -139,5 +139,6 @@
   <dimen name="guide_close_margin">15dp</dimen>
   <dimen name="security_logo_midium">60dp</dimen>
   <dimen name="button_height_30">30dp</dimen>
+  <dimen name="leaderboard_numerical_label_text_size">11sp</dimen>
 
 </resources>
