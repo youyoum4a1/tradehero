@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
@@ -103,7 +102,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         View view = null;
         if (position == 0) // HACK because first item is not clickable
         {
-            view = new TextView(getContext());
+            view = new View(getContext());
         }
         else
         {
