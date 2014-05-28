@@ -22,7 +22,6 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.news.NewsDetailFullView;
 import com.tradehero.th.fragments.news.NewsDetailSummaryView;
-import com.tradehero.th.fragments.news.NewsTranslationSelfDisplayer;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
@@ -222,15 +221,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         Bundle args = new Bundle();
         SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
         getDashboardNavigator().pushFragment(SettingsFragment.class, args);
-    }
-
-    protected void handleTranslationRequested()
-    {
-        detachTranslationTask();
-        TranslationKey key = mDetailNewsItemDTO.createTranslationKey("zh");
-        translationTask =
-                new NewsTranslationSelfDisplayer(getActivity(), translationCache, null)
-                .launchTranslation(key);
     }
 
     @Override

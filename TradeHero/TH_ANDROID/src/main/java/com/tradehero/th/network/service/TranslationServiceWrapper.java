@@ -1,9 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
-import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.IntermediateCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -43,10 +43,10 @@ import timber.log.Timber;
     public MiddleCallback<TranslationResult> translate(String from, String to, String text, Callback<TranslationResult> callback)
     {
         MiddleCallback<TranslationResult> middleCallback = new BaseMiddleCallback<>(callback);
-        DTOCache.GetOrFetchTask<TranslationTokenKey, TranslationToken> task = translationTokenCache.getOrFetch(
-            new TranslationTokenKey(),
-            new TranslationServiceWrapperTokenListener(from, to, text, middleCallback));
-        task.execute();
+        TranslationTokenKey key = new TranslationTokenKey();
+        translationTokenCache.register(key,
+                new TranslationServiceWrapperTokenListener(from, to, text, middleCallback));
+        translationTokenCache.getOrFetchAsync(key);
         return middleCallback;
     }
 
@@ -60,7 +60,7 @@ import timber.log.Timber;
         throw new IllegalArgumentException("Unhandled TranslationToken " + token);
     }
 
-    protected class TranslationServiceWrapperTokenListener implements DTOCache.Listener<TranslationTokenKey, TranslationToken>
+    protected class TranslationServiceWrapperTokenListener implements DTOCacheNew.Listener<TranslationTokenKey, TranslationToken>
     {
         private final String from;
         private final String to;
@@ -76,8 +76,7 @@ import timber.log.Timber;
             this.middleCallback = middleCallback;
         }
 
-        @Override public void onDTOReceived(TranslationTokenKey key, TranslationToken value,
-                boolean fromCache)
+        @Override public void onDTOReceived(TranslationTokenKey key, TranslationToken value)
         {
             translate(value, from, to, text, middleCallback);
         }

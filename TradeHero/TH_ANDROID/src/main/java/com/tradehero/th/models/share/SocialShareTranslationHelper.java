@@ -1,9 +1,8 @@
 package com.tradehero.th.models.share;
 
 import android.app.ProgressDialog;
-import android.text.TextUtils;
 import android.view.Window;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
@@ -26,7 +25,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
     protected ProgressDialog translateProgressDialog;
 
-    protected DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
+    protected DTOCacheNew.Listener<TranslationKey, TranslationResult> translationListener;
 
     @Inject public SocialShareTranslationHelper(
             CurrentActivityHolder currentActivityHolder,
@@ -45,7 +44,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     {
         setMenuClickedListener(null);
         dismissTranslateProgress();
-        detachTranslationTask();
+        detachTranslationCache();
         super.onDetach();
     }
 
@@ -59,13 +58,13 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         translateProgressDialog = null;
     }
 
-    protected void detachTranslationTask()
+    protected void detachTranslationCache()
     {
-        DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> taskCopy = translationTask;
-        if (taskCopy != null)
+        if (translationListener != null)
         {
-            taskCopy.setListener(null);
+            translationCache.unregister(translationListener);
         }
+        translationListener = null;
     }
 
     //<editor-fold desc="Listener Handling">
@@ -156,11 +155,11 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         translateProgressDialog = createTranslatingProgress();
         translateProgressDialog.show();
 
-        detachTranslationTask();
-        translationTask = translationCache.getOrFetch(
-                translationKeyFactory.createFrom(toTranslate, getTargetLanguage()),
-                createTranslationCacheListener(toTranslate));
-        translationTask.execute();
+        detachTranslationCache();
+        TranslationKey key = translationKeyFactory.createFrom(toTranslate, getTargetLanguage());
+        translationListener = createTranslationCacheListener(toTranslate);
+        translationCache.register(key, translationListener);
+        translationCache.getOrFetchAsync(key);
     }
 
     public ProgressDialog createTranslatingProgress()
@@ -172,12 +171,12 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         return progressDialog;
     }
 
-    protected DTOCache.Listener<TranslationKey, TranslationResult> createTranslationCacheListener(AbstractDiscussionCompactDTO toTranslate)
+    protected DTOCacheNew.Listener<TranslationKey, TranslationResult> createTranslationCacheListener(AbstractDiscussionCompactDTO toTranslate)
     {
         return new SocialShareTranslationHelperTranslationCacheListener(toTranslate);
     }
 
-    protected class SocialShareTranslationHelperTranslationCacheListener implements DTOCache.Listener<TranslationKey, TranslationResult>
+    protected class SocialShareTranslationHelperTranslationCacheListener implements DTOCacheNew.Listener<TranslationKey, TranslationResult>
     {
         private AbstractDiscussionCompactDTO toTranslate;
 
@@ -187,10 +186,10 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             this.toTranslate = toTranslate;
         }
 
-        @Override public void onDTOReceived(TranslationKey key, TranslationResult value,
-                boolean fromCache)
+        @Override public void onDTOReceived(TranslationKey key, TranslationResult value)
         {
             dismissTranslateProgress();
+            detachTranslationCache();
             notifyTranslated(toTranslate, value);
             THDialog.showTranslationResult(
                     currentActivityHolder.getCurrentContext(),
@@ -200,6 +199,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         @Override public void onErrorThrown(TranslationKey key, Throwable error)
         {
             dismissTranslateProgress();
+            detachTranslationCache();
             notifyTranslateFailed(toTranslate, error);
         }
     }
