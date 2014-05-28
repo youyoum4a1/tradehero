@@ -38,6 +38,7 @@ public class BingTranslationToken extends TranslationToken
     {
         super(other, myClass);
         type = TOKEN_TYPE;
+        setExpiresIn(expiresIn);
     }
     //</editor-fold>
 

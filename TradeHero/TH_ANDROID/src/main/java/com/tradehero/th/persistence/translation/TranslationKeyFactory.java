@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.translation;
 import android.text.TextUtils;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import javax.inject.Inject;
 
@@ -35,7 +34,7 @@ public class TranslationKeyFactory
         }
         if (fromDiscussion instanceof AbstractDiscussionDTO)
         {
-            return ((DiscussionDTO) fromDiscussion).text;
+            return ((AbstractDiscussionDTO) fromDiscussion).text;
         }
         return "No text to translate";
     }

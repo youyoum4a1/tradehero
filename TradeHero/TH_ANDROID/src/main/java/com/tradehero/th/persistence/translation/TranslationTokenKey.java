@@ -18,6 +18,6 @@ public class TranslationTokenKey implements DTOKey
 
     @Override public boolean equals(Object obj)
     {
-        return obj != null && (obj instanceof TranslationToken);
+        return obj != null && (obj instanceof TranslationTokenKey);
     }
 }
