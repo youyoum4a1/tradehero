@@ -145,7 +145,7 @@ public class UpdateCenterFragment extends BaseFragment
                 | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.message_center_title);
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         MenuItem menuFollow = menu.findItem(R.id.btn_new_message);

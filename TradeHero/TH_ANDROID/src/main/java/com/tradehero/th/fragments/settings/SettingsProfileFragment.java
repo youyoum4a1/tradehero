@@ -32,6 +32,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -46,6 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
+import org.json.JSONException;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -194,7 +196,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     protected Map<String, Object> getUserFormMap()
     {
         Map<String, Object> map = new HashMap<>();
-        map.put(UserFormFactory.KEY_TYPE, EmailAuthenticationProvider.EMAIL_AUTH_TYPE);
+        map.put(UserFormFactory.KEY_TYPE, EmailCredentialsDTO.EMAIL_AUTH_TYPE);
         profileView.populateUserFormMap(map);
         return map;
     }
@@ -245,7 +247,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         detachUserProfileFetchTask();
         fetchUserProfileTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, createUserProfileCacheListener());
         fetchUserProfileTask.execute();
-        this.profileView.populateCredentials(THUser.currentCredentials());
+        try
+        {
+            this.profileView.populateCredentials(THUser.getCurrentCredentials().createJSON());
+        }
+        catch (JSONException e)
+        {
+            Timber.e(e, "Failed to populate current user %s", THUser.getCurrentCredentials());
+        }
     }
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
@@ -284,6 +293,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
             profileView.progressDialog.setCancelable(true);
+            EmailCredentialsDTO emailCredentialsDTO = profileView.getEmailCredentialsDTO();
             EmailAuthenticationProvider.setCredentials(this.getUserFormJSON());
 
             UserFormDTO userFormDTO = profileView.createForm();
@@ -296,11 +306,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             middleCallbackUpdateUserProfile = userServiceWrapper.get().updateProfile(
                     currentUserId.toUserBaseKey(),
                     userFormDTO,
-                    createUpdateUserProfileCallback());
+                    createUpdateUserProfileCallback(emailCredentialsDTO));
         }
     }
 
-    private THCallback<UserProfileDTO> createUpdateUserProfileCallback()
+    private THCallback<UserProfileDTO> createUpdateUserProfileCallback(final EmailCredentialsDTO emailCredentialsDTO)
     {
         return new THCallback<UserProfileDTO>()
         {
@@ -310,6 +320,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 THToast.show(R.string.settings_update_profile_successful);
                 Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 navigator.popFragment();
+                if (emailCredentialsDTO != null && THUser.getCurrentCredentials() instanceof EmailCredentialsDTO)
+                {
+                    THUser.saveCredentialsToUserDefaults(emailCredentialsDTO);
+                }
             }
 
             @Override protected void failure(THException ex)

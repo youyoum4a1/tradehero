@@ -1,10 +1,11 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.social.UserFriendsDTO;
 
 import java.util.ArrayList;
@@ -13,46 +14,40 @@ import java.util.List;
 /**
  * Created by tradehero on 14-5-26.
  */
-public class SocialFriendsAdapter extends ViewDTOSetAdapter<UserFriendsDTO, SocialFriendItemView> {
+public class SocialFriendsAdapter extends ArrayAdapter<UserFriendsDTO> {
 
+    private Context mContext;
     private final Object mLock = new Object();
     private Filter mFilter;
-    private int layoutResourceId;
+    private int mLayoutResourceId;
     private SocialFriendItemView.OnElementClickListener elementClickedListener;
     private List<UserFriendsDTO> mOriginalValues;
     private List<UserFriendsDTO> mObjects;
 
     //<editor-fold desc="Constructors">
     public SocialFriendsAdapter(Context context, List<UserFriendsDTO> objects, int layoutResourceId) {
-        super(context, objects);
-        this.mOriginalValues = objects;
-        this.mObjects = new ArrayList<>(mOriginalValues);
-        this.layoutResourceId = layoutResourceId;
+        super(context,0,objects);
+        this.mContext = context;
+        this.mObjects = objects;
+        this.mLayoutResourceId = layoutResourceId;
     }
     //</editor-fold>
 
     @Override
     public SocialFriendItemView getView(int position, View convertView, ViewGroup parent) {
-        SocialFriendItemView view = super.getView(position, convertView, parent);
-        //view.setOnElementClickedListener(createUserClickedListener());
-        view.setOnElementClickedListener(elementClickedListener);
-        return view;
+        if (convertView == null)
+        {
+            convertView = LayoutInflater.from(mContext).inflate(getViewResId(position), parent, false);
+        }
+        SocialFriendItemView dtoView = (SocialFriendItemView) convertView;
+        dtoView.display(getItem(position));
+        dtoView.setOnElementClickedListener(elementClickedListener);
+        return dtoView;
+
     }
 
-
-    @Override
     protected int getViewResId(int position) {
-        return layoutResourceId;
-    }
-
-    @Override
-    public UserFriendsDTO getItem(int position) {
-        return mObjects.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return mObjects.size();
+        return mLayoutResourceId;
     }
 
     public void setOnElementClickedListener(
@@ -65,7 +60,6 @@ public class SocialFriendsAdapter extends ViewDTOSetAdapter<UserFriendsDTO, Soci
 
     protected void handleInviteEvent(UserFriendsDTO userFriendsDTO) {
     }
-
 
     public Filter getFilter() {
         if (mFilter == null) {
@@ -99,7 +93,6 @@ public class SocialFriendsAdapter extends ViewDTOSetAdapter<UserFriendsDTO, Soci
 
         @Override
         protected FilterResults performFiltering(CharSequence prefix) {
-            // TODO Auto-generated method stub
             FilterResults results = new FilterResults();
 
             if (mOriginalValues == null) {
@@ -123,11 +116,9 @@ public class SocialFriendsAdapter extends ViewDTOSetAdapter<UserFriendsDTO, Soci
                     final UserFriendsDTO value = mOriginalValues.get(i);
                     final String valueText = value.name.toLowerCase();
                     if (valueText.startsWith(prefixString)) {
-                        // 源码 ,匹配开头
                         newValues.add(value);
                     } else {
                         final String[] words = valueText.split(" ");
-                        //分隔符匹配，效率低
                         final int wordCount = words.length;
 
                         for (int k = 0; k < wordCount; k++) {

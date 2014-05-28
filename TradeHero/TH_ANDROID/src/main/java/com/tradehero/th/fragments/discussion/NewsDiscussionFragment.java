@@ -14,6 +14,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.persistence.news.NewsItemCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
@@ -211,12 +213,19 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
         ((NewsDialogLayout) contentView).setNewsData(mDetailNewsItemDTO,
-                WeChatMessageType.CreateDiscussion.getValue());
+                WeChatMessageType.CreateDiscussion);
         ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getSherlockActivity(), contentView, callback);
     }
     //</editor-fold>
+
+    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
+    {
+        Bundle args = new Bundle();
+        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
+        getDashboardNavigator().pushFragment(SettingsFragment.class, args);
+    }
 
     protected void handleTranslationRequested()
     {
@@ -262,6 +271,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         @Override public void onTranslationRequestedClicked()
         {
             handleTranslationRequested();
+        }
+
+        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
+        {
+            pushSettingsForConnect(socialShareFormDTO);
         }
 
         @Override public void onShareRequestedClicked()

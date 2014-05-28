@@ -1494,7 +1494,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         builder.setView(view);
         builder.setCancelable(false);
         TextView stockNameTextView = (TextView) view.findViewById(R.id.dialog_stock_name);
-        if (stockNameTextView != null)
+        if (stockNameTextView != null && securityCompactDTO != null)
         {
             stockNameTextView.setText(securityCompactDTO.name);
         }
@@ -1689,7 +1689,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             WeChatDTO weChatDTO = new WeChatDTO();
             weChatDTO.id = securityCompactDTO.id;
-            weChatDTO.type = WeChatMessageType.Trade.getValue();
+            weChatDTO.type = WeChatMessageType.Trade;
             if (isMyUrlOk())
             {
                 weChatDTO.imageURL = securityCompactDTO.imageBlobUrl;

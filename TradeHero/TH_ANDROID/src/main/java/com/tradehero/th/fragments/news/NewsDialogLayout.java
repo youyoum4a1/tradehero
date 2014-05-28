@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,9 +25,18 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.TimelineItemShareFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
+import com.tradehero.th.models.share.FacebookShareDestination;
+import com.tradehero.th.models.share.LinkedInShareDestination;
+import com.tradehero.th.models.share.ShareDestination;
+import com.tradehero.th.models.share.ShareDestinationFactory;
+import com.tradehero.th.models.share.TwitterShareDestination;
+import com.tradehero.th.models.share.WeChatShareDestination;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.network.share.SocialSharer;
@@ -36,37 +46,21 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import timber.log.Timber;
 
-public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCallback
+public class NewsDialogLayout extends ShareDialogLayout
 {
     public static final int FIRST_MENU_ID = 0;
     public static final int SHARE_MENU_ID = 1;
 
     @InjectView(R.id.news_action_share_title) protected TextView newsTitleView;
     @InjectView(R.id.news_action_share_subtitle) protected TextView newsSubTitleView;
-    @InjectView(R.id.news_action_share_title2) protected TextView shareTitleView;
 
     @InjectView(R.id.news_action_back) protected View backView;
-    @InjectView(R.id.news_action_share_cancel) protected View cancelView;
     @InjectView(R.id.news_action_share_switcher) protected ViewSwitcher titleSwitcher;
 
     @InjectView(R.id.news_action_list_switcher) protected ViewSwitcher optionsViewSwitcher;
     @InjectView(R.id.news_action_list_sharing_translation) protected ListView listViewOptions;
-    @InjectView(R.id.news_action_list_sharing_items) protected ListView listViewSharingOptions;
 
-    private THDialog.DialogInterface dialogCallback;
     protected ProgressDialog dialog;
-
-    private AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
-    private int id;
-    private String title;
-    private String description;
-
-    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
-    @Inject Provider<SocialSharer> socialSharerProvider;
-
-    private int mShareType;
-    private OnMenuClickedListener menuClickedListener;
-    private SocialSharer currentSocialSharer;
 
     //<editor-fold desc="Constructors">
     public NewsDialogLayout(Context context)
@@ -85,52 +79,16 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
     }
     //</editor-fold>
 
-    @Override
-    protected void onFinishInflate()
+    @Override protected void fillData()
     {
-        super.onFinishInflate();
-        DaggerUtils.inject(this);
-        ButterKnife.inject(this);
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        ButterKnife.inject(this);
-        fillData();
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        detachSocialSharer();
-        ButterKnife.reset(this);
-        super.onDetachedFromWindow();
-    }
-
-    private void detachSocialSharer()
-    {
-        SocialSharer socialSharerCopy = currentSocialSharer;
-        if (socialSharerCopy != null)
-        {
-            socialSharerCopy.setSharedListener(null);
-        }
-    }
-
-    private void fillData()
-    {
+        super.fillData();
         String[] dataForFirst = {getContext().getString(R.string.sharing),
                 getContext().getString(R.string.translation)};
-        String[] dataForSecond = getContext().getResources().getStringArray(R.array.share_to);
         MyListAdapter adapterForFirst =
                 new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,
                         dataForFirst);
-        MyListAdapter adapterForSecond =
-                new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text,
-                        dataForSecond);
         listViewOptions.setAdapter(adapterForFirst);
-        listViewSharingOptions.setAdapter(adapterForSecond);
         listViewOptions.setDividerHeight(1);
-        listViewSharingOptions.setDividerHeight(1);
         setNewsTitle();
     }
 
@@ -163,85 +121,6 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         titleSwitcher.setDisplayedChild(SHARE_MENU_ID);
     }
 
-    private void handleShareAction(int position)
-    {
-        SocialShareFormDTO shareFormDTO;
-        SocialSharer.OnSharedListener sharedListener = null;
-        if (position == 0)
-        {
-            shareFormDTO = createWeChatShareDTO();
-            // TODO add sharedListener
-        }
-        else
-        {
-            SocialNetworkEnum socialNetwork = null;
-            switch (position)
-            {
-                case 1:
-                    socialNetwork = SocialNetworkEnum.LN;
-                    break;
-                case 2:
-                    socialNetwork = SocialNetworkEnum.FB;
-                    break;
-                case 3:
-                    socialNetwork = SocialNetworkEnum.TW;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unhandled position " + position);
-            }
-            shareFormDTO = createTimelineItemShareFormDTO(socialNetwork);
-            sharedListener = createSharedListener(socialNetwork);
-        }
-        detachSocialSharer();
-        currentSocialSharer = socialSharerProvider.get();
-        currentSocialSharer.share(shareFormDTO, sharedListener);
-    }
-
-    private WeChatDTO createWeChatShareDTO()
-    {
-        WeChatDTO weChatDTO = new WeChatDTO();
-        weChatDTO.id = id;
-        weChatDTO.type = mShareType;
-        weChatDTO.title = title;
-        return weChatDTO;
-    }
-
-    private TimelineItemShareFormDTO createTimelineItemShareFormDTO(SocialNetworkEnum socialNetwork)
-    {
-        return new TimelineItemShareFormDTO(
-                new DiscussionListKey(DiscussionType.NEWS, id),
-                new TimelineItemShareRequestDTO(socialNetwork));
-    }
-
-    private SocialSharer.OnSharedListener createSharedListener(
-            final SocialNetworkEnum socialNetworkEnum)
-    {
-        return new SocialSharer.OnSharedListener()
-        {
-            @Override public void onShared()
-            {
-                THToast.show(String.format(
-                        getContext().getString(R.string.timeline_post_to_social_network),
-                        socialNetworkEnum.getName()));
-            }
-
-            @Override public void onShareFailed(Throwable throwable)
-            {
-                THToast.show("Share error " + socialNetworkEnum.getName());
-                Timber.e(throwable, "Share error");
-            }
-        };
-    }
-
-    @OnClick(R.id.news_action_share_cancel)
-    protected void dismissDialog()
-    {
-        if (dialogCallback != null)
-        {
-            dialogCallback.onDialogDismiss();
-        }
-    }
-
     @OnItemClick(R.id.news_action_list_sharing_translation)
     protected void onOptionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
@@ -257,41 +136,6 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         }
     }
 
-    @OnItemClick(R.id.news_action_list_sharing_items)
-    protected void onShareOptionsItemClicked(AdapterView<?> parent, View view, int position, long id)
-    {
-        handleShareAction(position);
-        dismissDialog();
-    }
-
-    @Override
-    public void setOnDismissCallback(THDialog.DialogInterface listener)
-    {
-        this.dialogCallback = listener;
-    }
-
-    public void setNewsData(NewsItemCompactDTO newsItemCompactDTO, int shareType)
-    {
-        this.description = newsItemCompactDTO.description;
-        this.title = null;
-        setNewsData((AbstractDiscussionCompactDTO) newsItemCompactDTO, shareType);
-    }
-
-    public void setNewsData(NewsItemDTO newsItemDTO, int shareType)
-    {
-        this.description = newsItemDTO.description;
-        this.title = newsItemDTO.text;
-        setNewsData((AbstractDiscussionCompactDTO) newsItemDTO, shareType);
-    }
-
-    public void setNewsData(AbstractDiscussionCompactDTO abstractDiscussionDTO, int shareType)
-    {
-        this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
-        this.id = abstractDiscussionDTO.id;
-        setNewsTitle();
-        mShareType = shareType;
-    }
-
     private class MyListAdapter extends ArrayAdapter<String>
     {
         public MyListAdapter(Context context, int resource, int textViewResourceId,
@@ -301,32 +145,39 @@ public class NewsDialogLayout extends LinearLayout implements THDialog.DialogCal
         }
     }
 
+    @Override public void setNewsData(AbstractDiscussionCompactDTO abstractDiscussionDTO, WeChatMessageType shareType)
+    {
+        super.setNewsData(abstractDiscussionDTO, shareType);
+        setNewsTitle();
+    }
+
+    @Override public void setMenuClickedListener(
+            OnShareMenuClickedListener menuClickedListener)
+    {
+        if (menuClickedListener != null &&
+                !(menuClickedListener instanceof OnMenuClickedListener))
+        {
+            throw new IllegalArgumentException("You can only set OnMenuClickedListener");
+        }
+        super.setMenuClickedListener(menuClickedListener);
+    }
+
     public void setMenuClickedListener(OnMenuClickedListener menuClickedListener)
     {
-        this.menuClickedListener = menuClickedListener;
+        super.setMenuClickedListener(menuClickedListener);
     }
 
     protected void notifyTranslationClicked()
     {
-        OnMenuClickedListener listenerCopy = menuClickedListener;
+        NewsDialogLayout.OnMenuClickedListener listenerCopy = (OnMenuClickedListener) menuClickedListener;
         if (listenerCopy != null)
         {
             listenerCopy.onTranslationRequestedClicked();
         }
     }
 
-    protected void notifyShareClicked()
-    {
-        OnMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onShareRequestedClicked();
-        }
-    }
-
-    public static interface OnMenuClickedListener
+    public static interface OnMenuClickedListener extends OnShareMenuClickedListener
     {
         void onTranslationRequestedClicked();
-        void onShareRequestedClicked();
     }
 }

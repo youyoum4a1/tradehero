@@ -195,13 +195,13 @@ import retrofit.Callback;
     //<editor-fold desc="Get Security">
     public SecurityPositionDetailDTO getSecurity(SecurityId securityId)
     {
-        return this.securityService.getSecurity(securityId.exchange, securityId.securitySymbol);
+        return this.securityService.getSecurity(securityId.exchange, securityId.getPathSafeSymbol());
     }
 
     public MiddleCallback<SecurityPositionDetailDTO> getSecurity(SecurityId securityId, Callback<SecurityPositionDetailDTO> callback)
     {
         MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        this.securityServiceAsync.getSecurity(securityId.exchange, securityId.securitySymbol, middleCallback);
+        this.securityServiceAsync.getSecurity(securityId.exchange, securityId.getPathSafeSymbol(), middleCallback);
         return middleCallback;
     }
     //</editor-fold>

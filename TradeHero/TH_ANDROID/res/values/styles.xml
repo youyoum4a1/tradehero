@@ -120,7 +120,10 @@
   <style name="TradeHero.Dashboard" parent="TradeHero">
     <item name="android:windowActionBarOverlay">false</item>
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
+    <!--<item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>-->
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
+    <item name="android:actionBarItemBackground">@drawable/actionbar_item_bg</item>
+    <item name="actionBarItemBackground">@drawable/actionbar_item_bg</item>
   </style>
 
   <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">
@@ -141,9 +144,13 @@
     </item>
   </style>
 
+    <style name="TradeHero.Dashboard.ActionBarButton" parent="Widget.Sherlock.Light.ActionButton">
+        <item name="android:background">@drawable/topbarrectangle_default</item>
+    </style>
+
   <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"
       parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
-    <item name="android:textColor">@color/white</item>
+    <item name="android:textColor">@color/black</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.Menu"
@@ -204,11 +211,11 @@
     <item name="android:layout_weight">1</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textColor">@color/tab_scroll_color</item>
-    <item name="android:textStyle">bold</item>
     <item name="android:singleLine">true</item>
     <item name="android:ellipsize">middle</item>
     <item name="android:layout_marginLeft">5dp</item>
     <item name="android:layout_marginRight">5dp</item>
+    <item name="android:background">@color/white</item>
   </style>
 
   <style name="TH.Time_Text">
@@ -234,6 +241,7 @@
     <item name="android:textColor">@color/btn_twitter_color_end</item>
     <item name="android:gravity">center</item>
     <item name="android:background">@drawable/security_btn_buy</item>
+    <item name="android:textSize">12sp</item>
   </style>
 
   <style name="TH.UserNameTitle">

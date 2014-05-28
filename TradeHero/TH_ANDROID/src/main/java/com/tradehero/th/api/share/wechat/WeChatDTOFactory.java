@@ -13,7 +13,7 @@ public class WeChatDTOFactory
     {
         return new WeChatDTO(
                 discussionDTO.getDiscussionKey().id,
-                WeChatMessageType.CreateDiscussion.getValue(),
+                WeChatMessageType.CreateDiscussion,
                 discussionDTO.text);
     }
 }

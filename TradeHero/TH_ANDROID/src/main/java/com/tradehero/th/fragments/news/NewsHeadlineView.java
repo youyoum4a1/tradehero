@@ -13,14 +13,17 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
@@ -108,10 +111,10 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     @OnClick(R.id.discussion_action_button_more) void showShareDialog()
     {
         View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.sharing_translation_dialog_layout, null);
+                .inflate(R.layout.sharing_dialog_layout, null);
         THDialog.DialogCallback callback = (THDialog.DialogCallback) contentView;
-        ((NewsDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News.getValue());
-        ((NewsDialogLayout) contentView).setMenuClickedListener(createNewsDialogMenuClickedListener());
+        ((ShareDialogLayout) contentView).setNewsData(newsItemDTO, WeChatMessageType.News);
+        ((ShareDialogLayout) contentView).setMenuClickedListener(createShareDialogMenuClickedListener());
         // TODO find a place to unset this listener
         THDialog.showUpDialog(getContext(), contentView, callback);
     }
@@ -221,17 +224,23 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         throw new IllegalStateException("It has no securityId");
     }
 
-    protected NewsDialogLayout.OnMenuClickedListener createNewsDialogMenuClickedListener()
+    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
+    {
+        Bundle args = new Bundle();
+        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
+        ((DashboardActivity) getContext()).getDashboardNavigator().pushFragment(SettingsFragment.class, args);
+    }
+
+    protected ShareDialogLayout.OnShareMenuClickedListener createShareDialogMenuClickedListener()
     {
         return new NewsHeadlineViewDialogMenuClickedListener();
     }
 
-    private class NewsHeadlineViewDialogMenuClickedListener implements NewsDialogLayout.OnMenuClickedListener
+    private class NewsHeadlineViewDialogMenuClickedListener implements ShareDialogLayout.OnShareMenuClickedListener
     {
-        @Override public void onTranslationRequestedClicked()
+        @Override public void onShareConnectRequested(SocialShareFormDTO socialShareFormDTO)
         {
-            // TODO better
-            THToast.show("Temp click for translation");
+            pushSettingsForConnect(socialShareFormDTO);
         }
 
         @Override public void onShareRequestedClicked()

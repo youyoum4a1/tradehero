@@ -1,6 +1,7 @@
 package com.tradehero.th.network.share;
 
 import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
 
 public interface SocialSharer
 {
@@ -9,8 +10,8 @@ public interface SocialSharer
 
     public static interface OnSharedListener
     {
-        // TODO add a DTO
-        void onShared();
-        void onShareFailed(Throwable throwable);
+        void onConnectRequired(SocialShareFormDTO shareFormDTO);
+        void onShared(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO);
+        void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable);
     }
 }

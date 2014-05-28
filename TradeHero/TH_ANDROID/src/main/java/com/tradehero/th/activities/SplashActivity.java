@@ -11,7 +11,6 @@ import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -19,10 +18,10 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
-import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -47,7 +46,7 @@ public class SplashActivity extends SherlockActivity
     @Inject protected ProviderListCache providerListCache;
     @Inject @FacebookAppId String facebookAppId;
 
-    @Inject @SessionToken StringPreference currentSessionToken;
+    @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<Tapstream> tapStream;
 
@@ -147,7 +146,7 @@ public class SplashActivity extends SherlockActivity
     public boolean canLoadApp()
     {
         // TODO HACK to ensure DashboardActivity has exchange list
-        boolean canLoad = currentSessionToken.isSet() && currentUserId.toUserBaseKey().key != 0;
+        boolean canLoad = mainCredentialsPreference.getCredentials() != null && currentUserId.toUserBaseKey().key != 0;
         try
         {
             UserProfileDTO profileDTO = userServiceWrapper.getUser(currentUserId.toUserBaseKey());

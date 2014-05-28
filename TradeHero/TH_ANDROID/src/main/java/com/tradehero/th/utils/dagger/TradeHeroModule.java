@@ -51,6 +51,7 @@ import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineView;
+import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
@@ -333,7 +334,7 @@ import javax.inject.Singleton;
                         UserFriendDTOView.class,
                         FriendListLoader.class,
 
-                        //binding
+                        ShareDialogLayout.class,
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
                         AbstractDiscussionItemView.class,

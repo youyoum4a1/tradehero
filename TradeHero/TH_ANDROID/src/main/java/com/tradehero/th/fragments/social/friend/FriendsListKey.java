@@ -5,9 +5,10 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 
 /**
- * Created by tradehero on 14-5-27.
+ * Created by wangliang on 14-5-27.
  */
 public class FriendsListKey implements DTOKey {
+
     UserBaseKey userBaseKey;
     SocialNetworkEnum socialNetworkEnum;
 

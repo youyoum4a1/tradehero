@@ -1,7 +1,9 @@
 package com.tradehero.th.api.form;
 
-public class WeiboUserFormDTO extends UserFormDTO {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-
-    public String weibo_access_token;
+public class WeiboUserFormDTO extends UserFormDTO
+{
+    @JsonProperty("weibo_access_token")
+    public String accessToken;
 }

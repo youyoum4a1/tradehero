@@ -286,7 +286,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(getString(R.string.dashboard_community));
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
 
         MenuItem item = menu.findItem(R.id.btn_add);
         if (item != null)
@@ -294,6 +294,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             item.setEnabled(true);
             item.setVisible(true);
         }
+
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
