@@ -59,50 +59,70 @@ import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.FacebookUtils;
-import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.TwitterUtils;
-import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public final class SettingsFragment extends DashboardPreferenceFragment
-{
-    @Inject THBillingInteractor billingInteractor;
-    @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.List;
+
+public final class SettingsFragment extends DashboardPreferenceFragment {
+    @Inject
+    THBillingInteractor billingInteractor;
+    @Inject
+    protected Provider<THUIBillingRequest> billingRequestProvider;
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
     private Integer restoreRequestCode;
 
-    @Inject UserServiceWrapper userServiceWrapper;
-    @Inject SessionServiceWrapper sessionServiceWrapper;
-    @Inject SocialServiceWrapper socialServiceWrapper;
+    @Inject
+    UserServiceWrapper userServiceWrapper;
+    @Inject
+    SessionServiceWrapper sessionServiceWrapper;
+    @Inject
+    SocialServiceWrapper socialServiceWrapper;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject CurrentUserId currentUserId;
-    @Inject PushNotificationManager pushNotificationManager;
-    @Inject LruMemFileCache lruCache;
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
-    @Inject @AuthenticationType StringPreference currentAuthenticationType;
-    @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
-    @Inject @ServerEndpoint StringPreference serverEndpoint;
+    @Inject
+    Lazy<UserProfileCache> userProfileCache;
+    @Inject
+    CurrentUserId currentUserId;
+    @Inject
+    PushNotificationManager pushNotificationManager;
+    @Inject
+    LruMemFileCache lruCache;
+    @Inject
+    THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject
+    @AuthenticationType
+    StringPreference currentAuthenticationType;
+    @Inject
+    @ResetHelpScreens
+    BooleanPreference resetHelpScreen;
+    @Inject
+    @ServerEndpoint
+    StringPreference serverEndpoint;
 
-    @Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject Lazy<TwitterUtils> twitterUtils;
-    @Inject Lazy<LinkedInUtils> linkedInUtils;
-    @Inject LocalyticsSession localyticsSession;
-    @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject
+    Lazy<FacebookUtils> facebookUtils;
+    @Inject
+    Lazy<TwitterUtils> twitterUtils;
+    @Inject
+    Lazy<LinkedInUtils> linkedInUtils;
+    @Inject
+    Lazy<WeiboUtils> weiboUtils;
+    @Inject
+    Lazy<QQUtils> qqUtils;
+    @Inject
+    LocalyticsSession localyticsSession;
+    @Inject
+    ProgressDialogUtil progressDialogUtil;
+    @Inject
+    Lazy<ResideMenu> resideMenuLazy;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
@@ -112,6 +132,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private SocialNetworkEnum currentSocialNetworkConnect;
     private CheckBoxPreference twitterSharing;
     private CheckBoxPreference linkedInSharing;
+    private CheckBoxPreference weiboSharing;
+    private CheckBoxPreference qqSharing;
+
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
@@ -121,8 +144,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             currentUserProfileRetrievedMilestoneListener;
     private LogInCallback socialConnectLogInCallback;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
@@ -132,48 +155,42 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         createSocialConnectLogInCallback();
 
-        purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
-        {
-            @Override public void onPurchaseRestored(
+        purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener() {
+            @Override
+            public void onPurchaseRestored(
                     int requestCode,
                     List restoredPurchases,
                     List failedRestorePurchases,
-                    List failExceptions)
-            {
-                if (Integer.valueOf(requestCode).equals(restoreRequestCode))
-                {
+                    List failExceptions) {
+                if (Integer.valueOf(requestCode).equals(restoreRequestCode)) {
                     restoreRequestCode = null;
                 }
             }
         };
     }
 
-    private void createSocialConnectLogInCallback()
-    {
-        socialConnectLogInCallback = new LogInCallback()
-        {
-            @Override public void done(UserLoginDTO user, THException ex)
-            {
+    private void createSocialConnectLogInCallback() {
+        socialConnectLogInCallback = new LogInCallback() {
+            @Override
+            public void done(UserLoginDTO user, THException ex) {
                 // when user cancel the process
-                if (!isDetached())
-                {
+                if (!isDetached()) {
                     progressDialog.hide();
                 }
             }
 
-            @Override public void onStart()
-            {
+            @Override
+            public void onStart() {
             }
 
-            @Override public boolean onSocialAuthDone(JSONCredentials json)
-            {
+            @Override
+            public boolean onSocialAuthDone(JSONCredentials json) {
                 detachMiddleCallbackConnect();
                 middleCallbackConnect = socialServiceWrapper.connect(
                         currentUserId.toUserBaseKey(),
                         UserFormFactory.create(json),
                         createSocialConnectCallback());
-                if (!isDetached())
-                {
+                if (!isDetached()) {
                     progressDialog.setMessage(
                             String.format(getString(R.string.authentication_connecting_tradehero),
                                     currentSocialNetworkConnect.getName()));
@@ -183,9 +200,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         };
     }
 
-    @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup,
-            Bundle paramBundle)
-    {
+    @Override
+    public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup,
+                             Bundle paramBundle) {
         View view = super.onCreateView(paramLayoutInflater, paramViewGroup, paramBundle);
         view.setBackgroundColor(getResources().getColor(R.color.white));
 
@@ -197,19 +214,16 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         this.currentUserProfileRetrievedMilestone.setOnCompleteListener(
                 currentUserProfileRetrievedMilestoneListener);
 
-        if (userProfileCache.get().get(currentUserId.toUserBaseKey()) == null)
-        {
+        if (userProfileCache.get().get(currentUserId.toUserBaseKey()) == null) {
             progressDialog =
                     progressDialogUtil.show(getActivity(), R.string.loading_required_information,
                             R.string.alert_dialog_please_wait);
         }
         this.currentUserProfileRetrievedMilestone.launch();
 
-        if (view != null)
-        {
+        if (view != null) {
             ListView listView = (ListView) view.findViewById(android.R.id.list);
-            if (listView != null)
-            {
+            if (listView != null) {
                 listView.setPadding(
                         (int) getResources().getDimension(R.dimen.setting_padding_left),
                         (int) getResources().getDimension(R.dimen.setting_padding_top),
@@ -221,16 +235,16 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return view;
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         initPreferenceClickHandlers();
         initInfo();
         super.onViewCreated(view, savedInstanceState);
     }
 
     //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(
@@ -243,10 +257,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     }
     //</editor-fold>
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 resideMenuLazy.get().openMenu();
                 return true;
@@ -254,8 +267,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
         detachLogoutCallback();
@@ -264,73 +277,61 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         super.onDestroyView();
     }
 
-    @Override public void onResume()
-    {
+    @Override
+    public void onResume() {
         super.onResume();
 
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
     }
 
-    private void detachMiddleCallbackUpdateUserProfile()
-    {
-        if (middleCallbackUpdateUserProfile != null)
-        {
+    private void detachMiddleCallbackUpdateUserProfile() {
+        if (middleCallbackUpdateUserProfile != null) {
             middleCallbackUpdateUserProfile.setPrimaryCallback(null);
         }
         middleCallbackUpdateUserProfile = null;
     }
 
-    protected void detachLogoutCallback()
-    {
-        if (logoutCallback != null)
-        {
+    protected void detachLogoutCallback() {
+        if (logoutCallback != null) {
             logoutCallback.setPrimaryCallback(null);
         }
         logoutCallback = null;
     }
 
-    protected void detachCurrentUserProfileMilestone()
-    {
-        if (this.currentUserProfileRetrievedMilestone != null)
-        {
+    protected void detachCurrentUserProfileMilestone() {
+        if (this.currentUserProfileRetrievedMilestone != null) {
             this.currentUserProfileRetrievedMilestone.setOnCompleteListener(null);
         }
         this.currentUserProfileRetrievedMilestone = null;
     }
 
-    protected void detachMiddleCallbackConnect()
-    {
-        if (middleCallbackConnect != null)
-        {
+    protected void detachMiddleCallbackConnect() {
+        if (middleCallbackConnect != null) {
             middleCallbackConnect.setPrimaryCallback(null);
         }
         middleCallbackConnect = null;
     }
 
-    protected void detachMiddleCallbackDisconnect()
-    {
-        if (middleCallbackDisconnect != null)
-        {
+    protected void detachMiddleCallbackDisconnect() {
+        if (middleCallbackDisconnect != null) {
             middleCallbackDisconnect.setPrimaryCallback(null);
         }
         middleCallbackDisconnect = null;
     }
 
-    @Override public void onDestroy()
-    {
+    @Override
+    public void onDestroy() {
         socialConnectLogInCallback = null;
         this.currentUserProfileRetrievedMilestoneListener = null;
         this.purchaseRestorerFinishedListener = null;
         super.onDestroy();
     }
 
-    private BillingPurchaseRestorer.OnPurchaseRestorerListener createPurchaseRestorerListener()
-    {
-        return new BillingPurchaseRestorer.OnPurchaseRestorerListener()
-        {
-            @Override public void onPurchaseRestored(int requestCode, List restoredPurchases,
-                    List failedRestorePurchases, List failExceptions)
-            {
+    private BillingPurchaseRestorer.OnPurchaseRestorerListener createPurchaseRestorerListener() {
+        return new BillingPurchaseRestorer.OnPurchaseRestorerListener() {
+            @Override
+            public void onPurchaseRestored(int requestCode, List restoredPurchases,
+                                           List failedRestorePurchases, List failExceptions) {
                 Timber.d("onPurchaseRestoreFinished3");
                 IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
                         getActivity(),
@@ -342,23 +343,20 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         };
     }
 
-    private void initPreferenceClickHandlers()
-    {
+    private void initPreferenceClickHandlers() {
         Preference topBanner = findPreference(getString(R.string.key_preference_top_banner));
-        topBanner.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
+        topBanner.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
                 handleTopBannerClicked();
                 return false;
             }
         });
 
         Preference settingFaq = findPreference(getString(R.string.key_settings_primary_faq));
-        settingFaq.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
+        settingFaq.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
                 handleFaqClicked();
                 return true;
             }
@@ -366,12 +364,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         Preference settingAbout = findPreference(getString(R.string.key_settings_misc_about));
 
-        if (settingAbout != null)
-        {
-            settingAbout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
+        if (settingAbout != null) {
+            settingAbout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
                     handleAboutClicked();
                     return true;
                 }
@@ -380,12 +376,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         Preference sendLoveBlock =
                 findPreference(getString(R.string.key_settings_primary_send_love));
-        if (sendLoveBlock != null)
-        {
-            sendLoveBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
+        if (sendLoveBlock != null) {
+            sendLoveBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
                     handleSendLoveClicked();
                     return true;
                 }
@@ -394,13 +388,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         Preference sendFeedbackBlock =
                 findPreference(getString(R.string.key_settings_primary_send_feedback));
-        if (sendFeedbackBlock != null)
-        {
+        if (sendFeedbackBlock != null) {
             sendFeedbackBlock.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener()
-                    {
-                        @Override public boolean onPreferenceClick(Preference preference)
-                        {
+                    new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
                             handleSendFeedbackClicked();
                             return true;
                         }
@@ -418,12 +410,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         Preference profileBlock = findPreference(getString(R.string.key_settings_primary_profile));
-        if (profileBlock != null)
-        {
-            profileBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
+        if (profileBlock != null) {
+            profileBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
                     handleProfileClicked();
                     return true;
                 }
@@ -431,12 +421,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         Preference paypalBlock = findPreference(getString(R.string.key_settings_primary_paypal));
-        if (paypalBlock != null)
-        {
-            paypalBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
+        if (paypalBlock != null) {
+            paypalBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
                     handlePaypalClicked();
                     return true;
                 }
@@ -444,12 +432,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         Preference alipayBlock = findPreference(getString(R.string.key_settings_primary_alipay));
-        if (alipayBlock != null)
-        {
-            alipayBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
+        if (alipayBlock != null) {
+            alipayBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
                     handleAlipayClicked();
                     return true;
                 }
@@ -458,13 +444,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         Preference transactionHistoryBlock =
                 findPreference(getString(R.string.key_settings_primary_transaction_history));
-        if (transactionHistoryBlock != null)
-        {
+        if (transactionHistoryBlock != null) {
             transactionHistoryBlock.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener()
-                    {
-                        @Override public boolean onPreferenceClick(Preference preference)
-                        {
+                    new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
                             handleTransactionHistoryClicked();
                             return true;
                         }
@@ -473,13 +457,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         Preference restorePurchaseBlock =
                 findPreference(getString(R.string.key_settings_primary_restore_purchases));
-        if (restorePurchaseBlock != null)
-        {
+        if (restorePurchaseBlock != null) {
             restorePurchaseBlock.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener()
-                    {
-                        @Override public boolean onPreferenceClick(Preference preference)
-                        {
+                    new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
                             handleRestorePurchaseClicked();
                             return true;
                         }
@@ -488,13 +470,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         Preference resetHelpScreensBlock =
                 findPreference(getString(R.string.key_settings_misc_reset_help_screens));
-        if (resetHelpScreensBlock != null)
-        {
+        if (resetHelpScreensBlock != null) {
             resetHelpScreensBlock.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener()
-                    {
-                        @Override public boolean onPreferenceClick(Preference preference)
-                        {
+                    new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
                             handleResetHelpScreensClicked();
                             return true;
                         }
@@ -503,12 +483,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         Preference clearCacheBlock =
                 findPreference(getString(R.string.key_settings_misc_clear_cache));
-        if (clearCacheBlock != null)
-        {
-            clearCacheBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
+        if (clearCacheBlock != null) {
+            clearCacheBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
                     handleClearCacheClicked();
                     return true;
                 }
@@ -516,12 +494,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         Preference signOutBlock = findPreference(getString(R.string.key_settings_misc_sign_out));
-        if (signOutBlock != null)
-        {
-            signOutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
+        if (signOutBlock != null) {
+            signOutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
                     handleSignOutClicked();
                     return true;
                 }
@@ -529,12 +505,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         Preference aboutBlock = findPreference(getString(R.string.key_settings_misc_about));
-        if (aboutBlock != null)
-        {
-            aboutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
+        if (aboutBlock != null) {
+            aboutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
                     handleAboutClicked();
                     return true;
                 }
@@ -544,34 +518,38 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         // Sharing
         facebookSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_facebook));
-        if (facebookSharing != null)
-        {
+        if (facebookSharing != null) {
             facebookSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.FB));
         }
         twitterSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_twitter));
-        if (twitterSharing != null)
-        {
+        if (twitterSharing != null) {
             twitterSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.TW));
         }
         linkedInSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_linked_in));
-        if (linkedInSharing != null)
-        {
+        if (linkedInSharing != null) {
             linkedInSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.LN));
+        }
+        weiboSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_weibo));
+        if (weiboSharing != null) {
+            weiboSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.WB));
+        }
+        qqSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_qq));
+        if (qqSharing != null) {
+            qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
         }
 
         // notification
         pushNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push));
-        if (pushNotification != null)
-        {
+        if (pushNotification != null) {
             pushNotification.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
+                    new Preference.OnPreferenceChangeListener() {
                         @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
                             return changePushNotification((boolean) newValue);
                         }
                     });
@@ -579,14 +557,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         emailNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_email));
-        if (emailNotification != null)
-        {
+        if (emailNotification != null) {
             emailNotification.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
+                    new Preference.OnPreferenceChangeListener() {
                         @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
                             return changeEmailNotification((boolean) newValue);
                         }
                     });
@@ -594,14 +569,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         pushNotificationSound = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push_alert_sound));
-        if (pushNotificationSound != null)
-        {
+        if (pushNotificationSound != null) {
             pushNotificationSound.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
+                    new Preference.OnPreferenceChangeListener() {
                         @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
                             pushNotificationManager.setSoundEnabled((boolean) newValue);
                             return true;
                         }
@@ -610,44 +582,36 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         pushNotificationVibrate = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push_alert_vibrate));
-        if (pushNotificationVibrate != null)
-        {
+        if (pushNotificationVibrate != null) {
             pushNotificationVibrate.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
+                    new Preference.OnPreferenceChangeListener() {
                         @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
                             pushNotificationManager.setVibrateEnabled((boolean) newValue);
                             return true;
                         }
                     });
         }
 
-        if (this.currentUserProfileRetrievedMilestone.isComplete())
-        {
+        if (this.currentUserProfileRetrievedMilestone.isComplete()) {
             updateNotificationStatus();
             updateSocialConnectStatus();
         }
         // Otherwise we rely on the complete listener
     }
 
-    private void initInfo()
-    {
+    private void initInfo() {
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
         PackageInfo packageInfo = null;
         String timeStr = "";
-        try
-        {
+        try {
             packageInfo = getActivity().getPackageManager().getPackageInfo(
                     getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e)
-        {
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        if (packageInfo != null)
-        {
+        if (packageInfo != null) {
             timeStr = (String) DateFormat.format(
                     getActivity().getString(R.string.data_format_d_mmm_yyyy_kk_mm),
                     packageInfo.lastUpdateTime);
@@ -657,51 +621,40 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         version.setTitle(VersionUtils.getVersionId(getActivity()) + " - " + serverPath);
     }
 
-    private void handleTopBannerClicked()
-    {
+    private void handleTopBannerClicked() {
         getNavigator().pushFragment(InviteFriendFragment.class, null,
                 Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
-    private void updateNotificationStatus()
-    {
+    private void updateNotificationStatus() {
         final UserProfileDTO currentUserProfile =
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (currentUserProfile != null)
-        {
-            if (emailNotification != null)
-            {
+        if (currentUserProfile != null) {
+            if (emailNotification != null) {
                 emailNotification.setChecked(currentUserProfile.emailNotificationsEnabled);
             }
 
-            if (pushNotification != null)
-            {
+            if (pushNotification != null) {
                 pushNotification.setChecked(currentUserProfile.pushNotificationsEnabled);
             }
 
-            if (pushNotificationSound != null)
-            {
+            if (pushNotificationSound != null) {
                 pushNotificationSound.setEnabled(currentUserProfile.pushNotificationsEnabled);
             }
 
-            if (pushNotificationVibrate != null)
-            {
+            if (pushNotificationVibrate != null) {
                 pushNotificationVibrate.setEnabled(currentUserProfile.pushNotificationsEnabled);
             }
 
-            if (currentUserProfile.pushNotificationsEnabled)
-            {
+            if (currentUserProfile.pushNotificationsEnabled) {
                 pushNotificationManager.enablePush();
-            }
-            else
-            {
+            } else {
                 pushNotificationManager.disablePush();
             }
         }
     }
 
-    private boolean changeEmailNotification(boolean enable)
-    {
+    private boolean changeEmailNotification(boolean enable) {
         progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_notifications_email_alert_title,
                 R.string.settings_notifications_email_alert_message);
@@ -714,8 +667,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return false;
     }
 
-    private boolean changePushNotification(boolean enable)
-    {
+    private boolean changePushNotification(boolean enable) {
         progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_notifications_push_alert_title,
                 R.string.settings_notifications_push_alert_message);
@@ -728,25 +680,20 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     }
 
     private Preference.OnPreferenceChangeListener createPreferenceChangeListenerSharing(
-            final SocialNetworkEnum socialNetwork)
-    {
-        return new Preference.OnPreferenceChangeListener()
-        {
-            @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-            {
+            final SocialNetworkEnum socialNetwork) {
+        return new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
                 return changeSharing(socialNetwork, (boolean) newValue);
             }
         };
     }
 
-    private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
-    {
+    private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable) {
         Timber.d("Sharing is asked to change");
         currentSocialNetworkConnect = socialNetwork;
-        if (enable)
-        {
-            switch (socialNetwork)
-            {
+        if (enable) {
+            switch (socialNetwork) {
                 case FB:
                     progressDialog = progressDialogUtil.show(getActivity(),
                             R.string.facebook,
@@ -768,10 +715,20 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                             R.string.authentication_connecting_to_linkedin);
                     linkedInUtils.get().logIn(getActivity(), socialConnectLogInCallback);
                     break;
+                case WB:
+                    progressDialog = progressDialogUtil.show(getActivity(),
+                            R.string.sina_weibo,
+                            R.string.authentication_connecting_to_weibo);
+                    weiboUtils.get().logIn(getActivity(), socialConnectLogInCallback);
+                    break;
+                case QQ:
+                    progressDialog = progressDialogUtil.show(getActivity(),
+                            R.string.linkedin,
+                            R.string.authentication_connecting_to_linkedin);
+                    qqUtils.get().logIn(getActivity(), socialConnectLogInCallback);
+                    break;
             }
-        }
-        else
-        {
+        } else {
             progressDialog = progressDialogUtil.show(getActivity(),
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);
@@ -781,83 +738,75 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     new SocialNetworkFormDTO(socialNetwork),
                     createSocialDisconnectCallback());
 
-            if (socialNetwork.getAuthenticationHeader().equals(currentAuthenticationType.get()))
-            {
+            if (socialNetwork.getAuthenticationHeader().equals(currentAuthenticationType.get())) {
                 effectSignOut();
             }
         }
         return false;
     }
 
-    private Callback<UserProfileDTO> createSocialDisconnectCallback()
-    {
-        return new SocialLinkingCallback()
-        {
-            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-            {
+
+    private Callback<UserProfileDTO> createSocialDisconnectCallback() {
+        return new SocialLinkingCallback() {
+            @Override
+            protected void success(UserProfileDTO userProfileDTO, THResponse thResponse) {
                 super.success(userProfileDTO, thResponse);
                 THUser.removeCredential(currentSocialNetworkConnect.getAuthenticationHeader());
             }
         };
     }
 
-    private Callback<UserProfileDTO> createSocialConnectCallback()
-    {
+    private Callback<UserProfileDTO> createSocialConnectCallback() {
         return new SocialLinkingCallback();
     }
 
-    private void updateSocialConnectStatus()
-    {
+    private void updateSocialConnectStatus() {
         UserProfileDTO updatedUserProfileDTO =
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (updatedUserProfileDTO != null)
-        {
-            if (facebookSharing != null)
-            {
+        if (updatedUserProfileDTO != null) {
+            if (facebookSharing != null) {
                 facebookSharing.setChecked(updatedUserProfileDTO.fbLinked);
             }
-            if (twitterSharing != null)
-            {
+            if (twitterSharing != null) {
                 twitterSharing.setChecked(updatedUserProfileDTO.twLinked);
             }
-            if (linkedInSharing != null)
-            {
+            if (linkedInSharing != null) {
                 linkedInSharing.setChecked(updatedUserProfileDTO.liLinked);
+            }
+            if (weiboSharing != null) {
+                weiboSharing.setChecked(updatedUserProfileDTO.wbLinked);
+            }
+            if (qqSharing != null) {
+                qqSharing.setChecked(updatedUserProfileDTO.qqLinked);
             }
             Timber.d("Sharing is updated");
         }
     }
 
-    private void handleSendLoveClicked()
-    {
+    private void handleSendLoveClicked() {
         THToast.show("Love");
         final String appName = Constants.PLAYSTORE_APP_ID;
-        try
-        {
+        try {
             startActivity(
                     new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
-        } catch (android.content.ActivityNotFoundException anfe)
-        {
+        } catch (android.content.ActivityNotFoundException anfe) {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
         }
     }
 
-    private void handleSendFeedbackClicked()
-    {
+    private void handleSendFeedbackClicked() {
         startActivity(
                 Intent.createChooser(VersionUtils.getSupportEmailIntent(getSherlockActivity()),
                         ""));
     }
 
-    private void handleSendFeedbackLongClicked()
-    {
+    private void handleSendFeedbackLongClicked() {
         startActivity(Intent.createChooser(
                 VersionUtils.getSupportEmailIntent(getSherlockActivity(), true), ""));
     }
 
-    private void handleFaqClicked()
-    {
+    private void handleFaqClicked() {
         localyticsSession.tagEvent(LocalyticsConstants.Settings_FAQ);
 
         String faqUrl = getResources().getString(R.string.th_faq_url);
@@ -866,39 +815,32 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         getNavigator().pushFragment(WebViewFragment.class, bundle);
     }
 
-    private void handleProfileClicked()
-    {
+    private void handleProfileClicked() {
         Bundle bundle = new Bundle();
         bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
         getNavigator().pushFragment(SettingsProfileFragment.class, bundle);
     }
 
-    private void handlePaypalClicked()
-    {
+    private void handlePaypalClicked() {
         getNavigator().pushFragment(SettingsPayPalFragment.class);
     }
 
-    private void handleAlipayClicked()
-    {
+    private void handleAlipayClicked() {
         getNavigator().pushFragment(SettingsAlipayFragment.class);
     }
 
-    private void handleTransactionHistoryClicked()
-    {
+    private void handleTransactionHistoryClicked() {
         getNavigator().pushFragment(SettingsTransactionHistoryFragment.class);
     }
 
-    private void handleRestorePurchaseClicked()
-    {
-        if (restoreRequestCode != null)
-        {
+    private void handleRestorePurchaseClicked() {
+        if (restoreRequestCode != null) {
             billingInteractor.forgetRequestCode(restoreRequestCode);
         }
         restoreRequestCode = billingInteractor.run(createRestoreRequest());
     }
 
-    protected THUIBillingRequest createRestoreRequest()
-    {
+    protected THUIBillingRequest createRestoreRequest() {
         THUIBillingRequest request = billingRequestProvider.get();
         request.restorePurchase = true;
         request.startWithProgressDialog = true;
@@ -908,75 +850,65 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return request;
     }
 
-    private Callback<UserProfileDTO> createUserProfileCallback()
-    {
-        return new THCallback<UserProfileDTO>()
-        {
-            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-            {
+    private Callback<UserProfileDTO> createUserProfileCallback() {
+        return new THCallback<UserProfileDTO>() {
+            @Override
+            protected void success(UserProfileDTO userProfileDTO, THResponse thResponse) {
                 userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             }
 
-            @Override protected void failure(THException ex)
-            {
+            @Override
+            protected void failure(THException ex) {
                 THToast.show(ex);
             }
 
-            @Override protected void finish()
-            {
+            @Override
+            protected void finish() {
                 progressDialog.hide();
                 updateNotificationStatus();
             }
         };
     }
 
-    private void handleResetHelpScreensClicked()
-    {
+    private void handleResetHelpScreensClicked() {
         resetHelpScreen.delete();
         THToast.show(R.string.settings_misc_reset_help_screen);
     }
 
-    private void handleClearCacheClicked()
-    {
+    private void handleClearCacheClicked() {
         progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_misc_cache_clearing_alert_title,
                 R.string.settings_misc_cache_clearing_alert_message);
 
-        new SlowedAsyncTask<Void, Void, Void>(500)
-        {
-            @Override protected Void doBackgroundAction(Void... voids)
-            {
+        new SlowedAsyncTask<Void, Void, Void>(500) {
+            @Override
+            protected Void doBackgroundAction(Void... voids) {
                 flushCache();
                 return null;
             }
 
-            @Override protected void onPostExecute(Void aVoid)
-            {
+            @Override
+            protected void onPostExecute(Void aVoid) {
                 handleCacheCleared();
             }
         }.execute();
     }
 
-    private void flushCache()
-    {
+    private void flushCache() {
         lruCache.flush();
     }
 
-    private void handleCacheCleared()
-    {
+    private void handleCacheCleared() {
         FragmentActivity activity = getActivity();
-        if (activity != null)
-        {
+        if (activity != null) {
             progressDialog = progressDialogUtil.show(getActivity(),
                     R.string.settings_misc_cache_cleared_alert_title,
                     R.string.empty);
-            getView().postDelayed(new Runnable()
-            {
-                @Override public void run()
-                {
+            getView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     ProgressDialog progressDialogCopy = progressDialog;
-                    if (progressDialogCopy != null)
-                    {
+                    if (progressDialogCopy != null) {
                         progressDialogCopy.hide();
                     }
                 }
@@ -984,25 +916,21 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
-    private void handleSignOutClicked()
-    {
+    private void handleSignOutClicked() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder
                 .setTitle(R.string.settings_misc_sign_out_are_you_sure)
                 .setCancelable(true)
                 .setNegativeButton(R.string.settings_misc_sign_out_no,
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
                         })
                 .setPositiveButton(R.string.settings_misc_sign_out_yes,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override public void onClick(DialogInterface dialogInterface, int i)
-                            {
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
                                 effectSignOut();
                             }
                         });
@@ -1010,8 +938,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         alertDialog.show();
     }
 
-    private void effectSignOut()
-    {
+    private void effectSignOut() {
         progressDialog = progressDialogUtil.show(getActivity(),
                 R.string.settings_misc_sign_out_alert_title,
                 R.string.settings_misc_sign_out_alert_message);
@@ -1023,13 +950,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         logoutCallback = sessionServiceWrapper.logout(createSignOutCallback(getActivity()));
     }
 
-    private Callback<UserProfileDTO> createSignOutCallback(final Activity activity)
-    {
-        return new Callback<UserProfileDTO>()
-        {
+    private Callback<UserProfileDTO> createSignOutCallback(final Activity activity) {
+        return new Callback<UserProfileDTO>() {
             @Override
-            public void success(UserProfileDTO o, Response response)
-            {
+            public void success(UserProfileDTO o, Response response) {
                 THUser.clearCurrentUser();
                 progressDialog.hide();
                 // TODO move these lines into MiddleCallbackLogout?
@@ -1038,14 +962,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         currentUserId.toUserBaseKey());
             }
 
-            @Override public void failure(RetrofitError error)
-            {
+            @Override
+            public void failure(RetrofitError error) {
                 progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
                 progressDialog.setMessage("");
-                getView().postDelayed(new Runnable()
-                {
-                    @Override public void run()
-                    {
+                getView().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
                         progressDialog.hide();
                     }
                 }, 3000);
@@ -1053,50 +976,45 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         };
     }
 
-    private void handleAboutClicked()
-    {
+    private void handleAboutClicked() {
         getNavigator().pushFragment(AboutFragment.class);
     }
 
-    private class SocialLinkingCallback extends THCallback<UserProfileDTO>
-    {
-        @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-        {
+    private class SocialLinkingCallback extends THCallback<UserProfileDTO> {
+        @Override
+        protected void success(UserProfileDTO userProfileDTO, THResponse thResponse) {
         }
 
-        @Override protected void failure(THException ex)
-        {
+        @Override
+        protected void failure(THException ex) {
             // user unlinked current authentication
             THToast.show(ex);
         }
 
-        @Override protected void finish()
-        {
+        @Override
+        protected void finish() {
             progressDialog.hide();
             updateSocialConnectStatus();
         }
     }
 
     private class SettingsUserProfileRetrievedCompleteListener
-            implements Milestone.OnCompleteListener
-    {
-        @Override public void onComplete(Milestone milestone)
-        {
+            implements Milestone.OnCompleteListener {
+        @Override
+        public void onComplete(Milestone milestone) {
             onFinish();
             updateNotificationStatus();
             updateSocialConnectStatus();
         }
 
-        private void onFinish()
-        {
-            if (progressDialog != null)
-            {
+        private void onFinish() {
+            if (progressDialog != null) {
                 progressDialog.hide();
             }
         }
 
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
+        @Override
+        public void onFailed(Milestone milestone, Throwable throwable) {
             onFinish();
             THToast.show(R.string.error_fetch_your_user_profile);
         }

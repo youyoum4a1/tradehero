@@ -15,9 +15,10 @@ import com.sina.weibo.sdk.exception.WeiboException;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.base.JSONCredentials;
+import org.json.JSONException;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.json.JSONException;
 
 @Singleton
 public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
@@ -120,7 +121,7 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         createWeiboAuth();
 
         authorizeViaClent();
-
+//        authorizeViaWeb();
         //        if (isWeiboInstalled() && false) {
         //            authorizeViaClent();
         //        }else {
