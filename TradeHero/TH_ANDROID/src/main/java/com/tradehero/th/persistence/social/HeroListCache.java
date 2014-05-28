@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.social;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -8,7 +8,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton public class HeroListCache extends StraightDTOCache<UserBaseKey, HeroIdExtWrapper>
+@Singleton public class HeroListCache extends StraightDTOCacheNew<UserBaseKey, HeroIdExtWrapper>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
@@ -24,7 +24,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected HeroIdExtWrapper fetch(UserBaseKey key) throws Throwable
+    @Override public HeroIdExtWrapper fetch(UserBaseKey key) throws Throwable
     {
         HeroDTOList allHeros = userServiceWrapper.getHeroes(key);
         return putInternal(key, allHeros);
