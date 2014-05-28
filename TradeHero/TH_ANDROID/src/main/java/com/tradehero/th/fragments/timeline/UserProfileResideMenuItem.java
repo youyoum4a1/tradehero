@@ -1,6 +1,10 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -109,15 +113,23 @@ public class UserProfileResideMenuItem extends LinearLayout
         {
             if (userProfileDTO != null)
             {
-                picasso.get().load(userProfileDTO.picture)
-                        .transform(userPhotoTransformation)
-                        .into(userProfileAvatar);
+                if (userProfileDTO.picture != null)
+                {
+                    picasso.get().load(userProfileDTO.picture)
+                            .error(getErrorDrawable())
+                            .transform(userPhotoTransformation)
+                            .into(userProfileAvatar);
+                }
+                else
+                {
+                    showDefaultUserPhoto();
+                }
 
                 userDisplayName.setText(userProfileDTO.displayName);
 
                 if (userProfileDTO.portfolio.roiSinceInception == null)
                 {
-                    userProfileDTO.portfolio.roiSinceInception = (Double)0.0;
+                    userProfileDTO.portfolio.roiSinceInception = 0.0D;
                 }
                 THSignedNumber thRoiSinceInception = new THSignedNumber(
                         THSignedNumber.TYPE_PERCENTAGE,
@@ -133,10 +145,23 @@ public class UserProfileResideMenuItem extends LinearLayout
         }
     }
 
+    private Drawable getErrorDrawable()
+    {
+        Bitmap defaultUserPhotoBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.superman_facebook);
+        return new BitmapDrawable(getResources(), userPhotoTransformation.transform(defaultUserPhotoBitmap));
+    }
+
     private void resetView()
     {
-        userProfileAvatar.setImageDrawable(null);
+        showDefaultUserPhoto();
         userDisplayName.setText("");
+    }
+
+    private void showDefaultUserPhoto()
+    {
+        picasso.get().load(R.drawable.superman_facebook)
+                .transform(userPhotoTransformation)
+                .into(userProfileAvatar);
     }
 
     private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
