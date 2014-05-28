@@ -319,20 +319,27 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (countryLogo != null)
         {
-            if (leaderboardItem != null)
+            try
             {
-                countryLogo.setImageResource(getCountryLogoId(leaderboardItem.countryCode));
+                if (leaderboardItem != null && leaderboardItem.countryCode != null)
+                {
+                    countryLogo.setImageResource(getCountryLogoId(leaderboardItem.countryCode));
+                }
+                else
+                {
+                    countryLogo.setImageResource(R.drawable.default_image);
+                }
             }
-            else
+            catch (OutOfMemoryError e)
             {
-                countryLogo.setImageResource(R.drawable.default_image);
+                Timber.e(e, null);
             }
         }
     }
 
     public int getCountryLogoId(String country)
     {
-        return getCountryLogoId(0, country);
+        return getCountryLogoId(R.drawable.default_image, country);
     }
 
     public int getCountryLogoId(int defaultResId, String country)
