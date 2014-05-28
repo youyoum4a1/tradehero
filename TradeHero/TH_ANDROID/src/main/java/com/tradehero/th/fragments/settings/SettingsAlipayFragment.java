@@ -10,7 +10,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -39,7 +39,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     private Button submitButton;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private MiddleCallback<UpdateAlipayAccountDTO> middleCallbackUpdateAlipayAccount;
 
     @Inject UserServiceWrapper userServiceWrapper;
@@ -78,7 +78,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachMiddleCallbackUpdateAlipayAccount();
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         if (alipayAccountText != null)
         {
             alipayAccountText.setOnTouchListener(null);
@@ -101,13 +101,10 @@ public class SettingsAlipayFragment extends DashboardFragment
         middleCallbackUpdateAlipayAccount = null;
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
-        {
-            userProfileFetchTask.setListener(null);
-        }
-        userProfileFetchTask = null;
+        userProfileCache.unregister(userProfileCacheListener);
+        userProfileCacheListener = null;
     }
 
     private void setupSubmitButton()
@@ -163,17 +160,18 @@ public class SettingsAlipayFragment extends DashboardFragment
         alipayAccountText = (ServerValidatedEmailText) view.findViewById(R.id.settings_alipay_email_text);
         // HACK: force this email to focus instead of the TabHost stealing focus..
         alipayAccountText.setOnTouchListener(new FocusableOnTouchListener());
-        detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), createUserProfileCacheListener());
-        userProfileFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCacheListener = createUserProfileCacheListener();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
-        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
             @Override
-            public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
             {
                 if (!isDetached())
                 {

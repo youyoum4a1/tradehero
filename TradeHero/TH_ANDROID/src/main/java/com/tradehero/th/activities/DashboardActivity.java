@@ -20,6 +20,7 @@ import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -95,7 +96,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
     private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     private ProgressDialog progressDialog;
 
@@ -137,10 +138,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         };
         launchBilling();
 
-        detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.get()
-                .getOrFetch(currentUserId.toUserBaseKey(), false, new UserProfileFetchListener());
-        userProfileFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCacheListener = new UserProfileFetchListener();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
         suggestUpgradeIfNecessary();
         this.dtoCacheUtil.initialPrefetches();
@@ -177,13 +178,13 @@ public class DashboardActivity extends SherlockFragmentActivity
         return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
+        if (userProfileCacheListener != null)
         {
-            userProfileFetchTask.setListener(null);
+            userProfileCache.get().unregister(userProfileCacheListener);
         }
-        userProfileFetchTask = null;
+        userProfileCacheListener = null;
     }
 
     private void launchBilling()
@@ -357,7 +358,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
         purchaseRestorerFinishedListener = null;
 
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         detachNotificationFetchTask();
 
         super.onDestroy();
@@ -404,10 +405,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
     }
 
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             supportInvalidateOptionsMenu();
         }

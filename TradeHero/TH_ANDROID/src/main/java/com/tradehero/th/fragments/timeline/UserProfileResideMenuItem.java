@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -43,8 +43,7 @@ public class UserProfileResideMenuItem extends LinearLayout
     @Inject Lazy<Picasso> picasso;
 
     private UserProfileDTO userProfileDTO;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
 
     //<editor-fold desc="Constructors">
     public UserProfileResideMenuItem(Context context)
@@ -70,9 +69,9 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     private void fetchAndDisplayUserProfile()
     {
-        detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileListener);
-        userProfileFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onAttachedToWindow()
@@ -84,18 +83,17 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         userProfileListener = null;
         super.onDetachedFromWindow();
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
+        if (userProfileListener != null)
         {
-            userProfileFetchTask.setListener(null);
+            userProfileCache.get().unregister(userProfileListener);
         }
-        userProfileFetchTask = null;
     }
 
     @Override public void display(UserProfileDTO dto)
@@ -164,9 +162,9 @@ public class UserProfileResideMenuItem extends LinearLayout
                 .into(userProfileAvatar);
     }
 
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             display(value);
         }

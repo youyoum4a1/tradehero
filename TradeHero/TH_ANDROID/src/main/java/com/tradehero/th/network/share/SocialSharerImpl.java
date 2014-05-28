@@ -2,6 +2,7 @@ package com.tradehero.th.network.share;
 
 import android.content.Intent;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
@@ -198,18 +199,18 @@ public class SocialSharerImpl implements SocialSharer
     {
         // Here we do not care about keeping the task because the listener already provides
         // the intermediation
-        userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), createProfileListener()).execute();
+        userProfileCache.register(currentUserId.toUserBaseKey(), createProfileListener());
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createProfileListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileListener()
     {
         return new SocialSharerUserProfileListener();
     }
 
-    protected class SocialSharerUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    protected class SocialSharerUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             currentUserProfile = value;
             shareWaitingDTOIfCan();

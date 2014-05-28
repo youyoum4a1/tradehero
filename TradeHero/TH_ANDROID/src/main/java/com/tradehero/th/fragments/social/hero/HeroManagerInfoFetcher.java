@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.hero;
 
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
@@ -20,12 +19,11 @@ public class HeroManagerInfoFetcher
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<HeroCache> heroCache;
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     private DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener;
 
     public HeroManagerInfoFetcher(
-            DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
+            DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
             DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
     {
         super();
@@ -36,15 +34,18 @@ public class HeroManagerInfoFetcher
 
     public void onDestroyView()
     {
-        if (this.userProfileFetchTask != null)
-        {
-            this.userProfileFetchTask.setListener(null);
-        }
-        this.userProfileFetchTask = null;
-
+        detachUserProfileCache();
         detachHeroListCache();
         setUserProfileListener(null);
         setHeroListListener(null);
+    }
+
+    protected void detachUserProfileCache()
+    {
+        if (userProfileListener != null)
+        {
+            userProfileCache.get().unregister(userProfileListener);
+        }
     }
 
     protected void detachHeroListCache()
@@ -56,7 +57,7 @@ public class HeroManagerInfoFetcher
     }
 
     public void setUserProfileListener(
-            DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener)
+            DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener)
     {
         this.userProfileListener = userProfileListener;
     }
@@ -75,13 +76,9 @@ public class HeroManagerInfoFetcher
 
     public void fetchUserProfile(UserBaseKey userBaseKey)
     {
-        if (this.userProfileFetchTask != null)
-        {
-            this.userProfileFetchTask.setListener(null);
-        }
-        this.userProfileFetchTask =
-                this.userProfileCache.get().getOrFetch(userBaseKey, this.userProfileListener);
-        this.userProfileFetchTask.execute();
+        detachUserProfileCache();
+        this.userProfileCache.get().register(userBaseKey, userProfileListener);
+        this.userProfileCache.get().getOrFetchAsync(userBaseKey);
     }
 
     public void fetchHeroes(UserBaseKey userBaseKey)

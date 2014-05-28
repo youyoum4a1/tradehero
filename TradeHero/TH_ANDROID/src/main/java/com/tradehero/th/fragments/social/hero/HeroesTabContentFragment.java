@@ -474,11 +474,10 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
 
     private class HeroManagerUserProfileCacheListener
-            implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             if (key.equals(HeroesTabContentFragment.this.followerId))
             {

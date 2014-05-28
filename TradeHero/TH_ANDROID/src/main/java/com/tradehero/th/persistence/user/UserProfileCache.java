@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.user;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -13,7 +14,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton public class UserProfileCache extends StraightDTOCache<UserBaseKey, UserProfileDTO>
+@Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -29,24 +30,13 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override public GetOrFetchTask<UserBaseKey, UserProfileDTO> getOrFetch(
-            UserBaseKey key, boolean forceUpdateCache,
-            Listener<UserBaseKey, UserProfileDTO> initialListener)
-    {
-        if (key == null)
-        {
-            throw new NullPointerException("UserBaseKey cannot be null");
-        }
-        return super.getOrFetch(key, forceUpdateCache, initialListener);
-    }
-
-    @Override protected UserProfileDTO fetch(UserBaseKey key) throws Throwable
+    @Override public UserProfileDTO fetch(UserBaseKey key) throws Throwable
     {
         VisitedFriendListPrefs.addVisitedId(key);
         return userServiceWrapper.get().getUser(key);
     }
 
-    public List<UserProfileDTO> getOrFetch(List<UserBaseKey> baseKeys) throws Throwable
+    public List<UserProfileDTO> getOrFetchSync(List<UserBaseKey> baseKeys) throws Throwable
     {
         if (baseKeys == null)
         {
@@ -56,7 +46,7 @@ import javax.inject.Singleton;
         List<UserProfileDTO> userProfileDTOs = new ArrayList<>();
         for (UserBaseKey baseKey: baseKeys)
         {
-            userProfileDTOs.add(getOrFetch(baseKey, false));
+            userProfileDTOs.add(getOrFetchSync(baseKey, false));
         }
         return userProfileDTOs;
     }

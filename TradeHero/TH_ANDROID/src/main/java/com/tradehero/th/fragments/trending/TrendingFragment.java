@@ -90,8 +90,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private DTOCacheNew.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     private ExtraTileAdapter wrapperAdapter;
     private DTOCache.Listener<ProviderListKey, ProviderIdList> providerListCallback;
@@ -121,7 +120,7 @@ public class TrendingFragment extends SecurityListFragment
 
         createExchangeListTypeCacheListener();
 
-        userProfileFetchListener = new UserProfileFetchListener();
+        userProfileCacheListener = new UserProfileFetchListener();
         providerListCallback = new ProviderListFetchListener();
     }
 
@@ -174,9 +173,9 @@ public class TrendingFragment extends SecurityListFragment
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Trade);
 
         // fetch user
-        detachUserFetchTask();
-        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileFetchListener);
-        userProfileFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
         // fetch provider list for provider tile
 
@@ -243,7 +242,7 @@ public class TrendingFragment extends SecurityListFragment
         detachExchangeListCache();
         detachProviderListTask();
         detachExchangeListCache();
-        detachUserFetchTask();
+        detachUserProfileCache();
         removeCallbacksIfCan(handleCompetitionRunnable);
 
         super.onStop();
@@ -271,13 +270,9 @@ public class TrendingFragment extends SecurityListFragment
         }
     }
 
-    private void detachUserFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
-        {
-            userProfileFetchTask.setListener(null);
-        }
-        userProfileFetchTask = null;
+        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     protected void detachExchangeListCache()
@@ -292,7 +287,7 @@ public class TrendingFragment extends SecurityListFragment
     {
         handleCompetitionRunnable = null;
         exchangeListTypeCacheListener = null;
-        userProfileFetchListener = null;
+        userProfileCacheListener = null;
         thIntentPassedListener = null;
         providerListCallback = null;
         super.onDestroy();
@@ -562,9 +557,10 @@ public class TrendingFragment extends SecurityListFragment
         }
     }
 
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    @Deprecated // It appears unused
+    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             Timber.d("Retrieve user with surveyUrl=%s", value.activeSurveyImageURL);
             refreshAdapterWithTiles(value.activeSurveyImageURL != null);
