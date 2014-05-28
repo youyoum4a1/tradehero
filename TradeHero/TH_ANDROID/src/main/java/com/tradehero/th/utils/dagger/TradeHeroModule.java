@@ -32,7 +32,9 @@ import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemView
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
@@ -83,6 +85,7 @@ import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
+import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.RelationsListItemView;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
@@ -121,6 +124,7 @@ import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
+import com.tradehero.th.fragments.updatecenter.messages.MessageListAdapter;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
@@ -334,13 +338,17 @@ import javax.inject.Singleton;
                         FriendListLoader.class,
 
                         ShareDialogLayout.class,
+                        ShareDestinationSetAdapter.class,
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
                         AbstractDiscussionItemView.class,
                         AbstractDiscussionItemViewHolder.class,
+                        SingleViewDiscussionSetAdapter.class,
                         MessageHeaderDTO.class,
+                        MessageListAdapter.class,
                         NewPrivateMessageFragment.class,
                         ReplyPrivateMessageFragment.class,
+                        DiscussionSetAdapter.class,
                         PrivateDiscussionView.class,
                         PrivateDiscussionSetAdapter.class,
                         PrivateDiscussionView.PrivateDiscussionViewDiscussionSetAdapter.class,

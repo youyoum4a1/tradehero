@@ -2,6 +2,7 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.widget.BaseAdapter;
+import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -18,6 +19,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(Context context)
     {
         super();
+        DaggerUtils.inject(this);
         this.context = context;
         set = createSet(null);
         items = new ArrayList<>();
@@ -26,6 +28,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
     public DTOSetAdapter(Context context, Collection<T> objects)
     {
         super();
+        DaggerUtils.inject(this);
         this.context = context;
         set = createSet(objects);
         items = new ArrayList<>(set);

@@ -2,23 +2,23 @@ package com.tradehero.th.models.share;
 
 import android.content.Context;
 import android.content.res.Resources;
-import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 
 public class ShareDestinationFactoryByResources implements ShareDestinationFactory
 {
-    public static final int ORDERED_SHARE_DESTINATION_IDS = R.array.ordered_share_destinations;
-
     private final Resources resources;
     private List<Integer> destinationIds;
 
-    @Inject public ShareDestinationFactoryByResources(Context context)
+    @Inject public ShareDestinationFactoryByResources(
+            Context context,
+            @ShareDestinationId Set<Integer> destinationIds)
     {
         super();
         this.resources = context.getResources();
-        this.destinationIds = getShareDestinationIds();
+        this.destinationIds = new ArrayList<>(destinationIds);
     }
 
     @Override public ArrayList<ShareDestination> getAllShareDestinations()
@@ -29,20 +29,6 @@ public class ShareDestinationFactoryByResources implements ShareDestinationFacto
         addIfListed(allDestinations, new TwitterShareDestination(), destinationIds);
         addIfListed(allDestinations, new WeChatShareDestination(), destinationIds);
         return allDestinations;
-    }
-
-    protected List<Integer> getShareDestinationIds()
-    {
-        List<Integer> destinationIds = new ArrayList<>();
-        for (int id : resources.getIntArray(ORDERED_SHARE_DESTINATION_IDS))
-        {
-            if (destinationIds.contains(id))
-            {
-                throw new IllegalStateException("Destination ids contains twice the id "+ id);
-            }
-            destinationIds.add(id);
-        }
-        return destinationIds;
     }
 
     protected void addIfListed(List<ShareDestination> destinations,

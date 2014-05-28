@@ -3,6 +3,7 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.auth.operator.ConsumerKey;
@@ -11,14 +12,21 @@ import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.auth.weibo.WeiboAppAuthData;
+import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationFactory;
 import com.tradehero.th.models.share.ShareDestinationFactoryByResources;
-import com.tradehero.th.network.share.SocialSharerImpl;
+import com.tradehero.th.models.share.ShareDestinationId;
+import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.SocialSharerImpl;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 @Module(
         injects = {
@@ -101,8 +109,29 @@ public class SocialNetworkModule
         return socialSharerImpl;
     }
 
+    @Provides(type = Provides.Type.SET_VALUES) @ShareDestinationId Set<Integer> providesShareDestinationFromResources(Context context)
+    {
+        Set<Integer> destinationIds = new LinkedHashSet<>();
+        for (int id : context.getResources().getIntArray(R.array.ordered_share_destinations))
+        {
+            if (destinationIds.contains(id))
+            {
+                Timber.e(new IllegalStateException("Destination ids contains twice the id " + id),
+                        null);
+            }
+            destinationIds.add(id);
+        }
+        return destinationIds;
+
+    }
+
     @Provides ShareDestinationFactory providesShareDestinationFactory(ShareDestinationFactoryByResources shareDestinationFactoryByResources)
     {
         return shareDestinationFactoryByResources;
+    }
+
+    @Provides Comparator<ShareDestination> providesShareDestinationComparator(ShareDestinationIndexResComparator shareDestinationComparator)
+    {
+        return shareDestinationComparator;
     }
 }
