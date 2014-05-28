@@ -4,13 +4,13 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class BaseIntermediateCallback<ValueType>
-    implements IntermediateCallback<ValueType>
+public class BaseCallbackWrapper<ValueType>
+    implements CallbackWrapper<ValueType>
 {
     protected Callback<ValueType> primaryCallback;
 
     //<editor-fold desc="Constructors">
-    public BaseIntermediateCallback(Callback<ValueType> primaryCallback)
+    public BaseCallbackWrapper(Callback<ValueType> primaryCallback)
     {
         this.primaryCallback = primaryCallback;
     }

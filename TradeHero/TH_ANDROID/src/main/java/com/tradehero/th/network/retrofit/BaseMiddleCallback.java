@@ -7,7 +7,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class BaseMiddleCallback<ValueType>
-    extends BaseIntermediateCallback<ValueType>
+    extends BaseCallbackWrapper<ValueType>
         implements MiddleCallback<ValueType>
 {
     protected DTOProcessor<ValueType> dtoProcessor;

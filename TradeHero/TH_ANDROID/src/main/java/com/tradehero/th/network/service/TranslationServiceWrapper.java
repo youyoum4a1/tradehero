@@ -5,7 +5,7 @@ import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.IntermediateCallback;
+import com.tradehero.th.network.retrofit.CallbackWrapper;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
@@ -50,7 +50,7 @@ import timber.log.Timber;
         return middleCallback;
     }
 
-    protected IntermediateCallback<TranslationResult> translate(TranslationToken token, String from, String to, String text, MiddleCallback<TranslationResult> callback)
+    protected CallbackWrapper<TranslationResult> translate(TranslationToken token, String from, String to, String text, MiddleCallback<TranslationResult> callback)
     {
         if (token instanceof BingTranslationToken)
         {
