@@ -17,4 +17,14 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment {
     protected String getTitle() {
         return getString(R.string.invite_social_friend,getString(R.string.sina_weibo));
     }
+
+    @Override
+    protected boolean canInviteAll() {
+        return false;
+    }
+
+    @Override
+    protected boolean canInvite() {
+        return false;
+    }
 }

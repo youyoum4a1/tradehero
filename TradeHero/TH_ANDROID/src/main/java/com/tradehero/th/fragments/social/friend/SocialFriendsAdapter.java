@@ -4,31 +4,25 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import com.tradehero.th.adapters.AbstractArrayAdapter;
 import com.tradehero.th.api.social.UserFriendsDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tradehero on 14-5-26.
+ * Created by wangliang on 14-5-26.
  */
-public class SocialFriendsAdapter extends ArrayAdapter<UserFriendsDTO> {
+public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
 
     private Context mContext;
-    private final Object mLock = new Object();
-    private Filter mFilter;
     private int mLayoutResourceId;
     private SocialFriendItemView.OnElementClickListener elementClickedListener;
-    private List<UserFriendsDTO> mOriginalValues;
-    private List<UserFriendsDTO> mObjects;
 
     //<editor-fold desc="Constructors">
     public SocialFriendsAdapter(Context context, List<UserFriendsDTO> objects, int layoutResourceId) {
         super(context,0,objects);
         this.mContext = context;
-        this.mObjects = objects;
         this.mLayoutResourceId = layoutResourceId;
     }
     //</editor-fold>
@@ -46,6 +40,11 @@ public class SocialFriendsAdapter extends ArrayAdapter<UserFriendsDTO> {
 
     }
 
+    @Override
+    protected String getItemNameForFilter(UserFriendsDTO item) {
+        return item.name;
+    }
+
     protected int getViewResId(int position) {
         return mLayoutResourceId;
     }
@@ -61,12 +60,12 @@ public class SocialFriendsAdapter extends ArrayAdapter<UserFriendsDTO> {
     protected void handleInviteEvent(UserFriendsDTO userFriendsDTO) {
     }
 
-    public Filter getFilter() {
-        if (mFilter == null) {
-            mFilter = new MyFilter();
-        }
-        return mFilter;
-    }
+//    public Filter getFilter() {
+//        if (mFilter == null) {
+//            mFilter = new MyFilter();
+//        }
+//        return mFilter;
+//    }
 
     protected SocialFriendItemView.OnElementClickListener createUserClickedListener() {
         return new SocialElementClickListener();
@@ -86,67 +85,67 @@ public class SocialFriendsAdapter extends ArrayAdapter<UserFriendsDTO> {
 
     }
 
-    /**
-     * Copy from ArrayAdapter
-     */
-    private class MyFilter extends Filter {
+//    /**
+//     * Copy from ArrayAdapter
+//     */
+//    private class MyFilter extends Filter {
+//
+//        @Override
+//        protected FilterResults performFiltering(CharSequence prefix) {
+//            FilterResults results = new FilterResults();
+//
+//            if (mOriginalValues == null) {
+//                synchronized (mLock) {
+//                    mOriginalValues = new ArrayList<UserFriendsDTO>(mObjects);//
+//                }
+//            }
+//
+//            if (prefix == null || prefix.length() == 0) {
+//                synchronized (mLock) {
+//                    ArrayList<UserFriendsDTO> list = new ArrayList<UserFriendsDTO>(mOriginalValues);
+//                    results.values = list;
+//                    results.count = list.size();
+//                    return results;
+//                }
+//            } else {
+//                String prefixString = prefix.toString().toLowerCase();
+//                final int count = mOriginalValues.size();
+//                final ArrayList<UserFriendsDTO> newValues = new ArrayList<UserFriendsDTO>(count);
+//                for (int i = 0; i < count; i++) {
+//                    final UserFriendsDTO value = mOriginalValues.get(i);
+//                    final String valueText = value.name.toLowerCase();
+//                    if (valueText.startsWith(prefixString)) {
+//                        newValues.add(value);
+//                    } else {
+//                        final String[] words = valueText.split(" ");
+//                        final int wordCount = words.length;
+//
+//                        for (int k = 0; k < wordCount; k++) {
+//                            if (words[k].startsWith(prefixString)) {
+//                                newValues.add(value);
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                results.values = newValues;
+//                results.count = newValues.size();
+//            }
+//
+//            return results;
+//        }
+//
+//        @Override
+//        protected void publishResults(CharSequence constraint,
+//                                      FilterResults results) {
+//            mObjects = (List<UserFriendsDTO>) results.values;
+//            if (results.count > 0) {
+//                notifyDataSetChanged();
+//            } else {
+//                notifyDataSetInvalidated();
+//            }
+//        }
 
-        @Override
-        protected FilterResults performFiltering(CharSequence prefix) {
-            FilterResults results = new FilterResults();
-
-            if (mOriginalValues == null) {
-                synchronized (mLock) {
-                    mOriginalValues = new ArrayList<UserFriendsDTO>(mObjects);//
-                }
-            }
-
-            if (prefix == null || prefix.length() == 0) {
-                synchronized (mLock) {
-                    ArrayList<UserFriendsDTO> list = new ArrayList<UserFriendsDTO>(mOriginalValues);
-                    results.values = list;
-                    results.count = list.size();
-                    return results;
-                }
-            } else {
-                String prefixString = prefix.toString().toLowerCase();
-                final int count = mOriginalValues.size();
-                final ArrayList<UserFriendsDTO> newValues = new ArrayList<UserFriendsDTO>(count);
-                for (int i = 0; i < count; i++) {
-                    final UserFriendsDTO value = mOriginalValues.get(i);
-                    final String valueText = value.name.toLowerCase();
-                    if (valueText.startsWith(prefixString)) {
-                        newValues.add(value);
-                    } else {
-                        final String[] words = valueText.split(" ");
-                        final int wordCount = words.length;
-
-                        for (int k = 0; k < wordCount; k++) {
-                            if (words[k].startsWith(prefixString)) {
-                                newValues.add(value);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                results.values = newValues;
-                results.count = newValues.size();
-            }
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint,
-                                      FilterResults results) {
-            mObjects = (List<UserFriendsDTO>) results.values;
-            if (results.count > 0) {
-                notifyDataSetChanged();
-            } else {
-                notifyDataSetInvalidated();
-            }
-        }
-
-    }
+//    }
 }

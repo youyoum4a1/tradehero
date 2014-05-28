@@ -566,9 +566,9 @@ import java.util.List;
         return userService.followBatchFree(followFriendsForm);
     }
 
-    public MiddleCallback<Response> followBatchFree(FollowFriendsForm followFriendsForm,Callback<Response> callback)
+    public MiddleCallback<UserProfileDTO> followBatchFree(FollowFriendsForm followFriendsForm,Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.followBatchFree(followFriendsForm,middleCallback);
         return middleCallback;
     }

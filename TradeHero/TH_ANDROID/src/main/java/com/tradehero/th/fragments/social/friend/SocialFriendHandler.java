@@ -3,26 +3,23 @@ package com.tradehero.th.fragments.social.friend;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.Window;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
+import com.tradehero.th.api.social.InviteDTO;
+import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.translation.TranslationResult;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.translation.TranslationCache;
-import com.tradehero.th.persistence.translation.TranslationKey;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,61 +27,94 @@ import java.util.List;
  */
 @Singleton
 public class SocialFriendHandler {
-
-    private ProgressDialog dialog;
-
-    Lazy<UserServiceWrapper> userService;
+    @Inject Lazy<UserServiceWrapper> userService;
 
     @Inject
-    public SocialFriendHandler(){
-
+    public SocialFriendHandler() {
+        DaggerUtils.inject(this);
     }
 
-    // TODO
-    public void inviteFriends(Context context, List<UserFriendsDTO> users)
-    {
+    public static class RequestCallback<T> implements Callback<T>{
 
+        private ProgressDialog dialog;
+        private Context context;
+
+        public RequestCallback(Context context)
+        {
+            this.context = context;
+        }
+
+        private void showDialog(Context context) {
+            if (dialog == null) {
+                dialog = new ProgressDialog(context);
+            }
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.show();
+        }
+
+        private void dismissDialog() {
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
+
+
+        public void onRequestStart()
+        {
+            showDialog(context);
+        }
+
+        @Override
+        public void success(T data, Response response) {
+            dismissDialog();
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+            dismissDialog();
+        }
     }
 
-
-    public MiddleCallback<Response> followFriends(Context context, List<UserFriendsDTO> users)
-    {
-        showDialog(context);
-
-        Callback<Response> callback = new Callback<Response>() {
-            @Override
-            public void success(Response userProfileDTO, Response response) {
-                dismissDialog();
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-                dismissDialog();
-            }
-        };
+    public MiddleCallback<UserProfileDTO> followFriends(List<UserFriendsDTO> users,RequestCallback<UserProfileDTO> callback) {
 
         FollowFriendsForm followFriendsForm = new FollowFriendsForm();
         followFriendsForm.userFriendsDTOs = users;
-        MiddleCallback<Response> middleCallback = userService.get().followBatchFree(followFriendsForm, callback);
+        if (callback != null)
+        {
+            callback.onRequestStart();
+        }
+        MiddleCallback<UserProfileDTO> middleCallback = userService.get().followBatchFree(followFriendsForm, callback);
         return middleCallback;
     }
 
-    private void showDialog(Context context)
-    {
-        if (dialog == null)
+
+    // TODO
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users,RequestCallback<Response> callback) {
+
+        InviteFormDTO inviteFormDTO = new InviteFormDTO();
+        List<InviteDTO> usersToFollow = new ArrayList<>(users.size());
+        for (int i=0;i<users.size();i++)
         {
-            dialog = new ProgressDialog(context);
+            InviteDTO inviteDTO = new InviteDTO();
+            UserFriendsDTO userFriendsDTO = users.get(i);
+            inviteDTO.email = userFriendsDTO.getEmail();
+            inviteDTO.fbId = userFriendsDTO.fbId;
+            inviteDTO.liId = userFriendsDTO.liId;
+            inviteDTO.twId = userFriendsDTO.twId;
+
+            usersToFollow.add(inviteDTO);
         }
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setMessage(context.getString(R.string.translating));
-        dialog.show();
+        inviteFormDTO.users = usersToFollow;
+        if (callback != null)
+        {
+            callback.onRequestStart();
+        }
+        MiddleCallback<Response> middleCallback = userService.get().inviteFriends(userKey,inviteFormDTO, callback);
+       return middleCallback;
     }
 
-    private void dismissDialog()
-    {
-        if (dialog != null && dialog.isShowing())
-        {
-            dialog.dismiss();
-        }
-    }
+
+
+
+
 }

@@ -66,7 +66,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     {
         if (v.getId() == R.id.social_item_action_btn && onElementClickListener != null)
         {
-            if (isTradeHeroUser())
+            if (userFriendsDTO.isTradeHeroUser())
             {
                 onElementClickListener.onFollowButtonClick(userFriendsDTO);
             }
@@ -138,7 +138,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
         int pT = actionBtn.getPaddingTop();
         int pB = actionBtn.getPaddingBottom();
 
-        if (isTradeHeroUser())
+        if (userFriendsDTO.isTradeHeroUser())
         {
             actionBtn.setText("Follow");
             actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
@@ -152,8 +152,5 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
         actionBtn.setPadding(pL,pT,pR,pB);
     }
 
-    private boolean isTradeHeroUser()
-    {
-        return userFriendsDTO.thUserId > 0;
-    }
+
 }

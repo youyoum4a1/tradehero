@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string-array name="servers">
+    <item>JackPC</item>
     <item>Prod</item>
     <item>Staging</item>
     <item>Dev</item>
@@ -11,6 +12,7 @@
   </string-array>
 
   <string-array name="server_values">
+    <item>http://jackfortune.chinacloudapp.cn/TH_API/api/</item>
     <item>https://www.tradehero.mobi/api/</item>
     <item>https://966e65227ab24d18a2a75e4530770153.cloudapp.net/api</item>
     <item>https://th-paas-test-dev1.cloudapp.net/api/</item>

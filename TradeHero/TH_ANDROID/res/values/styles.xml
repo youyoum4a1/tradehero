@@ -122,8 +122,8 @@
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
     <!--<item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>-->
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
-    <item name="android:actionBarItemBackground">@drawable/actionbar_item_bg</item>
-    <item name="actionBarItemBackground">@drawable/actionbar_item_bg</item>
+    <!--<item name="android:actionBarItemBackground">@drawable/actionbar_item_bg</item>-->
+    <!--<item name="actionBarItemBackground">@drawable/actionbar_item_bg</item>-->
   </style>
 
   <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">

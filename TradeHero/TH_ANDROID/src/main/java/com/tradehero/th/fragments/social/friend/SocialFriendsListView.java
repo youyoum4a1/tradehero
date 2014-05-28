@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
 
 public class SocialFriendsListView extends RelativeLayout {
@@ -27,6 +28,8 @@ public class SocialFriendsListView extends RelativeLayout {
     TextView emptyView;
     @InjectView(R.id.error)
     View errorView;
+
+    private OnClickListener onClickListener;
 
     //<editor-fold desc="Constructors">
     public SocialFriendsListView(Context context) {
@@ -47,6 +50,39 @@ public class SocialFriendsListView extends RelativeLayout {
         super.onFinishInflate();
         ButterKnife.inject(this);
         listView.setEmptyView(emptyView);
+    }
+
+    @OnClick(R.id.social_follow_all)
+    public void onFollowAllClick()
+    {
+        if (onClickListener != null)
+        {
+            onClickListener.onClick(followAllView);
+        }
+    }
+
+    @OnClick(R.id.social_invite_all)
+    public void onInviteAllClick()
+    {
+        if (onClickListener != null)
+        {
+            onClickListener.onClick(inviteAllView);
+        }
+    }
+
+    public void setInviteAllViewVisible(boolean viewVisible)
+    {
+        inviteAllView.setVisibility(viewVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setFollowAllViewVisible(boolean viewVisible)
+    {
+        followAllView.setVisibility(viewVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setFollowOrInivteActionClickListener(OnClickListener l)
+    {
+        this.onClickListener = l;
     }
 
     public void showErrorView() {

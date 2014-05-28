@@ -176,7 +176,7 @@ public interface UserService
     List<UserFriendsDTO> getFriends(
             @Path("userId") int userId);
 
-    @GET("/users/{userId}/getFriends")
+    @GET("/users/{userId}/GetNewFriends")
     List<UserFriendsDTO> getSocialFriends(
             @Path("userId") int userId, @Query("socialNetwork") SocialNetworkEnum socialNetwork);
 

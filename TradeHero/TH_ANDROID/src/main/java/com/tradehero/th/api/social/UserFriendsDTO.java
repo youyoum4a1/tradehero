@@ -13,6 +13,8 @@ public class UserFriendsDTO extends ExtendedDTO
 
     public String fbId;       // FB id
     public String liId;       // or LI id
+    public String twId;
+    public String wbId;
 
     public String liPicUrl;   // LI gives is pics (FB pics can be dynamically gen'd)
     public String liHeadline; // LI: gives current position/title?
@@ -66,5 +68,10 @@ public class UserFriendsDTO extends ExtendedDTO
         userFriendsDTO.name = contactEntry.getName();
         userFriendsDTO.setEmail(contactEntry.getEmail());
         return userFriendsDTO;
+    }
+
+    public boolean isTradeHeroUser()
+    {
+        return thUserId > 0;
     }
 }

@@ -13,27 +13,29 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.widget.dialog.THDialog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by wangliang on 14-5-26.
  */
-public abstract class SocialFriendsFragment extends DashboardFragment implements SocialFriendItemView.OnElementClickListener {
+public abstract class SocialFriendsFragment extends DashboardFragment implements SocialFriendItemView.OnElementClickListener, View.OnClickListener {
 
     @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
     @InjectView(R.id.search_social_friends)EditText searchEdit;
@@ -45,7 +47,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     private FriendsListKey friendsListKey;
     private FriendDTOList friendDTOList;
     private SocialFriendsAdapter socialFriendsListAdapter;
-    //DTOCache.GetOrFetchTask fetchTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_social_friends, container, false);
@@ -79,29 +79,97 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     @Override
     public void onInviteButtonClick(UserFriendsDTO userFriendsDTO) {
-
-        //socialFriendHandler.followFriends(getActivity(), Arrays.asList(userFriendsDTO));
-
+        List<UserFriendsDTO> usersToInvite = Arrays.asList(userFriendsDTO);
+        handleInviteUsers(usersToInvite);
         Timber.d("onInviteButtonClick %s", userFriendsDTO);
     }
 
     @Override
     public void onFollowButtonClick(UserFriendsDTO userFriendsDTO) {
         Timber.d("onFollowButtonClick %s",userFriendsDTO);
+        List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
+        handleFollowUsers(usersToFollow);
+    }
 
+    protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
+    {
+        socialFriendHandler.followFriends(usersToFollow,new FollowFriendCallback(usersToFollow));
+    }
 
+    // TODO subclass like FaccbookSocialFriendsFragment should override this methos because the logic of inviting friends is finished on the client side
+    protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
+    {
+        socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+    }
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.social_invite_all)
+        {
+            List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
+            if (usersUnInvited == null || usersUnInvited.size() == 0)
+            {
+                THToast.show("No user to Invite");
+                return;
+            }
+            handleInviteUsers(usersUnInvited);
+        }
+        else if (v.getId() == R.id.social_follow_all)
+        {
+            List<UserFriendsDTO> usersUnfollowed = findAllUsersUnfollowed();
+            if (usersUnfollowed == null || usersUnfollowed.size() == 0)
+            {
+                THToast.show("No user to follow");
+                return;
+            }
+            handleFollowUsers(usersUnfollowed);
+        }
+    }
+
+    private List<UserFriendsDTO> findAllUsersUnfollowed()
+    {
+        if (friendDTOList != null)
+        {
+            List<UserFriendsDTO> list = new ArrayList<>();
+            for (UserFriendsDTO o:friendDTOList)
+            {
+                if (o.isTradeHeroUser())
+                {
+                    list.add(o);
+                }
+            }
+            return list;
+        }
+        return null;
+    }
+
+    private List<UserFriendsDTO> findAllUsersUnInvited()
+    {
+        if (friendDTOList != null)
+        {
+            List<UserFriendsDTO> list = new ArrayList<>();
+            for (UserFriendsDTO o:friendDTOList)
+            {
+                if (!o.isTradeHeroUser())
+                {
+                    list.add(o);
+                }
+            }
+            return list;
+        }
+        return null;
     }
 
     protected abstract SocialNetworkEnum getSocialNetwork();
 
     protected abstract String getTitle();
 
-
     private void initView()
     {
         searchEdit.addTextChangedListener(new SearchChangeListener());
-
+        friendsRootView.setFollowAllViewVisible(canFollow());
+        friendsRootView.setInviteAllViewVisible(canInviteAll());
+        friendsRootView.setFollowOrInivteActionClickListener(this);
         displayLoadingView();
 
         if (friendsListKey == null)
@@ -134,8 +202,34 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     private void displayContentView(FriendDTOList value)
     {
         this.friendDTOList = value;
-        bindData();
-        friendsRootView.showContentView();
+        if (value == null || value.size() == 0)
+        {
+            friendsRootView.showEmptyView();
+        }
+        else
+        {
+            bindData();
+            friendsRootView.showContentView();
+        }
+    }
+
+    protected boolean canInvite()
+    {
+        return true;
+    }
+
+    protected boolean canInviteAll()
+    {
+        if (!canInvite())
+        {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canFollow()
+    {
+        return true;
     }
 
     private void bindData()
@@ -191,11 +285,98 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
                         socialFriendsListAdapter.getFilter().filter(s.toString());
                     }
                 }
-
-
             }
 
     }
+
+    private void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
+    {
+        if (friendDTOList != null && usersToInvite != null)
+        {
+            for (UserFriendsDTO userFriendsDTO:usersToInvite)
+            {
+                friendDTOList.remove(userFriendsDTO);
+            }
+        }
+        socialFriendsListAdapter.clear();
+        socialFriendsListAdapter.addAll(friendDTOList);
+    }
+
+    private void handleFollowSuccess(List<UserFriendsDTO> usersToFollow)
+    {
+        if (friendDTOList != null && usersToFollow != null)
+        {
+            for (UserFriendsDTO userFriendsDTO:usersToFollow)
+            {
+                friendDTOList.remove(userFriendsDTO);
+            }
+
+        }
+        socialFriendsListAdapter.clear();
+        socialFriendsListAdapter.addAll(friendDTOList);
+    }
+
+    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO> {
+
+        List<UserFriendsDTO> usersToFollow;
+
+
+        private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
+        {
+            super(getActivity());
+            this.usersToFollow = usersToFollow;
+        }
+
+        @Override
+        public void success(UserProfileDTO userProfileDTO, Response response) {
+            super.success(userProfileDTO,response);
+            if (response.getStatus() != 200)
+            {
+                // TODO
+                THToast.show("Error");
+                return;
+            }
+            handleFollowSuccess(usersToFollow);
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+            super.failure(retrofitError);
+            THToast.show("Error");
+        }
+    };
+
+    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response> {
+
+        List<UserFriendsDTO> usersToInvite;
+
+
+        private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
+        {
+            super(getActivity());
+            this.usersToInvite = usersToInvite;
+        }
+
+        @Override
+        public void success(Response data, Response response) {
+            super.success(data,response);
+            if (response.getStatus() != 200)
+            {
+                // TODO
+                THToast.show("Error");
+                return;
+            }
+            handleInviteSuccess(usersToInvite);
+
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+            super.failure(retrofitError);
+            // TODO
+            THToast.show("Error");
+        }
+    };
 
     class FriendFetchListener implements DTOCache.Listener<FriendsListKey, FriendDTOList>
     {

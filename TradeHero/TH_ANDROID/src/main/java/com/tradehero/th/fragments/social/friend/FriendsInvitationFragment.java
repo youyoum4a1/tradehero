@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -26,6 +28,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,6 +45,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     @Inject SocialTypeFactory socialTypeFactory;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
+    @Inject SocialFriendHandler socialFriendHandler;
 
     private List<UserFriendsDTO> userFriendsDTOs;
     private Runnable searchTask;
@@ -244,13 +248,133 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
 
     @Override
     public void onFollowButtonClick(UserFriendsDTO userFriendsDTO) {
-
+        handleFollowUsers(userFriendsDTO);
     }
 
     @Override
     public void onInviteButtonClick(UserFriendsDTO userFriendsDTO) {
+        handleInviteUsers(userFriendsDTO);
+    }
+
+    protected void handleFollowUsers(UserFriendsDTO userToFollow)
+    {
+        List<UserFriendsDTO> usersToFollow = Arrays.asList(userToFollow);
+        socialFriendHandler.followFriends(usersToFollow,new FollowFriendCallback(usersToFollow));
+    }
+
+    // TODO via which social network to invite user?
+    protected void handleInviteUsers(UserFriendsDTO userToInvite)
+    {
+        if (!TextUtils.isEmpty(userToInvite.liId) || !TextUtils.isEmpty(userToInvite.twId))
+        {
+            List<UserFriendsDTO> usersToInvite = Arrays.asList(userToInvite);
+            socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+        }
+        else if (!TextUtils.isEmpty(userToInvite.fbId))
+        {
+            //TODO do invite on the client side.
+        }
+        else
+        {
+            //if all ids are empty or only wbId is not empty, how to do?
+        }
 
     }
+
+    private void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
+    {
+        if (userFriendsDTOs != null && usersToInvite != null)
+        {
+            for (UserFriendsDTO userFriendsDTO:usersToInvite)
+            {
+                userFriendsDTOs.remove(userFriendsDTO);
+            }
+
+        }
+        SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter)friendsListView.getAdapter();
+
+        socialFriendsAdapter.clear();
+        socialFriendsAdapter.addAll(userFriendsDTOs);
+    }
+
+    private void handleFollowSuccess(List<UserFriendsDTO> usersToFollow)
+    {
+        if (userFriendsDTOs != null && usersToFollow != null)
+        {
+            for (UserFriendsDTO userFriendsDTO:usersToFollow)
+            {
+                userFriendsDTOs.remove(userFriendsDTO);
+            }
+
+        }
+        SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter)friendsListView.getAdapter();
+
+        socialFriendsAdapter.clear();
+        socialFriendsAdapter.addAll(userFriendsDTOs);
+    }
+
+    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO> {
+
+        List<UserFriendsDTO> usersToFollow;
+
+
+        private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
+        {
+            super(getActivity());
+            this.usersToFollow = usersToFollow;
+        }
+
+        @Override
+        public void success(UserProfileDTO userProfileDTO, Response response) {
+            super.success(userProfileDTO,response);
+            if (response.getStatus() != 200)
+            {
+                // TODO
+                THToast.show("Error");
+                return;
+            }
+            handleFollowSuccess(usersToFollow);
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+            super.failure(retrofitError);
+            THToast.show("Error");
+        }
+    };
+
+    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response> {
+
+        List<UserFriendsDTO> usersToInvite;
+
+
+        private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
+        {
+            super(getActivity());
+            this.usersToInvite = usersToInvite;
+        }
+
+        @Override
+        public void success(Response data, Response response) {
+            super.success(data,response);
+            if (response.getStatus() != 200)
+            {
+                // TODO
+                THToast.show("Error");
+                return;
+            }
+            handleInviteSuccess(usersToInvite);
+
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError) {
+            super.failure(retrofitError);
+            // TODO
+            THToast.show("Error");
+        }
+    };
+
 
 
     class SearchFriendsCallback implements  Callback<List<UserFriendsDTO>> {

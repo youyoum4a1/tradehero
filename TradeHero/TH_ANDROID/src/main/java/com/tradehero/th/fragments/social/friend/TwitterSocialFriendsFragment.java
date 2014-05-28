@@ -17,4 +17,6 @@ public class TwitterSocialFriendsFragment extends SocialFriendsFragment {
     protected String getTitle() {
         return getString(R.string.invite_social_friend,getString(R.string.twitter));
     }
+
+
 }
