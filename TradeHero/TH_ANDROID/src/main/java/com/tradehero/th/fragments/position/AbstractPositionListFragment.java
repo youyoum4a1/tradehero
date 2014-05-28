@@ -374,12 +374,17 @@ abstract public class AbstractPositionListFragment<
         outState.putBooleanArray(BUNDLE_KEY_EXPANDED_LIST_FLAGS, expandedPositions);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachPortfolioTask();
         detachGetPositionsTask();
         detachUserProfileTask();
 
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         if (positionsListView != null)
         {
             positionsListView.setOnScrollListener(null);
