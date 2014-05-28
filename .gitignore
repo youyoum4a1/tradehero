@@ -72,3 +72,5 @@ th_android.properties
 
 #Proguard
 **/proguard_logs
+
+TradeHero/TH_ANDROID/assets/crashlytics-build.properties
