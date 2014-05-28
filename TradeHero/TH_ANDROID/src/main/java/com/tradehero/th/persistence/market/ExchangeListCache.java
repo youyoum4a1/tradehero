@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.market;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.network.service.MarketService;
@@ -8,7 +8,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton public class ExchangeListCache extends StraightDTOCache<ExchangeListType, ExchangeDTOList>
+@Singleton public class ExchangeListCache extends StraightDTOCacheNew<ExchangeListType, ExchangeDTOList>
 {
     public static final int DEFAULT_MAX_SIZE = 1; // Be careful to increase when necessary
 
@@ -22,7 +22,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected ExchangeDTOList fetch(ExchangeListType key) throws Throwable
+    @Override public ExchangeDTOList fetch(ExchangeListType key) throws Throwable
     {
         return new ExchangeDTOList(marketService.get().getExchanges());
     }

@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -87,8 +88,7 @@ public class TrendingFragment extends SecurityListFragment
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
     private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
-    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
-    private DTOCache.GetOrFetchTask<ExchangeListType, ExchangeDTOList> exchangeListCacheFetchTask;
+    private DTOCacheNew.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
 
     private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
@@ -128,9 +128,9 @@ public class TrendingFragment extends SecurityListFragment
     private void createExchangeListTypeCacheListener()
     {
         exchangeListTypeCacheListener =
-                new DTOCache.Listener<ExchangeListType, ExchangeDTOList>()
+                new DTOCacheNew.Listener<ExchangeListType, ExchangeDTOList>()
                 {
-                    @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value, boolean fromCache)
+                    @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value)
                     {
                         Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
                         linkWith(value, true);
@@ -238,14 +238,19 @@ public class TrendingFragment extends SecurityListFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
-        detachExchangeListFetchTask();
+        detachExchangeListCache();
         detachProviderListTask();
-        detachExchangeListFetchTask();
+        detachExchangeListCache();
         detachUserFetchTask();
         removeCallbacksIfCan(handleCompetitionRunnable);
 
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         this.onFilterTypeChangedListener = null;
 
         if (filterSelectorView != null)
@@ -275,13 +280,12 @@ public class TrendingFragment extends SecurityListFragment
         userProfileFetchTask = null;
     }
 
-    protected void detachExchangeListFetchTask()
+    protected void detachExchangeListCache()
     {
-        if (exchangeListCacheFetchTask != null)
+        if (exchangeListTypeCacheListener != null)
         {
-            exchangeListCacheFetchTask.setListener(null);
+            exchangeListCache.get().unregister(exchangeListTypeCacheListener);
         }
-        exchangeListCacheFetchTask = null;
     }
 
     @Override public void onDestroy()
@@ -327,9 +331,10 @@ public class TrendingFragment extends SecurityListFragment
 
     private void fetchExchangeList()
     {
-        detachExchangeListFetchTask();
-        exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
-        exchangeListCacheFetchTask.execute();
+        detachExchangeListCache();
+        ExchangeListType key = new ExchangeListType();
+        exchangeListCache.get().register(key, exchangeListTypeCacheListener);
+        exchangeListCache.get().getOrFetchAsync(key);
     }
 
     private void linkWith(ExchangeDTOList exchangeDTOs, boolean andDisplay)

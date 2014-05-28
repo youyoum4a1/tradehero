@@ -153,7 +153,7 @@ public class SplashActivity extends SherlockActivity
             canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
-                exchangeListCache.getOrFetch(new ExchangeListType());
+                exchangeListCache.getOrFetchAsync(new ExchangeListType());
             }
             catch (Throwable throwable)
             {

@@ -152,7 +152,7 @@ import javax.inject.Singleton;
     
     public void preFetchExchanges()
     {
-        exchangeListCache.get().autoFetch(new ExchangeListType());
+        exchangeListCache.get().getOrFetchAsync(new ExchangeListType());
     }
     
     public void preFetchWatchlist()
