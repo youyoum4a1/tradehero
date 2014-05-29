@@ -34,14 +34,12 @@
 
     <TextView
         android:id="@+id/discussion_action_button_more"
-        style="@style/TH.DiscussionActionButtons"
+        style="@style/TH.DiscussionActionButtons.Text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@drawable/timeline_action_button_text_color_xml"
-        android:textStyle="bold"
         android:text="@string/more_character"
-        android:gravity="center"
+        android:gravity="right|center_vertical"
         />
 
   </com.tradehero.th.fragments.discussion.DiscussionActionButtonsView>

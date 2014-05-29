@@ -5,10 +5,10 @@
     <solid android:color="@color/gray_normal"/>
   </shape>
 </item>
-<item android:top="1dp">
+<item android:top="0.5dp">
   <shape>
     <corners android:bottomLeftRadius="@dimen/timeline_item_corner_radius" android:bottomRightRadius="@dimen/timeline_item_corner_radius"/>
-    <solid android:color="@color/timeline_list_item_action_buttons_background"/>
+    <solid android:color="@color/discussion_action_buttons_border_top_color"/>
   </shape>
 </item>
 </layer-list>
