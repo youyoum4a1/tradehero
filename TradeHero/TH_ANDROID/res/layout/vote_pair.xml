@@ -9,6 +9,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="horizontal"
+      android:layout_gravity="center_vertical"
       android:layout_centerVertical="true"
       >
 
@@ -17,6 +18,8 @@
         android:id="@+id/timeline_action_button_vote_up"
         android:drawableLeft="@drawable/icn_upvote"
         android:drawablePadding="@dimen/common_margin_4"
+        android:paddingLeft="@dimen/timeline_action_buttons_horizontal_padding"
+        android:paddingRight="@dimen/timeline_action_buttons_horizontal_padding"
         android:text="@integer/messages_initial_vote_count"
         tools:text="10"
         />
@@ -26,6 +29,8 @@
         android:id="@+id/timeline_action_button_vote_down"
         android:drawableLeft="@drawable/icn_downvote"
         android:drawablePadding="@dimen/common_margin_4"
+        android:paddingLeft="@dimen/timeline_action_buttons_horizontal_padding"
+        android:paddingRight="@dimen/timeline_action_buttons_horizontal_padding"
         android:text="@integer/messages_initial_vote_count"
         tools:text="2"
         android:visibility="gone"

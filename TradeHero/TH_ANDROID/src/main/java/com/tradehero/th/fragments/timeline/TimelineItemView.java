@@ -67,7 +67,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             R.id.timeline_user_profile_name,
             R.id.timeline_user_profile_picture,
             R.id.timeline_vendor_picture,
-            R.id.discussion_action_button_comment_count_wrapper,
             R.id.discussion_action_button_comment_count,
             R.id.discussion_action_button_share,
             R.id.discussion_action_button_more,
@@ -80,7 +79,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             case R.id.timeline_user_profile_name:
                 openOtherTimeline();
                 break;
-            case R.id.discussion_action_button_comment_count_wrapper:
             case R.id.discussion_action_button_comment_count:
                 openTimelineDiscussion();
                 break;
