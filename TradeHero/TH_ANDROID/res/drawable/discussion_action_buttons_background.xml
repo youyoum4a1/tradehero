@@ -5,7 +5,7 @@
     <solid android:color="@color/gray_normal"/>
   </shape>
 </item>
-<item android:top="0.5dp">
+<item android:top="@dimen/discussion_separator_thickness">
   <shape>
     <corners android:bottomLeftRadius="@dimen/timeline_item_corner_radius" android:bottomRightRadius="@dimen/timeline_item_corner_radius"/>
     <solid android:color="@color/discussion_action_buttons_border_top_color"/>
