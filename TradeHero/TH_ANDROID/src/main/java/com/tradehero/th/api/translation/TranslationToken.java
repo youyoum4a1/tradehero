@@ -3,7 +3,7 @@ package com.tradehero.th.api.translation;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.ExtendedDTO;
 
-abstract public class TranslationToken extends ExtendedDTO implements DTO
+public class TranslationToken extends ExtendedDTO implements DTO
 {
     public String type;
 
@@ -25,5 +25,8 @@ abstract public class TranslationToken extends ExtendedDTO implements DTO
         throw new IllegalStateException("Needs to be implemented");
     }
 
-    abstract public int logoResId();
+    public int logoResId()
+    {
+        return 0;
+    }
 }
