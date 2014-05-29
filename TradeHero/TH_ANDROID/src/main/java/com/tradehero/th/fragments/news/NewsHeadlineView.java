@@ -2,13 +2,15 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -18,13 +20,15 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.translation.TranslationResult;
+import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import com.tradehero.th.persistence.translation.TranslationCache;
-import com.tradehero.th.persistence.translation.TranslationKey;
+import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.inject.Inject;
@@ -32,17 +36,38 @@ import javax.inject.Inject;
 public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         implements THDialog.OnDialogItemClickListener
 {
+    private static enum TranslationStatus
+    {
+        ORIGINAL(R.string.discussion_translate_button),
+        TRANSLATING(R.string.discussion_translating_button),
+        TRANSLATED(R.string.discussion_show_original_button);
+
+        public int actionTextResId;
+
+        TranslationStatus(int actionTextResId)
+        {
+            this.actionTextResId = actionTextResId;
+        }
+    }
+
     @InjectView(R.id.news_title_description) TextView newsDescription;
     @InjectView(R.id.news_title_title) TextView newsTitle;
     @InjectView(R.id.news_source) TextView newsSource;
+
+    @InjectView(R.id.discussion_translate_notice_wrapper) View translateNoticeWrapper;
+    @InjectView(R.id.discussion_translate_notice) TextView translateNotice;
+    @InjectView(R.id.discussion_translate_notice_image) ImageView translateNoticeImage;
+
     @InjectView(R.id.discussion_action_button_more) View buttonMore;
 
     @Inject NewsItemCompactCacheNew newsItemCompactCache;
+    @Inject TranslationTokenCache translationTokenCache;
     @Inject TranslationCache translationCache;
     @Inject SocialShareTranslationHelper socialShareHelper;
 
     private NewsItemCompactDTO newsItemDTO;
-    private DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
+    private TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
+    private TranslationResult translationResult;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
@@ -73,21 +98,10 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         ButterKnife.inject(this);
     }
 
-    @Override
-    protected void onDetachedFromWindow()
+    @Override protected void onDetachedFromWindow()
     {
-        detachTranslationTask();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
-    }
-
-    private void detachTranslationTask()
-    {
-        if (translationTask != null)
-        {
-            translationTask.setListener(null);
-        }
-        translationTask = null;
     }
 
     //<editor-fold desc="Related to share dialog">
@@ -105,10 +119,17 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         }
     }
 
+    @OnClick({R.id.discussion_translate_notice_wrapper})
+    protected void translate()
+    {
+        socialShareHelper.translate(newsItemDTO);
+    }
+
     /**
      * show dialog including sharing and translation.
      */
-    @OnClick(R.id.discussion_action_button_more) void showShareDialog()
+    @OnClick(R.id.discussion_action_button_more)
+    protected void showShareDialog()
     {
         socialShareHelper.shareOrTranslate(newsItemDTO);
     }
@@ -160,6 +181,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
                 displayTitle();
                 displayDescription();
                 displaySource();
+                displayTranslateNotice();
                 displayMoreButton();
             }
             else
@@ -201,9 +223,33 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         newsTitle.setText(newsItemDTO.title);
     }
 
+    private void displayTranslateNotice()
+    {
+        translateNoticeWrapper.setVisibility(socialShareHelper.canTranslate(newsItemDTO) ? View.VISIBLE : View.GONE);
+        translateNotice.setText(getTranslateNoticeText());
+        TranslationToken token = translationTokenCache.get(new TranslationTokenKey());
+        if (token != null)
+        {
+            translateNoticeImage.setImageResource(token.logoResId());
+        }
+
+    }
+
+    private Spanned getTranslateNoticeText()
+    {
+        return Html.fromHtml(getContext().getString(
+                        R.string.discussion_translate_button_with_powered,
+                        getTranslateNoticeActionText()));
+    }
+
+    private String getTranslateNoticeActionText()
+    {
+        return getContext().getString(currentTranslationStatus.actionTextResId);
+    }
+
     private void displayMoreButton()
     {
-        buttonMore.setVisibility(socialShareHelper.canTranslate(newsItemDTO) ? View.VISIBLE : View.GONE);
+        buttonMore.setVisibility(View.GONE);
     }
 
     private void resetTitle()
