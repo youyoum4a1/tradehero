@@ -60,6 +60,10 @@ public class AbstractDiscussionCompactDTOFactory
         {
             populateTranslation((NewsItemDTO) toPopulate, translationKey, translationResult);
         }
+        else if (toPopulate instanceof TimelineItemDTO)
+        {
+            populateTranslation((TimelineItemDTO) toPopulate, translationKey, translationResult);
+        }
         else if (toPopulate instanceof DiscussionDTO)
         {
             populateTranslation((DiscussionDTO) toPopulate, translationKey, translationResult);
@@ -71,6 +75,10 @@ public class AbstractDiscussionCompactDTOFactory
         toPopulate.title = getSameOrTranslated(toPopulate.title, translationKey, translationResult);
         toPopulate.caption = getSameOrTranslated(toPopulate.caption, translationKey, translationResult);
         toPopulate.description = getSameOrTranslated(toPopulate.description, translationKey, translationResult);
+    }
+
+    protected void populateTranslation(TimelineItemDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
+    {
     }
 
     protected void populateTranslation(DiscussionDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
