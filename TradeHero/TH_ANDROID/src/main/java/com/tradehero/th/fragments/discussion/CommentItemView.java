@@ -136,14 +136,12 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     }
 
     @Optional @OnClick({
-            R.id.discussion_action_button_comment_count,
-            R.id.discussion_action_button_comment_count_wrapper
+            R.id.discussion_action_button_comment_count
     })
     void onCommentClicked(View view)
     {
         switch (view.getId())
         {
-            case R.id.discussion_action_button_comment_count_wrapper:
             case R.id.discussion_action_button_comment_count:
                 openDiscussion();
                 break;

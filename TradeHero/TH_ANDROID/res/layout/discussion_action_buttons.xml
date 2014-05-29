@@ -7,8 +7,6 @@
       android:id="@+id/discussion_share_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingTop="@dimen/timeline_action_buttons_vertical_padding"
-      android:paddingBottom="@dimen/timeline_action_buttons_vertical_padding"
       android:background="@drawable/timeline_action_buttons_background"
       >
 
@@ -16,10 +14,9 @@
 
     <TextView
         android:id="@+id/discussion_action_button_comment_count"
+        style="@style/TH.DiscussionActionButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/timeline_action_buttons_horizontal_padding"
-        android:paddingRight="@dimen/timeline_action_buttons_horizontal_padding"
         android:drawableLeft="@drawable/icn_comment"
         android:layout_gravity="center_vertical"
         android:gravity="center"
@@ -35,21 +32,19 @@
 
     <ImageView
         android:id="@+id/discussion_action_button_share"
+        style="@style/TH.DiscussionActionButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/timeline_action_buttons_horizontal_padding"
-        android:paddingRight="@dimen/timeline_action_buttons_horizontal_padding"
         android:gravity="center"
         android:src="@drawable/icn_actions_share"
         />
 
     <TextView
         android:id="@+id/discussion_action_button_more"
+        style="@style/TH.DiscussionActionButtons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:paddingLeft="@dimen/timeline_action_buttons_horizontal_padding"
-        android:paddingRight="@dimen/timeline_action_buttons_horizontal_padding"
         android:textColor="@drawable/timeline_action_button_text_color_xml"
         android:textStyle="bold"
         android:text="@string/more_character"
