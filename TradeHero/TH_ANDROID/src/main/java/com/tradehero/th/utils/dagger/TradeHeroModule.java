@@ -32,6 +32,7 @@ import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemView
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
@@ -213,6 +214,7 @@ import javax.inject.Singleton;
                         SimpleOwnPortfolioListItemAdapter.class,
                         MarkdownTextView.class,
 
+                        DiscussionActionButtonsView.class,
                         NewsHeadlineFragment.class,
                         ChartFragment.class,
                         StockInfoValueFragment.class,
