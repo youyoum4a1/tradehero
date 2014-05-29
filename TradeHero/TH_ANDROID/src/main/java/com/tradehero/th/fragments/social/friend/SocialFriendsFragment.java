@@ -42,7 +42,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     @Inject FriendsListCache friendsListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject SocialFriendHandler socialFriendHandler;
+
+    protected SocialFriendHandler socialFriendHandler;
 
     private FriendsListKey friendsListKey;
     private FriendDTOList friendDTOList;
@@ -93,13 +94,23 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
     {
+        createFriendHandler();
         socialFriendHandler.followFriends(usersToFollow,new FollowFriendCallback(usersToFollow));
     }
 
     // TODO subclass like FaccbookSocialFriendsFragment should override this methos because the logic of inviting friends is finished on the client side
     protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
     {
+        createFriendHandler();
         socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+    }
+
+    protected void createFriendHandler()
+    {
+        if (socialFriendHandler == null)
+        {
+            socialFriendHandler = new SocialFriendHandler();
+        }
     }
 
     @Override

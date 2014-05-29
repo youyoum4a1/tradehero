@@ -27,6 +27,7 @@ import java.util.List;
  */
 @Singleton
 public class SocialFriendHandler {
+
     @Inject Lazy<UserServiceWrapper> userService;
 
     @Inject
@@ -83,7 +84,16 @@ public class SocialFriendHandler {
         {
             callback.onRequestStart();
         }
-        MiddleCallback<UserProfileDTO> middleCallback = userService.get().followBatchFree(followFriendsForm, callback);
+        MiddleCallback<UserProfileDTO> middleCallback = null;
+        if(users.size() > 1)
+        {
+            middleCallback = userService.get().followBatchFree(followFriendsForm, callback);
+        }
+        else if (users.size() == 1)
+        {
+            UserFriendsDTO userFriendsDTO = users.get(0);
+            middleCallback = userService.get().freeFollow(new UserBaseKey(userFriendsDTO.thUserId), callback);
+        }
         return middleCallback;
     }
 

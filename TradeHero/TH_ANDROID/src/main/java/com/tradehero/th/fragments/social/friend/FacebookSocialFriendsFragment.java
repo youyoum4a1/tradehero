@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by tradehero on 14-5-26.
  */
-public class FackbookSocialFriendsFragment extends SocialFriendsFragment {
+public class FacebookSocialFriendsFragment extends SocialFriendsFragment {
 
     @Override
     protected SocialNetworkEnum getSocialNetwork() {
@@ -27,7 +27,17 @@ public class FackbookSocialFriendsFragment extends SocialFriendsFragment {
     }
 
     @Override
+    protected void createFriendHandler() {
+        if (socialFriendHandler == null)
+        {
+            socialFriendHandler = new FacebookSocialFriendHandler(getActivity());
+        }
+    }
+
+    @Override
     protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite) {
         // TODO
+        super.handleInviteUsers(usersToInvite);
     }
+
 }

@@ -12,6 +12,7 @@
   <string name="invite_friend_facebook_tradehero_refer_friend_message">Download TradeHero: make money copying top traders!</string>
   <string name="invite_friend_request_canceled">Request canceled</string>
   <string name="invite_friend_request_sent">Request sent</string>
+  <string name="invite_friend_request_error">Request error</string>
 
   <string name="error_fetch_friends">Failed to retrieve your friends list</string>
   <string name="error_fetch_local_contacts">Failed to retrieve the contacts from your phone</string>

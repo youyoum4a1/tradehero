@@ -356,7 +356,8 @@ import javax.inject.Singleton;
                         TwitterSocialFriendsFragment.class,
                         LinkedInSocialFriendsFragment.class,
                         WeiboSocialFriendsFragment.class,
-                        SocialFriendHandler.class
+                        SocialFriendHandler.class,
+                        FacebookSocialFriendHandler.class
                 },
         staticInjections =
                 {
