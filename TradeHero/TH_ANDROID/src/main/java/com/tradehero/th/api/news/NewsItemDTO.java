@@ -37,7 +37,7 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     }
 
     public <ExtendedDTOType extends ExtendedDTO> NewsItemDTO(ExtendedDTOType other,
-            Class<? extends ExtendedDTO> myClass)
+            Class<? extends NewsItemDTO> myClass)
     {
         super(other, myClass);
     }

@@ -24,7 +24,7 @@ public abstract class AbstractDiscussionDTO extends AbstractDiscussionCompactDTO
         super();
     }
 
-    public <ExtendedDTOType extends ExtendedDTO> AbstractDiscussionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    public <ExtendedDTOType extends ExtendedDTO> AbstractDiscussionDTO(ExtendedDTOType other, Class<? extends AbstractDiscussionDTO> myClass)
     {
         super(other, myClass);
     }
