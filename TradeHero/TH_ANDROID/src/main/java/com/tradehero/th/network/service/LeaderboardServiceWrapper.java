@@ -8,17 +8,18 @@ import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.SortedPerPagedLeaderboardKey;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
+import timber.log.Timber;
 
 @Singleton public class LeaderboardServiceWrapper
 {
@@ -74,11 +75,13 @@ import retrofit.Callback;
         }
         else if (leaderboardKey instanceof FriendsPerPagedLeaderboardKey)
         {
-            FriendsPerPagedLeaderboardKey friendsPerPagedLeaderboardKey = (FriendsPerPagedLeaderboardKey) leaderboardKey;
-            return leaderboardService.getFriendsLeaderboard(
-                    friendsPerPagedLeaderboardKey.page,
-                    friendsPerPagedLeaderboardKey.perPage,
-                    friendsPerPagedLeaderboardKey.includeFoF);
+            Timber.d("lyl getNewFriendsLeaderboard");
+            //FriendsPerPagedLeaderboardKey friendsPerPagedLeaderboardKey = (FriendsPerPagedLeaderboardKey) leaderboardKey;
+            //return leaderboardService.getFriendsLeaderboard(
+            //        friendsPerPagedLeaderboardKey.page,
+            //        friendsPerPagedLeaderboardKey.perPage,
+            //        friendsPerPagedLeaderboardKey.includeFoF);
+            return leaderboardService.getNewFriendsLeaderboard().leaderboard;
         }
         else if (leaderboardKey instanceof PerPagedLeaderboardKey)
         {
@@ -97,6 +100,18 @@ import retrofit.Callback;
                     null);
         }
         return leaderboardService.getLeaderboard(leaderboardKey.key, null, null);
+    }
+
+    public LeaderboardFriendsDTO getNewFriendsLeaderboard()
+    {
+        return leaderboardService.getNewFriendsLeaderboard();
+    }
+
+    public MiddleCallback<LeaderboardFriendsDTO> getNewFriendsLeaderboard(Callback<LeaderboardFriendsDTO> callback)
+    {
+        MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
+        return middleCallback;
     }
 
     public MiddleCallback<LeaderboardDTO> getLeaderboard(LeaderboardKey leaderboardKey, Callback<LeaderboardDTO> callback)

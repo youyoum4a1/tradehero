@@ -3,12 +3,12 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import java.util.List;
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
-
-import java.util.List;
 
 interface LeaderboardServiceAsync
 {
@@ -80,6 +80,9 @@ interface LeaderboardServiceAsync
             @Query("perPage") Integer perPage,
             @Query("includeFoF") Boolean includeFoF,
             Callback<LeaderboardDTO> callback);
+
+    @GET("/leaderboards/newfriends")
+    void getNewFriendsLeaderboard(Callback<LeaderboardFriendsDTO> callback);
 
     /**
      *

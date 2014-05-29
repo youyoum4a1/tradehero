@@ -42,6 +42,7 @@ import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragm
 import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
+import com.tradehero.th.fragments.leaderboard.LeaderboardFriendsItemView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
@@ -350,6 +351,7 @@ import javax.inject.Singleton;
 
                         SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
+                        LeaderboardFriendsItemView.class,
                 },
         staticInjections =
                 {
