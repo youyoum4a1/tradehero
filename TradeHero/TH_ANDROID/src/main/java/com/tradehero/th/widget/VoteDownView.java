@@ -1,6 +1,7 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
@@ -37,5 +38,10 @@ public class VoteDownView extends VoteView
             setValue(R.integer.messages_initial_vote_count);
             setChecked(false);
         }
+    }
+
+    @Override protected int getCheckedColor()
+    {
+        return Color.RED;
     }
 }

@@ -1,8 +1,11 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
+import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 
 abstract public class VoteView extends CompoundButton
@@ -26,7 +29,9 @@ abstract public class VoteView extends CompoundButton
     }
     //</editor-fold>
 
-    abstract public void display(AbstractDiscussionDTO discussionDTO);
+    public abstract void display(AbstractDiscussionDTO discussionDTO);
+
+    protected abstract int getCheckedColor();
 
     @Override public void setText(CharSequence text, BufferType type)
     {
@@ -54,8 +59,14 @@ abstract public class VoteView extends CompoundButton
         super.setChecked(checked);
         if (oldValue != checked)
         {
-            //Timber.d("Original value: %d", originalValue);
-            //setValue(originalValue);
+            // mutate to preserve the original drawable
+            Drawable drawableLeft = getResources().getDrawable(R.drawable.icn_upvote).mutate();
+            if (checked)
+            {
+                drawableLeft.setColorFilter(getCheckedColor(), PorterDuff.Mode.SRC_ATOP);
+            }
+            setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
+            invalidate();
         }
     }
 }
