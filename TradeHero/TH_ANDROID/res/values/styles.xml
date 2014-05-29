@@ -133,7 +133,7 @@
     <item name="android:paddingLeft">6dip</item>
     <item name="android:drawablePadding">2dip</item>
     <item name="android:textColor">@color/black</item>
-    <!--<item name="android:background">@drawable/authentication_sign_up_textbox</item>-->
+    <!--<item name="android:background">@drawable/textbox_light_background</item>-->
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar" parent="Widget.Sherlock.ActionBar">
