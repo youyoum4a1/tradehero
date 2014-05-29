@@ -13,22 +13,17 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
-import com.tradehero.th.persistence.translation.TranslationCache;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
-import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.inject.Inject;
@@ -61,13 +56,12 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     @InjectView(R.id.discussion_action_button_more) View buttonMore;
 
     @Inject NewsItemCompactCacheNew newsItemCompactCache;
-    @Inject TranslationTokenCache translationTokenCache;
-    @Inject TranslationCache translationCache;
     @Inject SocialShareTranslationHelper socialShareHelper;
 
     private NewsItemCompactDTO newsItemDTO;
+    private TranslationResult latestTranslationResult;
+    private NewsItemCompactDTO translatedNewsItemDTO;
     private TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
-    private TranslationResult translationResult;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
@@ -90,17 +84,20 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
+        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
 
     @Override protected void onDetachedFromWindow()
     {
         ButterKnife.reset(this);
+        socialShareHelper.onDetach();
         super.onDetachedFromWindow();
     }
 
@@ -120,9 +117,22 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     }
 
     @OnClick({R.id.discussion_translate_notice_wrapper})
-    protected void translate()
+    protected void toggleTranslate()
     {
-        socialShareHelper.translate(newsItemDTO);
+        switch (currentTranslationStatus)
+        {
+            case ORIGINAL:
+                currentTranslationStatus = TranslationStatus.TRANSLATING;
+                displayTranslatableTexts();
+                socialShareHelper.translate(newsItemDTO);
+                break;
+
+            case TRANSLATING:
+            case TRANSLATED:
+                currentTranslationStatus = TranslationStatus.ORIGINAL;
+                displayTranslatableTexts();
+                break;
+        }
     }
 
     /**
@@ -158,10 +168,9 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     }
 
     //@Override
+    // TODO review as this looks not right
     protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
-        //super.linkWith(abstractDiscussionDTO, andDisplay);
-
         if (abstractDiscussionDTO instanceof NewsItemCompactDTO)
         {
             linkWith((NewsItemCompactDTO) abstractDiscussionDTO, andDisplay);
@@ -171,15 +180,16 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     protected void linkWith(NewsItemCompactDTO newsItemDTO, boolean andDisplay)
     {
         this.newsItemDTO = newsItemDTO;
+        this.translatedNewsItemDTO = null;
+        this.currentTranslationStatus = TranslationStatus.ORIGINAL;
+        toggleTranslate();
 
         if (andDisplay)
         {
             if (newsItemDTO != null)
             {
-                displayTitle();
-                displayDescription();
+                displayTranslatableTexts();
                 displaySource();
-                displayTranslateNotice();
                 displayMoreButton();
             }
             else
@@ -189,6 +199,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         }
     }
 
+    //<editor-fold desc="Display Methods">
     private void resetViews()
     {
         resetTitle();
@@ -206,9 +217,30 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         newsSource.setText(null);
     }
 
+    private void displayTranslatableTexts()
+    {
+        displayDescription();
+        displayTitle();
+        displayTranslateNotice();
+    }
+
     private void displayDescription()
     {
-        newsDescription.setText(newsItemDTO.description);
+        newsDescription.setText(getDescriptionText());
+    }
+
+    private String getDescriptionText()
+    {
+        switch (currentTranslationStatus)
+        {
+            case ORIGINAL:
+            case TRANSLATING:
+                return newsItemDTO.description;
+
+            case TRANSLATED:
+                return translatedNewsItemDTO.description;
+        }
+        throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
 
     private void resetDescription()
@@ -218,19 +250,31 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
 
     private void displayTitle()
     {
-        newsTitle.setText(newsItemDTO.title);
+        newsTitle.setText(getTitleText());
+    }
+
+    private String getTitleText()
+    {
+        switch (currentTranslationStatus)
+        {
+            case ORIGINAL:
+            case TRANSLATING:
+                return newsItemDTO.title;
+
+            case TRANSLATED:
+                return translatedNewsItemDTO.title;
+        }
+        throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
 
     private void displayTranslateNotice()
     {
         translateNoticeWrapper.setVisibility(socialShareHelper.canTranslate(newsItemDTO) ? View.VISIBLE : View.GONE);
         translateNotice.setText(getTranslateNoticeText());
-        TranslationToken token = translationTokenCache.get(new TranslationTokenKey());
-        if (token != null)
+        if (latestTranslationResult != null)
         {
-            translateNoticeImage.setImageResource(token.logoResId());
+            translateNoticeImage.setImageResource(latestTranslationResult.logoResId());
         }
-
     }
 
     private Spanned getTranslateNoticeText()
@@ -254,6 +298,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     {
         newsTitle.setText(null);
     }
+    //</editor-fold>
 
     private String parseHost(String url)
     {
@@ -271,10 +316,59 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         throw new IllegalStateException("It has no securityId");
     }
 
-    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
+    protected SocialShareTranslationHelper.OnMenuClickedListener createSocialShareMenuClickedListener()
     {
-        Bundle args = new Bundle();
-        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
-        ((DashboardActivity) getContext()).getDashboardNavigator().pushFragment(SettingsFragment.class, args);
+        return new NewsHeadlineViewShareTranslationMenuClickListener();
+    }
+
+    protected class NewsHeadlineViewShareTranslationMenuClickListener implements SocialShareTranslationHelper.OnMenuClickedListener
+    {
+        @Override public void onCancelClicked()
+        {
+        }
+
+        @Override public void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO)
+        {
+        }
+
+        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+        {
+        }
+
+        @Override public void onShared(SocialShareFormDTO shareFormDTO,
+                SocialShareResultDTO socialShareResultDTO)
+        {
+        }
+
+        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        {
+        }
+
+        @Override public void onTranslationClicked(AbstractDiscussionCompactDTO toTranslate)
+        {
+        }
+
+        @Override public void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
+                TranslationResult translationResult)
+        {
+            latestTranslationResult = translationResult;
+            displayTranslateNotice();
+        }
+
+        @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
+                AbstractDiscussionCompactDTO translated)
+        {
+            translatedNewsItemDTO = (NewsItemCompactDTO) translated;
+            if (currentTranslationStatus.equals(TranslationStatus.TRANSLATING))
+            {
+                currentTranslationStatus = TranslationStatus.TRANSLATED;
+                displayTranslatableTexts();
+            }
+        }
+
+        @Override public void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate,
+                Throwable error)
+        {
+        }
     }
 }

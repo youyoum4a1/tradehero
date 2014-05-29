@@ -1,12 +1,9 @@
 package com.tradehero.th.models.share;
 
-import android.app.ProgressDialog;
-import android.view.Window;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.widget.dialog.THDialog;
-import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTOFactory;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.fragments.news.NewsDialogFactory;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
@@ -14,6 +11,7 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.persistence.translation.TranslationKeyFactory;
+import com.tradehero.th.persistence.translation.TranslationKeyList;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -21,11 +19,12 @@ import javax.inject.Provider;
 public class SocialShareTranslationHelper extends SocialShareHelper
 {
     protected final TranslationKeyFactory translationKeyFactory;
+    protected final AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory;
     protected final TranslationCache translationCache;
 
-    protected ProgressDialog translateProgressDialog;
-
-    protected DTOCacheNew.Listener<TranslationKey, TranslationResult> translationListener;
+    private AbstractDiscussionCompactDTO toTranslate;
+    private TranslationKeyList remainingKeys;
+    private AbstractDiscussionCompactDTO translated;
 
     @Inject public SocialShareTranslationHelper(
             CurrentActivityHolder currentActivityHolder,
@@ -33,44 +32,25 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             AlertDialogUtil alertDialogUtil,
             Provider<SocialSharer> socialSharerProvider,
             TranslationKeyFactory translationKeyFactory,
+            AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory,
             TranslationCache translationCache)
     {
         super(currentActivityHolder, newsDialogFactory, alertDialogUtil, socialSharerProvider);
         this.translationKeyFactory = translationKeyFactory;
+        this.abstractDiscussionCompactDTOFactory = abstractDiscussionCompactDTOFactory;
         this.translationCache = translationCache;
     }
 
     @Override public void onDetach()
     {
         setMenuClickedListener(null);
-        dismissTranslateProgress();
-        detachTranslationCache();
         super.onDetach();
-    }
-
-    protected void dismissTranslateProgress()
-    {
-        ProgressDialog progressDialogCopy = translateProgressDialog;
-        if (progressDialogCopy != null)
-        {
-            progressDialogCopy.dismiss();
-        }
-        translateProgressDialog = null;
-    }
-
-    protected void detachTranslationCache()
-    {
-        if (translationListener != null)
-        {
-            translationCache.unregister(translationListener);
-        }
-        translationListener = null;
     }
 
     //<editor-fold desc="Listener Handling">
     @Override public void setMenuClickedListener(SocialShareHelper.OnMenuClickedListener menuClickedListener)
     {
-        if (menuClickedListener != null && !(menuClickedListener instanceof NewsDialogLayout.OnMenuClickedListener))
+        if (menuClickedListener != null && !(menuClickedListener instanceof OnMenuClickedListener))
         {
             throw new IllegalArgumentException("Only accepts OnMenuClickedListener");
         }
@@ -86,12 +66,22 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
-    protected void notifyTranslated(AbstractDiscussionCompactDTO toTranslate, TranslationResult translationResult)
+    protected void notifyTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
+            TranslationResult translationResult)
     {
         OnMenuClickedListener listenerCopy = (OnMenuClickedListener) menuClickedListener;
         if (listenerCopy != null)
         {
-            listenerCopy.onTranslated(toTranslate, translationResult);
+            listenerCopy.onTranslatedOneAttribute(toTranslate, translationResult);
+        }
+    }
+
+    protected void notifyTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate, AbstractDiscussionCompactDTO translated)
+    {
+        OnMenuClickedListener listenerCopy = (OnMenuClickedListener) menuClickedListener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onTranslatedAllAtributes(toTranslate, translated);
         }
     }
 
@@ -151,63 +141,60 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
     public void translate(AbstractDiscussionCompactDTO toTranslate)
     {
-        dismissTranslateProgress();
-        translateProgressDialog = createTranslatingProgress();
-        translateProgressDialog.show();
+        this.toTranslate = toTranslate;
+        this.translated = abstractDiscussionCompactDTOFactory.clone(toTranslate);
 
-        detachTranslationCache();
-        TranslationKey key = translationKeyFactory.createFrom(toTranslate, getTargetLanguage());
-        translationListener = createTranslationCacheListener(toTranslate);
-        translationCache.register(key, translationListener);
-        translationCache.getOrFetchAsync(key);
+        remainingKeys = translationKeyFactory.createFrom(toTranslate, getTargetLanguage());
+        if (remainingKeys.size() == 0)
+        {
+            notifyAllDoneIfPossible();
+        }
+        else
+        {
+            for (TranslationKey key : new TranslationKeyList(remainingKeys))
+            {
+                translationCache.register(key, createTranslationCacheListener());
+                translationCache.getOrFetchAsync(key);
+            }
+        }
     }
 
-    public ProgressDialog createTranslatingProgress()
+    public void notifyAllDoneIfPossible()
     {
-        ProgressDialog progressDialog = new ProgressDialog(currentActivityHolder.getCurrentContext());
-        progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        progressDialog.setMessage(
-                currentActivityHolder.getCurrentActivity().getString(R.string.translating));
-        return progressDialog;
+        if (remainingKeys == null || remainingKeys.size() == 0)
+        {
+            notifyTranslatedAllAtributes(toTranslate, translated);
+        }
     }
 
-    protected DTOCacheNew.Listener<TranslationKey, TranslationResult> createTranslationCacheListener(AbstractDiscussionCompactDTO toTranslate)
+    protected DTOCacheNew.Listener<TranslationKey, TranslationResult> createTranslationCacheListener()
     {
-        return new SocialShareTranslationHelperTranslationCacheListener(toTranslate);
+        return new SocialShareTranslationHelperTranslationCacheListener();
     }
 
     protected class SocialShareTranslationHelperTranslationCacheListener implements DTOCacheNew.Listener<TranslationKey, TranslationResult>
     {
-        private AbstractDiscussionCompactDTO toTranslate;
-
-        public SocialShareTranslationHelperTranslationCacheListener(
-                AbstractDiscussionCompactDTO toTranslate)
-        {
-            this.toTranslate = toTranslate;
-        }
-
         @Override public void onDTOReceived(TranslationKey key, TranslationResult value)
         {
-            dismissTranslateProgress();
-            detachTranslationCache();
-            notifyTranslated(toTranslate, value);
-            THDialog.showTranslationResult(
-                    currentActivityHolder.getCurrentContext(),
-                    value.getContent());
+            notifyTranslatedOneAttribute(toTranslate, value);
+            abstractDiscussionCompactDTOFactory.populateTranslation(translated, key, value);
+            remainingKeys.remove(key);
+            notifyAllDoneIfPossible();
         }
 
         @Override public void onErrorThrown(TranslationKey key, Throwable error)
         {
-            dismissTranslateProgress();
-            detachTranslationCache();
             notifyTranslateFailed(toTranslate, error);
+            remainingKeys.remove(key);
+            notifyAllDoneIfPossible();
         }
     }
 
     public interface OnMenuClickedListener extends SocialShareHelper.OnMenuClickedListener
     {
         void onTranslationClicked(AbstractDiscussionCompactDTO toTranslate);
-        void onTranslated(AbstractDiscussionCompactDTO toTranslate, TranslationResult translationResult);
+        void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate, TranslationResult translationResult);
+        void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate, AbstractDiscussionCompactDTO translated);
         void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate, Throwable error);
     }
 }
