@@ -181,13 +181,9 @@
     <item name="android:drawableLeft">@drawable/icn_info_normal_small</item>
   </style>
 
-  <style name="TH_VoteView" parent="TH.DiscussionActionButtons">
+  <style name="TH.VoteView" parent="TH.DiscussionActionButtons.Text">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginLeft">@dimen/timeline_action_buttons_horizontal_padding</item>
-    <item name="android:layout_marginRight">@dimen/timeline_action_buttons_horizontal_padding</item>
-    <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
-    <item name="android:textStyle">bold</item>
     <item name="android:gravity">center_vertical</item>
   </style>
 
@@ -284,11 +280,23 @@
     <item name="showAnimation">true</item>
     <item name="textSize">18sp</item>
   </style>
+
   <style name="TH.DiscussionActionButtons">
-    <item name="android:paddingLeft">@dimen/timeline_action_buttons_horizontal_padding</item>
-    <item name="android:paddingRight">@dimen/timeline_action_buttons_horizontal_padding</item>
-    <item name="android:paddingTop">@dimen/timeline_action_buttons_vertical_padding</item>
-    <item name="android:paddingBottom">@dimen/timeline_action_buttons_vertical_padding</item>
+    <item name="android:paddingLeft">@dimen/discussion_action_buttons_horizontal_padding</item>
+    <item name="android:paddingRight">@dimen/discussion_action_buttons_horizontal_padding</item>
+    <item name="android:paddingTop">@dimen/discussion_action_buttons_vertical_padding</item>
+    <item name="android:paddingBottom">@dimen/discussion_action_buttons_vertical_padding</item>
   </style>
 
+  <style name="TH.DiscussionActionButtons.Text" parent="TH.DiscussionActionButtons">
+    <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">16sp</item>
+    <!--<item name="android:shadowColor">@color/timeline_action_button_text_color_shadow</item>-->
+    <!--<item name="android:shadowDy">1</item>-->
+    <!--<item name="android:shadowRadius">1</item>-->
+    <item name="android:layout_gravity">center_vertical</item>
+    <item name="android:drawablePadding">@dimen/discussion_action_buttons_drawable_padding</item>
+  </style>
+  <dimen name="discussion_action_buttons_drawable_padding">5dp</dimen>
 </resources>

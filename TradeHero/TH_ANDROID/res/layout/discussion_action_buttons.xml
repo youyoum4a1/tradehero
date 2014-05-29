@@ -14,18 +14,10 @@
 
     <TextView
         android:id="@+id/discussion_action_button_comment_count"
-        style="@style/TH.DiscussionActionButtons"
+        style="@style/TH.DiscussionActionButtons.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/icn_comment"
-        android:layout_gravity="center_vertical"
-        android:gravity="center"
-        android:textColor="@drawable/timeline_action_button_text_color_xml"
-        android:textStyle="bold"
-        android:shadowColor="@color/timeline_action_button_text_color_shadow"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        android:drawablePadding="@dimen/comment_count_drawable_padding"
         android:text="0"
         tools:text="200"
         />

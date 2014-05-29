@@ -83,11 +83,9 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                 openTimelineDiscussion();
                 break;
             case R.id.timeline_vendor_picture:
-            case R.id.timeline_action_button_trade_wrapper:
                 openSecurityProfile();
                 break;
             case R.id.discussion_action_button_share:
-            case R.id.timeline_action_button_share_wrapper:
                 createAndShowSharePopupDialog();
                 break;
             case R.id.discussion_action_button_more:
@@ -424,14 +422,10 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                 }
                 break;
             case R.id.timeline_vendor_picture:
-            case R.id.timeline_action_button_trade_wrapper:
                 if (timelineItemDTO != null)
                 {
                     openSecurityProfile();
                 }
-                break;
-            case R.id.timeline_action_button_share_wrapper:
-                createAndShowSharePopupDialog();
                 break;
         }
     }

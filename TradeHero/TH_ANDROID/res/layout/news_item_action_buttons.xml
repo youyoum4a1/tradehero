@@ -13,24 +13,15 @@
       android:orientation="horizontal"
       android:baselineAligned="false"
       android:gravity="center_vertical"
-      android:paddingLeft="@dimen/news_item_action_padding_l_r"
-      android:paddingRight="@dimen/news_item_action_padding_l_r"
       >
     <include layout="@layout/vote_pair"/>
 
     <TextView
         android:id="@+id/discussion_action_button_comment_count"
-        style="@style/TH.DiscussionActionButtons"
+        style="@style/TH.DiscussionActionButtons.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:drawableLeft="@drawable/icn_comment"
-        android:textColor="@drawable/timeline_action_button_text_color_xml"
-        android:textStyle="bold"
-        android:shadowColor="@color/timeline_action_button_text_color_shadow"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        android:drawablePadding="@dimen/timeline_action_buttons_horizontal_padding"
         android:text="0"
         tools:text="200"
         />
