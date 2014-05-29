@@ -7,6 +7,9 @@
     android:orientation="vertical"
     >
   <include layout="@layout/news_detail_summary_view"/>
-  <include layout="@layout/news_item_action_buttons"/>
+
+  <include layout="@layout/discussion_action_buttons"/>
+
   <include layout="@layout/news_detail_full_content"/>
+
 </LinearLayout>

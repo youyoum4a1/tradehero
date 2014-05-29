@@ -52,7 +52,7 @@
     </LinearLayout>
   </FrameLayout>
 
-  <include layout="@layout/news_item_action_buttons"/>
+  <include layout="@layout/discussion_action_buttons"/>
 
   <ScrollView
       android:layout_width="match_parent"
