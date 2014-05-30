@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.timeline;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,12 +17,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -32,13 +29,8 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
-import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -49,7 +41,6 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
-import retrofit.Callback;
 import retrofit.client.Response;
 
 public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTOKey>
@@ -343,19 +334,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         }
     }
 
-    private void openStockInfo()
-    {
-        localyticsSession.tagEvent(LocalyticsConstants.Monitor_Chart);
-
-        Bundle args = new Bundle();
-        SecurityId securityId = getSecurityId();
-        if (securityId != null)
-        {
-            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        }
-        getNavigator().pushFragment(StockInfoFragment.class, args);
-    }
-
     private void openStockAlertEditor()
     {
         localyticsSession.tagEvent(LocalyticsConstants.Monitor_Alert);
@@ -394,40 +372,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     private void createAndShowSharePopupDialog()
     {
         socialShareHelper.share(timelineItemDTO);
-    }
-
-    private void openSettingScreen()
-    {
-        getNavigator().pushFragment(SettingsFragment.class);
-    }
-
-    public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.timeline_user_profile_picture:
-            case R.id.timeline_user_profile_name:
-                if (timelineItemDTO != null)
-                {
-                    UserProfileCompactDTO user = timelineItemDTO.getUser();
-                    if (user != null)
-                    {
-                        if (currentUserId.get() != user.id)
-                        {
-                            Bundle bundle = new Bundle();
-                            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
-                            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-                        }
-                    }
-                }
-                break;
-            case R.id.timeline_vendor_picture:
-                if (timelineItemDTO != null)
-                {
-                    openSecurityProfile();
-                }
-                break;
-        }
     }
 
     private void openSecurityProfile()
@@ -473,55 +417,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     protected boolean canShowStockMenu()
     {
         return timelineItemDTO != null && timelineItemDTO.getFlavorSecurityForDisplay() != null;
-    }
-
-    private void updateMonitorMenuView(Menu menu)
-    {
-        if (menu != null)
-        {
-            SecurityId securityId = getSecurityId();
-
-            MenuItem watchListMenuItem = menu.findItem(R.id.timeline_action_add_to_watchlist);
-            if (watchListMenuItem != null)
-            {
-                if (securityId != null)
-                {
-                    // if Watchlist milestone has finished receiving data
-                    if (userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey()) != null)
-                    {
-                        if (watchlistPositionCache.get().get(securityId) == null)
-                        {
-                            watchListMenuItem.setTitle(getContext().getString(R.string.watchlist_add_title));
-                        }
-                        else
-                        {
-                            watchListMenuItem.setTitle(getContext().getString(R.string.watchlist_edit_title));
-                        }
-                        watchListMenuItem.setVisible(true);
-                    }
-                }
-                else
-                {
-                    watchListMenuItem.setVisible(false);
-                }
-            }
-        }
-    }
-
-    private Callback<Response> createShareRequestCallback(final SocialNetworkEnum socialNetworkEnum)
-    {
-        return new THCallback<Response>()
-        {
-            @Override protected void success(Response response, THResponse thResponse)
-            {
-                THToast.show(String.format(getContext().getString(R.string.timeline_post_to_social_network), socialNetworkEnum.getName()));
-            }
-
-            @Override protected void failure(THException ex)
-            {
-                THToast.show(String.format(getContext().getString(R.string.timeline_link_account), socialNetworkEnum.getName()));
-            }
-        };
     }
 
     @Override protected SecurityId getSecurityId()
