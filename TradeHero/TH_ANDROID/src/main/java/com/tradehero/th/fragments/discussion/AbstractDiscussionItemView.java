@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import butterknife.ButterKnife;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
@@ -10,9 +12,13 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
+import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -29,6 +35,7 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected Provider<PrettyTime> prettyTime;
     @Inject protected AlertDialogUtil alertDialogUtil;
+    @Inject protected SocialShareTranslationHelper socialShareHelper;
     protected AbstractDiscussionCompactItemViewHolder viewHolder;
     protected T discussionKey;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
@@ -57,27 +64,26 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         super.onFinishInflate();
         DaggerUtils.inject(this);
         viewHolder = createViewHolder();
-        viewHolder.initView(this);
+        ButterKnife.inject(viewHolder, this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (abstractDiscussionCompactDTO != null)
-        {
-            viewHolder.linkWith(abstractDiscussionCompactDTO, true);
-        }
+        ButterKnife.inject(viewHolder, this);
+        viewHolder.linkWith(abstractDiscussionCompactDTO, true);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachFetchDiscussionTask();
+        ButterKnife.reset(viewHolder);
         super.onDetachedFromWindow();
     }
 
     protected AbstractDiscussionCompactItemViewHolder createViewHolder()
     {
-        return new AbstractDiscussionCompactItemViewHolder();
+        return new AbstractDiscussionCompactItemViewHolder<AbstractDiscussionCompactDTO>();
     }
 
     @Override public void display(T discussionKey)
@@ -118,10 +124,7 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
     protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
-        if (viewHolder != null)
-        {
-            viewHolder.linkWith(abstractDiscussionDTO, andDisplay);
-        }
+        viewHolder.linkWith(abstractDiscussionDTO, andDisplay);
         if (andDisplay)
         {
         }
@@ -155,4 +158,82 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
     //</editor-fold>
+
+    protected void pushDiscussionFragment()
+    {
+        // To be overriden by children
+    }
+
+    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
+    {
+        return new NewsHeadLineViewHolderClickedListener();
+    }
+
+    protected class NewsHeadLineViewHolderClickedListener implements AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener
+    {
+        @Override public void onCommentButtonClicked()
+        {
+            pushDiscussionFragment();
+        }
+
+        @Override public void onTranslationRequested()
+        {
+            socialShareHelper.translate(abstractDiscussionCompactDTO);
+        }
+
+        @Override public void onMoreButtonClicked()
+        {
+            socialShareHelper.shareOrTranslate(abstractDiscussionCompactDTO);
+        }
+    }
+
+    protected SocialShareTranslationHelper.OnMenuClickedListener createSocialShareMenuClickedListener()
+    {
+        return new NewsHeadlineViewShareTranslationMenuClickListener();
+    }
+
+    protected class NewsHeadlineViewShareTranslationMenuClickListener implements SocialShareTranslationHelper.OnMenuClickedListener
+    {
+        @Override public void onCancelClicked()
+        {
+        }
+
+        @Override public void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO)
+        {
+        }
+
+        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+        {
+        }
+
+        @Override public void onShared(SocialShareFormDTO shareFormDTO,
+                SocialShareResultDTO socialShareResultDTO)
+        {
+        }
+
+        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        {
+        }
+
+        @Override public void onTranslationClicked(AbstractDiscussionCompactDTO toTranslate)
+        {
+        }
+
+        @Override public void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
+                TranslationResult translationResult)
+        {
+            viewHolder.setLatestTranslationResult(translationResult);
+        }
+
+        @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
+                AbstractDiscussionCompactDTO translated)
+        {
+            viewHolder.linkWithTranslated(translated, true);
+        }
+
+        @Override public void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate,
+                Throwable error)
+        {
+        }
+    }
 }
