@@ -3,20 +3,19 @@ package com.tradehero.th.fragments.news;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
-        AbstractDiscussionItemViewHolder<DiscussionType>
+public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO> extends AbstractDiscussionCompactItemViewHolder<DiscussionType>
 {
     @InjectView(R.id.news_title_description) TextView newsDescription;
     @InjectView(R.id.news_title_title) TextView newsTitle;
     @InjectView(R.id.news_source) TextView newsSource;
 
     //<editor-fold desc="Constructors">
-    public NewsItemViewHolder()
+    public NewsItemCompactViewHolder()
     {
         super();
     }
@@ -32,7 +31,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
 
     @Override public boolean isAutoTranslate()
     {
-        return false;
+        return true;
     }
 
     //<editor-fold desc="Display Methods">
@@ -44,7 +43,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         displayDescription();
     }
 
-    private void displaySource()
+    protected void displaySource()
     {
         if (discussionDTO != null)
         {
@@ -56,7 +55,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         }
     }
 
-    private String parseHost(String url)
+    public String parseHost(String url)
     {
         try
         {
@@ -70,16 +69,17 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
 
     @Override public void displayTranslatableTexts()
     {
+        super.displayTranslatableTexts();
         displayTitle();
         displayDescription();
     }
 
-    private void displayTitle()
+    protected void displayTitle()
     {
         newsTitle.setText(getTitleText());
     }
 
-    private String getTitleText()
+    public String getTitleText()
     {
         switch (currentTranslationStatus)
         {
@@ -101,12 +101,12 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
 
-    private void displayDescription()
+    protected void displayDescription()
     {
         newsDescription.setText(getDescriptionText());
     }
 
-    private String getDescriptionText()
+    public String getDescriptionText()
     {
         switch (currentTranslationStatus)
         {
