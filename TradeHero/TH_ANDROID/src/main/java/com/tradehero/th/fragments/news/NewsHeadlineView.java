@@ -2,19 +2,12 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.dialog.THDialog;
-import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.SocialShareFormDTO;
@@ -24,44 +17,13 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.inject.Inject;
 
 public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         implements THDialog.OnDialogItemClickListener
 {
-    private static enum TranslationStatus
-    {
-        ORIGINAL(R.string.discussion_translate_button),
-        TRANSLATING(R.string.discussion_translating_button),
-        TRANSLATED(R.string.discussion_show_original_button);
-
-        public int actionTextResId;
-
-        TranslationStatus(int actionTextResId)
-        {
-            this.actionTextResId = actionTextResId;
-        }
-    }
-
-    @InjectView(R.id.news_title_description) TextView newsDescription;
-    @InjectView(R.id.news_title_title) TextView newsTitle;
-    @InjectView(R.id.news_source) TextView newsSource;
-
-    @InjectView(R.id.discussion_translate_notice_wrapper) View translateNoticeWrapper;
-    @InjectView(R.id.discussion_translate_notice) TextView translateNotice;
-    @InjectView(R.id.discussion_translate_notice_image) ImageView translateNoticeImage;
-
-    @InjectView(R.id.discussion_action_button_more) View buttonMore;
-
     @Inject NewsItemCompactCacheNew newsItemCompactCache;
     @Inject SocialShareTranslationHelper socialShareHelper;
-
-    private NewsItemCompactDTO newsItemDTO;
-    private TranslationResult latestTranslationResult;
-    private NewsItemCompactDTO translatedNewsItemDTO;
-    private TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineView(Context context)
@@ -83,27 +45,31 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
         socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        ((NewsItemViewHolder) viewHolder).setMenuClickedListener(createViewHolderMenuClickedListener());
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
         socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        ((NewsItemViewHolder) viewHolder).setMenuClickedListener(
+                createViewHolderMenuClickedListener());
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
         socialShareHelper.onDetach();
         super.onDetachedFromWindow();
+        ((NewsItemViewHolder) viewHolder).setMenuClickedListener(null);
+    }
+
+    @Override protected NewsItemViewHolder createViewHolder()
+    {
+        return new NewsItemViewHolder();
     }
 
     //<editor-fold desc="Related to share dialog">
-    // TODO
-
     @Override
     public void onClick(int whichButton)
     {
@@ -115,41 +81,20 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
                 break;
         }
     }
-
-    @OnClick({R.id.discussion_translate_notice_wrapper})
-    protected void toggleTranslate()
-    {
-        switch (currentTranslationStatus)
-        {
-            case ORIGINAL:
-                currentTranslationStatus = TranslationStatus.TRANSLATING;
-                displayTranslatableTexts();
-                socialShareHelper.translate(newsItemDTO);
-                break;
-
-            case TRANSLATING:
-            case TRANSLATED:
-                currentTranslationStatus = TranslationStatus.ORIGINAL;
-                displayTranslatableTexts();
-                break;
-        }
-    }
-
-    /**
-     * show dialog including sharing and translation.
-     */
-    @OnClick(R.id.discussion_action_button_more)
-    protected void showShareDialog()
-    {
-        socialShareHelper.shareOrTranslate(newsItemDTO);
-    }
     //</editor-fold>
 
-    /**
-     * TODO this event should be handled by DiscussionActionButtonsView,
-     */
-    @OnClick(R.id.discussion_action_button_comment_count)
-    void onActionButtonCommentCountClicked()
+    @Override public void display(NewsItemDTOKey discussionKey)
+    {
+        super.display(discussionKey);
+        linkWith(newsItemCompactCache.get(discussionKey), true);
+    }
+
+    @Override protected SecurityId getSecurityId()
+    {
+        throw new IllegalStateException("It has no securityId");
+    }
+
+    protected void pushDiscussionFragment()
     {
         if (discussionKey != null)
         {
@@ -159,161 +104,35 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
             getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }
-
-    @Override public void display(NewsItemDTOKey discussionKey)
+    @Override
+    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionFetchListener()
     {
-        super.display(discussionKey);
-        linkWith(newsItemCompactCache.get(discussionKey), true);
-
+        // We are ok with the NewsItemDTO being saved in cache, but we do not want
+        // to get it here...
+        return null;
     }
 
-    //@Override
-    // TODO review as this looks not right
-    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
+    protected NewsItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
-        if (abstractDiscussionDTO instanceof NewsItemCompactDTO)
+        return new NewsHeadLineViewHolderClickedListener();
+    }
+
+    protected class NewsHeadLineViewHolderClickedListener implements NewsItemViewHolder.OnMenuClickedListener
+    {
+        @Override public void onCommentButtonClicked()
         {
-            linkWith((NewsItemCompactDTO) abstractDiscussionDTO, andDisplay);
+            pushDiscussionFragment();
         }
-    }
 
-    protected void linkWith(NewsItemCompactDTO newsItemDTO, boolean andDisplay)
-    {
-        this.newsItemDTO = newsItemDTO;
-        this.translatedNewsItemDTO = null;
-        this.currentTranslationStatus = TranslationStatus.ORIGINAL;
-        toggleTranslate();
-
-        if (andDisplay)
+        @Override public void onTranslationRequested()
         {
-            if (newsItemDTO != null)
-            {
-                displayTranslatableTexts();
-                displaySource();
-                displayMoreButton();
-            }
-            else
-            {
-                resetViews();
-            }
+            socialShareHelper.translate(abstractDiscussionCompactDTO);
         }
-    }
 
-    //<editor-fold desc="Display Methods">
-    private void resetViews()
-    {
-        resetTitle();
-        resetDescription();
-        resetSource();
-    }
-
-    private void displaySource()
-    {
-        newsSource.setText(parseHost(newsItemDTO.url));
-    }
-
-    private void resetSource()
-    {
-        newsSource.setText(null);
-    }
-
-    private void displayTranslatableTexts()
-    {
-        displayDescription();
-        displayTitle();
-        displayTranslateNotice();
-    }
-
-    private void displayDescription()
-    {
-        newsDescription.setText(getDescriptionText());
-    }
-
-    private String getDescriptionText()
-    {
-        switch (currentTranslationStatus)
+        @Override public void onMoreButtonClicked()
         {
-            case ORIGINAL:
-            case TRANSLATING:
-                return newsItemDTO.description;
-
-            case TRANSLATED:
-                return translatedNewsItemDTO.description;
+            socialShareHelper.shareOrTranslate(abstractDiscussionCompactDTO);
         }
-        throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
-    }
-
-    private void resetDescription()
-    {
-        newsDescription.setText(null);
-    }
-
-    private void displayTitle()
-    {
-        newsTitle.setText(getTitleText());
-    }
-
-    private String getTitleText()
-    {
-        switch (currentTranslationStatus)
-        {
-            case ORIGINAL:
-            case TRANSLATING:
-                return newsItemDTO.title;
-
-            case TRANSLATED:
-                return translatedNewsItemDTO.title;
-        }
-        throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
-    }
-
-    private void displayTranslateNotice()
-    {
-        translateNoticeWrapper.setVisibility(socialShareHelper.canTranslate(newsItemDTO) ? View.VISIBLE : View.GONE);
-        translateNotice.setText(getTranslateNoticeText());
-        if (latestTranslationResult != null)
-        {
-            translateNoticeImage.setImageResource(latestTranslationResult.logoResId());
-        }
-    }
-
-    private Spanned getTranslateNoticeText()
-    {
-        return Html.fromHtml(getContext().getString(
-                        R.string.discussion_translate_button_with_powered,
-                        getTranslateNoticeActionText()));
-    }
-
-    private String getTranslateNoticeActionText()
-    {
-        return getContext().getString(currentTranslationStatus.actionTextResId);
-    }
-
-    private void displayMoreButton()
-    {
-        buttonMore.setVisibility(View.GONE);
-    }
-
-    private void resetTitle()
-    {
-        newsTitle.setText(null);
-    }
-    //</editor-fold>
-
-    private String parseHost(String url)
-    {
-        try
-        {
-            return new URL(url).getHost();
-        } catch (MalformedURLException e)
-        {
-            return null;
-        }
-    }
-
-    @Override protected SecurityId getSecurityId()
-    {
-        throw new IllegalStateException("It has no securityId");
     }
 
     protected SocialShareTranslationHelper.OnMenuClickedListener createSocialShareMenuClickedListener()
@@ -351,18 +170,18 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
         @Override public void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
                 TranslationResult translationResult)
         {
-            latestTranslationResult = translationResult;
-            displayTranslateNotice();
+            ((NewsItemViewHolder) viewHolder).latestTranslationResult = translationResult;
+            ((NewsItemViewHolder) viewHolder).displayTranslateNotice();
         }
 
         @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
                 AbstractDiscussionCompactDTO translated)
         {
-            translatedNewsItemDTO = (NewsItemCompactDTO) translated;
-            if (currentTranslationStatus.equals(TranslationStatus.TRANSLATING))
+            ((NewsItemViewHolder) viewHolder).translatedAbstractDiscussionCompactDTO = translated;
+            if (((NewsItemViewHolder) viewHolder).currentTranslationStatus.equals(NewsItemViewHolder.TranslationStatus.TRANSLATING))
             {
-                currentTranslationStatus = TranslationStatus.TRANSLATED;
-                displayTranslatableTexts();
+                ((NewsItemViewHolder) viewHolder).currentTranslationStatus = NewsItemViewHolder.TranslationStatus.TRANSLATED;
+                ((NewsItemViewHolder) viewHolder).displayTranslatableTexts();
             }
         }
 

@@ -29,7 +29,7 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected Provider<PrettyTime> prettyTime;
     @Inject protected AlertDialogUtil alertDialogUtil;
-    protected AbstractDiscussionItemViewHolder viewHolder;
+    protected AbstractDiscussionCompactItemViewHolder viewHolder;
     protected T discussionKey;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
@@ -75,9 +75,9 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         super.onDetachedFromWindow();
     }
 
-    protected AbstractDiscussionItemViewHolder createViewHolder()
+    protected AbstractDiscussionCompactItemViewHolder createViewHolder()
     {
-        return new AbstractDiscussionItemViewHolder();
+        return new AbstractDiscussionCompactItemViewHolder();
     }
 
     @Override public void display(T discussionKey)

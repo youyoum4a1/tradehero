@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -9,13 +10,14 @@ import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
-public class AbstractDiscussionItemViewHolder
+public class AbstractDiscussionCompactItemViewHolder
 {
     @InjectView(R.id.private_text_container) @Optional protected View textContainer;
     @InjectView(R.id.discussion_content) protected TextView content;
@@ -26,14 +28,18 @@ public class AbstractDiscussionItemViewHolder
     @InjectView(R.id.discussion_action_button_comment_count) @Optional CompoundButton commentCountView;
 
     @Inject protected PrettyTime prettyTime;
+    @Inject protected Context context;
+    @Inject protected SocialShareTranslationHelper socialShareHelper;
 
-    protected AbstractDiscussionCompactDTO discussionDTO;
+    protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
-    public AbstractDiscussionItemViewHolder()
+    //<editor-fold desc="Constructors">
+    public AbstractDiscussionCompactItemViewHolder()
     {
         super();
         DaggerUtils.inject(this);
     }
+    //</editor-fold>
 
     public void initView(View view)
     {
@@ -42,7 +48,7 @@ public class AbstractDiscussionItemViewHolder
 
     public void linkWith(AbstractDiscussionCompactDTO discussionDTO, boolean andDisplay)
     {
-        this.discussionDTO = discussionDTO;
+        this.abstractDiscussionCompactDTO = discussionDTO;
         if (andDisplay)
         {
             displayText();
@@ -67,9 +73,9 @@ public class AbstractDiscussionItemViewHolder
     {
         if (content != null)
         {
-            if (this.discussionDTO instanceof AbstractDiscussionDTO)
+            if (this.abstractDiscussionCompactDTO instanceof AbstractDiscussionDTO)
             {
-                content.setText(((AbstractDiscussionDTO) this.discussionDTO).text);
+                content.setText(((AbstractDiscussionDTO) this.abstractDiscussionCompactDTO).text);
             }
             else
             {
@@ -78,9 +84,9 @@ public class AbstractDiscussionItemViewHolder
         }
         if (stubContent != null)
         {
-            if (this.discussionDTO instanceof AbstractDiscussionDTO)
+            if (this.abstractDiscussionCompactDTO instanceof AbstractDiscussionDTO)
             {
-                stubContent.setText(((AbstractDiscussionDTO) this.discussionDTO).text);
+                stubContent.setText(((AbstractDiscussionDTO) this.abstractDiscussionCompactDTO).text);
             }
             else
             {
@@ -104,16 +110,16 @@ public class AbstractDiscussionItemViewHolder
 
     public boolean isInProcess()
     {
-        return discussionDTO != null && discussionDTO.isInProcess();
+        return abstractDiscussionCompactDTO != null && abstractDiscussionCompactDTO.isInProcess();
     }
 
     private void displayTime()
     {
         if (time != null)
         {
-            if (discussionDTO.createdAtUtc != null && time != null)
+            if (abstractDiscussionCompactDTO.createdAtUtc != null)
             {
-                time.setText(prettyTime.formatUnrounded(discussionDTO.createdAtUtc));
+                time.setText(prettyTime.formatUnrounded(abstractDiscussionCompactDTO.createdAtUtc));
             }
         }
     }
