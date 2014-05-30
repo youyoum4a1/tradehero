@@ -40,7 +40,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     @InjectView(R.id.vote_pair) @Optional protected VotePair votePair;
     @InjectView(R.id.discussion_time) protected TextView time;
     @InjectView(R.id.discussion_action_button_comment_count) @Optional protected CompoundButton commentCountView;
-    @InjectView(R.id.discussion_action_button_more) protected View buttonMore;
+    @InjectView(R.id.discussion_action_button_more) @Optional protected View buttonMore;
 
     @InjectView(R.id.private_text_stub_container) @Optional protected  View stubTextContainer;
     @InjectView(R.id.discussion_stub_content) @Optional protected  TextView stubContent;
@@ -207,7 +207,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     /**
      * TODO this event should be handled by DiscussionActionButtonsView,
      */
-    @OnClick(R.id.discussion_action_button_comment_count)
+    @OnClick(R.id.discussion_action_button_comment_count) @Optional
     protected void notifyCommentButtonClicked()
     {
         OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
@@ -245,7 +245,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    @OnClick(R.id.discussion_action_button_more)
+    @OnClick(R.id.discussion_action_button_more) @Optional
     protected void notifyMoreButtonClicked()
     {
         OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
