@@ -22,7 +22,7 @@ import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
@@ -42,12 +42,12 @@ import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.network.share.SocialSharer;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -358,16 +358,16 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
-        AbstractDiscussionDTO abstractDiscussionDTO = discussionCache.get(discussionKey);
+        AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.get(discussionKey);
         linkWith(abstractDiscussionDTO, andDisplay);
     }
 
-    private void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    private void linkWith(AbstractDiscussionCompactDTO abstractDiscussionCompactDTO, boolean andDisplay)
     {
         // TODO question, should we subclass this to have a NewsEditPostFragment?
-        if (abstractDiscussionDTO instanceof NewsItemDTO)
+        if (abstractDiscussionCompactDTO instanceof NewsItemDTO)
         {
-            linkWith((NewsItemDTO) abstractDiscussionDTO, andDisplay);
+            linkWith((NewsItemDTO) abstractDiscussionCompactDTO, andDisplay);
         }
     }
 

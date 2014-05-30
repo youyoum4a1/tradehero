@@ -10,9 +10,9 @@ import java.net.URL;
 
 public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO> extends AbstractDiscussionCompactItemViewHolder<DiscussionType>
 {
-    @InjectView(R.id.news_title_description) TextView newsDescription;
-    @InjectView(R.id.news_title_title) TextView newsTitle;
-    @InjectView(R.id.news_source) TextView newsSource;
+    @InjectView(R.id.news_title_description) protected TextView newsDescription;
+    @InjectView(R.id.news_title_title) protected TextView newsTitle;
+    @InjectView(R.id.news_source) protected TextView newsSource;
 
     //<editor-fold desc="Constructors">
     public NewsItemCompactViewHolder()

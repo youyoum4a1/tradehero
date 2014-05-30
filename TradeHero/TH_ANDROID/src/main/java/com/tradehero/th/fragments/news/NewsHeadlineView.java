@@ -6,18 +6,12 @@ import android.util.AttributeSet;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import javax.inject.Inject;
 
@@ -106,7 +100,7 @@ public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
     }
 
     @Override
-    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionFetchListener()
+    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
     {
         // We are ok with the NewsItemDTO being saved in cache, but we do not want
         // to get it here...

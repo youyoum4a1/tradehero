@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
@@ -9,7 +8,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.SocialShareFormDTO;
@@ -40,7 +38,7 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
     protected T discussionKey;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
-    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
+    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchTask;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionItemView(Context context)
@@ -116,7 +114,7 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         discussionFetchTask = null;
     }
 
-    public void display(AbstractDiscussionDTO abstractDiscussionDTO)
+    public void display(AbstractDiscussionCompactDTO abstractDiscussionDTO)
     {
         linkWith(abstractDiscussionDTO, true);
     }
@@ -132,16 +130,16 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
 
     abstract protected SecurityId getSecurityId();
 
-    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionFetchListener()
+    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
     {
         return new DiscussionFetchListener();
     }
 
     private class DiscussionFetchListener
-            implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
+            implements DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
         @Override
-        public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
+        public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value, boolean fromCache)
         {
             display(value);
         }
