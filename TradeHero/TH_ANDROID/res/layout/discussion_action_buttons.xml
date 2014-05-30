@@ -5,7 +5,7 @@
   <com.tradehero.th.fragments.discussion.DiscussionActionButtonsView
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
-      android:id="@+id/discussion_share_buttons"
+      android:id="@+id/discussion_action_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/discussion_action_buttons_background"
@@ -13,7 +13,7 @@
 
     <include layout="@layout/vote_pair"/>
 
-    <TextView
+    <com.tradehero.th.widget.CommentActionView
         android:id="@+id/discussion_action_button_comment_count"
         style="@style/TH.DiscussionActionButtons.Text"
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:src="@drawable/icn_actions_share"
-        />
+        android:contentDescription="@null"/>
 
     <TextView
         android:id="@+id/discussion_action_button_more"

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -21,7 +22,7 @@ public class AbstractDiscussionItemViewHolder
     @InjectView(R.id.discussion_stub_content) @Optional protected  TextView stubContent;
     @InjectView(R.id.vote_pair) @Optional VotePair votePair;
     @InjectView(R.id.discussion_time) TextView time;
-    @InjectView(R.id.discussion_action_button_comment_count) @Optional TextView commentCountView;
+    @InjectView(R.id.discussion_action_button_comment_count) @Optional CompoundButton commentCountView;
 
     @Inject protected PrettyTime prettyTime;
 
@@ -56,6 +57,7 @@ public class AbstractDiscussionItemViewHolder
             {
                 Timber.d("commentCountView %d",discussionDTO.commentCount);
                 commentCountView.setText(String.valueOf(discussionDTO.commentCount));
+                commentCountView.setChecked(discussionDTO.commentCount > 0);
             }
         }
     }

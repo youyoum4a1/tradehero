@@ -11,7 +11,7 @@ import com.tradehero.th.R;
 
 public class DiscussionActionButtonsView extends LinearLayout
 {
-    @InjectView(R.id.discussion_action_button_comment_count) TextView comment;
+    @InjectView(R.id.discussion_action_button_comment_count) TextView commentCount;
     @InjectView(R.id.discussion_action_button_share) View shareButton;
     @InjectView(R.id.discussion_action_button_more) View more;
 
