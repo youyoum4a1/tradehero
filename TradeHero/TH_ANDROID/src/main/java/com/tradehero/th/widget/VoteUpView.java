@@ -1,7 +1,6 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
@@ -42,6 +41,6 @@ public class VoteUpView extends VoteView
 
     @Override protected int getCheckedColor()
     {
-        return Color.BLUE;
+        return getResources().getColor(R.color.timeline_action_button_text_color_pressed);
     }
 }
