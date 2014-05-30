@@ -61,6 +61,8 @@
   <string name="settings_alipay_header">支付宝</string>
   <string name="settings_alipay_label">支付宝账号</string>
   <string name="settings_alipay_hint">您的支付宝账号</string>
+  <string name="settings_alipay_id_hint">您的身份证号</string>
+  <string name="settings_alipay_realname_hint">您的真实姓名</string>
   <string name="settings_alipay_update">更新</string>
   <string name="settings_alipay_description">我们将会把来自粉丝的收益分成，转入您的支付宝帐户&#8230;</string>
   <string name="settings_alipay_successful_update">支付宝账号更新成功</string>

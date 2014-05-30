@@ -55,6 +55,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
@@ -78,6 +79,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     private Integer restoreRequestCode;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
+    @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
@@ -403,6 +405,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         // Passing it on just in case it is expecting something
         billingInteractor.get().onActivityResult(requestCode, resultCode, data);
+        weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
     private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>

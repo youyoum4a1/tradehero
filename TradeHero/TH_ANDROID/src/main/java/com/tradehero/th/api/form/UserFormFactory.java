@@ -2,6 +2,7 @@ package com.tradehero.th.api.form;
 
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
+import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
@@ -37,8 +38,7 @@ public class UserFormFactory
             populateBase(userFormDTO, json);
             populatePerType(userFormDTO, type, json);
             return userFormDTO;
-        }
-        catch (JSONException ex)
+        } catch (JSONException ex)
         {
             return null;
         }
@@ -134,8 +134,8 @@ public class UserFormFactory
         }
         else if (type.equals(QQCredentialsDTO.QQ_AUTH_TYPE))
         {
-            ((QQUserFormDTO) userFormDTO).openId = json.getString(SocialAuthenticationProvider.ID_KEY);
-            ((QQUserFormDTO) userFormDTO).accessToken = json.getString(QQCredentialsDTO.KEY_ACCESS_TOKEN);
+            ((QQUserFormDTO) userFormDTO).openid = json.getString(QQAuthenticationProvider.KEY_OPEN_ID);
+            ((QQUserFormDTO) userFormDTO).accessToken = json.getString(QQAuthenticationProvider.KEY_ACCESS_TOKEN);
         }
         else if (type.equals(WeiboCredentialsDTO.WEIBO_AUTH_TYPE))
         {

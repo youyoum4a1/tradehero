@@ -20,7 +20,7 @@
         android:textSize="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left" />
+        android:layout_gravity="left"/>
 
     <!--android:inputType="textEmailAddress"-->
     <!--app:invalidDrawableRight="@drawable/warning_red"-->
@@ -33,7 +33,6 @@
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
         style="@style/TradeHero.Authentication.EditText"
-
         android:drawableLeft="@drawable/accounts_glyph_email_default"
         app:invalidDrawable="@drawable/accounts_glyph_email_error"
         app:validDrawable="@drawable/accounts_glyph_email_ok"
@@ -43,7 +42,31 @@
         app:minSize="1"
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
-        app:delayValidationByMilliSec="500" />
+        app:delayValidationByMilliSec="500"/>
+
+
+    <com.tradehero.th.widget.ServerValidatedEmailText
+        android:id="@+id/settings_alipay_id_text"
+        android:hint="@string/settings_alipay_id_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dip"
+        android:layout_gravity="left|bottom"
+        android:imeOptions="actionNext"
+        style="@style/TradeHero.Authentication.EditText"
+        />
+
+    <com.tradehero.th.widget.ServerValidatedEmailText
+        android:id="@+id/settings_alipay_realname_text"
+        android:hint="@string/settings_alipay_realname_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dip"
+        android:layout_gravity="left|bottom"
+        android:imeOptions="actionNext"
+        style="@style/TradeHero.Authentication.EditText"
+        app:minSize="1"
+        />
 
     <Button
         android:id="@+id/settings_alipay_update_button"
@@ -55,7 +78,7 @@
         android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:text="@string/settings_alipay_description"

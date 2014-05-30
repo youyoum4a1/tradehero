@@ -59,7 +59,9 @@
   <string name="settings_about_copyright">&#169; Copyright 2012&#8211;2014 My Manisku Pte. Ltd.</string>
   <string name="settings_about_registered_company">Registered in Singapore company number 201003309N</string>
   <string name="settings_about_patents_pending">Patents Pending</string>
-  <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or identification. Such trademarks or images remain the sole property of their respective owners.</string>
+  <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or
+    identification. Such trademarks or images remain the sole property of their respective owners.
+  </string>
   <string name="settings_paypal_header">PayPal</string>
   <string name="settings_paypal_label">PayPal 계정 (이메일 주소)</string>
   <string name="settings_paypal_hint">PayPal 이메일주소</string>
@@ -69,6 +71,7 @@
   <string name="settings_alipay_header">Alipay</string>
   <string name="settings_alipay_label">Alipay 계정</string>
   <string name="settings_alipay_hint">Alipay 계정</string>
+  <string name="settings_alipay_id_hint">Your Identifier </string>
   <string name="settings_alipay_update">업데이트</string>
   <string name="settings_alipay_description">Alipay계정을 사용하여 팔로워로부터 얻은 수익을 송금합니다.&#8230;</string>
   <string name="settings_alipay_successful_update">Alipay 계정 성공적으로 업데이트</string>

@@ -6,6 +6,8 @@
   <string name="key_settings_sharing_facebook">key_settings_sharing_facebook</string>
   <string name="key_settings_sharing_twitter">key_settings_sharing_twitter</string>
   <string name="key_settings_sharing_linked_in">key_settings_sharing_linked_in</string>
+  <string name="key_settings_sharing_weibo">key_settings_sharing_weibo</string>
+  <string name="key_settings_sharing_qq">key_settings_sharing_qq</string>
   <string name="key_settings_primary_faq">key_settings_primary_faq</string>
   <string name="key_settings_misc_about">key_settings_misc_about</string>
   <string name="key_settings_misc_sign_out">key_settings_misc_sign_out</string>

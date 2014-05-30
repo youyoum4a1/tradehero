@@ -7,7 +7,8 @@
   <string name="settings_sharing_facebook">Facebook</string>
   <string name="settings_sharing_twitter">Twitter</string>
   <string name="settings_sharing_linked_in">LinkedIn</string>
-
+  <string name="settings_sharing_weibo">SinaWeiBo</string>
+  <string name="settings_sharing_qq">QQ</string>
   <string name="setting_general">General</string>
   <string name="settings_primary_send_love">Send Love!</string>
   <string name="settings_primary_send_feedback">Send Feedback</string>
@@ -59,18 +60,24 @@
   <string name="settings_about_copyright">&#169; Copyright 2012&#8211;2014 My Manisku Pte. Ltd.</string>
   <string name="settings_about_registered_company">Registered in Singapore company number 201003309N</string>
   <string name="settings_about_patents_pending">Patents Pending</string>
-  <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or identification. Such trademarks or images remain the sole property of their respective owners.</string>
+  <string name="settings_about">Any use of trademarks or copyright images is for the fair and reasonable uses of research, study, description and/or
+    identification. Such trademarks or images remain the sole property of their respective owners.
+  </string>
   <string name="settings_paypal_header">PayPal</string>
   <string name="settings_paypal_label">PayPal Account (email address)</string>
   <string name="settings_paypal_hint">Your PayPal email address</string>
   <string name="settings_paypal_update">Update</string>
-  <string name="settings_paypal_description">We use your PayPal account to distribute your share of the income received from your followers&#8230;</string>
+  <string name="settings_paypal_description">We use your PayPal account to distribute your share of the income received from your
+    followers&#8230;</string>
   <string name="settings_paypal_successful_update">PayPal account successfully updated</string>
   <string name="settings_alipay_header">Alipay</string>
   <string name="settings_alipay_label">Alipay Account</string>
   <string name="settings_alipay_hint">Your Alipay account</string>
+  <string name="settings_alipay_id_hint">Your Identifier </string>
+  <string name="settings_alipay_realname_hint">Your Real Name</string>
   <string name="settings_alipay_update">Update</string>
-  <string name="settings_alipay_description">We use your Alipay account to distribute your share of the income received from your followers&#8230;</string>
+  <string name="settings_alipay_description">We use your Alipay account to distribute your share of the income received from your
+    followers&#8230;</string>
   <string name="settings_alipay_successful_update">Alipay account successfully updated</string>
   <string name="settings_transaction_header">Transaction History</string>
   <string name="settings_transaction_date">DATE</string>

@@ -65,8 +65,10 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
@@ -102,6 +104,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
+    @Inject Lazy<WeiboUtils> weiboUtils;
+    @Inject Lazy<QQUtils> qqUtils;
     @Inject LocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
@@ -115,6 +119,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private SocialNetworkEnum currentSocialNetworkConnect;
     private CheckBoxPreference twitterSharing;
     private CheckBoxPreference linkedInSharing;
+    private CheckBoxPreference weiboSharing;
+    private CheckBoxPreference qqSharing;
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
@@ -599,7 +605,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             linkedInSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.LN));
         }
-
+        weiboSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_weibo));
+        if (weiboSharing != null)
+        {
+            weiboSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.WB));
+        }
+        qqSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_qq));
+        if (qqSharing != null)
+        {
+            qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
+        }
         // notification
         pushNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push));
@@ -807,6 +824,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                             R.string.authentication_connecting_to_linkedin);
                     linkedInUtils.get().logIn(getActivity(), socialConnectLogInCallback);
                     break;
+                case WB:
+                    progressDialog = progressDialogUtil.show(getActivity(),
+                            R.string.sina_weibo,
+                            R.string.authentication_connecting_to_weibo);
+                    weiboUtils.get().logIn(getActivity(), socialConnectLogInCallback);
+                    break;
+                case QQ:
+                    progressDialog = progressDialogUtil.show(getActivity(),
+                            R.string.tencent_qq,
+                            R.string.authentication_connecting_to_qq);
+                    qqUtils.get().logIn(getActivity(), socialConnectLogInCallback);
+                    break;
             }
         }
         else
@@ -862,6 +891,14 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             if (linkedInSharing != null)
             {
                 linkedInSharing.setChecked(updatedUserProfileDTO.liLinked);
+            }
+            if (weiboSharing != null)
+            {
+                weiboSharing.setChecked(updatedUserProfileDTO.wbLinked);
+            }
+            if (qqSharing != null)
+            {
+                qqSharing.setChecked(updatedUserProfileDTO.qqLinked);
             }
             Timber.d("Sharing is updated");
         }

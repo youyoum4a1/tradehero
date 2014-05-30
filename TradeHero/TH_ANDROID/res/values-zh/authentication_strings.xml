@@ -31,6 +31,8 @@
   <string name="authentication_twitter_email">电子邮件</string>
   <string name="authentication_twitter_connecting">连接 Twitter</string>
   <string name="sina_weibo">微博</string>
+  <string name="tencent_qq">QQ</string>
   <string name="authentication_connecting_to_weibo">连接微博</string>
+  <string name="authentication_connecting_to_qq">连接QQ</string>
 
 </resources>
