@@ -30,7 +30,7 @@ public class NewsItemCompactDTO extends AbstractDiscussionCompactDTO
     }
     //</editor-fold>
 
-    public NewsItemDTOKey createDTOKey()
+    @Override public NewsItemDTOKey getDiscussionKey()
     {
         return new NewsItemDTOKey(id);
     }

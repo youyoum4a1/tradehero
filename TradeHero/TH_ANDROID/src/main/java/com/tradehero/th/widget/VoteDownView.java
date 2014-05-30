@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.VoteDirection;
 
 public class VoteDownView extends VoteView
@@ -26,7 +26,7 @@ public class VoteDownView extends VoteView
     }
     //</editor-fold>
 
-    @Override public void display(AbstractDiscussionDTO discussionDTO)
+    @Override public void display(AbstractDiscussionCompactDTO discussionDTO)
     {
         if (discussionDTO != null)
         {

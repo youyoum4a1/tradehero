@@ -7,6 +7,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.VotePair;
@@ -26,7 +27,7 @@ public class AbstractDiscussionItemViewHolder
 
     @Inject protected PrettyTime prettyTime;
 
-    protected AbstractDiscussionDTO discussionDTO;
+    protected AbstractDiscussionCompactDTO discussionDTO;
 
     public AbstractDiscussionItemViewHolder()
     {
@@ -39,7 +40,7 @@ public class AbstractDiscussionItemViewHolder
         ButterKnife.inject(this, view);
     }
 
-    public void linkWith(AbstractDiscussionDTO discussionDTO, boolean andDisplay)
+    public void linkWith(AbstractDiscussionCompactDTO discussionDTO, boolean andDisplay)
     {
         this.discussionDTO = discussionDTO;
         if (andDisplay)
@@ -66,9 +67,9 @@ public class AbstractDiscussionItemViewHolder
     {
         if (content != null)
         {
-            if (this.discussionDTO != null)
+            if (this.discussionDTO instanceof AbstractDiscussionDTO)
             {
-                content.setText(this.discussionDTO.text);
+                content.setText(((AbstractDiscussionDTO) this.discussionDTO).text);
             }
             else
             {
@@ -77,9 +78,9 @@ public class AbstractDiscussionItemViewHolder
         }
         if (stubContent != null)
         {
-            if (this.discussionDTO != null)
+            if (this.discussionDTO instanceof AbstractDiscussionDTO)
             {
-                stubContent.setText(this.discussionDTO.text);
+                stubContent.setText(((AbstractDiscussionDTO) this.discussionDTO).text);
             }
             else
             {

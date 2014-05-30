@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.security.SecurityId;
@@ -30,7 +31,7 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
     @Inject protected AlertDialogUtil alertDialogUtil;
     protected AbstractDiscussionItemViewHolder viewHolder;
     protected T discussionKey;
-    protected AbstractDiscussionDTO abstractDiscussionDTO;
+    protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
 
@@ -62,9 +63,9 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (abstractDiscussionDTO != null)
+        if (abstractDiscussionCompactDTO != null)
         {
-            viewHolder.linkWith(abstractDiscussionDTO, true);
+            viewHolder.linkWith(abstractDiscussionCompactDTO, true);
         }
     }
 
@@ -114,9 +115,9 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         linkWith(abstractDiscussionDTO, true);
     }
 
-    protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
-        this.abstractDiscussionDTO = abstractDiscussionDTO;
+        this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         if (viewHolder != null)
         {
             viewHolder.linkWith(abstractDiscussionDTO, andDisplay);
