@@ -63,10 +63,6 @@ public class TranslationKeyFactory
         {
             addTranslatableTexts(texts, (TimelineItemDTO) abstractDiscussionDTO);
         }
-        else if (abstractDiscussionDTO instanceof NewsItemDTO)
-        {
-            addTranslatableTexts(texts, (NewsItemDTO) abstractDiscussionDTO);
-        }
     }
 
     protected void addTranslatableTexts(List<String> texts, DiscussionDTO discussionDTO)
@@ -98,6 +94,10 @@ public class TranslationKeyFactory
         if (newsItemCompactDTO.description != null)
         {
             texts.add(newsItemCompactDTO.description);
+        }
+        if (newsItemCompactDTO instanceof NewsItemDTO)
+        {
+            addTranslatableTexts(texts, (NewsItemDTO) newsItemCompactDTO);
         }
     }
 

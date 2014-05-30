@@ -1,19 +1,17 @@
 package com.tradehero.th.fragments.news;
 
+import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
-        AbstractDiscussionItemViewHolder<DiscussionType>
+        NewsItemCompactViewHolder<DiscussionType>
 {
-    @InjectView(R.id.news_title_description) TextView newsDescription;
-    @InjectView(R.id.news_title_title) TextView newsTitle;
-    @InjectView(R.id.news_source) TextView newsSource;
+    @InjectView(R.id.private_text_container) @Optional protected View textContainer;
+    @InjectView(R.id.discussion_content) protected TextView textContent;
 
     //<editor-fold desc="Constructors">
     public NewsItemViewHolder()
@@ -36,94 +34,39 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     }
 
     //<editor-fold desc="Display Methods">
-    @Override public void display()
-    {
-        super.display();
-        displaySource();
-        displayTitle();
-        displayDescription();
-    }
-
-    private void displaySource()
-    {
-        if (discussionDTO != null)
-        {
-            newsSource.setText(parseHost(discussionDTO.url));
-        }
-        else
-        {
-            newsSource.setText(R.string.na);
-        }
-    }
-
-    private String parseHost(String url)
-    {
-        try
-        {
-            return new URL(url).getHost();
-        }
-        catch (MalformedURLException e)
-        {
-            return null;
-        }
-    }
-
     @Override public void displayTranslatableTexts()
     {
-        displayTitle();
-        displayDescription();
+        super.displayTranslatableTexts();
+        displayText();
     }
 
-    private void displayTitle()
+    protected void displayText()
     {
-        newsTitle.setText(getTitleText());
-    }
-
-    private String getTitleText()
-    {
-        switch (currentTranslationStatus)
+        if (textContent != null)
         {
-            case ORIGINAL:
-            case TRANSLATING:
-                if (discussionDTO != null)
-                {
-                    return discussionDTO.title;
-                }
-                return null;
-
-            case TRANSLATED:
-                if (translatedDiscussionDTO != null)
-                {
-                    return translatedDiscussionDTO.title;
-                }
-                return null;
+            textContent.setText(getText());
         }
-        throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
 
-    private void displayDescription()
-    {
-        newsDescription.setText(getDescriptionText());
-    }
-
-    private String getDescriptionText()
+    protected String getText()
     {
         switch (currentTranslationStatus)
         {
             case ORIGINAL:
-            case TRANSLATING:
                 if (discussionDTO != null)
                 {
-                    return discussionDTO.description;
+                    return discussionDTO.text;
                 }
                 return null;
 
+            case TRANSLATING:
             case TRANSLATED:
                 if (translatedDiscussionDTO != null)
                 {
-                    return translatedDiscussionDTO.description;
+                    return translatedDiscussionDTO.text;
                 }
                 return null;
+
         }
         throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
