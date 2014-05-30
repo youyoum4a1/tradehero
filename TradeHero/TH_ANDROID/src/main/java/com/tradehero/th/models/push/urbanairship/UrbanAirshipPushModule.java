@@ -1,5 +1,6 @@
 package com.tradehero.th.models.push.urbanairship;
 
+import com.tradehero.common.annotation.Temp;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.handlers.GcmDeletedHandler;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
@@ -7,6 +8,7 @@ import com.tradehero.th.models.push.handlers.PushNotificationHandler;
 import com.tradehero.th.models.push.handlers.PushReceivedHandler;
 import com.tradehero.th.models.push.handlers.RegistrationFinishedHandler;
 import com.urbanairship.push.CustomPushNotificationBuilder;
+import com.urbanairship.push.PushNotificationBuilder;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Arrays;
@@ -38,7 +40,12 @@ public class UrbanAirshipPushModule
         }));
     }
 
-    @Provides CustomPushNotificationBuilder provideCustomPushNotificationBuilder()
+    @Provides @Temp PushNotificationBuilder provideCustomPushNotificationBuilder(RichNotificationBuilder richNotificationBuilder)
+    {
+        return richNotificationBuilder;
+    }
+
+    @Provides PushNotificationBuilder provideCustomPushNotificationBuilder()
     {
         CustomPushNotificationBuilder nb = new CustomPushNotificationBuilder();
 

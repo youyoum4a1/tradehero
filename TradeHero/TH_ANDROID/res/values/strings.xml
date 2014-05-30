@@ -146,4 +146,10 @@
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
+
+  <plurals name="inbox_notification_title">
+    <item quantity="one">1 New Message</item>
+    <item quantity="other">%d <b>New</b> Messages</item>
+  </plurals>
+  <string name="inbox_summary">+%d more</string>
 </resources>
