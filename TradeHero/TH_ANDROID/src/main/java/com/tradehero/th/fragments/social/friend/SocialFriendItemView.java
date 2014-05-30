@@ -142,6 +142,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
         {
             actionBtn.setText(R.string.follow);
             actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
+            actionBtn.setEnabled(true);
         }
         else
         {
