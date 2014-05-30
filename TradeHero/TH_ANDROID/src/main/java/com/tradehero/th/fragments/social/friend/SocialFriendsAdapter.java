@@ -60,13 +60,6 @@ public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
     protected void handleInviteEvent(UserFriendsDTO userFriendsDTO) {
     }
 
-//    public Filter getFilter() {
-//        if (mFilter == null) {
-//            mFilter = new MyFilter();
-//        }
-//        return mFilter;
-//    }
-
     protected SocialFriendItemView.OnElementClickListener createUserClickedListener() {
         return new SocialElementClickListener();
     }

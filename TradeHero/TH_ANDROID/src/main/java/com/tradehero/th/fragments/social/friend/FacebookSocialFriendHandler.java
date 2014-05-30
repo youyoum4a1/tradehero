@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import com.facebook.FacebookException;
@@ -30,6 +31,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
@@ -61,6 +63,30 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler{
         this.activity = activity;
     }
 
+
+    public static class FacebookRequestCallback extends RequestCallback
+    {
+
+        public FacebookRequestCallback(Context context) {
+            super(context);
+        }
+
+        @Override
+        public final void success(Object data, Response response) {
+            this.success();
+        }
+
+        public void success() {
+        }
+
+        public void failure() {
+        }
+
+        @Override
+        public final void failure(RetrofitError retrofitError) {
+            this.failure();
+        }
+    }
 
     @Override
     public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback) {
@@ -194,17 +220,23 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler{
     private void handleError()
     {
         Timber.d("handleError");
-        THToast.show(R.string.invite_friend_request_error);
+        //THToast.show(R.string.invite_friend_request_error);
+
+        if (callback != null)
+        {
+            // TODO
+            callback.failure(null);
+        }
     }
 
     private void handleSuccess()
     {
         Timber.d("handleSuccess");
-        THToast.show(R.string.invite_friend_request_sent);
+        //THToast.show(R.string.invite_friend_request_sent);
         if (callback != null)
         {
             // TODO
-            //callback.success();
+            callback.success(null,null);
         }
     }
 

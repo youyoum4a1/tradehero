@@ -352,7 +352,7 @@ import javax.inject.Singleton;
                         SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
                         FriendsInvitationFragment.class,
-                        FackbookSocialFriendsFragment.class,
+                        FacebookSocialFriendsFragment.class,
                         TwitterSocialFriendsFragment.class,
                         LinkedInSocialFriendsFragment.class,
                         WeiboSocialFriendsFragment.class,

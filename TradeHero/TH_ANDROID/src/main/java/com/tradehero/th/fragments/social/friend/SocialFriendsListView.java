@@ -80,6 +80,16 @@ public class SocialFriendsListView extends RelativeLayout {
         followAllView.setVisibility(viewVisible ? View.VISIBLE : View.GONE);
     }
 
+    public void setFollowAllViewEnable(boolean enable)
+    {
+        followAllView.setEnabled(enable);
+    }
+
+    public void setInviteAllViewEnable(boolean enable)
+    {
+        inviteAllView.setEnabled(enable);
+    }
+
     public void setFollowOrInivteActionClickListener(OnClickListener l)
     {
         this.onClickListener = l;

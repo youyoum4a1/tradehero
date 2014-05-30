@@ -37,7 +37,7 @@ public class SocialTypeFactory {
     public Class<? extends SocialFriendsFragment> findProperTargetFragment(SocialNetworkEnum socialNetworkEnum) {
         switch (socialNetworkEnum) {
             case FB:
-                return FackbookSocialFriendsFragment.class;
+                return FacebookSocialFriendsFragment.class;
 
             case TW:
                 return TwitterSocialFriendsFragment.class;

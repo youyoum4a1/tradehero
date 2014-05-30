@@ -28,9 +28,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wangliang on 14-5-26.
@@ -102,7 +100,12 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+        socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
+    }
+
+    protected SocialFriendHandler.RequestCallback createInviteCallback(List<UserFriendsDTO> usersToInvite)
+    {
+        return new InviteFriendCallback(usersToInvite);
     }
 
     protected void createFriendHandler()
@@ -212,7 +215,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     private void displayContentView(FriendDTOList value)
     {
-        this.friendDTOList = value;
+
+        this.friendDTOList = filterTheDublicated(value);
+        checkUserType();
         if (value == null || value.size() == 0)
         {
             friendsRootView.showEmptyView();
@@ -224,11 +229,60 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
     }
 
+    private FriendDTOList filterTheDublicated(FriendDTOList friendDTOList)
+    {
+        TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
+        hashSet.addAll(friendDTOList);
+        FriendDTOList list = new FriendDTOList();
+        list.addAll(hashSet);
+        return list;
+    }
+
+    private void checkUserType()
+    {
+        int size = friendDTOList.size();
+        boolean hasUserToFollow = false;
+        boolean hasUserToInvite = false;
+        for (int i=0;i<size;i++)
+        {
+            if (hasUserToFollow && hasUserToInvite)
+            {
+                break;
+            }
+            if (friendDTOList.get(i).isTradeHeroUser())
+            {
+                hasUserToFollow = true;
+            }
+            else
+            {
+                hasUserToInvite = true;
+            }
+        }
+        if (!canFollow() || !hasUserToFollow)
+        {
+            friendsRootView.setFollowAllViewEnable(false);
+        }
+
+        if (!canInviteAll() || !hasUserToInvite)
+        {
+            friendsRootView.setInviteAllViewEnable(false);
+        }
+    }
+
+
+    /**
+     * Cannot invite Weibo friends, so hide 'invite all' and remove the one that cannot be invited.
+     * @return
+     */
     protected boolean canInvite()
     {
         return true;
     }
 
+    /**
+     * Invite all friends of facebook is a bit of complex, so just hide 'invite all'.
+     * @return
+     */
     protected boolean canInviteAll()
     {
         if (!canInvite())
@@ -245,10 +299,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     private void bindData()
     {
+        List friendsDTOsCopy = new ArrayList<>(friendDTOList);
         socialFriendsListAdapter =
                 new SocialFriendsAdapter(
                         getActivity(),
-                        friendDTOList,
+                        friendsDTOsCopy,
                         R.layout.social_friends_item);
         socialFriendsListAdapter.setOnElementClickedListener(this);
         friendsRootView.listView.setAdapter(socialFriendsListAdapter);
@@ -300,17 +355,21 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     }
 
-    private void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
+    protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
         if (friendDTOList != null && usersToInvite != null)
         {
             for (UserFriendsDTO userFriendsDTO:usersToInvite)
             {
-                friendDTOList.remove(userFriendsDTO);
+                boolean removed = friendDTOList.remove(userFriendsDTO);
+                Timber.d("handleInviteSuccess remove: %s, result: %s",userFriendsDTO,removed);
             }
         }
+
         socialFriendsListAdapter.clear();
         socialFriendsListAdapter.addAll(friendDTOList);
+        // TODO
+        THToast.show(R.string.invite_friend_request_sent);
     }
 
     private void handleFollowSuccess(List<UserFriendsDTO> usersToFollow)
@@ -319,12 +378,27 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         {
             for (UserFriendsDTO userFriendsDTO:usersToFollow)
             {
-                friendDTOList.remove(userFriendsDTO);
+                boolean removed = friendDTOList.remove(userFriendsDTO);
+                Timber.d("handleFollowSuccess remove: %s, result: %s",userFriendsDTO,removed);
             }
 
         }
         socialFriendsListAdapter.clear();
         socialFriendsListAdapter.addAll(friendDTOList);
+        // TODO
+        THToast.show("Follow success");
+    }
+
+    protected void handleFollowError()
+    {
+        // TODO
+        THToast.show(R.string.follow_friend_request_error);
+    }
+
+    protected void handleInviteError()
+    {
+        // TODO
+        THToast.show(R.string.invite_friend_request_error);
     }
 
     class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO> {
@@ -344,7 +418,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
             if (response.getStatus() != 200)
             {
                 // TODO
-                THToast.show("Error");
+                handleFollowError();
                 return;
             }
             handleFollowSuccess(usersToFollow);
@@ -353,7 +427,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         @Override
         public void failure(RetrofitError retrofitError) {
             super.failure(retrofitError);
-            THToast.show("Error");
+            handleFollowError();
+
         }
     };
 
@@ -373,8 +448,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
             super.success(data,response);
             if (response.getStatus() != 200)
             {
-                // TODO
-                THToast.show("Error");
+                handleInviteError();
                 return;
             }
             handleInviteSuccess(usersToInvite);
@@ -384,8 +458,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         @Override
         public void failure(RetrofitError retrofitError) {
             super.failure(retrofitError);
-            // TODO
-            THToast.show("Error");
+            handleInviteError();
         }
     };
 
