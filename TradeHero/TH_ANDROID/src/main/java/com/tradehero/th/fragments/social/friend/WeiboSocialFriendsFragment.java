@@ -4,13 +4,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 
 /**
- * Created by tradehero on 14-5-26.
+ * Created by wangliang on 14-5-26.
  */
 public class WeiboSocialFriendsFragment extends SocialFriendsFragment {
 
     @Override
     protected SocialNetworkEnum getSocialNetwork() {
-        return SocialNetworkEnum.WEIBO;
+        return SocialNetworkEnum.WB;
     }
 
     @Override

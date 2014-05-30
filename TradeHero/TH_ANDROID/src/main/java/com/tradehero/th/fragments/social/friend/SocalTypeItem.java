@@ -9,7 +9,7 @@ public class SocalTypeItem {
 
     public SocialNetworkEnum socialNetwork;
     public int imageResource;
-    public String title;
+    public int titleResource;
     public int backgroundResource;
 
     public SocalTypeItem()
@@ -17,10 +17,10 @@ public class SocalTypeItem {
 
     }
 
-    public SocalTypeItem(int imageResource, String title, int backgroundResource, SocialNetworkEnum socialNetwork)
+    public SocalTypeItem(int imageResource, int titleResource, int backgroundResource, SocialNetworkEnum socialNetwork)
     {
         this.imageResource = imageResource;
-        this.title = title;
+        this.titleResource = titleResource;
         this.socialNetwork = socialNetwork;
         this.backgroundResource = backgroundResource;
     }

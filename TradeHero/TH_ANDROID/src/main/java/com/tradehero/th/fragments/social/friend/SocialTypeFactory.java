@@ -25,10 +25,10 @@ public class SocialTypeFactory {
         List<SocalTypeItem> socialList = new ArrayList<SocalTypeItem>();
 
         //new ColorStateList()
-        socialList.add(new SocalTypeItem(R.drawable.superman_facebook, "Invite from Facebook", R.drawable.social_item_fb, SocialNetworkEnum.FB));
-        socialList.add(new SocalTypeItem(R.drawable.superman_facebook, "Invite from Twitter", R.drawable.social_item_tw, SocialNetworkEnum.TW));
-        socialList.add(new SocalTypeItem(R.drawable.superman_facebook, "Invite from LinkedIn", R.drawable.social_item_ln, SocialNetworkEnum.LN));
-        socialList.add(new SocalTypeItem(R.drawable.superman_facebook, "Invite from Weibo", R.drawable.social_item_weibo, SocialNetworkEnum.WEIBO));
+        socialList.add(new SocalTypeItem(R.drawable.icn_fb_round,  R.string.inivte_from_facebook, R.drawable.social_item_fb, SocialNetworkEnum.FB));
+        socialList.add(new SocalTypeItem(R.drawable.icn_twitter_round, R.string.inivte_from_twitter, R.drawable.social_item_tw, SocialNetworkEnum.TW));
+        socialList.add(new SocalTypeItem(R.drawable.icn_linkedin_round, R.string.inivte_from_linkedIn, R.drawable.social_item_ln, SocialNetworkEnum.LN));
+        socialList.add(new SocalTypeItem(R.drawable.icn_weibo_round, R.string.inivte_from_weibo, R.drawable.social_item_weibo, SocialNetworkEnum.WB));
 
         return socialList;
     }
@@ -45,7 +45,7 @@ public class SocialTypeFactory {
             case LN:
                 return LinkedInSocialFriendsFragment.class;
 
-            case WEIBO:
+            case WB:
                 return WeiboSocialFriendsFragment.class;
 
         }

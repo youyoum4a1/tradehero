@@ -13,7 +13,7 @@ import java.util.List;
 import static com.tradehero.th.fragments.social.friend.FacebookSocialFriendHandler.*;
 
 /**
- * Created by tradehero on 14-5-26.
+ * Created by wangliang on 14-5-26.
  */
 public class FacebookSocialFriendsFragment extends SocialFriendsFragment {
 
@@ -72,7 +72,6 @@ public class FacebookSocialFriendsFragment extends SocialFriendsFragment {
         public void success() {
             handleInviteSuccess(usersToInvite);
         }
-
 
         @Override
         public void failure() {

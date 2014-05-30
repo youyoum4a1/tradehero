@@ -1,9 +1,11 @@
-package com.tradehero.th.api.share;
+package com.tradehero.th.api.share.timeline;
 
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.share.SocialShareFormDTOWithEnum;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 
-public class TimelineItemShareFormDTO implements SocialShareFormDTO
+public class TimelineItemShareFormDTO implements SocialShareFormDTOWithEnum
 {
     public DiscussionListKey discussionListKey;
     public TimelineItemShareRequestDTO timelineItemShareRequestDTO;
@@ -21,4 +23,13 @@ public class TimelineItemShareFormDTO implements SocialShareFormDTO
         this.timelineItemShareRequestDTO = timelineItemShareRequestDTO;
     }
     //</editor-fold>
+
+    @Override public SocialNetworkEnum getSocialNetworkEnum()
+    {
+        if (timelineItemShareRequestDTO != null)
+        {
+            return timelineItemShareRequestDTO.socialNetwork;
+        }
+        return null;
+    }
 }

@@ -56,6 +56,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -81,6 +83,7 @@ import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -88,12 +91,9 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Map;
@@ -1466,9 +1466,10 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void showBuySellDialog()
     {
-        publishToFb = false;
-        publishToLi = false;
-        publishToTw = false;
+        publishToFb = true;
+        publishToLi = true;
+        publishToTw = true;
+        publishToWe = true;
         shareLocation = true;
         sharePublic = false;
         pushPortfolioFragmentRunnable = null;
@@ -1706,7 +1707,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                         + securityCompactDTO.name + " " + mQuantity + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
-            socialSharerLazy.get().share(weChatDTO, null); // TODO proper callback?
+            socialSharerLazy.get().share(weChatDTO); // TODO proper callback?
         }
     }
 

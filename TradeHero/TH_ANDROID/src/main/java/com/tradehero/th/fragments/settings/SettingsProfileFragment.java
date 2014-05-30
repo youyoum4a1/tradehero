@@ -14,7 +14,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -66,7 +66,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -135,7 +135,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Override public void onDestroyView()
     {
         detachMiddleCallbackUpdateUserProfile();
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         if (profileView != null)
         {
             profileView.setOnTouchListenerOnFields(null);
@@ -161,13 +161,13 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         middleCallbackUpdateUserProfile = null;
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        if (fetchUserProfileTask != null)
+        if (userProfileCacheListener != null)
         {
-            fetchUserProfileTask.setListener(null);
+            userProfileCache.get().unregister(userProfileCacheListener);
         }
-        fetchUserProfileTask = null;
+        userProfileCacheListener = null;
     }
 
     @Override public void onClick(View view)
@@ -244,9 +244,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void populateCurrentUser()
     {
-        detachUserProfileFetchTask();
-        fetchUserProfileTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, createUserProfileCacheListener());
-        fetchUserProfileTask.execute();
+        detachUserProfileCache();
+        userProfileCacheListener = createUserProfileCacheListener();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
         try
         {
             this.profileView.populateCredentials(THUser.getCurrentCredentials().createJSON());
@@ -257,11 +258,11 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
-        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
             {
                 profileView.populate(value);
             }

@@ -40,6 +40,16 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return previous;
     }
 
+    protected void checkKey(DTOKeyType key)
+    {
+        if (key == null)
+        {
+            throw new NullPointerException(String.format(
+                    "Key cannot be null in cache %s",
+                    getClass()));
+        }
+    }
+
     @Override public DTOType getOrFetchSync(DTOKeyType key) throws Throwable
     {
         return getOrFetchSync(key, DEFAULT_FORCE_UPDATE);
@@ -47,6 +57,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     @Override public DTOType getOrFetchSync(DTOKeyType key, boolean force) throws Throwable
     {
+        checkKey(key);
         DTOType value = get(key);
 
         if (force || value == null)
@@ -91,6 +102,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     @Override public void getOrFetchAsync(final DTOKeyType key, final boolean forceUpdateCache)
     {
+        checkKey(key);
         getOrCreateCacheValue(key).getOrFetch(key, forceUpdateCache);
     }
 

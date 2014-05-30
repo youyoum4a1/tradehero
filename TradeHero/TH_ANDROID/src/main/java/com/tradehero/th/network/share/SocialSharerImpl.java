@@ -2,6 +2,7 @@ package com.tradehero.th.network.share;
 
 import android.content.Intent;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
@@ -9,14 +10,14 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.share.DiscussionShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.share.TimelineItemShareFormDTO;
+import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -84,9 +85,8 @@ public class SocialSharerImpl implements SocialSharer
     }
     //</editor-fold>
 
-    @Override public void share(SocialShareFormDTO shareFormDTO, OnSharedListener sharedListener)
+    @Override public void share(SocialShareFormDTO shareFormDTO)
     {
-        setSharedListener(sharedListener);
         this.waitingSocialShareFormDTO = shareFormDTO;
         shareWaitingDTOIfCan();
     }
@@ -155,8 +155,6 @@ public class SocialSharerImpl implements SocialSharer
                 timelineItemShareFormDTO.discussionListKey,
                 timelineItemShareFormDTO.timelineItemShareRequestDTO,
                 createDiscussionCallback(timelineItemShareFormDTO));
-
-        // TODO add check that it is able to share
     }
 
     public void share(WeChatDTO weChatDTO)
@@ -167,16 +165,7 @@ public class SocialSharerImpl implements SocialSharer
     public Intent createWeChatIntent(WeChatDTO weChatDTO)
     {
         Intent intent = new Intent(currentActivityHolder.getCurrentContext(), WXEntryActivity.class);
-        intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TYPE_KEY, weChatDTO.type);
-        intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_ID_KEY, weChatDTO.id);
-        if (weChatDTO.title != null)
-        {
-            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_TITLE_KEY, weChatDTO.title);
-        }
-        if (weChatDTO.imageURL != null && !weChatDTO.imageURL.isEmpty())
-        {
-            intent.putExtra(WXEntryActivity.WECHAT_MESSAGE_IMAGE_URL_KEY, weChatDTO.imageURL);
-        }
+        WXEntryActivity.putWeChatDTO(intent, weChatDTO);
         return intent;
     }
 
@@ -210,18 +199,18 @@ public class SocialSharerImpl implements SocialSharer
     {
         // Here we do not care about keeping the task because the listener already provides
         // the intermediation
-        userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), createProfileListener()).execute();
+        userProfileCache.register(currentUserId.toUserBaseKey(), createProfileListener());
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createProfileListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileListener()
     {
         return new SocialSharerUserProfileListener();
     }
 
-    protected class SocialSharerUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    protected class SocialSharerUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             currentUserProfile = value;
             shareWaitingDTOIfCan();

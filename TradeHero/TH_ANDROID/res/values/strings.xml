@@ -15,8 +15,8 @@
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
-  <string name="link">Link</string>
-  <string name="link_description">You need to link your %s account before sharing…</string>
+  <string name="link">Link %1$s</string>
+  <string name="link_description">You need to link your %1$s account before sharing…</string>
   <string name="link_now">Link now!</string>
   <string name="later">Later</string>
   <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
@@ -148,4 +148,14 @@
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
   <string name="invite_social_friend">Invite %s Friend</string>
+  <string name="search_social_friend_hint">Search your friend</string>
+
+    <string name="social_friend_empty">Sorry,no friends</string>
+    <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
+    <string name="inivte_from_weibo">Invite from Weibo</string>
+    <string name="inivte_from_linkedIn">Invite from LinkedIn</string>
+    <string name="inivte_from_twitter">Invite from Twitter</string>
+    <string name="inivte_from_facebook">Invite from Facebook</string>
+    <string name="invite">邀请</string>
+
 </resources>

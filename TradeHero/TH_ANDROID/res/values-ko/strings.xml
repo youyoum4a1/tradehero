@@ -15,8 +15,8 @@
   <string name="empty_video_list">지금 재생 가능한 비디오가 없습니다.</string>
   <string name="loading_required_information">요청한 정보 로딩중</string>
   <string name="server_response">"서버 응답: "</string>
-  <string name="link">링크</string>
-  <string name="link_description">공유하기전에 %s 계정을 연결하세요…</string>
+  <string name="link">링크 %1$s</string>
+  <string name="link_description">공유하기전에 %1$s 계정을 연결하세요…</string>
   <string name="link_now">지금 연결!</string>
   <string name="later">나중에</string>
   <string name="please_update">지금 사용하고 계신 버전은 오래된 버전입니다. 계속 트레이드히어로를 이용하려면 업데이트하세요</string>

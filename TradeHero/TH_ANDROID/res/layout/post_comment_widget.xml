@@ -3,6 +3,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
+
   <com.tradehero.th.fragments.discussion.PostCommentView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -52,9 +53,10 @@
           android:id="@+id/post_comment_text"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:inputType="text|textImeMultiLine|textMultiLine"
+          android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
           android:hint="@string/timeline_discussion_comment_box_hint"
           />
+
     </LinearLayout>
 
   </com.tradehero.th.fragments.discussion.PostCommentView>

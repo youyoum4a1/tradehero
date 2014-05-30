@@ -5,17 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
   <com.tradehero.th.fragments.news.NewsDetailSummaryView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:id="@+id/news_detail_summary"
       >
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/news_detail_title_placeholder"
         android:scaleType="centerCrop"
-        android:alpha="0.2"/>
+        android:alpha="0.2"
+        tools:src="@drawable/logo_about_bull"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,6 +30,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp">
+
       <TextView
           android:id="@+id/news_detail_title"
           android:layout_width="match_parent"
@@ -38,12 +43,15 @@
           android:id="@+id/news_detail_date"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          tools:text="A big one"
+          tools:text="1 hour ago"
           android:textSize="@dimen/news_detail_date_size"
           android:textColor="#777"
           android:layout_marginTop="5dp"
           android:layout_marginBottom="8dp"
           />
+
     </LinearLayout>
+
   </com.tradehero.th.fragments.news.NewsDetailSummaryView>
+
 </merge>

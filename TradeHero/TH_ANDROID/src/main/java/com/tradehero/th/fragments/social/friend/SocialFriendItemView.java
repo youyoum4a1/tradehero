@@ -140,14 +140,14 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
 
         if (userFriendsDTO.isTradeHeroUser())
         {
-            actionBtn.setText("Follow");
+            actionBtn.setText(R.string.follow);
             actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
         }
         else
         {
-            actionBtn.setText("Invite");
+            actionBtn.setText(R.string.invite);
             actionBtn.setBackgroundResource(R.drawable.green_rounded_button_selector);
-            //actionBtn.setBackgroundResource(Color.GREEN);
+            actionBtn.setEnabled(!userFriendsDTO.alreadyInvited);
         }
         actionBtn.setPadding(pL,pT,pR,pB);
     }

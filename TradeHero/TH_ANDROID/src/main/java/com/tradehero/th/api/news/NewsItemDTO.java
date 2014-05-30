@@ -37,7 +37,7 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     }
 
     public <ExtendedDTOType extends ExtendedDTO> NewsItemDTO(ExtendedDTOType other,
-            Class<? extends ExtendedDTO> myClass)
+            Class<? extends NewsItemDTO> myClass)
     {
         super(other, myClass);
     }
@@ -76,5 +76,24 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     @Override public NewsItemDTOKey getDiscussionKey()
     {
         return new NewsItemDTOKey(id);
+    }
+
+    @Override public String toString()
+    {
+        return "NewsItemDTO{" +
+                "title='" + title + '\'' +
+                ", caption='" + caption + '\'' +
+                ", description='" + description + '\'' +
+                ", source=" + source +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", url='" + url + '\'' +
+                ", category=" + category +
+                ", textEntities=" + textEntities +
+                ", entities=" + entities +
+                ", categories=" + categories +
+                ", securityIds=" + securityIds +
+                ", message='" + message + '\'' +
+                ", topReferencedSecurity=" + topReferencedSecurity +
+                '}';
     }
 }

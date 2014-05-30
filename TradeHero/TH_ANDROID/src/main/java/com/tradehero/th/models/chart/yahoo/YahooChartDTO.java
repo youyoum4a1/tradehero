@@ -15,6 +15,7 @@ public class YahooChartDTO implements ChartDTO
     public String yahooSymbol;
     public YahooChartSize size;
     public YahooTimeSpan timeSpan;
+    public boolean includeVolume;
     public List<YahooMovingAverageInterval> movingAverageIntervals;
 
     //<editor-fold desc="Constructors">
@@ -95,6 +96,16 @@ public class YahooChartDTO implements ChartDTO
         this.timeSpan = YahooTimeSpan.getBestApproximation(chartTimeSpan);
     }
 
+    @Override public void setIncludeVolume(boolean includeVolume)
+    {
+        this.includeVolume = includeVolume;
+    }
+
+    @Override public boolean isIncludeVolume()
+    {
+        return includeVolume;
+    }
+
     public static List<YahooMovingAverageInterval> defaultMovingAverageIntervals()
     {
         ArrayList<YahooMovingAverageInterval> created = new ArrayList<>();
@@ -106,10 +117,11 @@ public class YahooChartDTO implements ChartDTO
     public String getChartUrl()
     {
         return String.format(
-                "http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&z=%s&p=%s",
+                "http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&z=%s&p=%s&a=%s",
                 yahooSymbol,
                 timeSpan.code,
                 size.code,
-                YahooMovingAverageInterval.concat(movingAverageIntervals));
+                YahooMovingAverageInterval.concat(movingAverageIntervals),
+                includeVolume ? "v" : "");
     }
 }

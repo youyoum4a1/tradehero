@@ -13,7 +13,7 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.CommentKey;
 import com.tradehero.th.api.security.SecurityId;
@@ -30,7 +30,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
     @InjectView(R.id.timeline_user_profile_name) TextView username;
     @InjectView(R.id.timeline_user_profile_picture) ImageView avatar;
 
-    @InjectView(R.id.discussion_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_more) View more;
     @InjectView(R.id.discussion_action_button_share) @Optional View buttonShare;
 
     @Inject CurrentUserId currentUserId;
@@ -74,7 +74,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
         super.onDetachedFromWindow();
     }
 
-    @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    @Override protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
 
@@ -135,9 +135,7 @@ public class CommentItemView extends AbstractDiscussionItemView<CommentKey>
         }
     }
 
-    @Optional @OnClick({
-            R.id.discussion_action_button_comment_count
-    })
+    @Optional @OnClick(R.id.discussion_action_button_comment_count)
     void onCommentClicked(View view)
     {
         switch (view.getId())

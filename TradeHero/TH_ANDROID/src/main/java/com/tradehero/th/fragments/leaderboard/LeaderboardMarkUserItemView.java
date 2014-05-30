@@ -16,8 +16,6 @@ import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.GaugeView;
-import com.tradehero.common.widget.NumericalAnimatedTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -36,6 +34,7 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -64,7 +63,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
 
     protected UserProfileDTO currentUserProfileDTO;
@@ -74,6 +72,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
+    @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     // data
     protected LeaderboardUserDTO leaderboardItem;
@@ -105,14 +104,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
 
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
-    @InjectView(R.id.leaderboard_dayshold_tv) @Optional NumericalAnimatedTextView daysHoldTv;
-    @InjectView(R.id.leaderboard_position_tv) @Optional NumericalAnimatedTextView positionsCountTv;
-    @InjectView(R.id.leaderboard_tradecount_tv) @Optional NumericalAnimatedTextView tradeCountTv;
-
-    @InjectView(R.id.leaderboard_gauge_performance) @Optional GaugeView performanceGauge;
-    @InjectView(R.id.leaderboard_gauge_tradeconsistency) @Optional GaugeView tradeConsistencyGauge;
-    @InjectView(R.id.leaderboard_gauge_winrate) @Optional GaugeView winRateGauge;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional ImageView countryLogo;
+    @InjectView(R.id.user_statistic_view) UserStatisticView userStatisticView;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -319,20 +312,27 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (countryLogo != null)
         {
-            if (leaderboardItem != null)
+            try
             {
-                countryLogo.setImageResource(getCountryLogoId(leaderboardItem.countryCode));
+                if (leaderboardItem != null && leaderboardItem.countryCode != null)
+                {
+                    countryLogo.setImageResource(getCountryLogoId(leaderboardItem.countryCode));
+                }
+                else
+                {
+                    countryLogo.setImageResource(R.drawable.default_image);
+                }
             }
-            else
+            catch (OutOfMemoryError e)
             {
-                countryLogo.setImageResource(R.drawable.default_image);
+                Timber.e(e, null);
             }
         }
     }
 
     public int getCountryLogoId(String country)
     {
-        return getCountryLogoId(0, country);
+        return getCountryLogoId(R.drawable.default_image, country);
     }
 
     public int getCountryLogoId(int defaultResId, String country)
@@ -428,142 +428,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuFollowersCount.setText("" + leaderboardItem.getTotalFollowersCount());
         lbmuCommentsCount.setText("" + leaderboardItem.getCommentsCount());
 
-        //winRateGauge.setText(digitsWinRatio + "%");
-        //winRateGauge.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
-
-        if (tradeCountTv != null)
-        {
-            tradeCountTv.setEndValue(leaderboardItem.avgNumberOfTradesPerMonth.floatValue());
-            tradeCountTv.setFractionDigits(2);
-        }
-        if (daysHoldTv != null)
-        {
-            daysHoldTv.setEndValue(leaderboardItem.avgHoldingPeriodMins * 1.0f / (60 * 24));
-            daysHoldTv.setFractionDigits(2);
-        }
-        if (positionsCountTv != null)
-        {
-            positionsCountTv.setEndValue(leaderboardItem.numberOfPositionsInPeriod);
-            positionsCountTv.setFractionDigits(0);
-        }
-
-        showValueWithoutAnimation();
-    }
-
-    private void showValueWithoutAnimation()
-    {
-        String digitsWinRatio =
-                NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
-        if (winRateGauge != null)
-        {
-            winRateGauge.setContentText(digitsWinRatio + "%");
-            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
-            winRateGauge.setAnimiationFlag(false);
-            winRateGauge.setCurrentValue((float) leaderboardItem.getWinRatio() * 100);
-        }
-
-        if (performanceGauge != null)
-        {
-            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
-            performanceGauge.setSubText(
-                    getContext().getString(R.string.leaderboard_performance_title));
-            performanceGauge.setAnimiationFlag(false);
-            performanceGauge.setDrawStartValue(50f);
-            performanceGauge.setCurrentValue((float) normalizePerformance());
-        }
-
-        if (tradeConsistencyGauge != null)
-        {
-            tradeConsistencyGauge.setSubText(
-                    getContext().getString(R.string.leaderboard_consistency_title));
-            tradeConsistencyGauge.setAnimiationFlag(false);
-            tradeConsistencyGauge.setCurrentValue((float) normalizeConsistency());
-        }
-        Timber.d("showValueWithoutAnimation normalizeConsistency %s", normalizeConsistency());
-
-        if (tradeCountTv != null)
-        {
-            tradeCountTv.showText();
-        }
-        if (daysHoldTv != null)
-        {
-            daysHoldTv.showText();
-        }
-        if (positionsCountTv != null)
-        {
-            positionsCountTv.showText();
-        }
-    }
-
-    private void showExpandAnimation()
-    {
-        String digitsWinRatio =
-                NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
-        if (winRateGauge != null)
-        {
-            winRateGauge.setContentText(digitsWinRatio + "%");
-            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
-            winRateGauge.setAnimiationFlag(true);
-            winRateGauge.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
-        }
-
-        if (performanceGauge != null)
-        {
-            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
-            performanceGauge.setSubText(
-                    getContext().getString(R.string.leaderboard_performance_title));
-            performanceGauge.setAnimiationFlag(true);
-            performanceGauge.setDrawStartValue(50f);
-            performanceGauge.setTargetValue((float) normalizePerformance());
-        }
-
-        if (tradeConsistencyGauge != null)
-        {
-            tradeConsistencyGauge.setSubText(
-                    getContext().getString(R.string.leaderboard_consistency_title));
-            tradeConsistencyGauge.setAnimiationFlag(true);
-            tradeConsistencyGauge.setTargetValue((float) normalizeConsistency());
-        }
-
-        if (tradeCountTv != null)
-        {
-            tradeCountTv.startAnimation();
-        }
-        if (daysHoldTv != null)
-        {
-            daysHoldTv.startAnimation();
-        }
-        if (positionsCountTv != null)
-        {
-            positionsCountTv.startAnimation();
-        }
-    }
-
-    private void clearExpandAnimation()
-    {
-        if (winRateGauge != null)
-        {
-            winRateGauge.clear();
-        }
-        if (performanceGauge != null)
-        {
-            performanceGauge.clear();
-        }
-        if (tradeConsistencyGauge != null)
-        {
-            tradeConsistencyGauge.clear();
-        }
     }
 
     @Override public void onExpand(boolean expand)
     {
         if (expand)
         {
-            showExpandAnimation();
+            userStatisticView.display(leaderboardItem);
         }
         else
         {
-            clearExpandAnimation();
+            userStatisticView.display(null);
             Timber.d("clearExpandAnimation");
         }
     }
@@ -772,65 +647,5 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             freeFollowMiddleCallback.setPrimaryCallback(null);
         }
         freeFollowMiddleCallback = null;
-    }
-
-    private Double getAvgConsistency()
-    {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
-        }
-        return 0.004;
-    }
-
-    private double normalizeConsistency()
-    {
-        try
-        {
-            Double minConsistency = 0.004;
-            Double maxConsistency = getAvgConsistency();
-            Double consistency = leaderboardItem.getConsistency();
-            consistency = (consistency < minConsistency) ? minConsistency : consistency;
-            consistency = (consistency > maxConsistency) ? maxConsistency : consistency;
-
-            double result =
-                    100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
-            return result;
-        }
-        catch (Exception e)
-        {
-            Timber.e("normalizeConsistency", e);
-        }
-        return getAvgConsistency();
-    }
-
-    private double normalizePerformance()
-    {
-        try
-        {
-            Double v = leaderboardItem.sharpeRatioInPeriodVsSP500;
-            Double min = (double) -2;
-            Double max = (double) 2;
-
-            if (v > max)
-            {
-                v = max;
-            }
-            else if (v < min)
-            {
-                v = min;
-            }
-            double r = 100 * (v - min) / (max - min);
-            Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s",
-                    leaderboardItem.sharpeRatioInPeriodVsSP500, r);
-
-            return r;
-        }
-        catch (Exception e)
-        {
-            Timber.e("normalizePerformance", e);
-        }
-        return 0;
     }
 }

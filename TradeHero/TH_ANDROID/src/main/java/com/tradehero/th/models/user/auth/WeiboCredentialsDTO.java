@@ -38,7 +38,7 @@ public class WeiboCredentialsDTO extends BaseCredentialsDTO
 
     @Override public String getAuthHeaderParameter()
     {
-        throw new IllegalStateException("Not Implemented");
+        return token;
     }
 
     @Override protected void populate(JSONObject object) throws JSONException

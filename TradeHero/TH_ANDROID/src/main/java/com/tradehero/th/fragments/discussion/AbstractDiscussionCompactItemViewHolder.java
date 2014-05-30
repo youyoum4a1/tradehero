@@ -1,19 +1,23 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.content.Context;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
-public class AbstractDiscussionItemViewHolder
+public class AbstractDiscussionCompactItemViewHolder
 {
     @InjectView(R.id.private_text_container) @Optional protected View textContainer;
     @InjectView(R.id.discussion_content) protected TextView content;
@@ -21,26 +25,30 @@ public class AbstractDiscussionItemViewHolder
     @InjectView(R.id.discussion_stub_content) @Optional protected  TextView stubContent;
     @InjectView(R.id.vote_pair) @Optional VotePair votePair;
     @InjectView(R.id.discussion_time) TextView time;
-    @InjectView(R.id.discussion_action_button_comment_count) @Optional TextView commentCountView;
+    @InjectView(R.id.discussion_action_button_comment_count) @Optional CompoundButton commentCountView;
 
     @Inject protected PrettyTime prettyTime;
+    @Inject protected Context context;
+    @Inject protected SocialShareTranslationHelper socialShareHelper;
 
-    protected AbstractDiscussionDTO discussionDTO;
+    protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
-    public AbstractDiscussionItemViewHolder()
+    //<editor-fold desc="Constructors">
+    public AbstractDiscussionCompactItemViewHolder()
     {
         super();
         DaggerUtils.inject(this);
     }
+    //</editor-fold>
 
     public void initView(View view)
     {
         ButterKnife.inject(this, view);
     }
 
-    public void linkWith(AbstractDiscussionDTO discussionDTO, boolean andDisplay)
+    public void linkWith(AbstractDiscussionCompactDTO discussionDTO, boolean andDisplay)
     {
-        this.discussionDTO = discussionDTO;
+        this.abstractDiscussionCompactDTO = discussionDTO;
         if (andDisplay)
         {
             displayText();
@@ -56,6 +64,7 @@ public class AbstractDiscussionItemViewHolder
             {
                 Timber.d("commentCountView %d",discussionDTO.commentCount);
                 commentCountView.setText(String.valueOf(discussionDTO.commentCount));
+                commentCountView.setChecked(discussionDTO.commentCount > 0);
             }
         }
     }
@@ -64,9 +73,9 @@ public class AbstractDiscussionItemViewHolder
     {
         if (content != null)
         {
-            if (this.discussionDTO != null)
+            if (this.abstractDiscussionCompactDTO instanceof AbstractDiscussionDTO)
             {
-                content.setText(this.discussionDTO.text);
+                content.setText(((AbstractDiscussionDTO) this.abstractDiscussionCompactDTO).text);
             }
             else
             {
@@ -75,9 +84,9 @@ public class AbstractDiscussionItemViewHolder
         }
         if (stubContent != null)
         {
-            if (this.discussionDTO != null)
+            if (this.abstractDiscussionCompactDTO instanceof AbstractDiscussionDTO)
             {
-                stubContent.setText(this.discussionDTO.text);
+                stubContent.setText(((AbstractDiscussionDTO) this.abstractDiscussionCompactDTO).text);
             }
             else
             {
@@ -101,16 +110,16 @@ public class AbstractDiscussionItemViewHolder
 
     public boolean isInProcess()
     {
-        return discussionDTO != null && discussionDTO.isInProcess();
+        return abstractDiscussionCompactDTO != null && abstractDiscussionCompactDTO.isInProcess();
     }
 
     private void displayTime()
     {
         if (time != null)
         {
-            if (discussionDTO.createdAtUtc != null && time != null)
+            if (abstractDiscussionCompactDTO.createdAtUtc != null)
             {
-                time.setText(prettyTime.formatUnrounded(discussionDTO.createdAtUtc));
+                time.setText(prettyTime.formatUnrounded(abstractDiscussionCompactDTO.createdAtUtc));
             }
         }
     }

@@ -17,9 +17,11 @@ import java.util.List;
 public class SocalTypeListAdapter extends ArrayAdapter<SocalTypeItem>{
 
     private LayoutInflater mInflater;
+    private Context mContext;
 
     public SocalTypeListAdapter(Context context, int resource, List<SocalTypeItem> objects) {
         super(context, resource, objects);
+        mContext= context;
         mInflater = LayoutInflater.from(context);
 
     }
@@ -49,7 +51,7 @@ public class SocalTypeListAdapter extends ArrayAdapter<SocalTypeItem>{
         TextView titleView = (TextView)viewGroup.findViewById(R.id.social_item_title);
 
         logoView.setImageResource(item.imageResource);
-        titleView.setText(item.title);
+        titleView.setText(getContext().getString(item.titleResource));
 
         int pL = viewGroup.getPaddingLeft();
         int pR = viewGroup.getPaddingRight();

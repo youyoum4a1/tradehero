@@ -22,6 +22,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -68,7 +69,7 @@ public class SendMessageFragment extends DashboardFragment
     private Dialog progressDialog;
     /** Dialog to change different type of follower */
     private Dialog chooseDialog;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected List<WeakReference<MiddleCallback<DiscussionDTO>>> middleCallbackSendMessages;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
@@ -127,11 +128,12 @@ public class SendMessageFragment extends DashboardFragment
         if (item.getItemId() == 100)
         {
             progressDialogUtilLazy.get().show(getActivity(), null, getString(R.string.loading_loading));
+            detachUserProfileCache();
             userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
-            detachUserProfileFetchTask();
-            userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false,
-                    createUserProfileCacheListener());
-            userProfileFetchTask.execute();
+
+            userProfileCacheListener = createUserProfileCacheListener();
+            userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+            userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), true);
             return true;
         }
 
@@ -163,17 +165,17 @@ public class SendMessageFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachSendMessageCallbacks();
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         super.onDestroyView();
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> taskCopy = userProfileFetchTask;
-        if (taskCopy != null)
+        if (userProfileCacheListener != null)
         {
-            taskCopy.setListener(null);
+            userProfileCache.get().unregister(userProfileCacheListener);
         }
+        userProfileCacheListener = null;
     }
 
     private void detachSendMessageCallbacks()
@@ -362,12 +364,12 @@ public class SendMessageFragment extends DashboardFragment
         return 0;
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
-        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
             @Override
-            public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
             {
                 if (value != null)
                 {

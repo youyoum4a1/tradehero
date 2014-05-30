@@ -14,7 +14,7 @@
     <!--- TODO change the icon-->
     <item
             android:id="@+id/btn_add"
-            android:icon="@android:drawable/ic_menu_add"
+            android:icon="@drawable/btn_friends_add"
             android:enabled="true"
             android:visible="false"
             android:showAsAction="always"

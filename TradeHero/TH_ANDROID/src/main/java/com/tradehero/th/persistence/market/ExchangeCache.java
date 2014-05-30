@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.market;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.network.service.MarketService;
@@ -8,7 +8,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton public class ExchangeCache extends StraightDTOCache<ExchangeIntegerId, ExchangeDTO>
+@Singleton public class ExchangeCache extends StraightDTOCacheNew<ExchangeIntegerId, ExchangeDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -22,7 +22,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected ExchangeDTO fetch(ExchangeIntegerId key) throws Throwable
+    @Override public ExchangeDTO fetch(ExchangeIntegerId key) throws Throwable
     {
         return marketService.get().getExchange(key.key);
     }

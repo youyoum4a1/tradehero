@@ -9,6 +9,8 @@ public interface ChartDTO extends DTO
     ChartSize getChartSize();
     void setChartSize(ChartSize chartSize);
     ChartTimeSpan getChartTimeSpan();
+    void setIncludeVolume(boolean includeVolume);
+    boolean isIncludeVolume();
     void setChartTimeSpan(ChartTimeSpan chartTimeSpan);
     String getChartUrl();
 }

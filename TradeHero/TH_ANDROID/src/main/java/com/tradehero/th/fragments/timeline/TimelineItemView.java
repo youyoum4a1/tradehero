@@ -1,10 +1,8 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,42 +17,30 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
-import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import dagger.Lazy;
 import javax.inject.Inject;
-import retrofit.Callback;
 import retrofit.client.Response;
 
 public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTOKey>
@@ -66,7 +52,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     @InjectView(R.id.discussion_action_button_comment_count) TextView commentCount;
     @InjectView(R.id.discussion_action_button_share) View buttonShare;
-    @InjectView(R.id.discussion_action_button_more) TextView more;
+    @InjectView(R.id.discussion_action_button_more) View buttonMore;
 
     @OnClick({
             R.id.timeline_user_profile_name,
@@ -88,12 +74,10 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                 openTimelineDiscussion();
                 break;
             case R.id.timeline_vendor_picture:
-            case R.id.timeline_action_button_trade_wrapper:
                 openSecurityProfile();
                 break;
             case R.id.discussion_action_button_share:
-            case R.id.timeline_action_button_share_wrapper:
-                createAndShowSharePopupMenu();
+                createAndShowSharePopupDialog();
                 break;
             case R.id.discussion_action_button_more:
                 PopupMenu popUpMenu = createActionPopupMenu();
@@ -110,10 +94,9 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Inject Lazy<UserTimelineServiceWrapper> userTimelineServiceWrapper;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject LocalyticsSession localyticsSession;
-    @Inject Lazy<SocialSharer> socialSharerLazy;
+    @Inject SocialShareTranslationHelper socialShareHelper;
 
     private TimelineItemDTO timelineItemDTO;
-    private PopupMenu sharePopupMenu;
     private MiddleCallback<Response> shareMiddleCallback;
 
     //<editor-fold desc="Constructors">
@@ -136,11 +119,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        init();
-    }
-
-    private void init()
-    {
         ButterKnife.inject(this);
     }
 
@@ -174,13 +152,12 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        init();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachShareMiddleCallback();
-
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -197,14 +174,15 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     //<editor-fold desc="Action Buttons">
     private void updateActionButtonsVisibility()
     {
-        // nothing for now
+        buttonMore.setVisibility((socialShareHelper.canTranslate(timelineItemDTO) || canShowStockMenu()) ? View.VISIBLE : View.GONE);
     }
     //</editor-fold>
 
-    @Override protected void linkWith(AbstractDiscussionDTO abstractDiscussionDTO, boolean andDisplay)
+    @Override protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
-
+        //need do this, cos linkwith is in front of onAttachedToWindow
+        ButterKnife.inject(this);
         if (abstractDiscussionDTO instanceof TimelineItemDTO)
         {
             linkWith((TimelineItemDTO) abstractDiscussionDTO, true);
@@ -256,7 +234,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void displayUserProfilePicture(UserProfileCompactDTO user)
     {
-        if (user.picture != null)
+        if (user.picture != null && picasso != null)
         {
             displayDefaultUserProfilePicture();
             picasso.get()
@@ -269,10 +247,13 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void displayDefaultUserProfilePicture()
     {
-        picasso.get()
-                .load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformation)
-                .into(avatar);
+        if (avatar != null && picasso != null)
+        {
+            picasso.get()
+                    .load(R.drawable.superman_facebook)
+                    .transform(peopleIconTransformation)
+                    .into(avatar);
+        }
     }
 
     private void displayVendorLogo(TimelineItemDTO item)
@@ -345,32 +326,12 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
                     return true;
                 }
 
-                case R.id.timeline_action_button_share:
-                {
-                    PopupMenu popupMenu = createSharePopupMenu();
-                    popupMenu.show();
-                    return true;
-                }
-
-                case R.id.timeline_action_comment:
-                    openTimelineDiscussion();
+                case R.id.timeline_action_translate:
+                    translate();
                     break;
             }
             return false;
         }
-    }
-
-    private void openStockInfo()
-    {
-        localyticsSession.tagEvent(LocalyticsConstants.Monitor_Chart);
-
-        Bundle args = new Bundle();
-        SecurityId securityId = getSecurityId();
-        if (securityId != null)
-        {
-            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        }
-        getNavigator().pushFragment(StockInfoFragment.class, args);
     }
 
     private void openStockAlertEditor()
@@ -403,118 +364,14 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
     }
 
-    protected PopupMenu.OnMenuItemClickListener createSharePopupMenuItemClickListener()
+    private void translate()
     {
-        return new SharePopupMenuItemClickListener();
+        socialShareHelper.translate(timelineItemDTO);
     }
 
-    protected class SharePopupMenuItemClickListener implements PopupMenu.OnMenuItemClickListener
+    private void createAndShowSharePopupDialog()
     {
-        @Override public boolean onMenuItemClick(MenuItem item)
-        {
-            SocialNetworkEnum socialNetworkEnum = null;
-            boolean ableToShare = true;
-
-            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-
-            switch (item.getItemId())
-            {
-                case R.id.timeline_popup_menu_share_facebook:
-                    socialNetworkEnum = SocialNetworkEnum.FB;
-                    ableToShare = userProfileDTO != null && userProfileDTO.fbLinked;
-                    break;
-                case R.id.timeline_popup_menu_share_twitter:
-                    socialNetworkEnum = SocialNetworkEnum.TW;
-                    ableToShare = userProfileDTO != null && userProfileDTO.twLinked;
-                    break;
-                case R.id.timeline_popup_menu_share_linked_in:
-                    socialNetworkEnum = SocialNetworkEnum.LN;
-                    ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
-                    break;
-                case R.id.timeline_popup_menu_share_we_chat:
-                    WeChatDTO weChatDTO = new WeChatDTO();
-                    weChatDTO.id = timelineItemDTO.id;
-                    weChatDTO.title = timelineItemDTO.text;
-                    SecurityMediaDTO firstMediaWithLogo = timelineItemDTO.getFlavorSecurityForDisplay();
-                    if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
-                    {
-                        weChatDTO.imageURL = firstMediaWithLogo.url;
-                    }
-                    weChatDTO.type = WeChatMessageType.Timeline;
-                    socialSharerLazy.get().share(weChatDTO, null); // TODO proper callback?
-                    return true;
-            }
-            if (socialNetworkEnum == null)
-            {
-                return false;
-            }
-
-            if (ableToShare)
-            {
-                detachShareMiddleCallback();
-                shareMiddleCallback = userTimelineServiceWrapper.get().shareTimelineItem(
-                        currentUserId.toUserBaseKey(),
-                        timelineItemDTO.id, new TimelineItemShareRequestDTO(socialNetworkEnum),
-                        createShareRequestCallback(socialNetworkEnum));
-            }
-            else
-            {
-                alertDialogUtil.popWithOkCancelButton(
-                        getContext(),
-                        getContext().getString(R.string.link) + socialNetworkEnum.getName(),
-                        String.format(getContext().getString(R.string.link_description), socialNetworkEnum.getName()),
-                        R.string.link_now,
-                        R.string.later,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override public void onClick(DialogInterface dialog, int which)
-                            {
-                                openSettingScreen();
-                            }
-                        },
-                        null
-                );
-            }
-            return true;
-        }
-    }
-
-    private void openSettingScreen()
-    {
-        getNavigator().pushFragment(SettingsFragment.class);
-    }
-
-    public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.timeline_user_profile_picture:
-            case R.id.timeline_user_profile_name:
-                if (timelineItemDTO != null)
-                {
-                    UserProfileCompactDTO user = timelineItemDTO.getUser();
-                    if (user != null)
-                    {
-                        if (currentUserId.get() != user.id)
-                        {
-                            Bundle bundle = new Bundle();
-                            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
-                            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-                        }
-                    }
-                }
-                break;
-            case R.id.timeline_vendor_picture:
-            case R.id.timeline_action_button_trade_wrapper:
-                if (timelineItemDTO != null)
-                {
-                    openSecurityProfile();
-                }
-                break;
-            case R.id.timeline_action_button_share_wrapper:
-                createAndShowSharePopupMenu();
-                break;
-        }
+        socialShareHelper.share(timelineItemDTO);
     }
 
     private void openSecurityProfile()
@@ -540,83 +397,26 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     //<editor-fold desc="Popup dialog">
     private PopupMenu createActionPopupMenu()
     {
-        PopupMenu popupMenu = new PopupMenu(getContext(), more);
+        PopupMenu popupMenu = new PopupMenu(getContext(), buttonMore);
         MenuInflater menuInflater = popupMenu.getMenuInflater();
 
-        if (timelineItemDTO != null && timelineItemDTO.getFlavorSecurityForDisplay() != null)
+        if (canShowStockMenu())
         {
             menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
         }
-        menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
+
+        if (socialShareHelper.canTranslate(timelineItemDTO))
+        {
+            menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
+        }
+
         popupMenu.setOnMenuItemClickListener(createMonitorPopupMenuItemClickListener());
         return popupMenu;
     }
 
-    private void createAndShowSharePopupMenu()
+    protected boolean canShowStockMenu()
     {
-        if (sharePopupMenu == null)
-        {
-            sharePopupMenu = createSharePopupMenu();
-        }
-        sharePopupMenu.show();
-    }
-
-    protected PopupMenu createSharePopupMenu()
-    {
-        PopupMenu popupMenu = new PopupMenu(getContext(), more);
-        MenuInflater menuInflater = popupMenu.getMenuInflater();
-        menuInflater.inflate(R.menu.share_popup_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(createSharePopupMenuItemClickListener());
-        return popupMenu;
-    }
-
-    private void updateMonitorMenuView(Menu menu)
-    {
-        if (menu != null)
-        {
-            SecurityId securityId = getSecurityId();
-
-            MenuItem watchListMenuItem = menu.findItem(R.id.timeline_action_add_to_watchlist);
-            if (watchListMenuItem != null)
-            {
-                if (securityId != null)
-                {
-                    // if Watchlist milestone has finished receiving data
-                    if (userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey()) != null)
-                    {
-                        if (watchlistPositionCache.get().get(securityId) == null)
-                        {
-                            watchListMenuItem.setTitle(getContext().getString(R.string.watchlist_add_title));
-                        }
-                        else
-                        {
-                            watchListMenuItem.setTitle(getContext().getString(R.string.watchlist_edit_title));
-                        }
-                        watchListMenuItem.setVisible(true);
-                    }
-                }
-                else
-                {
-                    watchListMenuItem.setVisible(false);
-                }
-            }
-        }
-    }
-
-    private Callback<Response> createShareRequestCallback(final SocialNetworkEnum socialNetworkEnum)
-    {
-        return new THCallback<Response>()
-        {
-            @Override protected void success(Response response, THResponse thResponse)
-            {
-                THToast.show(String.format(getContext().getString(R.string.timeline_post_to_social_network), socialNetworkEnum.getName()));
-            }
-
-            @Override protected void failure(THException ex)
-            {
-                THToast.show(String.format(getContext().getString(R.string.timeline_link_account), socialNetworkEnum.getName()));
-            }
-        };
+        return timelineItemDTO != null && timelineItemDTO.getFlavorSecurityForDisplay() != null;
     }
 
     @Override protected SecurityId getSecurityId()

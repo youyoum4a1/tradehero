@@ -31,4 +31,10 @@
       android:background="@drawable/btn_background_social_linkedin"
       android:text="@string/sina_weibo"
       />
+  <Button
+      android:id="@+id/btn_qq_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:background="@drawable/btn_background_social_linkedin"
+      android:text="@string/tencent_qq"
+      />
 </LinearLayout>

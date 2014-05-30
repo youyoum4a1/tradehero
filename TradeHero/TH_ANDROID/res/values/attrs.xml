@@ -100,4 +100,8 @@
     <attr name="firstViewIsOnTheRight" format="boolean"/>
   </declare-styleable>
 
+  <declare-styleable name="ChartImageView">
+    <attr name="includeVolume" format="boolean"/>
+  </declare-styleable>
+
 </resources>

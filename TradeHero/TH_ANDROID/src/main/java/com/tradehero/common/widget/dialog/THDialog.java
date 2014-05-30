@@ -31,6 +31,7 @@ public class THDialog {
         void onDialogDismiss();
     }
 
+    @Deprecated // Translations should be shown inline
     public static void showTranslationResult(Context context, String text)
     {
         THDialog.showCenterDialog(

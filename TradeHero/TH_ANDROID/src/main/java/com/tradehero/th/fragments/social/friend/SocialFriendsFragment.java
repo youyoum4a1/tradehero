@@ -370,6 +370,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         socialFriendsListAdapter.addAll(friendDTOList);
         // TODO
         THToast.show(R.string.invite_friend_request_sent);
+
+        checkUserType();
     }
 
     private void handleFollowSuccess(List<UserFriendsDTO> usersToFollow)
@@ -387,6 +389,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         socialFriendsListAdapter.addAll(friendDTOList);
         // TODO
         THToast.show("Follow success");
+
+        checkUserType();
     }
 
     protected void handleFollowError()

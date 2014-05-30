@@ -74,10 +74,10 @@ public class LeaderboardPositionListFragment
         super.onResume();
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachGetLeaderboardPositions();
-        super.onDestroyView();
+        super.onStop();
     }
 
     @Override public void onDestroy()

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+
   <include
       android:id="@+id/discussion_new_post_action_buttons"
       layout="@layout/discussion_edit_post_action_buttons"
@@ -21,8 +22,11 @@
       android:gravity="top"
       android:layout_above="@id/discussion_new_post_action_buttons"
       android:background="@color/transparent"
-      android:inputType="textMultiLine"
+      android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
       tools:text="Buy more security from TradeHero">
+
       <requestFocus/>
+
   </EditText>
+
 </RelativeLayout>

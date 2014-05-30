@@ -28,8 +28,10 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Created by wanglinag on 14-5-26.
@@ -67,7 +69,9 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setTitle(getString(R.string.action_invite));
     }
 
@@ -162,7 +166,6 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         SocalTypeItem item =  (SocalTypeItem)parent.getItemAtPosition(position);
-        THToast.show(item.title);
 
         pushSocialInvitationFragment(item.socialNetwork);
     }
@@ -375,13 +378,21 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         }
     };
 
+    private List<UserFriendsDTO> filterTheDublicated(List<UserFriendsDTO> friendDTOList)
+    {
+        TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
+        hashSet.addAll(friendDTOList);
+        ArrayList list = new ArrayList();
+        list.addAll(hashSet);
+        return list;
+    }
 
 
     class SearchFriendsCallback implements  Callback<List<UserFriendsDTO>> {
 
         @Override
         public void success(List<UserFriendsDTO> userFriendsDTOs, Response response) {
-            FriendsInvitationFragment.this.userFriendsDTOs = userFriendsDTOs;
+            FriendsInvitationFragment.this.userFriendsDTOs = filterTheDublicated(userFriendsDTOs);
             bindSearchData();
         }
 
