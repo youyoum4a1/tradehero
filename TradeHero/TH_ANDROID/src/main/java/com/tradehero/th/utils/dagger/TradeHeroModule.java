@@ -29,12 +29,12 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
-import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
 import com.tradehero.th.fragments.discussion.DiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
@@ -58,6 +58,8 @@ import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
 import com.tradehero.th.fragments.news.NewsItemCompactViewHolder;
+import com.tradehero.th.fragments.news.NewsItemViewHolder;
+import com.tradehero.th.fragments.news.NewsViewLinear;
 import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
@@ -183,7 +185,6 @@ import javax.inject.Singleton;
                 ChartModule.class,
                 ActivityModule.class,
                 THIABModule.class,
-                NewsModule.class,
                 PushModule.class,
         },
         injects =
@@ -346,12 +347,14 @@ import javax.inject.Singleton;
                         ShareDestinationSetAdapter.class,
                         NewsDialogLayout.class,
                         NewsHeadlineViewLinear.class,
+                        NewsViewLinear.class,
                         AbstractDiscussionCompactItemViewLinear.class,
                         DiscussionItemViewLinear.class,
                         AbstractDiscussionCompactItemViewHolder.class,
                         AbstractDiscussionItemViewHolder.class,
                         DiscussionItemViewHolder.class,
                         NewsItemCompactViewHolder.class,
+                        NewsItemViewHolder.class,
                         TimelineItemViewHolder.class,
                         SingleViewDiscussionSetAdapter.class,
                         MessageHeaderDTO.class,

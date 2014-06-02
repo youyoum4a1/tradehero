@@ -95,6 +95,11 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
             {
                 // Nothing to do
             }
+
+            @Override public void onTranslationRequested()
+            {
+                // Nothing to do
+            }
         };
     }
 

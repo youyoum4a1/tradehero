@@ -56,14 +56,14 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         super.onFinishInflate();
         DaggerUtils.inject(this);
         viewHolder = createViewHolder();
-        ButterKnife.inject(viewHolder, this);
+        viewHolder.onFinishInflate(this);
         socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(viewHolder, this);
+        viewHolder.onAttachedToWindow(this);
         viewHolder.linkWith(abstractDiscussionCompactDTO, true);
         viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
         socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
@@ -74,7 +74,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         detachFetchDiscussionTask();
         socialShareHelper.onDetach();
         viewHolder.setMenuClickedListener(null);
-        ButterKnife.reset(viewHolder);
+        viewHolder.onDetachedFromWindow();
         super.onDetachedFromWindow();
     }
 
@@ -167,16 +167,16 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
             {
                 // Nothing to do
             }
+
+            @Override public void onTranslationRequested()
+            {
+                // Nothing to do
+            }
         };
     }
 
     abstract protected class AbstractDiscussionViewHolderClickedListener implements AbstractDiscussionItemViewHolder.OnMenuClickedListener
     {
-        @Override public void onTranslationRequested()
-        {
-            socialShareHelper.translate(abstractDiscussionCompactDTO);
-        }
-
         @Override public void onMoreButtonClicked()
         {
             socialShareHelper.shareOrTranslate(abstractDiscussionCompactDTO);
@@ -218,13 +218,11 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         @Override public void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
                 TranslationResult translationResult)
         {
-            viewHolder.setLatestTranslationResult(translationResult);
         }
 
         @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
                 AbstractDiscussionCompactDTO translated)
         {
-            viewHolder.linkWithTranslated(translated, true);
         }
 
         @Override public void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate,

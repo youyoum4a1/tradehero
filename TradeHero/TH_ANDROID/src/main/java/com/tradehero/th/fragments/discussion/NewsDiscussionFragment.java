@@ -13,19 +13,17 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.models.share.SocialShareTranslationHelper;
-import com.tradehero.th.persistence.news.NewsItemCache;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.fragments.news.NewsDetailFullView;
-import com.tradehero.th.fragments.news.NewsDetailSummaryView;
+import com.tradehero.th.fragments.news.NewsViewLinear;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.share.SocialShareTranslationHelper;
+import com.tradehero.th.persistence.news.NewsItemCache;
 import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
-import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -37,6 +35,8 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     public static final String BUNDLE_KEY_SECURITY_SYMBOL =
             NewsDiscussionFragment.class.getName() + ".security_symbol";
 
+    private static final String BUNDLE_KEY_IS_RETURNING = NewsDiscussionFragment.class.getName() + ".isReturning";
+
     private NewsItemDTO mDetailNewsItemDTO;
 
     @Inject NewsItemCache newsItemCache;
@@ -44,13 +44,13 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     @Inject SocialShareTranslationHelper socialShareTranslationHelper;
 
     @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
+    @InjectView(R.id.news_view_linear) NewsViewLinear newsView;
 
-    @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
-    @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
-    @InjectView(R.id.discussion_action_button_more) View buttonMore;
-    private DiscussionEditPostFragment discussionEditPostFragment;
-
-    @OnClick(R.id.news_start_new_discussion) void onStartNewDiscussion()
+    @OnClick({
+            R.id.news_start_new_discussion,
+            R.id.discussion_action_button_comment_count,
+    })
+    void onStartNewDiscussion()
     {
         Bundle bundle = new Bundle();
         if (newsItemDTOKey != null)
@@ -58,12 +58,8 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
             bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
                     newsItemDTOKey.getArgs());
         }
-        discussionEditPostFragment = (DiscussionEditPostFragment) getNavigator().pushFragment(
-                DiscussionEditPostFragment.class, bundle);
+        getNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
     }
-
-    // Action buttons
-    @InjectView(R.id.vote_pair) VotePair votePair;
 
     private NewsItemDTOKey newsItemDTOKey;
 
@@ -98,8 +94,10 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     {
         super.onResume();
 
-        if (discussionEditPostFragment != null && discussionEditPostFragment.isPosted())
+        Bundle args = getArguments();
+        if (args != null && args.getBoolean(BUNDLE_KEY_IS_RETURNING, false))
         {
+            // TODO review here as the cache should have been updated or invalidated.
             newsDiscussionView.refresh();
         }
     }
@@ -108,12 +106,16 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     {
         detachNewsFetchTask();
         detachTranslationTask();
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            args.putBoolean(BUNDLE_KEY_IS_RETURNING, true);
+        }
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        discussionEditPostFragment = null;
         super.onDestroy();
     }
 
@@ -135,9 +137,10 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         {
             NewsItemDTO cachedNews = newsItemCache.get(newsItemDTOKey);
 
-            linkWith(cachedNews, andDisplay);
+            //linkWith(cachedNews, andDisplay);
 
-            fetchNewsDetail(true);
+            //fetchNewsDetail(true);
+            newsView.display(newsItemDTOKey);
             setRandomBackground();
         }
         else
@@ -152,7 +155,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
         if (bgRes != 0)
         {
-            newsDetailSummaryView.setBackground(bgRes);
+            newsView.setTitleBackground(bgRes);
         }
     }
 
@@ -161,6 +164,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         // TODO
     }
 
+    // TODO remove
     private void fetchNewsDetail(boolean force)
     {
         detachNewsFetchTask();
@@ -192,29 +196,9 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
         if (andDisplay)
         {
-            votePair.display(mDetailNewsItemDTO);
-            newsDetailSummaryView.display(mDetailNewsItemDTO);
-            newsDetailFullView.display(mDetailNewsItemDTO);
-            displayMoreButton();
+            newsView.linkWith(mDetailNewsItemDTO, true);
         }
     }
-
-    //<editor-fold desc="Related to share dialog">
-    protected void displayMoreButton()
-    {
-        buttonMore.setVisibility(socialShareTranslationHelper.canTranslate(mDetailNewsItemDTO) ? View.VISIBLE : View.GONE);
-    }
-
-    @OnClick(R.id.discussion_action_button_more) void onActionButtonMoreClicked()
-    {
-        showNewsDialog();
-    }
-
-    private void showNewsDialog()
-    {
-        socialShareTranslationHelper.shareOrTranslate(mDetailNewsItemDTO);
-    }
-    //</editor-fold>
 
     protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
     {

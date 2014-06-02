@@ -67,6 +67,11 @@ public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
             {
                 // Nothing to do
             }
+
+            @Override public void onTranslationRequested()
+            {
+                // Nothing to do
+            }
         };
     }
 

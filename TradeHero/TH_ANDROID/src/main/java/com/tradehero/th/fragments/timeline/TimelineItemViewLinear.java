@@ -230,17 +230,23 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     @Override
     protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
-        return new TimelineItemViewMenuClickedListener();
+        return new TimelineItemViewMenuClickedListener()
+        {
+            @Override public void onShareButtonClicked()
+            {
+                // Nothing to do
+            }
+
+            @Override public void onTranslationRequested()
+            {
+                // Nothing to do
+            }
+        };
     }
 
-    protected class TimelineItemViewMenuClickedListener extends AbstractDiscussionViewHolderClickedListener
+    abstract protected class TimelineItemViewMenuClickedListener extends AbstractDiscussionViewHolderClickedListener
         implements TimelineItemViewHolder.OnMenuClickedListener
     {
-        @Override public void onShareButtonClicked()
-        {
-            // Nothing to do
-        }
-
         @Override public void onMoreButtonClicked()
         {
             PopupMenu popUpMenu = createActionPopupMenu();
