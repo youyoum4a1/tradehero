@@ -29,9 +29,9 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemView;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.DiscussionItemView;
 import com.tradehero.th.fragments.discussion.DiscussionItemViewHolder;
@@ -346,7 +346,7 @@ import javax.inject.Singleton;
                         ShareDestinationSetAdapter.class,
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
-                        AbstractDiscussionItemView.class,
+                        AbstractDiscussionCompactItemView.class,
                         DiscussionItemView.class,
                         AbstractDiscussionCompactItemViewHolder.class,
                         AbstractDiscussionItemViewHolder.class,

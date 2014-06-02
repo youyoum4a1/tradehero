@@ -12,7 +12,7 @@ import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import javax.inject.Inject;
 
 public class DiscussionItemView<T extends DiscussionKey>
-        extends AbstractDiscussionItemView<T>
+        extends AbstractDiscussionCompactItemView<T>
 {
     @Inject protected SocialShareTranslationHelper socialShareHelper;
 

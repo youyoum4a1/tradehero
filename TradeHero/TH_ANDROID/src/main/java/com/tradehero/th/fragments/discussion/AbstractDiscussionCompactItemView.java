@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
 
-abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
+abstract public class AbstractDiscussionCompactItemView<T extends DiscussionKey>
         extends LinearLayout
         implements DTOView<T>
 {
@@ -41,17 +41,17 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchTask;
 
     //<editor-fold desc="Constructors">
-    public AbstractDiscussionItemView(Context context)
+    public AbstractDiscussionCompactItemView(Context context)
     {
         super(context);
     }
 
-    public AbstractDiscussionItemView(Context context, AttributeSet attrs)
+    public AbstractDiscussionCompactItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public AbstractDiscussionItemView(Context context, AttributeSet attrs, int defStyle)
+    public AbstractDiscussionCompactItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

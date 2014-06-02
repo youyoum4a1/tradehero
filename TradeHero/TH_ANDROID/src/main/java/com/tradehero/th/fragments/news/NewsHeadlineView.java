@@ -11,12 +11,12 @@ import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import javax.inject.Inject;
 
-public class NewsHeadlineView extends AbstractDiscussionItemView<NewsItemDTOKey>
+public class NewsHeadlineView extends AbstractDiscussionCompactItemView<NewsItemDTOKey>
         implements THDialog.OnDialogItemClickListener
 {
     @Inject NewsItemCompactCacheNew newsItemCompactCache;
