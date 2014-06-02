@@ -1,6 +1,7 @@
 package com.tradehero.th.models.push;
 
-import android.content.Context;
+import android.content.SharedPreferences;
+import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.baidu.BaiduPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
@@ -20,8 +21,9 @@ import javax.inject.Singleton;
 )
 public class PushModule
 {
+    private static final String MAX_GROUP_NOTIFICATIONS = "MAX_GROUP_NOTIFICATIONS";
+
     @Provides @Singleton PushNotificationManager providePushNotificationManager(
-            Context context,
             Provider<BaiduPushManager> baiduPushManager,
             Provider<UrbanAirshipPushNotificationManager> urbanAirshipPushNotificationManager)
     {
@@ -34,5 +36,15 @@ public class PushModule
         {
             return urbanAirshipPushNotificationManager.get();
         }
+    }
+
+    @Provides @Singleton THNotificationBuilder provideTHNotificationBuilder(CommonNotificationBuilder commonNotificationBuilder)
+    {
+        return commonNotificationBuilder;
+    }
+
+    @Provides @Singleton @MaxGroupNotifications IntPreference provideMaxGroupNotifications(SharedPreferences sharedPreferences)
+    {
+        return new IntPreference(sharedPreferences, MAX_GROUP_NOTIFICATIONS, 3);
     }
 }

@@ -40,12 +40,12 @@ public class UrbanAirshipPushModule
         }));
     }
 
-    @Provides @Temp PushNotificationBuilder provideCustomPushNotificationBuilder(RichNotificationBuilder richNotificationBuilder)
+    @Provides PushNotificationBuilder provideCustomPushNotificationBuilder(RichNotificationBuilder richNotificationBuilder)
     {
         return richNotificationBuilder;
     }
 
-    @Provides PushNotificationBuilder provideCustomPushNotificationBuilder()
+    @Provides @Temp PushNotificationBuilder provideCustomPushNotificationBuilder()
     {
         CustomPushNotificationBuilder nb = new CustomPushNotificationBuilder();
 

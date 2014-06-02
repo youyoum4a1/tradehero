@@ -6,13 +6,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import com.baidu.android.pushservice.CustomPushNotificationBuilder;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.push.PushConstants;
+import com.tradehero.th.models.push.THNotificationBuilder;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
@@ -34,9 +34,9 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     public static final int CODE_OK = 0;
 
-    @Inject Provider<CustomPushNotificationBuilder> customPushNotificationBuilderProvider;
     @Inject CurrentUserId currentUserId;
     @Inject SessionServiceWrapper sessionServiceWrapper;
+    @Inject THNotificationBuilder thNotificationBuilder;
 
     @Inject @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag;
     @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
@@ -112,29 +112,18 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     private void showNotification(Context context, PushMessageDTO pushMessageDTO)
     {
-        CustomPushNotificationBuilder customPushNotificationBuilder = customPushNotificationBuilderProvider.get();
-        customPushNotificationBuilder.setNotificationText(pushMessageDTO.description);
+        Notification notification = thNotificationBuilder.buildNotification(pushMessageDTO.description, pushMessageDTO.id);
 
-        Notification notification = customPushNotificationBuilder.construct(context);
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        //TODO if we set PendingIntent.FLAG_ONE_SHOT, only the first notification will jump to new fragment. So temp remove it by alex
-        notification.contentIntent = PendingIntent.getBroadcast(context, pushMessageDTO.id, composeIntent(pushMessageDTO), 0);
-        //notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
-
-        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        int msgId;
-        if (pushMessageDTO.id > 0)
+        if (notification != null)
         {
-            msgId = pushMessageDTO.id;
+            //TODO if we set PendingIntent.FLAG_ONE_SHOT, only the first notification will jump to new fragment. So temp remove it by alex
+            notification.contentIntent = PendingIntent.getBroadcast(context, pushMessageDTO.id, composeIntent(pushMessageDTO), 0);
+            notification.contentIntent = PendingIntent.getBroadcast(context, 0, composeIntent(pushMessageDTO), PendingIntent.FLAG_ONE_SHOT);
+
+
+            NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.notify(thNotificationBuilder.getNotifyId(pushMessageDTO.id), notification);
         }
-        else
-        {
-            int hashCode = Math.abs(pushMessageDTO.description.hashCode());
-            msgId = hashCode % 1000;
-        }
-        Timber.d("Msg id:%d,content:%s",msgId,pushMessageDTO.description);
-        nm.notify(msgId, notification);
     }
 
     private void handleReceiveMessage(Context context, String message)
