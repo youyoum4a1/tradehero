@@ -99,13 +99,35 @@ public class AdView extends RelativeLayout
         {
             if (adDTO != null)
             {
-                picasso.get().load(adDTO.bannerImageUrl)
-                        .into(banner);
+                // Ok, this is the only way I found to workaround this problem, converting url to a filename, and manually put 9-patch image
+                // with that name to android resource folder.
+                int bannerResourceId = getResources().getIdentifier(getResourceFileName(adDTO.bannerImageUrl), "drawable", getContext().getPackageName());
+                if (bannerResourceId != 0)
+                {
+                    banner.setImageResource(bannerResourceId);
+                }
+                else
+                {
+                    picasso.get().load(adDTO.bannerImageUrl)
+                            .into(banner);
+                }
             }
             else
             {
                 banner.setImageDrawable(null);
             }
         }
+    }
+
+    private String getResourceFileName(String url)
+    {
+        String fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
+
+        fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+        if (fileName.contains("@"))
+        {
+            fileName = fileName.substring(0, fileName.lastIndexOf('@'));
+        }
+        return fileName.replace('-', '_').toLowerCase();
     }
 }
