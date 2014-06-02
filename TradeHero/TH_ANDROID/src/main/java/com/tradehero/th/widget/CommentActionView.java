@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 
 public class CommentActionView extends CompoundButton
 {
+    //<editor-fold desc="Constructors">
     public CommentActionView(Context context)
     {
         super(context);
@@ -23,6 +24,7 @@ public class CommentActionView extends CompoundButton
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override public void setChecked(boolean checked)
     {
@@ -30,7 +32,7 @@ public class CommentActionView extends CompoundButton
         super.setChecked(checked);
         if (oldValue != checked)
         {
-            // mutate to preserve the original drawable
+            // mutate to preserve the original drawable. This works when the icon is black over transparent.
             Drawable drawableLeft = getResources().getDrawable(R.drawable.icn_actions_comment).mutate();
             if (checked)
             {
