@@ -9,10 +9,10 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.translation.TranslationResult;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
@@ -70,11 +70,13 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         super.onAttachedToWindow();
         ButterKnife.inject(viewHolder, this);
         viewHolder.linkWith(abstractDiscussionCompactDTO, true);
+        viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachFetchDiscussionTask();
+        viewHolder.setMenuClickedListener(null);
         ButterKnife.reset(viewHolder);
         super.onDetachedFromWindow();
     }
@@ -114,11 +116,6 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         discussionFetchTask = null;
     }
 
-    public void display(AbstractDiscussionCompactDTO abstractDiscussionDTO)
-    {
-        linkWith(abstractDiscussionDTO, true);
-    }
-
     protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
@@ -127,8 +124,6 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         {
         }
     }
-
-    abstract protected SecurityId getSecurityId();
 
     protected DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
     {
@@ -141,7 +136,7 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
         @Override
         public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value, boolean fromCache)
         {
-            display(value);
+            linkWith(value, true);
         }
 
         @Override public void onErrorThrown(DiscussionKey key, Throwable error)
@@ -157,23 +152,29 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
     }
     //</editor-fold>
 
-    protected void pushDiscussionFragment()
-    {
-        // To be overriden by children
-    }
-
     protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
     {
-        return new NewsHeadLineViewHolderClickedListener();
+        return new AbstractDiscussionViewHolderClickedListener()
+        {
+            @Override public void onShareButtonClicked()
+            {
+                // Nothing to do
+            }
+
+            @Override public void onCommentButtonClicked()
+            {
+                // Nothing to do
+            }
+
+            @Override public void onUserClicked(UserBaseKey userClicked)
+            {
+                // Nothing to do
+            }
+        };
     }
 
-    protected class NewsHeadLineViewHolderClickedListener implements AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener
+    abstract protected class AbstractDiscussionViewHolderClickedListener implements AbstractDiscussionItemViewHolder.OnMenuClickedListener
     {
-        @Override public void onCommentButtonClicked()
-        {
-            pushDiscussionFragment();
-        }
-
         @Override public void onTranslationRequested()
         {
             socialShareHelper.translate(abstractDiscussionCompactDTO);
@@ -187,10 +188,10 @@ abstract public class AbstractDiscussionItemView<T extends DiscussionKey>
 
     protected SocialShareTranslationHelper.OnMenuClickedListener createSocialShareMenuClickedListener()
     {
-        return new NewsHeadlineViewShareTranslationMenuClickListener();
+        return new AbstractDiscussionItemViewShareTranslationMenuClickListener();
     }
 
-    protected class NewsHeadlineViewShareTranslationMenuClickListener implements SocialShareTranslationHelper.OnMenuClickedListener
+    protected class AbstractDiscussionItemViewShareTranslationMenuClickListener implements SocialShareTranslationHelper.OnMenuClickedListener
     {
         @Override public void onCancelClicked()
         {

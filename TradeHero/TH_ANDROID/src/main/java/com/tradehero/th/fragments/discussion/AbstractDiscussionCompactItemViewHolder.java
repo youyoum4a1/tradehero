@@ -21,6 +21,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
 {
+    public static boolean HAS_DOWN_VOTE = true;
     public static boolean IS_AUTO_TRANSLATE = false;
 
     public static enum TranslationStatus
@@ -40,6 +41,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     @InjectView(R.id.vote_pair) @Optional protected VotePair votePair;
     @InjectView(R.id.discussion_time) protected TextView time;
     @InjectView(R.id.discussion_action_button_comment_count) @Optional protected CompoundButton commentCountView;
+    @InjectView(R.id.discussion_action_button_share) @Optional View shareButton;
     @InjectView(R.id.discussion_action_button_more) @Optional protected View buttonMore;
 
     @InjectView(R.id.private_text_stub_container) @Optional protected  View stubTextContainer;
@@ -53,6 +55,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     @Inject protected Context context;
     @Inject protected SocialShareTranslationHelper socialShareHelper;
 
+    protected boolean downVote = HAS_DOWN_VOTE;
     protected DiscussionDTOType discussionDTO;
     protected DiscussionDTOType translatedDiscussionDTO;
     protected TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
@@ -86,6 +89,20 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         if (isAutoTranslate())
         {
             notifyTranslationRequested();
+        }
+    }
+
+    public boolean isDownVote()
+    {
+        return downVote;
+    }
+
+    public void setDownVote(boolean downVote)
+    {
+        this.downVote = downVote;
+        if (votePair != null)
+        {
+            votePair.setDownVote(downVote);
         }
     }
 
@@ -217,6 +234,22 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
+    @OnClick(R.id.discussion_action_button_share) @Optional
+    protected void handleShareButtonClicked(View view)
+    {
+        notifyShareRequested();
+    }
+
+    protected void notifyShareRequested()
+    {
+        socialShareHelper.share(discussionDTO);
+        OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
+        if (menuClickedListenerCopy != null)
+        {
+            menuClickedListenerCopy.onShareButtonClicked();
+        }
+    }
+
     @OnClick({R.id.discussion_translate_notice_wrapper}) @Optional
     protected void toggleTranslate()
     {
@@ -258,6 +291,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     public static interface OnMenuClickedListener
     {
         void onCommentButtonClicked();
+        void onShareButtonClicked();
         void onTranslationRequested();
         void onMoreButtonClicked();
     }

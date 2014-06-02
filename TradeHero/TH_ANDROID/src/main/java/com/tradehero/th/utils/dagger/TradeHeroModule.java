@@ -33,9 +33,12 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHo
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionItemView;
+import com.tradehero.th.fragments.discussion.DiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
@@ -344,9 +347,12 @@ import javax.inject.Singleton;
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
                         AbstractDiscussionItemView.class,
+                        DiscussionItemView.class,
                         AbstractDiscussionCompactItemViewHolder.class,
                         AbstractDiscussionItemViewHolder.class,
+                        DiscussionItemViewHolder.class,
                         NewsItemCompactViewHolder.class,
+                        TimelineItemViewHolder.class,
                         SingleViewDiscussionSetAdapter.class,
                         MessageHeaderDTO.class,
                         MessageListAdapter.class,

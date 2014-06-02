@@ -4,12 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.PrivateMessageKey;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionItemView;
+import com.tradehero.th.fragments.discussion.DiscussionItemViewHolder;
 
-public class PrivateMessageBubbleView extends AbstractDiscussionItemView<PrivateMessageKey>
+public class PrivateMessageBubbleView extends DiscussionItemView<PrivateMessageKey>
 {
     //<editor-fold desc="Constructors">
     public PrivateMessageBubbleView(Context context)
@@ -28,13 +26,8 @@ public class PrivateMessageBubbleView extends AbstractDiscussionItemView<Private
     }
     //</editor-fold>
 
-    @Override protected AbstractDiscussionCompactItemViewHolder createViewHolder()
+    @Override protected DiscussionItemViewHolder createViewHolder()
     {
-        return new AbstractDiscussionItemViewHolder<PrivateDiscussionDTO>();
-    }
-
-    @Override protected SecurityId getSecurityId()
-    {
-        throw new IllegalStateException("It has no securityId");
+        return new DiscussionItemViewHolder<PrivateDiscussionDTO>();
     }
 }
