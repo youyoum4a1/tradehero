@@ -104,7 +104,7 @@ public class AdView extends RelativeLayout
                 int bannerResourceId = getResources().getIdentifier(getResourceFileName(adDTO.bannerImageUrl), "drawable", getContext().getPackageName());
                 if (bannerResourceId != 0)
                 {
-                    banner.setImageResource(bannerResourceId);
+                    banner.setBackgroundResource(bannerResourceId);
                 }
                 else
                 {
