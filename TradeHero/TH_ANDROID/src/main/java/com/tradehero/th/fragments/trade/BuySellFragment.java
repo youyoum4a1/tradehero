@@ -1167,9 +1167,15 @@ public class BuySellFragment extends AbstractBuySellFragment
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
                     mStockLogo.setImageResource(exchange.logoId);
                     loadStockBgLogoDelayed();
-                } catch (IllegalArgumentException e)
+                }
+                catch (IllegalArgumentException e)
                 {
                     Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
+                    loadStockLogoDefault();
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, securityCompactDTO.exchange);
                     loadStockLogoDefault();
                 }
             }
