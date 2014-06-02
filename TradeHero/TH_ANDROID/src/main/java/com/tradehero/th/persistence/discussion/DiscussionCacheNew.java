@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.discussion;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -16,7 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton public class DiscussionCacheNew extends StraightDTOCacheNew<DiscussionKey, AbstractDiscussionDTO>
+@Singleton public class DiscussionCacheNew extends StraightDTOCacheNew<DiscussionKey, AbstractDiscussionCompactDTO>
 {
     private final DiscussionServiceWrapper discussionServiceWrapper;
     private final Lazy<NewsItemCache> newsCache;
@@ -34,7 +35,7 @@ import javax.inject.Singleton;
         this.newsCache = newsCache;
     }
 
-    @Override public AbstractDiscussionDTO fetch(DiscussionKey discussionKey) throws Throwable
+    @Override public AbstractDiscussionCompactDTO fetch(DiscussionKey discussionKey) throws Throwable
     {
         if (discussionKey instanceof TimelineItemDTOKey)
         {
@@ -51,23 +52,23 @@ import javax.inject.Singleton;
         throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
     }
 
-    public DiscussionDTOList put(List<? extends AbstractDiscussionDTO> discussionList)
+    public DiscussionDTOList put(List<? extends AbstractDiscussionCompactDTO> discussionList)
     {
-        DiscussionDTOList<? super AbstractDiscussionDTO> previous = new DiscussionDTOList<>();
-        for (AbstractDiscussionDTO discussionDTO : discussionList)
+        DiscussionDTOList<? super AbstractDiscussionCompactDTO> previous = new DiscussionDTOList<>();
+        for (AbstractDiscussionCompactDTO discussionDTO : discussionList)
         {
             previous.add(put(discussionDTO.getDiscussionKey(), discussionDTO));
         }
         return previous;
     }
 
-    public DiscussionDTOList<? super AbstractDiscussionDTO> get(List<DiscussionKey> discussionKeys)
+    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> get(List<DiscussionKey> discussionKeys)
     {
         if (discussionKeys == null)
         {
             return null;
         }
-        DiscussionDTOList<? super AbstractDiscussionDTO> dtos = new DiscussionDTOList<>();
+        DiscussionDTOList<? super AbstractDiscussionCompactDTO> dtos = new DiscussionDTOList<>();
         for (DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(get(discussionKey));
@@ -75,13 +76,13 @@ import javax.inject.Singleton;
         return dtos;
     }
 
-    public DiscussionDTOList<? super AbstractDiscussionDTO> getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
+    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
     {
         if (discussionKeys == null)
         {
             return null;
         }
-        DiscussionDTOList<? super AbstractDiscussionDTO> dtos = new DiscussionDTOList<>();
+        DiscussionDTOList<? super AbstractDiscussionCompactDTO> dtos = new DiscussionDTOList<>();
         for (DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(getOrFetchSync(discussionKey));

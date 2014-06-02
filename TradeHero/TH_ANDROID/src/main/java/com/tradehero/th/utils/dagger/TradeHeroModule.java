@@ -32,9 +32,13 @@ import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemView
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionItemView;
+import com.tradehero.th.fragments.discussion.DiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
+import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
@@ -53,7 +57,7 @@ import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineView;
-import com.tradehero.th.fragments.news.NewsItemViewHolder;
+import com.tradehero.th.fragments.news.NewsItemCompactViewHolder;
 import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
@@ -342,9 +346,13 @@ import javax.inject.Singleton;
                         ShareDestinationSetAdapter.class,
                         NewsDialogLayout.class,
                         NewsHeadlineView.class,
-                        NewsItemViewHolder.class,
                         AbstractDiscussionItemView.class,
+                        DiscussionItemView.class,
                         AbstractDiscussionCompactItemViewHolder.class,
+                        AbstractDiscussionItemViewHolder.class,
+                        DiscussionItemViewHolder.class,
+                        NewsItemCompactViewHolder.class,
+                        TimelineItemViewHolder.class,
                         SingleViewDiscussionSetAdapter.class,
                         MessageHeaderDTO.class,
                         MessageListAdapter.class,

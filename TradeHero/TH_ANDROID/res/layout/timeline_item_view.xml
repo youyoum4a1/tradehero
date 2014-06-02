@@ -18,7 +18,7 @@
       >
 
     <ImageView
-        android:id="@+id/timeline_user_profile_picture"
+        android:id="@+id/discussion_user_picture"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentLeft="true"
@@ -32,7 +32,7 @@
         android:id="@+id/timeline_item_top_right"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_toRightOf="@id/timeline_user_profile_picture">
+        android:layout_toRightOf="@id/discussion_user_picture">
 
       <ImageView
           android:id="@+id/in_watchlist_indicator"
@@ -61,7 +61,7 @@
           />
 
       <TextView
-          android:id="@+id/timeline_user_profile_name"
+          android:id="@+id/user_profile_name"
           style="@style/TH.UserNameTitle"
           android:layout_marginLeft="10dp"
           android:layout_alignParentLeft="true"
@@ -77,7 +77,7 @@
           android:textColor="@color/text_gray_normal"
           android:textSize="@dimen/timeline_item_date"
           android:layout_alignParentLeft="true"
-          android:layout_below="@id/timeline_user_profile_name"
+          android:layout_below="@id/user_profile_name"
           android:layout_toLeftOf="@id/timeline_vendor_picture"
           tools:text="A moment ago"
           />
@@ -90,7 +90,7 @@
         android:layout_below="@id/timeline_item_top_right"
         android:layout_marginLeft="10dip"
         android:layout_marginTop="10dip"
-        android:layout_toRightOf="@+id/timeline_user_profile_picture"
+        android:layout_toRightOf="@id/discussion_user_picture"
         tools:text="Tho Nguyen has become the best trader of the world!"
         android:textColorLink="@color/timeline_item_link"
         android:textColor="@color/timeline_item"

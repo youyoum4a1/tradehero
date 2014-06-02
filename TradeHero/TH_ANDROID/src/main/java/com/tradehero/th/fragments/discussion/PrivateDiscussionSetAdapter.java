@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdAsc;
@@ -66,7 +65,7 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
 
     protected boolean isMine(int position)
     {
-        return isMine(discussionCache.get(getItem(position)));
+        return isMine((AbstractDiscussionDTO) discussionCache.get(getItem(position)));
     }
 
     protected boolean isMine(AbstractDiscussionDTO discussionDTO)
