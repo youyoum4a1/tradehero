@@ -19,25 +19,21 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemView;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTOKey>
+public class TimelineItemView extends AbstractDiscussionCompactItemView<TimelineItemDTOKey>
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject LocalyticsSession localyticsSession;
-    @Inject SocialShareTranslationHelper socialShareHelper;
-
-    private TimelineItemDTO timelineItemDTO;
 
     //<editor-fold desc="Constructors">
     public TimelineItemView(Context context)
@@ -79,7 +75,6 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
     @Override protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
-        this.timelineItemDTO = (TimelineItemDTO) abstractDiscussionDTO;
         if (andDisplay)
         {
         }
@@ -122,7 +117,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     private void translate()
     {
-        socialShareHelper.translate(timelineItemDTO);
+        socialShareHelper.translate(abstractDiscussionCompactDTO);
     }
 
     //<editor-fold desc="Popup dialog">
@@ -136,7 +131,7 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
             menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
         }
 
-        if (socialShareHelper.canTranslate(timelineItemDTO))
+        if (socialShareHelper.canTranslate(abstractDiscussionCompactDTO))
         {
             menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
         }
@@ -147,11 +142,11 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     protected SecurityId getSecurityId()
     {
-        if (timelineItemDTO == null)
+        if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
         {
-            return null;
+            return ((TimelineItemDTO) abstractDiscussionCompactDTO).createFlavorSecurityIdForDisplay();
         }
-        return timelineItemDTO.createFlavorSecurityIdForDisplay();
+        return null;
     }
     //</editor-fold>
 
@@ -167,9 +162,9 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     protected void openOtherTimeline()
     {
-        if (timelineItemDTO != null)
+        if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
         {
-            UserProfileCompactDTO user = timelineItemDTO.getUser();
+            UserProfileCompactDTO user = ((TimelineItemDTO) abstractDiscussionCompactDTO).getUser();
             if (user != null)
             {
                 if (currentUserId.get() != user.id)
@@ -184,11 +179,11 @@ public class TimelineItemView extends AbstractDiscussionItemView<TimelineItemDTO
 
     protected void openSecurityProfile()
     {
-        if (timelineItemDTO != null)
+        if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
         {
             localyticsSession.tagEvent(LocalyticsConstants.Monitor_BuySell);
 
-            SecurityMediaDTO flavorSecurityForDisplay = timelineItemDTO.getFlavorSecurityForDisplay();
+            SecurityMediaDTO flavorSecurityForDisplay = ((TimelineItemDTO) abstractDiscussionCompactDTO).getFlavorSecurityForDisplay();
             if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
             {
                 SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);

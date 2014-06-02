@@ -35,17 +35,17 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
         super.linkWith(discussionDTO, andDisplay);
         if (andDisplay)
         {
+            displayMoreButton();
         }
     }
 
     //<editor-fold desc="Display Methods">
-    @Override protected void displayMoreButton()
+    protected void displayMoreButton()
     {
-        if (buttonMore != null)
+        if (discussionActionButtonsView != null)
         {
-            buttonMore.setVisibility(
-                    (socialShareHelper.canTranslate(discussionDTO) || canShowStockMenu())
-                            ? View.VISIBLE : View.GONE);
+            discussionActionButtonsView.setShowMore(
+                    socialShareHelper.canTranslate(discussionDTO) || canShowStockMenu());
         }
     }
 

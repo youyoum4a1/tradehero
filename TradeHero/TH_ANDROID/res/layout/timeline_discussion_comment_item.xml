@@ -8,6 +8,7 @@
     android:layout_marginTop="@dimen/timeline_side_spacing"
     android:descendantFocusability="blocksDescendants"
     >
+
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -65,6 +66,7 @@
           android:layout_below="@id/user_profile_name"
           tools:text="A moment ago"
           />
+
     </RelativeLayout>
 
     <TextView
@@ -81,5 +83,7 @@
         android:textSize="12sp"
         android:textStyle="normal"
         />
+
   </RelativeLayout>
+
 </com.tradehero.th.fragments.discussion.CommentItemView>

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -15,13 +14,11 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.VotePair;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
 {
-    public static boolean HAS_DOWN_VOTE = true;
     public static boolean IS_AUTO_TRANSLATE = false;
 
     public static enum TranslationStatus
@@ -38,11 +35,8 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    @InjectView(R.id.vote_pair) @Optional protected VotePair votePair;
+    @InjectView(R.id.discussion_action_buttons) @Optional protected DiscussionActionButtonsView discussionActionButtonsView;
     @InjectView(R.id.discussion_time) protected TextView time;
-    @InjectView(R.id.discussion_action_button_comment_count) @Optional protected CompoundButton commentCountView;
-    @InjectView(R.id.discussion_action_button_share) @Optional View shareButton;
-    @InjectView(R.id.discussion_action_button_more) @Optional protected View buttonMore;
 
     @InjectView(R.id.private_text_stub_container) @Optional protected  View stubTextContainer;
     @InjectView(R.id.discussion_stub_content) @Optional protected  TextView stubContent;
@@ -55,7 +49,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     @Inject protected Context context;
     @Inject protected SocialShareTranslationHelper socialShareHelper;
 
-    protected boolean downVote = HAS_DOWN_VOTE;
+    protected boolean downVote;
     protected DiscussionDTOType discussionDTO;
     protected DiscussionDTOType translatedDiscussionDTO;
     protected TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
@@ -73,6 +67,10 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     public void setMenuClickedListener(OnMenuClickedListener menuClickedListener)
     {
         this.menuClickedListener = menuClickedListener;
+        if (discussionActionButtonsView != null && menuClickedListener != null)
+        {
+            discussionActionButtonsView.setButtonClickedListener(createDiscussionActionButtonsViewClickedListener());
+        }
     }
 
     public void linkWith(DiscussionDTOType discussionDTO, boolean andDisplay)
@@ -80,6 +78,11 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         this.discussionDTO = discussionDTO;
         this.translatedDiscussionDTO = null;
         this.currentTranslationStatus = TranslationStatus.ORIGINAL;
+
+        if (discussionActionButtonsView != null)
+        {
+            discussionActionButtonsView.linkWith(discussionDTO, andDisplay);
+        }
 
         if (andDisplay)
         {
@@ -92,17 +95,12 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    public boolean isDownVote()
-    {
-        return downVote;
-    }
-
     public void setDownVote(boolean downVote)
     {
         this.downVote = downVote;
-        if (votePair != null)
+        if (discussionActionButtonsView != null)
         {
-            votePair.setDownVote(downVote);
+            discussionActionButtonsView.setDownVote(downVote);
         }
     }
 
@@ -131,11 +129,8 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     public void display()
     {
         displayInProcess();
-        displayVotePair();
-        displayCommentCount();
         displayTime();
         displayTranslatableTexts();
-        displayMoreButton();
     }
 
     protected void displayInProcess()
@@ -151,31 +146,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         return discussionDTO != null && discussionDTO.isInProcess();
     }
 
-    protected void displayVotePair()
-    {
-        if (votePair != null)
-        {
-            votePair.display(discussionDTO);
-        }
-    }
-
     protected void displayTime()
     {
         if (time != null)
         {
-            if (discussionDTO.createdAtUtc != null)
+            if (discussionDTO != null && discussionDTO.createdAtUtc != null)
             {
                 time.setText(prettyTime.formatUnrounded(discussionDTO.createdAtUtc));
             }
-        }
-    }
-
-    protected void displayCommentCount()
-    {
-        if (commentCountView != null)
-        {
-            commentCountView.setText(String.valueOf(discussionDTO.commentCount));
-            commentCountView.setChecked(discussionDTO.commentCount > 0);
         }
     }
 
@@ -211,20 +189,8 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     {
         return context.getString(currentTranslationStatus.actionTextResId);
     }
-
-    protected void displayMoreButton()
-    {
-        if (buttonMore != null)
-        {
-            buttonMore.setVisibility(View.GONE);
-        }
-    }
     //</editor-fold>
 
-    /**
-     * TODO this event should be handled by DiscussionActionButtonsView,
-     */
-    @OnClick(R.id.discussion_action_button_comment_count) @Optional
     protected void notifyCommentButtonClicked()
     {
         OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
@@ -232,12 +198,6 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         {
             menuClickedListenerCopy.onCommentButtonClicked();
         }
-    }
-
-    @OnClick(R.id.discussion_action_button_share) @Optional
-    protected void handleShareButtonClicked(View view)
-    {
-        notifyShareRequested();
     }
 
     protected void notifyShareRequested()
@@ -278,7 +238,6 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    @OnClick(R.id.discussion_action_button_more) @Optional
     protected void notifyMoreButtonClicked()
     {
         OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
@@ -288,11 +247,31 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    public static interface OnMenuClickedListener
+    protected DiscussionActionButtonsView.OnButtonClickedListener createDiscussionActionButtonsViewClickedListener()
     {
-        void onCommentButtonClicked();
-        void onShareButtonClicked();
+        return new AbstractDiscussionCompactItemViewHolderActionButtonsClickedListener();
+    }
+
+    protected class AbstractDiscussionCompactItemViewHolderActionButtonsClickedListener implements DiscussionActionButtonsView.OnButtonClickedListener
+    {
+        @Override public void onCommentButtonClicked()
+        {
+            notifyCommentButtonClicked();
+        }
+
+        @Override public void onShareButtonClicked()
+        {
+            notifyShareRequested();
+        }
+
+        @Override public void onMoreButtonClicked()
+        {
+            notifyMoreButtonClicked();
+        }
+    }
+
+    public static interface OnMenuClickedListener extends DiscussionActionButtonsView.OnButtonClickedListener
+    {
         void onTranslationRequested();
-        void onMoreButtonClicked();
     }
 }

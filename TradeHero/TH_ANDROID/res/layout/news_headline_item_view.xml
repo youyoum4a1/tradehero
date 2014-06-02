@@ -94,35 +94,7 @@
           android:visibility="gone"
           />
 
-      <LinearLayout
-          android:id="@+id/discussion_translate_notice_wrapper"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
-
-        <TextView
-            android:id="@+id/discussion_translate_notice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:visibility="visible"
-            android:layout_gravity="center_vertical"
-            android:textSize="12sp"
-            tools:text="( Translate ) Powered by"
-            />
-
-        <ImageView
-            android:id="@+id/discussion_translate_notice_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/logo_bing"
-            />
-
-      </LinearLayout>
+      <include layout="@layout/discussion_translate_notice" />
 
     </LinearLayout>
 

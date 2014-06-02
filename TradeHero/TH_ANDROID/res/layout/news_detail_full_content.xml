@@ -5,9 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
   <ScrollView
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
+
     <com.tradehero.th.fragments.news.NewsDetailFullView
         android:id="@+id/news_detail_full"
         android:layout_width="match_parent"
@@ -22,9 +24,11 @@
           android:layout_marginLeft="10dp"
           android:layout_marginRight="10dp"
           >
+
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
           <LinearLayout
               android:id="@+id/news_detail_reference_container"
               android:layout_width="600dp"
@@ -39,9 +43,15 @@
                 android:scrollbarAlwaysDrawHorizontalTrack="true"
                 android:scrollbars="horizontal"
                 />
+
           </LinearLayout>
+
         </FrameLayout>
+
       </HorizontalScrollView>
+
+      <!--include layout="@layout/discussion_translate_notice"/-->
+
       <TextView
           android:id="@+id/news_detail_desc"
           android:layout_marginLeft="10dp"
@@ -59,6 +69,7 @@
           android:id="@+id/news_detail_wrapper"
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/news_detail_loading"
             android:layout_marginLeft="10dp"
@@ -72,6 +83,7 @@
             android:textColor="#888"
             android:gravity="center"
             />
+
         <TextView
             android:id="@+id/news_detail_content"
             android:layout_marginLeft="10dp"
@@ -80,9 +92,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            tools:text="A big one"
             android:textColor="#444"
+            tools:text="A big one"
             />
+
       </com.tradehero.common.widget.BetterViewAnimator>
 
       <TextView
@@ -112,6 +125,9 @@
           android:layout_marginRight="10dp"
           android:paddingLeft="5dp"
           />
+
     </com.tradehero.th.fragments.news.NewsDetailFullView>
+
   </ScrollView>
+
 </merge>
