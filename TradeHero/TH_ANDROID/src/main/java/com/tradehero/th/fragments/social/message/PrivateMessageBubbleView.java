@@ -2,9 +2,12 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.discussion.key.PrivateMessageKey;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
 
 public class PrivateMessageBubbleView extends AbstractDiscussionItemView<PrivateMessageKey>
 {
@@ -24,6 +27,11 @@ public class PrivateMessageBubbleView extends AbstractDiscussionItemView<Private
         super(context, attrs, defStyle);
     }
     //</editor-fold>
+
+    @Override protected AbstractDiscussionCompactItemViewHolder createViewHolder()
+    {
+        return new AbstractDiscussionItemViewHolder<PrivateDiscussionDTO>();
+    }
 
     @Override protected SecurityId getSecurityId()
     {
