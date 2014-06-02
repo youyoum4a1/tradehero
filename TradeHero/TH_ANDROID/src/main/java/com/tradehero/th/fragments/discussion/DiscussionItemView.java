@@ -8,14 +8,10 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.share.SocialShareTranslationHelper;
-import javax.inject.Inject;
 
 public class DiscussionItemView<T extends DiscussionKey>
         extends AbstractDiscussionCompactItemView<T>
 {
-    @Inject protected SocialShareTranslationHelper socialShareHelper;
-
     //<editor-fold desc="Constructors">
     public DiscussionItemView(Context context)
     {

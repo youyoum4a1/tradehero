@@ -18,21 +18,14 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
-import javax.inject.Provider;
-import org.ocpsoft.prettytime.PrettyTime;
 
 abstract public class AbstractDiscussionCompactItemView<T extends DiscussionKey>
         extends LinearLayout
         implements DTOView<T>
 {
     @Inject protected DiscussionCache discussionCache;
-    @Inject protected UserProfileCache userProfileCache;
-    @Inject protected Provider<PrettyTime> prettyTime;
-    @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected SocialShareTranslationHelper socialShareHelper;
     protected AbstractDiscussionCompactItemViewHolder viewHolder;
     protected T discussionKey;

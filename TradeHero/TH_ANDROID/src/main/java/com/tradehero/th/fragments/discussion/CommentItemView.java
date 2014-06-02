@@ -4,13 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.CommentKey;
 
 public class CommentItemView extends DiscussionItemView<CommentKey>
 {
-    private DiscussionDTO discussionDTO;
-
     //<editor-fold desc="Constructors">
     public CommentItemView(Context context)
     {
@@ -46,7 +43,6 @@ public class CommentItemView extends DiscussionItemView<CommentKey>
     @Override protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
         super.linkWith(abstractDiscussionDTO, andDisplay);
-        this.discussionDTO = (DiscussionDTO) abstractDiscussionDTO;
         if (andDisplay)
         {
         }
@@ -54,10 +50,10 @@ public class CommentItemView extends DiscussionItemView<CommentKey>
 
     protected void openDiscussion()
     {
-        if (discussionDTO != null)
+        if (abstractDiscussionCompactDTO != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, discussionDTO.getDiscussionKey().getArgs());
+            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, abstractDiscussionCompactDTO.getDiscussionKey().getArgs());
             getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }
