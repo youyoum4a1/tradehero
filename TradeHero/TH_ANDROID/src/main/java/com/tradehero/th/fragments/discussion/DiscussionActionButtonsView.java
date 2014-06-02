@@ -55,7 +55,7 @@ public class DiscussionActionButtonsView extends LinearLayout
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
-        displayMoreButton();
+        display();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -94,6 +94,13 @@ public class DiscussionActionButtonsView extends LinearLayout
             displayCommentCount();
             displayMoreButton();
         }
+    }
+
+    public void display()
+    {
+        displayVotePair();
+        displayCommentCount();
+        displayMoreButton();
     }
 
     protected void displayVotePair()

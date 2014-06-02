@@ -21,7 +21,7 @@ public class NewsDetailSummaryView extends FrameLayout
     @InjectView(R.id.news_detail_title_placeholder) ImageView mNewsDetailTitlePlaceholder;
     @InjectView(R.id.news_detail_title_layout_wrapper) LinearLayout mNewsDetailTitleLayoutWrapper;
     @InjectView(R.id.news_detail_title) TextView mNewsDetailTitle;
-    @InjectView(R.id.news_detail_date) TextView mNewsDetailDate;
+    @InjectView(R.id.discussion_time) TextView mNewsDetailDate;
 
     @Inject PrettyTime prettyTime;
 

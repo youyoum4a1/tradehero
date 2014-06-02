@@ -53,7 +53,7 @@
       <!--include layout="@layout/discussion_translate_notice"/-->
 
       <TextView
-          android:id="@+id/news_detail_desc"
+          android:id="@+id/news_title_description"
           android:layout_marginLeft="10dp"
           android:layout_marginRight="10dp"
           android:layout_marginTop="10dp"
@@ -85,7 +85,7 @@
             />
 
         <TextView
-            android:id="@+id/news_detail_content"
+            android:id="@+id/discussion_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="15dp"

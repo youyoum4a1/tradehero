@@ -56,6 +56,7 @@ abstract public class AbstractDiscussionCompactItemView<T extends DiscussionKey>
         DaggerUtils.inject(this);
         viewHolder = createViewHolder();
         ButterKnife.inject(viewHolder, this);
+        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
 
     @Override protected void onAttachedToWindow()
@@ -64,11 +65,13 @@ abstract public class AbstractDiscussionCompactItemView<T extends DiscussionKey>
         ButterKnife.inject(viewHolder, this);
         viewHolder.linkWith(abstractDiscussionCompactDTO, true);
         viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
+        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachFetchDiscussionTask();
+        socialShareHelper.onDetach();
         viewHolder.setMenuClickedListener(null);
         ButterKnife.reset(viewHolder);
         super.onDetachedFromWindow();

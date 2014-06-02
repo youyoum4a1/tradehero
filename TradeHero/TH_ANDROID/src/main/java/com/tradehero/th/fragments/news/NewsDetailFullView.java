@@ -40,8 +40,7 @@ public class NewsDetailFullView extends LinearLayout
         implements DTOView<NewsItemDTO>
 {
     @InjectView(R.id.news_detail_wrapper) BetterViewAnimator mNewsContentWrapper;
-    @InjectView(R.id.news_detail_content) TextView mNewsDetailContent;
-    @InjectView(R.id.news_detail_desc) TextView mNewsDetailDesc;
+    @InjectView(R.id.discussion_content) TextView mNewsDetailContent;
     @InjectView(R.id.news_detail_reference) GridView mNewsDetailReference;
     @InjectView(R.id.news_view_on_web) TextView mNewsViewOnWeb;
     @InjectView(R.id.news_detail_reference_container) LinearLayout mNewsDetailReferenceContainer;

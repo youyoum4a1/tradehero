@@ -40,7 +40,7 @@
           />
 
       <TextView
-          android:id="@+id/news_detail_date"
+          android:id="@+id/discussion_time"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           tools:text="1 hour ago"

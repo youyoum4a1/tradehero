@@ -1,16 +1,13 @@
 package com.tradehero.th.fragments.news;
 
-import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
-import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
 
 public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         NewsItemCompactViewHolder<DiscussionType>
 {
-    @InjectView(R.id.private_text_container) @Optional protected View textContainer;
     @InjectView(R.id.discussion_content) protected TextView textContent;
 
     //<editor-fold desc="Constructors">
