@@ -50,7 +50,7 @@
 
       </HorizontalScrollView>
 
-      <include layout="@layout/discussion_translate_notice"/>
+      <!--include layout="@layout/discussion_translate_notice"/-->
 
       <TextView
           android:id="@+id/news_detail_desc"
