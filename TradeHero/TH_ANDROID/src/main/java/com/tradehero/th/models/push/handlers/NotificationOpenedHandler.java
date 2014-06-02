@@ -6,6 +6,7 @@ import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.models.push.NotificationGroupHolder;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import javax.inject.Inject;
@@ -13,11 +14,16 @@ import javax.inject.Inject;
 public class NotificationOpenedHandler extends PrecacheNotificationHandler
 {
     private final Context context;
+    private NotificationGroupHolder notificationGroupHolder;
 
-    @Inject public NotificationOpenedHandler(Context context, NotificationCache notificationCache)
+    @Inject public NotificationOpenedHandler(
+            Context context,
+            NotificationCache notificationCache,
+            NotificationGroupHolder notificationGroupHolder)
     {
         super(notificationCache);
         this.context = context;
+        this.notificationGroupHolder = notificationGroupHolder;
     }
 
     @Override public PushConstants.THAction getAction()
@@ -37,8 +43,21 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
             launchIntent.putExtras(notificationKey.getArgs());
         }
 
+        // remove the its group
+        clearNotificationGroup(intent);
+
         context.startActivity(launchIntent);
         return true;
+    }
+
+    private void clearNotificationGroup(Intent intent)
+    {
+        int groupId = intent.getIntExtra(PushConstants.KEY_PUSH_GROUP_ID, -1);
+
+        if (groupId > 0)
+        {
+            notificationGroupHolder.remove(groupId);
+        }
     }
 
     private Intent createLaunchIntent(Intent intent)

@@ -35,7 +35,7 @@ public class RichNotificationBuilder implements PushNotificationBuilder
     {
         try
         {
-            return Integer.parseInt(extras.get(PushConstants.PUSH_ID_KEY));
+            return Integer.parseInt(extras.get(PushConstants.KEY_PUSH_ID));
         }
         catch (Exception ex)
         {

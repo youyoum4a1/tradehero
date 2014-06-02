@@ -17,9 +17,7 @@ import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -31,20 +29,20 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     private final Context context;
     private final IntPreference maxGroupNotifications;
     private final NotificationCache notificationCache;
+    private final NotificationGroupHolder notificationGroupHolder;
 
-    private Map<Integer, List<NotificationDTO>> notificationGroupMap;
     private AsyncTask<Void, Void, NotificationDTO> notificationFetchTask;
 
     @Inject public CommonNotificationBuilder(
             Context context,
             NotificationCache notificationCache,
+            NotificationGroupHolder notificationGroupHolder,
             @MaxGroupNotifications IntPreference maxGroupNotifications)
     {
         this.context = context;
         this.notificationCache = notificationCache;
         this.maxGroupNotifications = maxGroupNotifications;
-
-        this.notificationGroupMap = new HashMap<>();
+        this.notificationGroupHolder = notificationGroupHolder;
     }
 
     @Override public Notification buildNotification(String message, int notificationId)
@@ -67,7 +65,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     {
         int groupId = uniquifyNotificationId(notificationDTO);
 
-        List<NotificationDTO> notificationDTOs = notificationGroupMap.get(groupId);
+        List<NotificationDTO> notificationDTOs = notificationGroupHolder.get(groupId);
         boolean firstMessageOfTheGroup = notificationDTOs == null || notificationDTOs.isEmpty();
 
         String title = context.getString(R.string.app_name);
@@ -80,7 +78,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         {
             notificationDTOs = new ArrayList<>();
             notificationDTOs.add(notificationDTO);
-            notificationGroupMap.put(groupId, notificationDTOs);
+            notificationGroupHolder.put(groupId, notificationDTOs);
             notification = notificationBuilder
                     .setContentText(notificationDTO.text)
                     .build();
@@ -123,6 +121,9 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     public Intent composeIntent(NotificationDTO notificationDTO)
     {
         Intent intent = new Intent(PushConstants.ACTION_NOTIFICATION_CLICKED);
+
+        intent.putExtra(PushConstants.KEY_PUSH_ID, String.valueOf(notificationDTO.pushId));
+        intent.putExtra(PushConstants.KEY_PUSH_GROUP_ID, uniquifyNotificationId(notificationDTO));
         intent.putExtra(PushConstants.KEY_NOTIFICATION_ID, notificationDTO.pushId);
         intent.putExtra(PushConstants.KEY_NOTIFICATION_CONTENT, notificationDTO.text);
         return intent;
@@ -144,7 +145,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     {
         String message = notificationDTO.text;
 
-        List<NotificationDTO> notificationGroup = notificationGroupMap.get(notificationDTO.pushId);
+        List<NotificationDTO> notificationGroup = notificationGroupHolder.get(notificationDTO.pushId);
         int size = notificationGroup != null ? notificationGroup.size() : 0;
         DiscussionType discussionType = DiscussionType.fromValue(notificationDTO.replyableTypeId);
         switch (discussionType)

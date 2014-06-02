@@ -30,7 +30,7 @@ public abstract class PrecacheNotificationHandler implements PushNotificationHan
 
     private void injectNotificationKey(Intent intent)
     {
-        String notificationIdValue = intent.getStringExtra(PushConstants.PUSH_ID_KEY);
+        String notificationIdValue = intent.getStringExtra(PushConstants.KEY_PUSH_ID);
         if (notificationIdValue != null)
         {
             try
