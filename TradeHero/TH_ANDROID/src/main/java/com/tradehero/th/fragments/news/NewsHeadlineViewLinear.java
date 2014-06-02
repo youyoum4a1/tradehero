@@ -9,28 +9,28 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import javax.inject.Inject;
 
-public class NewsHeadlineView extends AbstractDiscussionCompactItemView<NewsItemDTOKey>
+public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
 {
     @Inject NewsItemCompactCacheNew newsItemCompactCache;
 
     //<editor-fold desc="Constructors">
-    public NewsHeadlineView(Context context)
+    public NewsHeadlineViewLinear(Context context)
     {
         super(context);
     }
 
-    public NewsHeadlineView(Context context, AttributeSet attrs)
+    public NewsHeadlineViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public NewsHeadlineView(Context context, AttributeSet attrs, int defStyle)
+    public NewsHeadlineViewLinear(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

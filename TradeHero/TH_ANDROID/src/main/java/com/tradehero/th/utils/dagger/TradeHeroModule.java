@@ -29,11 +29,11 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
-import com.tradehero.th.fragments.discussion.DiscussionItemView;
+import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
 import com.tradehero.th.fragments.discussion.DiscussionItemViewHolder;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
@@ -56,7 +56,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
-import com.tradehero.th.fragments.news.NewsHeadlineView;
+import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
 import com.tradehero.th.fragments.news.NewsItemCompactViewHolder;
 import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
@@ -110,12 +110,12 @@ import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.PrivateDiscussionView;
-import com.tradehero.th.fragments.social.message.PrivateMessageBubbleView;
+import com.tradehero.th.fragments.social.message.PrivateMessageBubbleViewLinear;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineItemView;
+import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.fragments.timeline.UserProfileCompactViewHolder;
 import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -271,7 +271,7 @@ import javax.inject.Singleton;
                         CacheHelper.class,
 
                         TimelineFragment.class,
-                        TimelineItemView.class,
+                        TimelineItemViewLinear.class,
                         UserProfileCompactViewHolder.class,
                         UserProfileDetailViewHolder.class,
 
@@ -345,9 +345,9 @@ import javax.inject.Singleton;
                         ShareDialogLayout.class,
                         ShareDestinationSetAdapter.class,
                         NewsDialogLayout.class,
-                        NewsHeadlineView.class,
-                        AbstractDiscussionCompactItemView.class,
-                        DiscussionItemView.class,
+                        NewsHeadlineViewLinear.class,
+                        AbstractDiscussionCompactItemViewLinear.class,
+                        DiscussionItemViewLinear.class,
                         AbstractDiscussionCompactItemViewHolder.class,
                         AbstractDiscussionItemViewHolder.class,
                         DiscussionItemViewHolder.class,
@@ -362,7 +362,7 @@ import javax.inject.Singleton;
                         PrivateDiscussionView.class,
                         PrivateDiscussionSetAdapter.class,
                         PrivateDiscussionView.PrivateDiscussionViewDiscussionSetAdapter.class,
-                        PrivateMessageBubbleView.class,
+                        PrivateMessageBubbleViewLinear.class,
                         AbstractDiscussionFragment.class,
                         AbstractPrivateMessageFragment.class,
 

@@ -6,20 +6,20 @@ import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.CommentKey;
 
-public class CommentItemView extends DiscussionItemView<CommentKey>
+public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
 {
     //<editor-fold desc="Constructors">
-    public CommentItemView(Context context)
+    public CommentItemViewLinear(Context context)
     {
         super(context);
     }
 
-    public CommentItemView(Context context, AttributeSet attrs)
+    public CommentItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public CommentItemView(Context context, AttributeSet attrs, int defStyle)
+    public CommentItemViewLinear(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

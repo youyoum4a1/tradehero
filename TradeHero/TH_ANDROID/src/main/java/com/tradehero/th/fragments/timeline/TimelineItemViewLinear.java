@@ -19,7 +19,7 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
@@ -29,24 +29,24 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class TimelineItemView extends AbstractDiscussionCompactItemView<TimelineItemDTOKey>
+public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTOKey>
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject LocalyticsSession localyticsSession;
 
     //<editor-fold desc="Constructors">
-    public TimelineItemView(Context context)
+    public TimelineItemViewLinear(Context context)
     {
         super(context);
     }
 
-    public TimelineItemView(Context context, AttributeSet attrs)
+    public TimelineItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public TimelineItemView(Context context, AttributeSet attrs, int defStyle)
+    public TimelineItemViewLinear(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

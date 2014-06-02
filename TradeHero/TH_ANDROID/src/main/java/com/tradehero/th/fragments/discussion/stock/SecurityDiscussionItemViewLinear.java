@@ -6,23 +6,23 @@ import android.util.AttributeSet;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionItemViewHolder;
-import com.tradehero.th.fragments.discussion.DiscussionItemView;
+import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
 
-public class SecurityDiscussionItemView
-        extends DiscussionItemView<DiscussionKey>
+public class SecurityDiscussionItemViewLinear
+        extends DiscussionItemViewLinear<DiscussionKey>
 {
     //<editor-fold desc="Constructors">
-    public SecurityDiscussionItemView(Context context)
+    public SecurityDiscussionItemViewLinear(Context context)
     {
         super(context);
     }
 
-    public SecurityDiscussionItemView(Context context, AttributeSet attrs)
+    public SecurityDiscussionItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public SecurityDiscussionItemView(Context context, AttributeSet attrs, int defStyle)
+    public SecurityDiscussionItemViewLinear(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

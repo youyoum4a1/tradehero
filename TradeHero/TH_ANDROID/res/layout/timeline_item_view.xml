@@ -1,4 +1,4 @@
-<com.tradehero.th.fragments.timeline.TimelineItemView
+<com.tradehero.th.fragments.timeline.TimelineItemViewLinear
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -110,4 +110,4 @@
 
   </FrameLayout>
 
-</com.tradehero.th.fragments.timeline.TimelineItemView>
+</com.tradehero.th.fragments.timeline.TimelineItemViewLinear>

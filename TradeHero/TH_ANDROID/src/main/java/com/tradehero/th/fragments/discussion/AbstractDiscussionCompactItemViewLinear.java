@@ -21,7 +21,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-abstract public class AbstractDiscussionCompactItemView<T extends DiscussionKey>
+abstract public class AbstractDiscussionCompactItemViewLinear<T extends DiscussionKey>
         extends LinearLayout
         implements DTOView<T>
 {
@@ -34,17 +34,18 @@ abstract public class AbstractDiscussionCompactItemView<T extends DiscussionKey>
     private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchTask;
 
     //<editor-fold desc="Constructors">
-    public AbstractDiscussionCompactItemView(Context context)
+    public AbstractDiscussionCompactItemViewLinear(Context context)
     {
         super(context);
     }
 
-    public AbstractDiscussionCompactItemView(Context context, AttributeSet attrs)
+    public AbstractDiscussionCompactItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public AbstractDiscussionCompactItemView(Context context, AttributeSet attrs, int defStyle)
+    public AbstractDiscussionCompactItemViewLinear(Context context, AttributeSet attrs,
+            int defStyle)
     {
         super(context, attrs, defStyle);
     }

@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import timber.log.Timber;
 
-public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineView>
+public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineViewLinear>
 {
     //    public int[] backgrounds = {
     //            R.drawable.img_placeholder_news_1,
@@ -128,7 +128,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
     }
 
     @Override
-    protected void fineTune(final int position, NewsItemDTOKey dto, final NewsHeadlineView dtoView)
+    protected void fineTune(final int position, NewsItemDTOKey dto, final NewsHeadlineViewLinear dtoView)
     {
         View wrapperView = dtoView.findViewById(R.id.news_item_placeholder);
         if (backgroundsArr[position] != null)

@@ -217,9 +217,9 @@ public class DiscussionView extends FrameLayout
             discussionListCache.invalidateAllPagesFor(discussionKey);
         }
         initialFetchDiscussion(true);
-        if (topicView instanceof AbstractDiscussionCompactItemView)
+        if (topicView instanceof AbstractDiscussionCompactItemViewLinear)
         {
-            ((AbstractDiscussionCompactItemView) topicView).refresh();
+            ((AbstractDiscussionCompactItemViewLinear) topicView).refresh();
         }
     }
 

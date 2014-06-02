@@ -9,21 +9,21 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 
-public class DiscussionItemView<T extends DiscussionKey>
-        extends AbstractDiscussionCompactItemView<T>
+public class DiscussionItemViewLinear<T extends DiscussionKey>
+        extends AbstractDiscussionCompactItemViewLinear<T>
 {
     //<editor-fold desc="Constructors">
-    public DiscussionItemView(Context context)
+    public DiscussionItemViewLinear(Context context)
     {
         super(context);
     }
 
-    public DiscussionItemView(Context context, AttributeSet attrs)
+    public DiscussionItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public DiscussionItemView(Context context, AttributeSet attrs, int defStyle)
+    public DiscussionItemViewLinear(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

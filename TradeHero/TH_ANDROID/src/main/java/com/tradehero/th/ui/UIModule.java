@@ -8,13 +8,13 @@ import com.tradehero.th.fragments.discussion.NewsDiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemView;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
-import com.tradehero.th.fragments.timeline.TimelineItemView;
+import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem;
@@ -35,7 +35,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 UIComponents.class
         },
         injects = {
-                TimelineItemView.class,
+                TimelineItemViewLinear.class,
                 LeaderboardMarkUserListFragment.class,
                 UpdateCenterFragment.class,
                 NotificationsView.class,
@@ -51,7 +51,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 SecurityDiscussionView.class,
                 SecurityDiscussionFragment.class,
-                SecurityDiscussionItemView.class,
+                SecurityDiscussionItemViewLinear.class,
                 SecurityDiscussionCommentFragment.class,
 
                 DiscussionView.class,
