@@ -17,7 +17,7 @@ import timber.log.Timber;
 abstract public class DashboardFragment extends BaseFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
-    @Inject AlertDialogUtil alertDialogUtil;
+    @Inject protected AlertDialogUtil alertDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
