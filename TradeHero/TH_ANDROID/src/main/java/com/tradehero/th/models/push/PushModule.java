@@ -10,6 +10,7 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import timber.log.Timber;
 
 @Module(
         includes = {
@@ -33,10 +34,12 @@ public class PushModule
         boolean isChineseVersion = DeviceTokenHelper.isChineseVersion();
         if (isChineseVersion)
         {
+            Timber.d("Using Baidu Push");
             return baiduPushManager.get();
         }
         else
         {
+            Timber.d("Using UrbanAirship Push");
             return urbanAirshipPushNotificationManager.get();
         }
     }

@@ -21,6 +21,6 @@ public class UrbanAirshipIntentReceiver extends DefaultIntentReceiver
                 return THAction.RegistrationFinished;
         }
 
-        return null;
+        return super.translateAction(action);
     }
 }

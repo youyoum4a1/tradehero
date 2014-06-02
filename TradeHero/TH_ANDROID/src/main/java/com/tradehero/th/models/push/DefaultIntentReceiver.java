@@ -21,7 +21,7 @@ public abstract class DefaultIntentReceiver extends BroadcastReceiver
 
     @Override public void onReceive(Context context, Intent intent)
     {
-        Timber.d("Received new intent: %s", new IntentLogger(intent));
+        Timber.d("Received new intent: %s, using %s", new IntentLogger(intent), getClass().getName());
         PushConstants.THAction action = translateAction(intent.getAction());
 
         // TODO design decision: command/delegate pattern?
