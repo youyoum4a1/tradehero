@@ -2,6 +2,7 @@ package com.tradehero.th.models.push.handlers;
 
 import android.content.Context;
 import android.content.Intent;
+import com.tradehero.th.models.push.PushConstants;
 import com.urbanairship.UAirship;
 import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
@@ -17,9 +18,9 @@ public class RegistrationFinishedHandler implements PushNotificationHandler
         this.context = context;
     }
 
-    @Override public String getAction()
+    @Override public PushConstants.THAction getAction()
     {
-        return PushManager.ACTION_REGISTRATION_FINISHED;
+        return PushConstants.THAction.RegistrationFinished;
     }
 
     @Override public boolean handle(Intent intent)

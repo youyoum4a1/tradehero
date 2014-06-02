@@ -2,7 +2,9 @@ package com.tradehero.th.models.push;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -73,12 +75,13 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         NotificationCompat.Builder notificationBuilder = getCommonNotificationBuilder();
         notificationBuilder.setContentTitle(title);
 
+        Notification notification = null;
         if (firstMessageOfTheGroup)
         {
             notificationDTOs = new ArrayList<>();
             notificationDTOs.add(notificationDTO);
             notificationGroupMap.put(groupId, notificationDTOs);
-            return notificationBuilder
+            notification = notificationBuilder
                     .setContentText(notificationDTO.text)
                     .build();
         }
@@ -110,8 +113,19 @@ public class CommonNotificationBuilder implements THNotificationBuilder
                 style.setSummaryText(context.getString(R.string.inbox_summary, totalUnreadCount - maxGroupNotifications.get()));
             }
 
-            return style.build();
+            notification = style.build();
         }
+
+        notification.contentIntent = PendingIntent.getBroadcast(context, notificationDTO.pushId, composeIntent(notificationDTO), 0);
+        return notification;
+    }
+
+    public Intent composeIntent(NotificationDTO notificationDTO)
+    {
+        Intent intent = new Intent(PushConstants.ACTION_NOTIFICATION_CLICKED);
+        intent.putExtra(PushConstants.KEY_NOTIFICATION_ID, notificationDTO.pushId);
+        intent.putExtra(PushConstants.KEY_NOTIFICATION_CONTENT, notificationDTO.text);
+        return intent;
     }
 
     @Override public int getNotifyId(int notificationId)

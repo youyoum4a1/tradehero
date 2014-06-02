@@ -6,8 +6,8 @@ import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 
 public class NotificationOpenedHandler extends PrecacheNotificationHandler
@@ -20,9 +20,9 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         this.context = context;
     }
 
-    @Override public String getAction()
+    @Override public PushConstants.THAction getAction()
     {
-        return PushManager.ACTION_NOTIFICATION_OPENED;
+        return PushConstants.THAction.Opened;
     }
 
     @Override public boolean handle(Intent intent)

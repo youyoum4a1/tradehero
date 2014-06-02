@@ -213,7 +213,7 @@
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
-    <receiver android:name=".models.push.baidu.NotificationReceiver">
+    <receiver android:name=".models.push.baidu.BaiduIntentReceiver">
       <intent-filter>
         <action android:name="com.tradehero.th.ACTION_NOTIFICATION_CLICKED"/>
       </intent-filter>

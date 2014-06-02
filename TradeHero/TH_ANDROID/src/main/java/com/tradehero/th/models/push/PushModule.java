@@ -14,7 +14,10 @@ import javax.inject.Singleton;
 @Module(
         includes = {
                 BaiduPushModule.class,
-                UrbanAirshipPushModule.class
+                UrbanAirshipPushModule.class,
+        },
+        injects = {
+                DefaultIntentReceiver.class,
         },
         complete = false,
         library = true
