@@ -134,8 +134,7 @@ public class DisplayablePortfolioFetchAssistant
                         displayablePortfolioDTO.fetchingUser = false;
                         displayablePortfolioDTO.userBaseDTO = value;
                     }
-                    //hide this for createPortfolioDTOListener will notify later by alex
-                    //notifyListener();
+                    conditionalNotifyListener();
                 }
             }
 
@@ -164,7 +163,7 @@ public class DisplayablePortfolioFetchAssistant
                             displayablePortfolioDTO.portfolioDTO = value;
                         }
                     }
-                    notifyListener();
+                    conditionalNotifyListener();
                 }
             }
 
@@ -201,7 +200,7 @@ public class DisplayablePortfolioFetchAssistant
             notifyListener();
         }
     }
-    
+
     protected void notifyListener()
     {
         if (fetchedListener != null)
