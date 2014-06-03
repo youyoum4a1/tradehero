@@ -2,518 +2,391 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-<com.tradehero.th.fragments.leaderboard.ExpandingLayout
-    android:id="@+id/expanding_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/leaderboard_user_item_basic_info"
-    android:orientation="vertical"
-    android:padding="8dp"
-    android:visibility="visible"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
-
-  <LinearLayout
+  <com.tradehero.th.fragments.leaderboard.ExpandingLayout
+      android:id="@+id/expanding_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:gravity="center_horizontal"
-      tools:background="#f99">
-
-    <com.tradehero.common.widget.GaugeView
-        android:id="@+id/leaderboard_gauge_tradeconsistency"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_weight="1"
-        app:showText="true"
-        app:showRanges="true"
-        app:rangeColors="@array/rangeColors2"
-        app:showOuterBorder="false"
-        app:showInnerRim="false"
-        app:showOuterShadow="false"
-        app:showOuterRim="false"
-        app:showNeedle="true"
-        app:animationDuration="4000"
-        app:drawCenterIndicator="false"
-        />
-
-    <com.tradehero.common.widget.GaugeView
-        android:id="@+id/leaderboard_gauge_winrate"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_weight="1"
-        app:showText="true"
-        app:showRanges="true"
-        app:rangeColors="@array/rangeColors2"
-        app:showOuterBorder="false"
-        app:showInnerRim="false"
-        app:showOuterShadow="false"
-        app:showOuterRim="false"
-        app:showNeedle="true"
-        app:animationDuration="4000"
-        app:drawCenterIndicator="false"
-        />
-    <com.tradehero.common.widget.GaugeView
-        android:id="@+id/leaderboard_gauge_performance"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_weight="1"
-        app:showText="true"
-        app:showRanges="true"
-        app:rangeColors="@array/rangeColors2"
-        app:showOuterBorder="false"
-        app:showInnerRim="false"
-        app:showOuterShadow="false"
-        app:showOuterRim="false"
-        app:showNeedle="true"
-        android:padding="5dp"
-        app:animationDuration="4000"
-        app:drawCenterIndicator="true"
-        />
-
-    <!--app:scaleStartValue="50"-->
-    <!--android:background="#28f8"-->
-    </LinearLayout>
-
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_marginTop="8dp">
-
-  <com.tradehero.common.widget.NumericalAnimatedTextView
-      android:id="@+id/leaderboard_position_tv"
-      android:layout_width="0dp" android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:gravity="center"
-      app:animatedDuration="2500"
-      app:animatedInterval="50"
-      app:showAnimation="true"
-      app:textSize="18sp"
-
-      />
-  <com.tradehero.common.widget.NumericalAnimatedTextView
-      android:id="@+id/leaderboard_tradecount_tv"
-      android:layout_width="0dp" android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:gravity="center"
-      app:animatedDuration="2500"
-      app:animatedInterval="50"
-      app:showAnimation="true"
-      app:textSize="18sp"
-      />
-
-  <com.tradehero.common.widget.NumericalAnimatedTextView
-      android:id="@+id/leaderboard_dayshold_tv"
-      android:layout_width="0dp" android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:gravity="center"
-      app:animatedDuration="2500"
-      app:animatedInterval="50"
-      app:showAnimation="true"
-      app:textSize="18sp"
-      />
-    </LinearLayout>
-
-  <LinearLayout android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:layout_marginTop="-3dp">
-    <TextView
-        android:layout_width="0dp" android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/leaderboard_positions"
-        android:gravity="center"
-        android:textSize="11sp"
-        />
-    <TextView
-        android:layout_width="0dp" android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/leaderboard_monthly_trade_count"
-        android:gravity="center"
-        android:textSize="11sp"/>
-    <TextView
-        android:layout_width="0dp" android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/leaderboard_avg_days_held"
-        android:gravity="center"
-        android:textSize="11sp"/>
-  </LinearLayout>
-
-  <!-- Hero Quotient -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:weightSum="3"
-      android:visibility="gone"
+      android:layout_below="@id/leaderboard_user_item_basic_info"
+      android:orientation="vertical"
+      android:padding="8dp"
+      android:visibility="visible"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      xmlns:tools="http://schemas.android.com/tools"
       >
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_user_hero_quotient"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
-
-    <TextView
-        android:id="@+id/leaderboard_user_item_hq"
-        android:layout_height="30dp"
-        android:layout_width="30dp"
-        android:contentDescription="@null"
-        android:background="@drawable/hero_quotient_colour"
-        android:textSize="12dp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:paddingBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:shadowColor="@color/light_grey"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        tools:text="20"
-        />
-
-  </LinearLayout>
-
-  <!-- Profit and Loss -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_p_n_l"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
-
-    <TextView
-        android:id="@+id/lbmu_pl"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
-        android:layout_height="wrap_content"
-        tools:text="US$ 92,579,534"
-        />
-
-  </LinearLayout>
-
-  <!-- period -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_period"
-        android:gravity="right"
-        android:textColor="@color/light_grey"
-        />
-
-    <TextView
-        android:id="@+id/lbmu_period"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
-        android:layout_height="wrap_content"
-        tools:text="27 Jan 2014 - 3 Feb 2014"
-        />
-
-  </LinearLayout>
-
-  <!-- Sharpe ratio -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone"
-      >
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_user_sharpe_ratio"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
-
+    <include layout="@layout/user_statistic"/>
+    <!-- Hero Quotient -->
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:weightSum="3"
+        android:visibility="gone"
         >
 
       <TextView
-          android:id="@+id/lbmu_sharpe_ratio"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
-          android:textStyle="bold"
-          />
+          android:text="@string/leaderboard_user_hero_quotient"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
 
       <TextView
-          android:id="@+id/lbmu_volatility"
-          android:layout_width="wrap_content"
+          android:id="@+id/leaderboard_user_item_hq"
+          android:layout_height="30dp"
+          android:layout_width="30dp"
+          android:contentDescription="@null"
+          android:background="@drawable/hero_quotient_colour"
+          android:textSize="12dp"
+          android:gravity="center"
+          android:textStyle="bold"
+          android:paddingBottom="10dp"
+          android:layout_marginLeft="10dp"
+          android:shadowColor="@color/light_grey"
+          android:shadowDy="1"
+          android:shadowRadius="1"
+          tools:text="20"
+          />
+
+    </LinearLayout>
+
+    <!-- Profit and Loss -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
+          android:text="@string/leaderboard_p_n_l"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <TextView
+          android:id="@+id/lbmu_pl"
+          android:layout_width="0dp"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
-          android:textColor="@color/gray_1"
+          android:layout_height="wrap_content"
+          tools:text="US$ 92,579,534"
           />
 
     </LinearLayout>
 
-  </LinearLayout>
-
-  <!-- Number of Trades in Period -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_number_trades_in_period_title"
-        android:gravity="right"
-        android:lines="1"
-        android:textColor="@color/light_grey"/>
-
+    <!-- period -->
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
 
       <TextView
-          android:id="@+id/lbmu_number_trades_in_period"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
-          tools:text="21"
-          />
-
-    </LinearLayout>
-
-  </LinearLayout>
-
-  <!-- Win Ratio -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_win_ratio_title"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
-        android:layout_height="wrap_content"
-        >
-
-      <TextView
-          android:id="@+id/lbmu_win_ratio"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="66.8%"
-          />
-
-    </LinearLayout>
-
-  </LinearLayout>
-
-  <!-- Avg. Days Held -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_avg_days_held"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
-        android:layout_height="wrap_content"
-        >
-
-      <TextView
-          android:id="@+id/lbmu_avg_days_held"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textStyle="bold"
-          tools:text="3.77"
-          />
-
-    </LinearLayout>
-
-  </LinearLayout>
-
-  <!-- Benchmark ROI -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_benchmark_roi"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
-
-    <TextView
-        android:id="@+id/lbmu_benchmark_roi"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/gray_1"
-        tools:text="0.11% (S&amp;P 500)"
-        />
-
-  </LinearLayout>
-
-  <!-- Number of positions -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_positions_count"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
-        android:layout_height="wrap_content"
-        >
-
-      <TextView
-          android:id="@+id/lbmu_positions_count"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textStyle="bold"
-          tools:text="12"
+          android:text="@string/leaderboard_period"
+          android:gravity="right"
+          android:textColor="@color/light_grey"
           />
 
       <TextView
-          android:id="@+id/lbmu_number_of_trades"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
+          android:id="@+id/lbmu_period"
+          android:layout_width="0dp"
+          android:layout_weight="2"
           android:paddingLeft="10dp"
-          android:textColor="@color/gray_1"
-          tools:text="(21 trades)"
+          android:layout_height="wrap_content"
+          tools:text="27 Jan 2014 - 3 Feb 2014"
           />
 
     </LinearLayout>
 
-  </LinearLayout>
-
-  <!-- Number of followers -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
+    <!-- Sharpe ratio -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/leaderboard_followers_count"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone"
+        >
 
-    <TextView
-        android:id="@+id/lbmu_followers_count"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_user_sharpe_ratio"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          >
+
+        <TextView
+            android:id="@+id/lbmu_sharpe_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/lbmu_volatility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textColor="@color/gray_1"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Number of Trades in Period -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        tools:text="3"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_number_trades_in_period_title"
+          android:gravity="right"
+          android:lines="1"
+          android:textColor="@color/light_grey"/>
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          >
+
+        <TextView
+            android:id="@+id/lbmu_number_trades_in_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="21"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Win Ratio -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_win_ratio_title"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          >
+
+        <TextView
+            android:id="@+id/lbmu_win_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="66.8%"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Avg. Days Held -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_avg_days_held"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          >
+
+        <TextView
+            android:id="@+id/lbmu_avg_days_held"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            tools:text="3.77"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Benchmark ROI -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_benchmark_roi"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <TextView
+          android:id="@+id/lbmu_benchmark_roi"
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          android:textColor="@color/gray_1"
+          tools:text="0.11% (S&amp;P 500)"
+          />
+
+    </LinearLayout>
+
+    <!-- Number of positions -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_positions_count"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <LinearLayout
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          >
+
+        <TextView
+            android:id="@+id/lbmu_positions_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            tools:text="12"
+            />
+
+        <TextView
+            android:id="@+id/lbmu_number_of_trades"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:textColor="@color/gray_1"
+            tools:text="(21 trades)"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Number of followers -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_followers_count"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <TextView
+          android:id="@+id/lbmu_followers_count"
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          android:textStyle="bold"
+          tools:text="3"
+          />
+
+    </LinearLayout>
+
+    <!-- Comments count -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_comments_count"
+          android:gravity="right"
+          android:textColor="@color/light_grey"/>
+
+      <TextView
+          android:id="@+id/lbmu_comments_count"
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:paddingLeft="10dp"
+          android:layout_height="wrap_content"
+          android:textStyle="bold"
+          tools:text="1"
+          />
+
+    </LinearLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/lbmu_item_action_buttons"
         />
 
-  </LinearLayout>
-
-  <!-- Comments count -->
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="2dp"
-      android:visibility="gone">
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="@string/leaderboard_comments_count"
-        android:gravity="right"
-        android:textColor="@color/light_grey"/>
-
-    <TextView
-        android:id="@+id/lbmu_comments_count"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:paddingLeft="10dp"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        tools:text="1"
-        />
-
-  </LinearLayout>
-
-  <include
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      layout="@layout/lbmu_item_action_buttons"
-      />
-
-</com.tradehero.th.fragments.leaderboard.ExpandingLayout>
+  </com.tradehero.th.fragments.leaderboard.ExpandingLayout>
 </merge>

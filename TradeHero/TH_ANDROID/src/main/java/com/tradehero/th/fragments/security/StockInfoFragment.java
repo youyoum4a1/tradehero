@@ -26,7 +26,6 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
-import com.tradehero.th.persistence.news.SecurityNewsCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
@@ -48,7 +47,6 @@ public class StockInfoFragment extends DashboardFragment
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject Lazy<SecurityNewsCache> newsCache;
     private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
 
@@ -199,7 +197,7 @@ public class StockInfoFragment extends DashboardFragment
         if (securityId != null)
         {
             queryCompactCache(securityId, andDisplay);
-            queryNewsCache(securityId, andDisplay);
+            //queryNewsCache(securityId, andDisplay);
         }
 
         if (andDisplay)
@@ -240,37 +238,37 @@ public class StockInfoFragment extends DashboardFragment
         }
     }
 
-    private void queryNewsCache(final SecurityId securityId, final boolean andDisplay)
-    {
-        PaginatedDTO<NewsItemDTO> newsHeadlineList = newsCache.get().get(securityId);
-        if (newsHeadlineList != null)
-        {
-            linkWith(newsHeadlineList, andDisplay);
-        }
-        else
-        {
-            yahooNewsCacheListener = new DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>>()
-            {
-                @Override public void onDTOReceived(SecurityId key, PaginatedDTO<NewsItemDTO> value, boolean fromCache)
-                {
-                    linkWith(value, andDisplay);
-                }
-
-                @Override public void onErrorThrown(SecurityId key, Throwable error)
-                {
-                    THToast.show(R.string.error_fetch_news_list);
-                    Timber.e(error, "Failed to fetch NewsHeadlineList for %s", securityId, error);
-                }
-            };
-
-            if (yahooNewsCacheFetchTask != null)
-            {
-                yahooNewsCacheFetchTask.cancel(true);
-            }
-            yahooNewsCacheFetchTask = newsCache.get().getOrFetch(securityId, yahooNewsCacheListener);
-            yahooNewsCacheFetchTask.execute();
-        }
-    }
+    //private void queryNewsCache(final SecurityId securityId, final boolean andDisplay)
+    //{
+    //    PaginatedDTO<NewsItemDTO> newsHeadlineList = newsCache.get().get(securityId);
+    //    if (newsHeadlineList != null)
+    //    {
+    //        linkWith(newsHeadlineList, andDisplay);
+    //    }
+    //    else
+    //    {
+    //        yahooNewsCacheListener = new DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>>()
+    //        {
+    //            @Override public void onDTOReceived(SecurityId key, PaginatedDTO<NewsItemDTO> value, boolean fromCache)
+    //            {
+    //                linkWith(value, andDisplay);
+    //            }
+    //
+    //            @Override public void onErrorThrown(SecurityId key, Throwable error)
+    //            {
+    //                THToast.show(R.string.error_fetch_news_list);
+    //                Timber.e(error, "Failed to fetch NewsHeadlineList for %s", securityId, error);
+    //            }
+    //        };
+    //
+    //        if (yahooNewsCacheFetchTask != null)
+    //        {
+    //            yahooNewsCacheFetchTask.cancel(true);
+    //        }
+    //        yahooNewsCacheFetchTask = newsCache.get().getOrFetch(securityId, yahooNewsCacheListener);
+    //        yahooNewsCacheFetchTask.execute();
+    //    }
+    //}
 
     private void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {

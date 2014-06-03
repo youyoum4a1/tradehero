@@ -16,6 +16,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -96,7 +97,7 @@ abstract public class AbstractPositionListFragment<
     private boolean[] expandedPositions;
 
     protected DTOCache.GetOrFetchTask<CacheQueryIdType, GetPositionsDTOType> fetchGetPositionsDTOTask;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> fetchPortfolioDTOTask;
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -368,18 +369,23 @@ abstract public class AbstractPositionListFragment<
     {
         super.onSaveInstanceState(outState);
         detachGetPositionsTask();
-        detachUserProfileTask();
+        detachUserProfileCache();
         detachPortfolioTask();
         outState.putInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
         outState.putBooleanArray(BUNDLE_KEY_EXPANDED_LIST_FLAGS, expandedPositions);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachPortfolioTask();
         detachGetPositionsTask();
-        detachUserProfileTask();
+        detachUserProfileCache();
 
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         if (positionsListView != null)
         {
             positionsListView.setOnScrollListener(null);
@@ -412,7 +418,7 @@ abstract public class AbstractPositionListFragment<
         this.userProfileDTO = null;
 
         detachPortfolioTask();
-        detachUserProfileTask();
+        detachUserProfileCache();
         fetchPortfolio(false);
         fetchUserProfile();
         fetchSimplePage();
@@ -475,11 +481,13 @@ abstract public class AbstractPositionListFragment<
 
     protected void fetchUserProfile()
     {
-        detachUserProfileTask();
+        detachUserProfileCache();
         if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.userId != null)
         {
-            fetchUserProfileTask = createUserProfileFetchTask(shownOwnedPortfolioId.getUserBaseKey());
-            fetchUserProfileTask.execute();
+            userProfileCacheListener = createProfileCacheListener();
+            UserBaseKey key = shownOwnedPortfolioId.getUserBaseKey();
+            userProfileCache.register(key, userProfileCacheListener);
+            userProfileCache.getOrFetchAsync(key);
         }
     }
 
@@ -507,13 +515,13 @@ abstract public class AbstractPositionListFragment<
         fetchGetPositionsDTOTask = null;
     }
 
-    protected void detachUserProfileTask()
+    protected void detachUserProfileCache()
     {
-        if (fetchUserProfileTask != null)
+        if (userProfileCacheListener != null)
         {
-            fetchUserProfileTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        fetchUserProfileTask = null;
+        userProfileCacheListener = null;
     }
 
     protected void detachPortfolioTask()
@@ -523,11 +531,6 @@ abstract public class AbstractPositionListFragment<
             fetchPortfolioDTOTask.setListener(null);
         }
         fetchPortfolioDTOTask = null;
-    }
-
-    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> createUserProfileFetchTask(UserBaseKey userBaseKey)
-    {
-        return userProfileCache.getOrFetch(userBaseKey, false, createProfileCacheListener());
     }
 
     protected DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> createPortfolioFetchTask(OwnedPortfolioId ownedPortfolioId, boolean force)
@@ -823,7 +826,7 @@ abstract public class AbstractPositionListFragment<
         return R.layout.tutorial_position_list;
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
     {
         return new AbstractPositionListProfileCacheListener();
     }
@@ -849,9 +852,9 @@ abstract public class AbstractPositionListFragment<
         }
     }
 
-    protected class AbstractPositionListProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    protected class AbstractPositionListProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             linkWith(value, true);
             showResultIfNecessary();

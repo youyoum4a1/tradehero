@@ -6,14 +6,14 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.loaders.TimelineListLoader;
 
-public class SubTimelineAdapter extends LoaderDTOAdapter<TimelineItemDTOKey, TimelineItemView, TimelineListLoader>
+public class SubTimelineAdapter extends LoaderDTOAdapter<TimelineItemDTOKey, TimelineItemViewLinear, TimelineListLoader>
 {
     public SubTimelineAdapter(Context context, LayoutInflater inflater, int timelineLoaderId, int layoutResourceId)
     {
         super(context, inflater, timelineLoaderId, layoutResourceId);
     }
 
-    @Override protected void fineTune(int position, TimelineItemDTOKey dto, TimelineItemView dtoView)
+    @Override protected void fineTune(int position, TimelineItemDTOKey dto, TimelineItemViewLinear dtoView)
     {
     }
 

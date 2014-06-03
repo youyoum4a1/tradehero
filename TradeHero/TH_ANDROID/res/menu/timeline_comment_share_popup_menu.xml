@@ -4,13 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
-      android:id="@+id/timeline_action_comment"
-      android:title="@string/comment"
-      />
-
-  <item
-      android:id="@+id/timeline_action_button_share"
-      android:title="@string/share_to"
+      android:id="@+id/timeline_action_translate"
+      android:title="@string/translate"
       />
 
 </menu>

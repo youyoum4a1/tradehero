@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.translation;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.network.service.TranslationTokenServiceWrapper;
 import javax.inject.Inject;
@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 import timber.log.Timber;
 
 @Singleton
-public class TranslationTokenCache extends StraightDTOCache<TranslationTokenKey, TranslationToken>
+public class TranslationTokenCache extends StraightDTOCacheNew<TranslationTokenKey, TranslationToken>
 {
     private final TranslationTokenServiceWrapper translationTokenServiceWrapper;
 
@@ -47,7 +47,7 @@ public class TranslationTokenCache extends StraightDTOCache<TranslationTokenKey,
         return token;
     }
 
-    @Override protected TranslationToken fetch(TranslationTokenKey key) throws Throwable
+    @Override public TranslationToken fetch(TranslationTokenKey key) throws Throwable
     {
         return translationTokenServiceWrapper.getToken();
     }

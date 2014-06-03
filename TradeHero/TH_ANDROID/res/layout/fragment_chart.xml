@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -16,13 +17,15 @@
         android:layout_height="200dp"
         android:id="@+id/chart_image_wrapper"
         >
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
           android:text="@string/chart_loading_image"
           />
-      <ImageView
+
+      <com.tradehero.th.fragments.security.ChartImageView
           android:id="@+id/chart_imageView"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
@@ -30,7 +33,10 @@
           android:layout_marginLeft="20dp"
           android:scaleType="fitXY"
           android:adjustViewBounds="true"
-          android:contentDescription="@null"/>
+          android:contentDescription="@null"
+          app:includeVolume="false"
+          />
+
     </com.tradehero.common.widget.BetterViewAnimator>
 
     <com.tradehero.th.widget.news.TimeSpanButtonSet
@@ -89,6 +95,7 @@
               android:gravity="left"
               tools:text="Put"
               android:textSize="13sp" />
+
         </TableRow>
 
         <TableRow
@@ -116,6 +123,7 @@
               android:gravity="left"
               tools:text="T1IW"
               android:textSize="13sp" />
+
         </TableRow>
 
         <TableRow
@@ -143,6 +151,7 @@
               android:gravity="left"
               tools:text="1 Apr 14"
               android:textSize="13sp" />
+
         </TableRow>
 
         <TableRow
@@ -171,6 +180,7 @@
               android:text=""
               android:textSize="13sp"
               tools:text="US$ 567.8"/>
+
         </TableRow>
 
         <TableRow
@@ -198,6 +208,7 @@
               android:text=""
               android:textSize="13sp"
               tools:text="US$ 564.1"/>
+
         </TableRow>
 
         <TableRow
@@ -225,6 +236,7 @@
               android:text=""
               android:textSize="13sp"
               tools:text="US$ 571.9"/>
+
         </TableRow>
 
         <TableRow
@@ -252,6 +264,7 @@
               android:text=""
               android:textSize="13sp"
               tools:text="US$ 563.9"/>
+
         </TableRow>
 
       </TableLayout>
@@ -287,6 +300,7 @@
               android:gravity="right"
               tools:text="SG$ 2.000"
               android:textSize="13sp" />
+
         </TableRow>
 
         <TableRow
@@ -315,6 +329,7 @@
               tools:text="Ascendas REOT"
               android:textSize="13sp"
               />
+
         </TableRow>
 
         <TableRow
@@ -343,6 +358,7 @@
               tools:text="MB"
               android:textSize="13sp"
               />
+
         </TableRow>
 
         <TableRow
@@ -371,6 +387,7 @@
               android:text=""
               android:textSize="13sp"
               tools:text="14.11"/>
+
         </TableRow>
 
         <TableRow
@@ -399,6 +416,7 @@
               android:textSize="13sp"
               tools:text="40.23"
               />
+
         </TableRow>
 
         <TableRow
@@ -426,6 +444,7 @@
               android:textSize="13sp"
               tools:text="13,938,402"
               />
+
         </TableRow>
 
         <TableRow
@@ -453,6 +472,7 @@
               android:textSize="13sp"
               tools:text="10,840,800"
               />
+
         </TableRow>
 
       </TableLayout>

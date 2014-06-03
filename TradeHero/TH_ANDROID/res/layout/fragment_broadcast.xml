@@ -61,7 +61,7 @@
       android:inputType="textMultiLine"
       android:focusable="true"
       tools:text="NASDAQ:GOOG"
-      android:background="@drawable/et_bg"
+      android:background="@drawable/textbox_light_background"
       >
     <requestFocus/>
   </EditText>

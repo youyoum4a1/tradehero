@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.LoginFormDTO;
@@ -49,7 +50,9 @@ import retrofit.Callback;
 
     protected DTOProcessor<UserProfileDTO> createLogoutProcessor()
     {
-        return new DTOProcessorLogout(userProfileCache, dtoCacheUtil, context);
+        return new DTOProcessorLogout(
+                dtoCacheUtil,
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
     }
     //</editor-fold>
 

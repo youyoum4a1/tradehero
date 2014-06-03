@@ -15,6 +15,10 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
     
     @Override public DTOType get(DTOKeyType key)
     {
+        if (key == null)
+        {
+            return null;
+        }
         CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (cacheValue == null)
         {

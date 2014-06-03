@@ -5,6 +5,7 @@
 
   <item
       android:id="@+id/security_search_menu_elements"
+      android:title="@string/security_search_action_bar_elements_title"
       android:actionLayout="@layout/menu_elements_security_search_alone"
       android:visible="true"
       android:showAsAction="always"

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +35,7 @@ import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
@@ -221,8 +223,18 @@ public class ProfileInfoView extends LinearLayout
     public void handleDataFromLibrary(Intent data)
     {
         Uri selectedImageUri = data.getData();
-        String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
-        setNewImagePath(selectedPath);
+        if (selectedImageUri != null)
+        {
+            String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
+            setNewImagePath(selectedPath);
+        }
+        else
+        {
+            alertDialogUtil.popWithNegativeButton(getContext(),
+                    R.string.error_fetch_image_library,
+                    R.string.error_fetch_image_library,
+                    R.string.cancel).requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
     }
 
     public void setNewImagePath(String newImagePath)
@@ -310,7 +322,15 @@ public class ProfileInfoView extends LinearLayout
     {
         if (newImagePath != null)
         {
-            displayProfileImage(bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath));
+            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
+            if (decoded != null)
+            {
+                displayProfileImage(decoded);
+            }
+            else
+            {
+                displayDefaultProfileImage();
+            }
         }
         else if (userBaseDTO != null)
         {
@@ -367,11 +387,12 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
+    // TODO pass something else
     public void populateCredentials(JSONObject credentials)
     {
         if (credentials == null)
         {
-            Timber.e(new NullPointerException("credentials were null current auth type " +  THUser.currentAuthenticationType.get()), "");
+            Timber.e(new NullPointerException("credentials were null current auth type " +  THUser.getAuthHeader()), "");
             THToast.show(R.string.error_fetch_your_user_profile);
         }
         else
@@ -397,6 +418,13 @@ public class ProfileInfoView extends LinearLayout
             this.password.setText(passwordValue);
             this.confirmPassword.setText(passwordValue);
         }
+    }
+
+    public EmailCredentialsDTO getEmailCredentialsDTO()
+    {
+        return new EmailCredentialsDTO(
+                email.getText().toString(),
+                password.getText().toString());
     }
 
     @OnClick(R.id.image_optional) @Optional

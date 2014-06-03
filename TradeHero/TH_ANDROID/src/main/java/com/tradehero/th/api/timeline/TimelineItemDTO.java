@@ -1,6 +1,7 @@
 package com.tradehero.th.api.timeline;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
@@ -26,6 +27,12 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
     //<editor-fold desc="Constructors">
     public TimelineItemDTO()
     {
+    }
+
+    public <ExtendedDTOType extends ExtendedDTO> TimelineItemDTO(ExtendedDTOType other,
+            Class<? extends TimelineItemDTO> myClass)
+    {
+        super(other, myClass);
     }
     //</editor-fold>
 

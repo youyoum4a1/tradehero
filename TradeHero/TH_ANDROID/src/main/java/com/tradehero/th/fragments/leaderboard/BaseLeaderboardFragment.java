@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -32,8 +32,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Inject UserProfileCache userProfileCache;
 
     protected UserProfileDTO currentUserProfileDTO;
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheFetchTask;
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -62,14 +61,14 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Override public void onResume()
     {
         super.onResume();
-        detachUserProfileCacheFetchTask();
-        userProfileCacheFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCacheFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override public void onDestroyView()
     {
-        detachUserProfileCacheFetchTask();
+        detachUserProfileCache();
         super.onDestroyView();
     }
 
@@ -79,13 +78,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         super.onDestroy();
     }
 
-    protected void detachUserProfileCacheFetchTask()
+    protected void detachUserProfileCache()
     {
-        if (userProfileCacheFetchTask != null)
+        if (userProfileCacheListener != null)
         {
-            userProfileCacheFetchTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        userProfileCacheFetchTask = null;
     }
 
     protected int getMenuResource()
@@ -152,14 +150,14 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return false;
     }
 
-    protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         public BaseLeaderboardFragmentProfileCacheListener()
         {
             super();
         }
 
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             setCurrentUserProfileDTO(value);
         }

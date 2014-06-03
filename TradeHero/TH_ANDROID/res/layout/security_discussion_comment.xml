@@ -9,6 +9,7 @@
     app:listItemLayout="@layout/timeline_discussion_comment_item"
     app:topicLayout="@layout/security_discussion_item_view"
     >
+
   <ListView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -19,4 +20,5 @@
       />
 
   <include layout="@layout/post_comment_widget"/>
+  
 </com.tradehero.th.fragments.discussion.DiscussionView>

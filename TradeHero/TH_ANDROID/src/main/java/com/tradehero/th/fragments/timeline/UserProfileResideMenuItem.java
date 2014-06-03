@@ -1,6 +1,10 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -9,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -39,8 +43,7 @@ public class UserProfileResideMenuItem extends LinearLayout
     @Inject Lazy<Picasso> picasso;
 
     private UserProfileDTO userProfileDTO;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
 
     //<editor-fold desc="Constructors">
     public UserProfileResideMenuItem(Context context)
@@ -66,9 +69,9 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     private void fetchAndDisplayUserProfile()
     {
-        detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileListener);
-        userProfileFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onAttachedToWindow()
@@ -80,18 +83,17 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         userProfileListener = null;
         super.onDetachedFromWindow();
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
+        if (userProfileListener != null)
         {
-            userProfileFetchTask.setListener(null);
+            userProfileCache.get().unregister(userProfileListener);
         }
-        userProfileFetchTask = null;
     }
 
     @Override public void display(UserProfileDTO dto)
@@ -109,15 +111,23 @@ public class UserProfileResideMenuItem extends LinearLayout
         {
             if (userProfileDTO != null)
             {
-                picasso.get().load(userProfileDTO.picture)
-                        .transform(userPhotoTransformation)
-                        .into(userProfileAvatar);
+                if (userProfileDTO.picture != null)
+                {
+                    picasso.get().load(userProfileDTO.picture)
+                            .error(getErrorDrawable())
+                            .transform(userPhotoTransformation)
+                            .into(userProfileAvatar);
+                }
+                else
+                {
+                    showDefaultUserPhoto();
+                }
 
                 userDisplayName.setText(userProfileDTO.displayName);
 
                 if (userProfileDTO.portfolio.roiSinceInception == null)
                 {
-                    userProfileDTO.portfolio.roiSinceInception = (Double)0.0;
+                    userProfileDTO.portfolio.roiSinceInception = 0.0D;
                 }
                 THSignedNumber thRoiSinceInception = new THSignedNumber(
                         THSignedNumber.TYPE_PERCENTAGE,
@@ -133,15 +143,28 @@ public class UserProfileResideMenuItem extends LinearLayout
         }
     }
 
+    private Drawable getErrorDrawable()
+    {
+        Bitmap defaultUserPhotoBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.superman_facebook);
+        return new BitmapDrawable(getResources(), userPhotoTransformation.transform(defaultUserPhotoBitmap));
+    }
+
     private void resetView()
     {
-        userProfileAvatar.setImageDrawable(null);
+        showDefaultUserPhoto();
         userDisplayName.setText("");
     }
 
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    private void showDefaultUserPhoto()
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        picasso.get().load(R.drawable.superman_facebook)
+                .transform(userPhotoTransformation)
+                .into(userProfileAvatar);
+    }
+
+    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             display(value);
         }

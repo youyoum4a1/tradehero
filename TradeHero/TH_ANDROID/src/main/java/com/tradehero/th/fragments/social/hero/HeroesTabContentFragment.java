@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
@@ -473,11 +474,10 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
 
     private class HeroManagerUserProfileCacheListener
-            implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             if (key.equals(HeroesTabContentFragment.this.followerId))
             {
@@ -493,10 +493,9 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
 
     private class HeroManagerHeroListCacheListener
-            implements DTOCache.Listener<UserBaseKey, HeroIdExtWrapper>
+            implements DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper>
     {
-        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value)
         {
             //displayProgress(false);
             setListShown(true);
@@ -516,15 +515,10 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
 
     private class HeroManagerHeroListRefreshListener
-            implements DTOCache.Listener<UserBaseKey, HeroIdExtWrapper>
+            implements DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper>
     {
-        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value)
         {
-            if (fromCache)
-            {
-                return;
-            }
             onRefreshCompleted();
             //setListShown(true);
             display(value);

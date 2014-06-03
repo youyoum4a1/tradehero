@@ -13,8 +13,8 @@
   <string name="empty_video_list">当前没有任何学习视频</string>
   <string name="loading_required_information">读取所需信息中</string>
   <string name="server_response">"服务器响应: "</string>
-  <string name="link">连接</string>
-  <string name="link_description">分享前，请连接您的 %s 账号…</string>
+  <string name="link">连接 %1$s</string>
+  <string name="link_description">分享前，请连接您的 %1$s 账号…</string>
   <string name="link_now">现在连接!</string>
   <string name="later">晚点</string>
   <string name="please_update">此版本已经过期，请升级至最新的版本</string>

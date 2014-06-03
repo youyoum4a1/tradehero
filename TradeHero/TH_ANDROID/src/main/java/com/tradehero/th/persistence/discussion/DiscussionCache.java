@@ -2,29 +2,29 @@ package com.tradehero.th.persistence.discussion;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.news.NewsCache;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
+import com.tradehero.th.persistence.news.NewsItemCache;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionDTO>
+public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionCompactDTO>
 {
     private final DiscussionServiceWrapper discussionServiceWrapper;
-    private final NewsCache newsCache;
+    private final NewsItemCache newsItemCache;
     private final UserTimelineServiceWrapper timelineServiceWrapper;
 
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            NewsCache newsCache,
+            NewsItemCache newsItemCache,
             UserTimelineServiceWrapper userTimelineServiceWrapper,
             DiscussionServiceWrapper discussionServiceWrapper)
     {
@@ -33,11 +33,11 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         this.discussionServiceWrapper = discussionServiceWrapper;
 
         // very hacky, but server hacks it first :(
-        this.newsCache = newsCache;
+        this.newsItemCache = newsItemCache;
         this.timelineServiceWrapper = userTimelineServiceWrapper;
     }
 
-    @Override protected AbstractDiscussionDTO fetch(DiscussionKey discussionKey) throws Throwable
+    @Override protected AbstractDiscussionCompactDTO fetch(DiscussionKey discussionKey) throws Throwable
     {
         if (discussionKey instanceof TimelineItemDTOKey)
         {
@@ -45,32 +45,28 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
-            return newsCache.getOrFetch((NewsItemDTOKey) discussionKey);
+            return newsItemCache.getOrFetch((NewsItemDTOKey) discussionKey);
         }
-        else
-        {
-            return discussionServiceWrapper.getComment(discussionKey);
-        }
-        //throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
+        return discussionServiceWrapper.getComment(discussionKey);
     }
 
-    public DiscussionDTOList put(List<? extends AbstractDiscussionDTO> discussionList)
+    public DiscussionDTOList put(List<? extends AbstractDiscussionCompactDTO> discussionList)
     {
-        DiscussionDTOList<? super AbstractDiscussionDTO> previous = new DiscussionDTOList<>();
-        for (AbstractDiscussionDTO discussionDTO : discussionList)
+        DiscussionDTOList<? super AbstractDiscussionCompactDTO> previous = new DiscussionDTOList<>();
+        for (AbstractDiscussionCompactDTO discussionDTO : discussionList)
         {
             previous.add(put(discussionDTO.getDiscussionKey(), discussionDTO));
         }
         return previous;
     }
 
-    public DiscussionDTOList<? super AbstractDiscussionDTO> get(List<DiscussionKey> discussionKeys)
+    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> get(List<DiscussionKey> discussionKeys)
     {
         if (discussionKeys == null)
         {
             return null;
         }
-        DiscussionDTOList<? super AbstractDiscussionDTO> dtos = new DiscussionDTOList<>();
+        DiscussionDTOList<? super AbstractDiscussionCompactDTO> dtos = new DiscussionDTOList<>();
         for (DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(get(discussionKey));
@@ -78,13 +74,13 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         return dtos;
     }
 
-    public DiscussionDTOList<? super AbstractDiscussionDTO> getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
+    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
     {
         if (discussionKeys == null)
         {
             return null;
         }
-        DiscussionDTOList<? super AbstractDiscussionDTO> dtos = new DiscussionDTOList<>();
+        DiscussionDTOList<? super AbstractDiscussionCompactDTO> dtos = new DiscussionDTOList<>();
         for (DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(getOrFetch(discussionKey));

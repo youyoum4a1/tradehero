@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 BaiduPushMessageReceiver.class,
+                BaiduIntentReceiver.class,
         },
         // TODO remove static injection
         staticInjections = {

@@ -1,7 +1,11 @@
 package com.tradehero.th.activities;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -12,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +45,10 @@ public class GuideActivity extends Activity
         viewpager.setAdapter(new ListViewPagerAdapter(list));
         viewpager.setOnPageChangeListener(this);
 
+        if (isInstallShortcut())
+        {
+            removeShortcut();
+        }
         createShortcut();
     }
 
@@ -50,8 +59,102 @@ public class GuideActivity extends Activity
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.app_name));
         Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.launcher);
         intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), SplashActivity.class));
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, createLaunchIntent());
         sendBroadcast(intent);
+    }
+
+    private Intent createLaunchIntent()
+    {
+        Intent launchIntent = new Intent(Intent.ACTION_MAIN);
+        launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        launchIntent.setComponent(new ComponentName(getPackageName(), SplashActivity.class.getName()));
+        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        return launchIntent;
+    }
+
+
+    private void printShortcutName(Cursor c)
+    {
+        if (!BuildConfig.DEBUG)
+        {
+            return;
+        }
+
+        if (c == null || c.getCount() <= 0)
+        {
+            return;
+        }
+
+        String name = "title";
+        c.moveToFirst();
+        int index = c.getColumnIndex(name);
+        if (index == -1)
+        {
+            return;
+        }
+        c.moveToPrevious();
+        while (c.moveToNext())
+        {
+            String title = c.getString(index);
+            Timber.d("Shortcut title:%s",title);
+        }
+    }
+
+    private boolean isInstallShortcut() {
+
+        String name = getString(R.string.app_name);
+        boolean  isInstallShortcut = false;
+        final ContentResolver cr = getContentResolver();
+        String AUTHORITY = "com.android.launcher.settings";
+        Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
+                + "/favorites?notify=true");
+
+        Cursor c = cr.query(CONTENT_URI,
+                new String[] { "title", "iconResource" },
+                "title=?", new String[]{name}, null
+        );
+
+        if (c != null && c.getCount() > 0) {
+            isInstallShortcut = true;
+        }
+        printShortcutName(c);
+
+        if (c != null) {
+            c.close();
+        }
+
+        if (isInstallShortcut) {
+            return isInstallShortcut;
+        }
+
+        AUTHORITY = "com.android.launcher2.settings";
+        CONTENT_URI = Uri.parse("content://" + AUTHORITY
+                + "/favorites?notify=true");
+        c = cr.query(CONTENT_URI, new String[] { "title", "iconResource" },
+                "title=?", new String[]{name}, null
+        );
+
+        if (c != null && c.getCount() > 0) {
+            isInstallShortcut = true;
+        }
+        printShortcutName(c);
+
+        return isInstallShortcut;
+    }
+
+    private void removeShortcut() {
+
+        Intent shortcutIntent = new Intent(getApplicationContext(),
+                SplashActivity.class);
+        shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+        Intent addIntent = new Intent();
+        addIntent
+                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.app_name));
+
+        addIntent.setAction("com.android.launcher.action.UNINSTALL_SHORTCUT");
+        getApplicationContext().sendBroadcast(addIntent);
     }
 
     @Override public void onClick(View v)

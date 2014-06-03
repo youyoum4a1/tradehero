@@ -36,6 +36,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public String paypalEmailAddress;
     public String alipayAccount;
+    public String alipayIdentityNumber;
+    public String alipayRealName;
 
     public boolean pushNotificationsEnabled;
     public boolean emailNotificationsEnabled;
@@ -181,6 +183,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", portfolio=" + portfolio +
                 ", paypalEmailAddress='" + paypalEmailAddress + '\'' +
                 ", alipayAccount='" + alipayAccount + '\'' +
+                ", alipayIdentityNumber='" + alipayIdentityNumber + '\'' +
+                ", alipayRealName='" + alipayRealName + '\'' +
                 ", pushNotificationsEnabled=" + pushNotificationsEnabled +
                 ", emailNotificationsEnabled=" + emailNotificationsEnabled +
                 ", rank=" + rank +

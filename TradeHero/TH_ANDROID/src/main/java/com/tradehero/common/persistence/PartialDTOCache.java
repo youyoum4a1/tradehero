@@ -52,7 +52,6 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
     }
 
     /**
-     * The listener should be strongly referenced elsewhere
      * @param key
      * @param forceUpdateCache
      * @param initialListener
@@ -111,7 +110,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
                         {
                             if (value == null)
                             {
-                                Timber.e(new Exception(String.format("Null value returned for key %s, on cache %s", key, getClass())), null);
+                                Timber.e(new Exception(String.format("Null value returned for key %s, on cache %s", key, getCacheClass())), null);
                             }
                             currentListener.onDTOReceived(key, value, !forceUpdateCache);
                         }
@@ -247,5 +246,10 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
         {
             autoFetch(key, force);
         }
+    }
+
+    private Class<?> getCacheClass()
+    {
+        return getClass();
     }
 }

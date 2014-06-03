@@ -27,15 +27,20 @@ import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
-import com.tradehero.th.utils.*;
+import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -53,15 +58,17 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private Fragment currentFragment;
 
     private ProgressDialog progressDialog;
-    private JSONCredentials twitterJson;
+    private TwitterCredentialsDTO twitterJson;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
+    @Inject Lazy<QQUtils> qqUtils;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
+    @Inject CredentialsDTOFactory credentialsDTOFactory;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -126,8 +133,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             {
                 getSupportFragmentManager().putFragment(outState, M_FRAGMENT, currentFragment);
             }
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
             Timber.e("Error saving current Authentication Fragment", ex);
         }
@@ -145,7 +151,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         super.onActivityResult(requestCode, resultCode, data);
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
-        weiboUtils.get().authorizeCallBack(requestCode,resultCode,data);
+        weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
     @Override public void onClick(View view)
@@ -188,6 +194,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 authenticateWithWeibo();
                 break;
 
+            case R.id.btn_qq_signin:
+                authenticateWithQQ();
+                break;
             case R.id.txt_term_of_service_signin:
                 Intent pWebView = new Intent(this, WebViewActivity.class);
                 pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
@@ -218,7 +227,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             EmailAuthenticationProvider.setCredentials(createdJson);
             AuthenticationMode authenticationMode = castedFragment.getAuthenticationMode();
             THUser.setAuthenticationMode(authenticationMode);
-            THUser.logInWithAsync(EmailAuthenticationProvider.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
+            THUser.logInWithAsync(EmailCredentialsDTO.EMAIL_AUTH_TYPE, createCallbackForEmailSign(authenticationMode));
         }
         else
         {
@@ -257,6 +266,12 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         weiboUtils.get().logIn(this, new SocialAuthenticationCallback("Weibo"));
     }
 
+    private void authenticateWithQQ()
+    {
+        progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
+        qqUtils.get().logIn(this, new SocialAuthenticationCallback("QQ"));
+    }
+
     private void authenticateWithLinkedIn()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_LinkedIn);
@@ -278,7 +293,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
     }
 
-    private SocialAuthenticationCallback createTwitterAuthenticationCallback ()
+    private SocialAuthenticationCallback createTwitterAuthenticationCallback()
     {
         return new SocialAuthenticationCallback("Twitter")
         {
@@ -295,7 +310,13 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 }
                 // twitter does not return email for authentication user,
                 // we need to ask user for that
-                setTwitterData(json);
+                try
+                {
+                    setTwitterData((TwitterCredentialsDTO) credentialsDTOFactory.create(json));
+                } catch (JSONException | ParseException e)
+                {
+                    Timber.e(e, "Failed to create twitter credentials with %s", json);
+                }
                 progressDialog.hide();
                 setCurrentFragmentByClass(TwitterEmailFragment.class);
                 return false;
@@ -306,20 +327,13 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private void complementEmailForTwitterAuthentication()
     {
         EditText txtTwitterEmail = (EditText) currentFragment.getView().findViewById(R.id.authentication_twitter_email_txt);
-        try
-        {
-            twitterJson.put("email", txtTwitterEmail.getText());
-            progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), "Twitter"));
-            progressDialog.show();
-            THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
-        }
-        catch (JSONException e)
-        {
-            //nothing for now
-        }
+        twitterJson.email = txtTwitterEmail.getText().toString();
+        progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), "Twitter"));
+        progressDialog.show();
+        THUser.logInAsyncWithJson(twitterJson, createCallbackForTwitterComplementEmail());
     }
 
-    private LogInCallback createCallbackForTwitterComplementEmail ()
+    private LogInCallback createCallbackForTwitterComplementEmail()
     {
         return new LogInCallback()
         {
@@ -358,7 +372,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }
 
-    private void setTwitterData(JSONCredentials json)
+    private void setTwitterData(TwitterCredentialsDTO json)
     {
         twitterJson = json;
     }
@@ -367,6 +381,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private class SocialAuthenticationCallback extends LogInCallback
     {
         private final String providerName;
+
         public SocialAuthenticationCallback(String providerName)
         {
             this.providerName = providerName;
@@ -381,7 +396,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 launchDashboard(user);
             }
             else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
-                    (response = ((RetrofitError)cause).getResponse()) != null && response.getStatus() == 403) // Forbidden
+                    (response = ((RetrofitError) cause).getResponse()) != null && response.getStatus() == 403) // Forbidden
             {
                 THToast.show(R.string.authentication_not_registered);
             }

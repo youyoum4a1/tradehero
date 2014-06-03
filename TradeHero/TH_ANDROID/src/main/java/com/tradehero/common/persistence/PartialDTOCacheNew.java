@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import java.lang.ref.WeakReference;
+import timber.log.Timber;
 
 abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheNew<DTOKeyType, DTOType>
@@ -39,6 +40,16 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return previous;
     }
 
+    protected void checkKey(DTOKeyType key)
+    {
+        if (key == null)
+        {
+            throw new NullPointerException(String.format(
+                    "Key cannot be null in cache %s",
+                    getClass()));
+        }
+    }
+
     @Override public DTOType getOrFetchSync(DTOKeyType key) throws Throwable
     {
         return getOrFetchSync(key, DEFAULT_FORCE_UPDATE);
@@ -46,6 +57,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     @Override public DTOType getOrFetchSync(DTOKeyType key, boolean force) throws Throwable
     {
+        checkKey(key);
         DTOType value = get(key);
 
         if (force || value == null)
@@ -90,6 +102,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     @Override public void getOrFetchAsync(final DTOKeyType key, final boolean forceUpdateCache)
     {
+        checkKey(key);
         getOrCreateCacheValue(key).getOrFetch(key, forceUpdateCache);
     }
 
@@ -100,6 +113,12 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     protected void notifyListenersReceived(DTOKeyType key, DTOType value)
     {
+        if (value == null)
+        {
+            Timber.e(new Exception(
+                    String.format("Null value returned for key %s, on cache %s", key,
+                            getCacheClass())), null);
+        }
         getOrCreateCacheValue(key).notifyListenersReceived(key, value);
     }
 
@@ -194,5 +213,10 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
                 notifyListenersReceived(key, value);
             }
         }
+    }
+
+    protected Class<?> getCacheClass()
+    {
+        return getClass();
     }
 }

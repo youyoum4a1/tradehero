@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -23,7 +24,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -65,7 +66,7 @@ public class UpdateCenterFragment extends BaseFragment
     @Inject MessageHeaderCache messageHeaderCache;
 
     private FragmentTabHost mTabHost;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ImageButton mNewMsgButton;
 
     private BroadcastReceiver broadcastReceiver;
@@ -114,20 +115,20 @@ public class UpdateCenterFragment extends BaseFragment
 
     private void fetchUserProfile()
     {
-        detachUserProfileTask();
+        detachUserProfileCache();
 
-        fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false,
-                createUserProfileCacheListener());
-        fetchUserProfileTask.execute();
+        userProfileCacheListener = createUserProfileCacheListener();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private void detachUserProfileTask()
+    private void detachUserProfileCache()
     {
-        if (fetchUserProfileTask != null)
+        if (userProfileCacheListener != null)
         {
-            fetchUserProfileTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        fetchUserProfileTask = null;
+        userProfileCacheListener = null;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -144,7 +145,7 @@ public class UpdateCenterFragment extends BaseFragment
                 | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.message_center_title);
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
@@ -267,7 +268,7 @@ public class UpdateCenterFragment extends BaseFragment
         Timber.d("onDestroyView");
         //don't have to clear sub fragment to refresh data
         //clearTabs();
-        detachUserProfileTask();
+        detachUserProfileCache();
 
         super.onDestroyView();
     }
@@ -301,6 +302,7 @@ public class UpdateCenterFragment extends BaseFragment
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
             mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
         }
+        mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
         return mTabHost;
     }
 
@@ -362,15 +364,15 @@ public class UpdateCenterFragment extends BaseFragment
         changeTabTitleNumber(tabType, number);
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
         return new FetchUserProfileListener();
     }
 
-    private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    private class FetchUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             linkWith(value, true);
         }

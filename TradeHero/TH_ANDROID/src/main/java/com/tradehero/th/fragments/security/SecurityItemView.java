@@ -354,13 +354,20 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         if (countryLogo != null)
         {
-            if (securityCompactDTO != null)
+            try
             {
-                countryLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
+                if (securityCompactDTO != null)
+                {
+                    countryLogo.setImageResource(securityCompactDTO.getExchangeLogoId());
+                }
+                else
+                {
+                    countryLogo.setImageResource(R.drawable.default_image);
+                }
             }
-            else
+            catch (OutOfMemoryError e)
             {
-                countryLogo.setImageResource(R.drawable.default_image);
+                Timber.e(e, "");
             }
         }
     }
