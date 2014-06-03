@@ -78,6 +78,8 @@ import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
@@ -165,6 +167,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
     @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
@@ -609,6 +612,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
+        buildUsedMenuPortfolios();
         setInitialSellQuantityIfCan();
 
         if (andDisplay)
@@ -749,6 +753,13 @@ public class BuySellFragment extends AbstractBuySellFragment
                     portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioIdKey());
             newMenus.add(
                     new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
+
+            //MenuOwnedPortfolioIdList providerMenuPortfolios = menuOwnedPortfolioIdFactory.createProviderPortfolios(
+            //        securityPositionDetailDTO);
+            //if (providerMenuPortfolios != null)
+            //{
+            //    newMenus.addAll(providerMenuPortfolios);
+            //}
 
             TreeSet<OwnedPortfolioId> otherPortfolioIds = new TreeSet<>();
             // HACK

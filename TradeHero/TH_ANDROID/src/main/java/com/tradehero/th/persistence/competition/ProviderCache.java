@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -64,14 +65,14 @@ import javax.inject.Singleton;
         return providerDTOList;
     }
 
-    public List<ProviderDTO> get(List<ProviderId> providerIds)
+    public ProviderDTOList get(List<ProviderId> providerIds)
     {
         if (providerIds == null)
         {
             return null;
         }
 
-        List<ProviderDTO> fleshedValues = new ArrayList<>();
+        ProviderDTOList fleshedValues = new ProviderDTOList();
 
         for (ProviderId providerId: providerIds)
         {

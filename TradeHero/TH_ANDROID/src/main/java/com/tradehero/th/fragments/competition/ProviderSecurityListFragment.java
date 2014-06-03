@@ -224,6 +224,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
+        SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         getNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 

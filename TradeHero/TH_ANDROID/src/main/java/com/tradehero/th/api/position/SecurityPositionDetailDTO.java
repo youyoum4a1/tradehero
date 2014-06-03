@@ -1,7 +1,7 @@
 package com.tradehero.th.api.position;
 
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -13,15 +13,16 @@ public class SecurityPositionDetailDTO implements DTO
     public PositionDTOCompactList positions;
     //public PositionDTOCompact position; // This is a backward compatible element. Do not add back
     public PortfolioDTO portfolio;
-    public List<ProviderDTO> providers;
+    public ProviderDTOList providers;
     public int firstTradeAllTime;
 
+    //<editor-fold desc="Constructors">
     public SecurityPositionDetailDTO()
     {
     }
 
     public SecurityPositionDetailDTO(SecurityCompactDTO security, PositionDTOCompactList positions,
-            PortfolioDTO portfolio, List<ProviderDTO> providers, int firstTradeAllTime)
+            PortfolioDTO portfolio, ProviderDTOList providers, int firstTradeAllTime)
     {
         this.security = security;
         this.positions = positions;
@@ -29,6 +30,7 @@ public class SecurityPositionDetailDTO implements DTO
         this.providers = providers;
         this.firstTradeAllTime = firstTradeAllTime;
     }
+    //</editor-fold>
 
     public SecurityId getSecurityId()
     {
