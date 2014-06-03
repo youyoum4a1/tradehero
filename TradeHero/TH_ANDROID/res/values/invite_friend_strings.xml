@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="invite">Invite</string>
   <string name="invite_friends">Invite Friends</string>
   <string name="invite_friend_refer_friend_empty_view">Your friend list is empty, link your account with Facebook, Twitter or Linkedin to refer friends</string>
   <string name="invite_friend_send_invitations">Send Invitations</string>

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -66,7 +65,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @InjectView(R.id.lbmu_roi) TextView lbmuRoi;
     @InjectView(R.id.lbmu_roi_annualized) TextView lbmuRoiAnnualized;
     @InjectView(R.id.leaderboard_user_item_country_logo) ImageView countryLogo;
-    @InjectView(R.id.leaderboard_user_item_invite_btn) Button inviteBtn;
+    @InjectView(R.id.leaderboard_user_item_invite_btn) TextView inviteBtn;
 
     private LeaderboardUserDTO mLeaderboardUserDTO;
     private MiddleCallback<Response> middleCallbackInvite;
@@ -477,7 +476,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             //finish();
             Timber.d("lyl success " + response);
             //progressDialogUtilLazy.get().dismiss(getContext());
-            //TODO
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();
         }

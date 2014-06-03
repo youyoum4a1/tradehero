@@ -113,16 +113,20 @@
         android:layout_marginRight="10dp"
         />
 
-    <Button
+    <TextView
         android:id="@+id/leaderboard_user_item_invite_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
         android:layout_centerVertical="true"
-        android:scaleType="centerInside"
-        android:contentDescription="@null"
-        android:layout_marginRight="@dimen/common_margin_20"
-        android:text="invite"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/common_margin_4"
+        android:layout_marginRight="@dimen/common_margin_10"
+        android:layout_marginBottom="@dimen/common_margin_4"
+        android:text="@string/invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/leaderboard_position_text_size"
+        android:gravity="center"
+        android:background="@drawable/yellow_rounded_button_selector"
         />
   </RelativeLayout>
 

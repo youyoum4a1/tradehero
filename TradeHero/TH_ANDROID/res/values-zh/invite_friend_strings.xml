@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="invite">邀请</string>
   <string name="invite_friends">邀请朋友</string>
   <string name="invite_friend_refer_friend_empty_view">您的好友列表是空的, 连接微博或是 Linkedin 推荐朋友吧</string>
   <string name="invite_friend_send_invitations">发送邀请</string>
