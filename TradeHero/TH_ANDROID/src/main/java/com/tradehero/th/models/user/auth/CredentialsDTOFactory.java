@@ -28,7 +28,14 @@ public class CredentialsDTOFactory
         switch(type)
         {
             case EmailCredentialsDTO.EMAIL_AUTH_TYPE:
-                created = new EmailCredentialsDTO(object);
+                if (object.has(UserFormFactory.KEY_DISPLAY_NAME))
+                {
+                    created = new SignUpEmailCredentialsDTO(object);
+                }
+                else
+                {
+                    created = new EmailCredentialsDTO(object);
+                }
                 break;
 
             case FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE:
