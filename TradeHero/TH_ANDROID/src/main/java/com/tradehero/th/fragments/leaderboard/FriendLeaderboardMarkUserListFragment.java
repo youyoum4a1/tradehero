@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -33,12 +34,12 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @InjectView(R.id.leaderboard_mark_user_screen) RelativeLayout leaderboardMarkUserScreen;
 
+    private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
     private TextView leaderboardMarkUserMarkingTime;
     protected LeaderboardFriendsListAdapter leaderboardMarkUserListAdapter;
-    private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
-    @Inject Provider<PrettyTime> prettyTime;
-    @Inject protected LocalyticsSession localyticsSession;
     @Inject LeaderboardServiceWrapper leaderboardServiceWrapper;
+    @Inject LocalyticsSession localyticsSession;
+    @Inject Provider<PrettyTime> prettyTime;
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -47,23 +48,18 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         if (leaderboardMarkUserListAdapter == null)
         {
             leaderboardMarkUserListAdapter = new LeaderboardFriendsListAdapter(
-                            getActivity(), getActivity().getLayoutInflater(), R.layout.leaderboard_friends_item_view);
+                    getActivity(), getActivity().getLayoutInflater(),
+                    R.layout.leaderboard_friends_item_view);
             //leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
             //leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
             //leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
             //leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
             leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
         }
-
-        //Bundle loaderBundle = new Bundle(getArguments());
-        //leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
-        //        leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
-        //leaderboardMarkUserListView.setRefreshing();
-        //detachGetFriendsMiddleCallBack();
-        //getFriendsMiddleCallback = leaderboardServiceWrapper.getNewFriendsLeaderboard(new FriendsCallback());
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
     {
         Timber.d("lyl onCreateView");
         View view = inflater.inflate(R.layout.leaderboard_friends_listview, container, false);
@@ -81,9 +77,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override protected void initViews(View view)
     {
         Timber.d("lyl initViews");
-        //leaderboardMarkUserListAdapter = new LeaderboardFriendsListAdapter(
-        //        getActivity(), getActivity().getLayoutInflater(), R.layout.leaderboard_friends_item_view);
-        //leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
     }
 
     protected void inflateHeaderView(LayoutInflater inflater, ViewGroup container)
@@ -102,8 +95,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     protected void initHeaderView(View headerView)
     {
         String leaderboardDefDesc = getArguments().getString(BUNDLE_KEY_LEADERBOARD_DEF_DESC);
-
-        TextView leaderboardMarkUserTimePeriod = (TextView) headerView.findViewById(R.id.leaderboard_time_period);
+        TextView leaderboardMarkUserTimePeriod =
+                (TextView) headerView.findViewById(R.id.leaderboard_time_period);
         if (leaderboardMarkUserTimePeriod != null)
         {
             if (leaderboardDefDesc != null)
@@ -116,17 +109,18 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                 leaderboardMarkUserTimePeriod.setVisibility(View.GONE);
             }
         }
-        leaderboardMarkUserMarkingTime = (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
+        leaderboardMarkUserMarkingTime =
+                (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
     }
 
     @Override public void onResume()
     {
         super.onResume();
         Timber.d("lyl onResume");
-
         localyticsSession.tagEvent(LocalyticsConstants.FriendsLeaderboard_Filter_FoF);
         detachGetFriendsMiddleCallBack();
-        getFriendsMiddleCallback = leaderboardServiceWrapper.getNewFriendsLeaderboard(new FriendsCallback());
+        getFriendsMiddleCallback =
+                leaderboardServiceWrapper.getNewFriendsLeaderboard(new FriendsCallback());
     }
 
     private void detachGetFriendsMiddleCallBack()
@@ -144,12 +138,11 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         {
             Timber.d("lyl success leaderboard.size=%d", dto.leaderboard.users.size());
             Timber.d("lyl success socialFriends.size=%d", dto.socialFriends.size());
-            //mRelationsList = list;
-            //alertDialogUtilLazy.get().dismissProgressDialog();
             Date markingTime = dto.leaderboard.markUtc;
             if (markingTime != null && leaderboardMarkUserMarkingTime != null)
             {
-                leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
+                leaderboardMarkUserMarkingTime.setText(
+                        String.format("(%s)", prettyTime.get().format(markingTime)));
             }
             //Timber.d("lyl %d", leaderboardMarkUserScreen.getDisplayedChildLayoutId());
             //leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.leaderboard_mark_user_listview);
@@ -157,7 +150,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             List<LeaderboardUserDTO> list = dto.leaderboard.users;
             list.addAll(dto.socialFriends);
             leaderboardMarkUserListAdapter.setItems(list);
-            //leaderboardMarkUserListAdapter.setItems(dto.leaderboard.users);
             leaderboardMarkUserListAdapter.notifyDataSetChanged();
         }
 
@@ -165,7 +157,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         {
             THToast.show(new THException(retrofitError));
             Timber.d("lyl %s", new THException(retrofitError));
-            //alertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
@@ -174,29 +165,17 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         return R.menu.friend_leaderboard_menu;
     }
 
-    //@Override public boolean onOptionsItemSelected(MenuItem item)
-    //{
-    //    if (leaderboardMarkUserLoader != null)
-    //    {
-    //        boolean oldIncludeFoF = leaderboardMarkUserLoader.isIncludeFoF();
-    //        switch (item.getItemId())
-    //        {
-    //            case R.id.friend_leaderboard_menu_show_friends_of_friends:
-    //                if (!oldIncludeFoF)
-    //                {
-    //                    setFriendOfFriendFilter(true);
-    //                }
-    //                return true;
-    //            case R.id.friend_leaderboard_menu_show_friends_only:
-    //                if (oldIncludeFoF)
-    //                {
-    //                    setFriendOfFriendFilter(false);
-    //                }
-    //                return true;
-    //        }
-    //    }
-    //    return super.onOptionsItemSelected(item);
-    //}
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.friend_leaderboard_menu:
+                Timber.d("lyl friend_leaderboard_menu");
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override public void onDestroyView()
     {
@@ -218,30 +197,9 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         super.onDestroyView();
     }
 
-    //@Override protected PerPagedLeaderboardKey getInitialLeaderboardKey()
-    //{
-    //    return new FriendsPerPagedLeaderboardKey(leaderboardId, null, null, false);
-    //}
-    //
-    //@Override protected void saveCurrentFilterKey()
-    //{
-    //    // Do nothing really
-    //}
-
-     protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
+    protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
     {
         return inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
     }
 
-    //private void setFriendOfFriendFilter(boolean isFoF)
-    //{
-    //    currentLeaderboardKey = new FriendsPerPagedLeaderboardKey(
-    //            currentLeaderboardKey.key,
-    //            currentLeaderboardKey.page,
-    //            currentLeaderboardKey.perPage,
-    //            isFoF);
-    //    leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
-    //    leaderboardMarkUserLoader.reload();
-    //    //invalidateCachedItemView();
-    //}
 }
