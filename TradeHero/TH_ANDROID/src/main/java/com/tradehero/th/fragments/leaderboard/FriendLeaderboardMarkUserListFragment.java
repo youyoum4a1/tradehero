@@ -4,12 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
@@ -27,11 +28,10 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-//public class FriendLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
-    @InjectView(R.id.leaderboard_mark_user_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
-    @InjectView(R.id.leaderboard_mark_user_screen) BetterViewAnimator leaderboardMarkUserScreen;
+    @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
+    @InjectView(R.id.leaderboard_mark_user_screen) RelativeLayout leaderboardMarkUserScreen;
 
     private TextView leaderboardMarkUserMarkingTime;
     protected LeaderboardFriendsListAdapter leaderboardMarkUserListAdapter;
@@ -65,7 +65,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
+        Timber.d("lyl onCreateView");
+        View view = inflater.inflate(R.layout.leaderboard_friends_listview, container, false);
         ButterKnife.inject(this, view);
         initViews(view);
         inflateHeaderView(inflater, container);
@@ -79,6 +80,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override protected void initViews(View view)
     {
+        Timber.d("lyl initViews");
         //leaderboardMarkUserListAdapter = new LeaderboardFriendsListAdapter(
         //        getActivity(), getActivity().getLayoutInflater(), R.layout.leaderboard_friends_item_view);
         //leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
@@ -91,7 +93,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             View headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
             if (headerView != null)
             {
-                leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
+                leaderboardMarkUserListView.addHeaderView(headerView, null, false);
                 initHeaderView(headerView);
             }
         }
@@ -119,8 +121,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override public void onResume()
     {
-        Timber.d("lyl onResume");
         super.onResume();
+        Timber.d("lyl onResume");
 
         localyticsSession.tagEvent(LocalyticsConstants.FriendsLeaderboard_Filter_FoF);
         detachGetFriendsMiddleCallBack();
@@ -140,7 +142,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         @Override public void success(LeaderboardFriendsDTO dto, Response response)
         {
-            Timber.d("lyl success list.size=%d", dto.leaderboard.users.size());
+            Timber.d("lyl success leaderboard.size=%d", dto.leaderboard.users.size());
+            Timber.d("lyl success socialFriends.size=%d", dto.socialFriends.size());
             //mRelationsList = list;
             //alertDialogUtilLazy.get().dismissProgressDialog();
             Date markingTime = dto.leaderboard.markUtc;
@@ -149,8 +152,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                 leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
             }
             //Timber.d("lyl %d", leaderboardMarkUserScreen.getDisplayedChildLayoutId());
-            leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.leaderboard_mark_user_listview);
-            leaderboardMarkUserListView.onRefreshComplete();
+            //leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.leaderboard_mark_user_listview);
+            //leaderboardMarkUserListView.onRefreshComplete();
             List<LeaderboardUserDTO> list = dto.leaderboard.users;
             list.addAll(dto.socialFriends);
             leaderboardMarkUserListAdapter.setItems(list);
@@ -197,7 +200,21 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override public void onDestroyView()
     {
+        Timber.d("lyl onDestroyView");
         detachGetFriendsMiddleCallBack();
+        if (leaderboardMarkUserListView != null)
+        {
+            leaderboardMarkUserListView.setAdapter(null);
+            leaderboardMarkUserListView.setEmptyView(null);
+            leaderboardMarkUserListView.addHeaderView(null);
+            leaderboardMarkUserListView = null;
+        }
+        if (leaderboardMarkUserListAdapter != null)
+        {
+            leaderboardMarkUserListAdapter.setItems(null);
+            leaderboardMarkUserListAdapter = null;
+        }
+        leaderboardMarkUserScreen = null;
         super.onDestroyView();
     }
 

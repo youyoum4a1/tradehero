@@ -15,7 +15,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
@@ -116,7 +115,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     @Override public void display(LeaderboardUserDTO dto)
     {
-        Timber.d("lyl %s", dto.toString());
+        //Timber.d("lyl %s", dto.toString());
         mLeaderboardUserDTO = dto;
         if (mLeaderboardUserDTO != null)
         {
@@ -141,23 +140,13 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         if (avatar != null)
         {
+            loadDefaultPicture();
             if (mLeaderboardUserDTO != null && getPicture() != null)
             {
                 picasso.load(getPicture())
                         .transform(peopleIconTransformation)
                         .placeholder(avatar.getDrawable())
-                        .into(avatar, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-                                Timber.d("lyl onSuccess");
-                            }
-
-                            @Override public void onError()
-                            {
-                                Timber.d("lyl onError");
-                            }
-                        });
+                        .into(avatar);
             }
 
             if (mLeaderboardUserDTO.displayName != null
@@ -270,7 +259,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.name != null)
             {
-                //inviteBtn.setVisibility(mLeaderboardUserDTO.alreadyInvited ? INVISIBLE : VISIBLE);
                 inviteBtn.setVisibility(VISIBLE);
                 inviteBtn.setOnClickListener(this);
             }
@@ -327,7 +315,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 inviteDTO.twId = mLeaderboardUserDTO.twId;
             }
             inviteFriendForm.users.add(inviteDTO);
-            //progressDialogUtilLazy.get().show(getContext(), null, null);
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get()
@@ -340,38 +327,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             {
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
                         new TrackFacebookCallback());
-                        //new LogInCallback()
-                        //{
-                            //@Override public void done(UserLoginDTO user, THException ex)
-                            //{
-                            //    Timber.d("lyl done");
-                            //    getProgressDialog().dismiss();
-                            //}
-                            //
-                            //@Override public void onStart()
-                            //{
-                            //    Timber.d("lyl onStart");
-                            //    getProgressDialog().show();
-                            //}
-                            //
-                            //@Override public boolean onSocialAuthDone(JSONCredentials json)
-                            //{
-                            //    Timber.d("lyl onSocialAuthDone");
-                            //    detachMiddleCallbackConnect();
-                            //    middleCallbackConnect = socialServiceWrapperLazy.get().connect(
-                            //            currentUserId.toUserBaseKey(),
-                            //            UserFormFactory.create(json),
-                            //            new SocialLinkingCallback());
-                            //    //FragmentActivity activity = getActivity();
-                            //    //if (!isDetached() && activity != null && !activity.isFinishing())
-                            //    //{
-                            //    progressDialog.setMessage(getContext().getString(
-                            //            R.string.authentication_connecting_tradehero,
-                            //            "Facebook"));
-                            //    //}
-                            //    return false;
-                            //}
-                        //});
             }
             else
             {
@@ -384,21 +339,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         Timber.d("lyl sendRequestDialog");
         StringBuilder stringBuilder = new StringBuilder();
-        //if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
-        //{
-        //    Collections.shuffle(selectedFacebookFriends);
-        //    for (int i = 0; i < selectedFacebookFriends.size() && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
-        //    {
         stringBuilder.append(mLeaderboardUserDTO.fbId);
-        //}
-        //}
-        // disable loop
-        //selectedFacebookFriends = null;
-        // remove the last comma
-        //if (stringBuilder.length() > 0)
-        //{
-        //    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        //}
         Timber.d("lyl list of fbIds: %s", stringBuilder.toString());
 
         Bundle params = new Bundle();
@@ -456,7 +397,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        Timber.d("lyl onDetachedFromWindow");
+        //Timber.d("lyl onDetachedFromWindow");
         avatar.setOnClickListener(null);
         inviteBtn.setOnClickListener(null);
         detachMiddleCallbackInvite();
@@ -472,10 +413,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         @Override public void success(Response response, Response response2)
         {
-            // do nothing for now
-            //finish();
             Timber.d("lyl success " + response);
-            //progressDialogUtilLazy.get().dismiss(getContext());
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();
         }
@@ -483,9 +421,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
-            //progressDialogUtilLazy.get().dismiss(getContext());
             getProgressDialog().hide();
-            //finish();
         }
     }
 
@@ -510,13 +446,9 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             middleCallbackConnect = socialServiceWrapperLazy.get().connect(
                     currentUserId.toUserBaseKey(), UserFormFactory.create(json),
                     new SocialLinkingCallback());
-            //FragmentActivity activity = getActivity();
-            //if (!isDetached() && activity != null && !activity.isFinishing())
-            //{
             progressDialog.setMessage(getContext().getString(
                     R.string.authentication_connecting_tradehero,
                     "Facebook"));
-            //}
             return false;
         }
     }
@@ -550,13 +482,11 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             Timber.d("lyl success");
             userProfileCacheLazy.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
-            //sendInvitation();
             invite();
         }
 
         @Override protected void failure(THException ex)
         {
-            // user unlinked current authentication
             Timber.d("lyl failure");
             THToast.show(ex);
         }
