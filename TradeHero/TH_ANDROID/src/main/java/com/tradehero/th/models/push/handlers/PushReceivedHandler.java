@@ -1,10 +1,9 @@
 package com.tradehero.th.models.push.handlers;
 
 import android.content.Intent;
+import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class PushReceivedHandler extends PrecacheNotificationHandler
 {
@@ -13,18 +12,14 @@ public class PushReceivedHandler extends PrecacheNotificationHandler
         super(notificationCache);
     }
 
-    @Override public String getAction()
+    @Override public PushConstants.THAction getAction()
     {
-        return PushManager.ACTION_PUSH_RECEIVED;
+        return PushConstants.THAction.Received;
     }
 
     @Override public boolean handle(Intent intent)
     {
         super.handle(intent);
-
-        int id = intent.getIntExtra(PushManager.EXTRA_NOTIFICATION_ID, 0);
-
-        Timber.i("Received push notification. Alert: %s [NotificationID=%d]", intent.getStringExtra(PushManager.EXTRA_ALERT), id);
         return true;
     }
 

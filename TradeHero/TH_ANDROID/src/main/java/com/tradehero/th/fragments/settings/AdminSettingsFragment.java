@@ -128,7 +128,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private void sendFakePushNotification(int notificationId)
     {
         Intent fakeIntent = new Intent();
-        fakeIntent.putExtra(PushConstants.PUSH_ID_KEY, String.valueOf(notificationId));
+        fakeIntent.putExtra(PushConstants.KEY_PUSH_ID, String.valueOf(notificationId));
         notificationOpenedHandler.get().handle(fakeIntent);
     }
 
