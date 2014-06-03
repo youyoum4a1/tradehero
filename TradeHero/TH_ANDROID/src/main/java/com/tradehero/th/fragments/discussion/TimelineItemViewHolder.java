@@ -30,6 +30,11 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     }
     //</editor-fold>
 
+    @Override public boolean isAutoTranslate()
+    {
+        return true;
+    }
+
     @Override public void linkWith(TimelineItemDTOType discussionDTO, boolean andDisplay)
     {
         super.linkWith(discussionDTO, andDisplay);

@@ -44,8 +44,13 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
     @Override public void display()
     {
         super.display();
-        displayText();
         displayStubText();
+    }
+
+    @Override public void displayTranslatableTexts()
+    {
+        super.displayTranslatableTexts();
+        displayText();
     }
 
     protected void displayText()

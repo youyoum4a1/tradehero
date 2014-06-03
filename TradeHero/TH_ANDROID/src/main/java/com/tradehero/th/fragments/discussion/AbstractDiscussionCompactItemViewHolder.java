@@ -70,13 +70,19 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     public void onFinishInflate(View view)
     {
         ButterKnife.inject(this, view);
-        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        if (socialShareHelper != null)
+        {
+            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        }
     }
 
     public void onAttachedToWindow(View view)
     {
         ButterKnife.inject(this, view);
-        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        if (socialShareHelper != null)
+        {
+            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        }
         if (discussionActionButtonsView != null)
         {
             discussionActionButtonsView.setButtonClickedListener(createDiscussionActionButtonsViewClickedListener());
@@ -89,7 +95,10 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         {
             discussionActionButtonsView.setButtonClickedListener(null);
         }
-        socialShareHelper.onDetach();
+        if (socialShareHelper != null)
+        {
+            socialShareHelper.onDetach();
+        }
         ButterKnife.reset(this);
     }
 
