@@ -56,15 +56,13 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by tradehero on 14-5-29.
- */
 public class LeaderboardFriendsItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, View.OnClickListener
 {
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView avatar;
     @InjectView(R.id.leaderboard_user_item_display_name) TextView name;
+    @InjectView(R.id.leaderboard_user_item_social_name) TextView socialName;
     @InjectView(R.id.lbmu_roi) TextView lbmuRoi;
     @InjectView(R.id.lbmu_roi_annualized) TextView lbmuRoiAnnualized;
     @InjectView(R.id.leaderboard_user_item_country_logo) ImageView countryLogo;
@@ -72,17 +70,17 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private LeaderboardUserDTO mLeaderboardUserDTO;
     private MiddleCallback<Response> middleCallbackInvite;
+    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private ProgressDialog progressDialog;
     @Inject CurrentUserId currentUserId;
-    @Inject protected Picasso picasso;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-    @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
-    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    @Inject Picasso picasso;
     @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
-    @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
+    @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
     public LeaderboardFriendsItemView(Context context)
     {
@@ -104,15 +102,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         super.onFinishInflate();
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
-        initViews();
-    }
-
-    private void initViews()
-    {
-        //upgradeNow.setOnClickListener(this);
         loadDefaultPicture();
-        avatar.setOnClickListener(this);
-        inviteBtn.setOnClickListener(this);
     }
 
     protected void loadDefaultPicture()
@@ -123,44 +113,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                     .transform(peopleIconTransformation)
                     .into(avatar);
         }
-    }
-
-    public void displayPicture()
-    {
-        if (avatar != null)
-        {
-            loadDefaultPicture();
-            if (mLeaderboardUserDTO != null && getPicture() != null)
-            {
-                picasso.load(getPicture())
-                        .transform(peopleIconTransformation)
-                        .placeholder(avatar.getDrawable())
-                        .into(avatar, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-                            }
-
-                            @Override public void onError()
-                            {
-                                //loadDefaultPicture();
-                            }
-                        });
-            }
-        }
-    }
-
-    public String getPicture()
-    {
-        if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.picture != null)
-        {
-            return mLeaderboardUserDTO.picture;
-        }
-        else if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.fbPicUrl != null)
-        {
-            return mLeaderboardUserDTO.fbPicUrl;
-        }
-        return null;
     }
 
     @Override public void display(LeaderboardUserDTO dto)
@@ -178,18 +130,111 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
     }
 
-    private void updateInviteButton()
+    public void updatePosition(int position)
     {
-        if (inviteBtn != null)
+        if (lbmuPosition != null)
         {
-            if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.name != null)
+            lbmuPosition.setText("" + (position + 1));
+        }
+    }
+
+    public void displayPicture()
+    {
+        if (avatar != null)
+        {
+            if (mLeaderboardUserDTO != null && getPicture() != null)
             {
-                inviteBtn.setVisibility(mLeaderboardUserDTO.alreadyInvited ? INVISIBLE : VISIBLE);
+                picasso.load(getPicture())
+                        .transform(peopleIconTransformation)
+                        .placeholder(avatar.getDrawable())
+                        .into(avatar, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                                Timber.d("lyl onSuccess");
+                            }
+
+                            @Override public void onError()
+                            {
+                                Timber.d("lyl onError");
+                            }
+                        });
+            }
+
+            if (mLeaderboardUserDTO.displayName != null
+                    && !mLeaderboardUserDTO.displayName.isEmpty())
+            {
+                avatar.setOnClickListener(this);
+            }
+        }
+    }
+
+    public String getPicture()
+    {
+        if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.picture != null)
+        {
+            return mLeaderboardUserDTO.picture;
+        }
+        else if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.fbPicUrl != null)
+        {
+            return mLeaderboardUserDTO.fbPicUrl;
+        }
+        else if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.liPicUrl != null)
+        {
+            return mLeaderboardUserDTO.liPicUrl;
+        }
+        else if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.twPicUrl != null)
+        {
+            return mLeaderboardUserDTO.twPicUrl;
+        }
+        return null;
+    }
+
+    public void updateName()
+    {
+        if (mLeaderboardUserDTO.displayName != null)
+        {
+            if (mLeaderboardUserDTO.displayName.isEmpty())
+            {
+                name.setText(mLeaderboardUserDTO.firstName + " " + mLeaderboardUserDTO.lastName);
             }
             else
             {
-                inviteBtn.setVisibility(GONE);
+                name.setText(mLeaderboardUserDTO.displayName);
             }
+            name.setVisibility(VISIBLE);
+            socialName.setVisibility(INVISIBLE);
+        }
+        else if (mLeaderboardUserDTO.name != null && !mLeaderboardUserDTO.name.isEmpty())
+        {
+            name.setVisibility(INVISIBLE);
+            socialName.setVisibility(VISIBLE);
+            socialName.setText(mLeaderboardUserDTO.name);
+        }
+    }
+
+    public void updateROI()
+    {
+        if (mLeaderboardUserDTO.displayName != null)
+        {
+            THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
+                    mLeaderboardUserDTO.roiInPeriod * 100);
+            lbmuRoi.setText(roi.toString());
+            lbmuRoi.setTextColor(getResources().getColor(roi.getColor()));
+
+            THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
+                    mLeaderboardUserDTO.roiAnnualizedInPeriod * 100);
+            String roiAnnualizedFormat =
+                    getContext().getString(R.string.leaderboard_roi_annualized);
+            String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
+            lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
+            lbmuRoi.setVisibility(VISIBLE);
+            lbmuRoiAnnualized.setVisibility(VISIBLE);
+        }
+        else
+        {
+            lbmuRoi.setVisibility(INVISIBLE);
+            lbmuRoiAnnualized.setVisibility(INVISIBLE);
         }
     }
 
@@ -204,7 +249,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             }
             else
             {
-                //countryLogo.setImageResource(R.drawable.default_image);
                 countryLogo.setVisibility(GONE);
             }
         }
@@ -215,52 +259,26 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         try
         {
             return Country.valueOf(country).logoId;
-        }
-        catch (IllegalArgumentException ex)
+        } catch (IllegalArgumentException ex)
         {
             return defaultResId;
         }
     }
 
-    public void updateROI()
+    private void updateInviteButton()
     {
-        if (mLeaderboardUserDTO.displayName != null)
+        if (inviteBtn != null)
         {
-            THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, mLeaderboardUserDTO.roiInPeriod * 100);
-            lbmuRoi.setText(roi.toString());
-            lbmuRoi.setTextColor(getResources().getColor(roi.getColor()));
-
-            THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
-                    mLeaderboardUserDTO.roiAnnualizedInPeriod * 100);
-            String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
-            String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
-            lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
-        }
-    }
-
-    public void updatePosition(int position)
-    {
-        if (lbmuPosition != null)
-        {
-            lbmuPosition.setText("" + (position + 1));
-        }
-    }
-
-    public void updateName()
-    {
-        if (mLeaderboardUserDTO.displayName != null)
-        {
-            if (mLeaderboardUserDTO.displayName.isEmpty())
+            if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.name != null)
             {
-                name.setText(mLeaderboardUserDTO.firstName + mLeaderboardUserDTO.lastName);
+                //inviteBtn.setVisibility(mLeaderboardUserDTO.alreadyInvited ? INVISIBLE : VISIBLE);
+                inviteBtn.setVisibility(VISIBLE);
+                inviteBtn.setOnClickListener(this);
             }
-            else {
-                name.setText(mLeaderboardUserDTO.displayName);
+            else
+            {
+                inviteBtn.setVisibility(GONE);
             }
-        }
-        else if (mLeaderboardUserDTO.name != null && !mLeaderboardUserDTO.name.isEmpty())
-        {
-            name.setText(mLeaderboardUserDTO.name);
         }
     }
 
@@ -274,6 +292,22 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             case R.id.leaderboard_user_item_invite_btn:
                 invite();
                 break;
+        }
+    }
+
+    private void handleOpenProfileButtonClicked()
+    {
+        if (mLeaderboardUserDTO != null && currentUserId != null
+                && currentUserId.get() != mLeaderboardUserDTO.id)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, mLeaderboardUserDTO.id);
+            DashboardNavigator dashboardNavigator =
+                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+            if (dashboardNavigator != null)
+            {
+                dashboardNavigator.pushFragment(PushableTimelineFragment.class, bundle);
+            }
         }
     }
 
@@ -294,59 +328,56 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 inviteDTO.twId = mLeaderboardUserDTO.twId;
             }
             inviteFriendForm.users.add(inviteDTO);
-            progressDialogUtilLazy.get().show(getContext(), null, null);
+            //progressDialogUtilLazy.get().show(getContext(), null, null);
+            getProgressDialog().show();
             detachMiddleCallbackInvite();
-            middleCallbackInvite = userServiceWrapperLazy.get().inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm, new TrackShareCallback());
+            middleCallbackInvite = userServiceWrapperLazy.get()
+                    .inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm,
+                            new TrackShareCallback());
         }
         else if (mLeaderboardUserDTO.fbId != null)
         {
             if (Session.getActiveSession() == null)
             {
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
-                        new LogInCallback()
-                        {
-                            @Override public void done(UserLoginDTO user, THException ex)
-                            {
-                                //if (!isDetached())
-                                //{
-                                Timber.d("lyl done");
-                                    getProgressDialog().dismiss();
-                                //}
-                            }
-
-                            @Override public void onStart()
-                            {
-                                //if (!isDetached())
-                                //{
-                                Timber.d("lyl onStart");
-                                    getProgressDialog().show();
-                                //}
-                            }
-
-                            @Override public boolean onSocialAuthDone(JSONCredentials json)
-                            {
-                                Timber.d("lyl onSocialAuthDone");
-                                detachMiddleCallbackConnect();
-                                middleCallbackConnect = socialServiceWrapperLazy.get().connect(
-                                        currentUserId.toUserBaseKey(),
-                                        UserFormFactory.create(json),
-                                        new SocialLinkingCallback());
-                                //FragmentActivity activity = getActivity();
-                                //if (!isDetached() && activity != null && !activity.isFinishing())
-                                //{
-                                    progressDialog.setMessage(getContext().getString(
-                                            R.string.authentication_connecting_tradehero,
-                                            "Facebook"));
-                                //}
-                                return false;
-                            }
-                        });
-                return;
+                        new TrackFacebookCallback());
+                        //new LogInCallback()
+                        //{
+                            //@Override public void done(UserLoginDTO user, THException ex)
+                            //{
+                            //    Timber.d("lyl done");
+                            //    getProgressDialog().dismiss();
+                            //}
+                            //
+                            //@Override public void onStart()
+                            //{
+                            //    Timber.d("lyl onStart");
+                            //    getProgressDialog().show();
+                            //}
+                            //
+                            //@Override public boolean onSocialAuthDone(JSONCredentials json)
+                            //{
+                            //    Timber.d("lyl onSocialAuthDone");
+                            //    detachMiddleCallbackConnect();
+                            //    middleCallbackConnect = socialServiceWrapperLazy.get().connect(
+                            //            currentUserId.toUserBaseKey(),
+                            //            UserFormFactory.create(json),
+                            //            new SocialLinkingCallback());
+                            //    //FragmentActivity activity = getActivity();
+                            //    //if (!isDetached() && activity != null && !activity.isFinishing())
+                            //    //{
+                            //    progressDialog.setMessage(getContext().getString(
+                            //            R.string.authentication_connecting_tradehero,
+                            //            "Facebook"));
+                            //    //}
+                            //    return false;
+                            //}
+                        //});
             }
-            //if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
-            //{
+            else
+            {
                 sendRequestDialog();
-            //}
+            }
         }
     }
 
@@ -359,8 +390,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         //    Collections.shuffle(selectedFacebookFriends);
         //    for (int i = 0; i < selectedFacebookFriends.size() && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
         //    {
-                stringBuilder.append(mLeaderboardUserDTO.fbId);
-            //}
+        stringBuilder.append(mLeaderboardUserDTO.fbId);
+        //}
         //}
         // disable loop
         //selectedFacebookFriends = null;
@@ -382,10 +413,11 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         params.putString("message", messageToFacebookFriends);
         params.putString("to", stringBuilder.toString());
 
-        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(), params))
+        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+                currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+                params))
                 .setOnCompleteListener(new WebDialog.OnCompleteListener()
                 {
-
                     @Override
                     public void onComplete(Bundle values, FacebookException error)
                     {
@@ -423,24 +455,12 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         middleCallbackInvite = null;
     }
 
-    private void handleOpenProfileButtonClicked()
-    {
-        int userId = mLeaderboardUserDTO.id;
-
-        if (currentUserId != null && currentUserId.get() != userId)
-        {
-            Bundle bundle = new Bundle();
-            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
-            DashboardNavigator dashboardNavigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-            if (dashboardNavigator != null)
-            {
-                dashboardNavigator.pushFragment(PushableTimelineFragment.class, bundle);
-            }
-        }
-    }
-
     @Override protected void onDetachedFromWindow()
     {
+        Timber.d("lyl onDetachedFromWindow");
+        avatar.setOnClickListener(null);
+        inviteBtn.setOnClickListener(null);
+        detachMiddleCallbackInvite();
         super.onDetachedFromWindow();
     }
 
@@ -456,14 +476,50 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             // do nothing for now
             //finish();
             Timber.d("lyl success " + response);
-            progressDialogUtilLazy.get().dismiss(getContext());
+            //progressDialogUtilLazy.get().dismiss(getContext());
+            //TODO
+            THToast.show(R.string.invite_friend_success);
+            getProgressDialog().hide();
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
-            progressDialogUtilLazy.get().dismiss(getContext());
+            //progressDialogUtilLazy.get().dismiss(getContext());
+            getProgressDialog().hide();
             //finish();
+        }
+    }
+
+    private class TrackFacebookCallback extends LogInCallback
+    {
+        @Override public void done(UserLoginDTO user, THException ex)
+        {
+            Timber.d("lyl done");
+            getProgressDialog().dismiss();
+        }
+
+        @Override public void onStart()
+        {
+            Timber.d("lyl onStart");
+            getProgressDialog().show();
+        }
+
+        @Override public boolean onSocialAuthDone(JSONCredentials json)
+        {
+            Timber.d("lyl onSocialAuthDone");
+            detachMiddleCallbackConnect();
+            middleCallbackConnect = socialServiceWrapperLazy.get().connect(
+                    currentUserId.toUserBaseKey(), UserFormFactory.create(json),
+                    new SocialLinkingCallback());
+            //FragmentActivity activity = getActivity();
+            //if (!isDetached() && activity != null && !activity.isFinishing())
+            //{
+            progressDialog.setMessage(getContext().getString(
+                    R.string.authentication_connecting_tradehero,
+                    "Facebook"));
+            //}
+            return false;
         }
     }
 
@@ -509,7 +565,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
         @Override protected void finish()
         {
-            progressDialog.dismiss();
+            getProgressDialog().dismiss();
         }
     }
 }

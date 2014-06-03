@@ -65,6 +65,8 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public String liId;
     public String twId;
     public String fbPicUrl;
+    public String liPicUrl;
+    public String twPicUrl;
     public boolean alreadyInvited;
 
     public LeaderboardUserDTO()
