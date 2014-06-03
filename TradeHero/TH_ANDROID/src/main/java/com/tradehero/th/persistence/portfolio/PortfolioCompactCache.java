@@ -1,10 +1,14 @@
 package com.tradehero.th.persistence.portfolio;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.network.service.PortfolioService;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -38,5 +42,32 @@ import javax.inject.Singleton;
         }
 
         return super.put(key, value);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    public PortfolioCompactDTO getFirstByProvider(ProviderId providerId)
+    {
+        for (PortfolioCompactDTO portfolioCompactDTO : new ArrayList<>(snapshot().values()))
+        {
+            if (providerId.equals(portfolioCompactDTO.getProviderIdKey()))
+            {
+                return portfolioCompactDTO;
+            }
+        }
+        return null;
+    }
+
+    public PortfolioCompactDTOList get(Collection<PortfolioId> portfolioIds)
+    {
+        if (portfolioIds == null)
+        {
+            return null;
+        }
+
+        PortfolioCompactDTOList portfolioCompactDTOs = new PortfolioCompactDTOList();
+        for (PortfolioId portfolioId: portfolioIds)
+        {
+            portfolioCompactDTOs.add(get(portfolioId));
+        }
+        return portfolioCompactDTOs;
     }
 }
