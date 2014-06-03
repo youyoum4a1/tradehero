@@ -100,12 +100,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.lbmu_period) TextView lbmuPeriod;
     @InjectView(R.id.leaderboard_user_item_fof) MarkdownTextView lbmuFoF;
     @InjectView(R.id.lbmu_number_trades_in_period) TextView lbmuNumberTradesInPeriod;
-    @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
-    @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
+    @InjectView(R.id.leaderboard_user_item_follow) @Optional View lbmuFollowUser;
+    @InjectView(R.id.leaderboard_user_item_following) @Optional View lbmuFollowingUser;
 
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional ImageView countryLogo;
-    @InjectView(R.id.user_statistic_view) UserStatisticView userStatisticView;
+    @InjectView(R.id.user_statistic_view) @Optional UserStatisticView userStatisticView;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -432,14 +432,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @Override public void onExpand(boolean expand)
     {
-        if (expand)
+        if (userStatisticView != null)
         {
-            userStatisticView.display(leaderboardItem);
-        }
-        else
-        {
-            userStatisticView.display(null);
-            Timber.d("clearExpandAnimation");
+            if (expand)
+            {
+                userStatisticView.display(leaderboardItem);
+            }
+            else
+            {
+                userStatisticView.display(null);
+                Timber.d("clearExpandAnimation");
+            }
         }
     }
 
