@@ -23,22 +23,28 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -69,6 +75,9 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     private ProgressDialog progressDialog;
     @Inject CurrentUserId currentUserId;
     @Inject protected Picasso picasso;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
+    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -271,7 +280,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     private void invite()
     {
         Timber.d("lyl invite");
-        if (!mLeaderboardUserDTO.liId.isEmpty() || !mLeaderboardUserDTO.twId.isEmpty())
+        if (mLeaderboardUserDTO.liId != null || mLeaderboardUserDTO.twId != null)
         {
             InviteFormDTO inviteFriendForm = new InviteFormDTO();
             inviteFriendForm.users = new ArrayList<>();
@@ -289,7 +298,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get().inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm, new TrackShareCallback());
         }
-        else if (!mLeaderboardUserDTO.liId.isEmpty())
+        else if (mLeaderboardUserDTO.fbId != null)
         {
             if (Session.getActiveSession() == null)
             {
@@ -300,6 +309,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                             {
                                 //if (!isDetached())
                                 //{
+                                Timber.d("lyl done");
                                     getProgressDialog().dismiss();
                                 //}
                             }
@@ -308,12 +318,26 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                             {
                                 //if (!isDetached())
                                 //{
+                                Timber.d("lyl onStart");
                                     getProgressDialog().show();
                                 //}
                             }
 
                             @Override public boolean onSocialAuthDone(JSONCredentials json)
                             {
+                                Timber.d("lyl onSocialAuthDone");
+                                detachMiddleCallbackConnect();
+                                middleCallbackConnect = socialServiceWrapperLazy.get().connect(
+                                        currentUserId.toUserBaseKey(),
+                                        UserFormFactory.create(json),
+                                        new SocialLinkingCallback());
+                                //FragmentActivity activity = getActivity();
+                                //if (!isDetached() && activity != null && !activity.isFinishing())
+                                //{
+                                    progressDialog.setMessage(getContext().getString(
+                                            R.string.authentication_connecting_tradehero,
+                                            "Facebook"));
+                                //}
                                 return false;
                             }
                         });
@@ -328,6 +352,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private void sendRequestDialog()
     {
+        Timber.d("lyl sendRequestDialog");
         StringBuilder stringBuilder = new StringBuilder();
         //if (selectedFacebookFriends != null && !selectedFacebookFriends.isEmpty())
         //{
@@ -344,7 +369,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         //{
         //    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         //}
-        Timber.d("list of fbIds: %s", stringBuilder.toString());
+        Timber.d("lyl list of fbIds: %s", stringBuilder.toString());
 
         Bundle params = new Bundle();
         String messageToFacebookFriends = getContext().getString(
@@ -454,5 +479,37 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();
         return progressDialog;
+    }
+
+    protected void detachMiddleCallbackConnect()
+    {
+        if (middleCallbackConnect != null)
+        {
+            middleCallbackConnect.setPrimaryCallback(null);
+        }
+        middleCallbackConnect = null;
+    }
+
+    private class SocialLinkingCallback extends THCallback<UserProfileDTO>
+    {
+        @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
+        {
+            Timber.d("lyl success");
+            userProfileCacheLazy.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
+            //sendInvitation();
+            invite();
+        }
+
+        @Override protected void failure(THException ex)
+        {
+            // user unlinked current authentication
+            Timber.d("lyl failure");
+            THToast.show(ex);
+        }
+
+        @Override protected void finish()
+        {
+            progressDialog.dismiss();
+        }
     }
 }
