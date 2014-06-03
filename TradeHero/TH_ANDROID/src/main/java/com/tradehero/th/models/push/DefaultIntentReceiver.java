@@ -11,7 +11,7 @@ import timber.log.Timber;
 
 public abstract class DefaultIntentReceiver extends BroadcastReceiver
 {
-    @Inject Set<PushNotificationHandler> pushNotificationHandlers;
+    @Inject protected Set<PushNotificationHandler> pushNotificationHandlers;
 
     public DefaultIntentReceiver()
     {
