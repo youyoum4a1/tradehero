@@ -42,7 +42,6 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:padding="24dp"
-        android:background="@color/empty_text_bg"
         >
 
       <TextView
