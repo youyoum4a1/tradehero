@@ -142,12 +142,20 @@ public class SocialShareHelper
     }
     //</editor-fold>
 
+    public boolean canShare(AbstractDiscussionCompactDTO discussionToShare)
+    {
+        return discussionToShare != null;
+    }
+
     public void share(AbstractDiscussionCompactDTO discussionToShare)
     {
-        cancelFormWaiting();
-        dismissShareDialog();
-        shareDialog = shareDialogFactory.createShareDialog(currentActivityHolder.getCurrentContext(), discussionToShare,
-                createShareMenuClickedListener());
+        if (canShare(discussionToShare))
+        {
+            cancelFormWaiting();
+            dismissShareDialog();
+            shareDialog = shareDialogFactory.createShareDialog(currentActivityHolder.getCurrentContext(), discussionToShare,
+                    createShareMenuClickedListener());
+        }
     }
 
     protected ShareDialogLayout.OnShareMenuClickedListener createShareMenuClickedListener()
