@@ -605,18 +605,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             linkedInSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.LN));
         }
-        weiboSharing = (CheckBoxPreference) findPreference(
-                getString(R.string.key_settings_sharing_weibo));
-        if (weiboSharing != null)
-        {
-            weiboSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.WB));
-        }
-        qqSharing = (CheckBoxPreference) findPreference(
-                getString(R.string.key_settings_sharing_qq));
-        if (qqSharing != null)
-        {
-            qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
-        }
+        //weiboSharing = (CheckBoxPreference) findPreference(
+        //        getString(R.string.key_settings_sharing_weibo));
+        //if (weiboSharing != null)
+        //{
+        //    weiboSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.WB));
+        //}
+        //qqSharing = (CheckBoxPreference) findPreference(
+        //        getString(R.string.key_settings_sharing_qq));
+        //if (qqSharing != null)
+        //{
+        //    qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
+        //}
         // notification
         pushNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push));
