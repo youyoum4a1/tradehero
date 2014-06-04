@@ -142,20 +142,23 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
     public void translate(AbstractDiscussionCompactDTO toTranslate)
     {
-        this.toTranslate = toTranslate;
-        this.translated = abstractDiscussionCompactDTOFactory.clone(toTranslate);
+        if (toTranslate != null)
+        {
+            this.toTranslate = toTranslate;
+            this.translated = abstractDiscussionCompactDTOFactory.clone(toTranslate);
 
-        remainingKeys = translationKeyFactory.createFrom(toTranslate, getTargetLanguage());
-        if (remainingKeys.size() == 0)
-        {
-            notifyAllDoneIfPossible();
-        }
-        else
-        {
-            for (TranslationKey key : new TranslationKeyList(remainingKeys))
+            remainingKeys = translationKeyFactory.createFrom(toTranslate, getTargetLanguage());
+            if (remainingKeys.size() == 0)
             {
-                translationCache.register(key, createTranslationCacheListener());
-                translationCache.getOrFetchAsync(key);
+                notifyAllDoneIfPossible();
+            }
+            else
+            {
+                for (TranslationKey key : new TranslationKeyList(remainingKeys))
+                {
+                    translationCache.register(key, createTranslationCacheListener());
+                    translationCache.getOrFetchAsync(key);
+                }
             }
         }
     }
