@@ -18,7 +18,6 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -178,7 +177,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         int moduloId = 0;
         if (characteristicId == null)
         {
-            characteristicId = UUID.randomUUID().clockSequence();
+            characteristicId = getUniquePushNotificationIdentifier();
         }
         else
         {
@@ -200,6 +199,11 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             }
         }
         return (modulo * characteristicId) + moduloId;
+    }
+
+    private Integer getUniquePushNotificationIdentifier()
+    {
+        return (int) System.currentTimeMillis();
     }
 
     private NotificationCompat.Builder getCommonNotificationBuilder()
