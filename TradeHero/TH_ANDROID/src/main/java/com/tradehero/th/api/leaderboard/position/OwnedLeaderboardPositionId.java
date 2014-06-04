@@ -2,9 +2,9 @@ package com.tradehero.th.api.leaderboard.position;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.persistence.DTOKey;
+import com.tradehero.th.api.position.PositionDTOKey;
 
-public class OwnedLeaderboardPositionId implements Comparable, DTOKey, DTO
+public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, DTO
 {
     public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_ID = OwnedLeaderboardPositionId.class.getName() + ".leaderboardMarkUserId";
     public final static String BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID = OwnedLeaderboardPositionId.class.getName() + ".leaderboardMarkUserPositionId";
@@ -31,6 +31,13 @@ public class OwnedLeaderboardPositionId implements Comparable, DTOKey, DTO
                 BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID) : null;
     }
     //</editor-fold>
+
+    public static boolean isOwnedLeaderboardPositionId(Bundle args)
+    {
+        return args != null &&
+                args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) &&
+                args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID);
+    }
 
     @Override public int hashCode()
     {

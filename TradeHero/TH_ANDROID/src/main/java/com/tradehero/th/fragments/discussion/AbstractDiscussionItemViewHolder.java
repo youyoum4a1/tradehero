@@ -126,7 +126,11 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
 
     protected String getUserDisplayName()
     {
-        return String.format("%d",discussionDTO.userId);
+        if (discussionDTO == null)
+        {
+            return null;
+        }
+        return String.format("%d", discussionDTO.userId);
     }
 
     protected void displayProfilePicture()

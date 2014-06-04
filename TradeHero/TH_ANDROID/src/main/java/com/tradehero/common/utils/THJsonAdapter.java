@@ -1,6 +1,7 @@
 package com.tradehero.common.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.th.api.position.PositionDTOFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +10,6 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
-import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 import timber.log.Timber;
@@ -131,6 +131,7 @@ public class THJsonAdapter implements Converter
         {
             ObjectMapper objectMapper = new ObjectMapper();
             //objectMapper.setDateFormat(new ISO8601DateFormat());
+            objectMapper.registerModule(new PositionDTOFactory().createPositionDTOModule());
             objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"));
             return new JacksonConverter(objectMapper);
         }
