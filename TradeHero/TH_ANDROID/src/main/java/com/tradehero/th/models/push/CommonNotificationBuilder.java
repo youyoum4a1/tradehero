@@ -172,23 +172,46 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
     private int uniquifyNotificationId(NotificationDTO notificationDTO)
     {
-        DiscussionType discussionType = DiscussionType.fromValue(notificationDTO.replyableTypeId);
-
-        int identifier = notificationDTO.pushId;
-
-        switch (discussionType)
+        Integer characteristicId = notificationDTO.replyableTypeId;
+        int modulo = DiscussionType.values().length + 1;
+        int moduloId = 0;
+        if (characteristicId == null)
         {
-            case NEWS:
-            case SECURITY:
-            case TIMELINE_ITEM:
-                identifier = notificationDTO.replyableId;
-                break;
-            case BROADCAST_MESSAGE:
-            case PRIVATE_MESSAGE:
-                identifier = notificationDTO.referencedUserId;
-                break;
+            characteristicId = getUniquePushNotificationIdentifier();
         }
-        return (DiscussionType.values().length * identifier) + discussionType.ordinal();
+        else
+        {
+            DiscussionType discussionType = DiscussionType.fromValue(characteristicId);
+            moduloId = discussionType.value;
+
+            switch (discussionType)
+            {
+                case NEWS:
+                case SECURITY:
+                case TIMELINE_ITEM:
+                    characteristicId = notificationDTO.replyableId;
+                    break;
+                case BROADCAST_MESSAGE:
+                case PRIVATE_MESSAGE:
+                    characteristicId = notificationDTO.referencedUserId;
+                    if (characteristicId == null)
+                    {
+                        characteristicId = notificationDTO.threadId;
+                    }
+                    break;
+            }
+
+            if (characteristicId == null)
+            {
+                characteristicId = notificationDTO.pushId;
+            }
+        }
+        return (modulo * characteristicId) + moduloId;
+    }
+
+    private Integer getUniquePushNotificationIdentifier()
+    {
+        return (int) System.currentTimeMillis();
     }
 
     private NotificationCompat.Builder getCommonNotificationBuilder()

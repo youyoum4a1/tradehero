@@ -181,7 +181,11 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         {
             return loadingTextContent.getId();
         }
-        return textContent.getId();
+        else if (textContent != null)
+        {
+            return textContent.getId();
+        }
+        return 0;
     }
 
     public void setTitleBackground(int resId)

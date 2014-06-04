@@ -3,21 +3,24 @@ package com.tradehero.th.models.push.baidu;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.THNotificationBuilder;
-import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.DaggerUtils;
+import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -30,11 +33,10 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     @Inject CurrentUserId currentUserId;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject THNotificationBuilder thNotificationBuilder;
+    @Inject ObjectMapper objectMapper;
 
     @Inject @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag;
     @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
-
-    @Inject static Provider<NotificationOpenedHandler> notificationOpenedHandler;
 
     public BaiduPushMessageReceiver()
     {
@@ -81,33 +83,43 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         }
     }
 
-    private void showNotification(Context context, PushMessageDTO pushMessageDTO)
+    private void showNotification(Context context, BaiduPushMessageDTO baiduPushMessageDTO)
     {
-        Notification notification = thNotificationBuilder.buildNotification(pushMessageDTO.description, pushMessageDTO.id);
+        Notification notification = thNotificationBuilder.buildNotification(baiduPushMessageDTO.description, baiduPushMessageDTO.getId());
 
         if (notification != null)
         {
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(thNotificationBuilder.getNotifyId(pushMessageDTO.id), notification);
+            nm.notify(thNotificationBuilder.getNotifyId(baiduPushMessageDTO.getId()), notification);
         }
     }
 
     private void handleReceiveMessage(Context context, String message)
     {
-        PushMessageDTO pushMessageDTO = PushMessageHandler.parseNotification(message);
-        if (pushMessageDTO != null)
+        BaiduPushMessageDTO baiduPushMessageDTO = null;
+        try
         {
-            if(pushMessageDTO.discussionType != null)
+            baiduPushMessageDTO = objectMapper.readValue(message, BaiduPushMessageDTO.class);
+        }
+        catch (IOException e)
+        {
+            return;
+        }
+
+        if (baiduPushMessageDTO != null)
+        {
+            if(baiduPushMessageDTO.getDiscussionType() != null)
             {
-                switch (pushMessageDTO.discussionType)
+                switch (baiduPushMessageDTO.getDiscussionType())
                 {
                     case BROADCAST_MESSAGE:
                     case PRIVATE_MESSAGE:
-                        PushMessageHandler.notifyMessageReceived(context);
+                        Intent requestUpdateIntent = new Intent(PushConstants.ACTION_MESSAGE_RECEIVED);
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(requestUpdateIntent);
                         break;
                 }
             }
-            showNotification(context, pushMessageDTO);
+            showNotification(context, baiduPushMessageDTO);
         }
     }
 
