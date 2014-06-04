@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,7 +31,7 @@ import timber.log.Timber;
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
-    @InjectView(R.id.leaderboard_mark_user_screen) RelativeLayout leaderboardMarkUserScreen;
+    //@InjectView(R.id.leaderboard_mark_user_screen) RelativeLayout leaderboardMarkUserScreen;
 
     private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
     private TextView leaderboardMarkUserMarkingTime;
@@ -193,7 +192,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             leaderboardMarkUserListAdapter.setItems(null);
             leaderboardMarkUserListAdapter = null;
         }
-        leaderboardMarkUserScreen = null;
+        //leaderboardMarkUserScreen = null;
         super.onDestroyView();
     }
 
