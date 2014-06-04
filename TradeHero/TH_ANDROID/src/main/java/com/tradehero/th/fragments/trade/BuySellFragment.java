@@ -78,6 +78,8 @@ import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
@@ -165,6 +167,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
     @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
@@ -172,7 +175,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
-    @Inject WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
     @Inject Picasso picasso;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
@@ -609,6 +611,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
+        buildUsedMenuPortfolios();
         setInitialSellQuantityIfCan();
 
         if (andDisplay)
@@ -672,6 +675,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         if (andDisplay)
         {
+            displayBuySellSwitch();
             displaySelectedPortfolio();
         }
     }
@@ -738,77 +742,12 @@ public class BuySellFragment extends AbstractBuySellFragment
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
     protected void buildUsedMenuPortfolios()
     {
-        OwnedPortfolioId defaultOwnedPortfolioId =
-                portfolioCompactListCache.getDefaultPortfolio(currentUserId.toUserBaseKey());
+        Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
-        if (defaultOwnedPortfolioId != null && securityCompactDTO != null)
-        {
-            Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
-
-            PortfolioCompactDTO defaultPortfolioCompactDTO =
-                    portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioIdKey());
-            newMenus.add(
-                    new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
-
-            TreeSet<OwnedPortfolioId> otherPortfolioIds = new TreeSet<>();
-            // HACK
-            {
-                if (securityCompactDTO instanceof WarrantDTO)
-                {
-                    for (Map.Entry<ProviderId, OwnedPortfolioId> entry : warrantSpecificKnowledgeFactory
-                            .getWarrantApplicablePortfolios()
-                            .entrySet())
-                    {
-                        if (providerId == null)
-                        {
-                            providerId = entry.getKey();
-                        }
-                        otherPortfolioIds.add(entry.getValue());
-                        break; // Keep only the first
-                    }
-                }
-            }
-
-            ProviderSpecificResourcesDTO providerSpecificResourcesDTO =
-                    providerSpecificResourcesFactory.createResourcesDTO(providerId);
-
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null && !applicablePortfolioId.equals(
-                    defaultOwnedPortfolioId))
-            {
-                otherPortfolioIds.add(applicablePortfolioId);
-            }
-
-            for (OwnedPortfolioId ownedPortfolioId : otherPortfolioIds)
-            {
-                PortfolioCompactDTO portfolioCompactDTO =
-                        portfolioCompactCache.get(ownedPortfolioId.getPortfolioIdKey());
-                if (portfolioCompactDTO == null)
-                {
-                    Timber.e(new NullPointerException(
-                            "Missing portfolioCompact for " + ownedPortfolioId), "");
-                }
-                else if (portfolioCompactDTO != null
-                        && portfolioCompactDTO.providerId != null
-                        && providerId != null
-                        &&
-                        providerId.key.equals(portfolioCompactDTO.providerId)
-                        &&
-                        providerSpecificResourcesDTO != null
-                        && providerSpecificResourcesDTO.competitionPortfolioTitleResId > 0)
-                {
-
-                    newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, getString(
-                            providerSpecificResourcesDTO.competitionPortfolioTitleResId)));
-                }
-                else
-                {
-                    newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, portfolioCompactDTO));
-                }
-            }
-
-            usedMenuOwnedPortfolioIds = newMenus;
-        }
+        newMenus.addAll(menuOwnedPortfolioIdFactory.createPortfolioMenus(
+                currentUserId.toUserBaseKey(),
+                securityPositionDetailDTO));
+        usedMenuOwnedPortfolioIds = newMenus;
     }
 
     public void display()
@@ -1167,9 +1106,15 @@ public class BuySellFragment extends AbstractBuySellFragment
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
                     mStockLogo.setImageResource(exchange.logoId);
                     loadStockBgLogoDelayed();
-                } catch (IllegalArgumentException e)
+                }
+                catch (IllegalArgumentException e)
                 {
                     Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
+                    loadStockLogoDefault();
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, securityCompactDTO.exchange);
                     loadStockLogoDefault();
                 }
             }

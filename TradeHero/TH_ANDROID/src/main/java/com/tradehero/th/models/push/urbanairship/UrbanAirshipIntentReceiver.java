@@ -1,41 +1,26 @@
 package com.tradehero.th.models.push.urbanairship;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import com.tradehero.th.models.push.IntentLogger;
-import com.tradehero.th.models.push.handlers.PushNotificationHandler;
-import com.tradehero.th.utils.DaggerUtils;
-import java.util.Set;
-import javax.inject.Inject;
-import timber.log.Timber;
+import com.tradehero.th.models.push.DefaultIntentReceiver;
+import com.tradehero.th.models.push.PushConstants.THAction;
+import com.urbanairship.push.GCMMessageHandler;
+import com.urbanairship.push.PushManager;
 
-public class UrbanAirshipIntentReceiver extends BroadcastReceiver
+public class UrbanAirshipIntentReceiver extends DefaultIntentReceiver
 {
-    @Inject Set<PushNotificationHandler> pushNotificationHandlers;
-
-    public UrbanAirshipIntentReceiver()
+    @Override protected THAction translateAction(String action)
     {
-        super();
-        DaggerUtils.inject(this);
-    }
-
-    @Override public void onReceive(Context context, Intent intent)
-    {
-        Timber.d("Received new intent: %s", new IntentLogger(intent));
-        String action = intent.getAction();
-
-        // TODO design decision: command/delegate pattern?
-        for (PushNotificationHandler pushNotificationHandler: pushNotificationHandlers)
+        switch (action)
         {
-            if (action.equals(pushNotificationHandler.getAction()))
-            {
-                if (pushNotificationHandler.handle(intent))
-                {
-                    Timber.d("handled by %s\r\n", pushNotificationHandler.getClass());
-                    break;
-                }
-            }
+            case GCMMessageHandler.ACTION_GCM_DELETED_MESSAGES:
+                return THAction.GcmDeleted;
+            case PushManager.ACTION_NOTIFICATION_OPENED:
+                return THAction.Opened;
+            case PushManager.ACTION_PUSH_RECEIVED:
+                return THAction.Received;
+            case PushManager.ACTION_REGISTRATION_FINISHED:
+                return THAction.RegistrationFinished;
         }
+
+        return super.translateAction(action);
     }
 }

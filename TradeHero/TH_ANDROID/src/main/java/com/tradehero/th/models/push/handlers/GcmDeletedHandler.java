@@ -1,6 +1,7 @@
 package com.tradehero.th.models.push.handlers;
 
 import android.content.Intent;
+import com.tradehero.th.models.push.PushConstants;
 import com.urbanairship.push.GCMMessageHandler;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -12,9 +13,9 @@ public class GcmDeletedHandler implements PushNotificationHandler
         super();
     }
 
-    @Override public String getAction()
+    @Override public PushConstants.THAction getAction()
     {
-        return GCMMessageHandler.ACTION_GCM_DELETED_MESSAGES;
+        return PushConstants.THAction.GcmDeleted;
     }
 
     @Override public boolean handle(Intent intent)

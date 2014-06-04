@@ -13,7 +13,6 @@
       android:background="@drawable/edit_text_holo_light"
       android:imeOptions="actionSearch"
       android:inputType="text"
-      android:textColor="@color/white"
       android:layout_centerVertical="true"
       android:textColorHint="@color/light_grey"
       android:hint="@string/trending_search_empty_result_for_stock"

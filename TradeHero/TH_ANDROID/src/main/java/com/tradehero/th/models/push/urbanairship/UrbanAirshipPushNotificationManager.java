@@ -3,8 +3,8 @@ package com.tradehero.th.models.push.urbanairship;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.urbanairship.UAirship;
-import com.urbanairship.push.CustomPushNotificationBuilder;
 import com.urbanairship.push.PushManager;
+import com.urbanairship.push.PushNotificationBuilder;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -12,9 +12,9 @@ import timber.log.Timber;
 
 @Singleton public final class UrbanAirshipPushNotificationManager implements PushNotificationManager
 {
-    private final Lazy<CustomPushNotificationBuilder> customPushNotificationBuilder;
+    private final Lazy<PushNotificationBuilder> customPushNotificationBuilder;
 
-    @Inject public UrbanAirshipPushNotificationManager(Lazy<CustomPushNotificationBuilder> customPushNotificationBuilder)
+    @Inject public UrbanAirshipPushNotificationManager(Lazy<PushNotificationBuilder> customPushNotificationBuilder)
     {
         this.customPushNotificationBuilder = customPushNotificationBuilder;
     }

@@ -1,7 +1,7 @@
 package com.tradehero.th.persistence.news;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.network.service.NewsServiceWrapper;
@@ -40,7 +40,7 @@ public class NewsItemCache extends StraightDTOCache<NewsItemDTOKey, NewsItemDTO>
 
     @Override public NewsItemDTO get(NewsItemDTOKey key)
     {
-        AbstractDiscussionDTO abstractDiscussionDTO = discussionCache.get().get(key);
+        AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.get().get(key);
 
         return (abstractDiscussionDTO instanceof NewsItemDTO) ? (NewsItemDTO) abstractDiscussionDTO : null;
     }

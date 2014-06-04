@@ -202,7 +202,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override public int getSecurityIdListLoaderId()
     {
-        return SECURITY_ID_LIST_LOADER_ID;
+        return SECURITY_ID_LIST_LOADER_ID + providerId.key;
     }
 
     @Override public ProviderSecurityListType getSecurityListType(int page)
@@ -224,6 +224,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
+        SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         getNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -21,7 +21,7 @@ import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionItemView;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
@@ -38,7 +38,7 @@ public class PrivateDiscussionView extends DiscussionView
     @Inject protected MessageDiscussionListKeyFactory messageDiscussionListKeyFactory;
     private MessageHeaderDTO messageHeaderDTO;
 
-    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
+    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchTask;
     protected DiscussionDTO initiatingDiscussion;
 
     protected MessageType messageType;
@@ -163,7 +163,7 @@ public class PrivateDiscussionView extends DiscussionView
         return discussionListKeyFactory.create(messageHeaderDTO);
     }
 
-    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionCacheListener()
+    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionCacheListener()
     {
         return new PrivateDiscussionViewDiscussionCacheListener();
     }
@@ -263,9 +263,9 @@ public class PrivateDiscussionView extends DiscussionView
         return new PrivateDiscussionViewCommentPostedListener();
     }
 
-    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
+    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
-        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
+        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value, boolean fromCache)
         {
             linkWithInitiating((PrivateDiscussionDTO) value, true);
         }
@@ -294,7 +294,7 @@ public class PrivateDiscussionView extends DiscussionView
                     R.layout.private_message_bubble_other);
         }
 
-        @Override public AbstractDiscussionItemView<DiscussionKey> getView(int position, View convertView, ViewGroup parent)
+        @Override public AbstractDiscussionCompactItemViewLinear<DiscussionKey> getView(int position, View convertView, ViewGroup parent)
         {
             if (position == 0)
             {

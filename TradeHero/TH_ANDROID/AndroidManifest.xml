@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th"
     android:versionName="2.1.0"
-    android:versionCode="80"
+    android:versionCode="81"
     android:installLocation="auto">
 
   <uses-sdk
@@ -213,7 +213,7 @@
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
-    <receiver android:name=".models.push.baidu.NotificationReceiver">
+    <receiver android:name=".models.push.baidu.BaiduIntentReceiver">
       <intent-filter>
         <action android:name="com.tradehero.th.ACTION_NOTIFICATION_CLICKED"/>
       </intent-filter>

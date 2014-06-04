@@ -2,17 +2,19 @@ package com.tradehero.th.fragments.news;
 
 import android.widget.TextView;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO> extends AbstractDiscussionCompactItemViewHolder<DiscussionType>
+public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO>
+        extends AbstractDiscussionCompactItemViewHolder<DiscussionType>
 {
-    @InjectView(R.id.news_title_description) TextView newsDescription;
-    @InjectView(R.id.news_title_title) TextView newsTitle;
-    @InjectView(R.id.news_source) TextView newsSource;
+    @InjectView(R.id.news_title_description) @Optional protected TextView newsDescription;
+    @InjectView(R.id.news_title_title) @Optional protected TextView newsTitle;
+    @InjectView(R.id.news_source) @Optional protected TextView newsSource;
 
     //<editor-fold desc="Constructors">
     public NewsItemCompactViewHolder()
@@ -45,13 +47,16 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
 
     protected void displaySource()
     {
-        if (discussionDTO != null)
+        if (newsSource != null)
         {
-            newsSource.setText(parseHost(discussionDTO.url));
-        }
-        else
-        {
-            newsSource.setText(R.string.na);
+            if (discussionDTO != null)
+            {
+                newsSource.setText(parseHost(discussionDTO.url));
+            }
+            else
+            {
+                newsSource.setText(R.string.na);
+            }
         }
     }
 
@@ -76,7 +81,10 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
 
     protected void displayTitle()
     {
-        newsTitle.setText(getTitleText());
+        if (newsTitle != null)
+        {
+            newsTitle.setText(getTitleText());
+        }
     }
 
     public String getTitleText()
@@ -103,7 +111,10 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
 
     protected void displayDescription()
     {
-        newsDescription.setText(getDescriptionText());
+        if (newsDescription != null)
+        {
+            newsDescription.setText(getDescriptionText());
+        }
     }
 
     public String getDescriptionText()
@@ -128,4 +139,9 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
     //</editor-fold>
+
+    public static interface OnMenuClickedListener extends AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener
+    {
+        // Nothing for now
+    }
 }

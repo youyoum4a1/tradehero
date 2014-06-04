@@ -40,6 +40,8 @@ import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.persistence.trade.TradeCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -68,18 +70,19 @@ import javax.inject.Singleton;
     @Inject protected Lazy<PositionCache> positionCache;
     @Inject protected Lazy<PositionCompactCache> positionCompactCache;
     @Inject protected Lazy<PositionCompactIdCache> positionCompactIdCache;
+    @Inject protected Lazy<ProductPurchaseCache> productPurchaseCache;
     @Inject protected Lazy<ProviderCache> providerCache;
     @Inject protected Lazy<ProviderListCache> providerListCache;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject protected Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject protected Lazy<TradeCache> tradeCache;
     @Inject protected Lazy<TradeListCache> tradeListCache;
+    @Inject protected Lazy<TranslationTokenCache> translationTokenCache;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected Lazy<UserFollowerCache> userFollowerCache;
     @Inject protected Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     @Inject protected Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject protected Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject protected Lazy<ProductPurchaseCache> productPurchaseCache;
 
     @Inject protected Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
@@ -141,13 +144,19 @@ import javax.inject.Singleton;
         notificationListCache.get().invalidateAll();
     }
 
+    // TODO split between those that need auth and those that do not
     public void initialPrefetches()
     {
         preFetchExchanges();
         preFetchWatchlist();
         preFetchProviders();
-//        preFetchTrending(); // It would be too heavy on the server as we now jump first to Trending.
+
+        // TODO reinstate when this cache is ported to DTOCacheNew
+//        preFetchTrending();
+        // It would be too heavy on the server as we now jump first to Trending.
+
         preFetchAlerts();
+        preFetchTranslationToken();
     }
     
     public void preFetchExchanges()
@@ -173,5 +182,10 @@ import javax.inject.Singleton;
     public void preFetchAlerts()
     {
         alertCompactListCache.get().autoFetch(currentUserId.toUserBaseKey());
+    }
+
+    public void preFetchTranslationToken()
+    {
+        translationTokenCache.get().getOrFetchAsync(new TranslationTokenKey());
     }
 }

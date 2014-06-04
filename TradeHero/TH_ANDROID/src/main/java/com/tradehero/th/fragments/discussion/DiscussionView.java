@@ -16,7 +16,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -217,9 +217,9 @@ public class DiscussionView extends FrameLayout
             discussionListCache.invalidateAllPagesFor(discussionKey);
         }
         initialFetchDiscussion(true);
-        if (topicView instanceof AbstractDiscussionItemView)
+        if (topicView instanceof AbstractDiscussionCompactItemViewLinear)
         {
-            ((AbstractDiscussionItemView) topicView).refresh();
+            ((AbstractDiscussionCompactItemViewLinear) topicView).refresh();
         }
     }
 
@@ -388,7 +388,7 @@ public class DiscussionView extends FrameLayout
         // TODO review in light of the stubKey
         if (discussionKey != null)
         {
-            AbstractDiscussionDTO discussionDTO = discussionCache.get(discussionKey);
+            AbstractDiscussionCompactDTO discussionDTO = discussionCache.get(discussionKey);
             if (discussionDTO != null)
             {
                 ++discussionDTO.commentCount;
