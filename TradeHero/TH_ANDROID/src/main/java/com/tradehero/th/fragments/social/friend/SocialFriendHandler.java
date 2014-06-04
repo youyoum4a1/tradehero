@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.social.friend;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.Window;
-import com.tradehero.th.R;
 import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -13,14 +12,13 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by tradehero on 14-5-27.
@@ -78,8 +76,6 @@ public class SocialFriendHandler {
 
     public MiddleCallback<UserProfileDTO> followFriends(List<UserFriendsDTO> users,RequestCallback<UserProfileDTO> callback) {
 
-        FollowFriendsForm followFriendsForm = new FollowFriendsForm();
-        followFriendsForm.userFriendsDTOs = users;
         if (callback != null)
         {
             callback.onRequestStart();
@@ -87,6 +83,12 @@ public class SocialFriendHandler {
         MiddleCallback<UserProfileDTO> middleCallback = null;
         if(users.size() > 1)
         {
+            FollowFriendsForm followFriendsForm = new FollowFriendsForm();
+            followFriendsForm.userIds = new ArrayList<Integer>();
+            for (int i=0,j=users.size();i<j;i++)
+            {
+                followFriendsForm.userIds.add(users.get(i).thUserId);
+            }
             middleCallback = userService.get().followBatchFree(followFriendsForm, callback);
         }
         else if (users.size() == 1)
