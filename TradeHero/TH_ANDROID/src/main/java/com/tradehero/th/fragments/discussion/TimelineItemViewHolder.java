@@ -101,32 +101,31 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
 
     protected void displayVendorLogo()
     {
-        if (discussionDTO == null)
+        if (vendorImage != null)
         {
-            vendorImage.setVisibility(View.GONE);
-        }
-        else
-        {
-            SecurityMediaDTO firstMediaWithLogo = discussionDTO.getFlavorSecurityForDisplay();
-            if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
+            if (discussionDTO != null)
             {
-                if (vendorImage != null)
+                SecurityMediaDTO firstMediaWithLogo = discussionDTO.getFlavorSecurityForDisplay();
+                if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
                 {
                     if (firstMediaWithLogo.securityId != 0)
                     {
                         vendorImage.setContentDescription(String.format("%s:%s", firstMediaWithLogo.exchange, firstMediaWithLogo.symbol));
-
-                        picasso
-                                .load(firstMediaWithLogo.url)
-                                .transform(new WhiteToTransparentTransformation())
-                                .transform(new ScaleKeepRatioTransformation(
-                                        0,
-                                        context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_height),
-                                        context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_width),
-                                        context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_height)))
-                                .into(vendorImage);
-                        vendorImage.setVisibility(View.VISIBLE);
                     }
+                    picasso
+                            .load(firstMediaWithLogo.url)
+                            .transform(new WhiteToTransparentTransformation())
+                            .transform(new ScaleKeepRatioTransformation(
+                                    0,
+                                    context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_height),
+                                    context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_width),
+                                    context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_height)))
+                            .into(vendorImage);
+                    vendorImage.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    vendorImage.setVisibility(View.GONE);
                 }
             }
             else
@@ -138,18 +137,16 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
 
     protected void displayWatchlistIndicator()
     {
-        if (watchlistIndicator == null)
+        if (watchlistIndicator != null)
         {
-            return;
-        }
-
-        if (discussionDTO != null && watchlistPositionCache.get(discussionDTO.createFlavorSecurityIdForDisplay()) != null)
-        {
-            watchlistIndicator.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            watchlistIndicator.setVisibility(View.INVISIBLE);
+            if (discussionDTO != null && watchlistPositionCache.get(discussionDTO.createFlavorSecurityIdForDisplay()) != null)
+            {
+                watchlistIndicator.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                watchlistIndicator.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
