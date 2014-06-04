@@ -7,7 +7,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 
-public class OwnedPositionId extends OwnedPortfolioId implements DTO
+public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey, DTO
 {
     public final static String BUNDLE_KEY_POSITION_ID = OwnedPositionId.class.getName() + ".positionId";
 
