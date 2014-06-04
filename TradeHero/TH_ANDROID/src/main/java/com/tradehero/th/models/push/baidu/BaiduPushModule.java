@@ -18,7 +18,6 @@ import javax.inject.Singleton;
         // TODO remove static injection
         staticInjections = {
                 DeviceTokenHelper.class,
-                BaiduPushMessageReceiver.class
         },
         complete = false,
         library = true

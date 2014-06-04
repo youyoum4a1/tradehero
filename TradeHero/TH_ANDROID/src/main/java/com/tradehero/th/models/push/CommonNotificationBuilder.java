@@ -184,7 +184,6 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             DiscussionType discussionType = DiscussionType.fromValue(characteristicId);
             moduloId = discussionType.value;
 
-            characteristicId = notificationDTO.pushId;
             switch (discussionType)
             {
                 case NEWS:
@@ -196,6 +195,11 @@ public class CommonNotificationBuilder implements THNotificationBuilder
                 case PRIVATE_MESSAGE:
                     characteristicId = notificationDTO.referencedUserId;
                     break;
+            }
+
+            if (characteristicId == null)
+            {
+                characteristicId = notificationDTO.pushId;
             }
         }
         return (modulo * characteristicId) + moduloId;
