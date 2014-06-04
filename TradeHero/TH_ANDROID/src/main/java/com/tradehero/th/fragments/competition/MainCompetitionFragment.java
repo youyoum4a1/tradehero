@@ -337,9 +337,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (ownedPortfolioId != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            getNavigator().pushFragment(PositionListFragment.class, args);
+            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+            getDashboardNavigator().pushFragment(PositionListFragment.class, args);
         }
     }
 
@@ -348,7 +348,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
         ProviderVideoListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
-        getNavigator().pushFragment(ProviderVideoListFragment.class, args);
+        getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
     }
 
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)

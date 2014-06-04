@@ -594,15 +594,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (leaderboardItem.lbmuId != -1)
         {
             // leaderboard mark user id, to get marking user information
-            bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, leaderboardItem.lbmuId);
+            LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, leaderboardItem.getLeaderboardMarkUserId());
+            LeaderboardPositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
             getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
         }
         else
         {
-            bundle.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
+            PositionListFragment.putGetPositionsDTOKey(bundle, ownedPortfolioId);
+            PositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
             getNavigator().pushFragment(PositionListFragment.class, bundle);
         }
     }

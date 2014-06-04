@@ -2,33 +2,18 @@ package com.tradehero.th.fragments.position;
 
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import dagger.Lazy;
+import java.util.HashMap;
+import java.util.Map;
 import javax.inject.Inject;
 
-public class PositionListFragment extends AbstractPositionListFragment<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
+public class PositionListFragment extends AbstractPositionListFragment
 {
     @Inject Lazy<GetPositionsCache> getPositionsCache;
-
-    @Override protected void createPositionItemAdapter()
-    {
-        if (positionItemAdapter != null)
-        {
-            positionItemAdapter.setCellListener(null);
-        }
-        positionItemAdapter = new PositionItemAdapter(
-                getActivity(),
-                getActivity().getLayoutInflater(),
-                R.layout.position_item_header,
-                R.layout.position_locked_item,
-                R.layout.position_open_no_period,
-                R.layout.position_closed_no_period,
-                R.layout.position_quick_nothing);
-        positionItemAdapter.setCellListener(this);
-    }
 
     @Override protected void fetchSimplePage()
     {
@@ -37,7 +22,7 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
 
     @Override protected void fetchSimplePage(boolean force)
     {
-        if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.isValid())
+        if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
         {
             detachGetPositionsTask();
             fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
@@ -54,31 +39,31 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         fetchGetPositionsDTOTask.execute();
     }
 
-    @Override protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheListener()
+    @Override protected DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
     {
         return new GetPositionsListener();
     }
 
-    protected DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> createGetPositionsRefreshCacheListener()
+    protected DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener()
     {
         return new RefreshPositionsListener();
     }
 
-    @Override protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
+    @Override protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
     {
-        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, force, createGetPositionsCacheListener());
+        return getPositionsCache.get().getOrFetch(getPositionsDTOKey, force, createGetPositionsCacheListener());
     }
 
-    protected DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
+    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
     {
-        return getPositionsCache.get().getOrFetch(shownOwnedPortfolioId, true, createGetPositionsRefreshCacheListener());
+        return getPositionsCache.get().getOrFetch(getPositionsDTOKey, true, createGetPositionsRefreshCacheListener());
     }
 
-    protected class GetPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
+    protected class GetPositionsListener extends AbstractGetPositionsListener<GetPositionsDTOKey, GetPositionsDTO>
     {
-        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
+        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value, boolean fromCache)
         {
-            if (key.equals(shownOwnedPortfolioId))
+            if (key.equals(getPositionsDTOKey))
             {
                 //displayProgress(false);
                 linkWith(value, true);
@@ -91,9 +76,9 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
         }
     }
 
-    protected class RefreshPositionsListener extends AbstractGetPositionsListener<OwnedPortfolioId, PositionDTO, GetPositionsDTO>
+    protected class RefreshPositionsListener extends AbstractGetPositionsListener<GetPositionsDTOKey, GetPositionsDTO>
     {
-        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value, boolean fromCache)
+        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value, boolean fromCache)
         {
             if (!fromCache)
             {
@@ -102,7 +87,7 @@ public class PositionListFragment extends AbstractPositionListFragment<OwnedPort
             }
         }
 
-        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)
         {
             //super.onErrorThrown(key, error);
             boolean loaded = checkLoadingSuccess();

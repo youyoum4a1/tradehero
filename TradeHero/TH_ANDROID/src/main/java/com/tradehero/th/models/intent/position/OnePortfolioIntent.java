@@ -64,6 +64,8 @@ abstract public class OnePortfolioIntent extends PortfolioIntent
     @Override public void populate(Bundle bundle)
     {
         super.populate(bundle);
-        bundle.putInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, getPortfolioId().key);
+        // TODO need to be able to pass an OwnedPortfolioId
+        //PositionListFragment.putGetPositionsDTOKey();
+        //bundle.putInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, getPortfolioId().key);
     }
 }

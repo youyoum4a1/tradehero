@@ -3,42 +3,32 @@ package com.tradehero.th.fragments.position;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ExpandableListItem;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import java.util.Map;
 
-public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter<PositionInPeriodDTO>
+public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter
 {
     private final boolean isTimeRestricted;
 
-    public LeaderboardPositionItemAdapter(
-            Context context,
-            LayoutInflater inflater,
-            int headerLayoutId,
-            int lockedPositionLayoutId,
-            int openPositionLayoutId,
-            int closedPositionLayoutId,
-            int positionNothingId,
+    public LeaderboardPositionItemAdapter(Context context, LayoutInflater inflater,
+            Map<PositionItemType, Integer> positionItemTypeToLayoutId,
             boolean isTimeRestricted)
     {
-        super(context,
-                inflater,
-                headerLayoutId,
-                lockedPositionLayoutId,
-                openPositionLayoutId,
-                closedPositionLayoutId,
-                positionNothingId);
+        super(context, inflater, positionItemTypeToLayoutId);
         this.isTimeRestricted = isTimeRestricted;
     }
 
-    @Override protected ExpandableListItem<PositionInPeriodDTO> createExpandableItem(PositionInPeriodDTO dto)
+    @Override protected ExpandableListItem<PositionDTO> createExpandableItem(PositionDTO dto)
     {
         return new ExpandableLeaderboardPositionItem(dto);
     }
 
-    public static class ExpandableLeaderboardPositionItem extends ExpandableListItem<PositionInPeriodDTO>
+    public static class ExpandableLeaderboardPositionItem extends ExpandableListItem<PositionDTO>
     {
         protected boolean timeRestricted;
 
-        public ExpandableLeaderboardPositionItem(PositionInPeriodDTO model)
+        public ExpandableLeaderboardPositionItem(PositionDTO model)
         {
             super(model);
         }

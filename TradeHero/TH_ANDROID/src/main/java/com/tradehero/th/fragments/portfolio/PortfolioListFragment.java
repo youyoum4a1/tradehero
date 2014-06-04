@@ -173,12 +173,13 @@ public class PortfolioListFragment extends DashboardFragment
             if (displayablePortfolioDTO.portfolioDTO != null && displayablePortfolioDTO.portfolioDTO.isWatchlist)
             {
                 WatchlistPositionFragment.putOwnedPortfolioId(args, displayablePortfolioDTO.ownedPortfolioId);
-                getNavigator().pushFragment(WatchlistPositionFragment.class, args);
+                getDashboardNavigator().pushFragment(WatchlistPositionFragment.class, args);
             }
             else
             {
-                args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, displayablePortfolioDTO.ownedPortfolioId.getArgs());
-                getNavigator().pushFragment(PositionListFragment.class, args);
+                PositionListFragment.putGetPositionsDTOKey(args, displayablePortfolioDTO.ownedPortfolioId);
+                PositionListFragment.putShownUser(args, displayablePortfolioDTO.ownedPortfolioId.getUserBaseKey());
+                getDashboardNavigator().pushFragment(PositionListFragment.class, args);
             }
         }
         else

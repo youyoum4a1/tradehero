@@ -6,7 +6,9 @@ public enum PositionItemType
     Placeholder(1),
     Locked(2),
     Open(3),
-    Closed(4);
+    OpenInPeriod(4),
+    Closed(5),
+    ClosedInPeriod(6);
 
     public final int value;
 

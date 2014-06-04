@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 import com.tradehero.th.utils.DaggerUtils;
@@ -25,7 +26,7 @@ public class PositionPartialBottomInPeriodViewHolder
 
     private final Context context;
     private LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem;
-    private PositionInPeriodDTO positionInPeriodDTO;
+    private PositionDTO positionInPeriodDTO;
     private PortfolioDTO portfolioDTO;
 
     @Inject protected PositionUtils positionUtils;
@@ -52,7 +53,7 @@ public class PositionPartialBottomInPeriodViewHolder
 
     public boolean isShowingInPeriod()
     {
-        return positionInPeriodDTO != null && positionInPeriodDTO.isProperInPeriod();
+        return positionInPeriodDTO instanceof PositionInPeriodDTO;
     }
 
     public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem, boolean andDisplay)
@@ -64,7 +65,7 @@ public class PositionPartialBottomInPeriodViewHolder
         }
     }
 
-    public void linkWith(PositionInPeriodDTO positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         this.positionInPeriodDTO = positionDTO;
         if (andDisplay)
@@ -129,25 +130,28 @@ public class PositionPartialBottomInPeriodViewHolder
     {
         if (inPeriodPL != null)
         {
-            if (portfolioDTO != null)
+            if (portfolioDTO != null && positionInPeriodDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodPL.setText(positionUtils.getInPeriodRealizedPL(context, positionInPeriodDTO));
+                inPeriodPL.setText(positionUtils.getInPeriodRealizedPL(context, (PositionInPeriodDTO) positionInPeriodDTO));
             }
         }
     }
 
     public void displayInPeriodRoiValue()
     {
-        positionUtils.setROIInPeriod(inPeriodRoiValue, positionInPeriodDTO);
+        if (positionInPeriodDTO instanceof PositionInPeriodDTO)
+        {
+            positionUtils.setROIInPeriod(inPeriodRoiValue, (PositionInPeriodDTO) positionInPeriodDTO);
+        }
     }
 
     public void displayInPeriodAdditionalInvested()
     {
         if (inPeriodAdditionalInvested != null)
         {
-            if (portfolioDTO != null)
+            if (portfolioDTO != null && positionInPeriodDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodAdditionalInvested.setText(positionUtils.getAdditionalInvested(context, positionInPeriodDTO));
+                inPeriodAdditionalInvested.setText(positionUtils.getAdditionalInvested(context, (PositionInPeriodDTO) positionInPeriodDTO));
             }
         }
     }
@@ -156,9 +160,9 @@ public class PositionPartialBottomInPeriodViewHolder
     {
         if (inPeriodValueAtStart != null)
         {
-            if (portfolioDTO != null)
+            if (portfolioDTO != null && positionInPeriodDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodValueAtStart.setText(positionUtils.getValueAtStart(context, positionInPeriodDTO));
+                inPeriodValueAtStart.setText(positionUtils.getValueAtStart(context, (PositionInPeriodDTO) positionInPeriodDTO));
             }
         }
     }

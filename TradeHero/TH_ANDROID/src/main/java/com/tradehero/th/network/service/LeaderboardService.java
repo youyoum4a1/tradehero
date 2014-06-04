@@ -2,7 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
+import com.tradehero.th.api.position.GetPositionsDTO;
 import java.util.List;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -58,7 +58,7 @@ public interface LeaderboardService
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
     @GET("/leaderboardMarkUser/{leaderboardbMarkUserId}/positions")
-    GetLeaderboardPositionsDTO getPositionsForLeaderboardMarkUser(
+    GetPositionsDTO getPositionsForLeaderboardMarkUser(
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage);

@@ -82,28 +82,30 @@ public class PositionDTO extends PositionDTOCompact
         return positionIds;
     }
 
-    public OwnedPositionId getOwnedPositionId(Integer portfolioId)
-    {
-        return new OwnedPositionId(userId, portfolioId, id);
-    }
-
     public SecurityIntegerId getSecurityIntegerId()
     {
         return new SecurityIntegerId(securityId);
     }
 
-    public static List<OwnedPositionId> getFiledPositionIds(Integer portfolioId, List<PositionDTO> positionDTOs)
+    public static List<PositionDTOKey> getFiledPositionIds(List<PositionDTO> positionDTOs)
     {
         if (positionDTOs == null)
         {
             return null;
         }
 
-        List<OwnedPositionId> ownedPositionIds = new ArrayList<>();
+        List<PositionDTOKey> ownedPositionIds = new ArrayList<>();
 
         for (PositionDTO positionDTO: positionDTOs)
         {
-            ownedPositionIds.add(positionDTO.getOwnedPositionId(portfolioId));
+            if (positionDTO instanceof PositionInPeriodDTO)
+            {
+                ownedPositionIds.add(((PositionInPeriodDTO) positionDTO).getLbOwnedPositionId());
+            }
+            else
+            {
+                ownedPositionIds.add(positionDTO.getOwnedPositionId());
+            }
         }
 
         return ownedPositionIds;

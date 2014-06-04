@@ -7,7 +7,7 @@ import com.tradehero.th.api.position.GetPositionsDTOKey;
 public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
     implements GetPositionsDTOKey
 {
-    public static final String BUNDLE_KEY = LeaderboardMarkUserId.class.getName() + ".key";
+    private static final String BUNDLE_KEY = LeaderboardMarkUserId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserId(Integer key)

@@ -8,9 +8,9 @@ import android.widget.BaseAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.ExpandableListReporter;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.view.AbstractPositionView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import java.lang.ref.WeakReference;
@@ -18,56 +18,31 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import timber.log.Timber;
 
-public abstract class AbstractPositionItemAdapter<PositionDTOType extends PositionDTO>
+public class AbstractPositionItemAdapter
         extends BaseAdapter implements ExpandableListReporter
 {
-    protected List<Integer> itemTypes = new ArrayList<>();
+    protected List<PositionItemType> itemTypes = new ArrayList<>();
     protected List<Object> items = new ArrayList<>();
 
     protected final Context context;
     protected final LayoutInflater inflater;
 
-    private final int headerLayoutId;
-    private final int openPositionLayoutId;
-    private final int lockedPositionLayoutId;
-    private final int closedPositionLayoutId;
-    private final int positionNothingId;
+    private Map<PositionItemType, Integer> positionItemTypeToLayoutId;
 
-    private HashMap<Integer, Integer> viewTypeToLayoutId;
-
-    private WeakReference<PositionListener<PositionDTOType>> cellListener;
+    private WeakReference<PositionListener<PositionDTO>> cellListener;
 
     public AbstractPositionItemAdapter(
             Context context,
             LayoutInflater inflater,
-            int headerLayoutId,
-            int lockedPositionLayoutId,
-            int openPositionLayoutId,
-            int closedPositionLayoutId,
-            int positionNothingId)
+            Map<PositionItemType, Integer> positionItemTypeToLayoutId)
     {
         super();
         this.context = context;
         this.inflater = inflater;
-        this.headerLayoutId = headerLayoutId;
-        this.lockedPositionLayoutId = lockedPositionLayoutId;
-        this.openPositionLayoutId = openPositionLayoutId;
-        this.closedPositionLayoutId = closedPositionLayoutId;
-        this.positionNothingId = positionNothingId;
-
-        buildViewTypeMap();
-    }
-
-    private void buildViewTypeMap()
-    {
-        viewTypeToLayoutId = new HashMap<>();
-        viewTypeToLayoutId.put(PositionItemType.Header.value, this.headerLayoutId);
-        viewTypeToLayoutId.put(PositionItemType.Placeholder.value, this.positionNothingId);
-        viewTypeToLayoutId.put(PositionItemType.Locked.value, this.lockedPositionLayoutId);
-        viewTypeToLayoutId.put(PositionItemType.Open.value, this.openPositionLayoutId);
-        viewTypeToLayoutId.put(PositionItemType.Closed.value, this.closedPositionLayoutId);
+        this.positionItemTypeToLayoutId = positionItemTypeToLayoutId;
     }
 
     @Override public boolean hasStableIds()
@@ -75,27 +50,27 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         return true;
     }
 
-    public void setItems(List<PositionDTOType> dtos)
+    public void setItems(List<PositionDTO> dtos)
     {
-        List<Integer> newItemTypes = new ArrayList<>();
+        List<PositionItemType> newItemTypes = new ArrayList<>();
         List<Object> newItems = new ArrayList<>();
 
         if (dtos == null || dtos.size() == 0)
         {
-            newItemTypes.add(PositionItemType.Header.value);
+            newItemTypes.add(PositionItemType.Header);
             newItems.add(null);
 
-            newItemTypes.add(PositionItemType.Placeholder.value);
+            newItemTypes.add(PositionItemType.Placeholder);
             newItems.add(null);
         }
         else
         {
-            PositionDTOList<PositionDTOType> lockedPositions = new PositionDTOList<>();
-            PositionDTOList<PositionDTOType> openPositions = new PositionDTOList<>();
-            PositionDTOList<PositionDTOType> closedPositions = new PositionDTOList<>();
+            PositionDTOList<PositionDTO> lockedPositions = new PositionDTOList<>();
+            PositionDTOList<PositionDTO> openPositions = new PositionDTOList<>();
+            PositionDTOList<PositionDTO> closedPositions = new PositionDTOList<>();
 
             // Split in open / closed
-            for (PositionDTOType positionDTO : dtos)
+            for (PositionDTO positionDTO : dtos)
             {
                 if (positionDTO.isLocked())
                 {
@@ -116,20 +91,20 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
             // Open area
             if (lockedPositions.size() > 0)
             {
-                newItemTypes.add(PositionItemType.Header.value);
-                PositionDTOType positionDTO = lockedPositions.get(0);
+                newItemTypes.add(PositionItemType.Header);
+                PositionDTO positionDTO = lockedPositions.get(0);
                 newItems.add(new HeaderDTO(
                         PositionItemType.Locked,
                         positionDTO.aggregateCount,
                         positionDTO.earliestTradeUtc,
                         positionDTO.latestTradeUtc));
 
-                newItemTypes.add(PositionItemType.Locked.value);
+                newItemTypes.add(PositionItemType.Locked);
                 newItems.add(null);
             }
             else if (openPositions.size() > 0)
             {
-                newItemTypes.add(PositionItemType.Header.value);
+                newItemTypes.add(PositionItemType.Header);
                 newItems.add(new HeaderDTO(
                         PositionItemType.Open,
                         openPositions.size(),
@@ -137,25 +112,32 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
                         openPositions.getLatestTradeUtc()
                         ));
 
-                for (PositionDTOType openPosition : openPositions)
+                for (PositionDTO openPosition : openPositions)
                 {
-                    newItemTypes.add(PositionItemType.Open.value);
+                    if (openPosition instanceof PositionInPeriodDTO)
+                    {
+                        newItemTypes.add(PositionItemType.OpenInPeriod);
+                    }
+                    else
+                    {
+                        newItemTypes.add(PositionItemType.Open);
+                    }
                     newItems.add(createExpandableItem(openPosition));
                 }
             }
             else
             {
-                newItemTypes.add(PositionItemType.Header.value);
+                newItemTypes.add(PositionItemType.Header);
                 newItems.add(new HeaderDTO(PositionItemType.Placeholder, null));
 
-                newItemTypes.add(PositionItemType.Placeholder.value);
+                newItemTypes.add(PositionItemType.Placeholder);
                 newItems.add(null);
             }
 
             // Closed area
             if (closedPositions.size() > 0)
             {
-                newItemTypes.add(PositionItemType.Header.value);
+                newItemTypes.add(PositionItemType.Header);
                 newItems.add(new HeaderDTO(
                         PositionItemType.Closed,
                         closedPositions.size(),
@@ -163,9 +145,16 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
                         closedPositions.getLatestTradeUtc()
                         ));
 
-                for (PositionDTOType closedPosition : closedPositions)
+                for (PositionDTO closedPosition : closedPositions)
                 {
-                    newItemTypes.add(PositionItemType.Closed.value);
+                    if (closedPosition instanceof PositionInPeriodDTO)
+                    {
+                        newItemTypes.add(PositionItemType.ClosedInPeriod);
+                    }
+                    else
+                    {
+                        newItemTypes.add(PositionItemType.Closed);
+                    }
                     newItems.add(createExpandableItem(closedPosition));
                 }
             }
@@ -176,7 +165,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         notifyDataSetChanged();
     }
 
-    protected ExpandableListItem<PositionDTOType> createExpandableItem(PositionDTOType dto)
+    protected ExpandableListItem<PositionDTO> createExpandableItem(PositionDTO dto)
     {
         return new ExpandableListItem<>(dto);
     }
@@ -188,12 +177,12 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
 
     @Override public int getItemViewType(int position)
     {
-        return itemTypes.get(position);
+        return itemTypes.get(position).value;
     }
 
     protected int getLayoutForPosition(int position)
     {
-        return viewTypeToLayoutId.get(getItemViewType(position));
+        return positionItemTypeToLayoutId.get(itemTypes.get(position));
     }
 
     @Override public Object getItem(int position)
@@ -278,12 +267,12 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
         else if (itemViewType == PositionItemType.Locked.value)
         {
             PositionLockedView cell = (PositionLockedView) convertView;
-            cell.linkWith((PositionDTOType) null, false);
+            cell.linkWith((PositionDTO) null, false);
             cell.display();
         }
         else if (itemViewType == PositionItemType.Closed.value || itemViewType == PositionItemType.Open.value)
         {
-            ExpandableListItem<PositionDTOType> expandableWrapper = (ExpandableListItem<PositionDTOType>) getItem(position);
+            ExpandableListItem<PositionDTO> expandableWrapper = (ExpandableListItem<PositionDTO>) getItem(position);
             AbstractPositionView cell = (AbstractPositionView) convertView;
             cell.linkWith(expandableWrapper, false);
             cell.display();
@@ -315,7 +304,7 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
      * The listener needs to be strongly referenced elsewhere
      * @param cellListener
      */
-    public void setCellListener(PositionListener<PositionDTOType> cellListener)
+    public void setCellListener(PositionListener<PositionDTO> cellListener)
     {
         this.cellListener = new WeakReference<>(cellListener);
     }
@@ -413,47 +402,47 @@ public abstract class AbstractPositionItemAdapter<PositionDTOType extends Positi
     }
 
     protected class AbstractPositionItemAdapterPositionListener
-            implements PositionListener<PositionDTOType>
+            implements PositionListener<PositionDTO>
     {
-        @Override public void onTradeHistoryClicked(PositionDTOType clickedOwnedPositionId)
+        @Override public void onTradeHistoryClicked(PositionDTO clickedOwnedPositionId)
         {
-            PositionListener<PositionDTOType> listener = cellListener.get();
+            PositionListener<PositionDTO> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onTradeHistoryClicked(clickedOwnedPositionId);
             }
         }
 
-        @Override public void onBuyClicked(PositionDTOType clickedOwnedPositionId)
+        @Override public void onBuyClicked(PositionDTO clickedOwnedPositionId)
         {
-            PositionListener<PositionDTOType> listener = cellListener.get();
+            PositionListener<PositionDTO> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onBuyClicked(clickedOwnedPositionId);
             }
         }
 
-        @Override public void onSellClicked(PositionDTOType clickedOwnedPositionId)
+        @Override public void onSellClicked(PositionDTO clickedOwnedPositionId)
         {
-            PositionListener<PositionDTOType> listener = cellListener.get();
+            PositionListener<PositionDTO> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onSellClicked(clickedOwnedPositionId);
             }
         }
 
-        @Override public void onAddAlertClicked(PositionDTOType clickedOwnedPositionId)
+        @Override public void onAddAlertClicked(PositionDTO clickedOwnedPositionId)
         {
-            PositionListener<PositionDTOType> listener = cellListener.get();
+            PositionListener<PositionDTO> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onAddAlertClicked(clickedOwnedPositionId);
             }
         }
 
-        @Override public void onStockInfoClicked(PositionDTOType clickedOwnedPositionId)
+        @Override public void onStockInfoClicked(PositionDTO clickedOwnedPositionId)
         {
-            PositionListener<PositionDTOType> listener = cellListener.get();
+            PositionListener<PositionDTO> listener = cellListener.get();
             if (listener != null)
             {
                 listener.onStockInfoClicked(clickedOwnedPositionId);

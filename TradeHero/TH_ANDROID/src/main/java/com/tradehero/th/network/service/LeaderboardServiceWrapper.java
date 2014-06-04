@@ -8,16 +8,15 @@ import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.SortedPerPagedLeaderboardKey;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
+import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import retrofit.Callback;
 
 @Singleton public class LeaderboardServiceWrapper
@@ -161,13 +160,14 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
-    public GetLeaderboardPositionsDTO getPositionsForLeaderboardMarkUser(
+    public GetPositionsDTO getPositionsForLeaderboardMarkUser(
             LeaderboardMarkUserId key)
     {
+        GetPositionsDTO received;
         if (key instanceof PerPagedLeaderboardMarkUserId)
         {
             PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;
-            return leaderboardService.getPositionsForLeaderboardMarkUser(
+            received = leaderboardService.getPositionsForLeaderboardMarkUser(
                     perPagedLeaderboardMarkUserId.key,
                     perPagedLeaderboardMarkUserId.page,
                     perPagedLeaderboardMarkUserId.perPage);
@@ -175,22 +175,26 @@ import retrofit.Callback;
         else if (key instanceof PagedLeaderboardMarkUserId)
         {
             PagedLeaderboardMarkUserId pagedLeaderboardMarkUserId = (PagedLeaderboardMarkUserId) key;
-            return leaderboardService.getPositionsForLeaderboardMarkUser(
+            received = leaderboardService.getPositionsForLeaderboardMarkUser(
                     pagedLeaderboardMarkUserId.key,
                     pagedLeaderboardMarkUserId.page,
                     null);
         }
-        return leaderboardService.getPositionsForLeaderboardMarkUser(
-                key.key,
-                null,
-                null);
+        else
+        {
+            received = leaderboardService.getPositionsForLeaderboardMarkUser(
+                    key.key,
+                    null,
+                    null);
+        }
+        return received;
     }
 
-    public MiddleCallback<GetLeaderboardPositionsDTO> getPositionsForLeaderboardMarkUser(
+    public MiddleCallback<GetPositionsDTO> getPositionsForLeaderboardMarkUser(
             LeaderboardMarkUserId key,
-            Callback<GetLeaderboardPositionsDTO> callback)
+            Callback<GetPositionsDTO> callback)
     {
-        MiddleCallback<GetLeaderboardPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
         if (key instanceof PerPagedLeaderboardMarkUserId)
         {
             PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;

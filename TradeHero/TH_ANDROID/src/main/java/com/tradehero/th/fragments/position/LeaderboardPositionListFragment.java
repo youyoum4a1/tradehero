@@ -5,23 +5,26 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
-import com.tradehero.th.persistence.leaderboard.position.GetLeaderboardPositionsCache;
+import com.tradehero.th.persistence.position.GetPositionsCache;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class LeaderboardPositionListFragment
-        extends AbstractPositionListFragment<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>
+        extends AbstractPositionListFragment
 {
-    @Inject GetLeaderboardPositionsCache getLeaderboardPositionsCache;
+    @Inject GetPositionsCache getPositionsCache;
 
-    private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> getLeaderboardPositionsCacheListener;
-    private DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> fetchGetPositionsDTOTask;
+    private DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO>
+            getLeaderboardPositionsCacheListener;
+    private DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOTask;
 
-    private LeaderboardMarkUserId leaderboardMarkUserId;
     private boolean timeRestricted;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -32,7 +35,8 @@ public class LeaderboardPositionListFragment
 
     @Override protected void createPositionItemAdapter()
     {
-        timeRestricted = getArguments().getBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, false);
+        timeRestricted =
+                getArguments().getBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED, false);
         if (positionItemAdapter != null)
         {
             positionItemAdapter.setCellListener(null);
@@ -40,35 +44,35 @@ public class LeaderboardPositionListFragment
         positionItemAdapter = new LeaderboardPositionItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
-                R.layout.position_item_header,
-                R.layout.position_locked_item,
-                R.layout.position_open_in_period,
-                R.layout.position_closed_in_period,
-                R.layout.position_quick_nothing,
+                getLayoutResIds(),
                 timeRestricted);
         positionItemAdapter.setCellListener(this);
     }
 
-    @Override protected DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheListener()
+    @Override
+    protected DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
     {
-        return new GetLeaderboardPositionsListener();
+        return new GetPositionsListener();
     }
 
-    @Override protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
+    @Override
+    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheFetchTask(
+            boolean force)
     {
-        return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, force, getLeaderboardPositionsCacheListener);
+        return getPositionsCache.getOrFetch((LeaderboardMarkUserId) getPositionsDTOKey, force,
+                getLeaderboardPositionsCacheListener);
     }
 
-    protected DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createRefreshPositionsCacheFetchTask()
+    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
     {
-        return getLeaderboardPositionsCache.getOrFetch(leaderboardMarkUserId, true, createRefreshLeaderboardPositionsCacheListener() );
+        return getPositionsCache.getOrFetch((LeaderboardMarkUserId) getPositionsDTOKey, true,
+                createRefreshLeaderboardPositionsCacheListener());
     }
 
     @Override public void onResume()
     {
-        this.leaderboardMarkUserId = new LeaderboardMarkUserId((int) getArguments().getLong(LeaderboardMarkUserId.BUNDLE_KEY));
-
-        String periodStart = getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
+        String periodStart =
+                getArguments().getString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING);
         Timber.d("Period Start: %s" + periodStart);
 
         super.onResume();
@@ -104,13 +108,14 @@ public class LeaderboardPositionListFragment
     @Override protected void refreshSimplePage()
     {
         detachGetLeaderboardPositions();
-        DTOCache.GetOrFetchTask<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> fetchGetPositionsDTOTask = createRefreshPositionsCacheFetchTask();
+        DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOTask =
+                createRefreshPositionsCacheFetchTask();
         fetchGetPositionsDTOTask.execute();
     }
 
     @Override protected void fetchSimplePage(boolean force)
     {
-        if (shownOwnedPortfolioId != null && shownOwnedPortfolioId.isValid())
+        if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
         {
             detachGetLeaderboardPositions();
             fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
@@ -118,15 +123,17 @@ public class LeaderboardPositionListFragment
         }
     }
 
-    private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createGetLeaderboardPositionsCacheListener()
+    private DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetLeaderboardPositionsCacheListener()
     {
-        return new DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO>()
+        return new DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO>()
         {
-            @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value, boolean fromCache)
+            @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value,
+                    boolean fromCache)
             {
-                if (key.equals(leaderboardMarkUserId))
+                if (key.equals(getPositionsDTOKey))
                 {
-                    Timber.d("GetLeaderboardPositionsCacheListener onDTOReceived %s",leaderboardMarkUserId);
+                    Timber.d("GetLeaderboardPositionsCacheListener onDTOReceived %s",
+                            getPositionsDTOKey);
                     linkWith(value, true);
                     showResultIfNecessary();
                 }
@@ -134,11 +141,11 @@ public class LeaderboardPositionListFragment
                 {
                     showErrorView();
                     Timber.e("leaderboardMarkUserId(%s) doesn't match result(%s)",
-                            leaderboardMarkUserId, key);
+                            getPositionsDTOKey, key);
                 }
             }
 
-            @Override public void onErrorThrown(LeaderboardMarkUserId key, Throwable error)
+            @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)
             {
                 //To change body of implemented methods use File | Settings | File Templates.
                 showErrorView();
@@ -146,21 +153,21 @@ public class LeaderboardPositionListFragment
         };
     }
 
-    private DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO> createRefreshLeaderboardPositionsCacheListener()
+    private DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createRefreshLeaderboardPositionsCacheListener()
     {
-        return new DTOCache.Listener<LeaderboardMarkUserId, GetLeaderboardPositionsDTO>()
+        return new DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO>()
         {
-            @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value, boolean fromCache)
+            @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value,
+                    boolean fromCache)
             {
                 if (!fromCache)
                 {
-                   linkWith(value, true);
+                    linkWith(value, true);
                     showResultIfNecessary();
                 }
-
             }
 
-            @Override public void onErrorThrown(LeaderboardMarkUserId key, Throwable error)
+            @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)
             {
                 //To change body of implemented methods use File | Settings | File Templates.
                 boolean loaded = checkLoadingSuccess();
@@ -172,30 +179,43 @@ public class LeaderboardPositionListFragment
         };
     }
 
-    @Override public void onTradeHistoryClicked(PositionInPeriodDTO clickedPositionDTO)
+    @Override public void onTradeHistoryClicked(PositionDTO clickedPositionDTO)
     {
         // We should not call the super method.
         Bundle args = new Bundle();
-        args.putBundle(TradeListInPeriodFragment.BUNDLE_KEY_OWNED_LEADERBOARD_POSITION_ID_BUNDLE, clickedPositionDTO.getLbOwnedPositionId().getArgs());
-        getNavigator().pushFragment(TradeListInPeriodFragment.class, args);
+        if (clickedPositionDTO instanceof PositionInPeriodDTO)
+        {
+            args.putBundle(
+                    TradeListInPeriodFragment.BUNDLE_KEY_OWNED_LEADERBOARD_POSITION_ID_BUNDLE,
+                    ((PositionInPeriodDTO) clickedPositionDTO).getLbOwnedPositionId().getArgs());
+            getDashboardNavigator().pushFragment(TradeListInPeriodFragment.class, args);
+        }
+        else
+        {
+            args.putBundle(TradeListFragment.BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE,
+                    clickedPositionDTO.getOwnedPositionId().getArgs());
+            getDashboardNavigator().pushFragment(TradeListFragment.class, args);
+        }
     }
 
-    protected class GetLeaderboardPositionsListener extends AbstractGetPositionsListener<LeaderboardMarkUserId, PositionInPeriodDTO, GetLeaderboardPositionsDTO>
+    protected class GetPositionsListener
+            extends AbstractGetPositionsListener<GetPositionsDTOKey, GetPositionsDTO>
     {
-        @Override public void onDTOReceived(LeaderboardMarkUserId key, GetLeaderboardPositionsDTO value, boolean fromCache)
+        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value,
+                boolean fromCache)
         {
-            if (key.equals(leaderboardMarkUserId))
+            if (key.equals(getPositionsDTOKey))
             {
                 Timber.d("GetLeaderboardPositionsListener onDTOReceived");
                 //displayProgress(false);
                 linkWith(value, true);
                 showResultIfNecessary();
-
             }
             else
             {
                 showErrorView();
-                Timber.e("leaderboardMarkUserId(%s) doesn't match result(%s)",leaderboardMarkUserId,key);
+                Timber.e("leaderboardMarkUserId(%s) doesn't match result(%s)", getPositionsDTOKey,
+                        key);
             }
             //TODO if condition false, how to do?
         }

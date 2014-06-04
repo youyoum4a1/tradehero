@@ -669,8 +669,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         Bundle args = new Bundle();
 
         PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                ownedPortfolioId.getArgs());
+        PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+        PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
         DashboardNavigator navigator =
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         navigator.pushFragment(PositionListFragment.class, args);

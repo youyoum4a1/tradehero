@@ -99,7 +99,9 @@ public class OpenPortfolioIntentTest
         OpenPortfolioIntent intent = new OpenPortfolioIntent(portfolioId);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(123, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+        assertTrue(false);
+        // Need to change the Intent
+        //assertEquals(123, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -111,6 +113,8 @@ public class OpenPortfolioIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(123, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+        assertTrue(false);
+        // Need to change the Intent
+        //assertEquals(123, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
 }
