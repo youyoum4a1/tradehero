@@ -18,6 +18,7 @@ import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -172,23 +173,33 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
     private int uniquifyNotificationId(NotificationDTO notificationDTO)
     {
-        DiscussionType discussionType = DiscussionType.fromValue(notificationDTO.replyableTypeId);
-
-        int identifier = notificationDTO.pushId;
-
-        switch (discussionType)
+        Integer characteristicId = notificationDTO.replyableTypeId;
+        int modulo = DiscussionType.values().length + 1;
+        int moduloId = 0;
+        if (characteristicId == null)
         {
-            case NEWS:
-            case SECURITY:
-            case TIMELINE_ITEM:
-                identifier = notificationDTO.replyableId;
-                break;
-            case BROADCAST_MESSAGE:
-            case PRIVATE_MESSAGE:
-                identifier = notificationDTO.referencedUserId;
-                break;
+            characteristicId = UUID.randomUUID().clockSequence();
         }
-        return (DiscussionType.values().length * identifier) + discussionType.ordinal();
+        else
+        {
+            DiscussionType discussionType = DiscussionType.fromValue(characteristicId);
+            moduloId = discussionType.value;
+
+            characteristicId = notificationDTO.pushId;
+            switch (discussionType)
+            {
+                case NEWS:
+                case SECURITY:
+                case TIMELINE_ITEM:
+                    characteristicId = notificationDTO.replyableId;
+                    break;
+                case BROADCAST_MESSAGE:
+                case PRIVATE_MESSAGE:
+                    characteristicId = notificationDTO.referencedUserId;
+                    break;
+            }
+        }
+        return (modulo * characteristicId) + moduloId;
     }
 
     private NotificationCompat.Builder getCommonNotificationBuilder()
