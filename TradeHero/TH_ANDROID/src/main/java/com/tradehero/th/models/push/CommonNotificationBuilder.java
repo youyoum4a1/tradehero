@@ -194,6 +194,10 @@ public class CommonNotificationBuilder implements THNotificationBuilder
                 case BROADCAST_MESSAGE:
                 case PRIVATE_MESSAGE:
                     characteristicId = notificationDTO.referencedUserId;
+                    if (characteristicId == null)
+                    {
+                        characteristicId = notificationDTO.threadId;
+                    }
                     break;
             }
 
