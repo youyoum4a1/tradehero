@@ -67,6 +67,12 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
         displayWatchlistIndicator();
     }
 
+    @Override public void onDetachedFromWindow()
+    {
+        picasso.cancelRequest(vendorImage);
+        super.onDetachedFromWindow();
+    }
+
     @Override protected String getUserDisplayName()
     {
         if (discussionDTO != null)
@@ -104,20 +110,24 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
             SecurityMediaDTO firstMediaWithLogo = discussionDTO.getFlavorSecurityForDisplay();
             if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
             {
-                if (vendorImage != null && firstMediaWithLogo.securityId != 0)
+                if (vendorImage != null)
                 {
-                    vendorImage.setContentDescription(String.format("%s:%s", firstMediaWithLogo.exchange, firstMediaWithLogo.symbol));
+                    if (firstMediaWithLogo.securityId != 0)
+                    {
+                        vendorImage.setContentDescription(String.format("%s:%s", firstMediaWithLogo.exchange, firstMediaWithLogo.symbol));
+
+                        picasso
+                                .load(firstMediaWithLogo.url)
+                                .transform(new WhiteToTransparentTransformation())
+                                .transform(new ScaleKeepRatioTransformation(
+                                        0,
+                                        context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_height),
+                                        context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_width),
+                                        context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_height)))
+                                .into(vendorImage);
+                        vendorImage.setVisibility(View.VISIBLE);
+                    }
                 }
-                picasso
-                        .load(firstMediaWithLogo.url)
-                        .transform(new WhiteToTransparentTransformation())
-                        .transform(new ScaleKeepRatioTransformation(
-                                0,
-                                context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_height),
-                                context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_width),
-                                context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_height)))
-                        .into(vendorImage);
-                vendorImage.setVisibility(View.VISIBLE);
             }
             else
             {
