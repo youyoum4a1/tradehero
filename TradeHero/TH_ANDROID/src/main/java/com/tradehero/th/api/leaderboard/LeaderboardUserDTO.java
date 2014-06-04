@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
@@ -62,6 +63,11 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public LeaderboardUserDTO()
     {
         super();
+    }
+
+    public LeaderboardMarkUserId getLeaderboardMarkUserId()
+    {
+        return new LeaderboardMarkUserId((int) lbmuId);
     }
 
     public LeaderboardUserId getLeaderboardUserId()

@@ -56,6 +56,13 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
     }
     //</editor-fold>
 
+    public static boolean isOwnedPortfolioId(Bundle args)
+    {
+        return args != null &&
+                args.containsKey(BUNDLE_KEY_USER_ID) &&
+                args.containsKey(BUNDLE_KEY_PORTFOLIO_ID);
+    }
+
     @Override public int hashCode()
     {
         return (userId == null ? 0 : userId.hashCode()) ^
