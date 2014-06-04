@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="key_preference_top_banner">preference_top_banner</string>
+  <string name="key_preference_top_banner" translatable="false">preference_top_banner</string>
 
-  <string name="key_settings_sharing_facebook">key_settings_sharing_facebook</string>
-  <string name="key_settings_sharing_twitter">key_settings_sharing_twitter</string>
-  <string name="key_settings_sharing_linked_in">key_settings_sharing_linked_in</string>
-  <string name="key_settings_sharing_weibo">key_settings_sharing_weibo</string>
-  <string name="key_settings_sharing_qq">key_settings_sharing_qq</string>
-  <string name="key_settings_primary_faq">key_settings_primary_faq</string>
-  <string name="key_settings_misc_about">key_settings_misc_about</string>
-  <string name="key_settings_misc_sign_out">key_settings_misc_sign_out</string>
-  <string name="key_settings_primary_send_feedback">key_settings_primary_send_feedback</string>
-  <string name="key_settings_primary_send_love">key_settings_primary_send_love</string>
-  <string name="key_settings_primary_profile">key_settings_primary_profile</string>
-  <string name="key_settings_primary_paypal">key_settings_primary_paypal</string>
-  <string name="key_settings_primary_alipay">key_settings_primary_alipay</string>
-  <string name="key_settings_primary_transaction_history">key_settings_primary_transaction_history</string>
-  <string name="key_settings_primary_restore_purchases">key_settings_primary_restore_purchases</string>
-  <string name="key_settings_notifications_email">key_settings_notifications_email</string>
-  <string name="key_settings_notifications_push">key_settings_notifications_push</string>
-  <string name="key_settings_notifications_push_alert_sound">key_settings_notifications_push_alert_sound</string>
-  <string name="key_settings_notifications_push_alert_vibrate">key_settings_notifications_push_alert_vibrate</string>
-  <string name="key_settings_misc_reset_help_screens">key_settings_misc_reset_help_screens</string>
-  <string name="key_settings_misc_clear_cache">key_settings_misc_clear_cache</string>
-  <string name="key_settings_misc_version_server">key_settings_misc_version_server</string>
+  <string name="key_settings_sharing_facebook" translatable="false">key_settings_sharing_facebook</string>
+  <string name="key_settings_sharing_twitter" translatable="false">key_settings_sharing_twitter</string>
+  <string name="key_settings_sharing_linked_in" translatable="false">key_settings_sharing_linked_in</string>
+  <string name="key_settings_sharing_weibo" translatable="false">key_settings_sharing_weibo</string>
+  <string name="key_settings_sharing_qq" translatable="false">key_settings_sharing_qq</string>
+  <string name="key_settings_primary_faq" translatable="false">key_settings_primary_faq</string>
+  <string name="key_settings_misc_about" translatable="false">key_settings_misc_about</string>
+  <string name="key_settings_misc_sign_out" translatable="false">key_settings_misc_sign_out</string>
+  <string name="key_settings_primary_send_feedback" translatable="false">key_settings_primary_send_feedback</string>
+  <string name="key_settings_primary_send_love" translatable="false">key_settings_primary_send_love</string>
+  <string name="key_settings_primary_profile" translatable="false">key_settings_primary_profile</string>
+  <string name="key_settings_primary_paypal" translatable="false">key_settings_primary_paypal</string>
+  <string name="key_settings_primary_alipay" translatable="false">key_settings_primary_alipay</string>
+  <string name="key_settings_primary_transaction_history" translatable="false">key_settings_primary_transaction_history</string>
+  <string name="key_settings_primary_restore_purchases" translatable="false">key_settings_primary_restore_purchases</string>
+  <string name="key_settings_notifications_email" translatable="false">key_settings_notifications_email</string>
+  <string name="key_settings_notifications_push" translatable="false">key_settings_notifications_push</string>
+  <string name="key_settings_notifications_push_alert_sound" translatable="false">key_settings_notifications_push_alert_sound</string>
+  <string name="key_settings_notifications_push_alert_vibrate" translatable="false">key_settings_notifications_push_alert_vibrate</string>
+  <string name="key_settings_misc_reset_help_screens" translatable="false">key_settings_misc_reset_help_screens</string>
+  <string name="key_settings_misc_clear_cache" translatable="false">key_settings_misc_clear_cache</string>
+  <string name="key_settings_misc_version_server" translatable="false">key_settings_misc_version_server</string>
 
 </resources>

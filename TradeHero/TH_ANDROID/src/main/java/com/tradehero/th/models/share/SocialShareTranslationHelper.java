@@ -100,25 +100,26 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         return currentActivityHolder.getCurrentActivity().getResources().getConfiguration().locale.getLanguage();
     }
 
-    public boolean canTranslate(AbstractDiscussionCompactDTO discussionToShare)
+    public boolean canTranslate(AbstractDiscussionCompactDTO discussionToTranslate)
     {
-        return translationKeyFactory.isValidLangCode(discussionToShare.langCode) &&
-                !discussionToShare.langCode.equals(getTargetLanguage());
+        return discussionToTranslate != null &&
+                translationKeyFactory.isValidLangCode(discussionToTranslate.langCode) &&
+                !discussionToTranslate.langCode.equals(getTargetLanguage());
     }
 
     public void shareOrTranslate(AbstractDiscussionCompactDTO discussionToShare)
     {
-        if (false && !canTranslate(discussionToShare))
-        {
-            share(discussionToShare);
-        }
-        else
+        if (canTranslate(discussionToShare))
         {
             cancelFormWaiting();
             dismissShareDialog();
             shareDialog = ((NewsDialogFactory) shareDialogFactory).createNewsDialog(
                     currentActivityHolder.getCurrentContext(), discussionToShare,
                     createShareMenuClickedListener());
+        }
+        else
+        {
+            share(discussionToShare);
         }
     }
 

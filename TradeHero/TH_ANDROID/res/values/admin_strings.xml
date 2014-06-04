@@ -2,4 +2,5 @@
 <resources>
   <string name="select_server">Select server</string>
   <string name="admin_setting">Admin Settings</string>
+  <string name="admin_setting_user_info" translatable="false">[%s] (%d)</string>
 </resources>
