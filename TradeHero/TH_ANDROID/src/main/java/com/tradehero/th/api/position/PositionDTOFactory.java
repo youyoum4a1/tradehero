@@ -1,5 +1,8 @@
 package com.tradehero.th.api.position;
 
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,23 @@ import javax.inject.Singleton;
     @Inject public PositionDTOFactory()
     {
         super();
+    }
+
+    public Module createPositionDTOModule()
+    {
+        PositionDTODeserialiser deserializer = new PositionDTODeserialiser();
+        registerTypes(deserializer);
+        SimpleModule module =
+                new SimpleModule("PolymorphicPositionDTODeserializerModule",
+                        new Version(1, 0, 0, null, null, null));
+        module.addDeserializer(PositionDTO.class, deserializer);
+        return module;
+    }
+
+    public void registerTypes(PositionDTODeserialiser deserialiser)
+    {
+        deserialiser.registerPositionDTO("totalPLInPeriodRefCcy", PositionInPeriodDTO.class);
+        deserialiser.registerPositionDTO("watchlistPrice", WatchlistPositionDTO.class);
     }
 
     public PositionDTO clonePerType(PositionDTO positionDTO)
