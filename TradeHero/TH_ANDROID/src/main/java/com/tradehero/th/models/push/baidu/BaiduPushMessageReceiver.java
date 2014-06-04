@@ -14,7 +14,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.THNotificationBuilder;
-import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
@@ -22,7 +21,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -39,8 +37,6 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     @Inject @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag;
     @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
-
-    @Inject static Provider<NotificationOpenedHandler> notificationOpenedHandler;
 
     public BaiduPushMessageReceiver()
     {
