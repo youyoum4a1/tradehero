@@ -39,6 +39,12 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
     }
     //</editor-fold>
 
+    public static boolean isOwnedPositionId(Bundle args)
+    {
+        return isOwnedPortfolioId(args) &&
+                args.containsKey(BUNDLE_KEY_POSITION_ID);
+    }
+
     @Override public int hashCode()
     {
         return super.hashCode() ^ (positionId == null ? 0 : positionId.hashCode());

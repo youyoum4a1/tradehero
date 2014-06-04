@@ -32,6 +32,13 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
     }
     //</editor-fold>
 
+    public static boolean isOwnedLeaderboardPositionId(Bundle args)
+    {
+        return args != null &&
+                args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) &&
+                args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID);
+    }
+
     @Override public int hashCode()
     {
         return (this.leaderboardMarkUserId == null ? 0 : leaderboardMarkUserId.hashCode()) ^
