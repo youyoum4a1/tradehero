@@ -95,27 +95,34 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
 
     protected void displayVendorLogo()
     {
-        SecurityMediaDTO firstMediaWithLogo = discussionDTO.getFlavorSecurityForDisplay();
-        if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
+        if (discussionDTO == null)
         {
-            if (vendorImage != null && firstMediaWithLogo.securityId != 0)
-            {
-                vendorImage.setContentDescription(String.format("%s:%s", firstMediaWithLogo.exchange, firstMediaWithLogo.symbol));
-            }
-            picasso
-                    .load(firstMediaWithLogo.url)
-                    .transform(new WhiteToTransparentTransformation())
-                    .transform(new ScaleKeepRatioTransformation(
-                            0,
-                            context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_height),
-                            context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_width),
-                            context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_height)))
-                    .into(vendorImage);
-            vendorImage.setVisibility(View.VISIBLE);
+            vendorImage.setVisibility(View.GONE);
         }
         else
         {
-            vendorImage.setVisibility(View.GONE);
+            SecurityMediaDTO firstMediaWithLogo = discussionDTO.getFlavorSecurityForDisplay();
+            if (firstMediaWithLogo != null && firstMediaWithLogo.url != null)
+            {
+                if (vendorImage != null && firstMediaWithLogo.securityId != 0)
+                {
+                    vendorImage.setContentDescription(String.format("%s:%s", firstMediaWithLogo.exchange, firstMediaWithLogo.symbol));
+                }
+                picasso
+                        .load(firstMediaWithLogo.url)
+                        .transform(new WhiteToTransparentTransformation())
+                        .transform(new ScaleKeepRatioTransformation(
+                                0,
+                                context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_height),
+                                context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_width),
+                                context.getResources().getDimensionPixelSize(R.dimen.timeline_vendor_logo_max_height)))
+                        .into(vendorImage);
+                vendorImage.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                vendorImage.setVisibility(View.GONE);
+            }
         }
     }
 
