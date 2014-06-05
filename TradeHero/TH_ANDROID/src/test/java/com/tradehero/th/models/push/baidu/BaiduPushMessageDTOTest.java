@@ -1,28 +1,38 @@
 package com.tradehero.th.models.push.baidu;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.common.utils.IOUtils;
+import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.TestConstants;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import retrofit.converter.ConversionException;
+import retrofit.converter.Converter;
+import retrofit.mime.TypedByteArray;
 
+import static com.tradehero.util.TestUtil.getResourceAsByteArray;
 import static org.fest.assertions.api.Assertions.assertThat;
 
+@RunWith(RobolectricMavenTestRunner.class)
 public class BaiduPushMessageDTOTest
 {
-    private String baiduMessageDTOContent1;
+    @Inject Converter converter;
 
     @Before
     public void setUp() throws IOException
     {
-        baiduMessageDTOContent1 = new String(IOUtils.streamToBytes(getClass().getResourceAsStream("/baidu_push_dto_1.json")));
+        DaggerUtils.inject(this);
     }
 
-    @Test public void testDeserializeBaiduPushMessageDTO() throws IOException
+    @Test public void testDeserializeBaiduPushMessageDTO() throws IOException, ConversionException
     {
-        ObjectMapper objectMapper = new ObjectMapper();
-        BaiduPushMessageDTO baiduMessageDTO = objectMapper.readValue(baiduMessageDTOContent1, BaiduPushMessageDTO.class);
+        byte[] baiduPushDTO1 = getResourceAsByteArray(BaiduPushMessageDTO.class, "baidu_push_dto_1.json");
+        TypedByteArray typedInput = new TypedByteArray(TestConstants.JSON_MIME_UTF8, baiduPushDTO1);
+
+        BaiduPushMessageDTO baiduMessageDTO = (BaiduPushMessageDTO) converter.fromBody(typedInput, BaiduPushMessageDTO.class);
 
         BaiduPushMessageDTO expectValue = new BaiduPushMessageDTO();
         expectValue.title = "notification1";

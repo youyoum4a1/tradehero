@@ -1,0 +1,14 @@
+package com.tradehero.th.models.push.baidu;
+
+import dagger.Module;
+
+@Module(
+        injects = {
+                BaiduPushMessageDTOTest.class
+        },
+        complete = false,
+        library = true
+)
+public class BaiduTestModule
+{
+}
