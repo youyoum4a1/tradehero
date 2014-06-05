@@ -1,6 +1,6 @@
 package com.tradehero;
 
-import com.tradehero.base.TestApplication;
+import com.tradehero.th.base.TestApplication;
 import org.junit.runners.model.InitializationError;
 import org.robolectric.AndroidManifest;
 import org.robolectric.RobolectricTestRunner;
@@ -27,9 +27,13 @@ public class RobolectricMavenTestRunner extends RobolectricTestRunner
                     return TestApplication.class.getName();
                 }
 
+                /**
+                 * Note that robolectric does not support sdk ver 19 at this time
+                 * @return minSdkTarget support
+                 */
                 @Override public int getTargetSdkVersion()
                 {
-                    return 17;
+                    return 16;
                 }
             };
         }
