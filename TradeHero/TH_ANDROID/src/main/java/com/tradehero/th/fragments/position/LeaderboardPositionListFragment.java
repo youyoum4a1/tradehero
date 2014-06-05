@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.position;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
@@ -149,6 +148,7 @@ public class LeaderboardPositionListFragment
             {
                 //To change body of implemented methods use File | Settings | File Templates.
                 showErrorView();
+                Timber.e(error, "Failed to get positions");
             }
         };
     }
@@ -187,13 +187,13 @@ public class LeaderboardPositionListFragment
         {
             args.putBundle(
                     TradeListInPeriodFragment.BUNDLE_KEY_OWNED_LEADERBOARD_POSITION_ID_BUNDLE,
-                    ((PositionInPeriodDTO) clickedPositionDTO).getLbOwnedPositionId().getArgs());
+                    clickedPositionDTO.getPositionDTOKey().getArgs());
             getDashboardNavigator().pushFragment(TradeListInPeriodFragment.class, args);
         }
         else
         {
             args.putBundle(TradeListFragment.BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE,
-                    clickedPositionDTO.getOwnedPositionId().getArgs());
+                    clickedPositionDTO.getPositionDTOKey().getArgs());
             getDashboardNavigator().pushFragment(TradeListFragment.class, args);
         }
     }

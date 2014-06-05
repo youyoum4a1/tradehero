@@ -2,6 +2,7 @@ package com.tradehero.th.api.position;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -14,12 +15,17 @@ import java.util.Map;
 public class PositionDTODeserialiser extends StdDeserializer<PositionDTO>
 {
     private Map<String, Class<? extends PositionDTO>> uniqueAttributes;
+    // We need an inner mapper to avoid infinite looping
+    private ObjectMapper innerMapper;
 
     //<editor-fold desc="Constructors">
     PositionDTODeserialiser()
     {
         super(PositionDTO.class);
         uniqueAttributes = new HashMap<>();
+        innerMapper = new ObjectMapper();
+        innerMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
     }
     //</editor-fold>
 
@@ -49,6 +55,6 @@ public class PositionDTODeserialiser extends StdDeserializer<PositionDTO>
                 break;
             }
         }
-        return mapper.readValue(jp, positionDTOClass);
+        return innerMapper.readValue(root.traverse(), positionDTOClass);
     }
 }

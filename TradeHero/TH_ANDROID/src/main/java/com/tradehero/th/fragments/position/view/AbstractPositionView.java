@@ -234,7 +234,7 @@ public abstract class AbstractPositionView<
     public PositionDTOType getPositionDTO()
     {
         Timber.d("getPositionDTO %s", positionDTO);
-        Timber.d("getPositionDTO %s", positionDTO.getOwnedPositionId());
+        Timber.d("getPositionDTO %s", positionDTO.getPositionDTOKey());
         return positionDTO;
     }
 

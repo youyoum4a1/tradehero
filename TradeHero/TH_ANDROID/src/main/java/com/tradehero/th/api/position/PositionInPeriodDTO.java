@@ -1,5 +1,6 @@
 package com.tradehero.th.api.position;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
@@ -30,7 +31,8 @@ public class PositionInPeriodDTO extends PositionDTO
         return new LeaderboardMarkUserPositionId(leaderboardMarkUserId);
     }
 
-    public OwnedLeaderboardPositionId getLbOwnedPositionId()
+    @JsonIgnore
+    @Override public PositionDTOKey getPositionDTOKey()
     {
         return new OwnedLeaderboardPositionId(leaderboardMarkUserId, id);
     }
@@ -45,24 +47,7 @@ public class PositionInPeriodDTO extends PositionDTO
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    public static List<OwnedLeaderboardPositionId> getFiledLbPositionIds(List<PositionInPeriodDTO> positionInPeriodDTOs)
-    {
-        if (positionInPeriodDTOs == null)
-        {
-            return null;
-        }
-
-        List<OwnedLeaderboardPositionId> ownedPositionIds = new ArrayList<>();
-
-        for (PositionInPeriodDTO positionInPeriodDTO : positionInPeriodDTOs)
-        {
-            ownedPositionIds.add(positionInPeriodDTO.getLbOwnedPositionId());
-        }
-
-        return ownedPositionIds;
-    }
-
-    public OwnedLeaderboardPositionId getLeaderboardOwnedPositionId()
+    public OwnedLeaderboardPositionId getLbOwnedPositionId()
     {
         return new OwnedLeaderboardPositionId(userId, id);
     }

@@ -65,18 +65,24 @@ public class PositionDTO extends PositionDTOCompact
         return new OwnedPositionId(userId, portfolioId, id);
     }
 
-    public static List<OwnedPositionId> getOwnedPositionIds(List<PositionDTO> positionDTOs)
+    @JsonIgnore
+    public PositionDTOKey getPositionDTOKey()
+    {
+        return getOwnedPositionId();
+    }
+
+    public static List<PositionDTOKey> getPositionDTOKeys(List<PositionDTO> positionDTOs)
     {
         if (positionDTOs == null)
         {
             return null;
         }
 
-        List<OwnedPositionId> positionIds = new ArrayList<>();
+        List<PositionDTOKey> positionIds = new ArrayList<>();
 
         for (PositionDTO positionDTO: positionDTOs)
         {
-            positionIds.add(positionDTO.getOwnedPositionId());
+            positionIds.add(positionDTO.getPositionDTOKey());
         }
 
         return positionIds;
@@ -94,21 +100,14 @@ public class PositionDTO extends PositionDTOCompact
             return null;
         }
 
-        List<PositionDTOKey> ownedPositionIds = new ArrayList<>();
+        List<PositionDTOKey> positionDTOKeys = new ArrayList<>();
 
         for (PositionDTO positionDTO: positionDTOs)
         {
-            if (positionDTO instanceof PositionInPeriodDTO)
-            {
-                ownedPositionIds.add(((PositionInPeriodDTO) positionDTO).getLbOwnedPositionId());
-            }
-            else
-            {
-                ownedPositionIds.add(positionDTO.getOwnedPositionId());
-            }
+            positionDTOKeys.add(positionDTO.getPositionDTOKey());
         }
 
-        return ownedPositionIds;
+        return positionDTOKeys;
     }
 
     public Double getROISinceInception()

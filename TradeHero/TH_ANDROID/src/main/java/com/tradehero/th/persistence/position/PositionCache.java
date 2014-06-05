@@ -1,9 +1,7 @@
 package com.tradehero.th.persistence.position;
 
-import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOFactory;
@@ -102,7 +100,7 @@ import javax.inject.Singleton;
 
         for (PositionDTO positionDTO: values)
         {
-            previousValues.add(put(positionDTO.getOwnedPositionId(), positionDTO));
+            previousValues.add(put(positionDTO.getPositionDTOKey(), positionDTO));
         }
 
         return previousValues;
