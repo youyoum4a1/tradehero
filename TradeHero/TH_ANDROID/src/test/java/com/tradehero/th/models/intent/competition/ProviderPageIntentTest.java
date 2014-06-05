@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
+@Config(manifest = TestConstants.MANIFEST_PATH)
 public class ProviderPageIntentTest
 {
     @Before public void setUp()
