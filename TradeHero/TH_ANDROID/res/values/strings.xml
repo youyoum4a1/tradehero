@@ -158,4 +158,9 @@
     <string name="inivte_from_facebook">Invite from Facebook</string>
     <string name="invite">邀请</string>
 
+  <plurals name="inbox_notification_title">
+    <item quantity="one">1 New Message</item>
+    <item quantity="other">%d <b>New</b> Messages</item>
+  </plurals>
+  <string name="inbox_summary">+%d more</string>
 </resources>
