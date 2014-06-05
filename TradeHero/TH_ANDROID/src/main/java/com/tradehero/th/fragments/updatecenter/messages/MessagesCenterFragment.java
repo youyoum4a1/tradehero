@@ -35,7 +35,7 @@ import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
-import com.tradehero.th.models.push.baidu.PushMessageHandler;
+import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -140,7 +140,7 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 @Override public void onReceive(Context context, Intent intent)
                 {
-                    if (PushMessageHandler.BROADCAST_ACTION_MESSAGE_RECEIVED.equals(intent.getAction()))
+                    if (PushConstants.ACTION_MESSAGE_RECEIVED.equals(intent.getAction()))
                     {
                         Timber.d("onReceive message doRefreshContent");
                         if (messagesView != null
@@ -165,7 +165,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
             LocalBroadcastManager.getInstance(getActivity())
                     .registerReceiver(broadcastReceiver,
-                            new IntentFilter(PushMessageHandler.BROADCAST_ACTION_MESSAGE_RECEIVED));
+                            new IntentFilter(PushConstants.ACTION_MESSAGE_RECEIVED));
         }
     }
 

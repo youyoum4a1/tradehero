@@ -191,6 +191,7 @@ public class DiscussionView extends FrameLayout
 
     @Override public void display(DiscussionKey discussionKey)
     {
+        discussionListCache.invalidateAllPagesFor(discussionKey);
         linkWith(discussionKey, true);
     }
 

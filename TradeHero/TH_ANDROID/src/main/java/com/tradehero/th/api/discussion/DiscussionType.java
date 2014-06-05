@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum DiscussionType
 {
+    UNKNOWN(0, "Unknown"),
     COMMENT(1, "comment"),
     TIMELINE_ITEM(2, "timelineitem"),
     SECURITY(3, "security"),
@@ -30,7 +31,8 @@ public enum DiscussionType
                 return discussionType;
             }
         }
-        throw new IllegalArgumentException("Description " + description + " does not map to a DiscussionType");
+        return UNKNOWN;
+        //throw new IllegalArgumentException("Description " + description + " does not map to a DiscussionType");
     }
 
     @JsonCreator public static DiscussionType fromValue(int value)
@@ -42,7 +44,8 @@ public enum DiscussionType
                 return discussionType;
             }
         }
-        throw new IllegalArgumentException("Value " + value + " does not map to a DiscussionType");
+        return UNKNOWN;
+        //throw new IllegalArgumentException("Value " + value + " does not map to a DiscussionType");
     }
 
     @JsonValue final String value()

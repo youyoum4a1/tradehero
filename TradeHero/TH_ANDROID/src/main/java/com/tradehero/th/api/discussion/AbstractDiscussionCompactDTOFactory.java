@@ -16,6 +16,10 @@ public class AbstractDiscussionCompactDTOFactory
     //<editor-fold desc="Clone">
     public AbstractDiscussionCompactDTO clone(AbstractDiscussionCompactDTO original)
     {
+        if (original == null)
+        {
+            return null;
+        }
         if (original instanceof NewsItemCompactDTO)
         {
             return clone((NewsItemCompactDTO) original);
@@ -24,6 +28,7 @@ public class AbstractDiscussionCompactDTOFactory
         {
             return clone((AbstractDiscussionDTO) original);
         }
+
         throw new IllegalArgumentException("Unhandled type " + original.getClass());
     }
 
