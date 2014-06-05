@@ -73,7 +73,7 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId implements CharSequen
 
     @Override public String toString()
     {
-        return title;
+        return title == null ? "" : title;
     }
     //</editor-fold>
 

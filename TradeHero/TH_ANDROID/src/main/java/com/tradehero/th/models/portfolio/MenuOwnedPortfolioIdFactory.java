@@ -29,7 +29,11 @@ public class MenuOwnedPortfolioIdFactory
             SecurityPositionDetailDTO securityPositionDetailDTO)
     {
         MenuOwnedPortfolioIdList menus = new MenuOwnedPortfolioIdList();
-        menus.add(createMainPortfolioMenu(forUser));
+        MenuOwnedPortfolioId mainPortfolioMenu = createMainPortfolioMenu(forUser);
+        if (mainPortfolioMenu != null)
+        {
+            menus.add(createMainPortfolioMenu(forUser));
+        }
         MenuOwnedPortfolioIdList providerMenus = createProviderPortfolioMenus(forUser, securityPositionDetailDTO);
         if (providerMenus != null)
         {
