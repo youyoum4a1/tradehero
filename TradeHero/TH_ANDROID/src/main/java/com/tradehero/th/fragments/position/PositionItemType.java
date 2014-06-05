@@ -16,4 +16,24 @@ public enum PositionItemType
     {
         this.value = value;
     }
+
+    public static boolean takesPositionDTO(PositionItemType positionItemType)
+    {
+        switch (positionItemType)
+        {
+            case Header:
+            case Placeholder:
+            case Locked:
+                return false;
+
+            case Open:
+            case OpenInPeriod:
+            case Closed:
+            case ClosedInPeriod:
+                return true;
+
+            default:
+                throw new IllegalArgumentException("Unhandled value " + positionItemType);
+        }
+    }
 }

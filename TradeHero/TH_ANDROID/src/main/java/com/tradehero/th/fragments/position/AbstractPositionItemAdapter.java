@@ -175,9 +175,14 @@ public class AbstractPositionItemAdapter
         return itemTypes.size();
     }
 
+    public PositionItemType getItemPositionType(int position)
+    {
+        return itemTypes.get(position);
+    }
+
     @Override public int getItemViewType(int position)
     {
-        return itemTypes.get(position).value;
+        return getItemPositionType(position).value;
     }
 
     protected int getLayoutForPosition(int position)
@@ -238,7 +243,7 @@ public class AbstractPositionItemAdapter
     //@SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        int itemViewType = getItemViewType(position);
+        PositionItemType itemPositionType = getItemPositionType(position);
         int layoutToInflate = getLayoutForPosition(position);
 
         if (convertView == null)
@@ -260,19 +265,19 @@ public class AbstractPositionItemAdapter
 
         Object item = getItem(position);
 
-        if (itemViewType == PositionItemType.Header.value)
+        if (itemPositionType == PositionItemType.Header && convertView != null)
         {
             prepareHeaderView((PositionSectionHeaderItemView) convertView, (HeaderDTO) item);
         }
-        else if (itemViewType == PositionItemType.Locked.value)
+        else if (itemPositionType == PositionItemType.Locked && convertView != null)
         {
             PositionLockedView cell = (PositionLockedView) convertView;
-            cell.linkWith((PositionDTO) null, false);
+            cell.linkWith(null, false);
             cell.display();
         }
-        else if (itemViewType == PositionItemType.Closed.value || itemViewType == PositionItemType.Open.value)
+        else if (PositionItemType.takesPositionDTO(itemPositionType) && convertView != null)
         {
-            ExpandableListItem<PositionDTO> expandableWrapper = (ExpandableListItem<PositionDTO>) getItem(position);
+            ExpandableListItem<PositionDTO> expandableWrapper = (ExpandableListItem<PositionDTO>) item;
             AbstractPositionView cell = (AbstractPositionView) convertView;
             cell.linkWith(expandableWrapper, false);
             cell.display();

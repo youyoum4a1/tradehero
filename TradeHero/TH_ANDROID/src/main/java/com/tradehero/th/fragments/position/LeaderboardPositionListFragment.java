@@ -58,13 +58,13 @@ public class LeaderboardPositionListFragment
     protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheFetchTask(
             boolean force)
     {
-        return getPositionsCache.getOrFetch((LeaderboardMarkUserId) getPositionsDTOKey, force,
+        return getPositionsCache.getOrFetch(getPositionsDTOKey, force,
                 getLeaderboardPositionsCacheListener);
     }
 
     protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
     {
-        return getPositionsCache.getOrFetch((LeaderboardMarkUserId) getPositionsDTOKey, true,
+        return getPositionsCache.getOrFetch(getPositionsDTOKey, true,
                 createRefreshLeaderboardPositionsCacheListener());
     }
 

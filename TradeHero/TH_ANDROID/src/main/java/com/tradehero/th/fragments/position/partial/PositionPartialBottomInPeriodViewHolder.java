@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
@@ -26,8 +25,7 @@ public class PositionPartialBottomInPeriodViewHolder
 
     private final Context context;
     private LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem;
-    private PositionDTO positionInPeriodDTO;
-    private PortfolioDTO portfolioDTO;
+    private PositionDTO positionDTO;
 
     @Inject protected PositionUtils positionUtils;
 
@@ -53,7 +51,7 @@ public class PositionPartialBottomInPeriodViewHolder
 
     public boolean isShowingInPeriod()
     {
-        return positionInPeriodDTO instanceof PositionInPeriodDTO;
+        return positionDTO instanceof PositionInPeriodDTO;
     }
 
     public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem, boolean andDisplay)
@@ -67,22 +65,11 @@ public class PositionPartialBottomInPeriodViewHolder
 
     public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
-        this.positionInPeriodDTO = positionDTO;
+        this.positionDTO = positionDTO;
         if (andDisplay)
         {
             displayInPeriodModelPart();
             displayModelPart();
-        }
-    }
-
-    public void linkWith(PortfolioDTO portfolioDTO, boolean andDisplay)
-    {
-        this.portfolioDTO = portfolioDTO;
-        if (andDisplay)
-        {
-            displayInPeriodPL();
-            displayInPeriodAdditionalInvested();
-            displayInPeriodValueAtStart();
         }
     }
 
@@ -130,18 +117,18 @@ public class PositionPartialBottomInPeriodViewHolder
     {
         if (inPeriodPL != null)
         {
-            if (portfolioDTO != null && positionInPeriodDTO instanceof PositionInPeriodDTO)
+            if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodPL.setText(positionUtils.getInPeriodRealizedPL(context, (PositionInPeriodDTO) positionInPeriodDTO));
+                inPeriodPL.setText(positionUtils.getInPeriodRealizedPL(context, (PositionInPeriodDTO) positionDTO));
             }
         }
     }
 
     public void displayInPeriodRoiValue()
     {
-        if (positionInPeriodDTO instanceof PositionInPeriodDTO)
+        if (positionDTO instanceof PositionInPeriodDTO)
         {
-            positionUtils.setROIInPeriod(inPeriodRoiValue, (PositionInPeriodDTO) positionInPeriodDTO);
+            positionUtils.setROIInPeriod(inPeriodRoiValue, (PositionInPeriodDTO) positionDTO);
         }
     }
 
@@ -149,9 +136,9 @@ public class PositionPartialBottomInPeriodViewHolder
     {
         if (inPeriodAdditionalInvested != null)
         {
-            if (portfolioDTO != null && positionInPeriodDTO instanceof PositionInPeriodDTO)
+            if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodAdditionalInvested.setText(positionUtils.getAdditionalInvested(context, (PositionInPeriodDTO) positionInPeriodDTO));
+                inPeriodAdditionalInvested.setText(positionUtils.getAdditionalInvested(context, (PositionInPeriodDTO) positionDTO));
             }
         }
     }
@@ -160,20 +147,20 @@ public class PositionPartialBottomInPeriodViewHolder
     {
         if (inPeriodValueAtStart != null)
         {
-            if (portfolioDTO != null && positionInPeriodDTO instanceof PositionInPeriodDTO)
+            if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodValueAtStart.setText(positionUtils.getValueAtStart(context, (PositionInPeriodDTO) positionInPeriodDTO));
+                inPeriodValueAtStart.setText(positionUtils.getValueAtStart(context, (PositionInPeriodDTO) positionDTO));
             }
         }
     }
 
     public void displayInPeriodStartValueDate()
     {
-        if (inPeriodStartValueDate != null && positionInPeriodDTO != null)
+        if (inPeriodStartValueDate != null && positionDTO != null)
         {
             inPeriodStartValueDate.setText(context.getString(
                     R.string.position_in_period_as_of,
-                    DateUtils.getDisplayableDate(context, positionInPeriodDTO.latestTradeUtc)));
+                    DateUtils.getDisplayableDate(context, positionDTO.latestTradeUtc)));
         }
     }
 }
