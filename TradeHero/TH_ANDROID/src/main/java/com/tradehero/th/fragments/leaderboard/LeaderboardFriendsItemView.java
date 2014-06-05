@@ -32,6 +32,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -58,6 +59,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, View.OnClickListener
 {
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
+    @InjectView(R.id.leaderboard_user_item_lable) ImageView lable;
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView avatar;
     @InjectView(R.id.leaderboard_user_item_display_name) TextView name;
     @InjectView(R.id.leaderboard_user_item_social_name) TextView socialName;
@@ -119,7 +121,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         mLeaderboardUserDTO = dto;
         if (mLeaderboardUserDTO != null)
         {
-            //updatePosition();
+            //setPosition();
+            updatePosition();
             displayPicture();
             updateName();
             updateROI();
@@ -128,11 +131,54 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
     }
 
-    public void updatePosition(int position)
+    private void updatePosition()
     {
+        Timber.d("lyl updatePosition");
+        if (lable != null)
+        {
+            boolean isSocial = false;
+            if (mLeaderboardUserDTO.fbId != null)
+            {
+                isSocial = true;
+                lable.setBackgroundResource(R.drawable.icon_share_fb_on);
+            }
+            else if (mLeaderboardUserDTO.liId != null)
+            {
+                isSocial = true;
+                lable.setBackgroundResource(R.drawable.icon_share_linkedin_on);
+            }
+            else if (mLeaderboardUserDTO.twId != null)
+            {
+                isSocial = true;
+                lable.setBackgroundResource(R.drawable.icon_share_tw_on);
+            }
+            if (isSocial)
+            {
+                lbmuPosition.setVisibility(INVISIBLE);
+                lable.setVisibility(VISIBLE);
+            }
+            else
+            {
+                lbmuPosition.setVisibility(VISIBLE);
+                lable.setVisibility(INVISIBLE);
+            }
+        }
+    }
+
+    public void setPosition(int position)
+    {
+        Timber.d("lyl setPosition position=%d", position);
         if (lbmuPosition != null)
         {
             lbmuPosition.setText("" + (position + 1));
+            if (currentUserId.get() == mLeaderboardUserDTO.id)
+            {
+                lbmuPosition.setTextColor(getContext().getResources().getColor(R.color.button_green));
+            }
+            else
+            {
+                lbmuPosition.setTextColor(getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+            }
         }
     }
 
@@ -159,21 +205,24 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     public String getPicture()
     {
-        if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.picture != null)
+        if (mLeaderboardUserDTO != null)
         {
-            return mLeaderboardUserDTO.picture;
-        }
-        else if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.fbPicUrl != null)
-        {
-            return mLeaderboardUserDTO.fbPicUrl;
-        }
-        else if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.liPicUrl != null)
-        {
-            return mLeaderboardUserDTO.liPicUrl;
-        }
-        else if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.twPicUrl != null)
-        {
-            return mLeaderboardUserDTO.twPicUrl;
+            if (mLeaderboardUserDTO.picture != null)
+            {
+                return mLeaderboardUserDTO.picture;
+            }
+            else if (mLeaderboardUserDTO.fbPicUrl != null)
+            {
+                return mLeaderboardUserDTO.fbPicUrl;
+            }
+            else if (mLeaderboardUserDTO.liPicUrl != null)
+            {
+                return mLeaderboardUserDTO.liPicUrl;
+            }
+            else if (mLeaderboardUserDTO.twPicUrl != null)
+            {
+                return mLeaderboardUserDTO.twPicUrl;
+            }
         }
         return null;
     }
@@ -284,8 +333,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private void handleOpenProfileButtonClicked()
     {
-        if (mLeaderboardUserDTO != null && currentUserId != null
-                && currentUserId.get() != mLeaderboardUserDTO.id)
+        if (mLeaderboardUserDTO != null && currentUserId != null)
         {
             Bundle bundle = new Bundle();
             bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, mLeaderboardUserDTO.id);
@@ -293,7 +341,14 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                     ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
             if (dashboardNavigator != null)
             {
-                dashboardNavigator.pushFragment(PushableTimelineFragment.class, bundle);
+                if (currentUserId.get() == mLeaderboardUserDTO.id)
+                {
+                    dashboardNavigator.pushFragment(MeTimelineFragment.class, bundle);
+                }
+                else
+                {
+                    dashboardNavigator.pushFragment(PushableTimelineFragment.class, bundle);
+                }
             }
         }
     }
@@ -402,11 +457,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         inviteBtn.setOnClickListener(null);
         detachMiddleCallbackInvite();
         super.onDetachedFromWindow();
-    }
-
-    public void setPosition(int position)
-    {
-        updatePosition(position);
     }
 
     private class TrackShareCallback implements retrofit.Callback<Response>

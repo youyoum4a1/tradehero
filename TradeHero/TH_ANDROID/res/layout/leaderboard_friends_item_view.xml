@@ -35,6 +35,13 @@
         />
 
     <ImageView
+        android:id="@+id/leaderboard_user_item_lable"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="12dp"
+        android:layout_centerVertical="true"/>
+
+    <ImageView
         android:id="@+id/leaderboard_user_item_profile_picture"
         android:layout_height="@dimen/leaderboard_user_view_profile_width"
         android:layout_width="@dimen/leaderboard_user_view_profile_width"
@@ -50,6 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/common_margin_10"
+        android:layout_marginRight="@dimen/common_margin_100"
         android:ellipsize="end"
         android:textStyle="bold"
         android:textSize="@dimen/leaderboard_title_text_size"
