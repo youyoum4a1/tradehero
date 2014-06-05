@@ -9,8 +9,10 @@ import java.util.List;
 
 public class PositionInPeriodDTO extends PositionDTO
 {
+    public static final String TOTAL_PL_IN_PERIOD_REF_CCY = "totalPLInPeriodRefCcy";
+
     // This leaderboard Mark User Id needs to be populated by the service
-    private Integer leaderboardMarkUserId;
+    private LeaderboardMarkUserId leaderboardMarkUserId;
 
     public Double totalPLInPeriodRefCcy;
     public Double marketValueStartPeriodRefCcy;
@@ -28,7 +30,7 @@ public class PositionInPeriodDTO extends PositionDTO
 
     public LeaderboardMarkUserPositionId getLbPositionId()
     {
-        return new LeaderboardMarkUserPositionId(leaderboardMarkUserId);
+        return new LeaderboardMarkUserPositionId(leaderboardMarkUserId.key);
     }
 
     @JsonIgnore
@@ -39,10 +41,10 @@ public class PositionInPeriodDTO extends PositionDTO
 
     public LeaderboardMarkUserId getLeaderboardMarkUserId()
     {
-        return new LeaderboardMarkUserId(leaderboardMarkUserId);
+        return leaderboardMarkUserId;
     }
 
-    public void setLeaderboardMarkUserId(Integer leaderboardMarkUserId)
+    public void setLeaderboardMarkUserId(LeaderboardMarkUserId leaderboardMarkUserId)
     {
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }

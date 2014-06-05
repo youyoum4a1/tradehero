@@ -12,6 +12,8 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
@@ -31,6 +33,11 @@ import retrofit.Callback;
         super();
         this.leaderboardService = leaderboardService;
         this.leaderboardServiceAsync = leaderboardServiceAsync;
+    }
+
+    protected DTOProcessor<GetPositionsDTO> createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
+    {
+        return new DTOProcessorGetPositions(leaderboardMarkUserId);
     }
 
     //<editor-fold desc="Get Leaderboard Definitions">
@@ -187,6 +194,10 @@ import retrofit.Callback;
                     null,
                     null);
         }
+        if (received != null)
+        {
+            received.setOnInPeriod(key);
+        }
         return received;
     }
 
@@ -194,7 +205,7 @@ import retrofit.Callback;
             LeaderboardMarkUserId key,
             Callback<GetPositionsDTO> callback)
     {
-        MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback, createProcessorReceivedGetPositions(key));
         if (key instanceof PerPagedLeaderboardMarkUserId)
         {
             PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;
@@ -224,5 +235,4 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
-
 }
