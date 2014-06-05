@@ -109,7 +109,10 @@ import retrofit.RetrofitError;
         {
             previous = previousCut.create(securityCompactCache.get(), filedPositionCache.get());
         }
-        portfolioCache.get().autoFetch((OwnedPortfolioId) key);
+        if (key instanceof OwnedPortfolioId)
+        {
+            portfolioCache.get().autoFetch((OwnedPortfolioId) key);
+        }
 
         return previous;
     }
@@ -150,7 +153,7 @@ import retrofit.RetrofitError;
         {
             for (PositionDTO positionDTO: value.positions)
             {
-                filedPositionCache.get().invalidate(positionDTO.getOwnedPositionId());
+                filedPositionCache.get().invalidate(positionDTO.getPositionDTOKey());
             }
         }
     }
