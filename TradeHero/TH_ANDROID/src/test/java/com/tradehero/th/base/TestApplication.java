@@ -1,7 +1,6 @@
-package com.tradehero.base;
+package com.tradehero.th.base;
 
 import com.tradehero.TestModule;
-import com.tradehero.th.base.Application;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
