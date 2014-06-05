@@ -94,7 +94,6 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     {
         if (userFriendsDTO != null)
         {
-            //resetUserIcon();
             displayDefaultUserIcon();
             picasso.load(userFriendsDTO.getProfilePictureURL())
                     .placeholder(friendLogo.getDrawable())

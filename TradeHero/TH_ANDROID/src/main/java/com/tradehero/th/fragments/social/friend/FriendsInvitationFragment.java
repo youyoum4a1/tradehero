@@ -20,8 +20,11 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -48,6 +51,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject SocialFriendHandler socialFriendHandler;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     private List<UserFriendsDTO> userFriendsDTOs;
     private Runnable searchTask;
@@ -166,8 +170,16 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         SocalTypeItem item =  (SocalTypeItem)parent.getItemAtPosition(position);
-
-        pushSocialInvitationFragment(item.socialNetwork);
+        boolean linked = checkLinkedStatus(item.socialNetwork);
+        if (linked)
+        {
+            pushSocialInvitationFragment(item.socialNetwork);
+        }
+        else
+        {
+            THToast.show(R.string.friend_link_social_network);
+            pushSettingsFragment();
+        }
     }
 
     private void canclePendingSearchTask()
@@ -247,6 +259,35 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         Class<? extends SocialFriendsFragment> target = socialTypeFactory.findProperTargetFragment(socialNetwork);
         Bundle bundle = new Bundle();
         getNavigator().pushFragment(target,bundle);
+    }
+
+    private void pushSettingsFragment()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(SettingsFragment.KEY_SHOW_AS_HOME_UP,true);
+        getNavigator().pushFragment(SettingsFragment.class,bundle);
+    }
+
+    private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork) {
+        UserProfileDTO updatedUserProfileDTO =
+                userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (updatedUserProfileDTO != null) {
+            switch (socialNetwork) {
+                case FB:
+                    return updatedUserProfileDTO.fbLinked;
+                case LN:
+                    return updatedUserProfileDTO.liLinked;
+                case TW:
+                    return updatedUserProfileDTO.twLinked;
+                case WB:
+                    return updatedUserProfileDTO.wbLinked;
+                case QQ:
+                    return updatedUserProfileDTO.qqLinked;
+                default:
+                    return false;
+            }
+        }
+        return false;
     }
 
     @Override

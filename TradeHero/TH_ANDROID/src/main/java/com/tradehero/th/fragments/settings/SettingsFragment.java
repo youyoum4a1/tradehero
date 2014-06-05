@@ -82,6 +82,7 @@ import timber.log.Timber;
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
+    public static final String KEY_SHOW_AS_HOME_UP = SettingsFragment.class.getName() + ".showAsHomeUp";
 
     @Inject THBillingInteractor billingInteractor;
     @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
@@ -273,13 +274,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(
-                ActionBar.DISPLAY_SHOW_HOME
-                        | ActionBar.DISPLAY_SHOW_TITLE
-                        | ActionBar.DISPLAY_USE_LOGO);
-        actionBar.setTitle(getString(R.string.settings));
+        boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
+        int flag = ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE;
+        if (!showHomeAsUp)
+        {
+            flag |= ActionBar.DISPLAY_USE_LOGO;
+            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+        }
+        else
+        {
+            flag |= ActionBar.DISPLAY_HOME_AS_UP;
+        }
+        actionBar.setDisplayOptions(flag);
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+        actionBar.setTitle(getString(R.string.settings));
+
     }
     //</editor-fold>
 
@@ -288,7 +298,15 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                resideMenuLazy.get().openMenu();
+                boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
+                if(showHomeAsUp)
+                {
+                    getNavigator().popFragment();
+                }
+                else
+                {
+                    resideMenuLazy.get().openMenu();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -605,18 +623,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             linkedInSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.LN));
         }
-        //weiboSharing = (CheckBoxPreference) findPreference(
-        //        getString(R.string.key_settings_sharing_weibo));
-        //if (weiboSharing != null)
-        //{
-        //    weiboSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.WB));
-        //}
-        //qqSharing = (CheckBoxPreference) findPreference(
-        //        getString(R.string.key_settings_sharing_qq));
-        //if (qqSharing != null)
-        //{
-        //    qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
-        //}
+        weiboSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_weibo));
+        if (weiboSharing != null)
+        {
+            weiboSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.WB));
+        }
+        qqSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_qq));
+        if (qqSharing != null)
+        {
+            qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
+        }
         // notification
         pushNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push));

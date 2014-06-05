@@ -76,5 +76,6 @@
     <string name="inivte_from_facebook">邀请Facebook好友</string>
     <string name="inivte_from_twitter">邀请Twitter好友</string>
     <string name="invite">Invite</string>
+    <string name="friend_link_social_network">请绑定社交网络</string>
 
 </resources>
