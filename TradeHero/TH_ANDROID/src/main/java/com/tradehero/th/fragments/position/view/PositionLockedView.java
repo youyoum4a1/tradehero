@@ -4,9 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.PositionUtils;
@@ -14,11 +15,11 @@ import javax.inject.Inject;
 
 public class PositionLockedView extends LinearLayout
 {
-    private ColorIndicator colorIndicator;
-    private TextView positionPercent;
-    private TextView unrealisedPLValue;
-    private TextView realisedPLValue;
-    private TextView totalInvestedValue;
+    @InjectView(R.id.color_indicator) protected ColorIndicator colorIndicator;
+    @InjectView(R.id.position_percentage) protected TextView positionPercent;
+    @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+    @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
+    @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
 
     private PositionDTO positionDTO;
 
@@ -45,16 +46,7 @@ public class PositionLockedView extends LinearLayout
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        initViews();
-    }
-
-    protected void initViews()
-    {
-        positionPercent = (TextView) findViewById(R.id.position_percentage);
-        colorIndicator = (ColorIndicator) findViewById(R.id.color_indicator);
-        unrealisedPLValue = (TextView) findViewById(R.id.unrealised_pl_value);
-        realisedPLValue = (TextView) findViewById(R.id.realised_pl_value);
-        totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
+        ButterKnife.inject(this);
     }
 
     public void linkWith(PositionDTO positionDTO, boolean andDisplay)

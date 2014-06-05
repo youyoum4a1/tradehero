@@ -3,11 +3,10 @@ package com.tradehero.th.fragments.position.partial;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.utils.PositionUtils;
 import com.tradehero.th.utils.THSignedNumber;
 
 abstract public class AbstractPositionPartialBottomOpenView<
@@ -16,12 +15,12 @@ abstract public class AbstractPositionPartialBottomOpenView<
         >
         extends AbstractPartialBottomView<PositionDTOType, ExpandableListItemType>
 {
-    private TextView unrealisedPLValue;
-    private TextView realisedPLValue;
-    private TextView totalInvestedValue;
-    private TextView marketValueValue;
-    private TextView quantityValue;
-    private TextView averagePriceValue;
+    @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+    @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
+    @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
+    @InjectView(R.id.market_value_value) protected TextView marketValueValue;
+    @InjectView(R.id.quantity_value) protected TextView quantityValue;
+    @InjectView(R.id.average_price_value) protected TextView averagePriceValue;
 
     //<editor-fold desc="Constructors">
     public AbstractPositionPartialBottomOpenView(Context context)
@@ -39,17 +38,6 @@ abstract public class AbstractPositionPartialBottomOpenView<
         super(context, attrs, defStyle);
     }
     //</editor-fold>
-
-    @Override protected void initViews()
-    {
-        super.initViews();
-        unrealisedPLValue = (TextView) findViewById(R.id.unrealised_pl_value);
-        realisedPLValue = (TextView) findViewById(R.id.realised_pl_value);
-        totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
-        marketValueValue = (TextView) findViewById(R.id.market_value_value);
-        quantityValue = (TextView) findViewById(R.id.quantity_value);
-        averagePriceValue = (TextView) findViewById(R.id.average_price_value);
-    }
 
     @Override public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
     {
