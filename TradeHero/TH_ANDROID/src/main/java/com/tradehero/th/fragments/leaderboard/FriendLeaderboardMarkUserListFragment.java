@@ -17,6 +17,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -161,7 +162,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         switch (item.getItemId())
         {
             case R.id.friend_leaderboard_menu:
-
+                Bundle args = new Bundle();
+                getDashboardNavigator().pushFragment(FriendsInvitationFragment.class, args);
                 break;
         }
         return super.onOptionsItemSelected(item);

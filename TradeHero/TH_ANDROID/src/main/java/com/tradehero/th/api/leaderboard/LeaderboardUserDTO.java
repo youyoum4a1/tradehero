@@ -69,9 +69,11 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public String fbId;
     public String liId;
     public String twId;
+    public String wbId;
     public String fbPicUrl;
     public String liPicUrl;
     public String twPicUrl;
+    public String wbPicUrl;
     public boolean alreadyInvited;
 
     public LeaderboardUserDTO()
@@ -147,6 +149,10 @@ public class LeaderboardUserDTO extends UserBaseDTO
         {
             return twPicUrl;
         }
+        else if (wbPicUrl != null)
+        {
+            return wbPicUrl;
+        }
         return null;
     }
 
@@ -163,6 +169,10 @@ public class LeaderboardUserDTO extends UserBaseDTO
         else if (twId != null)
         {
             return R.drawable.icon_share_tw_on;
+        }
+        else if (wbId != null)
+        {
+            return R.drawable.icn_weibo_round;
         }
         return null;
     }
