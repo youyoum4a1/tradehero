@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
+import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
@@ -190,6 +191,20 @@ public class LeaderboardUserDTO extends UserBaseDTO
             //Timber.e("normalizePerformance", e);
         }
         return 0;
+    }
+
+    public InviteDTO getInviteDTO()
+    {
+        InviteDTO inviteDTO = new InviteDTO();
+        if (!liId.isEmpty())
+        {
+            inviteDTO.liId = liId;
+        }
+        else if (!twId.isEmpty())
+        {
+            inviteDTO.twId = twId;
+        }
+        return inviteDTO;
     }
 
     @JsonIgnore
