@@ -17,7 +17,9 @@ public class PositionLockedView extends LinearLayout
 {
     @InjectView(R.id.color_indicator) protected ColorIndicator colorIndicator;
     @InjectView(R.id.position_percentage) protected TextView positionPercent;
+    @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
     @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+    @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
     @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
     @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
 
@@ -65,10 +67,27 @@ public class PositionLockedView extends LinearLayout
             Double roi = positionDTO.getROISinceInception();
             colorIndicator.linkWith(roi);
         }
-        displayRealisedPLValue();
+        displayUnrealisedPLValueHeader();
         displayUnrealisedPLValue();
+        displayRealisedPLValueHeader();
+        displayRealisedPLValue();
         displayPositionPercent();
         displayTotalInvested();
+    }
+
+    public void displayUnrealisedPLValueHeader()
+    {
+        if (unrealisedPLValueHeader != null)
+        {
+            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
+            {
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_loss_header);
+            }
+            else
+            {
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_profit_header);
+            }
+        }
     }
 
     public void displayUnrealisedPLValue()
@@ -76,6 +95,21 @@ public class PositionLockedView extends LinearLayout
         if (unrealisedPLValue != null)
         {
             positionUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
+        }
+    }
+
+    public void displayRealisedPLValueHeader()
+    {
+        if (realisedPLValueHeader != null)
+        {
+            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
+            {
+                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
+            }
+            else
+            {
+                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
+            }
         }
     }
 

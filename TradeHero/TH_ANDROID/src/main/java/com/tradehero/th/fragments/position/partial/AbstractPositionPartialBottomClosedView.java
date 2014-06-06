@@ -15,7 +15,8 @@ abstract public class AbstractPositionPartialBottomClosedView<
             >
         extends AbstractPartialBottomView<PositionDTOType, ExpandableListItemType>
 {
-    @InjectView(R.id.position_realized_pl_value) protected TextView realisedPLValue;
+    @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
+    @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
     @InjectView(R.id.roi_value) protected TextView roiValue;
     @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
     @InjectView(R.id.opened_date) protected TextView openedDate;
@@ -44,6 +45,7 @@ abstract public class AbstractPositionPartialBottomClosedView<
         super.linkWith(positionDTO, andDisplay);
         if (andDisplay)
         {
+            displayRealisedPLValueHeader();
             displayRealisedPLValue();
             displayRoiValue();
             displayTotalInvested();
@@ -56,12 +58,28 @@ abstract public class AbstractPositionPartialBottomClosedView<
     @Override public void displayModelPart()
     {
         super.displayModelPart();
+        displayRealisedPLValueHeader();
         displayRealisedPLValue();
         displayRoiValue();
         displayTotalInvested();
         displayOpenedDate();
         displayClosedDate();
         displayPeriodHeld();
+    }
+
+    public void displayRealisedPLValueHeader()
+    {
+        if (realisedPLValueHeader != null)
+        {
+            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
+            {
+                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
+            }
+            else
+            {
+                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
+            }
+        }
     }
 
     public void displayRealisedPLValue()

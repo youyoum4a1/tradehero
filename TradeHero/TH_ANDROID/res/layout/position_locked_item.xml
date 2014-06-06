@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.position.view.PositionLockedView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -112,11 +113,12 @@
           >
 
         <TextView
+            android:id="@+id/realised_pl_value_header"
             style="@style/TH.SmallTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:text="@string/trade_list_realized_pl"
+            tools:text="Realized Profit"
             />
 
         <TextView
@@ -124,6 +126,7 @@
             style="@style/TH.SmallValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            tools:text="US$ 700"
             />
 
       </TableRow>
@@ -146,6 +149,7 @@
             style="@style/TH.SmallValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            tools:text="US$ 20,000"
             />
 
       </TableRow>

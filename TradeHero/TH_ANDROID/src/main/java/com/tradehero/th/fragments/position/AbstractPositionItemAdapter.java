@@ -100,7 +100,7 @@ public class AbstractPositionItemAdapter
                         positionDTO.latestTradeUtc));
 
                 newItemTypes.add(PositionItemType.Locked);
-                newItems.add(null);
+                newItems.add(lockedPositions.get(0));
             }
             else if (openPositions.size() > 0)
             {
@@ -272,7 +272,7 @@ public class AbstractPositionItemAdapter
         else if (itemPositionType == PositionItemType.Locked && convertView != null)
         {
             PositionLockedView cell = (PositionLockedView) convertView;
-            cell.linkWith(null, false);
+            cell.linkWith((PositionDTO) item, false);
             cell.display();
         }
         else if (PositionItemType.takesPositionDTO(itemPositionType) && convertView != null)
