@@ -9,12 +9,13 @@
   <string name="action_menu_about">关于</string>
   <string name="leaderboard_empty">开始交易并成为第一个上此英雄榜的人吧</string>
   <string name="action_search">搜索</string>
+  <string name="action_invite">邀请好友</string>
   <string name="update">更新</string>
   <string name="empty_video_list">当前没有任何学习视频</string>
   <string name="loading_required_information">读取所需信息中</string>
   <string name="server_response">"服务器响应: "</string>
-  <string name="link">连接</string>
-  <string name="link_description">分享前，请连接您的 %s 账号…</string>
+  <string name="link">连接 %1$s</string>
+  <string name="link_description">分享前，请连接您的 %1$s 账号…</string>
   <string name="link_now">现在连接!</string>
   <string name="later">晚点</string>
   <string name="please_update">此版本已经过期，请升级至最新的版本</string>
@@ -65,4 +66,16 @@
   <string name="sell">卖</string>
   <string name="buy">买</string>
   <string name="sure_to_delete_message">删除这条消息？</string>
+  <string name="search_social_friend_hint">搜索你的好友</string>
+  <string name="invite_social_friend">邀请%s好友</string>
+
+  <string name="social_friend_empty">没有好友数据</string>
+  <string name="search_social_friend_empty">没有找到好友数据</string>
+    <string name="inivte_from_weibo">邀请微博好友</string>
+    <string name="inivte_from_linkedIn">邀请LinkedIn好友</string>
+    <string name="inivte_from_facebook">邀请Facebook好友</string>
+    <string name="inivte_from_twitter">邀请Twitter好友</string>
+    <string name="invite">邀请</string>
+    <string name="friend_link_social_network">请绑定社交网络</string>
+
 </resources>

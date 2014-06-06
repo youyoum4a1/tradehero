@@ -24,4 +24,9 @@ public class TranslationToken extends ExtendedDTO implements DTO
     {
         throw new IllegalStateException("Needs to be implemented");
     }
+
+    public int logoResId()
+    {
+        return 0;
+    }
 }

@@ -7,6 +7,7 @@ import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -61,6 +62,20 @@ public class THWebViewClient extends WebViewClient
                 notifyThIntentPassed(thIntent);
                 return true;
             }
+        }
+
+        if (Uri.parse(url).getScheme().equals("market"))
+        {
+            try
+            {
+                context.startActivity(
+                        new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
+            catch (android.content.ActivityNotFoundException anfe)
+            {
+                THToast.show("Unable to open url: " + url);
+            }
+            return true;
         }
 
         Timber.d("shouldOverrideUrlLoading Simple passing of URL");

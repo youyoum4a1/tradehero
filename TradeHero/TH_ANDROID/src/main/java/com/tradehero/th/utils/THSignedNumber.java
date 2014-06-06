@@ -11,6 +11,9 @@ public class THSignedNumber
     public static final int TYPE_SIGN_PLUS_MINUS_ALWAYS = 1;
     public static final int TYPE_SIGN_MINUS_ONLY = 2;
 
+    public static final boolean WITH_SIGN = true;
+    public static final boolean WITHOUT_SIGN = false;
+
     private final boolean withSign;
     private final int signType;
     private int type;
@@ -32,7 +35,7 @@ public class THSignedNumber
 
     public THSignedNumber(int type, Double number, String currency)
     {
-        this(type, number, true, currency, TYPE_SIGN_ARROW);
+        this(type, number, THSignedNumber.WITH_SIGN, currency, TYPE_SIGN_ARROW);
     }
 
     public THSignedNumber(int type, Double number, boolean withSign, String currency)

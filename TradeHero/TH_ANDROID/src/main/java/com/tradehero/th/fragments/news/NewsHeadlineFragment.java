@@ -218,7 +218,7 @@ public class NewsHeadlineFragment
             {
                 for (NewsItemCompactDTO newsItemDTO : data)
                 {
-                    newsItemDTOKeyList.add(newsItemDTO.createDTOKey());
+                    newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
                 }
             }
 

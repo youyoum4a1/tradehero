@@ -1,6 +1,7 @@
 package com.tradehero.th.models.portfolio;
 
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
@@ -78,7 +79,8 @@ public class DisplayablePortfolioFetchAssistant
                     if (displayablePortfolioDTO.userBaseDTO == null && !displayablePortfolioDTO.fetchingUser)
                     {
                         displayablePortfolioDTO.fetchingUser = true;
-                        userProfileCache.getOrFetch(entry.getKey(), createUserProfileDTOListener()).execute();
+                        userProfileCache.register(entry.getKey(), createUserProfileDTOListener());
+                        userProfileCache.getOrFetchAsync(entry.getKey());
                     }
                     if (displayablePortfolioDTO.portfolioDTO == null && !displayablePortfolioDTO.fetchingPortfolio)
                     {
@@ -117,11 +119,11 @@ public class DisplayablePortfolioFetchAssistant
         };
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileDTOListener()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileDTOListener()
     {
-        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
             {
                 Timber.d("Received UserProfileDTO %s", key);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key);
@@ -132,8 +134,7 @@ public class DisplayablePortfolioFetchAssistant
                         displayablePortfolioDTO.fetchingUser = false;
                         displayablePortfolioDTO.userBaseDTO = value;
                     }
-                    //hide this for createPortfolioDTOListener will notify later by alex
-                    //notifyListener();
+                    conditionalNotifyListener();
                 }
             }
 
@@ -162,7 +163,7 @@ public class DisplayablePortfolioFetchAssistant
                             displayablePortfolioDTO.portfolioDTO = value;
                         }
                     }
-                    notifyListener();
+                    conditionalNotifyListener();
                 }
             }
 
@@ -199,7 +200,7 @@ public class DisplayablePortfolioFetchAssistant
             notifyListener();
         }
     }
-    
+
     protected void notifyListener()
     {
         if (fetchedListener != null)

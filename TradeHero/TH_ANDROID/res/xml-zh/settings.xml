@@ -17,6 +17,19 @@
         android:icon="@drawable/settings_linkedin_normal"
         />
 
+    <CheckBoxPreference
+        android:key="@string/key_settings_sharing_weibo"
+        android:title="@string/settings_sharing_weibo"
+        android:visibility="gone"
+        android:icon="@drawable/settings_profile"
+        />
+
+    <CheckBoxPreference
+        android:key="@string/key_settings_sharing_qq"
+        android:title="@string/settings_sharing_qq"
+        android:visibility="gone"
+        android:icon="@drawable/settings_profile"
+        />
   </PreferenceCategory>
 
   <PreferenceCategory
@@ -131,6 +144,6 @@
   <Preference
       android:key="@string/key_settings_misc_version_server"
       android:title="version"
-    />
+      />
 
 </PreferenceScreen>

@@ -6,7 +6,7 @@ import com.tradehero.th.api.share.SocialShareResultDTO;
 public interface SocialSharer
 {
     void setSharedListener(OnSharedListener sharedListener);
-    void share(SocialShareFormDTO shareFormDTO, OnSharedListener sharedListener);
+    void share(SocialShareFormDTO shareFormDTO);
 
     public static interface OnSharedListener
     {

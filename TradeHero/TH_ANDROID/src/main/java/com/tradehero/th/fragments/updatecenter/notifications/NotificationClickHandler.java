@@ -249,7 +249,8 @@ public class NotificationClickHandler
                 {
                     Bundle args = new Bundle();
                     OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
-                    args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+                    PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+                    PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
                     navigator.pushFragment(PositionListFragment.class, args);
                 }
             }

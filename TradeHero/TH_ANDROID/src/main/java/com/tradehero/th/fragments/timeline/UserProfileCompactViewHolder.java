@@ -83,7 +83,7 @@ public class UserProfileCompactViewHolder
                 THSignedNumber thPlSinceInception = new THSignedNumber(
                         THSignedNumber.TYPE_MONEY,
                         pl,
-                        true,
+                        THSignedNumber.WITH_SIGN,
                         SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
                         THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
                 profitValue.setText(thPlSinceInception.toString());

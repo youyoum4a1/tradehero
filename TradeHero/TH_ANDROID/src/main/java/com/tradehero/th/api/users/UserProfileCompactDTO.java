@@ -7,6 +7,8 @@ public class UserProfileCompactDTO extends UserBaseDTO
     public boolean liLinked;
     public boolean twLinked;
     public boolean thLinked;
+    public boolean wbLinked;
+    public boolean qqLinked;
 
     public UserProfileCompactDTO()
     {

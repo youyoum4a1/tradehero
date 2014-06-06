@@ -65,7 +65,7 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
 
     protected boolean isMine(int position)
     {
-        return isMine(discussionCache.get(getItem(position)));
+        return isMine((AbstractDiscussionDTO) discussionCache.get(getItem(position)));
     }
 
     protected boolean isMine(AbstractDiscussionDTO discussionDTO)

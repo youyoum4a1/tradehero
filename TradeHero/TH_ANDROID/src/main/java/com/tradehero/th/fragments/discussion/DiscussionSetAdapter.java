@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 abstract public class DiscussionSetAdapter
-        extends ViewDTOSetAdapter<DiscussionKey, AbstractDiscussionItemView<DiscussionKey>>
+        extends ViewDTOSetAdapter<DiscussionKey, AbstractDiscussionCompactItemViewLinear<DiscussionKey>>
 {
     public DiscussionSetAdapter(Context context)
     {

@@ -2,11 +2,11 @@ package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.common.persistence.DTOKey;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
-public class OwnedPortfolioId  implements Comparable, DTOKey
+public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
 {
     public final static String BUNDLE_KEY_USER_ID = OwnedPortfolioId.class.getName() + ".userId";
     public final static String BUNDLE_KEY_PORTFOLIO_ID = OwnedPortfolioId.class.getName() + ".portfolioId";
@@ -55,6 +55,13 @@ public class OwnedPortfolioId  implements Comparable, DTOKey
         this.portfolioId = args.containsKey(BUNDLE_KEY_PORTFOLIO_ID) ? args.getInt(BUNDLE_KEY_PORTFOLIO_ID) : null;
     }
     //</editor-fold>
+
+    public static boolean isOwnedPortfolioId(Bundle args)
+    {
+        return args != null &&
+                args.containsKey(BUNDLE_KEY_USER_ID) &&
+                args.containsKey(BUNDLE_KEY_PORTFOLIO_ID);
+    }
 
     @Override public int hashCode()
     {

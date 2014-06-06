@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:scaleType="centerInside"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/search_image_bg"/>
 
     <RelativeLayout
@@ -42,7 +43,6 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:padding="24dp"
-        android:background="@color/empty_text_bg"
         >
 
       <TextView

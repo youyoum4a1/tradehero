@@ -3,10 +3,10 @@
     <shape>
       <gradient
           android:angle="270"
-          android:endColor="@color/signinbg_color"
+          android:endColor="@color/textbox_light_background_color"
           android:startColor="@color/white"/>
       <corners android:radius="@dimen/authentication_button_radius"/>
-      <stroke android:width="0.5dp" android:color="@color/btn_new_user_color_light"/>
+      <stroke android:width="0.5dp" android:color="@color/textbox_border_color_light"/>
     </shape>
   </item>
   <!--(for inner shadow)-->

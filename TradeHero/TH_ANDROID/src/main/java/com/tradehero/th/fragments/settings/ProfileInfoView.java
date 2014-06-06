@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -222,8 +223,18 @@ public class ProfileInfoView extends LinearLayout
     public void handleDataFromLibrary(Intent data)
     {
         Uri selectedImageUri = data.getData();
-        String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
-        setNewImagePath(selectedPath);
+        if (selectedImageUri != null)
+        {
+            String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
+            setNewImagePath(selectedPath);
+        }
+        else
+        {
+            alertDialogUtil.popWithNegativeButton(getContext(),
+                    R.string.error_fetch_image_library,
+                    R.string.error_fetch_image_library,
+                    R.string.cancel).requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
     }
 
     public void setNewImagePath(String newImagePath)

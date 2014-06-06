@@ -1,7 +1,7 @@
 package com.tradehero.th.network.share;
 
 import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.TimelineItemShareFormDTO;
+import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import javax.inject.Inject;

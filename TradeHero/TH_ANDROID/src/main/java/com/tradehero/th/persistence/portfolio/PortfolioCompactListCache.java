@@ -66,11 +66,6 @@ import javax.inject.Singleton;
         }
     }
 
-    /**
-     * The default portfolio is the one without providerId.
-     * @param key
-     * @return
-     */
     public OwnedPortfolioId getDefaultPortfolio(UserBaseKey key)
     {
         OwnedPortfolioIdList list = get(key);
@@ -78,26 +73,16 @@ import javax.inject.Singleton;
         {
             return null;
         }
-        // Find the one without providerId
+
         PortfolioId portfolioId;
         PortfolioCompactDTO portfolioCompactDTO;
         for (OwnedPortfolioId ownedPortfolioId : list)
         {
-            if (ownedPortfolioId == null)
-            {
-                return null;
-            }
             portfolioId = ownedPortfolioId.getPortfolioIdKey();
-            if (portfolioId.key == null)
+            if (portfolioId != null)
             {
-                return null;
-            }
-            portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
-            if (portfolioCompactDTO != null && portfolioCompactDTO.providerId == null && !portfolioCompactDTO.isWatchlist)
-            {
-                //TODO hard code for the default portfolio should be main portfolio, alex
-                //return ownedPortfolioId;
-                if (portfolioCompactDTO.title.equals("Main Portfolio"))
+                portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
+                if (portfolioCompactDTO != null && portfolioCompactDTO.isDefault())
                 {
                     return ownedPortfolioId;
                 }

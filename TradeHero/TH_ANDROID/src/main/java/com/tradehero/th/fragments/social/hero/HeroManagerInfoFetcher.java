@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.social.HeroIdList;
@@ -19,14 +19,12 @@ public class HeroManagerInfoFetcher
     @Inject protected Lazy<HeroListCache> heroListCache;
     @Inject protected Lazy<HeroCache> heroCache;
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
-    private DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, HeroIdExtWrapper> heroListFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
+    private DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener;
 
     public HeroManagerInfoFetcher(
-            DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
-            DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
+            DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
+            DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
     {
         super();
         this.userProfileListener = userProfileListener;
@@ -36,30 +34,36 @@ public class HeroManagerInfoFetcher
 
     public void onDestroyView()
     {
-        if (this.userProfileFetchTask != null)
-        {
-            this.userProfileFetchTask.setListener(null);
-        }
-        this.userProfileFetchTask = null;
-
-        if (this.heroListFetchTask != null)
-        {
-            this.heroListFetchTask.setListener(null);
-        }
-        this.heroListFetchTask = null;
-
+        detachUserProfileCache();
+        detachHeroListCache();
         setUserProfileListener(null);
         setHeroListListener(null);
     }
 
+    protected void detachUserProfileCache()
+    {
+        if (userProfileListener != null)
+        {
+            userProfileCache.get().unregister(userProfileListener);
+        }
+    }
+
+    protected void detachHeroListCache()
+    {
+        if (heroListListener != null)
+        {
+            heroListCache.get().unregister(heroListListener);
+        }
+    }
+
     public void setUserProfileListener(
-            DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileListener)
+            DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener)
     {
         this.userProfileListener = userProfileListener;
     }
 
     public void setHeroListListener(
-            DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
+            DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
     {
         this.heroListListener = heroListListener;
     }
@@ -72,13 +76,9 @@ public class HeroManagerInfoFetcher
 
     public void fetchUserProfile(UserBaseKey userBaseKey)
     {
-        if (this.userProfileFetchTask != null)
-        {
-            this.userProfileFetchTask.setListener(null);
-        }
-        this.userProfileFetchTask =
-                this.userProfileCache.get().getOrFetch(userBaseKey, this.userProfileListener);
-        this.userProfileFetchTask.execute();
+        detachUserProfileCache();
+        this.userProfileCache.get().register(userBaseKey, userProfileListener);
+        this.userProfileCache.get().getOrFetchAsync(userBaseKey);
     }
 
     public void fetchHeroes(UserBaseKey userBaseKey)
@@ -93,28 +93,22 @@ public class HeroManagerInfoFetcher
         {
             if (this.heroListListener != null)
             {
-                this.heroListListener.onDTOReceived(userBaseKey, heroIdExtWrapper, true);
+                this.heroListListener.onDTOReceived(userBaseKey, heroIdExtWrapper);
             }
         }
         else
         {
-            if (heroListFetchTask != null)
-            {
-                heroListFetchTask.setListener(null);
-            }
-            heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, heroListListener);
-            heroListFetchTask.execute();
+            detachHeroListCache();
+            heroListCache.get().register(userBaseKey, heroListListener);
+            heroListCache.get().getOrFetchAsync(userBaseKey);
         }
     }
 
     public void reloadHeroes(UserBaseKey userBaseKey,
-            DTOCache.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
+            DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
     {
-        if (heroListFetchTask != null)
-        {
-            heroListFetchTask.setListener(null);
-        }
-        heroListFetchTask = heroListCache.get().getOrFetch(userBaseKey, true, heroListListener);
-        heroListFetchTask.execute();
+        detachHeroListCache();
+        heroListCache.get().register(userBaseKey, heroListListener);
+        heroListCache.get().getOrFetchAsync(userBaseKey, true);
     }
 }

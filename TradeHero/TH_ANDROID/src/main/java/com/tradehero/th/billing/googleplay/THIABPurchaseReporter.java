@@ -213,7 +213,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 
     protected void handleCallbackFailed(RetrofitError error)
     {
-        Timber.e("Failed reporting to TradeHero server", error);
+        Timber.e(error, "Failed reporting to TradeHero server");
         notifyListenerReportFailed(new PurchaseReportRetrofitException(error));
     }
 

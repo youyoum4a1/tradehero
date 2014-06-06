@@ -13,13 +13,14 @@
       >
 
     <TextView
+        android:id="@+id/realised_pl_value_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="2dp"
         android:layout_weight="0"
         android:gravity="right"
         style="@style/TH.SmallTitle"
-        android:text="@string/position_expanded_close_pl_header"
+        tools:text="Profit"
         />
 
     <RelativeLayout
@@ -29,7 +30,7 @@
       >
 
       <TextView
-          android:id="@+id/position_realized_pl_value"
+          android:id="@+id/realised_pl_value"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"

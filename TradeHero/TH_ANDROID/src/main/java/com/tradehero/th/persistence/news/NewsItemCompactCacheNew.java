@@ -29,7 +29,7 @@ public class NewsItemCompactCacheNew extends StraightDTOCacheNew<NewsItemDTOKey,
         {
             for (NewsItemCompactDTO value : values)
             {
-                put(value.createDTOKey(), value);
+                put(value.getDiscussionKey(), value);
             }
         }
     }

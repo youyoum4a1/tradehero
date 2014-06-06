@@ -117,12 +117,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachPortfolioRetrievedMilestone();
         detachPremiumFollowUserAssistant();
         detachRequestCode();
-        super.onDestroyView();
+        super.onStop();
     }
 
     protected void detachRequestCode()

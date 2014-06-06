@@ -9,6 +9,7 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -37,7 +38,7 @@ import timber.log.Timber;
 
 public class PremiumFollowUserAssistant implements
         Callback<UserProfileDTO>,
-        DTOCache.Listener<UserBaseKey, UserProfileDTO>
+        DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
 {
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
@@ -65,7 +66,8 @@ public class PremiumFollowUserAssistant implements
 
     public void launchFollow()
     {
-        userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), this).execute();
+        userProfileCache.register(currentUserId.toUserBaseKey(), this);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     public void launchUnFollow()
@@ -78,7 +80,7 @@ public class PremiumFollowUserAssistant implements
         this.userFollowedListener = userFollowedListener;
     }
 
-    @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+    @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
     {
         this.currentUserProfile = value;
         follow();

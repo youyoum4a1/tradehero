@@ -33,6 +33,7 @@
   <string name="authentication_twitter_email">이메일</string>
   <string name="authentication_twitter_connecting">트위터에 연결중</string>
   <string name="sina_weibo">Weibo</string>
+  <string name="tencent_qq">QQ</string>
   <string name="authentication_connecting_to_weibo">Weibo에 연결중</string>
   <string name="wechat">WeChat</string>
 

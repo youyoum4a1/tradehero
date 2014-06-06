@@ -19,9 +19,10 @@ import com.tencent.mm.sdk.openapi.WXWebpageObject;
 import com.tencent.mm.sdk.platformtools.Util;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -39,16 +40,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 {
     public static final int WECHAT_MESSAGE_TYPE_NONE = -1;
     private static final int TIMELINE_SUPPORTED_VERSION = 0x21020001;
-    public static final String WECHAT_MESSAGE_ID_KEY = "wechat_message_id_key";
-    public static final String WECHAT_MESSAGE_TYPE_KEY = "wechat_message_type_key";
-    public static final String WECHAT_MESSAGE_IMAGE_URL_KEY = "wechat_message_image_url_key";
-    public static final String WECHAT_MESSAGE_TITLE_KEY = "wechat_message_title_key";
+    private static final String WECHAT_DTO_INTENT_KEY = WXEntryActivity.class.getName() + ".weChatDTOKey";
     private static final String WECHAT_SHARE_NEWS_KEY = "news:";
     private static final String WECHAT_SHARE_TYPE_VALUE = "WeChat";
 
-    private int mMsgNewsId;
-    private String mTitle;
-    private String mMsgImageURL;
+    private WeChatDTO weChatDTO;
     private Bitmap mBitmap;
     private MiddleCallback<Response> trackShareMiddleCallback;
 
@@ -58,6 +54,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Inject Lazy<Picasso> picassoLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
 
+    public static void putWeChatDTO(Intent intent, WeChatDTO weChatDTO)
+    {
+        intent.putExtra(WECHAT_DTO_INTENT_KEY, weChatDTO.getArgs());
+    }
+
+    public static WeChatDTO getWeChatDTO(Intent intent)
+    {
+        return new WeChatDTO(intent.getBundleExtra(WECHAT_DTO_INTENT_KEY));
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -66,21 +72,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         // TODO take this intent extraction into a separate method and use a new
         // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        int msgType = getIntent().getIntExtra(WECHAT_MESSAGE_TYPE_KEY, WECHAT_MESSAGE_TYPE_NONE);
-        mMsgNewsId = getIntent().getIntExtra(WECHAT_MESSAGE_ID_KEY, 0);
-        mTitle = getIntent().getStringExtra(WECHAT_MESSAGE_TITLE_KEY);
-        mMsgImageURL = getIntent().getStringExtra(WECHAT_MESSAGE_IMAGE_URL_KEY);
+        weChatDTO = getWeChatDTO(getIntent());
         loadImage();
 
-        WeChatMessageType weChatMessageType = WeChatMessageType.fromValue(msgType);
-
         boolean isWXInstalled = mWeChatApi.isWXAppInstalled();
-        if (isWXInstalled && weChatMessageType != null)
+        if (isWXInstalled && weChatDTO.type != null)
         {
             if (mWeChatApi.getWXAppSupportAPI()
                     >= TIMELINE_SUPPORTED_VERSION) //wechat 4.2 support timeline
             {
-                WXMediaMessage weChatMessage = buildMessage(weChatMessageType);
+                WXMediaMessage weChatMessage = buildMessage(weChatDTO.type);
                 SendMessageToWX.Req weChatReq = buildRequest(weChatMessage);
                 mWeChatApi.sendReq(weChatReq);
             }
@@ -104,16 +105,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
         WXMediaMessage weChatMsg = new WXMediaMessage(webpage);
         weChatMsg.description = getString(weChatMessageType.getTitleResId());
-        if (mTitle != null && !mTitle.isEmpty())
+        if (weChatDTO != null && weChatDTO.title != null && !weChatDTO.title.isEmpty())
         {
-            weChatMsg.title = mTitle;
+            weChatMsg.title = weChatDTO.title;
         }
         else
         {
             weChatMsg.title = weChatMsg.description;
         }
         int i = 0;
-        while (mMsgImageURL != null && mBitmap == null && i < 200)
+        while (weChatDTO != null && weChatDTO.imageURL != null && mBitmap == null && i < 200)
         {
             i++;
         }
@@ -126,7 +127,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     private void loadImage()
     {
-        if (mMsgImageURL != null && !mMsgImageURL.isEmpty())
+        if (weChatDTO != null && weChatDTO.imageURL != null && !weChatDTO.imageURL.isEmpty())
         {
             Thread thread = new Thread(new Runnable()
             {
@@ -134,7 +135,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 {
                     try
                     {
-                        mBitmap = Bitmap.createBitmap(picassoLazy.get().load(mMsgImageURL).get());
+                        mBitmap = Bitmap.createBitmap(picassoLazy.get().load(weChatDTO.imageURL).get());
                         if (mBitmap != null)
                         {
                             mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
@@ -213,7 +214,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private void reportWeChatSuccessShareToServer()
     {
         WeChatTrackShareFormDTO weChatTrackShareFormDTO = new WeChatTrackShareFormDTO();
-        weChatTrackShareFormDTO.msg = WECHAT_SHARE_NEWS_KEY + mMsgNewsId;
+        weChatTrackShareFormDTO.msg = WECHAT_SHARE_NEWS_KEY + weChatDTO.id;
         weChatTrackShareFormDTO.type = WECHAT_SHARE_TYPE_VALUE;
 
         detachTrackShareMiddleCallback();

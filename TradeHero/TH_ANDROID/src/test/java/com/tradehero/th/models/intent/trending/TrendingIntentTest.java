@@ -16,7 +16,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
+@Config(manifest = TestConstants.MANIFEST_PATH)
 public class TrendingIntentTest
 {
     @Before public void setUp()

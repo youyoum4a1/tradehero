@@ -1,8 +1,9 @@
 package com.tradehero.th.fragments.portfolio.header;
 
-import android.os.Bundle;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
@@ -15,16 +16,26 @@ import javax.inject.Singleton;
 {
     @Inject protected CurrentUserId currentUserId;
 
-    public int layoutIdFor(Bundle ownedPortfolioIdBundle)
+    public int layoutIdFor(GetPositionsDTOKey getPositionsDTOKey)
     {
-        if (ownedPortfolioIdBundle == null)
+        if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
         {
-            throw new PortfolioHeaderFactoryException("Unable to build arguments from Bundle");
+            return layoutIdFor((LeaderboardMarkUserId) getPositionsDTOKey);
         }
-        return layoutIdFor(new OwnedPortfolioId(ownedPortfolioIdBundle));
+        else if (getPositionsDTOKey instanceof OwnedPortfolioId)
+        {
+            return layoutIdFor((OwnedPortfolioId) getPositionsDTOKey);
+        }
+        throw new IllegalArgumentException("Unhandled getPositionDTOKey type " + getPositionsDTOKey.getClass());
     }
 
-    public int layoutIdFor(OwnedPortfolioId ownedPortfolioId)
+    protected int layoutIdFor(LeaderboardMarkUserId leaderboardMarkUserId)
+    {
+        // TODO check whether we need to see this is current user or not
+        return R.layout.portfolio_header_other_user_view;
+    }
+
+    protected int layoutIdFor(OwnedPortfolioId ownedPortfolioId)
     {
         return layoutIdFor(ownedPortfolioId.getUserBaseKey());
     }

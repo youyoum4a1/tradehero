@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -63,7 +64,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     protected FreshQuoteHolder freshQuoteHolder;
     protected QuoteDTO quoteDTO;
@@ -163,7 +164,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onSaveInstanceState(outState);
 
         detachFetchPositionDetailTask();
-        detachFetchUserProfileTask();
+        detachUserProfileCache();
         destroyFreshQuoteHolder();
 
         outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
@@ -180,7 +181,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onDestroyView()
     {
         detachFetchPositionDetailTask();
-        detachFetchUserProfileTask();
+        detachUserProfileCache();
         destroyFreshQuoteHolder();
         querying = false;
 
@@ -210,13 +211,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         fetchPositionDetailTask = null;
     }
 
-    protected void detachFetchUserProfileTask()
+    protected void detachUserProfileCache()
     {
-        if (fetchUserProfileTask != null)
+        if (userProfileCacheListener != null)
         {
-            fetchUserProfileTask.setListener(null);
+            userProfileCache.get().unregister(userProfileCacheListener);
         }
-        fetchUserProfileTask = null;
+        userProfileCacheListener = null;
     }
 
     public void setTransactionTypeBuy(boolean transactionTypeBuy)
@@ -258,13 +259,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void requestUserProfile()
     {
-        if (fetchUserProfileTask != null)
-        {
-            fetchUserProfileTask.cancel(false);
-        }
+        detachUserProfileCache();
         UserBaseKey baseKey = currentUserId.toUserBaseKey();
-        fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, createUserProfileCacheListener(baseKey));
-        fetchUserProfileTask.execute();
+        userProfileCacheListener = createUserProfileCacheListener(baseKey);
+        userProfileCache.get().register(baseKey, userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(baseKey);
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -497,12 +496,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener(UserBaseKey userBaseKey)
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener(UserBaseKey userBaseKey)
     {
         return new AbstractBuySellUserProfileCacheListener(userBaseKey);
     }
 
-    private class AbstractBuySellUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    private class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         private final UserBaseKey userBaseKey;
 
@@ -511,7 +510,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             this.userBaseKey = userBaseKey;
         }
 
-        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value)
         {
             if (key.equals(userBaseKey))
             {

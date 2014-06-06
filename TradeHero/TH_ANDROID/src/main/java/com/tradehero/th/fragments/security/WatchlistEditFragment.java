@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,8 +52,8 @@ public class WatchlistEditFragment extends DashboardFragment
     private EditText watchPrice;
     private EditText watchQuantity;
     private SecurityId securityKeyId;
-    private Button watchAction;
-    private Button deleteButton;
+    private TextView watchAction;
+    private TextView deleteButton;
     private ProgressDialog progressBar;
 
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
@@ -88,12 +87,12 @@ public class WatchlistEditFragment extends DashboardFragment
         watchPrice = (EditText) view.findViewById(R.id.edit_watchlist_item_security_price);
         watchQuantity = (EditText) view.findViewById(R.id.edit_watchlist_item_security_quantity);
 
-        watchAction = (Button) view.findViewById(R.id.edit_watchlist_item_done);
+        watchAction = (TextView) view.findViewById(R.id.edit_watchlist_item_done);
         if (watchAction != null)
         {
             watchAction.setOnClickListener(createOnWatchButtonClickedListener());
         }
-        deleteButton = (Button) view.findViewById(R.id.edit_watchlist_item_delete);
+        deleteButton = (TextView) view.findViewById(R.id.edit_watchlist_item_delete);
         if (deleteButton != null)
         {
             deleteButton.setOnClickListener(createOnDeleteButtonClickedListener());

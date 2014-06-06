@@ -420,7 +420,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             shares = 0;
         }
 
-        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, formattedPrice, false, currencyDisplay);
+        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, formattedPrice, THSignedNumber.WITHOUT_SIGN, currencyDisplay);
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.watchlist_number_of_shares),
                 shares, thSignedNumber.toString()

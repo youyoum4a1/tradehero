@@ -20,7 +20,7 @@ public class TwitterCredentialsDTO extends BaseCredentialsDTO
     public TwitterCredentialsDTO(JSONObject object) throws JSONException
     {
         this(object.getString(TwitterAuthenticationProvider.ID_KEY),
-                object.getString(TwitterAuthenticationProvider.EMAIL_KEY),
+                object.has(TwitterAuthenticationProvider.EMAIL_KEY) ? object.getString(TwitterAuthenticationProvider.EMAIL_KEY) : "",
                 object.getString(TwitterAuthenticationProvider.AUTH_TOKEN_KEY),
                 object.getString(TwitterAuthenticationProvider.AUTH_TOKEN_SECRET_KEY),
                 object.getString(TwitterAuthenticationProvider.SCREEN_NAME_KEY));
@@ -62,6 +62,7 @@ public class TwitterCredentialsDTO extends BaseCredentialsDTO
         TwitterUserFormDTO userFormDTO = new TwitterUserFormDTO();
         userFormDTO.accessToken = token;
         userFormDTO.accessTokenSecret = tokenSecret;
+        userFormDTO.email = email;
         return userFormDTO;
     }
 }

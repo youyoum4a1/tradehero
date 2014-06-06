@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.news.NewsHeadlineView
+<com.tradehero.th.fragments.news.NewsHeadlineViewLinear
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,24 +10,31 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     >
+
   <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/news_item_bg">
-    <ImageView android:layout_width="match_parent" android:layout_height="match_parent"
+
+    <ImageView
         android:id="@+id/news_item_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:alpha="0.2"
         android:background="@drawable/img_placeholder_news_2"
         android:contentDescription="@null"/>
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+    <LinearLayout
         android:id="@+id/news_item_layout_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginBottom="5dp"
         android:paddingTop="8dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp">
+
       <TextView
           android:id="@+id/news_title_title"
           android:layout_width="match_parent"
@@ -45,6 +52,7 @@
           android:layout_marginBottom="8dp"
           android:orientation="horizontal"
           >
+
         <TextView
             android:id="@+id/discussion_time"
             android:layout_width="wrap_content"
@@ -52,18 +60,21 @@
             style="@style/TH.Time_Text"
             tools:text="A big one"
             />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TH.Time_Text"
             android:text="@string/via"
             />
+
         <TextView
             android:id="@+id/news_source"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TH.Time_Text"
             />
+
       </LinearLayout>
 
       <TextView
@@ -75,14 +86,20 @@
           android:textColor="#444"
           android:maxLines="4"
           />
+
       <TextView
           android:id="@+id/discussion_content"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:visibility="gone"
           />
+
+      <include layout="@layout/discussion_translate_notice" />
+
     </LinearLayout>
+
   </FrameLayout>
 
-  <include layout="@layout/news_item_action_buttons"/>
-</com.tradehero.th.fragments.news.NewsHeadlineView>
+  <include layout="@layout/discussion_action_buttons"/>
+
+</com.tradehero.th.fragments.news.NewsHeadlineViewLinear>

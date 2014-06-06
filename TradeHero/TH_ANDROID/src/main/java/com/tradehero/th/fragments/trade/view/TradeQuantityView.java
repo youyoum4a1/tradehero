@@ -292,7 +292,7 @@ public class TradeQuantityView extends TableLayout
         if (portfolioCompactDTO != null)
         {
             double cashAvailable = portfolioCompactDTO.cashBalance;
-            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable, false, portfolioCompactDTO.currencyDisplay);
+            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable, THSignedNumber.WITHOUT_SIGN, portfolioCompactDTO.currencyDisplay);
             return thSignedNumber.toString();
         }
         else
@@ -392,7 +392,7 @@ public class TradeQuantityView extends TableLayout
         {
             return "-";
         }
-        THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * priceRefCcy, false, portfolioCompactDTO.currencyDisplay);
+        THSignedNumber thTradeValue = new THSignedNumber(THSignedNumber.TYPE_MONEY, shareQuantity * priceRefCcy, THSignedNumber.WITHOUT_SIGN, portfolioCompactDTO.currencyDisplay);
         return thTradeValue.toString();
     }
 

@@ -32,6 +32,9 @@ abstract public class SecurityCompactDTOFilter<SecurityCompactDTOType extends Se
     @SuppressWarnings("unchecked")
     @Override final protected void publishResults(CharSequence charSequence, FilterResults filterResults)
     {
+        // TODO make a new instance instead of casting as it appears the FilterResults can be passed later,
+        // for instance after a sleep.
+        // https://www.crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/539106b0e3de5099ba4db214
         publishResults(charSequence, (SecurityFilterResults<SecurityCompactDTOType>) filterResults);
     }
 

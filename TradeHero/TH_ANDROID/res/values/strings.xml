@@ -10,12 +10,13 @@
   <string name="leaderboard_empty">Start trading now to be the first trader on this leaderboard
   </string>
   <string name="action_search">Search</string>
-  <string name="update">Update</string>
+  <string name="action_invite">Invite Friends</string>
+    <string name="update">Update</string>
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
-  <string name="link">Link</string>
-  <string name="link_description">You need to link your %s account before sharing…</string>
+  <string name="link">Link %1$s</string>
+  <string name="link_description">You need to link your %1$s account before sharing…</string>
   <string name="link_now">Link now!</string>
   <string name="later">Later</string>
   <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
@@ -78,72 +79,93 @@
   <string name="sell">Sell</string>
   <string name="buy">Buy</string>
   <string name="chart_loading_image">Loading chart image…</string>
+
   <!--do not translate begin-->
-  <string name="tap_stream_type_google_install">android-tradehero-google-install</string>
-  <string name="tap_stream_type_google_open">android-tradehero-google-open</string>
-  <string name="tap_stream_type_baidu_install">android-tradehero-baidu-install</string>
-  <string name="tap_stream_type_baidu_open">android-tradehero-baidu-open</string>
-  <string name="tap_stream_type_tencent_install">android-tradehero-tencent-install</string>
-  <string name="tap_stream_type_tencent_open">android-tradehero-tencent-open</string>
-  <string name="tap_stream_type_xiaomi_install">android-tradehero-xiaomi-install</string>
-  <string name="tap_stream_type_xiaomi_open">android-tradehero-xiaomi-open</string>
-  <string name="tap_stream_type_91_install">android-tradehero-91-install</string>
-  <string name="tap_stream_type_91_open">android-tradehero-91-open</string>
-  <string name="tap_stream_type_azhuosc_install">android-tradehero-azhuosc-install</string>
-  <string name="tap_stream_type_azhuosc_open">android-tradehero-azhuosc-open</string>
-  <string name="tap_stream_type_azhisc_install">android-tradehero-azhisc-install</string>
-  <string name="tap_stream_type_azhisc_open">android-tradehero-azhisc-open</string>
-  <string name="tap_stream_type_lenovo_install">android-tradehero-lenovo-install</string>
-  <string name="tap_stream_type_lenovo_open">android-tradehero-lenovo-open</string>
-  <string name="tap_stream_type_wandoujia_install">android-tradehero-wandoujia-install</string>
-  <string name="tap_stream_type_wandoujia_open">android-tradehero-wandoujia-open</string>
-  <string name="tap_stream_type_360_install">android-tradehero-360-install</string>
-  <string name="tap_stream_type_360_open">android-tradehero-360-open</string>
-  <string name="tap_stream_type_oppo_install">android-tradehero-oppo-install</string>
-  <string name="tap_stream_type_oppo_open">android-tradehero-oppo-open</string>
-  <string name="tap_stream_type_jifeng_install">android-tradehero-jifeng-install</string>
-  <string name="tap_stream_type_jifeng_open">android-tradehero-jifeng-open</string>
-  <string name="tap_stream_type_yyhui_install">android-tradehero-yyhui-install</string>
-  <string name="tap_stream_type_yyhui_open">android-tradehero-yyhui-open</string>
-  <string name="tap_stream_type_ydmm_install">android-tradehero-ydmm-install</string>
-  <string name="tap_stream_type_ydmm_open">android-tradehero-ydmm-open</string>
-  <string name="tap_stream_type_mptang_install">android-tradehero-mptang-install</string>
-  <string name="tap_stream_type_mptang_open">android-tradehero-mptang-open</string>
-  <string name="tap_stream_type_dianxin_install">android-tradehero-dianxin-install</string>
-  <string name="tap_stream_type_dianxin_open">android-tradehero-dianxin-open</string>
-  <string name="tap_stream_type_baiduguard_install">android-tradehero-baiduguard-install</string>
-  <string name="tap_stream_type_baiduguard_open">android-tradehero-baiduguard-open</string>
-  <string name="tap_stream_type_wifiwanneng_install">android-tradehero-wifiwanneng-install</string>
-  <string name="tap_stream_type_wifiwanneng_open">android-tradehero-wifiwanneng-open</string>
-  <string name="tap_stream_type_caipiao500_install">android-tradehero-caipiao500-install</string>
-  <string name="tap_stream_type_caipiao500_open">android-tradehero-caipiao500-open</string>
-  <string name="tap_stream_type_mengtian1_install">android-tradehero-mengtian1-install</string>
-  <string name="tap_stream_type_mengtian1_open">android-tradehero-mengtian1-open</string>
-  <string name="tap_stream_type_mengtian2_install">android-tradehero-mengtian2-install</string>
-  <string name="tap_stream_type_mengtian2_open">android-tradehero-mengtian2-open</string>
-  <string name="tap_stream_type_sougou_install">android-tradehero-sougou-install</string>
-  <string name="tap_stream_type_sougou_open">android-tradehero-sougou-open</string>
-  <string name="tap_stream_type_huawei_install">android-tradehero-huawei-install</string>
-  <string name="tap_stream_type_huawei_open">android-tradehero-huawei-open</string>
-  <string name="tap_stream_type_meizu_install">android-tradehero-meizu-install</string>
-  <string name="tap_stream_type_meizu_open">android-tradehero-meizu-open</string>
-  <string name="tap_stream_type_dianke1_install">android-tradehero-dianke1-install</string>
-  <string name="tap_stream_type_dianke1_open">android-tradehero-dianke1-open</string>
-  <string name="tap_stream_type_dianke2_install">android-tradehero-dianke2-install</string>
-  <string name="tap_stream_type_dianke2_open">android-tradehero-dianke2-open</string>
-  <string name="tap_stream_type_dianke3_install">android-tradehero-dianke3-install</string>
-  <string name="tap_stream_type_dianke3_open">android-tradehero-dianke3-open</string>
-  <string name="tap_stream_type_dianke4_install">android-tradehero-dianke4-install</string>
-  <string name="tap_stream_type_dianke4_open">android-tradehero-dianke4-open</string>
-  <string name="tap_stream_type_dianke5_install">android-tradehero-dianke5-install</string>
-  <string name="tap_stream_type_dianke5_open">android-tradehero-dianke5-open</string>
-  <string name="tap_stream_type_91m_install">android-tradehero-91m-install</string>
-  <string name="tap_stream_type_91m_open">android-tradehero-91m-open</string>
-  <string name="tap_stream_type_dianping_install">android-tradehero-dianping-install</string>
-  <string name="tap_stream_type_dianping_open">android-tradehero-dianping-open</string>
-  <string name="tap_stream_type_aiqiyi_install">android-tradehero-aiqiyi-install</string>
-  <string name="tap_stream_type_aiqiyi_open">android-tradehero-aiqiyi-open</string>
+  <string name="tap_stream_type_google_install" translatable="false">android-tradehero-google-install</string>
+  <string name="tap_stream_type_google_open" translatable="false">android-tradehero-google-open</string>
+  <string name="tap_stream_type_baidu_install" translatable="false">android-tradehero-baidu-install</string>
+  <string name="tap_stream_type_baidu_open" translatable="false">android-tradehero-baidu-open</string>
+  <string name="tap_stream_type_tencent_install" translatable="false">android-tradehero-tencent-install</string>
+  <string name="tap_stream_type_tencent_open" translatable="false">android-tradehero-tencent-open</string>
+  <string name="tap_stream_type_xiaomi_install" translatable="false">android-tradehero-xiaomi-install</string>
+  <string name="tap_stream_type_xiaomi_open" translatable="false">android-tradehero-xiaomi-open</string>
+  <string name="tap_stream_type_91_install" translatable="false">android-tradehero-91-install</string>
+  <string name="tap_stream_type_91_open" translatable="false">android-tradehero-91-open</string>
+  <string name="tap_stream_type_azhuosc_install" translatable="false">android-tradehero-azhuosc-install</string>
+  <string name="tap_stream_type_azhuosc_open" translatable="false">android-tradehero-azhuosc-open</string>
+  <string name="tap_stream_type_azhisc_install" translatable="false">android-tradehero-azhisc-install</string>
+  <string name="tap_stream_type_azhisc_open" translatable="false">android-tradehero-azhisc-open</string>
+  <string name="tap_stream_type_lenovo_install" translatable="false">android-tradehero-lenovo-install</string>
+  <string name="tap_stream_type_lenovo_open" translatable="false">android-tradehero-lenovo-open</string>
+  <string name="tap_stream_type_wandoujia_install" translatable="false">android-tradehero-wandoujia-install</string>
+  <string name="tap_stream_type_wandoujia_open" translatable="false">android-tradehero-wandoujia-open</string>
+  <string name="tap_stream_type_360_install" translatable="false">android-tradehero-360-install</string>
+  <string name="tap_stream_type_360_open" translatable="false">android-tradehero-360-open</string>
+  <string name="tap_stream_type_oppo_install" translatable="false">android-tradehero-oppo-install</string>
+  <string name="tap_stream_type_oppo_open" translatable="false">android-tradehero-oppo-open</string>
+  <string name="tap_stream_type_jifeng_install" translatable="false">android-tradehero-jifeng-install</string>
+  <string name="tap_stream_type_jifeng_open" translatable="false">android-tradehero-jifeng-open</string>
+  <string name="tap_stream_type_yyhui_install" translatable="false">android-tradehero-yyhui-install</string>
+  <string name="tap_stream_type_yyhui_open" translatable="false">android-tradehero-yyhui-open</string>
+  <string name="tap_stream_type_ydmm_install" translatable="false">android-tradehero-ydmm-install</string>
+  <string name="tap_stream_type_ydmm_open" translatable="false">android-tradehero-ydmm-open</string>
+  <string name="tap_stream_type_mptang_install" translatable="false">android-tradehero-mptang-install</string>
+  <string name="tap_stream_type_mptang_open" translatable="false">android-tradehero-mptang-open</string>
+  <string name="tap_stream_type_dianxin_install" translatable="false">android-tradehero-dianxin-install</string>
+  <string name="tap_stream_type_dianxin_open" translatable="false">android-tradehero-dianxin-open</string>
+  <string name="tap_stream_type_baiduguard_install" translatable="false">android-tradehero-baiduguard-install</string>
+  <string name="tap_stream_type_baiduguard_open" translatable="false">android-tradehero-baiduguard-open</string>
+  <string name="tap_stream_type_wifiwanneng_install" translatable="false">android-tradehero-wifiwanneng-install</string>
+  <string name="tap_stream_type_wifiwanneng_open" translatable="false">android-tradehero-wifiwanneng-open</string>
+  <string name="tap_stream_type_caipiao500_install" translatable="false">android-tradehero-caipiao500-install</string>
+  <string name="tap_stream_type_caipiao500_open" translatable="false">android-tradehero-caipiao500-open</string>
+  <string name="tap_stream_type_mengtian1_install" translatable="false">android-tradehero-mengtian1-install</string>
+  <string name="tap_stream_type_mengtian1_open" translatable="false">android-tradehero-mengtian1-open</string>
+  <string name="tap_stream_type_mengtian2_install" translatable="false">android-tradehero-mengtian2-install</string>
+  <string name="tap_stream_type_mengtian2_open" translatable="false">android-tradehero-mengtian2-open</string>
+  <string name="tap_stream_type_sougou_install" translatable="false">android-tradehero-sougou-install</string>
+  <string name="tap_stream_type_sougou_open" translatable="false">android-tradehero-sougou-open</string>
+  <string name="tap_stream_type_huawei_install" translatable="false">android-tradehero-huawei-install</string>
+  <string name="tap_stream_type_huawei_open" translatable="false">android-tradehero-huawei-open</string>
+  <string name="tap_stream_type_meizu_install" translatable="false">android-tradehero-meizu-install</string>
+  <string name="tap_stream_type_meizu_open" translatable="false">android-tradehero-meizu-open</string>
+  <string name="tap_stream_type_dianke1_install" translatable="false">android-tradehero-dianke1-install</string>
+  <string name="tap_stream_type_dianke1_open" translatable="false">android-tradehero-dianke1-open</string>
+  <string name="tap_stream_type_dianke2_install" translatable="false">android-tradehero-dianke2-install</string>
+  <string name="tap_stream_type_dianke2_open" translatable="false">android-tradehero-dianke2-open</string>
+  <string name="tap_stream_type_dianke3_install" translatable="false">android-tradehero-dianke3-install</string>
+  <string name="tap_stream_type_dianke3_open" translatable="false">android-tradehero-dianke3-open</string>
+  <string name="tap_stream_type_dianke4_install" translatable="false">android-tradehero-dianke4-install</string>
+  <string name="tap_stream_type_dianke4_open" translatable="false">android-tradehero-dianke4-open</string>
+  <string name="tap_stream_type_dianke5_install" translatable="false">android-tradehero-dianke5-install</string>
+  <string name="tap_stream_type_dianke5_open" translatable="false">android-tradehero-dianke5-open</string>
+  <string name="tap_stream_type_91m_install" translatable="false">android-tradehero-91m-install</string>
+  <string name="tap_stream_type_91m_open" translatable="false">android-tradehero-91m-open</string>
+  <string name="tap_stream_type_dianping_install" translatable="false">android-tradehero-dianping-install</string>
+  <string name="tap_stream_type_dianping_open" translatable="false">android-tradehero-dianping-open</string>
+  <string name="tap_stream_type_aiqiyi_install" translatable="false">android-tradehero-aiqiyi-install</string>
+  <string name="tap_stream_type_aiqiyi_open" translatable="false">android-tradehero-aiqiyi-open</string>
+
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
+  <string name="invite_social_friend">Invite %s Friend</string>
+  <string name="search_social_friend_hint">Search your friend</string>
+
+    <string name="social_friend_empty">Sorry,no friends</string>
+    <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
+    <string name="inivte_from_weibo">Invite from Weibo</string>
+    <string name="inivte_from_linkedIn">Invite from LinkedIn</string>
+    <string name="inivte_from_twitter">Invite from Twitter</string>
+    <string name="inivte_from_facebook">Invite from Facebook</string>
+    <string name="invite">Invite</string>
+
+  <plurals name="inbox_notification_title">
+    <item quantity="one">1 New Message</item>
+    <item quantity="other">%d <b>New</b> Messages</item>
+  </plurals>
+  <string name="inbox_summary">+%d more</string>
+  <string name="notification_unread_messages">You have %d unread messages</string>
+  <string name="notification_new_activities">You have %d new activities</string>
+  <string name="friend_link_social_network">Please Link Social Network.</string>
 </resources>

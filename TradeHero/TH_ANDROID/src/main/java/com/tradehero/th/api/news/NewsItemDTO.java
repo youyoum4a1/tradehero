@@ -1,25 +1,15 @@
 package com.tradehero.th.api.news;
 
 import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Collections;
 import java.util.List;
 
-public class NewsItemDTO extends AbstractDiscussionDTO
+public class NewsItemDTO extends NewsItemCompactDTO
 {
-    public String title;
-    public String caption;
-    public String description;
-
-    public NewsItemSourceDTO source;
+    public String text;
 
     public String imageUrl;
-
-    public String url;
-
-    public NewsItemCategoryDTO category;
 
     private List<NewsItemMediaDTO> textEntities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> entities; // Needed to Hyperlink NewsItem's content
@@ -28,8 +18,6 @@ public class NewsItemDTO extends AbstractDiscussionDTO
 
     public String message;
 
-    public SecurityCompactDTO topReferencedSecurity;
-
     //<editor-fold desc="Constructors">
     public NewsItemDTO()
     {
@@ -37,7 +25,7 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     }
 
     public <ExtendedDTOType extends ExtendedDTO> NewsItemDTO(ExtendedDTOType other,
-            Class<? extends ExtendedDTO> myClass)
+            Class<? extends NewsItemDTO> myClass)
     {
         super(other, myClass);
     }
@@ -81,19 +69,14 @@ public class NewsItemDTO extends AbstractDiscussionDTO
     @Override public String toString()
     {
         return "NewsItemDTO{" +
-                "title='" + title + '\'' +
-                ", caption='" + caption + '\'' +
-                ", description='" + description + '\'' +
-                ", source=" + source +
+                super.toString() +
+                ", text='" + text + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", url='" + url + '\'' +
-                ", category=" + category +
                 ", textEntities=" + textEntities +
                 ", entities=" + entities +
                 ", categories=" + categories +
                 ", securityIds=" + securityIds +
                 ", message='" + message + '\'' +
-                ", topReferencedSecurity=" + topReferencedSecurity +
                 '}';
     }
 }

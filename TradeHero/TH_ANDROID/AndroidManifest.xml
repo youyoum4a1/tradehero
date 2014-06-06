@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th"
     android:versionName="2.1.0"
-    android:versionCode="80"
+    android:versionCode="83"
     android:installLocation="auto">
 
   <uses-sdk
@@ -11,7 +11,7 @@
 
   <supports-screens
       android:anyDensity="true"
-      android:resizeable="true"/>
+      android:resizeable="true"/>TreeSetLearningTest.java
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -64,7 +64,7 @@
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
   <!--Baidu push-->
 
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+  <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
 
   <application
       android:name=".base.Application"
@@ -220,6 +220,24 @@
     <meta-data
         android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
 
+    <!--QQ login -->
+    <activity
+        android:name="com.tencent.tauth.AuthActivity"
+        android:noHistory="true"
+        android:launchMode="singleTask">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="tencent1101331512"/>
+      </intent-filter>
+    </activity>
+
+    <activity
+        android:name="com.tencent.connect.common.AssistActivity"
+        android:screenOrientation="portrait"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+    </activity>
     <!-- Samsung IAP -->
     <activity
         android:name="com.sec.android.iap.lib.activity.InboxActivity"
@@ -275,7 +293,7 @@
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
-    <receiver android:name=".models.push.baidu.NotificationReceiver">
+    <receiver android:name=".models.push.baidu.BaiduIntentReceiver">
       <intent-filter>
         <action android:name="com.tradehero.th.ACTION_NOTIFICATION_CLICKED"/>
       </intent-filter>

@@ -1,5 +1,6 @@
 package com.tradehero.th.api.translation.bing;
 
+import com.tradehero.th.R;
 import com.tradehero.th.api.translation.TranslationToken;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +39,7 @@ public class BingTranslationToken extends TranslationToken
     {
         super(other, myClass);
         type = TOKEN_TYPE;
+        setExpiresIn(expiresIn);
     }
     //</editor-fold>
 
@@ -97,6 +99,11 @@ public class BingTranslationToken extends TranslationToken
     @Override public boolean isValid()
     {
         return Calendar.getInstance().getTime().getTime() < expirationDate.getTime();
+    }
+
+    @Override public int logoResId()
+    {
+        return R.drawable.logo_bing;
     }
 
     @Override

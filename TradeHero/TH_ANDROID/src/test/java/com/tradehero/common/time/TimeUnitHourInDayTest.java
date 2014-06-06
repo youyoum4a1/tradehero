@@ -4,19 +4,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
 import org.ocpsoft.prettytime.units.Day;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = Config.NONE)
 public class TimeUnitHourInDayTest
 {
     @Test public void calculatePreciseDurationOnlyDay()

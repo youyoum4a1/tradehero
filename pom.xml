@@ -198,6 +198,7 @@
         <version>2.12.4</version>
         <configuration>
           <skipTests>true</skipTests>
+          <argLine>-XX:-UseSplitVerifier</argLine>
         </configuration>
       </plugin>
     </plugins>

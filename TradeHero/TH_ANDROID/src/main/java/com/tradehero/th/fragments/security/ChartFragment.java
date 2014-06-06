@@ -43,7 +43,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     public final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";
     public final static String BUNDLE_KEY_ARGUMENTS = ChartFragment.class.getName() + ".arguments";
 
-    @InjectView(R.id.chart_imageView) protected ImageView chartImage;
+    @InjectView(R.id.chart_imageView) protected ChartImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private ChartDTO chartDTO;
@@ -109,6 +109,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
                 chartDTO.setChartSize(new ChartSize(args.getIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT)));
             }
         }
+
+        chartDTO.setIncludeVolume(chartImage.includeVolume);
 
         // Override with saved value if any
         if (savedInstanceState != null)

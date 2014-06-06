@@ -21,4 +21,9 @@ public class TranslationResult extends ExtendedDTO
     {
         return null;
     }
+
+    public int logoResId()
+    {
+        return 0;
+    }
 }

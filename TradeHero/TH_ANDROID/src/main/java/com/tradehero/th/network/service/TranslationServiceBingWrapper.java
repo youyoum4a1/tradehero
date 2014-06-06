@@ -4,7 +4,7 @@ import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.translation.bing.BingTranslationResult;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.models.translation.bing.BaseMiddleCallbackBingTranslationResult;
-import com.tradehero.th.network.retrofit.IntermediateCallback;
+import com.tradehero.th.network.retrofit.CallbackWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -31,7 +31,7 @@ import retrofit.Callback;
                 from, to, PREFERRED_CONTENT_TYPE, text);
     }
 
-    public IntermediateCallback<TranslationResult> translate(BingTranslationToken token, String from, String to, String text,
+    public CallbackWrapper<TranslationResult> translate(BingTranslationToken token, String from, String to, String text,
             Callback<TranslationResult> callback)
     {
         BaseMiddleCallbackBingTranslationResult middleCallback = new BaseMiddleCallbackBingTranslationResult(callback);

@@ -2,12 +2,12 @@ package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 
 public class PositionPartialBottomInPeriodOpenView
         extends AbstractPositionPartialBottomOpenView<
-            PositionInPeriodDTO,
+        PositionDTO,
             LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem>
 {
     private PositionPartialBottomInPeriodViewHolder inPeriodViewHolder;
@@ -29,11 +29,9 @@ public class PositionPartialBottomInPeriodOpenView
     }
     //</editor-fold>
 
-    @Override protected void initViews()
+    @Override protected void onFinishInflate()
     {
-        // overall
-        super.initViews();
-
+        super.onFinishInflate();
         // in period
         inPeriodViewHolder = new PositionPartialBottomInPeriodViewHolder(getContext(), this);
     }
@@ -50,7 +48,7 @@ public class PositionPartialBottomInPeriodOpenView
         }
     }
 
-    @Override public void linkWith(PositionInPeriodDTO positionDTO, boolean andDisplay)
+    @Override public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         super.linkWith(positionDTO, andDisplay);
         if (inPeriodViewHolder != null)

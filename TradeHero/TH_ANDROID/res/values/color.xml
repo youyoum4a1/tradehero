@@ -7,7 +7,7 @@
   <color name="red">#D42621</color>
   <color name="actionbar_gradient1">#6B748E</color>
   <color name="actionbar_gradient2">#929CBA</color>
-  <color name="btn_new_user_color_light">#555555</color>
+  <color name="textbox_border_color_light">#555555</color>
   <color name="btn_new_user_color_dark">#2B4170</color>
   <color name="round_rectangle1">#4E6DAE</color>
   <color name="round_rectangle2">#2B4170</color>
@@ -18,7 +18,7 @@
   <color name="black">@android:color/black</color>
   <color name="light_grey">#BFBFBF</color>
   <color name="white">@android:color/white</color>
-  <color name="signinbg_color">#D6D6D6</color>
+  <color name="textbox_light_background_color">#fafafa</color>
   <color name="signinfnt_color">#47454A</color>
 
   <color name="btn_facebook_color_start">#5776b6</color>
@@ -27,6 +27,9 @@
   <color name="btn_twitter_color_end">#419aff</color>
   <color name="btn_linkedin_color_light">#1c8fcf</color>
   <color name="btn_linkedin_color_dark">#0274b4</color>
+  <color name="btn_weibo_color_start">#da2320</color>
+  <color name="btn_weibo_color_end">#df0f3f</color>
+
   <color name="gray_2">#A0AFAFAF</color>
   <color name="text_gray_normal">#aaaaaa</color>
   <color name="gray_normal">#aaaaaa</color>
