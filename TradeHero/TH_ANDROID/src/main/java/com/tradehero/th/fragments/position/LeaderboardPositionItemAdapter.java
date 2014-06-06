@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
 import java.util.Map;
 
 public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter

@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import java.util.List;
 import retrofit.http.GET;
@@ -70,6 +71,9 @@ public interface LeaderboardService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             @Query("includeFoF") Boolean includeFoF);
+
+    @GET("/leaderboards/newfriends")
+    LeaderboardFriendsDTO getNewFriendsLeaderboard();
 
     /**
      *

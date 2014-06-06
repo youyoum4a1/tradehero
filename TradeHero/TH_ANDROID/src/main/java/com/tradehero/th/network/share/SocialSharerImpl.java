@@ -1,7 +1,6 @@
 package com.tradehero.th.network.share;
 
 import android.content.Intent;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;

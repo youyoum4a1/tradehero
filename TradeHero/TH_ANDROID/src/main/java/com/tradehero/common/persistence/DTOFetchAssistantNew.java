@@ -1,10 +1,7 @@
 package com.tradehero.common.persistence;
 
-import android.os.AsyncTask;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import timber.log.Timber;
 
 abstract public class DTOFetchAssistantNew<DTOKeyType extends DTOKey, DTOType extends DTO>

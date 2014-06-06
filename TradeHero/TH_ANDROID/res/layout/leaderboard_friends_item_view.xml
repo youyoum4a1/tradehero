@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.leaderboard.LeaderboardFriendsItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:background="@color/white"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:descendantFocusability="blocksDescendants"
+    >
+
+  <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/leaderboard_user_item_basic_info"
+      tools:background="#8f0"
+      >
+
+    <TextView
+        android:id="@+id/leaderboard_user_item_position"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/leaderboard_position_text_size"
+        android:textStyle="bold"
+        android:textColor="@color/leaderboard_ranking_position"
+        android:shadowColor="@color/light_grey"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:layout_centerVertical="true"
+        tools:text="1"
+        />
+
+    <ImageView
+        android:id="@+id/leaderboard_user_item_lable"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="12dp"
+        android:layout_centerVertical="true"/>
+
+    <ImageView
+        android:id="@+id/leaderboard_user_item_profile_picture"
+        android:layout_height="@dimen/leaderboard_user_view_profile_width"
+        android:layout_width="@dimen/leaderboard_user_view_profile_width"
+        android:contentDescription="@null"
+        android:src="@drawable/icon"
+        android:layout_toRightOf="@id/leaderboard_user_item_position"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        />
+
+    <TextView
+        android:id="@+id/leaderboard_user_item_display_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/common_margin_10"
+        android:layout_marginRight="@dimen/common_margin_100"
+        android:ellipsize="end"
+        android:textStyle="bold"
+        android:textSize="@dimen/leaderboard_title_text_size"
+        android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+        android:shadowColor="@color/light_grey"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        tools:text="Rafael Barba"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/leaderboard_user_item_display_name"
+        android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="@dimen/common_margin_10"
+        >
+
+      <TextView
+          android:id="@+id/lbmu_roi"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="+87%"
+          />
+
+      <TextView
+          android:id="@+id/lbmu_roi_annualized"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="5dp"
+          android:textColor="@color/gray_1"
+          tools:text="(annualised: +1200%)"
+          />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/leaderboard_user_item_social_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:ellipsize="end"
+        android:textStyle="bold"
+        android:textSize="@dimen/leaderboard_position_text_size"
+        android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
+        android:layout_marginLeft="@dimen/common_margin_10"
+        android:layout_marginRight="@dimen/common_margin_110"
+        android:shadowColor="@color/light_grey"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        tools:text="Rafael Barba"
+        />
+
+    <ImageView
+        android:id="@+id/leaderboard_user_item_country_logo"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside"
+        android:contentDescription="@null"
+        android:layout_marginRight="10dp"
+        />
+
+    <TextView
+        android:id="@+id/leaderboard_user_item_invite_btn"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/common_margin_4"
+        android:layout_marginRight="@dimen/common_margin_10"
+        android:layout_marginBottom="@dimen/common_margin_4"
+        android:text="@string/invite"
+        android:textColor="@color/white"
+        android:textSize="@dimen/leaderboard_position_text_size"
+        android:gravity="center"
+        android:background="@drawable/yellow_rounded_button_selector"
+        />
+  </RelativeLayout>
+
+  <include
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      layout="@layout/leaderboard_item_expendview_2"
+      />
+
+</com.tradehero.th.fragments.leaderboard.LeaderboardFriendsItemView>

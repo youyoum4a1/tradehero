@@ -26,6 +26,8 @@ import timber.log.Timber;
 public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
         implements StickyListHeadersAdapter
 {
+    private static final int DEFINE_ROW_NUMBERS_OF_MOSTED_SKILLED_AND_FRIENDS = 2;
+
     private Map<LeaderboardCommunityType, List<LeaderboardDefKey>> items = new HashMap<>();
     private List<ProviderId> providerDTOs = new ArrayList<>();
 
@@ -98,17 +100,15 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             heroAndFollower.add(1, fakeDto.getLeaderboardDefKey());
         }
 
-        //TODO want delete friend by alex, is that right way?
-        //List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
-        //
-        //if (skillAndFriend != null && skillAndFriend.size() < 3)
-        //{
-        //    LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
-        //    fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
-        //    fakeDto.name = getContext().getString(R.string.leaderboard_community_friends);
-        //    leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-        //    skillAndFriend.add(fakeDto.getLeaderboardDefKey());
-        //}
+        List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
+        if (skillAndFriend != null && skillAndFriend.size() < DEFINE_ROW_NUMBERS_OF_MOSTED_SKILLED_AND_FRIENDS)
+        {
+            LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
+            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
+            fakeDto.name = getContext().getString(R.string.leaderboard_community_friends);
+            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
+            skillAndFriend.add(fakeDto.getLeaderboardDefKey());
+        }
 
         List<LeaderboardDefKey> sectorAndExchange = typeMap.get(LeaderboardCommunityType.SectorAndExchange);
 
