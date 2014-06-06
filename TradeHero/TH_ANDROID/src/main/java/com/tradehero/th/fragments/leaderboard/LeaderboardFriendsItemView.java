@@ -211,20 +211,10 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         if (lable != null)
         {
             boolean isSocial = false;
-            if (mLeaderboardUserDTO.fbId != null)
+            if (mLeaderboardUserDTO.getLableRes() != null)
             {
                 isSocial = true;
-                lable.setBackgroundResource(R.drawable.icon_share_fb_on);
-            }
-            else if (mLeaderboardUserDTO.liId != null)
-            {
-                isSocial = true;
-                lable.setBackgroundResource(R.drawable.icon_share_linkedin_on);
-            }
-            else if (mLeaderboardUserDTO.twId != null)
-            {
-                isSocial = true;
-                lable.setBackgroundResource(R.drawable.icon_share_tw_on);
+                lable.setBackgroundResource(mLeaderboardUserDTO.getLableRes());
             }
             if (isSocial)
             {
@@ -262,9 +252,9 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         if (avatar != null)
         {
             loadDefaultPicture();
-            if (mLeaderboardUserDTO != null && getPicture() != null)
+            if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.getPicture() != null)
             {
-                picasso.load(getPicture())
+                picasso.load(mLeaderboardUserDTO.getPicture())
                         .transform(peopleIconTransformation)
                         .placeholder(avatar.getDrawable())
                         .into(avatar);
@@ -276,30 +266,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 avatar.setOnClickListener(this);
             }
         }
-    }
-
-    public String getPicture()
-    {
-        if (mLeaderboardUserDTO != null)
-        {
-            if (mLeaderboardUserDTO.picture != null)
-            {
-                return mLeaderboardUserDTO.picture;
-            }
-            else if (mLeaderboardUserDTO.fbPicUrl != null)
-            {
-                return mLeaderboardUserDTO.fbPicUrl;
-            }
-            else if (mLeaderboardUserDTO.liPicUrl != null)
-            {
-                return mLeaderboardUserDTO.liPicUrl;
-            }
-            else if (mLeaderboardUserDTO.twPicUrl != null)
-            {
-                return mLeaderboardUserDTO.twPicUrl;
-            }
-        }
-        return null;
     }
 
     public void updateName()
@@ -433,7 +399,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                         getContext().getString(R.string.leaderboard_performance_title));
                 performanceGauge.setAnimiationFlag(false);
                 performanceGauge.setDrawStartValue(50f);
-                performanceGauge.setCurrentValue((float) normalizePerformance());
+                performanceGauge.setCurrentValue((float) mLeaderboardUserDTO.normalizePerformance());
             }
 
             if (tradeConsistencyGauge != null)
@@ -831,7 +797,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                     getContext().getString(R.string.leaderboard_performance_title));
             performanceGauge.setAnimiationFlag(true);
             performanceGauge.setDrawStartValue(50f);
-            performanceGauge.setTargetValue((float) normalizePerformance());
+            performanceGauge.setTargetValue((float) mLeaderboardUserDTO.normalizePerformance());
         }
 
         if (tradeConsistencyGauge != null)
@@ -856,39 +822,11 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
     }
 
-    private double normalizePerformance()
-    {
-        try
-        {
-            Double v = mLeaderboardUserDTO.sharpeRatioInPeriodVsSP500;
-            Double min = (double) -2;
-            Double max = (double) 2;
-
-            if (v > max)
-            {
-                v = max;
-            }
-            else if (v < min)
-            {
-                v = min;
-            }
-            double r = 100 * (v - min) / (max - min);
-            Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s",
-                    mLeaderboardUserDTO.sharpeRatioInPeriodVsSP500, r);
-
-            return r;
-        } catch (Exception e)
-        {
-            Timber.e("normalizePerformance", e);
-        }
-        return 0;
-    }
-
     private double normalizeConsistency()
     {
         try
         {
-            Double minConsistency = 0.004;
+            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
             Double maxConsistency = getAvgConsistency();
             Double consistency = mLeaderboardUserDTO.getConsistency();
             consistency = (consistency < minConsistency) ? minConsistency : consistency;
@@ -912,7 +850,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
         }
-        return 0.004;
+        return LeaderboardUserDTO.MIN_CONSISTENCY;
     }
 
     private class TrackShareCallback implements retrofit.Callback<Response>

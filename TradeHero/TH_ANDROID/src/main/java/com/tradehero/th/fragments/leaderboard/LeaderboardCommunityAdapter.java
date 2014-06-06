@@ -26,6 +26,8 @@ import timber.log.Timber;
 public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
         implements StickyListHeadersAdapter
 {
+    private static final int DEFINE_ROW_NUMBERS_OF_MOSTED_SKILLED_AND_FRIENDS = 2;
+
     private Map<LeaderboardCommunityType, List<LeaderboardDefKey>> items = new HashMap<>();
     private List<ProviderId> providerDTOs = new ArrayList<>();
 
@@ -99,7 +101,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
         }
 
         List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
-        if (skillAndFriend != null && skillAndFriend.size() < 2)
+        if (skillAndFriend != null && skillAndFriend.size() < DEFINE_ROW_NUMBERS_OF_MOSTED_SKILLED_AND_FRIENDS)
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;

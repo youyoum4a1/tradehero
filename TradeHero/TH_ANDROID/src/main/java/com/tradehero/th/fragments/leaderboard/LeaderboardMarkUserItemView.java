@@ -469,7 +469,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                     getContext().getString(R.string.leaderboard_performance_title));
             performanceGauge.setAnimiationFlag(false);
             performanceGauge.setDrawStartValue(50f);
-            performanceGauge.setCurrentValue((float) normalizePerformance());
+            performanceGauge.setCurrentValue((float) leaderboardItem.normalizePerformance());
         }
 
         if (tradeConsistencyGauge != null)
@@ -514,7 +514,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                     getContext().getString(R.string.leaderboard_performance_title));
             performanceGauge.setAnimiationFlag(true);
             performanceGauge.setDrawStartValue(50f);
-            performanceGauge.setTargetValue((float) normalizePerformance());
+            performanceGauge.setTargetValue((float) leaderboardItem.normalizePerformance());
         }
 
         if (tradeConsistencyGauge != null)
@@ -781,14 +781,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
         }
-        return 0.004;
+        return LeaderboardUserDTO.MIN_CONSISTENCY;
     }
 
     private double normalizeConsistency()
     {
         try
         {
-            Double minConsistency = 0.004;
+            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
             Double maxConsistency = getAvgConsistency();
             Double consistency = leaderboardItem.getConsistency();
             consistency = (consistency < minConsistency) ? minConsistency : consistency;
@@ -803,34 +803,5 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             Timber.e("normalizeConsistency", e);
         }
         return getAvgConsistency();
-    }
-
-    private double normalizePerformance()
-    {
-        try
-        {
-            Double v = leaderboardItem.sharpeRatioInPeriodVsSP500;
-            Double min = (double) -2;
-            Double max = (double) 2;
-
-            if (v > max)
-            {
-                v = max;
-            }
-            else if (v < min)
-            {
-                v = min;
-            }
-            double r = 100 * (v - min) / (max - min);
-            Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s",
-                    leaderboardItem.sharpeRatioInPeriodVsSP500, r);
-
-            return r;
-        }
-        catch (Exception e)
-        {
-            Timber.e("normalizePerformance", e);
-        }
-        return 0;
     }
 }
