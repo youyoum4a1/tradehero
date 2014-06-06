@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,14 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -33,12 +38,13 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     //@InjectView(R.id.leaderboard_mark_user_screen) RelativeLayout leaderboardMarkUserScreen;
 
+    protected LeaderboardFriendsListAdapter leaderboardMarkUserListAdapter;
     private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
     private TextView leaderboardMarkUserMarkingTime;
-    protected LeaderboardFriendsListAdapter leaderboardMarkUserListAdapter;
     @Inject LeaderboardServiceWrapper leaderboardServiceWrapper;
     @Inject LocalyticsSession localyticsSession;
     @Inject Provider<PrettyTime> prettyTime;
+    @Inject SingleExpandingListViewListener singleExpandingListViewListener;
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -51,9 +57,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                     R.layout.leaderboard_friends_item_view);
             //leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
             //leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-            //leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
+            leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
             //leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
             leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+            leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         }
     }
 
@@ -183,6 +190,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         if (leaderboardMarkUserListView != null)
         {
             leaderboardMarkUserListView.setAdapter(null);
+            leaderboardMarkUserListView.setOnItemClickListener(null);
             leaderboardMarkUserListView.setEmptyView(null);
             leaderboardMarkUserListView.addHeaderView(null);
             leaderboardMarkUserListView = null;
@@ -190,6 +198,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         if (leaderboardMarkUserListAdapter != null)
         {
             leaderboardMarkUserListAdapter.setItems(null);
+            leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
             leaderboardMarkUserListAdapter = null;
         }
         //leaderboardMarkUserScreen = null;
@@ -201,4 +210,51 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         return inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
     }
 
+    @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
+    {
+        super.setCurrentUserProfileDTO(currentUserProfileDTO);
+        if (leaderboardMarkUserListAdapter != null)
+        {
+            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+            leaderboardMarkUserListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardFriendsItemView.OnFollowRequestedListener
+    {
+        @Override public void onFollowRequested(UserBaseKey userBaseKey)
+        {
+            handleFollowRequested(userBaseKey);
+        }
+    }
+
+    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    {
+        return new LeaderboardMarkUserListPremiumUserFollowedListener();
+    }
+
+    protected class LeaderboardMarkUserListPremiumUserFollowedListener extends BasePurchaseManagerPremiumUserFollowedListener
+    {
+        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        {
+            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
+            handleFollowSuccess(currentUserProfileDTO);
+        }
+    }
+
+    protected void handleFollowRequested(final UserBaseKey userBaseKey)
+    {
+        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        {
+            @Override public void onClick(DialogInterface dialog, int which)
+            {
+                premiumFollowUser(userBaseKey);
+            }
+        });
+    }
+
+    protected void handleFollowSuccess(UserProfileDTO userProfileDTO)
+    {
+        setCurrentUserProfileDTO(userProfileDTO);
+    }
 }

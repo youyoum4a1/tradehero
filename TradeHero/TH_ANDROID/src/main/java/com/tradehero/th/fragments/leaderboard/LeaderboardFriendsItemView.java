@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
@@ -18,20 +19,28 @@ import com.facebook.widget.WebDialog;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.GaugeView;
+import com.tradehero.common.widget.NumericalAnimatedTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
@@ -44,11 +53,14 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
+import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -56,7 +68,8 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
-        implements DTOView<LeaderboardUserDTO>, View.OnClickListener
+        implements DTOView<LeaderboardUserDTO>, View.OnClickListener,
+        ExpandingLayout.OnExpandListener
 {
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
     @InjectView(R.id.leaderboard_user_item_lable) ImageView lable;
@@ -68,12 +81,28 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_country_logo) ImageView countryLogo;
     @InjectView(R.id.leaderboard_user_item_invite_btn) TextView inviteBtn;
 
+    @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
+    @InjectView(R.id.leaderboard_gauge_winrate) @Optional GaugeView winRateGauge;
+    @InjectView(R.id.leaderboard_gauge_performance) @Optional GaugeView performanceGauge;
+    @InjectView(R.id.leaderboard_gauge_tradeconsistency) @Optional GaugeView tradeConsistencyGauge;
+    @InjectView(R.id.leaderboard_dayshold_tv) @Optional NumericalAnimatedTextView daysHoldTv;
+    @InjectView(R.id.leaderboard_position_tv) @Optional NumericalAnimatedTextView positionsCountTv;
+    @InjectView(R.id.leaderboard_tradecount_tv) @Optional NumericalAnimatedTextView tradeCountTv;
+    @InjectView(R.id.leaderboard_user_item_open_profile) @Optional TextView lbmuOpenProfile;
+    @InjectView(R.id.leaderboard_user_item_open_positions_list) @Optional TextView lbmuOpenPositionsList;
+    @InjectView(R.id.leaderboard_user_item_follow) @Optional RelativeLayout lbmuFollowUser;
+    @InjectView(R.id.leaderboard_user_item_following) @Optional RelativeLayout lbmuFollowingUser;
+
     private LeaderboardUserDTO mLeaderboardUserDTO;
     private MiddleCallback<Response> middleCallbackInvite;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    protected OnFollowRequestedListener followRequestedListener;
     private ProgressDialog progressDialog;
+    protected UserProfileDTO currentUserProfileDTO;
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
@@ -102,7 +131,56 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         super.onFinishInflate();
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
+        Timber.d("lyl onFinishInflate");
         loadDefaultPicture();
+        if (expandingLayout != null)
+        {
+            expandingLayout.setOnExpandListener(this);
+            expandingLayout.setVisibility(GONE);
+        }
+        if (lbmuOpenProfile != null)
+        {
+            lbmuOpenProfile.setOnClickListener(this);
+        }
+        if (lbmuOpenPositionsList != null)
+        {
+            lbmuOpenPositionsList.setOnClickListener(this);
+        }
+        if (lbmuFollowUser != null)
+        {
+            lbmuFollowUser.setOnClickListener(this);
+        }
+    }
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        Timber.d("lyl onAttachedToWindow");
+        ButterKnife.inject(this);
+        loadDefaultPicture();
+        if (expandingLayout != null)
+        {
+            //expandingLayout.setOnExpandListener(this);
+            expandingLayout.setVisibility(GONE);
+        }
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        //Timber.d("lyl onDetachedFromWindow");
+        avatar.setOnClickListener(null);
+        inviteBtn.setOnClickListener(null);
+        detachMiddleCallbackInvite();
+        if (lbmuOpenProfile != null)
+        {
+            lbmuOpenProfile.setOnClickListener(null);
+            lbmuOpenProfile = null;
+        }
+        if (lbmuOpenPositionsList != null)
+        {
+            lbmuOpenPositionsList.setOnClickListener(null);
+            lbmuOpenPositionsList = null;
+        }
+        super.onDetachedFromWindow();
     }
 
     protected void loadDefaultPicture()
@@ -128,12 +206,13 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             updateROI();
             displayCountryLogo();
             updateInviteButton();
+            showValueWithoutAnimation();
         }
     }
 
     private void updatePosition()
     {
-        Timber.d("lyl updatePosition");
+        //Timber.d("lyl updatePosition");
         if (lable != null)
         {
             boolean isSocial = false;
@@ -167,7 +246,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     public void setPosition(int position)
     {
-        Timber.d("lyl setPosition position=%d", position);
+        //Timber.d("lyl setPosition position=%d", position);
         if (lbmuPosition != null)
         {
             lbmuPosition.setText("" + (position + 1));
@@ -177,7 +256,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             }
             else
             {
-                lbmuPosition.setTextColor(getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+                lbmuPosition.setTextColor(
+                        getContext().getResources().getColor(R.color.leaderboard_ranking_position));
             }
         }
     }
@@ -318,16 +398,246 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
     }
 
+    private void showValueWithoutAnimation()
+    {
+        if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.displayName != null)
+        {
+            if (tradeCountTv != null)
+            {
+                tradeCountTv.setEndValue(mLeaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue());
+                tradeCountTv.setFractionDigits(2);
+            }
+            if (daysHoldTv != null)
+            {
+                daysHoldTv.setEndValue(mLeaderboardUserDTO.avgHoldingPeriodMins * 1.0f / (60 * 24));
+                daysHoldTv.setFractionDigits(2);
+            }
+            if (positionsCountTv != null)
+            {
+                positionsCountTv.setEndValue(mLeaderboardUserDTO.numberOfPositionsInPeriod);
+                positionsCountTv.setFractionDigits(0);
+            }
+
+            String digitsWinRatio =
+                    NumberDisplayUtils.formatWithRelevantDigits(mLeaderboardUserDTO.getWinRatio() * 100, 3);
+            if (winRateGauge != null)
+            {
+                winRateGauge.setContentText(digitsWinRatio + "%");
+                winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+                winRateGauge.setAnimiationFlag(false);
+                winRateGauge.setCurrentValue((float) mLeaderboardUserDTO.getWinRatio() * 100);
+            }
+
+            if (performanceGauge != null)
+            {
+                performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
+                performanceGauge.setSubText(
+                        getContext().getString(R.string.leaderboard_performance_title));
+                performanceGauge.setAnimiationFlag(false);
+                performanceGauge.setDrawStartValue(50f);
+                performanceGauge.setCurrentValue((float) normalizePerformance());
+            }
+
+            if (tradeConsistencyGauge != null)
+            {
+                tradeConsistencyGauge.setSubText(
+                        getContext().getString(R.string.leaderboard_consistency_title));
+                tradeConsistencyGauge.setAnimiationFlag(false);
+                tradeConsistencyGauge.setCurrentValue((float) normalizeConsistency());
+            }
+            Timber.d("showValueWithoutAnimation normalizeConsistency %s", normalizeConsistency());
+
+            if (tradeCountTv != null)
+            {
+                tradeCountTv.showText();
+            }
+            if (daysHoldTv != null)
+            {
+                daysHoldTv.showText();
+            }
+            if (positionsCountTv != null)
+            {
+                positionsCountTv.showText();
+            }
+        }
+    }
+
     @Override public void onClick(View v)
     {
         switch (v.getId())
         {
             case R.id.leaderboard_user_item_profile_picture:
+            case R.id.leaderboard_user_item_open_profile:
                 handleOpenProfileButtonClicked();
                 break;
             case R.id.leaderboard_user_item_invite_btn:
                 invite();
                 break;
+            case R.id.leaderboard_user_item_open_positions_list:
+                handleOpenPositionListClicked();
+                break;
+            case R.id.leaderboard_user_item_follow:
+                alertDialogUtilLazy.get().showFollowDialog(getContext(), mLeaderboardUserDTO,
+                        UserProfileDTOUtil.IS_NOT_FOLLOWER,
+                        new LeaderBoardFollowRequestedListener());
+                break;
+        }
+    }
+
+    public class LeaderBoardFollowRequestedListener
+            implements com.tradehero.th.models.social.OnFollowRequestedListener
+    {
+        @Override public void freeFollowRequested(UserBaseKey heroId)
+        {
+            freeFollow(heroId);
+        }
+
+        @Override public void premiumFollowRequested(UserBaseKey heroId)
+        {
+            follow(heroId);
+        }
+    }
+
+    protected void freeFollow(UserBaseKey heroId)
+    {
+        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
+                R.string.following_this_hero));
+        detachFreeFollowMiddleCallback();
+        freeFollowMiddleCallback =
+                userServiceWrapperLazy.get()
+                        .freeFollow(heroId, new FreeFollowCallback());
+    }
+
+    protected void follow(UserBaseKey heroId)
+    {
+        Timber.d("lyl follow");
+        notifyFollowRequested(heroId);
+    }
+
+    protected void notifyFollowRequested(UserBaseKey heroId)
+    {
+        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        if (followRequestedListenerCopy != null)
+        {
+            followRequestedListenerCopy.onFollowRequested(heroId);
+        }
+    }
+
+    public static interface OnFollowRequestedListener
+    {
+        void onFollowRequested(UserBaseKey userBaseKey);
+    }
+
+    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    {
+        this.followRequestedListener = followRequestedListener;
+    }
+
+    private void detachFreeFollowMiddleCallback()
+    {
+        if (freeFollowMiddleCallback != null)
+        {
+            freeFollowMiddleCallback.setPrimaryCallback(null);
+        }
+        freeFollowMiddleCallback = null;
+    }
+
+    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
+    {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            alertDialogUtilLazy.get().dismissProgressDialog();
+            linkWith(userProfileDTO, true);
+            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+            alertDialogUtilLazy.get().dismissProgressDialog();
+        }
+    }
+
+    public void linkWith(UserProfileDTO currentUserProfileDTO, boolean andDisplay)
+    {
+        this.currentUserProfileDTO = currentUserProfileDTO;
+        if (andDisplay)
+        {
+            displayFollow();
+        }
+    }
+
+    private void displayFollow()
+    {
+        Boolean isFollowing = isCurrentUserFollowing();
+        if (lbmuFollowUser != null)
+        {
+            boolean showButton = isFollowing == null || !isFollowing;
+            lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
+        }
+        if (lbmuFollowingUser != null)
+        {
+            boolean showImage = isFollowing != null && isFollowing;
+            lbmuFollowingUser.setVisibility(showImage ? VISIBLE : GONE);
+        }
+    }
+
+    public Boolean isCurrentUserFollowing()
+    {
+        if (currentUserProfileDTO == null || mLeaderboardUserDTO == null)
+        {
+            return null;
+        }
+        return currentUserProfileDTO.isFollowingUser(mLeaderboardUserDTO.getBaseKey());
+    }
+
+    private void handleOpenPositionListClicked()
+    {
+        int userId = mLeaderboardUserDTO.id;
+
+        // portfolio, to display position list
+        int portfolioId = mLeaderboardUserDTO.portfolioId;
+        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
+
+        Bundle bundle = new Bundle();
+        // to display time of value on start investment
+        SimpleDateFormat sdf =
+                new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
+        String formattedStartPeriodUtc = sdf.format(mLeaderboardUserDTO.periodStartUtc);
+        bundle.putString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING,
+                formattedStartPeriodUtc);
+
+        // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
+        //LeaderboardDefDTO leaderboardDef = leaderboardDefCache.get()
+        //        .get(new LeaderboardDefKey(mLeaderboardUserDTO.getLeaderboardId()));
+        //boolean isTimeRestrictedLeaderboard =
+        //        leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
+        //bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED,
+        //        isTimeRestrictedLeaderboard);
+
+        if (mLeaderboardUserDTO.lbmuId != -1)
+        {
+            // leaderboard mark user id, to get marking user information
+            bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
+                    ownedPortfolioId.getArgs());
+            bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, mLeaderboardUserDTO.lbmuId);
+            DashboardNavigator dashboardNavigator =
+                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+            if (dashboardNavigator != null)
+            {
+                dashboardNavigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
+            }
+        }
+        else
+        {
+            bundle.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
+                    ownedPortfolioId.getArgs());
+            DashboardNavigator dashboardNavigator =
+                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+            if (dashboardNavigator != null)
+            {
+                dashboardNavigator.pushFragment(PositionListFragment.class, bundle);
+            }
         }
     }
 
@@ -450,13 +760,151 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         middleCallbackInvite = null;
     }
 
-    @Override protected void onDetachedFromWindow()
+    @Override public void onExpand(boolean expand)
     {
-        //Timber.d("lyl onDetachedFromWindow");
-        avatar.setOnClickListener(null);
-        inviteBtn.setOnClickListener(null);
-        detachMiddleCallbackInvite();
-        super.onDetachedFromWindow();
+        Timber.d("lyl expand="+expand);
+        if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.displayName != null)
+        {
+            Timber.d("lyl normal");
+            if (expand)
+            {
+                showExpandAnimation();
+            }
+            else
+            {
+                clearExpandAnimation();
+                Timber.d("clearExpandAnimation");
+            }
+        }
+        else
+        {
+            Timber.d("lyl back");
+            if (expandingLayout != null)
+            {
+                mLeaderboardUserDTO.setExpanded(false);
+                expandingLayout.setVisibility(GONE);
+            }
+        }
+    }
+
+    private void clearExpandAnimation()
+    {
+        if (winRateGauge != null)
+        {
+            winRateGauge.clear();
+        }
+        if (performanceGauge != null)
+        {
+            performanceGauge.clear();
+        }
+        if (tradeConsistencyGauge != null)
+        {
+            tradeConsistencyGauge.clear();
+        }
+    }
+
+    private void showExpandAnimation()
+    {
+        String digitsWinRatio =
+                NumberDisplayUtils.formatWithRelevantDigits(mLeaderboardUserDTO.getWinRatio() * 100, 3);
+        if (winRateGauge != null)
+        {
+            winRateGauge.setContentText(digitsWinRatio + "%");
+            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+            winRateGauge.setAnimiationFlag(true);
+            winRateGauge.setTargetValue((float) mLeaderboardUserDTO.getWinRatio() * 100);
+        }
+
+        if (performanceGauge != null)
+        {
+            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
+            performanceGauge.setSubText(
+                    getContext().getString(R.string.leaderboard_performance_title));
+            performanceGauge.setAnimiationFlag(true);
+            performanceGauge.setDrawStartValue(50f);
+            performanceGauge.setTargetValue((float) normalizePerformance());
+        }
+
+        if (tradeConsistencyGauge != null)
+        {
+            tradeConsistencyGauge.setSubText(
+                    getContext().getString(R.string.leaderboard_consistency_title));
+            tradeConsistencyGauge.setAnimiationFlag(true);
+            tradeConsistencyGauge.setTargetValue((float) normalizeConsistency());
+        }
+
+        if (tradeCountTv != null)
+        {
+            tradeCountTv.startAnimation();
+        }
+        if (daysHoldTv != null)
+        {
+            daysHoldTv.startAnimation();
+        }
+        if (positionsCountTv != null)
+        {
+            positionsCountTv.startAnimation();
+        }
+    }
+
+    private double normalizePerformance()
+    {
+        try
+        {
+            Double v = mLeaderboardUserDTO.sharpeRatioInPeriodVsSP500;
+            Double min = (double) -2;
+            Double max = (double) 2;
+
+            if (v > max)
+            {
+                v = max;
+            }
+            else if (v < min)
+            {
+                v = min;
+            }
+            double r = 100 * (v - min) / (max - min);
+            Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s",
+                    mLeaderboardUserDTO.sharpeRatioInPeriodVsSP500, r);
+
+            return r;
+        }
+        catch (Exception e)
+        {
+            Timber.e("normalizePerformance", e);
+        }
+        return 0;
+    }
+
+    private double normalizeConsistency()
+    {
+        try
+        {
+            Double minConsistency = 0.004;
+            Double maxConsistency = getAvgConsistency();
+            Double consistency = mLeaderboardUserDTO.getConsistency();
+            consistency = (consistency < minConsistency) ? minConsistency : consistency;
+            consistency = (consistency > maxConsistency) ? maxConsistency : consistency;
+
+            double result =
+                    100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
+            return result;
+        }
+        catch (Exception e)
+        {
+            Timber.e("normalizeConsistency", e);
+        }
+        return getAvgConsistency();
+    }
+
+    private Double getAvgConsistency()
+    {
+        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
+        {
+            return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
+        }
+        return 0.004;
     }
 
     private class TrackShareCallback implements retrofit.Callback<Response>
