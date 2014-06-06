@@ -93,8 +93,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
-import com.tradehero.th.fragments.social.AllRelationsFragment;
-import com.tradehero.th.fragments.social.RelationsListItemView;
+import com.tradehero.th.fragments.social.*;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
@@ -378,7 +377,12 @@ import javax.inject.Singleton;
                         LinkedInSocialFriendsFragment.class,
                         WeiboSocialFriendsFragment.class,
                         SocialFriendHandler.class,
-                        FacebookSocialFriendHandler.class
+                        FacebookSocialFriendHandler.class,
+                        FacebookSocialLinkHelper.class,
+                        LinkedInSocialLinkHelper.class,
+                        TwitterSocialLinkHelper.class,
+                        WeiboSocialLinkHelper.class,
+
                 },
         staticInjections =
                 {

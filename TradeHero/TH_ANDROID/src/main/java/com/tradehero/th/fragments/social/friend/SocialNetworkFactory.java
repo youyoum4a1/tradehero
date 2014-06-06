@@ -1,23 +1,28 @@
 package com.tradehero.th.fragments.social.friend;
 
+import android.app.Activity;
 import android.content.res.ColorStateList;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.LinkedIn;
+import com.tradehero.th.fragments.social.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wangliang on 14-5-26.
  */
 @Singleton
-public class SocialTypeFactory {
+public class SocialNetworkFactory {
+    private Map<SocialNetworkEnum,SocialLinkHelper> socialLinkHelperCache;
 
     @Inject
-    public SocialTypeFactory() {
+    public SocialNetworkFactory() {
     }
 
 
@@ -50,6 +55,36 @@ public class SocialTypeFactory {
 
         }
         throw new IllegalArgumentException("Do not support " + socialNetworkEnum);
+    }
+
+    public SocialLinkHelper buildSocialLinkerHelper(Activity context, SocialNetworkEnum socialNetwork)
+    {
+        if (socialLinkHelperCache == null ){
+            socialLinkHelperCache = new HashMap<>();
+        }
+        if (socialLinkHelperCache.get(socialNetwork) != null)
+        {
+            return socialLinkHelperCache.get(socialNetwork);
+        }
+        SocialLinkHelper socialLinkHelper = null;
+        switch (socialNetwork) {
+            case FB:
+                socialLinkHelper = new FacebookSocialLinkHelper(context);
+                break;
+            case TW:
+                socialLinkHelper = new TwitterSocialLinkHelper(context);
+                break;
+            case LN:
+                socialLinkHelper = new LinkedInSocialLinkHelper(context);
+                break;
+            case WB:
+                socialLinkHelper = new WeiboSocialLinkHelper(context);
+                break;
+                default:
+                    throw new IllegalArgumentException("Do not support " + socialNetwork);
+        }
+        socialLinkHelperCache.put(socialNetwork,socialLinkHelper);
+        return socialLinkHelper;
 
     }
 

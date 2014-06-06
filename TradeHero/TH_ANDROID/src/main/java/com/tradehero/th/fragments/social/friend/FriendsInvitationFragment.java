@@ -21,6 +21,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -47,10 +48,11 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     @InjectView(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
     @InjectView(R.id.social_search_friends_none) TextView friendsListEmptyView;
 
-    @Inject SocialTypeFactory socialTypeFactory;
+    @Inject SocialNetworkFactory socialNetworkFactory;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject SocialFriendHandler socialFriendHandler;
+    SocialFriendHandler socialFriendHandler;
+    FacebookSocialFriendHandler facebookSocialFriendHandler;
     @Inject Lazy<UserProfileCache> userProfileCache;
 
     private List<UserFriendsDTO> userFriendsDTOs;
@@ -66,6 +68,8 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        socialFriendHandler = new SocialFriendHandler();
+        facebookSocialFriendHandler = new FacebookSocialFriendHandler(getActivity());
     }
 
     @Override
@@ -138,7 +142,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
 
     private void bindSocialTypeData()
     {
-        List<SocalTypeItem> socalTypeItemList =  socialTypeFactory.getSocialTypeList();
+        List<SocalTypeItem> socalTypeItemList =  socialNetworkFactory.getSocialTypeList();
         SocalTypeListAdapter adapter = new SocalTypeListAdapter(getActivity(),0,socalTypeItemList);
         socialListView.setAdapter(adapter);
         socialListView.setOnItemClickListener(this);
@@ -178,7 +182,8 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         else
         {
             THToast.show(R.string.friend_link_social_network);
-            pushSettingsFragment();
+            //pushSettingsFragment();
+            linkSocialNetwork(item.socialNetwork);
         }
     }
 
@@ -256,9 +261,9 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
 
     private void pushSocialInvitationFragment(SocialNetworkEnum socialNetwork)
     {
-        Class<? extends SocialFriendsFragment> target = socialTypeFactory.findProperTargetFragment(socialNetwork);
+        Class<? extends SocialFriendsFragment> target = socialNetworkFactory.findProperTargetFragment(socialNetwork);
         Bundle bundle = new Bundle();
-        getNavigator().pushFragment(target,bundle);
+        getNavigator().pushFragment(target, bundle);
     }
 
     private void pushSettingsFragment()
@@ -266,6 +271,12 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         Bundle bundle = new Bundle();
         bundle.putBoolean(SettingsFragment.KEY_SHOW_AS_HOME_UP,true);
         getNavigator().pushFragment(SettingsFragment.class,bundle);
+    }
+
+    private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
+    {
+        SocialLinkHelper socialLinkHelper = socialNetworkFactory.buildSocialLinkerHelper(getActivity(), socialNetworkEnum);
+        socialLinkHelper.link();
     }
 
     private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork) {
@@ -309,14 +320,15 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     // TODO via which social network to invite user?
     protected void handleInviteUsers(UserFriendsDTO userToInvite)
     {
+        List<UserFriendsDTO> usersToInvite = Arrays.asList(userToInvite);
         if (!TextUtils.isEmpty(userToInvite.liId) || !TextUtils.isEmpty(userToInvite.twId))
         {
-            List<UserFriendsDTO> usersToInvite = Arrays.asList(userToInvite);
             socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
         }
         else if (!TextUtils.isEmpty(userToInvite.fbId))
         {
             //TODO do invite on the client side.
+            facebookSocialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
         }
         else
         {
