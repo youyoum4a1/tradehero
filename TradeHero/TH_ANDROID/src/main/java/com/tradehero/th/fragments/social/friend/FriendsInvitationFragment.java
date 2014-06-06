@@ -7,7 +7,11 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
@@ -26,16 +30,15 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Created by wanglinag on 14-5-26.
@@ -269,8 +272,8 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     private void pushSettingsFragment()
     {
         Bundle bundle = new Bundle();
-        bundle.putBoolean(SettingsFragment.KEY_SHOW_AS_HOME_UP,true);
-        getNavigator().pushFragment(SettingsFragment.class,bundle);
+        bundle.putBoolean(SettingsFragment.KEY_SHOW_AS_HOME_UP, true);
+        getNavigator().pushFragment(SettingsFragment.class, bundle);
     }
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
@@ -339,6 +342,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
 
     private void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
+        //Invite Success will not disappear the friend in Invie 
         if (userFriendsDTOs != null && usersToInvite != null)
         {
             for (UserFriendsDTO userFriendsDTO:usersToInvite)

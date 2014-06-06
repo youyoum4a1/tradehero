@@ -263,7 +263,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         if (!canFollow() || !hasUserToFollow)
         {
             //friendsRootView.setFollowAllViewEnable(false);
-            friendsRootView.setInviteAllViewVisible(false);
+            friendsRootView.setFollowAllViewVisible(false);
         }
 
         if (!canInviteAll() || !hasUserToInvite)
@@ -361,18 +361,19 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
-        if (friendDTOList != null && usersToInvite != null)
-        {
-            for (UserFriendsDTO userFriendsDTO:usersToInvite)
-            {
-                boolean removed = friendDTOList.remove(userFriendsDTO);
-                Timber.d("handleInviteSuccess remove: %s, result: %s",userFriendsDTO,removed);
-            }
-        }
-
-        socialFriendsListAdapter.clear();
-        socialFriendsListAdapter.addAll(friendDTOList);
-        // TODO
+        //Invite Success will not disappear the friend in Invie
+        //if (friendDTOList != null && usersToInvite != null)
+        //{
+        //    for (UserFriendsDTO userFriendsDTO:usersToInvite)
+        //    {
+        //        boolean removed = friendDTOList.remove(userFriendsDTO);
+        //        Timber.d("handleInviteSuccess remove: %s, result: %s",userFriendsDTO,removed);
+        //    }
+        //}
+        //
+        //socialFriendsListAdapter.clear();
+        //socialFriendsListAdapter.addAll(friendDTOList);
+        //// TODO
         THToast.show(R.string.invite_friend_request_sent);
 
         checkUserType();
