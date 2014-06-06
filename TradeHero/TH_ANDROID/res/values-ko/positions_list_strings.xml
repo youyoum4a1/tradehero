@@ -10,8 +10,8 @@
   <string name="position_list_header_closed">마감 (%d)</string>
   <string name="position_list_header_closed_unsure">마감</string>
   <string name="position_list_header_time_base">%1$s - %2$s</string>
-  <string name="position_unrealised_pl_header">확정되지 않은 손익</string>
-  <string name="position_realised_pl_header">확정된 손익</string>
+  <string name="position_unrealised_pl_header" deprecated="true">확정되지 않은 손익</string>
+  <string name="position_realised_pl_header" deprecated="true">확정된 손익</string>
   <string name="position_total_invested_header">총 투자금액</string>
   <string name="position_market_value_header">시가</string>
   <string name="position_quantity_header">수량</string>
@@ -33,7 +33,7 @@
   <string name="positions_in_period">기간내</string>
   <string name="positions_overall">전체</string>
 
-  <string name="position_in_period_pl">기간내 손익</string>
+  <string name="position_in_period_pl" deprecated="true">기간내 손익</string>
   <string name="position_in_period_additional_invested">추가로 투자</string>
   <string name="position_in_period_start_value">시작자산</string>
   <string name="position_in_period_as_of">%1$s기준</string>

@@ -1,6 +1,6 @@
 package com.tradehero.th.utils;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
@@ -16,19 +16,19 @@ public class PositionUtils
         super();
     }
 
-    public String getSumInvested(Context context, PositionDTO position)
+    public String getSumInvested(Resources resources, PositionDTO position)
     {
         if (position != null)
         {
-            return getSumInvested(context, position, position.getNiceCurrency());
+            return getSumInvested(resources, position, position.getNiceCurrency());
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    private String getSumInvested(Context context, PositionDTO position, String refCurrency)
+    private String getSumInvested(Resources resources, PositionDTO position, String refCurrency)
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
@@ -38,23 +38,23 @@ public class PositionUtils
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    public String getValueAtStart(Context context, PositionInPeriodDTO position)
+    public String getValueAtStart(Resources resources, PositionInPeriodDTO position)
     {
         if (position != null)
         {
-            return getValueAtStart(context, position, position.getNiceCurrency());
+            return getValueAtStart(resources, position, position.getNiceCurrency());
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    private String getValueAtStart(Context context, PositionInPeriodDTO position, String refCurrency)
+    private String getValueAtStart(Resources resources, PositionInPeriodDTO position, String refCurrency)
     {
         if (position != null &&
                 position.marketValueStartPeriodRefCcy != null &&
@@ -66,23 +66,36 @@ public class PositionUtils
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    public String getRealizedPL(Context context, PositionDTO position)
+    public void setRealizedPLLook(TextView textView, PositionDTO positionDTO)
     {
-        if (position != null)
+        textView.setText(getRealizedPL(textView.getResources(), positionDTO));
+        if (positionDTO.realizedPLRefCcy != null)
         {
-            return getRealizedPL(context, position, position.getNiceCurrency());
+            textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(positionDTO.realizedPLRefCcy)));
         }
         else
         {
-            return context.getString(R.string.na);
+            textView.setTextColor(textView.getResources().getColor(R.color.black));
         }
     }
 
-    private String getRealizedPL(Context context, PositionDTO position, String refCurrency)
+    private String getRealizedPL(Resources resources, PositionDTO position)
+    {
+        if (position != null)
+        {
+            return getRealizedPL(resources, position, position.getNiceCurrency());
+        }
+        else
+        {
+            return resources.getString(R.string.na);
+        }
+    }
+
+    private String getRealizedPL(Resources resources, PositionDTO position, String refCurrency)
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
@@ -96,23 +109,23 @@ public class PositionUtils
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    public String getInPeriodRealizedPL(Context context, PositionInPeriodDTO position)
+    public String getInPeriodRealizedPL(Resources resources, PositionInPeriodDTO position)
     {
         if (position != null)
         {
-            return getInPeriodRealizedPL(context, position, position.getNiceCurrency());
+            return getInPeriodRealizedPL(resources, position, position.getNiceCurrency());
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    private String getInPeriodRealizedPL(Context context, PositionInPeriodDTO position, String refCurrency)
+    private String getInPeriodRealizedPL(Resources resources, PositionInPeriodDTO position, String refCurrency)
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
@@ -122,23 +135,23 @@ public class PositionUtils
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    public String getMarketValue(Context context, PositionDTO position)
+    public String getMarketValue(Resources resources, PositionDTO position)
     {
         if (position != null)
         {
-            return getMarketValue(context, position, position.getNiceCurrency());
+            return getMarketValue(resources, position, position.getNiceCurrency());
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    private String getMarketValue(Context context, PositionDTO position, String refCurrency)
+    private String getMarketValue(Resources resources, PositionDTO position, String refCurrency)
     {
         if (position != null)
         {
@@ -148,23 +161,36 @@ public class PositionUtils
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    public String getUnrealizedPL(Context context, PositionDTO position)
+    public void setUnrealizedPLLook(TextView textView, PositionDTO positionDTO)
     {
-        if (position != null)
+        textView.setText(getUnrealizedPL(textView.getResources(), positionDTO));
+        if (positionDTO.unrealizedPLRefCcy != null)
         {
-            return getUnrealizedPL(context, position, position.getNiceCurrency());
+            textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(positionDTO.unrealizedPLRefCcy)));
         }
         else
         {
-            return context.getString(R.string.na);
+            textView.setTextColor(textView.getResources().getColor(R.color.black));
         }
     }
 
-    private String getUnrealizedPL(Context context, PositionDTO position, String refCurrency)
+    private String getUnrealizedPL(Resources resources, PositionDTO position)
+    {
+        if (position != null)
+        {
+            return getUnrealizedPL(resources, position, position.getNiceCurrency());
+        }
+        else
+        {
+            return resources.getString(R.string.na);
+        }
+    }
+
+    private String getUnrealizedPL(Resources resources, PositionDTO position, String refCurrency)
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
@@ -178,7 +204,7 @@ public class PositionUtils
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
@@ -215,19 +241,19 @@ public class PositionUtils
         }
     }
 
-    public String getAdditionalInvested(Context context, PositionInPeriodDTO position)
+    public String getAdditionalInvested(Resources resources, PositionInPeriodDTO position)
     {
         if (position != null)
         {
-            return getAdditionalInvested(context, position, position.getNiceCurrency());
+            return getAdditionalInvested(resources, position, position.getNiceCurrency());
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 
-    private String getAdditionalInvested(Context context, PositionInPeriodDTO position, String refCurrency)
+    private String getAdditionalInvested(Resources resources, PositionInPeriodDTO position, String refCurrency)
     {
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
@@ -238,7 +264,7 @@ public class PositionUtils
         }
         else
         {
-            return context.getString(R.string.na);
+            return resources.getString(R.string.na);
         }
     }
 }

@@ -15,7 +15,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
         >
         extends AbstractPartialBottomView<PositionDTOType, ExpandableListItemType>
 {
+    @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
     @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+    @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
     @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
     @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
     @InjectView(R.id.market_value_value) protected TextView marketValueValue;
@@ -44,7 +46,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
         super.linkWith(positionDTO, andDisplay);
         if (andDisplay)
         {
+            displayUnrealisedPLValueHeader();
             displayUnrealisedPLValue();
+            displayRealisedPLValueHeader();
             displayRealisedPLValue();
             displayTotalInvested();
             displayMarketValue();
@@ -56,7 +60,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
     @Override public void displayModelPart()
     {
         super.displayModelPart();
+        displayUnrealisedPLValueHeader();
         displayUnrealisedPLValue();
+        displayRealisedPLValueHeader();
         displayRealisedPLValue();
         displayTotalInvested();
         displayMarketValue();
@@ -64,13 +70,40 @@ abstract public class AbstractPositionPartialBottomOpenView<
         displayAveragePriceValue();
     }
 
+    public void displayUnrealisedPLValueHeader()
+    {
+        if (unrealisedPLValueHeader != null)
+        {
+            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
+            {
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_loss_header);
+            }
+            else
+            {
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_profit_header);
+            }
+        }
+    }
+
     public void displayUnrealisedPLValue()
     {
         if (unrealisedPLValue != null)
         {
-            if (positionDTO != null)
+            positionUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
+        }
+    }
+
+    public void displayRealisedPLValueHeader()
+    {
+        if (realisedPLValueHeader != null)
+        {
+            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
             {
-                unrealisedPLValue.setText(positionUtils.getUnrealizedPL(getContext(), positionDTO));
+                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
+            }
+            else
+            {
+                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
             }
         }
     }
@@ -79,10 +112,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (realisedPLValue != null)
         {
-            if (positionDTO != null)
-            {
-                realisedPLValue.setText(positionUtils.getRealizedPL(getContext(), positionDTO));
-            }
+            positionUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
@@ -92,7 +122,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionUtils.getSumInvested(getContext(), positionDTO));
+                totalInvestedValue.setText(positionUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }
@@ -103,7 +133,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null)
             {
-                marketValueValue.setText(positionUtils.getMarketValue(getContext(), positionDTO));
+                marketValueValue.setText(positionUtils.getMarketValue(getResources(), positionDTO));
             }
         }
     }

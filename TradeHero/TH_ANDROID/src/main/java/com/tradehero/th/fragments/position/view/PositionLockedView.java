@@ -75,10 +75,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (unrealisedPLValue != null)
         {
-            if (positionDTO != null)
-            {
-                unrealisedPLValue.setText(positionUtils.getUnrealizedPL(getContext(), positionDTO));
-            }
+            positionUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
         }
     }
 
@@ -86,10 +83,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (realisedPLValue != null)
         {
-            if (positionDTO != null)
-            {
-                realisedPLValue.setText(positionUtils.getRealizedPL(getContext(), positionDTO));
-            }
+            positionUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
@@ -99,7 +93,7 @@ public class PositionLockedView extends LinearLayout
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionUtils.getSumInvested(getContext(), positionDTO));
+                totalInvestedValue.setText(positionUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }

@@ -68,10 +68,7 @@ abstract public class AbstractPositionPartialBottomClosedView<
     {
         if (realisedPLValue != null)
         {
-            if (positionDTO != null)
-            {
-                realisedPLValue.setText(positionUtils.getRealizedPL(getContext(), positionDTO));
-            }
+            positionUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
@@ -86,7 +83,7 @@ abstract public class AbstractPositionPartialBottomClosedView<
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionUtils.getSumInvested(getContext(), positionDTO));
+                totalInvestedValue.setText(positionUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }

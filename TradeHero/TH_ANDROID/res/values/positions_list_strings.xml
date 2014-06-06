@@ -12,8 +12,8 @@
   <string name="position_list_header_time_base">%1$s - %2$s</string>
   <string name="position_unrealised_loss_header">Will Lose</string>
   <string name="position_unrealised_profit_header">Will Profit</string>
-  <string name="position_unrealised_pl_header">Unrealized P&amp;L</string>
-  <string name="position_realised_pl_header">Realized P&amp;L</string>
+  <string name="position_unrealised_pl_header" deprecated="true">Unrealized P&amp;L</string>
+  <string name="position_realised_pl_header" deprecated="true">Realized P&amp;L</string>
   <string name="position_realised_loss_header">Loss</string>
   <string name="position_realised_profit_header">Profit</string>
   <string name="position_total_invested_header">Total Invested</string>
@@ -37,9 +37,9 @@
   <string name="positions_in_period">In Period</string>
   <string name="positions_overall">Overall</string>
 
-  <string name="position_in_period_pl">Period P&amp;L</string>
-  <string name="position_in_period_loss">In Period Loss</string>
-  <string name="position_in_period_profit">In Period Profit</string>
+  <string name="position_in_period_pl" deprecated="true">Period P&amp;L</string>
+  <string name="position_in_period_loss">Loss In Period</string>
+  <string name="position_in_period_profit">Profit In Period</string>
   <string name="position_in_period_additional_invested">Addl. Invested</string>
   <string name="position_in_period_start_value">Value at Start</string>
   <string name="position_in_period_as_of">as of %1$s</string>

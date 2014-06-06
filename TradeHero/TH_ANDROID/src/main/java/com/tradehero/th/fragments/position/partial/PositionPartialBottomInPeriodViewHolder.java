@@ -125,7 +125,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodPL.setText(positionUtils.getInPeriodRealizedPL(context, (PositionInPeriodDTO) positionDTO));
+                inPeriodPL.setText(positionUtils.getInPeriodRealizedPL(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }
@@ -144,7 +144,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodAdditionalInvested.setText(positionUtils.getAdditionalInvested(context, (PositionInPeriodDTO) positionDTO));
+                inPeriodAdditionalInvested.setText(positionUtils.getAdditionalInvested(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }
@@ -155,7 +155,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodValueAtStart.setText(positionUtils.getValueAtStart(context, (PositionInPeriodDTO) positionDTO));
+                inPeriodValueAtStart.setText(positionUtils.getValueAtStart(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }
