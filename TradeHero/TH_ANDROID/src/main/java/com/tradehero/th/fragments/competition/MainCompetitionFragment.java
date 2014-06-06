@@ -325,7 +325,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushTradeNowElement(CompetitionZoneTradeNowDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
-        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+        ProviderSecurityListFragment.putProviderId(args, providerId);
         ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }

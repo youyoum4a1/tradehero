@@ -66,6 +66,7 @@ import com.tradehero.th.fragments.portfolio.PortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.PortfolioListItemView;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
@@ -231,6 +232,7 @@ import javax.inject.Singleton;
 
                         PositionListFragment.class,
                         LeaderboardPositionListFragment.class,
+                        CompetitionLeaderboardPositionListFragment.class,
                         OtherUserPortfolioHeaderView.class,
 
                         PositionPartialTopView.class,

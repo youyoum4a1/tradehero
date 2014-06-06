@@ -593,20 +593,30 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         if (leaderboardItem.lbmuId != -1)
         {
-            // leaderboard mark user id, to get marking user information
-            LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, leaderboardItem.getLeaderboardMarkUserId());
-            LeaderboardPositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
-            getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
+            pushLeaderboardPositionListFragment(bundle);
         }
         else
         {
-            PositionListFragment.putGetPositionsDTOKey(bundle, ownedPortfolioId);
-            PositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
-            getNavigator().pushFragment(PositionListFragment.class, bundle);
+            pushPositionListFragment(bundle, ownedPortfolioId);
         }
     }
 
-    private DashboardNavigator getNavigator()
+    protected void pushLeaderboardPositionListFragment(Bundle bundle)
+    {
+        // leaderboard mark user id, to get marking user information
+        LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, leaderboardItem.getLeaderboardMarkUserId());
+        LeaderboardPositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
+        getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
+    }
+
+    protected void pushPositionListFragment(Bundle bundle, OwnedPortfolioId ownedPortfolioId)
+    {
+        PositionListFragment.putGetPositionsDTOKey(bundle, ownedPortfolioId);
+        PositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
+        getNavigator().pushFragment(PositionListFragment.class, bundle);
+    }
+
+    protected DashboardNavigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
