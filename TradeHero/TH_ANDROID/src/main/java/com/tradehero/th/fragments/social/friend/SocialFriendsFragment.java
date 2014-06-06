@@ -23,12 +23,14 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeSet;
+import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.*;
 
 /**
  * Created by wangliang on 14-5-26.
@@ -260,12 +262,14 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
         if (!canFollow() || !hasUserToFollow)
         {
-            friendsRootView.setFollowAllViewEnable(false);
+            //friendsRootView.setFollowAllViewEnable(false);
+            friendsRootView.setInviteAllViewVisible(false);
         }
 
         if (!canInviteAll() || !hasUserToInvite)
         {
-            friendsRootView.setInviteAllViewEnable(false);
+            //friendsRootView.setInviteAllViewEnable(false);
+            friendsRootView.setInviteAllViewVisible(false);
         }
     }
 
