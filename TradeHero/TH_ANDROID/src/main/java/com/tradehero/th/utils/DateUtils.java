@@ -22,8 +22,8 @@ public class DateUtils
 
         if (sdf == null)
         {
-            sdf = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_yyyy_hh_mm_gmt));
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+            sdf = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_yyyy_hh_mm));
+            sdf.setTimeZone(TimeZone.getDefault());
         }
         return sdf.format(d);
     }
@@ -41,7 +41,7 @@ public class DateUtils
 
     public static String getFormattedUtcDate(Date utcDate)
     {
-        SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_yyyy_hh_mm_gmt));
+        SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_yyyy_hh_mm));
         return requiredFormat.format(utcDate);
     }
 }
