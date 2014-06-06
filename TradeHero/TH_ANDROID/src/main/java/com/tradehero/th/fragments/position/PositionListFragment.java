@@ -692,8 +692,8 @@ public class PositionListFragment
     {
         Bundle args = new Bundle();
         // By default tries
-        args.putBundle(TradeListFragment.BUNDLE_KEY_OWNED_POSITION_ID_BUNDLE, clickedPositionDTO.getOwnedPositionId().getArgs());
-        getNavigator().pushFragment(TradeListFragment.class, args);
+        TradeListFragment.putPositionDTOKey(args, clickedPositionDTO.getPositionDTOKey());
+        getDashboardNavigator().pushFragment(TradeListFragment.class, args);
     }
 
     @Override public void onBuyClicked(PositionDTO clickedPositionDTO)

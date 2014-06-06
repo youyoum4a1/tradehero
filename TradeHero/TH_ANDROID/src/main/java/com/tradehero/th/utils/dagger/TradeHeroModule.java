@@ -124,7 +124,6 @@ import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
@@ -244,7 +243,6 @@ import javax.inject.Singleton;
                         PositionPartialBottomInPeriodViewHolder.class,
 
                         TradeListFragment.class,
-                        TradeListInPeriodFragment.class,
                         TradeListItemView.class,
                         TradeListOverlayHeaderView.class,
                         TradeListHeaderView.class,
