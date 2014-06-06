@@ -24,6 +24,8 @@ public class TestApplication extends Application  implements TestLifecycleApplic
 
     @Override public void prepareTest(Object test)
     {
+        // this is not very nice, since we will inject everytime a test is call
+        // it should be done before every setup instead
         DaggerUtils.inject(test);
     }
 

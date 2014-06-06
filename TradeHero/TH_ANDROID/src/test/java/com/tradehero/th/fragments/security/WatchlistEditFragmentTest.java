@@ -1,5 +1,9 @@
 package com.tradehero.th.fragments.security;
 
+import com.actionbarsherlock.ActionBarSherlock;
+import com.actionbarsherlock.internal.ActionBarSherlockCompat;
+import com.actionbarsherlock.internal.ActionBarSherlockNative;
+import com.actionbarsherlock.internal.ActionBarSherlockRobolectric;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import org.junit.Before;
@@ -16,11 +20,15 @@ public class WatchlistEditFragmentTest
 
     @Before public void setUp()
     {
-        activity = Robolectric.buildActivity(DashboardActivity.class).create().get();
+        ActionBarSherlock.registerImplementation(ActionBarSherlockRobolectric.class);
+        ActionBarSherlock.unregisterImplementation(ActionBarSherlockNative.class);
+        ActionBarSherlock.unregisterImplementation(ActionBarSherlockCompat.class);
+
+        activity = Robolectric.buildActivity(DashboardActivity.class).create().visible().get();
     }
 
     @Test public void shouldNotBeNull()
     {
-        assertThat(true).isEqualTo(true);
+        assertThat(activity).isNotNull();
     }
 }
