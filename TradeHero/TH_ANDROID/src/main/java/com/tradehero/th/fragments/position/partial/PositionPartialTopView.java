@@ -353,7 +353,7 @@ public class PositionPartialTopView extends LinearLayout
                     number = new THSignedNumber(
                             THSignedNumber.TYPE_MONEY,
                             positionDTO.realizedPLRefCcy,
-                            true,
+                            THSignedNumber.WITH_SIGN,
                             /*portfolioDTO*/positionDTO.getNiceCurrency(),
                             THSignedNumber.TYPE_SIGN_MINUS_ONLY
                             );
@@ -363,7 +363,7 @@ public class PositionPartialTopView extends LinearLayout
                     number = new THSignedNumber(
                             THSignedNumber.TYPE_MONEY,
                             positionDTO.marketValueRefCcy,
-                            true,
+                            THSignedNumber.WITH_SIGN,
                             /*portfolioDTO*/positionDTO.getNiceCurrency(),
                             THSignedNumber.TYPE_SIGN_MINUS_ONLY
                     );

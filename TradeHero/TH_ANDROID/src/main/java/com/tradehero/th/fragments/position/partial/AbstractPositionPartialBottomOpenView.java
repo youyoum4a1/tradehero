@@ -159,7 +159,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null && positionDTO.averagePriceRefCcy != null)
             {
-                THSignedNumber ThAveragePriceRefCcy = new THSignedNumber(THSignedNumber.TYPE_MONEY, positionDTO.averagePriceRefCcy, false, positionDTO.getNiceCurrency());
+                THSignedNumber ThAveragePriceRefCcy = new THSignedNumber(THSignedNumber.TYPE_MONEY, positionDTO.averagePriceRefCcy, THSignedNumber.WITHOUT_SIGN, positionDTO.getNiceCurrency());
                 averagePriceValue.setText(ThAveragePriceRefCcy.toString());
             }
             else

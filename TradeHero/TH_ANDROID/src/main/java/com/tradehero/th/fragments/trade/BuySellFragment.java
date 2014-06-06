@@ -907,7 +907,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 else
                 {
                     bthSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, false, "");
+                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, THSignedNumber.WITHOUT_SIGN, "");
                     bPrice = bthSignedNumber.toString();
                 }
 
@@ -918,7 +918,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 else
                 {
                     sthSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, false, "");
+                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
                     sPrice = sthSignedNumber.toString();
                 }
             }
@@ -1661,7 +1661,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 double value = mQuantity * priceRefCcy;
                 THSignedNumber thTradeValue =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, false,
+                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
                                 portfolioCompactDTO.currencyDisplay);
                 valueText = thTradeValue.toString();
 
@@ -1670,7 +1670,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     double cashAvailable = portfolioCompactDTO.cashBalance;
                     THSignedNumber thSignedNumber =
                             new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable - value,
-                                    false, portfolioCompactDTO.currencyDisplay);
+                                    THSignedNumber.WITHOUT_SIGN, portfolioCompactDTO.currencyDisplay);
                     cashLeftText = thSignedNumber.toString();
                 }
             }

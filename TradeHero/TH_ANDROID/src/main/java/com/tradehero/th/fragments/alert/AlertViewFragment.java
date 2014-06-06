@@ -322,7 +322,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     {
         if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
+            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, THSignedNumber.WITHOUT_SIGN);
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
@@ -336,7 +336,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void displayCurrentPrice()
     {
-        THSignedNumber thCurrentPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.security.lastPrice, false);
+        THSignedNumber thCurrentPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.security.lastPrice, THSignedNumber.WITHOUT_SIGN);
         currentPrice.setText(thCurrentPrice.toString());
     }
 

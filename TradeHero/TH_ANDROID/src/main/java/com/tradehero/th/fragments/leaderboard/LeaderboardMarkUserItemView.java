@@ -387,7 +387,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
         {
             lbmuSharpeRatio.setText(new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                    leaderboardItem.sharpeRatioInPeriodVsSP500, false).toString());
+                    leaderboardItem.sharpeRatioInPeriodVsSP500, THSignedNumber.WITHOUT_SIGN).toString());
         }
         else
         {
@@ -452,7 +452,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             THSignedNumber formattedNumber =
                     new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.PLinPeriodRefCcy,
-                            false, getLbmuPlCurrencyDisplay());
+                            THSignedNumber.WITHOUT_SIGN, getLbmuPlCurrencyDisplay());
             lbmuPl.setText(formattedNumber.toString());
         }
     }
