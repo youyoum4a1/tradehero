@@ -10,6 +10,7 @@
   <string name="leaderboard_empty">지금 트레이드를 시작하여 리더보드에 첫번째로 이름을 올리세요! 
   </string>
   <string name="action_search">검색</string>
+  <string name="action_invite">Invite Friends</string>    <!--TODO translation-->
   <string name="update">업데이트</string>
   <string name="empty_video_list">지금 재생 가능한 비디오가 없습니다.</string>
   <string name="loading_required_information">요청한 정보 로딩중</string>

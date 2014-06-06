@@ -94,8 +94,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
-import com.tradehero.th.fragments.social.AllRelationsFragment;
-import com.tradehero.th.fragments.social.RelationsListItemView;
+import com.tradehero.th.fragments.social.*;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
@@ -103,6 +102,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
+import com.tradehero.th.fragments.social.friend.*;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
@@ -371,6 +371,18 @@ import javax.inject.Singleton;
 
                         SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
+                        FriendsInvitationFragment.class,
+                        FacebookSocialFriendsFragment.class,
+                        TwitterSocialFriendsFragment.class,
+                        LinkedInSocialFriendsFragment.class,
+                        WeiboSocialFriendsFragment.class,
+                        SocialFriendHandler.class,
+                        FacebookSocialFriendHandler.class,
+                        FacebookSocialLinkHelper.class,
+                        LinkedInSocialLinkHelper.class,
+                        TwitterSocialLinkHelper.class,
+                        WeiboSocialLinkHelper.class,
+
                 },
         staticInjections =
                 {

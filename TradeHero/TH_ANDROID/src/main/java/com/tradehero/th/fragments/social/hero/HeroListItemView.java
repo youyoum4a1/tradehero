@@ -85,7 +85,6 @@ public class HeroListItemView extends RelativeLayout
         picasso.get().load(R.drawable.superman_facebook)
                 .transform(peopleIconTransformation)
                 .into(userIcon);
-        Timber.d("HeroListItemView onAttachedToWindow hashCode:%d", this.hashCode());
     }
 
     @OnClick(R.id.ic_status) void onStatusIconClicked()

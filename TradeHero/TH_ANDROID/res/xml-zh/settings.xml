@@ -17,7 +17,6 @@
         android:icon="@drawable/settings_linkedin_normal"
         />
 
-    <!--
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_weibo"
         android:title="@string/settings_sharing_weibo"
@@ -31,7 +30,6 @@
         android:visibility="gone"
         android:icon="@drawable/settings_profile"
         />
-    -->
   </PreferenceCategory>
 
   <PreferenceCategory

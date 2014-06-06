@@ -122,7 +122,10 @@
   <style name="TradeHero.Dashboard" parent="TradeHero">
     <item name="android:windowActionBarOverlay">false</item>
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
+    <!--<item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>-->
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
+    <!--<item name="android:actionBarItemBackground">@drawable/actionbar_item_bg</item>-->
+    <!--<item name="actionBarItemBackground">@drawable/actionbar_item_bg</item>-->
   </style>
 
   <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">
@@ -141,6 +144,10 @@
     <item name="android:actionMenuTextColor">@style/TradeHero.Dashboard.ActionBar.MenuTextColor
     </item>
   </style>
+
+    <style name="TradeHero.Dashboard.ActionBarButton" parent="Widget.Sherlock.Light.ActionButton">
+        <item name="android:background">@drawable/topbarrectangle_default</item>
+    </style>
 
   <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"
       parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
