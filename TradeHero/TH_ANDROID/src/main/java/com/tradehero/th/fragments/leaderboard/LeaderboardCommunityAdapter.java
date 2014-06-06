@@ -98,10 +98,8 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             heroAndFollower.add(1, fakeDto.getLeaderboardDefKey());
         }
 
-        //TODO want delete friend by alex, is that right way?
         List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
-
-        if (skillAndFriend != null && skillAndFriend.size() < 3)
+        if (skillAndFriend != null && skillAndFriend.size() < 2)
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
             fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
