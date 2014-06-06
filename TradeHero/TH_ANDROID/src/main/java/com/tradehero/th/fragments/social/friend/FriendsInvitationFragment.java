@@ -43,7 +43,8 @@ import timber.log.Timber;
 /**
  * Created by wanglinag on 14-5-26.
  */
-public class FriendsInvitationFragment extends DashboardFragment implements AdapterView.OnItemClickListener, SocialFriendItemView.OnElementClickListener
+public class FriendsInvitationFragment extends DashboardFragment
+        implements AdapterView.OnItemClickListener, SocialFriendItemView.OnElementClickListener
 {
     @InjectView(R.id.search_social_friends) EditText searchTextView;
     @InjectView(R.id.social_friend_type_list) ListView socialListView;
@@ -68,15 +69,18 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     private static final int LIST_TYPE_FRIEND_LIST = 2;
 
     private Bundle savedState;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         socialFriendHandler = new SocialFriendHandler();
         facebookSocialFriendHandler = new FacebookSocialFriendHandler(getActivity());
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
@@ -87,38 +91,45 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup v = (ViewGroup)inflater.inflate(R.layout.fragment_invite_friends,container,false);
-        ButterKnife.inject(this,v);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_invite_friends, container, false);
+        ButterKnife.inject(this, v);
         return v;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         restoreSavedData(savedInstanceState);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState)
+    {
         outState.putBundle(KEY_BUNDLE, savedState != null ? savedState : saveState());
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView()
+    {
         savedState = saveState();
 
         super.onDestroyView();
     }
 
-    private void restoreSavedData(Bundle savedInstanceState) {
-        if(savedInstanceState != null && savedState == null) {
+    private void restoreSavedData(Bundle savedInstanceState)
+    {
+        if (savedInstanceState != null && savedState == null)
+        {
             savedState = savedInstanceState.getBundle(KEY_BUNDLE);
         }
         int listType = LIST_TYPE_SOCIAL_LIST;
-        if(savedState != null) {
+        if (savedState != null)
+        {
             listType = savedState.getInt(KEY_LIST_TYPE);
         }
         savedState = null;
@@ -132,7 +143,8 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         }
     }
 
-    private Bundle saveState() {
+    private Bundle saveState()
+    {
         Bundle state = new Bundle();
         state.putInt(KEY_LIST_TYPE, (friendsListView.getVisibility() == View.VISIBLE) ? LIST_TYPE_FRIEND_LIST : LIST_TYPE_SOCIAL_LIST);
         return state;
@@ -145,8 +157,8 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
 
     private void bindSocialTypeData()
     {
-        List<SocalTypeItem> socalTypeItemList =  socialNetworkFactory.getSocialTypeList();
-        SocalTypeListAdapter adapter = new SocalTypeListAdapter(getActivity(),0,socalTypeItemList);
+        List<SocalTypeItem> socalTypeItemList = socialNetworkFactory.getSocialTypeList();
+        SocalTypeListAdapter adapter = new SocalTypeListAdapter(getActivity(), 0, socalTypeItemList);
         socialListView.setAdapter(adapter);
         socialListView.setOnItemClickListener(this);
         showSocialTypeList();
@@ -156,7 +168,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     {
         if (friendsListView.getAdapter() == null)
         {
-            SocialFriendsAdapter  socialFriendsListAdapter =
+            SocialFriendsAdapter socialFriendsListAdapter =
                     new SocialFriendsAdapter(
                             getActivity(),
                             userFriendsDTOs,
@@ -167,7 +179,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         }
         else
         {
-            SocialFriendsAdapter socialFriendsListAdapter = (SocialFriendsAdapter)friendsListView.getAdapter();
+            SocialFriendsAdapter socialFriendsListAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
             socialFriendsListAdapter.clear();
             socialFriendsListAdapter.addAll(userFriendsDTOs);
         }
@@ -175,8 +187,9 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        SocalTypeItem item =  (SocalTypeItem)parent.getItemAtPosition(position);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        SocalTypeItem item = (SocalTypeItem) parent.getItemAtPosition(position);
         boolean linked = checkLinkedStatus(item.socialNetwork);
         if (linked)
         {
@@ -195,7 +208,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         View view = getView();
         if (view != null && searchTask != null)
         {
-           view.removeCallbacks(searchTask);
+            view.removeCallbacks(searchTask);
         }
     }
 
@@ -259,7 +272,7 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     {
         detachSearchTask();
         String query = searchTextView.getText().toString();
-        searchCallback =  userServiceWrapper.searchSocialFriends(currentUserId.toUserBaseKey(), null, query, new SearchFriendsCallback());
+        searchCallback = userServiceWrapper.searchSocialFriends(currentUserId.toUserBaseKey(), null, query, new SearchFriendsCallback());
     }
 
     private void pushSocialInvitationFragment(SocialNetworkEnum socialNetwork)
@@ -282,11 +295,14 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         socialLinkHelper.link();
     }
 
-    private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork) {
+    private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork)
+    {
         UserProfileDTO updatedUserProfileDTO =
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (updatedUserProfileDTO != null) {
-            switch (socialNetwork) {
+        if (updatedUserProfileDTO != null)
+        {
+            switch (socialNetwork)
+            {
                 case FB:
                     return updatedUserProfileDTO.fbLinked;
                 case LN:
@@ -305,19 +321,21 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
     }
 
     @Override
-    public void onFollowButtonClick(UserFriendsDTO userFriendsDTO) {
+    public void onFollowButtonClick(UserFriendsDTO userFriendsDTO)
+    {
         handleFollowUsers(userFriendsDTO);
     }
 
     @Override
-    public void onInviteButtonClick(UserFriendsDTO userFriendsDTO) {
+    public void onInviteButtonClick(UserFriendsDTO userFriendsDTO)
+    {
         handleInviteUsers(userFriendsDTO);
     }
 
     protected void handleFollowUsers(UserFriendsDTO userToFollow)
     {
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userToFollow);
-        socialFriendHandler.followFriends(usersToFollow,new FollowFriendCallback(usersToFollow));
+        socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
     }
 
     // TODO via which social network to invite user?
@@ -337,46 +355,44 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         {
             //if all ids are empty or only wbId is not empty, how to do?
         }
-
     }
 
     private void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
-        //Invite Success will not disappear the friend in Invie 
-        if (userFriendsDTOs != null && usersToInvite != null)
-        {
-            for (UserFriendsDTO userFriendsDTO:usersToInvite)
-            {
-                userFriendsDTOs.remove(userFriendsDTO);
-            }
-
-        }
-        SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter)friendsListView.getAdapter();
-
-        socialFriendsAdapter.clear();
-        socialFriendsAdapter.addAll(userFriendsDTOs);
+        //Invite Success will not disappear the friend in Invite
+        //if (userFriendsDTOs != null && usersToInvite != null)
+        //{
+        //    for (UserFriendsDTO userFriendsDTO : usersToInvite)
+        //    {
+        //        userFriendsDTOs.remove(userFriendsDTO);
+        //    }
+        //}
+        //SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
+        //
+        //socialFriendsAdapter.clear();
+        //socialFriendsAdapter.addAll(userFriendsDTOs);
+        THToast.show(R.string.invite_friend_request_sent);
     }
 
     private void handleFollowSuccess(List<UserFriendsDTO> usersToFollow)
     {
         if (userFriendsDTOs != null && usersToFollow != null)
         {
-            for (UserFriendsDTO userFriendsDTO:usersToFollow)
+            for (UserFriendsDTO userFriendsDTO : usersToFollow)
             {
                 userFriendsDTOs.remove(userFriendsDTO);
             }
-
         }
-        SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter)friendsListView.getAdapter();
+        SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
 
         socialFriendsAdapter.clear();
         socialFriendsAdapter.addAll(userFriendsDTOs);
     }
 
-    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO> {
+    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
+    {
 
         List<UserFriendsDTO> usersToFollow;
-
 
         private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
         {
@@ -385,28 +401,33 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         }
 
         @Override
-        public void success(UserProfileDTO userProfileDTO, Response response) {
-            super.success(userProfileDTO,response);
-            if (response.getStatus() != 200)
+        public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            super.success(userProfileDTO, response);
+            if (response.getStatus() == 200 || response.getStatus() == 204)
             {
-                // TODO
-                THToast.show("Error");
-                return;
+                handleFollowSuccess(usersToFollow);
             }
-            handleFollowSuccess(usersToFollow);
+            else
+            {
+                THToast.show(R.string.follow_friend_request_error);
+            }
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
             super.failure(retrofitError);
-            THToast.show("Error");
+            THToast.show(R.string.follow_friend_request_error);
         }
-    };
+    }
 
-    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response> {
+    ;
+
+    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
+    {
 
         List<UserFriendsDTO> usersToInvite;
-
 
         private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
         {
@@ -415,25 +436,29 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         }
 
         @Override
-        public void success(Response data, Response response) {
-            super.success(data,response);
-            if (response.getStatus() != 200)
+        public void success(Response data, Response response)
+        {
+            super.success(data, response);
+            if (response.getStatus() == 200 || response.getStatus() == 204)
             {
-                // TODO
-                THToast.show("Error");
-                return;
+                handleInviteSuccess(usersToInvite);
             }
-            handleInviteSuccess(usersToInvite);
-
+            else
+            {
+                THToast.show(R.string.invite_friend_request_error);
+            }
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
             super.failure(retrofitError);
             // TODO
-            THToast.show("Error");
+            THToast.show(R.string.invite_friend_request_error);
         }
-    };
+    }
+
+    ;
 
     private List<UserFriendsDTO> filterTheDublicated(List<UserFriendsDTO> friendDTOList)
     {
@@ -444,48 +469,58 @@ public class FriendsInvitationFragment extends DashboardFragment implements Adap
         return list;
     }
 
-
-    class SearchFriendsCallback implements  Callback<List<UserFriendsDTO>> {
+    class SearchFriendsCallback implements Callback<List<UserFriendsDTO>>
+    {
 
         @Override
-        public void success(List<UserFriendsDTO> userFriendsDTOs, Response response) {
+        public void success(List<UserFriendsDTO> userFriendsDTOs, Response response)
+        {
             FriendsInvitationFragment.this.userFriendsDTOs = filterTheDublicated(userFriendsDTOs);
             bindSearchData();
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
-            Timber.e(retrofitError,"SearchFriendsCallback error");
+        public void failure(RetrofitError retrofitError)
+        {
+            Timber.e(retrofitError, "SearchFriendsCallback error");
             // TODO need to tell user.
             showSocialTypeList();
         }
     }
 
-    class SearchTextWatcher implements TextWatcher {
+    class SearchTextWatcher implements TextWatcher
+    {
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
 
         }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
 
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-                canclePendingSearchTask();
-                if (s != null && s.toString().trim().length() > 0) {
-                    scheduleSearch();
-                } else {
-                    showSocialTypeList();
-                }
+        public void afterTextChanged(Editable s)
+        {
+            canclePendingSearchTask();
+            if (s != null && s.toString().trim().length() > 0)
+            {
+                scheduleSearch();
+            }
+            else
+            {
+                showSocialTypeList();
+            }
         }
     }
 
     @Override
-    public boolean isTabBarVisible() {
+    public boolean isTabBarVisible()
+    {
         return false;
     }
 }
