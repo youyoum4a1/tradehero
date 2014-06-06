@@ -24,7 +24,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -66,7 +66,7 @@ public class UpdateCenterFragment extends BaseFragment
     @Inject MessageHeaderCache messageHeaderCache;
 
     private FragmentTabHost mTabHost;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ImageButton mNewMsgButton;
 
     private BroadcastReceiver broadcastReceiver;
@@ -115,20 +115,20 @@ public class UpdateCenterFragment extends BaseFragment
 
     private void fetchUserProfile()
     {
-        detachUserProfileTask();
+        detachUserProfileCache();
 
-        fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false,
-                createUserProfileCacheListener());
-        fetchUserProfileTask.execute();
+        userProfileCacheListener = createUserProfileCacheListener();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private void detachUserProfileTask()
+    private void detachUserProfileCache()
     {
-        if (fetchUserProfileTask != null)
+        if (userProfileCacheListener != null)
         {
-            fetchUserProfileTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        fetchUserProfileTask = null;
+        userProfileCacheListener = null;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -268,7 +268,7 @@ public class UpdateCenterFragment extends BaseFragment
         Timber.d("onDestroyView");
         //don't have to clear sub fragment to refresh data
         //clearTabs();
-        detachUserProfileTask();
+        detachUserProfileCache();
 
         super.onDestroyView();
     }
@@ -364,15 +364,15 @@ public class UpdateCenterFragment extends BaseFragment
         changeTabTitleNumber(tabType, number);
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
         return new FetchUserProfileListener();
     }
 
-    private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    private class FetchUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             linkWith(value, true);
         }

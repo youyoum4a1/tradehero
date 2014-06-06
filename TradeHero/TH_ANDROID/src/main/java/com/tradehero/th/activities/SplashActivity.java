@@ -40,10 +40,10 @@ public class SplashActivity extends SherlockActivity
 
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
-    @Inject protected UserServiceWrapper userServiceWrapper;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected ExchangeListCache exchangeListCache;
-    @Inject protected ProviderListCache providerListCache;
+    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject ExchangeListCache exchangeListCache;
+    @Inject ProviderListCache providerListCache;
     @Inject @FacebookAppId String facebookAppId;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
@@ -153,7 +153,7 @@ public class SplashActivity extends SherlockActivity
             canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
-                exchangeListCache.getOrFetch(new ExchangeListType());
+                exchangeListCache.getOrFetchAsync(new ExchangeListType());
             }
             catch (Throwable throwable)
             {

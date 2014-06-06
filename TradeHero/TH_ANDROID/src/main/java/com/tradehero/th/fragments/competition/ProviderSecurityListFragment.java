@@ -37,7 +37,7 @@ import javax.inject.Inject;
 
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
-    public static final String BUNDLE_KEY_PROVIDER_ID = ProviderSecurityListFragment.class.getName() + ".providerId";
+    private static final String BUNDLE_KEY_PROVIDER_ID = ProviderSecurityListFragment.class.getName() + ".providerId";
     public final static int SECURITY_ID_LIST_LOADER_ID = 2531;
 
     // TODO sort warrants
@@ -58,20 +58,26 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     ActionBar actionBar;
     private MenuItem wizardButton;
 
+    public static void putProviderId(Bundle args, ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
+
+    private static ProviderId getProviderId(Bundle args)
+    {
+        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_KEY_PROVIDER_ID))
         {
-            this.providerId = new ProviderId(savedInstanceState.getBundle(BUNDLE_KEY_PROVIDER_ID));
-        }
-        else if (getArguments() != null && getArguments().containsKey(BUNDLE_KEY_PROVIDER_ID))
-        {
-            this.providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
+            this.providerId = getProviderId(savedInstanceState);
         }
         else
         {
-            throw new IllegalArgumentException("There is no defined providerId");
+            this.providerId = getProviderId(getArguments());
         }
         this.providerSpecificResourcesDTO = this.providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
@@ -202,7 +208,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override public int getSecurityIdListLoaderId()
     {
-        return SECURITY_ID_LIST_LOADER_ID;
+        return SECURITY_ID_LIST_LOADER_ID + providerId.key;
     }
 
     @Override public ProviderSecurityListType getSecurityListType(int page)
@@ -224,6 +230,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
+        SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         getNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 

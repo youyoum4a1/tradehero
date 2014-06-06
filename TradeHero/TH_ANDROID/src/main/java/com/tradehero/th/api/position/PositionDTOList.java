@@ -1,6 +1,7 @@
 package com.tradehero.th.api.position;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -60,5 +61,16 @@ public class PositionDTOList<PositionDTOType extends PositionDTO>
         }
 
         return latest;
+    }
+
+    public void setOnInPeriod(LeaderboardMarkUserId leaderboardMarkUserId)
+    {
+        for (PositionDTOType positionDTO : this)
+        {
+            if (positionDTO instanceof PositionInPeriodDTO)
+            {
+                ((PositionInPeriodDTO) positionDTO).setLeaderboardMarkUserId(leaderboardMarkUserId);
+            }
+        }
     }
 }

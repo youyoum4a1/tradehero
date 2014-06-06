@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
+import com.tradehero.common.persistence.DTORetrievedAsyncMilestoneNew;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -8,7 +8,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class UserProfileRetrievedMilestone extends DTORetrievedAsyncMilestone<UserBaseKey, UserProfileDTO, UserProfileCache>
+public class UserProfileRetrievedMilestone extends DTORetrievedAsyncMilestoneNew<UserBaseKey, UserProfileDTO, UserProfileCache>
 {
     @Inject Lazy<UserProfileCache> userProfileCache;
 

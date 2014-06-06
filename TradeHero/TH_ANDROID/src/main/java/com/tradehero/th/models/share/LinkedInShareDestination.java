@@ -13,7 +13,7 @@ public class LinkedInShareDestination extends BaseShareDestination
 
     @Override public int getIdResId()
     {
-        return R.integer.share_destination_id_linked;
+        return R.integer.social_destination_id_linkedin;
     }
 
     @Override public SocialNetworkEnum getSocialNetworkEnum()

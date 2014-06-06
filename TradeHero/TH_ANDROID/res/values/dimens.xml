@@ -7,7 +7,7 @@
   <dimen name="authentication_head_text_size">18sp</dimen>
   <dimen name="authentication_text_size">14sp</dimen>
   <dimen name="copyright_text_size">12sp</dimen>
-  <dimen name="authentication_textbox_radius">5dp</dimen>
+  <dimen name="textbox_light_background_radius">5dp</dimen>
   <dimen name="user_profile_corner_radius">0dp</dimen>
   <dimen name="dashboard_padding">0dp</dimen>
 
@@ -36,11 +36,11 @@
   <dimen name="timeline_vendor_logo_max_height">40dp</dimen>
   <dimen name="timeline_vendor_logo_max_width">100dp</dimen>
   <dimen name="timeline_vendor_logo_height">40dp</dimen>
-  <dimen name="timeline_action_buttons_horizontal_padding">10dp</dimen>
+  <dimen name="discussion_action_buttons_horizontal_padding">15dp</dimen>
   <dimen name="timeline_action_buttons_horizontal_padding_big">20dp</dimen>
   <dimen name="comment_action_buttons_horizontal_padding">3dp</dimen>
   <dimen name="timeline_action_buttons_padding">3dp</dimen>
-  <dimen name="timeline_action_buttons_vertical_padding">3dp</dimen>
+  <dimen name="discussion_action_buttons_vertical_padding">3dp</dimen>
   <dimen name="timeline_action_buttons_vertical_padding_big">10dp</dimen>
   <dimen name="leaderboard_fof_text_size">12sp</dimen>
   <dimen name="notification_margin">10dp</dimen>
@@ -142,5 +142,7 @@
   <dimen name="guide_close_margin">15dp</dimen>
   <dimen name="security_logo_midium">60dp</dimen>
   <dimen name="button_height_30">30dp</dimen>
+  <dimen name="leaderboard_numerical_label_text_size">11sp</dimen>
+  <dimen name="discussion_separator_thickness">0.5dp</dimen>
 
 </resources>

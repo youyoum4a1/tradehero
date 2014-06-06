@@ -168,7 +168,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 THSignedNumber thPlSinceInception = new THSignedNumber(
                         THSignedNumber.TYPE_MONEY,
                         pl,
-                        true,
+                        THSignedNumber.WITH_SIGN,
                         SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
                         THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
                 profitFromTrades.setText(thPlSinceInception.toString());
@@ -201,7 +201,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
                 THSignedNumber thTotalWealth = new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                        userProfileDTO.portfolio.totalValue, false);
+                        userProfileDTO.portfolio.totalValue, THSignedNumber.WITHOUT_SIGN);
                 totalWealth.setText(thTotalWealth.toString());
             }
             else
@@ -218,7 +218,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
                 THSignedNumber thAdditionalCash = new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                        userProfileDTO.portfolio.getTotalExtraCash(), false);
+                        userProfileDTO.portfolio.getTotalExtraCash(), THSignedNumber.WITHOUT_SIGN);
                 additionalCash.setText(thAdditionalCash.toString());
             }
             else
@@ -235,7 +235,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
                 THSignedNumber thCashOnHand = new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                        userProfileDTO.portfolio.cashBalance, false);
+                        userProfileDTO.portfolio.cashBalance, THSignedNumber.WITHOUT_SIGN);
                 cashOnHand.setText(thCashOnHand.toString());
             }
             else

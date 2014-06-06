@@ -14,6 +14,7 @@ import timber.log.Timber;
 abstract public class SignInOrUpFragment extends AuthenticationFragment
 {
     abstract protected int getViewId();
+
     abstract protected int getEmailSignUpViewId();
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -31,6 +32,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_weibo_signin).setOnClickListener(onClickListener);
+        view.findViewById(R.id.btn_qq_signin).setOnClickListener(onClickListener);
         view.findViewById(getEmailSignUpViewId()).setOnClickListener(onClickListener);
         view.findViewById(R.id.txt_term_of_service_signin).setOnClickListener(onClickListener);
 
@@ -38,7 +40,8 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
         checkLocale();
     }
@@ -53,7 +56,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     {
         boolean isChineseLocale = DeviceTokenHelper.isChineseVersion();
         String language = MetaHelper.getLanguage(getActivity());
-        Timber.d("language %s",language);
+        Timber.d("language %s", language);
         if (isChineseLocale)
         {
             showViewForChinese();
@@ -62,6 +65,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         else if (language != null && language.startsWith("ko"))
         {
             getView().findViewById(R.id.btn_weibo_signin).setVisibility(View.GONE);
+            getView().findViewById(R.id.btn_qq_signin).setVisibility(View.GONE);
         }
     }
 
@@ -72,8 +76,8 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         root.findViewById(R.id.btn_twitter_signin).setVisibility(View.GONE);
         root.findViewById(R.id.btn_linkedin_signin).setVisibility(View.VISIBLE);
         root.findViewById(R.id.btn_weibo_signin).setVisibility(View.VISIBLE);
+        root.findViewById(R.id.btn_qq_signin).setVisibility(View.VISIBLE);
     }
-
 
     abstract public AuthenticationMode getAuthenticationMode();
 }

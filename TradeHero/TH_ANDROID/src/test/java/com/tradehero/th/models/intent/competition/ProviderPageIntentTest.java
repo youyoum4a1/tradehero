@@ -8,7 +8,6 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
 import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -22,12 +21,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
+@Config(manifest = TestConstants.MANIFEST_PATH)
 public class ProviderPageIntentTest
 {
     @Before public void setUp()
     {
-        DaggerUtils.inject(this);
         THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
     }
 

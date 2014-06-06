@@ -34,7 +34,9 @@
   <string name="authentication_twitter_email">Email</string>
   <string name="authentication_twitter_connecting">Connecting to Twitter</string>
   <string name="sina_weibo">Weibo</string>
+  <string name="tencent_qq">QQ</string>
   <string name="authentication_connecting_to_weibo">Connecting to Weibo</string>
+  <string name="authentication_connecting_to_qq">Connecting to QQ</string>
   <string name="wechat">WeChat</string>
 
   <string name="authentication_error_creating_signup_form">There was an error creating the sign-up form</string>

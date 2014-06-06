@@ -10,7 +10,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -36,10 +36,12 @@ public class SettingsAlipayFragment extends DashboardFragment
 {
     private View view;
     private ServerValidatedEmailText alipayAccountText;
+    private ServerValidatedEmailText alipayAccountIDText;
+    private ServerValidatedEmailText alipayAccountRealNameText;
     private ProgressDialog progressDialog;
     private Button submitButton;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private MiddleCallback<UpdateAlipayAccountDTO> middleCallbackUpdateAlipayAccount;
 
     @Inject UserServiceWrapper userServiceWrapper;
@@ -78,11 +80,21 @@ public class SettingsAlipayFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachMiddleCallbackUpdateAlipayAccount();
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         if (alipayAccountText != null)
         {
             alipayAccountText.setOnTouchListener(null);
             alipayAccountText = null;
+        }
+        if (alipayAccountIDText != null)
+        {
+            alipayAccountIDText.setOnTouchListener(null);
+            alipayAccountIDText = null;
+        }
+        if (alipayAccountRealNameText != null)
+        {
+            alipayAccountRealNameText.setOnTouchListener(null);
+            alipayAccountRealNameText = null;
         }
         if (submitButton != null)
         {
@@ -101,13 +113,10 @@ public class SettingsAlipayFragment extends DashboardFragment
         middleCallbackUpdateAlipayAccount = null;
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
-        {
-            userProfileFetchTask.setListener(null);
-        }
-        userProfileFetchTask = null;
+        userProfileCache.unregister(userProfileCacheListener);
+        userProfileCacheListener = null;
     }
 
     private void setupSubmitButton()
@@ -123,6 +132,8 @@ public class SettingsAlipayFragment extends DashboardFragment
                         R.string.authentication_connecting_tradehero_only);
                 UpdateAlipayAccountFormDTO accountDTO = new UpdateAlipayAccountFormDTO();
                 accountDTO.newAlipayAccount = alipayAccountText.getText().toString();
+                accountDTO.userIdentityNumber = alipayAccountIDText.getText().toString();
+                accountDTO.userRealName = alipayAccountRealNameText.getText().toString();
                 detachMiddleCallbackUpdateAlipayAccount();
                 middleCallbackUpdateAlipayAccount = userServiceWrapper.updateAlipayAccount(
                         currentUserId.toUserBaseKey(), accountDTO, createUpdatePayPalCallback());
@@ -163,21 +174,28 @@ public class SettingsAlipayFragment extends DashboardFragment
         alipayAccountText = (ServerValidatedEmailText) view.findViewById(R.id.settings_alipay_email_text);
         // HACK: force this email to focus instead of the TabHost stealing focus..
         alipayAccountText.setOnTouchListener(new FocusableOnTouchListener());
-        detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), createUserProfileCacheListener());
-        userProfileFetchTask.execute();
+        alipayAccountIDText = (ServerValidatedEmailText) view.findViewById(R.id.settings_alipay_id_text);
+        alipayAccountIDText.setOnTouchListener(new FocusableOnTouchListener());
+        alipayAccountRealNameText = (ServerValidatedEmailText) view.findViewById(R.id.settings_alipay_realname_text);
+        alipayAccountRealNameText.setOnTouchListener(new FocusableOnTouchListener());
+        detachUserProfileCache();
+        userProfileCacheListener = createUserProfileCacheListener();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
-        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
             @Override
-            public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
             {
                 if (!isDetached())
                 {
                     alipayAccountText.setText(value.alipayAccount);
+                    alipayAccountIDText.setText(value.alipayIdentityNumber);
+                    alipayAccountRealNameText.setText(value.alipayRealName);
                 }
             }
 

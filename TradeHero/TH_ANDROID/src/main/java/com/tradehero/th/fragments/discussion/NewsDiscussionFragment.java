@@ -5,29 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.models.share.SocialShareTranslationHelper;
-import com.tradehero.th.persistence.news.NewsItemCache;
-import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
-import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.fragments.news.NewsDetailFullView;
-import com.tradehero.th.fragments.news.NewsDetailSummaryView;
-import com.tradehero.th.fragments.news.NewsTranslationSelfDisplayer;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.translation.TranslationCache;
-import com.tradehero.th.persistence.translation.TranslationKey;
-import com.tradehero.th.widget.VotePair;
-import javax.inject.Inject;
+import com.tradehero.th.fragments.news.NewsViewLinear;
 import timber.log.Timber;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
@@ -38,44 +22,17 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     public static final String BUNDLE_KEY_SECURITY_SYMBOL =
             NewsDiscussionFragment.class.getName() + ".security_symbol";
 
-    private NewsItemDTO mDetailNewsItemDTO;
-
-    @Inject NewsItemCache newsItemCache;
-    @Inject TranslationCache translationCache;
-    @Inject SocialShareTranslationHelper socialShareTranslationHelper;
+    private static final String BUNDLE_KEY_IS_RETURNING = NewsDiscussionFragment.class.getName() + ".isReturning";
 
     @InjectView(R.id.discussion_view) NewsDiscussionView newsDiscussionView;
-
-    @InjectView(R.id.news_detail_summary) NewsDetailSummaryView newsDetailSummaryView;
-    @InjectView(R.id.news_detail_full) NewsDetailFullView newsDetailFullView;
-    @InjectView(R.id.discussion_action_button_more) View buttonMore;
-    private DiscussionEditPostFragment discussionEditPostFragment;
-
-    @OnClick(R.id.news_start_new_discussion) void onStartNewDiscussion()
-    {
-        Bundle bundle = new Bundle();
-        if (newsItemDTOKey != null)
-        {
-            bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
-                    newsItemDTOKey.getArgs());
-        }
-        discussionEditPostFragment = (DiscussionEditPostFragment) getNavigator().pushFragment(
-                DiscussionEditPostFragment.class, bundle);
-    }
-
-    // Action buttons
-    @InjectView(R.id.vote_pair) VotePair votePair;
+    @InjectView(R.id.news_view_linear) NewsViewLinear newsView;
 
     private NewsItemDTOKey newsItemDTOKey;
-
-    private DTOCache.GetOrFetchTask<NewsItemDTOKey, NewsItemDTO> newsFetchTask;
-    private DTOCache.GetOrFetchTask<TranslationKey, TranslationResult> translationTask;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_news_discussion, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_news_discussion, container, false);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -83,7 +40,6 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         Bundle bundle = getArguments();
         String title = bundle.getString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL);
-        //bundle.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL, securityId.securitySymbol);
         actionBar.setTitle(title);
         Timber.d("onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
@@ -99,22 +55,26 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     {
         super.onResume();
 
-        if (discussionEditPostFragment != null && discussionEditPostFragment.isPosted())
+        Bundle args = getArguments();
+        if (args != null && args.getBoolean(BUNDLE_KEY_IS_RETURNING, false))
         {
+            // TODO review here as the cache should have been updated or invalidated.
             newsDiscussionView.refresh();
         }
     }
 
     @Override public void onDestroyView()
     {
-        detachNewsFetchTask();
-        detachTranslationTask();
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            args.putBoolean(BUNDLE_KEY_IS_RETURNING, true);
+        }
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        discussionEditPostFragment = null;
         super.onDestroy();
     }
 
@@ -134,11 +94,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
         if (newsItemDTOKey != null)
         {
-            NewsItemDTO cachedNews = newsItemCache.get(newsItemDTOKey);
-
-            linkWith(cachedNews, andDisplay);
-
-            fetchNewsDetail(true);
+            newsView.display(newsItemDTOKey);
             setRandomBackground();
         }
         else
@@ -153,7 +109,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         int bgRes = getArguments().getInt(BUNDLE_KEY_TITLE_BACKGROUND_RES, 0);
         if (bgRes != 0)
         {
-            newsDetailSummaryView.setBackground(bgRes);
+            newsView.setTitleBackground(bgRes);
         }
     }
 
@@ -162,99 +118,8 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         // TODO
     }
 
-    private void fetchNewsDetail(boolean force)
-    {
-        detachNewsFetchTask();
-        newsFetchTask = newsItemCache.getOrFetch(newsItemDTOKey, force, createNewsFetchListener());
-        newsFetchTask.execute();
-    }
-
-    private void detachNewsFetchTask()
-    {
-        if (newsFetchTask != null)
-        {
-            newsFetchTask.setListener(null);
-        }
-        newsFetchTask = null;
-    }
-
-    private void detachTranslationTask()
-    {
-        if (translationTask != null)
-        {
-            translationTask.setListener(null);
-        }
-        translationTask = null;
-    }
-
-    private void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay)
-    {
-        mDetailNewsItemDTO = newsItemDTO;
-
-        if (andDisplay)
-        {
-            votePair.display(mDetailNewsItemDTO);
-            newsDetailSummaryView.display(mDetailNewsItemDTO);
-            newsDetailFullView.display(mDetailNewsItemDTO);
-            displayMoreButton();
-        }
-    }
-
-    //<editor-fold desc="Related to share dialog">
-    protected void displayMoreButton()
-    {
-        buttonMore.setVisibility(socialShareTranslationHelper.canTranslate(mDetailNewsItemDTO) ? View.VISIBLE : View.GONE);
-    }
-
-    @OnClick(R.id.discussion_action_button_more) void onActionButtonMoreClicked()
-    {
-        showNewsDialog();
-    }
-
-    private void showNewsDialog()
-    {
-        socialShareTranslationHelper.shareOrTranslate(mDetailNewsItemDTO);
-    }
-    //</editor-fold>
-
-    protected void pushSettingsForConnect(SocialShareFormDTO socialShareFormDTO)
-    {
-        Bundle args = new Bundle();
-        SettingsFragment.putSocialNetworkToConnect(args, socialShareFormDTO);
-        getDashboardNavigator().pushFragment(SettingsFragment.class, args);
-    }
-
-    protected void handleTranslationRequested()
-    {
-        detachTranslationTask();
-        TranslationKey key = mDetailNewsItemDTO.createTranslationKey("zh");
-        translationTask =
-                new NewsTranslationSelfDisplayer(getActivity(), translationCache, null)
-                .launchTranslation(key);
-    }
-
-    @Override
-    public boolean isTabBarVisible()
+    @Override public boolean isTabBarVisible()
     {
         return false;
-    }
-
-    private DTOCache.Listener<NewsItemDTOKey, NewsItemDTO> createNewsFetchListener()
-    {
-        return new NewsFetchListener();
-    }
-
-    private class NewsFetchListener implements DTOCache.Listener<NewsItemDTOKey, NewsItemDTO>
-    {
-        @Override
-        public void onDTOReceived(NewsItemDTOKey key, NewsItemDTO value, boolean fromCache)
-        {
-            linkWith(value, true);
-        }
-
-        @Override public void onErrorThrown(NewsItemDTOKey key, Throwable error)
-        {
-            THToast.show(new THException(error));
-        }
     }
 }

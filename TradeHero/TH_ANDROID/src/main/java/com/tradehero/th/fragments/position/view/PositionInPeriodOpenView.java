@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.position.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 
 public class PositionInPeriodOpenView extends AbstractPositionView<
-            PositionInPeriodDTO,
+        PositionDTO,
         LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem>
 {
     //<editor-fold desc="Constructors">

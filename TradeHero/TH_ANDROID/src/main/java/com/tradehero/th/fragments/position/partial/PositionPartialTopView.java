@@ -6,13 +6,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -34,22 +35,21 @@ public class PositionPartialTopView extends LinearLayout
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject protected PositionUtils positionUtils;
 
-    private ImageView stockLogo;
-    private TextView stockSymbol;
-    private TextView companyName;
-    private TextView stockMovementIndicator;
-    private TextView stockLastPrice;
-    private ImageView marketClose;
-    private TextView positionPercent;
-    private TextView positionLastAmountHeader;
-    private TextView positionLastAmount;
-    private View tradeHistoryButton;
+    @InjectView(R.id.stock_logo) protected ImageView stockLogo;
+    @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
+    @InjectView(R.id.company_name) protected TextView companyName;
+    @InjectView(R.id.stock_movement_indicator) protected TextView stockMovementIndicator;
+    @InjectView(R.id.stock_last_price) protected TextView stockLastPrice;
+    @InjectView(R.id.ic_market_close) protected ImageView marketClose;
+    @InjectView(R.id.position_percentage) protected TextView positionPercent;
+    @InjectView(R.id.position_last_amount_header) protected TextView positionLastAmountHeader;
+    @InjectView(R.id.position_last_amount) protected TextView positionLastAmount;
+    @InjectView(R.id.btn_trade_history) protected View tradeHistoryButton;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     protected PositionDTO positionDTO;
 
-    private SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
 
     //<editor-fold desc="Constructors">
@@ -73,25 +73,16 @@ public class PositionPartialTopView extends LinearLayout
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
+        ButterKnife.inject(this);
         initViews();
     }
 
     protected void initViews()
     {
-        stockLogo = (ImageView) findViewById(R.id.stock_logo);
         if (stockLogo != null)
         {
             stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
-        stockSymbol = (TextView) findViewById(R.id.stock_symbol);
-        companyName = (TextView) findViewById(R.id.company_name);
-        stockMovementIndicator = (TextView) findViewById(R.id.stock_movement_indicator);
-        stockLastPrice = (TextView) findViewById(R.id.stock_last_price);
-        marketClose = (ImageView) findViewById(R.id.ic_market_close);
-        positionPercent = (TextView) findViewById(R.id.position_percentage);
-        positionLastAmountHeader = (TextView) findViewById(R.id.position_last_amount_header);
-        positionLastAmount = (TextView) findViewById(R.id.position_last_amount);
-        tradeHistoryButton = findViewById(R.id.btn_trade_history);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -107,7 +98,6 @@ public class PositionPartialTopView extends LinearLayout
             securityCompactCacheFetchTask.setListener(null);
         }
         securityCompactCacheFetchTask = null;
-        securityCompactCacheListener = null;
         if (stockLogo != null)
         {
             stockLogo.setImageDrawable(null);
@@ -137,15 +127,11 @@ public class PositionPartialTopView extends LinearLayout
         SecurityCompactDTO cachedSecurityCompactDTO = securityCompactCache.get().get(securityId);
         if (cachedSecurityCompactDTO == null)
         {
-            if (securityCompactCacheListener == null)
-            {
-                securityCompactCacheListener = createSecurityCompactCacheListener();
-            }
             if (securityCompactCacheFetchTask != null)
             {
                 securityCompactCacheFetchTask.setListener(null);
             }
-            securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, securityCompactCacheListener);
+            securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, createSecurityCompactCacheListener());
             securityCompactCacheFetchTask.execute();
         }
         else
@@ -367,7 +353,7 @@ public class PositionPartialTopView extends LinearLayout
                     number = new THSignedNumber(
                             THSignedNumber.TYPE_MONEY,
                             positionDTO.realizedPLRefCcy,
-                            true,
+                            THSignedNumber.WITH_SIGN,
                             /*portfolioDTO*/positionDTO.getNiceCurrency(),
                             THSignedNumber.TYPE_SIGN_MINUS_ONLY
                             );
@@ -377,7 +363,7 @@ public class PositionPartialTopView extends LinearLayout
                     number = new THSignedNumber(
                             THSignedNumber.TYPE_MONEY,
                             positionDTO.marketValueRefCcy,
-                            true,
+                            THSignedNumber.WITH_SIGN,
                             /*portfolioDTO*/positionDTO.getNiceCurrency(),
                             THSignedNumber.TYPE_SIGN_MINUS_ONLY
                     );

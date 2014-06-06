@@ -10,8 +10,12 @@
   <string name="position_list_header_closed">CLOSED (%d)</string>
   <string name="position_list_header_closed_unsure">CLOSED</string>
   <string name="position_list_header_time_base">%1$s - %2$s</string>
-  <string name="position_unrealised_pl_header">Unrealized P&amp;L</string>
-  <string name="position_realised_pl_header">Realized P&amp;L</string>
+  <string name="position_unrealised_loss_header">Will Lose</string>
+  <string name="position_unrealised_profit_header">Will Profit</string>
+  <string name="position_unrealised_pl_header" deprecated="true">Unrealized P&amp;L</string>
+  <string name="position_realised_pl_header" deprecated="true">Realized P&amp;L</string>
+  <string name="position_realised_loss_header">Loss</string>
+  <string name="position_realised_profit_header">Profit</string>
   <string name="position_total_invested_header">Total Invested</string>
   <string name="position_market_value_header">Market Value</string>
   <string name="position_quantity_header">Quantity</string>
@@ -21,8 +25,8 @@
   <string name="error_lost_position_in_cache">We have lost track of this trading position</string>
 
   <string name="position_expanded_close_pl_header">P&amp;L</string>
-  <string name="position_expanded_close_opened_date_header">Opened</string>
-  <string name="position_expanded_close_closed_date_header">Closed</string>
+  <string name="position_expanded_close_opened_date_header">Bought on</string>
+  <string name="position_expanded_close_closed_date_header">Sold on</string>
   <string name="position_expanded_close_period_header">Holding Time</string>
   <string name="position_period_held_day_singular">%d day</string>
   <string name="position_period_held_day_plural">%d days</string>
@@ -33,7 +37,9 @@
   <string name="positions_in_period">In Period</string>
   <string name="positions_overall">Overall</string>
 
-  <string name="position_in_period_pl">Period P&amp;L</string>
+  <string name="position_in_period_pl" deprecated="true">Period P&amp;L</string>
+  <string name="position_in_period_loss">Loss In Period</string>
+  <string name="position_in_period_profit">Profit In Period</string>
   <string name="position_in_period_additional_invested">Addl. Invested</string>
   <string name="position_in_period_start_value">Value at Start</string>
   <string name="position_in_period_as_of">as of %1$s</string>

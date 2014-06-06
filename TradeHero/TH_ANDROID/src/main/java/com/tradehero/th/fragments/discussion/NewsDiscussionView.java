@@ -25,9 +25,6 @@ public class NewsDiscussionView extends DiscussionView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
-        //delete postCommentView for no use alex
-        //postCommentView.setVisibility(GONE);
     }
 
     @Override protected void setLoading()

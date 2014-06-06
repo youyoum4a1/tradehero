@@ -1,5 +1,6 @@
 package com.tradehero.th.api.translation.bing;
 
+import com.tradehero.th.R;
 import com.tradehero.th.api.translation.TranslationResult;
 import org.simpleframework.xml.Text;
 
@@ -39,6 +40,11 @@ public class BingTranslationResult extends TranslationResult
     public void setContent(String content)
     {
         this.content = content;
+    }
+
+    @Override public int logoResId()
+    {
+        return R.drawable.logo_bing;
     }
 
     @Override

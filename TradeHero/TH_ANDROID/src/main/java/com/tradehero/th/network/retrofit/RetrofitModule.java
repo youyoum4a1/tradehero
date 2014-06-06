@@ -2,10 +2,14 @@ package com.tradehero.th.network.retrofit;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTODeserialiser;
+import com.tradehero.th.api.position.PositionDTOJacksonModule;
 import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
@@ -195,10 +199,17 @@ public class RetrofitModule
     }
     //</editor-fold>
 
-    @Provides @Singleton ObjectMapper provideObjectMapper()
+    @Provides JsonDeserializer<PositionDTO> providesPositionDTODeserialiser(PositionDTODeserialiser deserialiser)
+    {
+        return deserialiser;
+    }
+
+    @Provides @Singleton ObjectMapper provideObjectMapper(
+            PositionDTOJacksonModule positionDTOModule)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.registerModule(positionDTOModule);
 
         // TODO confirm this is correct here
         objectMapper.setVisibilityChecker(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()

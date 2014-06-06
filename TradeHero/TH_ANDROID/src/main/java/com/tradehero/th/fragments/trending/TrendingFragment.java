@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -87,11 +88,9 @@ public class TrendingFragment extends SecurityListFragment
     private TrendingOnFilterTypeChangedListener onFilterTypeChangedListener;
     private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
-    private DTOCache.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
-    private DTOCache.GetOrFetchTask<ExchangeListType, ExchangeDTOList> exchangeListCacheFetchTask;
+    private DTOCacheNew.Listener<ExchangeListType, ExchangeDTOList> exchangeListTypeCacheListener;
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileFetchListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     private ExtraTileAdapter wrapperAdapter;
     private DTOCache.Listener<ProviderListKey, ProviderIdList> providerListCallback;
@@ -121,16 +120,16 @@ public class TrendingFragment extends SecurityListFragment
 
         createExchangeListTypeCacheListener();
 
-        userProfileFetchListener = new UserProfileFetchListener();
+        userProfileCacheListener = new UserProfileFetchListener();
         providerListCallback = new ProviderListFetchListener();
     }
 
     private void createExchangeListTypeCacheListener()
     {
         exchangeListTypeCacheListener =
-                new DTOCache.Listener<ExchangeListType, ExchangeDTOList>()
+                new DTOCacheNew.Listener<ExchangeListType, ExchangeDTOList>()
                 {
-                    @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value, boolean fromCache)
+                    @Override public void onDTOReceived(ExchangeListType key, ExchangeDTOList value)
                     {
                         Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
                         linkWith(value, true);
@@ -174,9 +173,9 @@ public class TrendingFragment extends SecurityListFragment
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Trade);
 
         // fetch user
-        detachUserFetchTask();
-        userProfileFetchTask = userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileFetchListener);
-        userProfileFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
         // fetch provider list for provider tile
 
@@ -238,14 +237,19 @@ public class TrendingFragment extends SecurityListFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
-        detachExchangeListFetchTask();
+        detachExchangeListCache();
         detachProviderListTask();
-        detachExchangeListFetchTask();
-        detachUserFetchTask();
+        detachExchangeListCache();
+        detachUserProfileCache();
         removeCallbacksIfCan(handleCompetitionRunnable);
 
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         this.onFilterTypeChangedListener = null;
 
         if (filterSelectorView != null)
@@ -266,29 +270,24 @@ public class TrendingFragment extends SecurityListFragment
         }
     }
 
-    private void detachUserFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
-        {
-            userProfileFetchTask.setListener(null);
-        }
-        userProfileFetchTask = null;
+        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
-    protected void detachExchangeListFetchTask()
+    protected void detachExchangeListCache()
     {
-        if (exchangeListCacheFetchTask != null)
+        if (exchangeListTypeCacheListener != null)
         {
-            exchangeListCacheFetchTask.setListener(null);
+            exchangeListCache.get().unregister(exchangeListTypeCacheListener);
         }
-        exchangeListCacheFetchTask = null;
     }
 
     @Override public void onDestroy()
     {
         handleCompetitionRunnable = null;
         exchangeListTypeCacheListener = null;
-        userProfileFetchListener = null;
+        userProfileCacheListener = null;
         thIntentPassedListener = null;
         providerListCallback = null;
         super.onDestroy();
@@ -327,9 +326,10 @@ public class TrendingFragment extends SecurityListFragment
 
     private void fetchExchangeList()
     {
-        detachExchangeListFetchTask();
-        exchangeListCacheFetchTask = exchangeListCache.get().getOrFetch(new ExchangeListType(), exchangeListTypeCacheListener);
-        exchangeListCacheFetchTask.execute();
+        detachExchangeListCache();
+        ExchangeListType key = new ExchangeListType();
+        exchangeListCache.get().register(key, exchangeListTypeCacheListener);
+        exchangeListCache.get().getOrFetchAsync(key);
     }
 
     private void linkWith(ExchangeDTOList exchangeDTOs, boolean andDisplay)
@@ -441,11 +441,11 @@ public class TrendingFragment extends SecurityListFragment
             ProviderDTO providerDTO = providerCache.get().get(new ProviderId(providerId));
             switch (providerId)
             {
-                case ProviderIdConstants.PROVIDER_ID_PHILLIP_MACQUARIE_WARRANTS:
-                    handleCompetitionItemClicked(providerDTO);
-                    break;
                 case ProviderIdConstants.PROVIDER_ID_MACQUARIE_WARRANTS:
                     Timber.d("PROVIDER_ID_MACQUARIE_WARRANTS");
+                    break;
+                default:
+                    handleCompetitionItemClicked(providerDTO);
                     break;
             }
         }
@@ -456,7 +456,7 @@ public class TrendingFragment extends SecurityListFragment
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();
-            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
+            ProviderSecurityListFragment.putProviderId(args, providerDTO.getProviderId());
             ProviderSecurityListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
             getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
         }
@@ -557,9 +557,10 @@ public class TrendingFragment extends SecurityListFragment
         }
     }
 
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey,UserProfileDTO>
+    @Deprecated // It appears unused
+    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             Timber.d("Retrieve user with surveyUrl=%s", value.activeSurveyImageURL);
             refreshAdapterWithTiles(value.activeSurveyImageURL != null);

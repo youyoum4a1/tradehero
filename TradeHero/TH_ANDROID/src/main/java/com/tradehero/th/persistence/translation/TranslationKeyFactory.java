@@ -4,7 +4,13 @@ import android.text.TextUtils;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.PrivateDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.inject.Inject;
 
 public class TranslationKeyFactory
@@ -13,31 +19,112 @@ public class TranslationKeyFactory
     {
     }
 
-    public TranslationKey createFrom(AbstractDiscussionCompactDTO fromDiscussion, String toLanguage)
+    public TranslationKeyList createFrom(AbstractDiscussionCompactDTO fromDiscussion, String toLanguage)
     {
         if (fromDiscussion == null)
         {
             return null;
         }
-        return new TranslationKey(
+        return createKeys(
                 fromDiscussion.langCode,
                 toLanguage,
-                getTranslatableText(fromDiscussion));
+                getTranslatableTexts(fromDiscussion));
     }
 
-    protected String getTranslatableText(AbstractDiscussionCompactDTO fromDiscussion)
+    protected List<String> getTranslatableTexts(AbstractDiscussionCompactDTO fromDiscussion)
     {
-        if (fromDiscussion instanceof NewsItemCompactDTO)
+        if (fromDiscussion == null)
         {
-            return String.format("%1$s\n%2$s",
-                    ((NewsItemCompactDTO) fromDiscussion).title,
-                    ((NewsItemCompactDTO) fromDiscussion).description);
+            return null;
         }
+        List<String> texts = new ArrayList<>();
         if (fromDiscussion instanceof AbstractDiscussionDTO)
         {
-            return ((DiscussionDTO) fromDiscussion).text;
+            addTranslatableTexts(texts, (AbstractDiscussionDTO) fromDiscussion);
         }
-        return "No text to translate";
+        else if (fromDiscussion instanceof NewsItemCompactDTO)
+        {
+            addTranslatableTexts(texts, (NewsItemCompactDTO) fromDiscussion);
+        }
+        return texts;
+    }
+
+    protected void addTranslatableTexts(List<String> texts, AbstractDiscussionDTO abstractDiscussionDTO)
+    {
+        if (abstractDiscussionDTO.text != null)
+        {
+            texts.add(abstractDiscussionDTO.text);
+        }
+        if (abstractDiscussionDTO instanceof DiscussionDTO)
+        {
+            addTranslatableTexts(texts, (DiscussionDTO) abstractDiscussionDTO);
+        }
+        else if (abstractDiscussionDTO instanceof TimelineItemDTO)
+        {
+            addTranslatableTexts(texts, (TimelineItemDTO) abstractDiscussionDTO);
+        }
+    }
+
+    protected void addTranslatableTexts(List<String> texts, DiscussionDTO discussionDTO)
+    {
+        if (discussionDTO instanceof PrivateDiscussionDTO)
+        {
+            addTranslatableTexts(texts, (PrivateDiscussionDTO) discussionDTO);
+        }
+    }
+
+    protected void addTranslatableTexts(List<String> texts, PrivateDiscussionDTO privateDiscussionDTO)
+    {
+    }
+
+    protected void addTranslatableTexts(List<String> texts, TimelineItemDTO timelineItemDTO)
+    {
+    }
+
+    protected void addTranslatableTexts(List<String> texts, NewsItemCompactDTO newsItemCompactDTO)
+    {
+        if (newsItemCompactDTO.caption != null)
+        {
+            texts.add(newsItemCompactDTO.caption);
+        }
+        if (newsItemCompactDTO.title != null)
+        {
+            texts.add(newsItemCompactDTO.title);
+        }
+        if (newsItemCompactDTO.description != null)
+        {
+            texts.add(newsItemCompactDTO.description);
+        }
+        if (newsItemCompactDTO instanceof NewsItemDTO)
+        {
+            addTranslatableTexts(texts, (NewsItemDTO) newsItemCompactDTO);
+        }
+    }
+
+    protected void addTranslatableTexts(List<String> texts, NewsItemDTO newsItemDTO)
+    {
+        if (newsItemDTO.text != null)
+        {
+            texts.add(newsItemDTO.text);
+        }
+        if (newsItemDTO.message != null)
+        {
+            texts.add(newsItemDTO.message);
+        }
+    }
+
+    public TranslationKeyList createKeys(String fromLang, String toLang, Collection<String> texts)
+    {
+        if (texts == null)
+        {
+            return null;
+        }
+        TranslationKeyList keys = new TranslationKeyList();
+        for (String text: texts)
+        {
+            keys.add(new TranslationKey(fromLang, toLang, text));
+        }
+        return keys;
     }
 
     public boolean isValidLangCode(String langCode)

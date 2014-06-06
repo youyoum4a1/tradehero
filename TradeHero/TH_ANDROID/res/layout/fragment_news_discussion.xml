@@ -9,10 +9,11 @@
     app:listItemLayout="@layout/timeline_discussion_comment_item"
     app:topicLayout="@layout/news_detail_view_header"
     >
+
   <ListView
+      android:id="@android:id/list"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:id="@android:id/list"
       android:listSelector="@color/transparent"
       android:divider="@color/transparent"
       android:paddingBottom="@dimen/discussion_comment_box_height"

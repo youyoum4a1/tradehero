@@ -3,8 +3,10 @@ package com.tradehero.th.api.social;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
+import com.tradehero.th.models.user.auth.QQCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.models.user.auth.WeChatCredentialsDTO;
+import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 
 public enum SocialNetworkEnum
 {
@@ -12,7 +14,9 @@ public enum SocialNetworkEnum
     LN(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE, "LinkedIn"),
     TH(EmailCredentialsDTO.EMAIL_AUTH_TYPE, "TradeHero"),
     TW(TwitterCredentialsDTO.TWITTER_AUTH_TYPE, "Twitter"),
-    WECHAT(WeChatCredentialsDTO.WECHAT_AUTH_TYPE, "WeChat");
+    WECHAT(WeChatCredentialsDTO.WECHAT_AUTH_TYPE, "WeChat"),
+    WB(WeiboCredentialsDTO.WEIBO_AUTH_TYPE, "WeiBo"),
+    QQ(QQCredentialsDTO.QQ_AUTH_TYPE, "QQ");
 
     private final String authenticationHeader;
     private final String name;

@@ -3,9 +3,9 @@ package com.tradehero.th.fragments.trade;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.api.position.PositionDTO;
 
-public class TradeListItemInPeriodAdapter extends AbstractTradeListItemAdapter<PositionInPeriodDTO>
+public class TradeListItemInPeriodAdapter extends AbstractTradeListItemAdapter<PositionDTO>
 {
     public static final int LAYOUT_RES_ID_POSITION_OPEN = R.layout.position_open_in_period;
     public static final int LAYOUT_RES_ID_POSITION_CLOSED = R.layout.position_closed_in_period;

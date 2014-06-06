@@ -3,16 +3,17 @@ package com.tradehero.common.widget.dialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.view.*;
-import android.widget.*;
-import android.view.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.tradehero.th.R;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +32,7 @@ public class THDialog {
         void onDialogDismiss();
     }
 
+    @Deprecated // Translations should be shown inline
     public static void showTranslationResult(Context context, String text)
     {
         THDialog.showCenterDialog(

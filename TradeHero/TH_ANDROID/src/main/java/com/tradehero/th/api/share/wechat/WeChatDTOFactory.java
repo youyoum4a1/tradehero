@@ -32,6 +32,11 @@ public class WeChatDTOFactory
         {
             weChatDTO.type = WeChatMessageType.CreateDiscussion;
             weChatDTO.title = ((DiscussionDTO) abstractDiscussionCompactDTO).text;
+            if (((DiscussionDTO) abstractDiscussionCompactDTO).user != null &&
+                    ((DiscussionDTO) abstractDiscussionCompactDTO).user.picture != null)
+            {
+                weChatDTO.imageURL = ((DiscussionDTO) abstractDiscussionCompactDTO).user.picture;
+            }
         }
         else if (abstractDiscussionCompactDTO instanceof NewsItemCompactDTO)
         {

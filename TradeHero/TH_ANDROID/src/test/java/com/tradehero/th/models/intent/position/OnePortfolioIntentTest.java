@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
+@Config(manifest = TestConstants.MANIFEST_PATH)
 public class OnePortfolioIntentTest
 {
     @Before public void setUp()
@@ -99,7 +99,9 @@ public class OnePortfolioIntentTest
         OnePortfolioIntent intent = new SimpleOnePortfolioIntent(portfolioId);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(567, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+        assertTrue(false);
+        // Need to change the Intent
+        //assertEquals(567, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -111,6 +113,8 @@ public class OnePortfolioIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(567, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+        assertTrue(false);
+        // Need to change the Intent
+        //assertEquals(567, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
 }

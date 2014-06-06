@@ -19,8 +19,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -63,8 +63,8 @@ public class PortfolioListItemView extends RelativeLayout
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
     private Milestone.OnCompleteListener currentUserProfileRetrievedMilestoneListener;
 
-    private DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO> getPositionsListener;
-    private DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> getPositionsFetchTask;
+    private DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> getPositionsListener;
+    private DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> getPositionsFetchTask;
 
     private DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistListener;
     private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistFetchTask;
@@ -161,7 +161,7 @@ public class PortfolioListItemView extends RelativeLayout
 
     protected void detachGetPositionsTask()
     {
-        DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> positionTaskCopy =
+        DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> positionTaskCopy =
                 this.getPositionsFetchTask;
         if (positionTaskCopy != null)
         {
@@ -234,7 +234,7 @@ public class PortfolioListItemView extends RelativeLayout
                 displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()
                         .equals(currentUserId.toUserBaseKey()))
         {
-            DTOCache.GetOrFetchTask<OwnedPortfolioId, GetPositionsDTO> task =
+            DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> task =
                     this.getPositionsCache.getOrFetch(displayablePortfolioDTOCopy.ownedPortfolioId,
                             getPositionsListener);
             this.getPositionsFetchTask = task;
@@ -370,7 +370,7 @@ public class PortfolioListItemView extends RelativeLayout
                 THSignedNumber roi = new THSignedNumber(
                         THSignedNumber.TYPE_PERCENTAGE,
                         displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100,
-                        true,
+                        THSignedNumber.WITH_SIGN,
                         null,
                         THSignedNumber.TYPE_SIGN_ARROW);
                 roiValue.setText(roi.toString(1));
@@ -415,13 +415,13 @@ public class PortfolioListItemView extends RelativeLayout
     }
 
     private class PortfolioListItemViewGetPositionsListener
-            implements DTOCache.Listener<OwnedPortfolioId, GetPositionsDTO>
+            implements DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO>
     {
         public PortfolioListItemViewGetPositionsListener()
         {
         }
 
-        @Override public void onDTOReceived(OwnedPortfolioId key, GetPositionsDTO value,
+        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value,
                 boolean fromCache)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
@@ -433,7 +433,7 @@ public class PortfolioListItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)
         {
             // We do not inform the user as this is not critical
         }

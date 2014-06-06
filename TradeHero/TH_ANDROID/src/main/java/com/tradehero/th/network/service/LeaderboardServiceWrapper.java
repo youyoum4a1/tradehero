@@ -8,11 +8,13 @@ import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.SortedPerPagedLeaderboardKey;
-import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
+import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
@@ -32,6 +34,11 @@ import retrofit.Callback;
         super();
         this.leaderboardService = leaderboardService;
         this.leaderboardServiceAsync = leaderboardServiceAsync;
+    }
+
+    protected DTOProcessor<GetPositionsDTO> createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
+    {
+        return new DTOProcessorGetPositions(leaderboardMarkUserId);
     }
 
     //<editor-fold desc="Get Leaderboard Definitions">
@@ -169,13 +176,14 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
-    public GetLeaderboardPositionsDTO getPositionsForLeaderboardMarkUser(
+    public GetPositionsDTO getPositionsForLeaderboardMarkUser(
             LeaderboardMarkUserId key)
     {
+        GetPositionsDTO received;
         if (key instanceof PerPagedLeaderboardMarkUserId)
         {
             PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;
-            return leaderboardService.getPositionsForLeaderboardMarkUser(
+            received = leaderboardService.getPositionsForLeaderboardMarkUser(
                     perPagedLeaderboardMarkUserId.key,
                     perPagedLeaderboardMarkUserId.page,
                     perPagedLeaderboardMarkUserId.perPage);
@@ -183,22 +191,30 @@ import retrofit.Callback;
         else if (key instanceof PagedLeaderboardMarkUserId)
         {
             PagedLeaderboardMarkUserId pagedLeaderboardMarkUserId = (PagedLeaderboardMarkUserId) key;
-            return leaderboardService.getPositionsForLeaderboardMarkUser(
+            received = leaderboardService.getPositionsForLeaderboardMarkUser(
                     pagedLeaderboardMarkUserId.key,
                     pagedLeaderboardMarkUserId.page,
                     null);
         }
-        return leaderboardService.getPositionsForLeaderboardMarkUser(
-                key.key,
-                null,
-                null);
+        else
+        {
+            received = leaderboardService.getPositionsForLeaderboardMarkUser(
+                    key.key,
+                    null,
+                    null);
+        }
+        if (received != null)
+        {
+            received.setOnInPeriod(key);
+        }
+        return received;
     }
 
-    public MiddleCallback<GetLeaderboardPositionsDTO> getPositionsForLeaderboardMarkUser(
+    public MiddleCallback<GetPositionsDTO> getPositionsForLeaderboardMarkUser(
             LeaderboardMarkUserId key,
-            Callback<GetLeaderboardPositionsDTO> callback)
+            Callback<GetPositionsDTO> callback)
     {
-        MiddleCallback<GetLeaderboardPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback, createProcessorReceivedGetPositions(key));
         if (key instanceof PerPagedLeaderboardMarkUserId)
         {
             PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;
@@ -228,5 +244,4 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
-
 }

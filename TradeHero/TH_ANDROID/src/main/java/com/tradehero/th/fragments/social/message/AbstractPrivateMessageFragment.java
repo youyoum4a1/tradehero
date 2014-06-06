@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -34,7 +35,6 @@ import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
@@ -60,7 +60,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Inject protected UserProfileCache userProfileCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
@@ -93,7 +93,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         return null;
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
         return new AbstractPrivateMessageFragmentUserProfileListener();
     }
@@ -182,11 +182,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     private void detachUserProfileTask()
     {
-        if (userProfileCacheTask != null)
+        if (userProfileCacheListener != null)
         {
-            userProfileCacheTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        userProfileCacheTask = null;
+        userProfileCacheListener = null;
     }
 
     @Override public void onDestroy()
@@ -235,9 +235,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         Timber.d("fetchCorrespondentProfile");
         detachUserProfileTask();
-        userProfileCacheTask =
-                userProfileCache.getOrFetch(correspondentId, createUserProfileCacheListener());
-        userProfileCacheTask.execute();
+        userProfileCacheListener = createUserProfileCacheListener();
+        userProfileCache.register(correspondentId, userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(correspondentId);
     }
 
     public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -306,10 +306,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     }
 
     protected class AbstractPrivateMessageFragmentUserProfileListener
-            implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             linkWith(value, true);
         }

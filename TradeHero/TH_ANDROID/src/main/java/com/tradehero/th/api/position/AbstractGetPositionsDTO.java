@@ -1,6 +1,8 @@
 package com.tradehero.th.api.position;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,15 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
             }
         }
         return openPositions;
+    }
+
+    @JsonIgnore
+    public void setOnInPeriod(LeaderboardMarkUserId leaderboardMarkUserId)
+    {
+        if (positions != null)
+        {
+            positions.setOnInPeriod(leaderboardMarkUserId);
+        }
     }
 
     @Override public String toString()

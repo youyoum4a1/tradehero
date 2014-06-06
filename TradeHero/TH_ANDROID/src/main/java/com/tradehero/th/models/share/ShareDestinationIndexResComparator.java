@@ -1,10 +1,13 @@
 package com.tradehero.th.models.share;
 
+import android.content.Context;
 import android.content.res.Resources;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import javax.inject.Inject;
 
 public class ShareDestinationIndexResComparator implements Comparator<ShareDestination>
 {
@@ -13,18 +16,12 @@ public class ShareDestinationIndexResComparator implements Comparator<ShareDesti
     private Resources resources;
     private List<Integer> destinationIds;
 
-    public ShareDestinationIndexResComparator(Resources resources)
+    @Inject public ShareDestinationIndexResComparator(
+            Context context,
+            @ShareDestinationId Set<Integer> destinationIds)
     {
-        this.resources = resources;
-        this.destinationIds = new ArrayList<>();
-        for (int id : resources.getIntArray(ORDERED_SHARE_DESTINATION_IDS))
-        {
-            if (destinationIds.contains(id))
-            {
-                throw new IllegalStateException("Destination ids contains twice the id "+ id);
-            }
-            destinationIds.add(id);
-        }
+        this.resources = context.getResources();
+        this.destinationIds = new ArrayList<>(destinationIds);
     }
 
     @Override public int compare(ShareDestination left, ShareDestination right)

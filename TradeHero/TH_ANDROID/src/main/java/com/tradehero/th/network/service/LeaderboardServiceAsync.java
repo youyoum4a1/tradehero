@@ -2,8 +2,8 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.tradehero.th.api.position.GetPositionsDTO;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -70,7 +70,7 @@ interface LeaderboardServiceAsync
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage,
-            Callback<GetLeaderboardPositionsDTO> callback);
+            Callback<GetPositionsDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Friends Leaderboard">

@@ -7,6 +7,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 
 public class WatchlistPositionDTO extends PositionDTO
 {
+    public static final String WATCHLIST_PRICE_FIELD = "watchlistPrice";
+
     public Double watchlistPrice;
     public SecurityCompactDTO securityDTO;
 

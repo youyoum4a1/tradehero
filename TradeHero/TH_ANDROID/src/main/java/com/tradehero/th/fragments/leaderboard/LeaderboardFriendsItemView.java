@@ -26,7 +26,6 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.social.InviteFormDTO;
@@ -597,27 +596,36 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
         if (mLeaderboardUserDTO.lbmuId != -1)
         {
-            // leaderboard mark user id, to get marking user information
-            bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, mLeaderboardUserDTO.lbmuId);
-            DashboardNavigator dashboardNavigator =
-                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-            if (dashboardNavigator != null)
-            {
-                dashboardNavigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
-            }
+            pushLeaderboardPositionListFragment(bundle);
         }
         else
         {
-            bundle.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            DashboardNavigator dashboardNavigator =
-                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-            if (dashboardNavigator != null)
-            {
-                dashboardNavigator.pushFragment(PositionListFragment.class, bundle);
-            }
+            pushPositionListFragment(bundle, ownedPortfolioId);
+        }
+    }
+
+    protected void pushLeaderboardPositionListFragment(Bundle bundle)
+    {
+        // leaderboard mark user id, to get marking user information
+        LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, mLeaderboardUserDTO.getLeaderboardMarkUserId());
+        LeaderboardPositionListFragment.putShownUser(bundle, mLeaderboardUserDTO.getBaseKey());
+        DashboardNavigator dashboardNavigator =
+                ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        if (dashboardNavigator != null)
+        {
+            dashboardNavigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
+        }
+    }
+
+    protected void pushPositionListFragment(Bundle bundle, OwnedPortfolioId ownedPortfolioId)
+    {
+        PositionListFragment.putGetPositionsDTOKey(bundle, ownedPortfolioId);
+        PositionListFragment.putShownUser(bundle, mLeaderboardUserDTO.getBaseKey());
+        DashboardNavigator dashboardNavigator =
+                ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        if (dashboardNavigator != null)
+        {
+            dashboardNavigator.pushFragment(PositionListFragment.class, bundle);
         }
     }
 

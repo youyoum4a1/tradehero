@@ -12,7 +12,7 @@ public class PrivateDiscussionDTO extends DiscussionDTO
         super();
     }
 
-    public <ExtendedDTOType extends ExtendedDTO> PrivateDiscussionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    public <ExtendedDTOType extends ExtendedDTO> PrivateDiscussionDTO(ExtendedDTOType other, Class<? extends PrivateDiscussionDTO> myClass)
     {
         super(other, myClass);
     }

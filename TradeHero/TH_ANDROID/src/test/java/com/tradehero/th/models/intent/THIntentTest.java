@@ -14,10 +14,9 @@ import org.robolectric.annotation.Config;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
+@Config(manifest = TestConstants.MANIFEST_PATH)
 public class THIntentTest
 {
     @Before public void setUp()

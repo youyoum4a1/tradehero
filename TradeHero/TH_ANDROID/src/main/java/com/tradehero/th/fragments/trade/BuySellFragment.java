@@ -44,7 +44,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -55,7 +54,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -76,11 +76,11 @@ import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
-import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -88,15 +88,11 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import dagger.Lazy;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
@@ -165,6 +161,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
+    @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
     @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
@@ -172,7 +169,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
-    @Inject WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
     @Inject Picasso picasso;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
@@ -609,6 +605,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.linkWith(securityPositionDetailDTO, andDisplay);
 
+        buildUsedMenuPortfolios();
         setInitialSellQuantityIfCan();
 
         if (andDisplay)
@@ -672,6 +669,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         if (andDisplay)
         {
+            displayBuySellSwitch();
             displaySelectedPortfolio();
         }
     }
@@ -738,77 +736,12 @@ public class BuySellFragment extends AbstractBuySellFragment
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
     protected void buildUsedMenuPortfolios()
     {
-        OwnedPortfolioId defaultOwnedPortfolioId =
-                portfolioCompactListCache.getDefaultPortfolio(currentUserId.toUserBaseKey());
+        Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
-        if (defaultOwnedPortfolioId != null && securityCompactDTO != null)
-        {
-            Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
-
-            PortfolioCompactDTO defaultPortfolioCompactDTO =
-                    portfolioCompactCache.get(defaultOwnedPortfolioId.getPortfolioIdKey());
-            newMenus.add(
-                    new MenuOwnedPortfolioId(defaultOwnedPortfolioId, defaultPortfolioCompactDTO));
-
-            TreeSet<OwnedPortfolioId> otherPortfolioIds = new TreeSet<>();
-            // HACK
-            {
-                if (securityCompactDTO instanceof WarrantDTO)
-                {
-                    for (Map.Entry<ProviderId, OwnedPortfolioId> entry : warrantSpecificKnowledgeFactory
-                            .getWarrantApplicablePortfolios()
-                            .entrySet())
-                    {
-                        if (providerId == null)
-                        {
-                            providerId = entry.getKey();
-                        }
-                        otherPortfolioIds.add(entry.getValue());
-                        break; // Keep only the first
-                    }
-                }
-            }
-
-            ProviderSpecificResourcesDTO providerSpecificResourcesDTO =
-                    providerSpecificResourcesFactory.createResourcesDTO(providerId);
-
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null && !applicablePortfolioId.equals(
-                    defaultOwnedPortfolioId))
-            {
-                otherPortfolioIds.add(applicablePortfolioId);
-            }
-
-            for (OwnedPortfolioId ownedPortfolioId : otherPortfolioIds)
-            {
-                PortfolioCompactDTO portfolioCompactDTO =
-                        portfolioCompactCache.get(ownedPortfolioId.getPortfolioIdKey());
-                if (portfolioCompactDTO == null)
-                {
-                    Timber.e(new NullPointerException(
-                            "Missing portfolioCompact for " + ownedPortfolioId), "");
-                }
-                else if (portfolioCompactDTO != null
-                        && portfolioCompactDTO.providerId != null
-                        && providerId != null
-                        &&
-                        providerId.key.equals(portfolioCompactDTO.providerId)
-                        &&
-                        providerSpecificResourcesDTO != null
-                        && providerSpecificResourcesDTO.competitionPortfolioTitleResId > 0)
-                {
-
-                    newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, getString(
-                            providerSpecificResourcesDTO.competitionPortfolioTitleResId)));
-                }
-                else
-                {
-                    newMenus.add(new MenuOwnedPortfolioId(ownedPortfolioId, portfolioCompactDTO));
-                }
-            }
-
-            usedMenuOwnedPortfolioIds = newMenus;
-        }
+        newMenus.addAll(menuOwnedPortfolioIdFactory.createPortfolioMenus(
+                currentUserId.toUserBaseKey(),
+                securityPositionDetailDTO));
+        usedMenuOwnedPortfolioIds = newMenus;
     }
 
     public void display()
@@ -974,7 +907,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 else
                 {
                     bthSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, false, "");
+                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, THSignedNumber.WITHOUT_SIGN, "");
                     bPrice = bthSignedNumber.toString();
                 }
 
@@ -985,7 +918,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 else
                 {
                     sthSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, false, "");
+                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
                     sPrice = sthSignedNumber.toString();
                 }
             }
@@ -1167,9 +1100,15 @@ public class BuySellFragment extends AbstractBuySellFragment
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
                     mStockLogo.setImageResource(exchange.logoId);
                     loadStockBgLogoDelayed();
-                } catch (IllegalArgumentException e)
+                }
+                catch (IllegalArgumentException e)
                 {
                     Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
+                    loadStockLogoDefault();
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, securityCompactDTO.exchange);
                     loadStockLogoDefault();
                 }
             }
@@ -1466,9 +1405,10 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void showBuySellDialog()
     {
-        publishToFb = false;
-        publishToLi = false;
-        publishToTw = false;
+        publishToFb = true;
+        publishToLi = true;
+        publishToTw = true;
+        publishToWe = true;
         shareLocation = true;
         sharePublic = false;
         pushPortfolioFragmentRunnable = null;
@@ -1721,7 +1661,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 double value = mQuantity * priceRefCcy;
                 THSignedNumber thTradeValue =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, false,
+                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
                                 portfolioCompactDTO.currencyDisplay);
                 valueText = thTradeValue.toString();
 
@@ -1730,7 +1670,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     double cashAvailable = portfolioCompactDTO.cashBalance;
                     THSignedNumber thSignedNumber =
                             new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable - value,
-                                    false, portfolioCompactDTO.currencyDisplay);
+                                    THSignedNumber.WITHOUT_SIGN, portfolioCompactDTO.currencyDisplay);
                     cashLeftText = thSignedNumber.toString();
                 }
             }
@@ -1895,8 +1835,8 @@ public class BuySellFragment extends AbstractBuySellFragment
             navigator.popFragment();
 
             Bundle args = new Bundle();
-            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
+            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
             navigator.pushFragment(PositionListFragment.class, args);
         }
     }

@@ -3,11 +3,10 @@ package com.tradehero.th.fragments.position.partial;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.utils.PositionUtils;
 import com.tradehero.th.utils.THSignedNumber;
 
 abstract public class AbstractPositionPartialBottomOpenView<
@@ -16,12 +15,14 @@ abstract public class AbstractPositionPartialBottomOpenView<
         >
         extends AbstractPartialBottomView<PositionDTOType, ExpandableListItemType>
 {
-    private TextView unrealisedPLValue;
-    private TextView realisedPLValue;
-    private TextView totalInvestedValue;
-    private TextView marketValueValue;
-    private TextView quantityValue;
-    private TextView averagePriceValue;
+    @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
+    @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+    @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
+    @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
+    @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
+    @InjectView(R.id.market_value_value) protected TextView marketValueValue;
+    @InjectView(R.id.quantity_value) protected TextView quantityValue;
+    @InjectView(R.id.average_price_value) protected TextView averagePriceValue;
 
     //<editor-fold desc="Constructors">
     public AbstractPositionPartialBottomOpenView(Context context)
@@ -40,23 +41,14 @@ abstract public class AbstractPositionPartialBottomOpenView<
     }
     //</editor-fold>
 
-    @Override protected void initViews()
-    {
-        super.initViews();
-        unrealisedPLValue = (TextView) findViewById(R.id.unrealised_pl_value);
-        realisedPLValue = (TextView) findViewById(R.id.realised_pl_value);
-        totalInvestedValue = (TextView) findViewById(R.id.total_invested_value);
-        marketValueValue = (TextView) findViewById(R.id.market_value_value);
-        quantityValue = (TextView) findViewById(R.id.quantity_value);
-        averagePriceValue = (TextView) findViewById(R.id.average_price_value);
-    }
-
     @Override public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
     {
         super.linkWith(positionDTO, andDisplay);
         if (andDisplay)
         {
+            displayUnrealisedPLValueHeader();
             displayUnrealisedPLValue();
+            displayRealisedPLValueHeader();
             displayRealisedPLValue();
             displayTotalInvested();
             displayMarketValue();
@@ -68,7 +60,9 @@ abstract public class AbstractPositionPartialBottomOpenView<
     @Override public void displayModelPart()
     {
         super.displayModelPart();
+        displayUnrealisedPLValueHeader();
         displayUnrealisedPLValue();
+        displayRealisedPLValueHeader();
         displayRealisedPLValue();
         displayTotalInvested();
         displayMarketValue();
@@ -76,13 +70,40 @@ abstract public class AbstractPositionPartialBottomOpenView<
         displayAveragePriceValue();
     }
 
+    public void displayUnrealisedPLValueHeader()
+    {
+        if (unrealisedPLValueHeader != null)
+        {
+            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.unrealizedPLRefCcy < 0)
+            {
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_loss_header);
+            }
+            else
+            {
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_profit_header);
+            }
+        }
+    }
+
     public void displayUnrealisedPLValue()
     {
         if (unrealisedPLValue != null)
         {
-            if (positionDTO != null)
+            positionUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
+        }
+    }
+
+    public void displayRealisedPLValueHeader()
+    {
+        if (realisedPLValueHeader != null)
+        {
+            if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null && positionDTO.realizedPLRefCcy < 0)
             {
-                unrealisedPLValue.setText(positionUtils.getUnrealizedPL(getContext(), positionDTO));
+                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
+            }
+            else
+            {
+                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
             }
         }
     }
@@ -91,10 +112,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (realisedPLValue != null)
         {
-            if (positionDTO != null)
-            {
-                realisedPLValue.setText(positionUtils.getRealizedPL(getContext(), positionDTO));
-            }
+            positionUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
@@ -104,7 +122,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionUtils.getSumInvested(getContext(), positionDTO));
+                totalInvestedValue.setText(positionUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }
@@ -115,7 +133,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null)
             {
-                marketValueValue.setText(positionUtils.getMarketValue(getContext(), positionDTO));
+                marketValueValue.setText(positionUtils.getMarketValue(getResources(), positionDTO));
             }
         }
     }
@@ -141,7 +159,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null && positionDTO.averagePriceRefCcy != null)
             {
-                THSignedNumber ThAveragePriceRefCcy = new THSignedNumber(THSignedNumber.TYPE_MONEY, positionDTO.averagePriceRefCcy, false, positionDTO.getNiceCurrency());
+                THSignedNumber ThAveragePriceRefCcy = new THSignedNumber(THSignedNumber.TYPE_MONEY, positionDTO.averagePriceRefCcy, THSignedNumber.WITHOUT_SIGN, positionDTO.getNiceCurrency());
                 averagePriceValue.setText(ThAveragePriceRefCcy.toString());
             }
             else

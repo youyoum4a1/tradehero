@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
@@ -67,7 +68,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> profileCacheFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected List<CompetitionId> competitionIds;
     private DTOCache.GetOrFetchTask<ProviderId, CompetitionIdList> competitionListCacheFetchTask;
 
@@ -121,11 +122,10 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override public void onStart()
     {
         super.onStart();
-        detachUserProfileCacheTask();
-        profileCacheFetchTask = userProfileCache.getOrFetch(
-                currentUserId.toUserBaseKey(),
-                createProfileCacheListener());
-        profileCacheFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCacheListener = createProfileCacheListener();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
 
         detachCompetitionListCacheTask();
         competitionListCacheFetchTask = competitionListCache.getOrFetch(
@@ -147,7 +147,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onStop()
     {
-        detachUserProfileCacheTask();
+        detachUserProfileCache();
         detachCompetitionListCacheTask();
         super.onStop();
     }
@@ -175,13 +175,13 @@ public class MainCompetitionFragment extends CompetitionFragment
         super.onDestroy();
     }
 
-    private void detachUserProfileCacheTask()
+    private void detachUserProfileCache()
     {
-        if (profileCacheFetchTask != null)
+        if (userProfileCacheListener != null)
         {
-            profileCacheFetchTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        profileCacheFetchTask = null;
+        userProfileCacheListener = null;
     }
 
     private void detachCompetitionListCacheTask()
@@ -325,7 +325,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushTradeNowElement(CompetitionZoneTradeNowDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
-        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+        ProviderSecurityListFragment.putProviderId(args, providerId);
         ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
@@ -337,9 +337,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (ownedPortfolioId != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            getNavigator().pushFragment(PositionListFragment.class, args);
+            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+            getDashboardNavigator().pushFragment(PositionListFragment.class, args);
         }
     }
 
@@ -348,7 +348,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
         ProviderVideoListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
-        getNavigator().pushFragment(ProviderVideoListFragment.class, args);
+        getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
     }
 
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
@@ -413,7 +413,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         return new MainCompetitionFragmentItemClickListener();
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
     {
         return new MainCompetitionUserProfileCacheListener();
     }
@@ -491,10 +491,9 @@ public class MainCompetitionFragment extends CompetitionFragment
     }
 
     private class MainCompetitionUserProfileCacheListener
-            implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value)
         {
             linkWith(value, true);
         }
