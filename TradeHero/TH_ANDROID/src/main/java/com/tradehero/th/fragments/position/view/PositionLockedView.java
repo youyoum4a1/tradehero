@@ -9,8 +9,8 @@ import butterknife.InjectView;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.PositionUtils;
 import javax.inject.Inject;
 
 public class PositionLockedView extends LinearLayout
@@ -25,7 +25,7 @@ public class PositionLockedView extends LinearLayout
 
     private PositionDTO positionDTO;
 
-    @Inject protected PositionUtils positionUtils;
+    @Inject protected PositionDTOUtils positionDTOUtils;
 
     //<editor-fold desc="Constructors">
     public PositionLockedView(Context context)
@@ -94,7 +94,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (unrealisedPLValue != null)
         {
-            positionUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
+            positionDTOUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
         }
     }
 
@@ -117,7 +117,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (realisedPLValue != null)
         {
-            positionUtils.setRealizedPLLook(realisedPLValue, positionDTO);
+            positionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
@@ -127,7 +127,7 @@ public class PositionLockedView extends LinearLayout
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionUtils.getSumInvested(getResources(), positionDTO));
+                totalInvestedValue.setText(positionDTOUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }
@@ -136,7 +136,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (positionPercent != null)
         {
-            positionUtils.setROISinceInception(positionPercent, positionDTO);
+            positionDTOUtils.setROISinceInception(positionPercent, positionDTO);
         }
     }
 }

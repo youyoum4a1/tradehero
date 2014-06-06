@@ -18,11 +18,11 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.PositionUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -33,7 +33,7 @@ public class PositionPartialTopView extends LinearLayout
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<SecurityIdCache> securityIdCache;
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
-    @Inject protected PositionUtils positionUtils;
+    @Inject protected PositionDTOUtils positionDTOUtils;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
@@ -315,11 +315,11 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod())
             {
-                positionUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
+                positionDTOUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
             }
             else
             {
-                positionUtils.setROISinceInception(positionPercent, positionDTO);
+                positionDTOUtils.setROISinceInception(positionPercent, positionDTO);
             }
         }
     }
