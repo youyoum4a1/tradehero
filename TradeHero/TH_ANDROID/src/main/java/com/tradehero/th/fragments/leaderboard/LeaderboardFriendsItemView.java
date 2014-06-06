@@ -132,7 +132,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         super.onFinishInflate();
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
-        Timber.d("lyl onFinishInflate");
         loadDefaultPicture();
         if (expandingLayout != null)
         {
@@ -156,19 +155,16 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        Timber.d("lyl onAttachedToWindow");
         ButterKnife.inject(this);
         loadDefaultPicture();
         if (expandingLayout != null)
         {
-            //expandingLayout.setOnExpandListener(this);
             expandingLayout.setVisibility(GONE);
         }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        //Timber.d("lyl onDetachedFromWindow");
         avatar.setOnClickListener(null);
         inviteBtn.setOnClickListener(null);
         detachMiddleCallbackInvite();
@@ -197,11 +193,9 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     @Override public void display(LeaderboardUserDTO dto)
     {
-        //Timber.d("lyl %s", dto.toString());
         mLeaderboardUserDTO = dto;
         if (mLeaderboardUserDTO != null)
         {
-            //setPosition();
             updatePosition();
             displayPicture();
             updateName();
@@ -214,7 +208,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private void updatePosition()
     {
-        //Timber.d("lyl updatePosition");
         if (lable != null)
         {
             boolean isSocial = false;
@@ -248,7 +241,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     public void setPosition(int position)
     {
-        //Timber.d("lyl setPosition position=%d", position);
         if (lbmuPosition != null)
         {
             lbmuPosition.setText("" + (position + 1));
@@ -474,7 +466,11 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             case R.id.leaderboard_user_item_profile_picture:
             case R.id.leaderboard_user_item_open_profile:
-                handleOpenProfileButtonClicked();
+                if (mLeaderboardUserDTO.displayName != null
+                        && !mLeaderboardUserDTO.displayName.isEmpty())
+                {
+                    handleOpenProfileButtonClicked();
+                }
                 break;
             case R.id.leaderboard_user_item_invite_btn:
                 invite();
@@ -516,7 +512,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     protected void follow(UserBaseKey heroId)
     {
-        Timber.d("lyl follow");
         notifyFollowRequested(heroId);
     }
 
@@ -575,13 +570,11 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private void displayFollow()
     {
-        Timber.d("lyl displayFollow");
         Boolean isFollowing = isCurrentUserFollowing();
         if (lbmuFollowUser != null)
         {
             if (currentUserId.get() == mLeaderboardUserDTO.id)
             {
-                Timber.d("lyl hide follow");
                 lbmuFollowUser.setVisibility(GONE);
             }
             else
@@ -594,7 +587,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             if (currentUserId.get() == mLeaderboardUserDTO.id)
             {
-                Timber.d("lyl hide follow");
                 lbmuFollowingUser.setVisibility(GONE);
             }
             else
@@ -688,7 +680,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private void invite()
     {
-        Timber.d("lyl invite");
         if (mLeaderboardUserDTO.liId != null || mLeaderboardUserDTO.twId != null)
         {
             InviteFormDTO inviteFriendForm = new InviteFormDTO();
@@ -725,10 +716,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private void sendRequestDialog()
     {
-        Timber.d("lyl sendRequestDialog");
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(mLeaderboardUserDTO.fbId);
-        Timber.d("lyl list of fbIds: %s", stringBuilder.toString());
 
         Bundle params = new Bundle();
         String messageToFacebookFriends = getContext().getString(
@@ -785,10 +774,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     @Override public void onExpand(boolean expand)
     {
-        Timber.d("lyl expand=" + expand);
         if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.displayName != null)
         {
-            Timber.d("lyl normal");
             if (expand)
             {
                 showExpandAnimation();
@@ -796,12 +783,10 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             else
             {
                 clearExpandAnimation();
-                Timber.d("clearExpandAnimation");
             }
         }
         else
         {
-            Timber.d("lyl back");
             if (expandingLayout != null)
             {
                 mLeaderboardUserDTO.setExpanded(false);
@@ -934,7 +919,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         @Override public void success(Response response, Response response2)
         {
-            Timber.d("lyl success " + response);
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();
         }
@@ -950,19 +934,16 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         @Override public void done(UserLoginDTO user, THException ex)
         {
-            Timber.d("lyl done");
             getProgressDialog().dismiss();
         }
 
         @Override public void onStart()
         {
-            Timber.d("lyl onStart");
             getProgressDialog().show();
         }
 
         @Override public boolean onSocialAuthDone(JSONCredentials json)
         {
-            Timber.d("lyl onSocialAuthDone");
             detachMiddleCallbackConnect();
             middleCallbackConnect = socialServiceWrapperLazy.get().connect(
                     currentUserId.toUserBaseKey(), UserFormFactory.create(json),
@@ -1001,14 +982,12 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
-            Timber.d("lyl success");
             userProfileCacheLazy.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
             invite();
         }
 
         @Override protected void failure(THException ex)
         {
-            Timber.d("lyl failure");
             THToast.show(ex);
         }
 

@@ -31,12 +31,10 @@ import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
-    //@InjectView(R.id.leaderboard_mark_user_screen) RelativeLayout leaderboardMarkUserScreen;
 
     protected LeaderboardFriendsListAdapter leaderboardMarkUserListAdapter;
     private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
@@ -49,16 +47,12 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        Timber.d("lyl onActivityCreated");
         if (leaderboardMarkUserListAdapter == null)
         {
             leaderboardMarkUserListAdapter = new LeaderboardFriendsListAdapter(
                     getActivity(), getActivity().getLayoutInflater(),
                     R.layout.leaderboard_friends_item_view);
-            //leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
-            //leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
             leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
-            //leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
             leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
             leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         }
@@ -67,7 +61,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        Timber.d("lyl onCreateView");
         View view = inflater.inflate(R.layout.leaderboard_friends_listview, container, false);
         ButterKnife.inject(this, view);
         initViews(view);
@@ -82,7 +75,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override protected void initViews(View view)
     {
-        Timber.d("lyl initViews");
     }
 
     protected void inflateHeaderView(LayoutInflater inflater, ViewGroup container)
@@ -122,7 +114,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onResume()
     {
         super.onResume();
-        Timber.d("lyl onResume");
         localyticsSession.tagEvent(LocalyticsConstants.FriendsLeaderboard_Filter_FoF);
         detachGetFriendsMiddleCallBack();
         getFriendsMiddleCallback =
@@ -142,17 +133,12 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         @Override public void success(LeaderboardFriendsDTO dto, Response response)
         {
-            Timber.d("lyl success leaderboard.size=%d", dto.leaderboard.users.size());
-            Timber.d("lyl success socialFriends.size=%d", dto.socialFriends.size());
             Date markingTime = dto.leaderboard.markUtc;
             if (markingTime != null && leaderboardMarkUserMarkingTime != null)
             {
                 leaderboardMarkUserMarkingTime.setText(
                         String.format("(%s)", prettyTime.get().format(markingTime)));
             }
-            //Timber.d("lyl %d", leaderboardMarkUserScreen.getDisplayedChildLayoutId());
-            //leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.leaderboard_mark_user_listview);
-            //leaderboardMarkUserListView.onRefreshComplete();
             List<LeaderboardUserDTO> list = dto.leaderboard.users;
             list.addAll(dto.socialFriends);
             leaderboardMarkUserListAdapter.setItems(list);
@@ -162,7 +148,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
-            Timber.d("lyl %s", new THException(retrofitError));
         }
     }
 
@@ -176,7 +161,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         switch (item.getItemId())
         {
             case R.id.friend_leaderboard_menu:
-                Timber.d("lyl friend_leaderboard_menu");
 
                 break;
         }
@@ -185,7 +169,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     @Override public void onDestroyView()
     {
-        Timber.d("lyl onDestroyView");
         detachGetFriendsMiddleCallBack();
         if (leaderboardMarkUserListView != null)
         {
@@ -201,7 +184,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
             leaderboardMarkUserListAdapter = null;
         }
-        //leaderboardMarkUserScreen = null;
         super.onDestroyView();
     }
 

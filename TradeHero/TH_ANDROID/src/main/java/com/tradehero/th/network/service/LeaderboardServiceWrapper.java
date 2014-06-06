@@ -19,7 +19,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import timber.log.Timber;
 
 @Singleton public class LeaderboardServiceWrapper
 {
@@ -75,12 +74,6 @@ import timber.log.Timber;
         }
         else if (leaderboardKey instanceof FriendsPerPagedLeaderboardKey)
         {
-            Timber.d("lyl getNewFriendsLeaderboard");
-            //FriendsPerPagedLeaderboardKey friendsPerPagedLeaderboardKey = (FriendsPerPagedLeaderboardKey) leaderboardKey;
-            //return leaderboardService.getFriendsLeaderboard(
-            //        friendsPerPagedLeaderboardKey.page,
-            //        friendsPerPagedLeaderboardKey.perPage,
-            //        friendsPerPagedLeaderboardKey.includeFoF);
             return leaderboardService.getNewFriendsLeaderboard().leaderboard;
         }
         else if (leaderboardKey instanceof PerPagedLeaderboardKey)

@@ -59,6 +59,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public String currencyDisplay;
     public String currencyISO;
 
+    //for social friends
     public String name;
     public String thUserId;
     public String fbId;

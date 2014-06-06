@@ -8,7 +8,6 @@ import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import timber.log.Timber;
 
 public class LeaderboardFriendsListAdapter extends ArrayDTOAdapter<LeaderboardUserDTO, LeaderboardFriendsItemView>
 {
@@ -29,7 +28,6 @@ public class LeaderboardFriendsListAdapter extends ArrayDTOAdapter<LeaderboardUs
         final View expandingLayout = leaderboardFriendsItemView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
-            Timber.d("lyl position="+position+" expand="+leaderboardUserDTO.isExpanded());
             expandingLayout.setVisibility(leaderboardUserDTO.isExpanded() ? View.VISIBLE : View.GONE);
         }
     }
