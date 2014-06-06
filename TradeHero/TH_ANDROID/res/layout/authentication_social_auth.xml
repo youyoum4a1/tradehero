@@ -36,6 +36,5 @@
       style="@style/TradeHero.SocialAuthenticationButton"
       android:background="@drawable/btn_background_social_linkedin"
       android:text="@string/tencent_qq"
-      android:visibility="gone"
       />
 </LinearLayout>

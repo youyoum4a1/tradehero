@@ -62,7 +62,9 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
             showViewForChinese();
         }
         // TODO remove this shit
-        else if (language != null && language.startsWith("ko"))
+        //else if (language != null && language.startsWith("ko"))
+        //if not ChineseLocale weibo & qq will show gone ,checked with Cody
+        else
         {
             getView().findViewById(R.id.btn_weibo_signin).setVisibility(View.GONE);
             getView().findViewById(R.id.btn_qq_signin).setVisibility(View.GONE);
