@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -228,13 +227,14 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     protected void handleFollowRequested(final UserBaseKey userBaseKey)
     {
-        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialog, int which)
-            {
+        //TODO hacked by alipay alex
+        //heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
+        //{
+        //    @Override public void onClick(DialogInterface dialog, int which)
+        //    {
                 premiumFollowUser(userBaseKey);
-            }
-        });
+            //}
+        //});
     }
 
     protected void handleFollowSuccess(UserProfileDTO userProfileDTO)
