@@ -419,20 +419,19 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         @Override
         public void success(UserProfileDTO userProfileDTO, Response response) {
             super.success(userProfileDTO,response);
-            if (response.getStatus() != 200)
+            if (response.getStatus() == 200 || response.getStatus() == 204)
             {
                 // TODO
-                handleFollowError();
+                handleFollowSuccess(usersToFollow);
                 return;
             }
-            handleFollowSuccess(usersToFollow);
+            handleFollowError();
         }
 
         @Override
         public void failure(RetrofitError retrofitError) {
             super.failure(retrofitError);
             handleFollowError();
-
         }
     };
 
@@ -450,13 +449,12 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         @Override
         public void success(Response data, Response response) {
             super.success(data,response);
-            if (response.getStatus() != 200)
+            if (response.getStatus() == 200 || response.getStatus() == 204)
             {
-                handleInviteError();
+                handleInviteSuccess(usersToInvite);
                 return;
             }
-            handleInviteSuccess(usersToInvite);
-
+            handleInviteError();
         }
 
         @Override
@@ -482,7 +480,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
         @Override public void onErrorThrown(FriendsListKey key, Throwable error)
         {
-
             if (!hasView())
             {
                 return;
