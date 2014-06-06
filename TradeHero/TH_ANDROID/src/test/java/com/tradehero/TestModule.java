@@ -1,7 +1,7 @@
 package com.tradehero;
 
 import com.tradehero.common.CommonModule;
-import com.tradehero.th.AppModule;
+import com.tradehero.th.AppTestModule;
 import com.tradehero.th.base.TestApplication;
 import com.tradehero.th.models.push.handers.NotificationOpenedHandlerTest;
 import dagger.Module;
@@ -9,7 +9,7 @@ import dagger.Module;
 @Module(
         includes = {
                 CommonModule.class,
-                AppModule.class
+                AppTestModule.class
         },
         injects = {
                 TestApplication.class,
