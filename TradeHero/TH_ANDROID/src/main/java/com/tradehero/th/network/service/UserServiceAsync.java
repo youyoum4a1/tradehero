@@ -5,6 +5,7 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
@@ -13,6 +14,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.*;
@@ -189,6 +191,18 @@ interface UserServiceAsync
             @Path("userId") int userId,
             Callback<List<UserFriendsDTO>> callback);
     //</editor-fold>
+
+    @GET("/users/{userId}/GetNewFriends")
+    void getSocialFriends(
+            @Path("userId") int userId, @Query("socialNetwork") SocialNetworkEnum socialNetwork, Callback<List<UserFriendsDTO>> callback);
+
+    @GET("/users/{userId}/SearchFriends")
+    void searchSocialFriends(@Path("userId") int userId, @Query("socialNetwork") SocialNetworkEnum socialNetwork, @Query("q")String query, Callback<List<UserFriendsDTO>> callback);
+
+
+    @POST("/users/BatchFollow/free")
+    void followBatchFree(@Body FollowFriendsForm followFriendsForm, Callback<UserProfileDTO> callback);
+
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends")

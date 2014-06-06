@@ -1,17 +1,20 @@
-package com.tradehero.th.utils;
+package com.tradehero.th.models.position;
 
 import android.content.res.Resources;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
 
-public class PositionUtils
+public class PositionDTOUtils
 {
     protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
 
-    @Inject public PositionUtils()
+    @Inject public PositionDTOUtils()
     {
         super();
     }

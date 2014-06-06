@@ -11,26 +11,25 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.fragments.trade.AbstractTradeListItemAdapter;
+import com.tradehero.th.fragments.trade.TradeListItemAdapter;
+import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeCache;
-import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
 
-public class TradeListItemView extends LinearLayout implements DTOView<AbstractTradeListItemAdapter.ExpandableTradeItem>
+public class TradeListItemView extends LinearLayout implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
 {
-    private AbstractTradeListItemAdapter.ExpandableTradeItem tradeItem;
+    private TradeListItemAdapter.ExpandableTradeItem tradeItem;
     private TradeDTO trade;
     private PositionDTO position;
 
@@ -38,6 +37,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
 
     @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
+    @Inject TradeDTOUtils tradeDTOUtils;
 
     // all the 3 caches below are needed to get the security currencyDisplay display
     // 1) use the position cache to get the the PositionDTO containing the securityId (type SecurityIntegerId)
@@ -49,14 +49,13 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
 
     @InjectView(R.id.ic_position_profit_indicator_left) protected ColorIndicator profitIndicatorView;
     @InjectView(R.id.trade_date_label) protected TextView dateTextView;
-    @InjectView(R.id.trade_quantity_label) protected TextView quantityTextView;
+    @InjectView(R.id.trade_quantity_label) protected TextView tradeQuantityHeader;
     @InjectView(R.id.trade_avg_price) protected TextView averagePriceTextView;
-    @InjectView(R.id.trade_realized_pl) protected TextView realizedPLTextView;
-    @InjectView(R.id.trade_unrealized_pl_container) protected View unrealizedPLContainer;
-    @InjectView(R.id.trade_unrealized_pl) protected TextView unrealizedPLTextView;
-    @InjectView(R.id.trade_quantity) protected TextView positionQuantityTextView;
+    @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
+    @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
+    @InjectView(R.id.trade_quantity) protected TextView tradeQuantityValue;
     @InjectView(R.id.trade_list_comment_section) protected View commentSection;
-    @InjectView(R.id.trade_list_comment) protected TextView commentTextView;
+    @InjectView(R.id.trade_list_comment) protected TextView commentText;
 
     //<editor-fold desc="Constructors">
     public TradeListItemView(Context context)
@@ -80,11 +79,6 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
         super.onFinishInflate();
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
-        initViews();
-    }
-
-    protected void initViews()
-    {
     }
 
     @Override protected void onDetachedFromWindow()
@@ -93,18 +87,18 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(AbstractTradeListItemAdapter.ExpandableTradeItem expandableItem)
+    @Override public void display(TradeListItemAdapter.ExpandableTradeItem expandableItem)
     {
         linkWith(expandableItem, true);
     }
 
-    public void linkWith(AbstractTradeListItemAdapter.ExpandableTradeItem item, boolean andDisplay)
+    public void linkWith(TradeListItemAdapter.ExpandableTradeItem item, boolean andDisplay)
     {
         this.tradeItem = item;
         if (this.tradeItem != null)
         {
-            this.position = positionCache.get().get(new OwnedPositionId(tradeItem.getModel()));
-            this.trade = tradeCache.get().get(tradeItem.getModel());
+            this.position = positionCache.get().get(tradeItem.getModel().positionDTOKey);
+            this.trade = tradeCache.get().get(tradeItem.getModel().ownedTradeId);
         }
         else
         {
@@ -136,10 +130,10 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
             this.profitIndicatorView.linkWith(getNumberToDisplay());
         }
 
-        if (this.quantityTextView != null && trade != null)
+        if (this.tradeQuantityHeader != null && trade != null)
         {
             String quantityString = String.format("%+,d @ %s %,.2f", trade.quantity, getSecurityCurrencyDisplay(), trade.unit_price);
-            this.quantityTextView.setText(quantityString);
+            this.tradeQuantityHeader.setText(quantityString);
         }
 
         if (this.dateTextView != null && trade != null && trade.date_time != null)
@@ -154,51 +148,68 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
 
     private void displayExpandableSection()
     {
+        displayAveragePrice();
+        displayRealisedPLValueHeader();
+        displayRealisedPLValue();
+        displayTradeQuantity();
+        displayCommentSection();
+        displayCommentText();
+    }
+
+    private void displayAveragePrice()
+    {
         if (this.averagePriceTextView != null && trade != null && position != null)
         {
             String avgPriceString = String.format("%s %,.2f", position.getNiceCurrency(), trade.average_price_after_trade);
             this.averagePriceTextView.setText(avgPriceString);
         }
+    }
 
-        if (this.realizedPLTextView != null && trade != null && position != null)
+    private void displayRealisedPLValueHeader()
+    {
+        if (realisedPLValueHeader != null)
         {
-            String realizedPLString = String.format("%s %+,.2f", position.getNiceCurrency(), trade.realized_pl_after_trade);
-            this.realizedPLTextView.setText(realizedPLString);
-            this.realizedPLTextView.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(trade.realized_pl_after_trade)));
-        }
-
-        if (this.unrealizedPLContainer != null && tradeItem != null && position != null)
-        {
-            this.unrealizedPLContainer.setVisibility(tradeItem.isLastTrade() && position.isClosed() ? GONE : VISIBLE);
-        }
-
-        if (this.unrealizedPLTextView != null && tradeItem != null && position != null)
-        {
-            if (tradeItem.isLastTrade() && position.isClosed())
+            if (position != null && position.unrealizedPLRefCcy != null && position.realizedPLRefCcy < 0)
             {
-                this.unrealizedPLTextView.setText(R.string.na);
+                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
             }
             else
             {
-                String realizedPLString = String.format("%s %+,.2f", position.getNiceCurrency(), position.unrealizedPLRefCcy);
-                this.unrealizedPLTextView.setText(realizedPLString);
-                unrealizedPLTextView.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(position.unrealizedPLRefCcy)));
+                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
             }
         }
+    }
 
-        if (this.positionQuantityTextView != null && trade != null)
+    private void displayRealisedPLValue()
+    {
+        if (this.realisedPLValue != null && trade != null && position != null)
+        {
+            tradeDTOUtils.setRealizedPLLook(realisedPLValue, trade, position.getNiceCurrency());
+        }
+    }
+
+    private void displayTradeQuantity()
+    {
+        if (this.tradeQuantityValue != null && trade != null)
         {
             String quantityAfterTradeString = String.format("%,d", trade.quantity_after_trade);
-            this.positionQuantityTextView.setText(quantityAfterTradeString);
+            this.tradeQuantityValue.setText(quantityAfterTradeString);
         }
+    }
 
+    private void displayCommentSection()
+    {
         if (this.commentSection != null && trade != null)
         {
             this.commentSection.setVisibility( trade.commentText == null ? GONE : VISIBLE);
         }
-        if (this.commentTextView != null && trade != null)
+    }
+
+    private void displayCommentText()
+    {
+        if (this.commentText != null && trade != null)
         {
-            this.commentTextView.setText(trade.commentText);
+            this.commentText.setText(trade.commentText);
         }
     }
 

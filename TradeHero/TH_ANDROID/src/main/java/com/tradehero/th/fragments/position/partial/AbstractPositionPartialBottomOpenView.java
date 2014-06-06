@@ -89,7 +89,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (unrealisedPLValue != null)
         {
-            positionUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
+            positionDTOUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
         }
     }
 
@@ -112,7 +112,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
     {
         if (realisedPLValue != null)
         {
-            positionUtils.setRealizedPLLook(realisedPLValue, positionDTO);
+            positionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
@@ -122,7 +122,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionUtils.getSumInvested(getResources(), positionDTO));
+                totalInvestedValue.setText(positionDTOUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }
@@ -133,7 +133,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null)
             {
-                marketValueValue.setText(positionUtils.getMarketValue(getResources(), positionDTO));
+                marketValueValue.setText(positionDTOUtils.getMarketValue(getResources(), positionDTO));
             }
         }
     }

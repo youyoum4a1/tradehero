@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.trade.view.TradeListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -84,44 +85,22 @@
           android:paddingBottom="2dp">
 
         <TextView
+            android:id="@+id/realised_pl_value_header"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="@string/trade_list_realized_pl"
             android:gravity="right"
-            android:textColor="@color/light_grey"/>
-
-        <TextView
-            android:id="@+id/trade_realized_pl"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:paddingLeft="10dp"
-            android:layout_height="wrap_content"
+            android:textColor="@color/light_grey"
+            tools:text="Profit"
             />
 
-      </LinearLayout>
-
-      <LinearLayout
-          android:id="@+id/trade_unrealized_pl_container"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          android:paddingBottom="2dp">
-
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:text="@string/trade_list_unrealized_pl"
-            android:gravity="right"
-            android:textColor="@color/light_grey"/>
-
-        <TextView
-            android:id="@+id/trade_unrealized_pl"
+            android:id="@+id/realised_pl_value"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
+            tools:text="US$ 435"
             />
 
       </LinearLayout>
@@ -146,6 +125,7 @@
             android:layout_weight="3"
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
+            tools:text="45"
             />
 
       </LinearLayout>
@@ -182,7 +162,9 @@
         <TextView
             android:id="@+id/trade_list_comment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:text="Feeling like it"
+            />
 
       </LinearLayout>
 

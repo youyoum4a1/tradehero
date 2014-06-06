@@ -95,8 +95,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
-import com.tradehero.th.fragments.social.AllRelationsFragment;
-import com.tradehero.th.fragments.social.RelationsListItemView;
+import com.tradehero.th.fragments.social.*;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
@@ -104,6 +103,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
+import com.tradehero.th.fragments.social.friend.*;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
@@ -125,7 +125,6 @@ import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trade.TradeListInPeriodFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
@@ -245,7 +244,6 @@ import javax.inject.Singleton;
                         PositionPartialBottomInPeriodViewHolder.class,
 
                         TradeListFragment.class,
-                        TradeListInPeriodFragment.class,
                         TradeListItemView.class,
                         TradeListOverlayHeaderView.class,
                         TradeListHeaderView.class,
@@ -375,6 +373,18 @@ import javax.inject.Singleton;
                         SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
                         LeaderboardFriendsItemView.class,
+                        FriendsInvitationFragment.class,
+                        FacebookSocialFriendsFragment.class,
+                        TwitterSocialFriendsFragment.class,
+                        LinkedInSocialFriendsFragment.class,
+                        WeiboSocialFriendsFragment.class,
+                        SocialFriendHandler.class,
+                        FacebookSocialFriendHandler.class,
+                        FacebookSocialLinkHelper.class,
+                        LinkedInSocialLinkHelper.class,
+                        TwitterSocialLinkHelper.class,
+                        WeiboSocialLinkHelper.class,
+
                 },
         staticInjections =
                 {

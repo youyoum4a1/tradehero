@@ -30,7 +30,6 @@
         />
 
 
-    <!--
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_weibo"
         android:title="@string/settings_sharing_weibo"
@@ -42,7 +41,6 @@
         android:title="@string/settings_sharing_qq"
         android:icon="@drawable/settings_profile"
         />
-     -->
   </PreferenceCategory>
 
   <PreferenceCategory

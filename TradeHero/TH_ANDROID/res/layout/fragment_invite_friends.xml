@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+    <EditText
+            android:id="@+id/search_social_friends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_social_friend_hint"
+            />
+    <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <ListView
+                android:id="@+id/social_friend_type_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:background="@null"
+                android:divider="@null"
+                />
+        <ListView
+                android:id="@+id/social_friends_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:background="@null"
+                android:visibility="gone"
+                />
+
+        <TextView
+                android:id="@+id/social_search_friends_none"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/search_social_friend_empty"
+                android:visibility="gone"/>
+
+        <ProgressBar
+                android:id="@+id/social_search_friends_progressbar"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

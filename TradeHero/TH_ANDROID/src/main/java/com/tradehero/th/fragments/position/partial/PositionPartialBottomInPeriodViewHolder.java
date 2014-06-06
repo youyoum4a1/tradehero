@@ -9,9 +9,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
+import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.PositionUtils;
 import javax.inject.Inject;
 
 public class PositionPartialBottomInPeriodViewHolder
@@ -30,7 +30,7 @@ public class PositionPartialBottomInPeriodViewHolder
     private LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem;
     private PositionDTO positionDTO;
 
-    @Inject protected PositionUtils positionUtils;
+    @Inject protected PositionDTOUtils positionDTOUtils;
 
     public PositionPartialBottomInPeriodViewHolder(Context context, View container)
     {
@@ -125,7 +125,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodPL.setText(positionUtils.getInPeriodRealizedPL(context.getResources(), (PositionInPeriodDTO) positionDTO));
+                inPeriodPL.setText(positionDTOUtils.getInPeriodRealizedPL(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }
@@ -134,7 +134,7 @@ public class PositionPartialBottomInPeriodViewHolder
     {
         if (positionDTO instanceof PositionInPeriodDTO)
         {
-            positionUtils.setROIInPeriod(inPeriodRoiValue, (PositionInPeriodDTO) positionDTO);
+            positionDTOUtils.setROIInPeriod(inPeriodRoiValue, (PositionInPeriodDTO) positionDTO);
         }
     }
 
@@ -144,7 +144,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodAdditionalInvested.setText(positionUtils.getAdditionalInvested(context.getResources(), (PositionInPeriodDTO) positionDTO));
+                inPeriodAdditionalInvested.setText(positionDTOUtils.getAdditionalInvested(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }
@@ -155,7 +155,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodValueAtStart.setText(positionUtils.getValueAtStart(context.getResources(), (PositionInPeriodDTO) positionDTO));
+                inPeriodValueAtStart.setText(positionDTOUtils.getValueAtStart(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }
