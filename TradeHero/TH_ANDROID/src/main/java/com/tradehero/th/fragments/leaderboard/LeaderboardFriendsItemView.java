@@ -89,7 +89,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_position_tv) @Optional NumericalAnimatedTextView positionsCountTv;
     @InjectView(R.id.leaderboard_tradecount_tv) @Optional NumericalAnimatedTextView tradeCountTv;
     @InjectView(R.id.leaderboard_user_item_open_profile) @Optional TextView lbmuOpenProfile;
-    @InjectView(R.id.leaderboard_user_item_open_positions_list) @Optional TextView lbmuOpenPositionsList;
+    @InjectView(R.id.leaderboard_user_item_open_positions_list) @Optional TextView
+            lbmuOpenPositionsList;
     @InjectView(R.id.leaderboard_user_item_follow) @Optional RelativeLayout lbmuFollowUser;
     @InjectView(R.id.leaderboard_user_item_following) @Optional RelativeLayout lbmuFollowingUser;
 
@@ -151,6 +152,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             lbmuFollowUser.setOnClickListener(this);
         }
     }
+
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
@@ -252,7 +254,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             lbmuPosition.setText("" + (position + 1));
             if (currentUserId.get() == mLeaderboardUserDTO.id)
             {
-                lbmuPosition.setTextColor(getContext().getResources().getColor(R.color.button_green));
+                lbmuPosition.setTextColor(
+                        getContext().getResources().getColor(R.color.button_green));
             }
             else
             {
@@ -404,7 +407,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             if (tradeCountTv != null)
             {
-                tradeCountTv.setEndValue(mLeaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue());
+                tradeCountTv.setEndValue(
+                        mLeaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue());
                 tradeCountTv.setFractionDigits(2);
             }
             if (daysHoldTv != null)
@@ -419,11 +423,13 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             }
 
             String digitsWinRatio =
-                    NumberDisplayUtils.formatWithRelevantDigits(mLeaderboardUserDTO.getWinRatio() * 100, 3);
+                    NumberDisplayUtils.formatWithRelevantDigits(
+                            mLeaderboardUserDTO.getWinRatio() * 100, 3);
             if (winRateGauge != null)
             {
                 winRateGauge.setContentText(digitsWinRatio + "%");
-                winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+                winRateGauge.setSubText(
+                        getContext().getString(R.string.leaderboard_win_ratio_title));
                 winRateGauge.setAnimiationFlag(false);
                 winRateGauge.setCurrentValue((float) mLeaderboardUserDTO.getWinRatio() * 100);
             }
@@ -569,16 +575,33 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private void displayFollow()
     {
+        Timber.d("lyl displayFollow");
         Boolean isFollowing = isCurrentUserFollowing();
         if (lbmuFollowUser != null)
         {
-            boolean showButton = isFollowing == null || !isFollowing;
-            lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
+            if (currentUserId.get() == mLeaderboardUserDTO.id)
+            {
+                Timber.d("lyl hide follow");
+                lbmuFollowUser.setVisibility(GONE);
+            }
+            else
+            {
+                boolean showButton = isFollowing == null || !isFollowing;
+                lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
+            }
         }
         if (lbmuFollowingUser != null)
         {
-            boolean showImage = isFollowing != null && isFollowing;
-            lbmuFollowingUser.setVisibility(showImage ? VISIBLE : GONE);
+            if (currentUserId.get() == mLeaderboardUserDTO.id)
+            {
+                Timber.d("lyl hide follow");
+                lbmuFollowingUser.setVisibility(GONE);
+            }
+            else
+            {
+                boolean showImage = isFollowing != null && isFollowing;
+                lbmuFollowingUser.setVisibility(showImage ? VISIBLE : GONE);
+            }
         }
     }
 
@@ -762,7 +785,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     @Override public void onExpand(boolean expand)
     {
-        Timber.d("lyl expand="+expand);
+        Timber.d("lyl expand=" + expand);
         if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.displayName != null)
         {
             Timber.d("lyl normal");
@@ -806,7 +829,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     private void showExpandAnimation()
     {
         String digitsWinRatio =
-                NumberDisplayUtils.formatWithRelevantDigits(mLeaderboardUserDTO.getWinRatio() * 100, 3);
+                NumberDisplayUtils.formatWithRelevantDigits(mLeaderboardUserDTO.getWinRatio() * 100,
+                        3);
         if (winRateGauge != null)
         {
             winRateGauge.setContentText(digitsWinRatio + "%");
@@ -868,8 +892,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                     mLeaderboardUserDTO.sharpeRatioInPeriodVsSP500, r);
 
             return r;
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             Timber.e("normalizePerformance", e);
         }
@@ -889,8 +912,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             double result =
                     100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
             return result;
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             Timber.e("normalizeConsistency", e);
         }
@@ -899,7 +921,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
 
     private Double getAvgConsistency()
     {
-        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO =
+                userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             return userProfileDTO.mostSkilledLbmu.getAvgConsistency();

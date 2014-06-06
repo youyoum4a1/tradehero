@@ -104,6 +104,7 @@
         android:textSize="@dimen/leaderboard_position_text_size"
         android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
         android:layout_marginLeft="@dimen/common_margin_10"
+        android:layout_marginRight="@dimen/common_margin_110"
         android:shadowColor="@color/light_grey"
         android:shadowDy="1"
         android:shadowRadius="1"
