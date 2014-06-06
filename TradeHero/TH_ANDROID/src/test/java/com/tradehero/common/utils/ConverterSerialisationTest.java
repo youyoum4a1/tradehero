@@ -2,7 +2,6 @@ package com.tradehero.common.utils;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.utils.DaggerUtils;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -19,7 +18,6 @@ public class ConverterSerialisationTest
 
     @Before public void setUp()
     {
-        DaggerUtils.inject(this);
     }
 
     @Test public void shouldSerialiseSimple1() throws Exception

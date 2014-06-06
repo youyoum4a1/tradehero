@@ -2,7 +2,6 @@ package com.tradehero.th.api.discussion.form;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.utils.DaggerUtils;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -21,7 +20,6 @@ public class MessageCreateFormDTOTest
 
     @Before public void setUp()
     {
-        DaggerUtils.inject(this);
     }
 
     private String asString(TypedOutput typedOutput) throws Exception

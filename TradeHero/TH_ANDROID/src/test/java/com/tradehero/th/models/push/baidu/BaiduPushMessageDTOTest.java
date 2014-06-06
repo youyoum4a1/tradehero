@@ -3,7 +3,6 @@ package com.tradehero.th.models.push.baidu;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -24,7 +23,6 @@ public class BaiduPushMessageDTOTest
     @Before
     public void setUp() throws IOException
     {
-        DaggerUtils.inject(this);
     }
 
     @Test public void testDeserializeBaiduPushMessageDTO() throws IOException, ConversionException

@@ -3,7 +3,6 @@ package com.tradehero.common.utils;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +24,6 @@ public class ConverterDeserialisationTest
 
     @Before public void setUp()
     {
-        DaggerUtils.inject(this);
     }
 
     @Test public void shouldCreatePortfolioDTO1() throws Exception

@@ -8,7 +8,6 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
 import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +26,6 @@ public class ProviderPageIntentTest
 {
     @Before public void setUp()
     {
-        DaggerUtils.inject(this);
         THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
     }
 
