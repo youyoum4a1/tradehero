@@ -16,6 +16,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
+import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -38,6 +39,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
     @Inject TradeDTOUtils tradeDTOUtils;
+    @Inject Lazy<PositionDTOUtils> positionDTOUtils;
 
     // all the 3 caches below are needed to get the security currencyDisplay display
     // 1) use the position cache to get the the PositionDTO containing the securityId (type SecurityIntegerId)
@@ -53,6 +55,9 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     @InjectView(R.id.trade_avg_price) protected TextView averagePriceTextView;
     @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
     @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
+    @InjectView(R.id.unrealised_pl_container) protected View unrealisedPLContainer;
+    @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
+    @InjectView(R.id.unrealised_pl_value) protected TextView unrealizedPLValue;
     @InjectView(R.id.trade_quantity) protected TextView tradeQuantityValue;
     @InjectView(R.id.trade_list_comment_section) protected View commentSection;
     @InjectView(R.id.trade_list_comment) protected TextView commentText;
@@ -132,16 +137,16 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 
         if (this.tradeQuantityHeader != null && trade != null)
         {
-            String quantityString = String.format("%+,d @ %s %,.2f", trade.quantity, getSecurityCurrencyDisplay(), trade.unit_price);
+            String quantityString = String.format("%+,d @ %s %,.2f", trade.quantity, getSecurityCurrencyDisplay(), trade.unitPrice);
             this.tradeQuantityHeader.setText(quantityString);
         }
 
-        if (this.dateTextView != null && trade != null && trade.date_time != null)
+        if (this.dateTextView != null && trade != null && trade.dateTime != null)
         {
             SimpleDateFormat sdf = new SimpleDateFormat("d MMM H:m z");
             sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-            String dateString = sdf.format(trade.date_time);
+            String dateString = sdf.format(trade.dateTime);
             dateTextView.setText(dateString);
         }
     }
@@ -149,6 +154,9 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     private void displayExpandableSection()
     {
         displayAveragePrice();
+        displayUnrealisedPLContainer();
+        displayUnrealisedPLValueHeader();
+        displayUnrealisedPLValue();
         displayRealisedPLValueHeader();
         displayRealisedPLValue();
         displayTradeQuantity();
@@ -160,8 +168,46 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (this.averagePriceTextView != null && trade != null && position != null)
         {
-            String avgPriceString = String.format("%s %,.2f", position.getNiceCurrency(), trade.average_price_after_trade);
+            String avgPriceString = String.format("%s %,.2f", position.getNiceCurrency(), trade.averagePriceAfterTradeRefCcy);
             this.averagePriceTextView.setText(avgPriceString);
+        }
+    }
+
+    private void displayUnrealisedPLContainer()
+    {
+        if (this.unrealisedPLContainer != null && tradeItem != null && position != null)
+        {
+            this.unrealisedPLContainer.setVisibility((tradeItem.isLastTrade() && position.isOpen()) ? VISIBLE : GONE);
+        }
+    }
+
+    private void displayUnrealisedPLValueHeader()
+    {
+        if (unrealisedPLValueHeader != null)
+        {
+            if (position != null && position.unrealizedPLRefCcy != null && position.unrealizedPLRefCcy < 0)
+            {
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_loss_header);
+            }
+            else
+            {
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_profit_header);
+            }
+        }
+    }
+
+    private void displayUnrealisedPLValue()
+    {
+        if (this.unrealizedPLValue != null && tradeItem != null && position != null)
+        {
+            if (tradeItem.isLastTrade() && position.isOpen())
+            {
+                positionDTOUtils.get().setUnrealizedPLLook(unrealizedPLValue, position);
+            }
+            else
+            {
+                this.unrealizedPLValue.setText(R.string.na);
+            }
         }
     }
 
@@ -169,7 +215,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (realisedPLValueHeader != null)
         {
-            if (position != null && position.unrealizedPLRefCcy != null && position.realizedPLRefCcy < 0)
+            if (trade != null && trade.realizedPLAfterTradeRefCcy < 0)
             {
                 realisedPLValueHeader.setText(R.string.position_realised_loss_header);
             }
@@ -192,7 +238,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (this.tradeQuantityValue != null && trade != null)
         {
-            String quantityAfterTradeString = String.format("%,d", trade.quantity_after_trade);
+            String quantityAfterTradeString = String.format("%,d", trade.quantityAfterTrade);
             this.tradeQuantityValue.setText(quantityAfterTradeString);
         }
     }
@@ -251,7 +297,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         }
         else
         {
-            return trade.realized_pl_after_trade;
+            return trade.realizedPLAfterTradeRefCcy;
         }
     }
 }

@@ -18,7 +18,7 @@ public class TradeDTOUtils
     public void setRealizedPLLook(TextView textView, TradeDTO tradeDTO, String refCurrency)
     {
         textView.setText(getRealizedPL(textView.getResources(), tradeDTO, refCurrency));
-        textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(tradeDTO.realized_pl_after_trade)));
+        textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(tradeDTO.realizedPLAfterTradeRefCcy)));
     }
 
     private String getRealizedPL(Resources resources, TradeDTO tradeDTO, String refCurrency)
@@ -27,7 +27,30 @@ public class TradeDTOUtils
         {
             THSignedNumber formattedNumber = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
-                    tradeDTO.realized_pl_after_trade,
+                    tradeDTO.realizedPLAfterTradeRefCcy,
+                    THSignedNumber.WITHOUT_SIGN,
+                    refCurrency);
+            return formattedNumber.toString();
+        }
+        else
+        {
+            return resources.getString(R.string.na);
+        }
+    }
+
+    public void setUnrealizedPLLook(TextView textView, TradeDTO tradeDTO, String refCurrency)
+    {
+        textView.setText(getUnrealizedPL(textView.getResources(), tradeDTO, refCurrency));
+        textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(tradeDTO.realizedPLAfterTradeRefCcy)));
+    }
+
+    private String getUnrealizedPL(Resources resources, TradeDTO tradeDTO, String refCurrency)
+    {
+        if (tradeDTO != null)
+        {
+            THSignedNumber formattedNumber = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    tradeDTO.realizedPLAfterTradeRefCcy,
                     THSignedNumber.WITHOUT_SIGN,
                     refCurrency);
             return formattedNumber.toString();

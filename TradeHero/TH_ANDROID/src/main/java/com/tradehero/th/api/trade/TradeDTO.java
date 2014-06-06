@@ -1,22 +1,28 @@
 package com.tradehero.th.api.trade;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
 
 public class TradeDTO implements DTO
 {
     public int id;
-    public double unit_price;
-    public double transaction_cost;
+    @JsonProperty("unit_price")
+    public double unitPrice;
+    @JsonProperty("transaction_cost")
+    public double transactionCost;
     public int quantity;
-    public Date date_time;
-    public double exchange_rate;
-    public int quantity_after_trade;
+    @JsonProperty("date_time")
+    public Date dateTime;
+    @JsonProperty("exchange_rate")
+    public double exchangeRate;
+    @JsonProperty("quantity_after_trade")
+    public int quantityAfterTrade;
 
-    // This price is a refCcy price
-    public double average_price_after_trade;
-    // This price is a refCcy price
-    public double realized_pl_after_trade;
+    @JsonProperty("average_price_after_trade")
+    public double averagePriceAfterTradeRefCcy;
+    @JsonProperty("realized_pl_after_trade")
+    public double realizedPLAfterTradeRefCcy;
 
     public String commentText;
 
