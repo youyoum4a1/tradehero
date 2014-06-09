@@ -1,6 +1,6 @@
 package com.tradehero.th.models.chart.yahoo;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;

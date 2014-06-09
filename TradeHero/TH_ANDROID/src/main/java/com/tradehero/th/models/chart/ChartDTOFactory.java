@@ -1,7 +1,7 @@
 package com.tradehero.th.models.chart;
 
-import com.sun.istack.internal.NotNull;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import org.jetbrains.annotations.NotNull;
 
 public interface ChartDTOFactory
 {

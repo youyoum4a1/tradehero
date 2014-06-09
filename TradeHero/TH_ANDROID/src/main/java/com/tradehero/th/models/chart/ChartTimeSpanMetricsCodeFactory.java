@@ -1,6 +1,6 @@
 package com.tradehero.th.models.chart;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 
 public class ChartTimeSpanMetricsCodeFactory
