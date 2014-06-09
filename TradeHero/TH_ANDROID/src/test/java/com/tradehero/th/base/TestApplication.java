@@ -1,5 +1,9 @@
 package com.tradehero.th.base;
 
+import com.actionbarsherlock.ActionBarSherlock;
+import com.actionbarsherlock.internal.ActionBarSherlockCompat;
+import com.actionbarsherlock.internal.ActionBarSherlockNative;
+import com.actionbarsherlock.internal.ActionBarSherlockRobolectric;
 import com.tradehero.TestModule;
 import com.tradehero.th.utils.DaggerUtils;
 import java.lang.reflect.Method;
@@ -10,6 +14,15 @@ import org.robolectric.TestLifecycleApplication;
 
 public class TestApplication extends Application  implements TestLifecycleApplication
 {
+    @Override protected void init()
+    {
+        super.init();
+
+        ActionBarSherlock.registerImplementation(ActionBarSherlockRobolectric.class);
+        ActionBarSherlock.unregisterImplementation(ActionBarSherlockNative.class);
+        ActionBarSherlock.unregisterImplementation(ActionBarSherlockCompat.class);
+    }
+
     @Override protected Object[] getModules()
     {
         Object[] appModules = super.getModules();
