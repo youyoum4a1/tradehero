@@ -325,10 +325,10 @@ public class DashboardNavigator extends Navigator
     //    manager.popBackStack(rootFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     //}
 
-    @Override public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
+    @Override public <T extends Fragment> T pushFragment(Class<T> fragmentClass, Bundle args)
     {
         resideMenu.closeMenu();
-        Fragment fragment = super.pushFragment(fragmentClass, args);
+        T fragment = super.pushFragment(fragmentClass, args);
         executePending(fragment);
         return fragment;
     }
