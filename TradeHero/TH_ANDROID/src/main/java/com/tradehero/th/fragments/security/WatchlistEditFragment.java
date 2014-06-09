@@ -72,10 +72,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
     public static void putSecurityId(Bundle args, SecurityId securityId)
     {
-        if (args != null && securityId != null)
-        {
-            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        }
+        args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

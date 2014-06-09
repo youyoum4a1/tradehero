@@ -127,7 +127,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     private void loadImage()
     {
-        if (weChatDTO != null && weChatDTO.imageURL != null && !weChatDTO.imageURL.isEmpty())
+        final WeChatDTO weChatDTOCopy = weChatDTO;
+        if (weChatDTOCopy != null && weChatDTOCopy.imageURL != null && !weChatDTOCopy.imageURL.isEmpty())
         {
             Thread thread = new Thread(new Runnable()
             {
@@ -135,12 +136,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 {
                     try
                     {
-                        mBitmap = Bitmap.createBitmap(picassoLazy.get().load(weChatDTO.imageURL).get());
+                        mBitmap = Bitmap.createBitmap(picassoLazy.get().load(weChatDTOCopy.imageURL).get());
                         if (mBitmap != null)
                         {
                             mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
                         }
-                    } catch (IOException e)
+                    }
+                    catch (IOException e)
                     {
                         THToast.show(e.getMessage());
                         e.printStackTrace();

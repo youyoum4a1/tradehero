@@ -25,6 +25,7 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -51,7 +52,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     }
     //</editor-fold>
 
-    @Override public void onFinishInflate(View view)
+    @Override public void onFinishInflate(@NotNull View view)
     {
         super.onFinishInflate(view);
         if (mNewsDetailReference != null)
