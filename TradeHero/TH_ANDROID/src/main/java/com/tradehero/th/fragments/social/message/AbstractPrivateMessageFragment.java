@@ -387,7 +387,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             }
             correspondentId = new UserBaseKey(value.recipientUserId);
             fetchCorrespondentProfile();
-            if (value != null && value.unread)
+            if (value.unread)
             {
                 reportMessageRead(value);
             }

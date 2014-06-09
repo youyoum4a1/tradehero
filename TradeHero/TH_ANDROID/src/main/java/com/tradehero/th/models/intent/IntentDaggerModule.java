@@ -49,7 +49,6 @@ public class IntentDaggerModule
     {
         return factory;
     }
-
     @Provides(type = Provides.Type.SET)
     THIntentFactory provideInteractorIntentFactory(ResetPortfolioIntentFactory factory)
     {
