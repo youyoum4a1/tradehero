@@ -8,6 +8,8 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 public class RoundedShapeTransformation implements RecyclerTransformation
 {
@@ -30,13 +32,23 @@ public class RoundedShapeTransformation implements RecyclerTransformation
         this.recycleOriginal = recycleOriginal;
     }
 
-    @Override public Bitmap transform(Bitmap scaleBitmapImage)
+    @NotNull
+    @Override public Bitmap transform(@NotNull Bitmap scaleBitmapImage)
     {
         scaleBitmapImage = centerCropTransformation.transform(scaleBitmapImage);
         int targetWidth = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
         int targetHeight = targetWidth;
 
-        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        Bitmap targetBitmap = null;
+        try
+        {
+            targetBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        }
+        catch (OutOfMemoryError e)
+        {
+            Timber.e(e, null);
+            return scaleBitmapImage;
+        }
 
         Canvas canvas = new Canvas(targetBitmap);
         Path path = new Path();
