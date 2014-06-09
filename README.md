@@ -17,6 +17,8 @@ git checkout origin/develop --track
 - To make it easier working with Dagger (dependency injection module), install this plugin: https://github.com/square/dagger-intellij-plugin
 - To build for release, you need Crashlytics plugin. Download it from https://www.crashlytics.com/downloads/intellij and install from disk.
 - DO NOT publish app to Google Play before obfuscating it with ProGuard!!! To know how, read the proguard help page from Wiki.
+- If the `parent` project has an Android facet, remove the facet.
+- If a submodule, such as `facebook-android-sdk` is not detected as a Maven project, right-click on its `pom.xml` file and choose `Add as Maven project`.
 
 #### Useful tip
 - Disable unnecessary logcat error output by going to Setting - Apps - All and disable exchange service
