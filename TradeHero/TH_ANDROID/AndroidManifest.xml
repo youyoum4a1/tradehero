@@ -239,18 +239,18 @@
         android:theme="@android:style/Theme.Translucent.NoTitleBar">
     </activity>
     <!-- Samsung IAP -->
-    <activity
-        android:name="com.sec.android.iap.lib.activity.InboxActivity"
-        android:theme="@style/Theme.Empty"
-        android:configChanges="orientation|screenSize"/>
-    <activity
-        android:name="com.sec.android.iap.lib.activity.PaymentActivity"
-        android:theme="@style/Theme.Empty"
-        android:configChanges="orientation|screenSize"/>
-    <activity
-        android:name="com.sec.android.iap.lib.activity.ItemActivity"
-        android:theme="@style/Theme.Empty"
-        android:configChanges="orientation|screenSize"/>
+    <!--<activity-->
+        <!--android:name="com.sec.android.iap.lib.activity.InboxActivity"-->
+        <!--android:theme="@style/Theme.Empty"-->
+        <!--android:configChanges="orientation|screenSize"/>-->
+    <!--<activity-->
+        <!--android:name="com.sec.android.iap.lib.activity.PaymentActivity"-->
+        <!--android:theme="@style/Theme.Empty"-->
+        <!--android:configChanges="orientation|screenSize"/>-->
+    <!--<activity-->
+        <!--android:name="com.sec.android.iap.lib.activity.ItemActivity"-->
+        <!--android:theme="@style/Theme.Empty"-->
+        <!--android:configChanges="orientation|screenSize"/>-->
 
     <!-- remove gsm receiver for not used in china build and lead crash -->
     <!--&lt;!&ndash; GCM &ndash;&gt;-->
