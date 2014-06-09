@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.util.DisplayMetrics;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import com.tradehero.common.graphics.RotateTransformation;
 import com.tradehero.th.R;
 import java.io.File;
@@ -31,7 +33,8 @@ public class GraphicUtil implements BitmapForProfileFactory
      * ExifInterface.ORIENTATION_ROTATE_270, ExifInterface.ORIENTATION_ROTATE_180,
      * ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_NORMAL, null when unsure
      */
-    public Integer getOrientationCode(File imageFile)
+    @Nullable
+    public Integer getOrientationCode(@NotNull File imageFile)
     {
         try
         {
@@ -40,23 +43,24 @@ public class GraphicUtil implements BitmapForProfileFactory
             return exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL);
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             return null;
         }
     }
 
-    public int getRotationDegree(String imagePath)
+    public int getRotationDegree(@NotNull String imagePath)
     {
         return getRotationDegree(new File(imagePath));
     }
 
-    public int getRotationDegree(File imageFile)
+    public int getRotationDegree(@NotNull File imageFile)
     {
         return getRotationDegree(getOrientationCode(imageFile));
     }
 
-    public int getRotationDegree(Integer orientationCode)
+    public int getRotationDegree(@Nullable Integer orientationCode)
     {
         int rotation = 0;
         if (orientationCode != null)
@@ -78,7 +82,8 @@ public class GraphicUtil implements BitmapForProfileFactory
     }
     //</editor-fold>
 
-    @Override public Bitmap decodeBitmapForProfile(Resources resources, String selectedPath)
+    @Nullable
+    @Override public Bitmap decodeBitmapForProfile(Resources resources, @NotNull String selectedPath)
     {
         File imageFile = new File(selectedPath);
         BitmapFactory.Options options;
@@ -97,13 +102,15 @@ public class GraphicUtil implements BitmapForProfileFactory
         return decodeFileWithinSize(imageFile, maxEdgePixel, maxEdgePixel);
     }
 
-    public Bitmap decodeFileForDisplay(Context context, File f)
+    @Nullable
+    public Bitmap decodeFileForDisplay(@NotNull Context context, @NotNull File f)
     {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return decodeFileWithinSize(f, metrics.widthPixels, metrics.heightPixels);
     }
 
-    public Bitmap decodeFileWithinSize(File f, int width, int height)
+    @Nullable
+    public Bitmap decodeFileWithinSize(@NotNull File f, int width, int height)
     {
         try
         {
@@ -138,7 +145,8 @@ public class GraphicUtil implements BitmapForProfileFactory
         return null;
     }
 
-    public Bitmap decodeFileWithOrientation(File f, int rotationDegree,
+    @Nullable
+    public Bitmap decodeFileWithOrientation(@NotNull File f, int rotationDegree,
             BitmapFactory.Options options)
     {
         try
