@@ -380,8 +380,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         {
             Timber.d("MessageHeaderDTO=%s", value);
             ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-            actionBar.setTitle(value.title);
-            actionBar.setSubtitle(value.subTitle);
+            if (actionBar != null)
+            {
+                actionBar.setTitle(value.title);
+                actionBar.setSubtitle(value.subTitle);
+            }
             correspondentId = new UserBaseKey(value.recipientUserId);
             fetchCorrespondentProfile();
             if (value != null && value.unread)
