@@ -16,9 +16,7 @@ public class SecuritySearchWatchlistFragment extends SecuritySearchFragment
     protected void pushWatchlistFragmentIn(SecurityId securityId)
     {
         Bundle args = new Bundle();
-        args.putBundle(
-                WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                securityId.getArgs());
+        WatchlistEditFragment.putSecurityId(args, securityId);
         args.putString(
                 Navigator.BUNDLE_KEY_RETURN_FRAGMENT,
                 WatchlistPositionFragment.class.getName());
