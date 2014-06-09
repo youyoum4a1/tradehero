@@ -219,15 +219,19 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        Bundle argument = getArguments();
-
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
-        String title = argument.getString(BUNDLE_KEY_TITLE);
-        if (title != null && !title.isEmpty())
+        Bundle argument = getArguments();
+
+        if (argument != null && argument.containsKey(BUNDLE_KEY_TITLE))
         {
-            setActionBarTitle(title);
+            String title = argument.getString(BUNDLE_KEY_TITLE);
+
+            if (title != null && !title.isEmpty())
+            {
+                setActionBarTitle(title);
+            }
         }
     }
 
