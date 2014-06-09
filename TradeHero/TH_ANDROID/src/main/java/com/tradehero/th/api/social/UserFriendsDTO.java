@@ -15,8 +15,10 @@ public class UserFriendsDTO extends ExtendedDTO implements Comparable<UserFriend
     public String liId;       // or LI id
     public String twId;
     public String wbId;
-
+    public String fbPicUrl;
+    public String twPicUrl;
     public String liPicUrl;   // LI gives is pics (FB pics can be dynamically gen'd)
+    public String wbPicUrl;
     public String liHeadline; // LI: gives current position/title?
 
     public boolean alreadyInvited; //has an invitation been sent already
@@ -30,13 +32,21 @@ public class UserFriendsDTO extends ExtendedDTO implements Comparable<UserFriend
 
     public String getProfilePictureURL()
     {
-        if (fbId != null && !fbId.isEmpty())
+        if (fbPicUrl != null && !fbPicUrl.isEmpty())
         {
-            return String.format(Constants.FACEBOOK_PROFILE_PICTURE, fbId);
+            return fbPicUrl;
+        }
+        else if (twPicUrl != null && !twPicUrl.isEmpty())
+        {
+            return twPicUrl;
         }
         else if (liPicUrl != null && !liPicUrl.isEmpty())
         {
             return liPicUrl;
+        }
+        else if (wbPicUrl != null && !wbPicUrl.isEmpty())
+        {
+            return wbPicUrl;
         }
         return null;
     }

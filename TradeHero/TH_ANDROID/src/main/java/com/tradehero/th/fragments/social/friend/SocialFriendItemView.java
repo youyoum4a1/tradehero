@@ -21,6 +21,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import org.w3c.dom.Text;
 
 import javax.inject.Inject;
+import timber.log.Timber;
 
 /**
  * Created by tradehero on 14-5-26.
@@ -103,7 +104,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
                     {
                         @Override public void onSuccess()
                         {
-
+                            Timber.d("windy display User Icon success!");
                         }
 
                         @Override public void onError()

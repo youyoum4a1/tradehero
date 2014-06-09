@@ -7,6 +7,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -23,6 +24,7 @@ public enum DashboardTabType
     PORTFOLIO(R.string.dashboard_portfolio, R.drawable.icn_menu_portfolio, PortfolioListFragment.class, false),
     UPDATE_CENTER(R.layout.update_center_selector, R.string.message_center, R.color.transparent, UpdateCenterFragment.class),
     //UPDATE_CENTER(R.string.update_center, R.drawable.icn_menu_messages, UpdateCenterFragment.class),
+    REFERRAL(R.string.dashboard_referral, R.drawable.icn_menu_referral, FriendsInvitationFragment.class),
     STORE(R.string.dashboard_store, R.drawable.icn_menu_store, StoreScreenFragment.class),
     SETTING(R.string.settings, R.drawable.icn_menu_settings, SettingsFragment.class),
     ADMIN_SETTINGS(R.string.dashboard_admin_settings, R.drawable.icn_menu_settings, AdminSettingsFragment.class);

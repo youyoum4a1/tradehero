@@ -32,6 +32,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingSearchType;
@@ -447,8 +448,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void pushInvitaionFragment()
     {
-        Bundle args = new Bundle();
-        getNavigator().pushFragment(FriendsInvitationFragment.class, args);
+        getDashboardNavigator().goToTab(DashboardTabType.REFERRAL);
     }
 
     //</editor-fold>
