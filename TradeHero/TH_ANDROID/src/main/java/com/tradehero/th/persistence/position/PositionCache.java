@@ -14,22 +14,25 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class PositionCache extends StraightDTOCache<PositionDTOKey, PositionDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 5000;
 
-    protected Lazy<PositionCompactIdCache> positionCompactIdCache;
-    protected Lazy<LeaderboardPositionIdCache> positionIdCache;
-    protected Lazy<TradeListCache> tradeListCache;
-    protected PositionDTOFactory positionDTOFactory;
+    @NotNull protected Lazy<PositionCompactIdCache> positionCompactIdCache;
+    @NotNull protected Lazy<LeaderboardPositionIdCache> positionIdCache;
+    @NotNull protected Lazy<TradeListCache> tradeListCache;
+    @NotNull protected PositionDTOFactory positionDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCache(
-            Lazy<PositionCompactIdCache> positionCompactIdCache,
-            Lazy<LeaderboardPositionIdCache> positionIdCache,
-            Lazy<TradeListCache> tradeListCache,
-            PositionDTOFactory positionDTOFactory)
+            @NotNull Lazy<PositionCompactIdCache> positionCompactIdCache,
+            @NotNull Lazy<LeaderboardPositionIdCache> positionIdCache,
+            @NotNull Lazy<TradeListCache> tradeListCache,
+            @NotNull PositionDTOFactory positionDTOFactory)
     {
         super(DEFAULT_MAX_SIZE);
         this.positionCompactIdCache = positionCompactIdCache;
@@ -39,12 +42,13 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected PositionDTO fetch(PositionDTOKey key)
+    @Override protected PositionDTO fetch(@NotNull PositionDTOKey key)
     {
         throw new IllegalStateException("You should not fetch PositionDTO individually");
     }
 
-    @Override public PositionDTO put(PositionDTOKey key, PositionDTO value)
+    @Nullable
+    @Override public PositionDTO put(@NotNull PositionDTOKey key, @NotNull PositionDTO value)
     {
         // Save the correspondence between integer id and compound key.
         if (key instanceof OwnedPositionId)
@@ -67,13 +71,13 @@ import javax.inject.Singleton;
         return super.put(key, positionDTOFactory.clonePerType(value));
     }
 
-    @Override public void invalidate(PositionDTOKey key)
+    @Override public void invalidate(@NotNull PositionDTOKey key)
     {
         invalidateMatchingTrades(key);
         super.invalidate(key);
     }
 
-    protected void invalidateMatchingTrades(PositionDTOKey key)
+    protected void invalidateMatchingTrades(@NotNull PositionDTOKey key)
     {
         if (key instanceof OwnedPositionId)
         {
@@ -89,7 +93,9 @@ import javax.inject.Singleton;
         }
     }
 
-    public PositionDTOList<PositionDTO> put(List<PositionDTO> values)
+    @Contract("null -> null")
+    @Nullable
+    public PositionDTOList<PositionDTO> put(@Nullable List<PositionDTO> values)
     {
         if (values == null)
         {
@@ -106,7 +112,9 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public PositionDTOList<PositionDTO> get(List<PositionDTOKey> keys)
+    @Contract("null -> null")
+    @Nullable
+    public PositionDTOList<PositionDTO> get(@Nullable List<PositionDTOKey> keys)
     {
         if (keys == null)
         {

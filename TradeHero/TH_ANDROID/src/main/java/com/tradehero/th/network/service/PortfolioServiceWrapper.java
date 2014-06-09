@@ -16,6 +16,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class PortfolioServiceWrapper
@@ -77,7 +78,8 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
-    public PortfolioDTO getPortfolio(OwnedPortfolioId ownedPortfolioId)
+    @NotNull
+    public PortfolioDTO getPortfolio(@NotNull OwnedPortfolioId ownedPortfolioId)
     {
         basicCheck(ownedPortfolioId);
         return this.portfolioService.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId);
