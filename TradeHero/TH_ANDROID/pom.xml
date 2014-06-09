@@ -132,11 +132,11 @@
     <!--<version>1.3</version>-->
     <!--</dependency>-->
 
-    <dependency>
-      <groupId>com.urbanairship</groupId>
-      <artifactId>urbanairship-lib</artifactId>
-      <version>3.2.1</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.urbanairship</groupId>-->
+      <!--<artifactId>urbanairship-lib</artifactId>-->
+      <!--<version>3.2.1</version>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>javax.inject</groupId>
@@ -475,6 +475,7 @@
       <artifactId>alipaysdk</artifactId>
       <version>1.0.0</version>
       <scope>system</scope>
+      <!--<systemPath>${project.basedir}/gen-external-apklibs/alipay_lib/libs/alipaysdk.jar</systemPath>-->
       <systemPath>${project.basedir}/libs/alipaysdk.jar</systemPath>
     </dependency>
 
