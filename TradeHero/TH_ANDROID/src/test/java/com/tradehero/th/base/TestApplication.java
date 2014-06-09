@@ -14,6 +14,8 @@ import org.robolectric.TestLifecycleApplication;
 
 public class TestApplication extends Application  implements TestLifecycleApplication
 {
+    private static final String DAGGER_INJECT_ADAPTER_CLASS_SUFFIX = "$$InjectAdapter";
+
     @Override protected void init()
     {
         super.init();
@@ -39,7 +41,14 @@ public class TestApplication extends Application  implements TestLifecycleApplic
     {
         // this is not very nice, since we will inject everytime a test is call
         // it should be done before every setup instead
-        DaggerUtils.inject(test);
+        try
+        {
+            Class.forName(test.getClass().getName() + DAGGER_INJECT_ADAPTER_CLASS_SUFFIX);
+            DaggerUtils.inject(test);
+        } catch (ClassNotFoundException e)
+        {
+            //my class isn't there!
+        }
     }
 
     @Override public void afterTest(Method method)
