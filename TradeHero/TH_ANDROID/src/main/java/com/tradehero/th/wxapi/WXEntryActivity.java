@@ -136,10 +136,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 {
                     try
                     {
-                        mBitmap = Bitmap.createBitmap(picassoLazy.get().load(weChatDTOCopy.imageURL).get());
-                        if (mBitmap != null)
+                        Bitmap tempBitmap = Bitmap.createBitmap(picassoLazy.get().load(weChatDTOCopy.imageURL).get());
+                        // TODO find a way to force picasso to redownload and not have a recycled image.
+                        if (tempBitmap != null && !tempBitmap.isRecycled())
                         {
-                            mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
+                            mBitmap = Bitmap.createScaledBitmap(tempBitmap, 250, 250, false);
                         }
                     }
                     catch (IOException e)
