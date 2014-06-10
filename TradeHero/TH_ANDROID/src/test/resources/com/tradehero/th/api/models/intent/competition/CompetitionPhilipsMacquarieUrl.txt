@@ -1,0 +1,5 @@
+https://th-paas-test-dev1.cloudapp.net/api/competitionpages/landing/?providerId=22&userId=239284&showNextButton=1&authorization=Basic%20bmVlcmFqQGVhdGVjaG5vbG9naWVzLmNvbTphc2QxMjM%3D
+
+tradehero://providers/22/pages/%252Fcompetitionpages%252Frules%253FproviderId%253D22%2526userId%253D239284%2526showNextButton%253D1
+https://th-paas-test-dev1.cloudapp.net/api//competitionpages/rules?providerId=22&userId=239284&showNextButton=1
+
