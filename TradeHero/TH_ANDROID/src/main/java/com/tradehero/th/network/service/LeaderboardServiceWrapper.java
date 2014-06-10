@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -14,6 +15,7 @@ import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.leaderboard.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -25,14 +27,17 @@ import retrofit.Callback;
 {
     private final LeaderboardService leaderboardService;
     private final LeaderboardServiceAsync leaderboardServiceAsync;
+    private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     @Inject public LeaderboardServiceWrapper(
             LeaderboardService leaderboardService,
-            LeaderboardServiceAsync leaderboardServiceAsync)
+            LeaderboardServiceAsync leaderboardServiceAsync,
+            LeaderboardDefDTOFactory leaderboardDefDTOFactory)
     {
         super();
         this.leaderboardService = leaderboardService;
         this.leaderboardServiceAsync = leaderboardServiceAsync;
+        this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
 
     protected DTOProcessor<GetPositionsDTO> createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
@@ -40,15 +45,20 @@ import retrofit.Callback;
         return new DTOProcessorGetPositions(leaderboardMarkUserId);
     }
 
+    protected DTOProcessor<LeaderboardDefDTOList> createProcessorLeaderboardDefDTOList()
+    {
+        return new DTOProcessorLeaderboardDefDTOList(leaderboardDefDTOFactory);
+    }
+
     //<editor-fold desc="Get Leaderboard Definitions">
     public LeaderboardDefDTOList getLeaderboardDefinitions()
     {
-        return leaderboardService.getLeaderboardDefinitions();
+        return createProcessorLeaderboardDefDTOList().process(leaderboardService.getLeaderboardDefinitions());
     }
 
     public MiddleCallback<LeaderboardDefDTOList> getLeaderboardDefinitions(Callback<LeaderboardDefDTOList> callback)
     {
-        MiddleCallback<LeaderboardDefDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<LeaderboardDefDTOList> middleCallback = new BaseMiddleCallback<>(callback, createProcessorLeaderboardDefDTOList());
         leaderboardServiceAsync.getLeaderboardDefinitions(middleCallback);
         return middleCallback;
     }

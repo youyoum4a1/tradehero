@@ -1,11 +1,13 @@
 package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.api.leaderboard.ConnectedLeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.network.service.LeaderboardService;
+import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -15,7 +17,7 @@ import javax.inject.Singleton;
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<LeaderboardService> leaderboardService;
+    @Inject protected Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
     @Inject public LeaderboardDefListCache()
@@ -25,7 +27,7 @@ import javax.inject.Singleton;
 
     @Override protected LeaderboardDefKeyList fetch(LeaderboardDefListKey listKey) throws Throwable
     {
-        List<LeaderboardDefDTO> leaderboardDefinitions = leaderboardService.get().getLeaderboardDefinitions();
+        List<LeaderboardDefDTO> leaderboardDefinitions = leaderboardServiceWrapper.get().getLeaderboardDefinitions();
         if (leaderboardDefinitions != null)
         {
             return putInternal(listKey, leaderboardDefinitions);
@@ -40,6 +42,8 @@ import javax.inject.Singleton;
     {
         LeaderboardDefKeyList
                 allKeys = new LeaderboardDefKeyList(),
+                connectedKeys = new LeaderboardDefKeyList(),
+                drillDownKeys = new LeaderboardDefKeyList(),
                 sectorKeys = new LeaderboardDefKeyList(),
                 exchangeKeys = new LeaderboardDefKeyList(),
                 timePeriodKeys = new LeaderboardDefKeyList(),
@@ -47,7 +51,7 @@ import javax.inject.Singleton;
 
         for (LeaderboardDefDTO leaderboardDefDTO: allLeaderboardDefinitions)
         {
-            LeaderboardDefKey key = new LeaderboardDefKey(leaderboardDefDTO.id);
+            LeaderboardDefKey key = leaderboardDefDTO.getLeaderboardDefKey();
             leaderboardDefCache.get().put(key, leaderboardDefDTO);
 
             allKeys.add(key);
@@ -67,12 +71,22 @@ import javax.inject.Singleton;
             {
                 mostSkilledKeys.add(key);
             }
+            else if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
+            {
+                drillDownKeys.add(key);
+            }
+            else if (leaderboardDefDTO instanceof ConnectedLeaderboardDefDTO)
+            {
+                connectedKeys.add(key);
+            }
         }
 
         put(LeaderboardDefListKey.getMostSkilled(), mostSkilledKeys);
         put(LeaderboardDefListKey.getExchange(), exchangeKeys);
         put(LeaderboardDefListKey.getSector(), sectorKeys);
         put(LeaderboardDefListKey.getTimePeriod(), timePeriodKeys);
+        put(LeaderboardDefListKey.getConnected(), connectedKeys);
+        put(LeaderboardDefListKey.getDrillDown(), drillDownKeys);
         put(new LeaderboardDefListKey(), allKeys);
 
         return get(listKey);
