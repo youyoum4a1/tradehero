@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
@@ -53,16 +54,16 @@ import retrofit.Callback;
         }
     }
 
-    public List<TradeDTO> getTrades(OwnedPositionId ownedPositionId)
+    public TradeDTOList getTrades(OwnedPositionId ownedPositionId)
     {
         basicCheck(ownedPositionId);
         return this.tradeService.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId);
     }
 
-    public MiddleCallback<List<TradeDTO>> getTrades(OwnedPositionId ownedPositionId, Callback<List<TradeDTO>> callback)
+    public MiddleCallback<TradeDTOList> getTrades(OwnedPositionId ownedPositionId, Callback<TradeDTOList> callback)
     {
         basicCheck(ownedPositionId);
-        MiddleCallback<List<TradeDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<TradeDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         this.tradeServiceAsync.getTrades(ownedPositionId.userId, ownedPositionId.portfolioId, ownedPositionId.positionId, middleCallback);
         return middleCallback;
     }

@@ -61,7 +61,7 @@ public class TradeListFragment extends DashboardFragment
 
     protected PositionDTOKey positionDTOKey;
     protected PositionDTO positionDTO;
-    protected List<OwnedTradeId> ownedTradeIds;
+    protected OwnedTradeIdList ownedTradeIds;
 
     protected TradeListItemAdapter adapter;
     protected TradeListHeaderView.TradeListHeaderClickListener buttonListener;
@@ -227,6 +227,10 @@ public class TradeListFragment extends DashboardFragment
 
     @Override public void onDestroyOptionsMenu()
     {
+        if (actionBar != null)
+        {
+            actionBar.setSubtitle(null);
+        }
         actionBar = null;
         super.onDestroyOptionsMenu();
     }
@@ -295,7 +299,7 @@ public class TradeListFragment extends DashboardFragment
         }
     }
 
-    public void linkWith(List<OwnedTradeId> ownedTradeIds, boolean andDisplay)
+    public void linkWith(OwnedTradeIdList ownedTradeIds, boolean andDisplay)
     {
         this.ownedTradeIds = ownedTradeIds;
         rePurposeAdapter();
@@ -350,6 +354,7 @@ public class TradeListFragment extends DashboardFragment
                     else
                     {
                         actionBarCopy.setTitle(securityCompactDTO.name);
+                        actionBarCopy.setSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.exchange, securityId.securitySymbol));
                     }
                 }
             }

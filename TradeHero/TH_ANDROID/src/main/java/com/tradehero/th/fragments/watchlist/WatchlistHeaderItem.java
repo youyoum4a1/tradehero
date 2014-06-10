@@ -3,13 +3,15 @@ package com.tradehero.th.fragments.watchlist;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
 
 public class WatchlistHeaderItem extends TwoStateView
 {
-    private TextView title;
-    private TextView value;
+    @InjectView(R.id.title) protected TextView title;
+    @InjectView(R.id.value) protected TextView value;
     private String firstTitle;
     private String secondTitle;
     private String firstValue;
@@ -35,14 +37,12 @@ public class WatchlistHeaderItem extends TwoStateView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        ButterKnife.inject(this);
         init();
     }
 
     private void init()
     {
-        title = (TextView) findViewById(R.id.title);
-        value = (TextView) findViewById(R.id.value);
-
         post(new Runnable()
         {
             @Override public void run()

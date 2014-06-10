@@ -7,13 +7,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
 import com.tradehero.th.models.position.PositionDTOUtils;
@@ -23,23 +22,26 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.ocpsoft.prettytime.PrettyTime;
 
 public class TradeListItemView extends LinearLayout implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
 {
     private TradeListItemAdapter.ExpandableTradeItem tradeItem;
     private TradeDTO trade;
     private PositionDTO position;
-
-    private String currencyDisplay; //cached value - cleared in onDetach
+    private boolean prettyDate = true;
 
     @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
     @Inject TradeDTOUtils tradeDTOUtils;
     @Inject Lazy<PositionDTOUtils> positionDTOUtils;
+    @Inject PrettyTime prettyTime;
 
     // all the 3 caches below are needed to get the security currencyDisplay display
     // 1) use the position cache to get the the PositionDTO containing the securityId (type SecurityIntegerId)
@@ -51,14 +53,16 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
 
     @InjectView(R.id.ic_position_profit_indicator_left) protected ColorIndicator profitIndicatorView;
     @InjectView(R.id.trade_date_label) protected TextView dateTextView;
-    @InjectView(R.id.trade_quantity_label) protected TextView tradeQuantityHeader;
+    @InjectView(R.id.traded_quantity_verbose) protected TextView tradedQuantityVerbose;
+    @InjectView(R.id.holding_quantity_verbose) protected TextView holdingQuantityVerbose;
     @InjectView(R.id.trade_avg_price) protected TextView averagePriceTextView;
     @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
     @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
     @InjectView(R.id.unrealised_pl_container) protected View unrealisedPLContainer;
     @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
     @InjectView(R.id.unrealised_pl_value) protected TextView unrealizedPLValue;
-    @InjectView(R.id.trade_quantity) protected TextView tradeQuantityValue;
+    @InjectView(R.id.trade_value_header) protected TextView tradeValueHeader;
+    @InjectView(R.id.trade_value) protected TextView tradeValue;
     @InjectView(R.id.trade_list_comment_section) protected View commentSection;
     @InjectView(R.id.trade_list_comment) protected TextView commentText;
 
@@ -86,9 +90,15 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         ButterKnife.inject(this);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
+    }
+
     @Override protected void onDetachedFromWindow()
     {
-        this.currencyDisplay = null;
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -135,20 +145,97 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             this.profitIndicatorView.linkWith(getNumberToDisplay());
         }
 
-        if (this.tradeQuantityHeader != null && trade != null)
-        {
-            String quantityString = String.format("%+,d @ %s %,.2f", trade.quantity, getSecurityCurrencyDisplay(), trade.unitPrice);
-            this.tradeQuantityHeader.setText(quantityString);
-        }
+        displayTradeBoughtText();
+        displayTradeDate();
+        displayHoldingQuantity();
+    }
 
-        if (this.dateTextView != null && trade != null && trade.dateTime != null)
+    private void displayTradeBoughtText()
+    {
+        if (tradedQuantityVerbose != null)
         {
-            SimpleDateFormat sdf = new SimpleDateFormat("d MMM H:m z");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-            String dateString = sdf.format(trade.dateTime);
-            dateTextView.setText(dateString);
+            tradedQuantityVerbose.setText(getTradeBoughtText());
         }
+    }
+
+    protected String getTradeBoughtText()
+    {
+        if (trade != null && position != null)
+        {
+            int textResId = trade.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
+            THSignedNumber tradeValue = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    trade.unitPrice,
+                    THSignedNumber.WITHOUT_SIGN,
+                    getCurrencyDisplay());
+            return getContext().getString(
+                    textResId,
+                    Math.abs(trade.quantity),
+                    tradeValue.toString());
+        }
+        else
+        {
+            return getContext().getString(R.string.na);
+        }
+    }
+
+    private void displayHoldingQuantity()
+    {
+        if (this.holdingQuantityVerbose != null)
+        {
+            this.holdingQuantityVerbose.setText(getHoldingQuantityText());
+        }
+    }
+
+    protected String getHoldingQuantityText()
+    {
+        if (trade != null)
+        {
+            return getContext().getString(
+                tradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
+                trade.quantityAfterTrade);
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    private void displayTradeDate()
+    {
+        if (dateTextView != null)
+        {
+            dateTextView.setText(getTradeDateText());
+        }
+    }
+
+    @NotNull
+    protected String getTradeDateText()
+    {
+        if (trade != null && trade.dateTime != null)
+        {
+            if (prettyDate)
+            {
+                return prettyTime.format(trade.dateTime);
+            }
+            else
+            {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM d HH:m");
+                sdf.setTimeZone(TimeZone.getDefault());
+                return sdf.format(trade.dateTime);
+            }
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    @OnClick(R.id.trade_date_label)
+    protected void toggleTradeDateLook(View view)
+    {
+        prettyDate = !prettyDate;
+        displayTradeDate();
     }
 
     private void displayExpandableSection()
@@ -159,7 +246,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         displayUnrealisedPLValue();
         displayRealisedPLValueHeader();
         displayRealisedPLValue();
-        displayTradeQuantity();
+        displayTradeValue();
         displayCommentSection();
         displayCommentText();
     }
@@ -234,12 +321,28 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         }
     }
 
-    private void displayTradeQuantity()
+    private void displayTradeValue()
     {
-        if (this.tradeQuantityValue != null && trade != null)
+        if (tradeValue != null)
         {
-            String quantityAfterTradeString = String.format("%,d", trade.quantityAfterTrade);
-            this.tradeQuantityValue.setText(quantityAfterTradeString);
+            tradeValue.setText(getTradeValueText());
+        }
+    }
+
+    protected String getTradeValueText()
+    {
+        if (trade != null)
+        {
+            THSignedNumber tradeValue = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    trade.quantity * trade.unitPrice,
+                    THSignedNumber.WITHOUT_SIGN,
+                    getCurrencyDisplay());
+            return String.format("%s %s", getCurrencyDisplay(), tradeValue.toString());
+        }
+        else
+        {
+            return "";
         }
     }
 
@@ -259,30 +362,36 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         }
     }
 
-    private String getSecurityCurrencyDisplay()
+    @NotNull
+    private String getCurrencyDisplay()
     {
-        if (currencyDisplay == null)
+        if (position == null)
         {
-            if (position == null)
-            {
-                return null;
-            }
-
-            SecurityId securityId = securityIdCache.get().get(position.getSecurityIntegerId());
-            if (securityId == null)
-            {
-                return null;
-            }
-
-            SecurityCompactDTO security = securityCache.get().get(securityId);
-            if (security == null)
-            {
-                return null;
-            }
-
-            currencyDisplay = security.currencyDisplay;
+            return "null";
         }
-        return currencyDisplay;
+        return position.currencyDisplay;
+        //if (currencyDisplay == null)
+        //{
+        //    if (position == null)
+        //    {
+        //        return null;
+        //    }
+        //
+        //    SecurityId securityId = securityIdCache.get().get(position.getSecurityIntegerId());
+        //    if (securityId == null)
+        //    {
+        //        return null;
+        //    }
+        //
+        //    SecurityCompactDTO security = securityCache.get().get(securityId);
+        //    if (security == null)
+        //    {
+        //        return null;
+        //    }
+        //
+        //    currencyDisplay = security.currencyDisplay;
+        //}
+        //return currencyDisplay;
     }
 
     private double getNumberToDisplay()
