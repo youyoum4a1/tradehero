@@ -220,7 +220,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             }
             else
             {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM d HH:m");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM d HH:mm");
                 sdf.setTimeZone(TimeZone.getDefault());
                 return sdf.format(trade.dateTime);
             }
@@ -369,29 +369,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         {
             return "null";
         }
-        return position.currencyDisplay;
-        //if (currencyDisplay == null)
-        //{
-        //    if (position == null)
-        //    {
-        //        return null;
-        //    }
-        //
-        //    SecurityId securityId = securityIdCache.get().get(position.getSecurityIntegerId());
-        //    if (securityId == null)
-        //    {
-        //        return null;
-        //    }
-        //
-        //    SecurityCompactDTO security = securityCache.get().get(securityId);
-        //    if (security == null)
-        //    {
-        //        return null;
-        //    }
-        //
-        //    currencyDisplay = security.currencyDisplay;
-        //}
-        //return currencyDisplay;
+        return position.getNiceCurrency();
     }
 
     private double getNumberToDisplay()
