@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,9 +54,6 @@ import timber.log.Timber;
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     implements WithTutorial,View.OnClickListener
 {
-    private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefFetchListener;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
-
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject Lazy<ProviderListCache> providerListCache;
@@ -75,88 +71,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private BaseWebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
+    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
     private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardDefFetchListener = createDefKeyListListener();
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener(); }
-
-    private AdapterView.OnItemClickListener createOnItemClickListener()
-    {
-        return new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-            {
-                Object item = adapterView.getItemAtPosition(position);
-                if (item instanceof LeaderboardDefKey)
-                {
-                    LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
-                    if (dto != null)
-                    {
-                        switch (dto.id)
-                        {
-                            case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
-                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
-                                pushLeaderboardDefSector();
-                                break;
-                            case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
-                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
-                                pushLeaderboardDefExchange();
-                                break;
-                            default:
-                                localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
-                                pushLeaderboardListViewFragment(dto);
-                                break;
-                        }
-                    }
-                }
-                if (item instanceof ProviderId)
-                {
-                    handleCompetitionItemClicked(providerCache.get().get((ProviderId) item));
-                }
-            }
-        };
-    }
-
-    private DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
-    {
-        return new DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>()
-        {
-            @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
-            {
-                if (!isDetached())
-                {
-                    handleLeaderboardDefKeyListReceived();
-                }
-            }
-
-            @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
-            {
-                THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
-                Timber.e("Error fetching the leaderboard def key list %s", key, error);
-            }
-        };
-    }
-
-    private DTOCache.Listener<ProviderListKey, ProviderIdList> createProviderIdListListener()
-    {
-        return new DTOCache.Listener<ProviderListKey, ProviderIdList>()
-        {
-            @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
-            {
-                displayCompetitionProviders(value);
-            }
-
-            @Override public void onErrorThrown(ProviderListKey key, Throwable error)
-            {
-                handleFailToReceiveLeaderboardDefKeyList();
-                THToast.show(getString(R.string.error_fetch_provider_info_list));
-                Timber.e("Failed retrieving the list of competition providers", error);
-            }
-        };
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -167,105 +88,40 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         return view;
     }
 
-    @Override public void onAttach(Activity activity)
+    @Override protected void initViews(View view)
     {
-        super.onAttach(activity);
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Community);
-
+        leaderboardDefListView.setOnItemClickListener(createItemClickListener());
+        prepareAdapter();
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
         {
             communityScreen.setDisplayedChildByLayoutId(currentDisplayedChildLayoutId);
         }
+    }
 
-        // prepare adapter for this screen
-        prepareAdapters();
-
-        // get the data
-        detachProviderListFetchTask();
-        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), createProviderIdListListener());
-        providerListFetchTask.execute();
+    @Override public void onResume()
+    {
+        super.onResume();
+        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Community);
+        loadData();
 
         // We came back into view so we have to forget the web fragment
-        if (this.webFragment != null)
-        {
-            this.webFragment.setThIntentPassedListener(null);
-        }
-        this.webFragment = null;
-    }
-
-    @Override public void onPause()
-    {
-        super.onPause();
-        currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-    }
-
-    private void prepareAdapters()
-    {
-        detachLeaderboardDefListCacheFetchTask();
-        leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
-                LeaderboardDefListKey.getCommunity(), leaderboardDefFetchListener);
-        leaderboardDefListFetchTask.execute();
-    }
-
-    @Override protected void initViews(View view)
-    {
-        // list of leaderboard definition item
-        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
-                getActivity(), getActivity().getLayoutInflater(),
-                R.layout.leaderboard_definition_item_view, R.layout.leaderboard_competition_item_view);
-
-        leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
-        leaderboardDefListView.setOnItemClickListener(createOnItemClickListener());
+        detachWebFragment();
     }
 
     @Override public void onDestroyView()
     {
         detachLeaderboardDefListCacheFetchTask();
         detachProviderListFetchTask();
-        if (leaderboardDefListView != null)
-        {
-            leaderboardDefListView.setOnItemClickListener(null);
-            leaderboardDefListView = null;
-        }
-
+        currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
+        leaderboardDefListView.setOnItemClickListener(null);
         super.onDestroyView();
-    }
-
-    private void detachLeaderboardDefListCacheFetchTask()
-    {
-        if (leaderboardDefListFetchTask != null)
-        {
-            leaderboardDefListFetchTask.setListener(null);
-        }
-        leaderboardDefListFetchTask = null;
-    }
-
-    protected void detachProviderListFetchTask()
-    {
-        if (providerListFetchTask != null)
-        {
-            providerListFetchTask.setListener(null);
-        }
-        providerListFetchTask = null;
     }
 
     @Override public void onDestroy()
     {
         this.thIntentPassedListener = null;
-        leaderboardDefFetchListener = null;
-
+        detachWebFragment();
         super.onDestroy();
     }
 
@@ -311,34 +167,148 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     }
     //</editor-fold>
 
+    private void detachWebFragment()
+    {
+        if (this.webFragment != null)
+        {
+            this.webFragment.setThIntentPassedListener(null);
+        }
+        this.webFragment = null;
+    }
+
+    private void prepareAdapter()
+    {
+        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
+                getActivity(),
+                getActivity().getLayoutInflater(),
+                R.layout.leaderboard_definition_item_view,
+                R.layout.leaderboard_competition_item_view);
+        leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
+    }
+
+    //<editor-fold desc="Data Fetching">
+    private void detachLeaderboardDefListCacheFetchTask()
+    {
+        if (leaderboardDefListFetchTask != null)
+        {
+            leaderboardDefListFetchTask.setListener(null);
+        }
+        leaderboardDefListFetchTask = null;
+    }
+
+    private void detachProviderListFetchTask()
+    {
+        if (providerListFetchTask != null)
+        {
+            providerListFetchTask.setListener(null);
+        }
+        providerListFetchTask = null;
+    }
+
+    private void loadData()
+    {
+        // get the data
+        fetchLeaderboardDefList();
+        fetchProviderIdList();
+    }
+
+    private void fetchLeaderboardDefList()
+    {
+        detachLeaderboardDefListCacheFetchTask();
+        leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
+                LeaderboardDefListKey.getCommunity(), createDefKeyListListener());
+        leaderboardDefListFetchTask.execute();
+    }
+
+    protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
+    {
+        return new LeaderboardCommunityLeaderboardDefKeyListListener();
+    }
+
+    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+    {
+        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+        {
+            handleLeaderboardDefKeyListReceived();
+        }
+
+        @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
+            Timber.e(error, "Error fetching the leaderboard def key list %s", key);
+        }
+    }
+
+    private void fetchProviderIdList()
+    {
+        detachProviderListFetchTask();
+        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), createProviderIdListListener());
+        providerListFetchTask.execute();
+    }
+
+    protected DTOCache.Listener<ProviderListKey, ProviderIdList> createProviderIdListListener()
+    {
+        return new LeaderboardCommunityProviderListListener();
+    }
+
+    protected class LeaderboardCommunityProviderListListener implements DTOCache.Listener<ProviderListKey, ProviderIdList>
+    {
+        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
+        {
+            displayCompetitionProviders(value);
+        }
+
+        @Override public void onErrorThrown(ProviderListKey key, Throwable error)
+        {
+            handleFailToReceiveLeaderboardDefKeyList();
+            THToast.show(getString(R.string.error_fetch_provider_info_list));
+            Timber.e("Failed retrieving the list of competition providers", error);
+        }
+    }
+    //</editor-fold>
+
+    protected AdapterView.OnItemClickListener createItemClickListener()
+    {
+        return new LeaderboardCommunityOnItemClickListener();
+    }
+
+    protected class LeaderboardCommunityOnItemClickListener implements AdapterView.OnItemClickListener
+    {
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
+        {
+            Object item = adapterView.getItemAtPosition(position);
+            if (item instanceof LeaderboardDefKey)
+            {
+                LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
+                if (dto != null)
+                {
+                    switch (dto.id)
+                    {
+                        case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
+                            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
+                            pushLeaderboardDefSector();
+                            break;
+                        case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
+                            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
+                            pushLeaderboardDefExchange();
+                            break;
+                        default:
+                            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
+                            pushLeaderboardListViewFragment(dto);
+                            break;
+                    }
+                }
+            }
+            if (item instanceof ProviderId)
+            {
+                handleCompetitionItemClicked(providerCache.get().get((ProviderId) item));
+            }
+        }
+    }
+
     private void displayCompetitionProviders(List<ProviderId> providerIds)
     {
         leaderboardDefListAdapter.setCompetitionItems(providerIds);
-    }
-
-    private void handleCompetitionItemClicked(ProviderDTO providerDTO)
-    {
-        if (providerDTO != null && providerDTO.isUserEnrolled)
-        {
-            Bundle args = new Bundle();
-            args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
-            OwnedPortfolioId associatedPortfolioId =
-                    new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
-            MainCompetitionFragment.putApplicablePortfolioId(args, associatedPortfolioId);
-            getNavigator().pushFragment(MainCompetitionFragment.class, args);
-        }
-        else if (providerDTO != null)
-        {
-            // HACK Just in case the user eventually enrolls
-            portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
-            Bundle args = new Bundle();
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
-                    providerDTO.getProviderId(),
-                    currentUserId.toUserBaseKey()));
-            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
-            webFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
-            webFragment.setThIntentPassedListener(thIntentPassedListener);
-        }
     }
 
     @Override public int getTutorialLayout()
@@ -346,7 +316,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         return R.layout.tutorial_leaderboard_community;
     }
 
-    private class LeaderboardCommunityTHIntentPassedListener implements THIntentPassedListener
+    protected class LeaderboardCommunityTHIntentPassedListener implements THIntentPassedListener
     {
         @Override public void onIntentPassed(THIntent thIntent)
         {
@@ -393,28 +363,42 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         displayedChild.setOnClickListener(this);
     }
 
-    private void reloadData()
-    {
-        // prepare adapter for this screen
-        prepareAdapters();
-
-        // get the data
-        detachProviderListFetchTask();
-        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), createProviderIdListListener());
-        providerListFetchTask.execute();
-    }
-
     @Override public void onClick(View v)
     {
         if (v.getId() == R.id.error)
         {
             //if error view is click it means to reload the data
             communityScreen.setDisplayedChildByLayoutId(R.id.progress);
-            reloadData();
+            loadData();
         }
     }
 
     //<editor-fold desc="Navigation">
+    private void handleCompetitionItemClicked(ProviderDTO providerDTO)
+    {
+        if (providerDTO != null && providerDTO.isUserEnrolled)
+        {
+            Bundle args = new Bundle();
+            args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
+            OwnedPortfolioId associatedPortfolioId =
+                    new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
+            MainCompetitionFragment.putApplicablePortfolioId(args, associatedPortfolioId);
+            getNavigator().pushFragment(MainCompetitionFragment.class, args);
+        }
+        else if (providerDTO != null)
+        {
+            // HACK Just in case the user eventually enrolls
+            portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
+            Bundle args = new Bundle();
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
+                    providerDTO.getProviderId(),
+                    currentUserId.toUserBaseKey()));
+            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
+            webFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment.setThIntentPassedListener(thIntentPassedListener);
+        }
+    }
+
     private void pushLeaderboardDefSector()
     {
         Bundle bundle = new Bundle(getArguments());

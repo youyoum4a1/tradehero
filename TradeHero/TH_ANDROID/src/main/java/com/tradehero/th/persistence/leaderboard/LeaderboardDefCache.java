@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -27,14 +28,14 @@ import javax.inject.Singleton;
         return get(key);
     }
 
-    public List<LeaderboardDefDTO> getOrFetch(List<LeaderboardDefKey> keys) throws Throwable
+    public LeaderboardDefDTOList getOrFetch(List<LeaderboardDefKey> keys) throws Throwable
     {
         if (keys == null)
         {
             return null;
         }
 
-        List<LeaderboardDefDTO> ret = new ArrayList<>();
+        LeaderboardDefDTOList ret = new LeaderboardDefDTOList();
         for (LeaderboardDefKey key: keys)
         {
             ret.add(getOrFetch(key, false));
