@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="alipay_virtual_dollars_subject">股货英雄-虚拟现金</string>
-  <string name="alipay_follow_credits_subject">股货英雄-关注点数</string>
-  <string name="alipay_stock_alerts_subject">股货英雄-股市预警</string>
-  <string name="alipay_reset_portfolio_subject">股货英雄-重置投资组合</string>
+  <string name="alipay_virtual_dollars_subject">全民股神-虚拟现金</string>
+  <string name="alipay_follow_credits_subject">全民股神-关注点数</string>
+  <string name="alipay_stock_alerts_subject">全民股神-股市预警</string>
+  <string name="alipay_reset_portfolio_subject">全民股神-重置投资组合</string>
   <string name="alipay_cancel">您已取消支付</string>
   <string name="alipay_success">支付完成，请查看您的账号</string>
   <string name="alipay_not_sure">支付完成，请查看您的账号，可能会有点小延迟</string>
