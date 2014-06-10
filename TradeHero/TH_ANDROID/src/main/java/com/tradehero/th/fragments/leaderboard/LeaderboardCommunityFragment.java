@@ -33,7 +33,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -75,17 +74,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private THIntentPassedListener thIntentPassedListener;
     private BaseWebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
-    private AdapterView.OnItemClickListener leaderboardCommunityListOnClickListener;
     private int currentDisplayedChildLayoutId;
-    private DTOCache.Listener<ProviderListKey, ProviderIdList> providerListCallback;
     private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardCommunityListOnClickListener = createOnItemClickListener();
         leaderboardDefFetchListener = createDefKeyListListener();
-        providerListCallback = createProviderIdListListener();
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener(); }
 
     private AdapterView.OnItemClickListener createOnItemClickListener()
@@ -194,7 +189,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         // get the data
         detachProviderListFetchTask();
-        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), providerListCallback);
+        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), createProviderIdListListener());
         providerListFetchTask.execute();
 
         // We came back into view so we have to forget the web fragment
@@ -232,7 +227,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
                 R.layout.leaderboard_definition_item_view, R.layout.leaderboard_competition_item_view);
 
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
-        leaderboardDefListView.setOnItemClickListener(leaderboardCommunityListOnClickListener);
+        leaderboardDefListView.setOnItemClickListener(createOnItemClickListener());
     }
 
     @Override public void onDestroyView()
@@ -269,10 +264,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onDestroy()
     {
         this.thIntentPassedListener = null;
-
-        leaderboardCommunityListOnClickListener = null;
         leaderboardDefFetchListener = null;
-        providerListCallback = null;
 
         super.onDestroy();
     }
@@ -312,7 +304,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
                 return true;
 
             case R.id.btn_add:
-                pushInvitaionFragment();
+                pushInvitationFragment();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -408,7 +400,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         // get the data
         detachProviderListFetchTask();
-        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), providerListCallback);
+        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), createProviderIdListListener());
         providerListFetchTask.execute();
     }
 
@@ -446,7 +438,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
     }
 
-    private void pushInvitaionFragment()
+    private void pushInvitationFragment()
     {
         getDashboardNavigator().goToTab(DashboardTabType.REFERRAL);
     }

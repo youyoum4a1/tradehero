@@ -6,7 +6,6 @@ import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
-import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 import org.junit.After;
@@ -23,12 +22,12 @@ public class OneProviderIntentTest
 {
     @Before public void setUp()
     {
-        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
+        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
     }
 
     @After public void tearDown()
     {
-        THIntent.currentActivityHolder = null;
+        THIntent.context = null;
     }
 
     @Test public void providerActionUriPathIsWellFormed()

@@ -3,7 +3,6 @@ package com.tradehero.th.models.intent.competition;
 import android.content.Intent;
 import android.net.Uri;
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
 import org.junit.After;
 import org.junit.Before;
@@ -19,12 +18,12 @@ public class ProviderIntentFactoryTest
 {
     @Before public void setUp()
     {
-        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
+        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
     }
 
     @After public void tearDown()
     {
-        THIntent.currentActivityHolder = null;
+        THIntent.context = null;
     }
 
     @Test public void createsPageIntent()

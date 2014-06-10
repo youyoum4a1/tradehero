@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
@@ -17,7 +17,6 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -42,14 +41,14 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Leaderboard Definitions">
-    public List<LeaderboardDefDTO> getLeaderboardDefinitions()
+    public LeaderboardDefDTOList getLeaderboardDefinitions()
     {
         return leaderboardService.getLeaderboardDefinitions();
     }
 
-    public MiddleCallback<List<LeaderboardDefDTO>> getLeaderboardDefinitions(Callback<List<LeaderboardDefDTO>> callback)
+    public MiddleCallback<LeaderboardDefDTOList> getLeaderboardDefinitions(Callback<LeaderboardDefDTOList> callback)
     {
-        MiddleCallback<List<LeaderboardDefDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<LeaderboardDefDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         leaderboardServiceAsync.getLeaderboardDefinitions(middleCallback);
         return middleCallback;
     }

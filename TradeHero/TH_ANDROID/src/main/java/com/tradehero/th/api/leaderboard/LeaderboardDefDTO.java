@@ -4,7 +4,6 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import java.util.Date;
-import java.util.List;
 
 public class LeaderboardDefDTO extends ExtendedDTO
 {
@@ -38,9 +37,10 @@ public class LeaderboardDefDTO extends ExtendedDTO
     public String desc;
 
     // sort & cap fields
-    public List<LeaderboardSortTypeDTO> sortTypes;
+    public LeaderboardSortTypeDTOList sortTypes;
     public Integer defaultSortTypeId;
     public Integer capAt;
+    public CountryCodeList countryCodes;
 
     public LeaderboardDefDTO()
     {
