@@ -43,10 +43,10 @@
   <string name="need_install_wechat">请安装微信</string>
   <string name="need_update_wechat">请更新微信至 4.2 之后的版本</string>
   <!--<string name="share_to_wechat_timeline">分享至微信朋友圈</string>-->
-  <string name="share_to_wechat_timeline_news">我在全民股神上分享了一条新闻，快来加入吧</string>
-  <string name="share_to_wechat_timeline_create_discussion">我在全民股神上发起了一段讨论，快来加入吧</string>
-  <string name="share_to_wechat_timeline_discussion">我在全民股神上分享了一段讨论，快来加入吧</string>
-  <string name="share_to_wechat_timeline_timeline">我在全民股神上分享了我的动态，快来加入吧</string>
-  <string name="share_to_wechat_timeline_trade">我在全民股神上完成了一笔交易，快来加入吧</string>
+  <string name="share_to_wechat_timeline_news">我在股货英雄上分享了一条新闻，快来加入吧</string>
+  <string name="share_to_wechat_timeline_create_discussion">我在股货英雄上发起了一段讨论，快来加入吧</string>
+  <string name="share_to_wechat_timeline_discussion">我在股货英雄上分享了一段讨论，快来加入吧</string>
+  <string name="share_to_wechat_timeline_timeline">我在股货英雄上分享了我的动态，快来加入吧</string>
+  <string name="share_to_wechat_timeline_trade">我在股货英雄上完成了一笔交易，快来加入吧</string>
   <string name="share_success">分享成功</string>
 </resources>

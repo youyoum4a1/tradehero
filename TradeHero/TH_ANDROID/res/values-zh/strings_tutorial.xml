@@ -4,7 +4,7 @@
   <!--timeline-->
   <string name="tutorial_timeline_content">
     <![CDATA[查找排行榜上的牛人,按总损益排名，或按特定的“英雄指数”排名。你也可以按交易所、行业、月收益、季度收益、总收益进行筛选。\n\n竞技好友排行榜，与微博好友较劲。]]></string>
-  <string name="tutorial_timeline_header">欢迎来到全民股神!</string>
+  <string name="tutorial_timeline_header">欢迎来到股货英雄!</string>
   <string name="tutorial_portfolio_list_header">投资组合</string>
 
   <!--Store screen-->
@@ -23,7 +23,7 @@
 
   <!--Trending-->
   <string name="tutorial_trending_header">寻找股票</string>
-  <string name="tutorial_trending_content">你可以在屏幕顶部的搜索栏，输入公司名称或符号，在我们所支持的股票交易所里搜寻特定股票。\n\n你也可以滚动查看实时交易的股票：全民股神用户正在买入或出售的股票
+  <string name="tutorial_trending_content">你可以在屏幕顶部的搜索栏，输入公司名称或符号，在我们所支持的股票交易所里搜寻特定股票。\n\n你也可以滚动查看实时交易的股票：股货英雄用户正在买入或出售的股票
   </string>
   <string name="tutorial_buy_sell_header">买 / 卖</string>
   <string name="tutorial_buy_sell_content">交易价格* 是指买入时得到的报价，或卖出时的投标价格。这是为了模拟市价委托型交易。对于某些股票，我们没有报价信息，我们将采用最近一次交易价格代替。\n\n交易数量不能超过每日平均交易总量或当日总量的20％，两者取较高值。你的交易数量可能会因为这个条款受限。\n\n*价格可能会因为交易所状况或我们的数据提供方有所延迟
