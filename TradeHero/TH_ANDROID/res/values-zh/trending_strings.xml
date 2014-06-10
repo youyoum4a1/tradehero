@@ -12,7 +12,7 @@
 
   <!-- What's Trending filters -->
   <string name="trending_filter_basic_title">热门证劵</string>
-  <string name="trending_filter_basic_description">股货英雄中的热门证劵</string>
+  <string name="trending_filter_basic_description">全民股神中的热门证劵</string>
   <string name="trending_filter_volume_title">异常交易量</string>
   <string name="trending_filter_volume_description">前日交易量 &gt; 平均日交易量</string>
   <string name="trending_filter_price_title">价格异常</string>
