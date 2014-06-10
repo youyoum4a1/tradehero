@@ -12,7 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.robolectric.TestLifecycleApplication;
 
-public class TestApplication extends Application  implements TestLifecycleApplication
+public class TestApplication extends Application
+        implements TestLifecycleApplication
 {
     private static final String DAGGER_INJECT_ADAPTER_CLASS_SUFFIX = "$$InjectAdapter";
 
@@ -45,7 +46,8 @@ public class TestApplication extends Application  implements TestLifecycleApplic
         {
             Class.forName(test.getClass().getName() + DAGGER_INJECT_ADAPTER_CLASS_SUFFIX);
             DaggerUtils.inject(test);
-        } catch (ClassNotFoundException e)
+        }
+        catch (ClassNotFoundException e)
         {
             //my class isn't there!
         }
