@@ -26,8 +26,6 @@ public class TradeDTO implements DTO
 
     public String commentText;
 
-    public boolean isLastTrade;
-
     public TradeDTO()
     {
     }

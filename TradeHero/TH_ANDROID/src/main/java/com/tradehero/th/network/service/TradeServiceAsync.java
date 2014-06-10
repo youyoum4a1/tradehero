@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.api.trade.TradeDTOList;
 import java.util.List;
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -14,7 +15,7 @@ interface TradeServiceAsync
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
             @Path("positionId") int positionId,
-            Callback<List<TradeDTO>> callback);
+            Callback<TradeDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Single Trade">
