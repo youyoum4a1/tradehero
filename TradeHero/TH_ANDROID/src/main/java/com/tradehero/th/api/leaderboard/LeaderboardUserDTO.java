@@ -212,11 +212,11 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public InviteDTO getInviteDTO()
     {
         InviteDTO inviteDTO = new InviteDTO();
-        if (!liId.isEmpty())
+        if (liId != null && !liId.isEmpty())
         {
             inviteDTO.liId = liId;
         }
-        else if (!twId.isEmpty())
+        else if (twId != null && !twId.isEmpty())
         {
             inviteDTO.twId = twId;
         }
