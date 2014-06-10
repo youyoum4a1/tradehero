@@ -18,6 +18,8 @@ import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
@@ -48,14 +50,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     @InjectView(R.id.discussion_translate_notice) @Optional protected TextView translateNotice;
     @InjectView(R.id.discussion_translate_notice_image) @Optional protected ImageView translateNoticeImage;
 
-    @Inject protected PrettyTime prettyTime;
-    @Inject protected Context context;
-    @Inject protected SocialShareTranslationHelper socialShareHelper;
+    @Inject @NotNull protected PrettyTime prettyTime;
+    @Inject @NotNull protected Context context;
+    @Inject @NotNull protected SocialShareTranslationHelper socialShareHelper;
 
     protected boolean downVote;
     protected DiscussionDTOType discussionDTO;
     protected DiscussionDTOType translatedDiscussionDTO;
-    protected TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
+    protected @NotNull TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
     protected TranslationResult latestTranslationResult;
     protected OnMenuClickedListener menuClickedListener;
 
@@ -67,22 +69,16 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     }
     //</editor-fold>
 
-    public void onFinishInflate(View view)
+    public void onFinishInflate(@NotNull View view)
     {
         ButterKnife.inject(this, view);
-        if (socialShareHelper != null)
-        {
-            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
-        }
+        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
 
-    public void onAttachedToWindow(View view)
+    public void onAttachedToWindow(@NotNull View view)
     {
         ButterKnife.inject(this, view);
-        if (socialShareHelper != null)
-        {
-            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
-        }
+        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
         if (discussionActionButtonsView != null)
         {
             discussionActionButtonsView.setButtonClickedListener(createDiscussionActionButtonsViewClickedListener());
@@ -95,10 +91,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         {
             discussionActionButtonsView.setButtonClickedListener(null);
         }
-        if (socialShareHelper != null)
-        {
-            socialShareHelper.onDetach();
-        }
+        socialShareHelper.onDetach();
         ButterKnife.reset(this);
     }
 
@@ -150,7 +143,10 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         {
             currentTranslationStatus = TranslationStatus.TRANSLATED;
         }
-        displayTranslatableTexts();
+        if (andDisplay)
+        {
+            displayTranslatableTexts();
+        }
     }
 
     public void setLatestTranslationResult(TranslationResult latestTranslationResult)
@@ -188,6 +184,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
+    @Nullable
     protected String getTimeToDisplay()
     {
         if (discussionDTO != null && discussionDTO.createdAtUtc != null)
@@ -368,6 +365,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             setLatestTranslationResult(translationResult);
         }
 
+        @SuppressWarnings("unchecked")
         @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
                 AbstractDiscussionCompactDTO translated)
         {

@@ -252,8 +252,7 @@ public class UpdateCenterFragment extends BaseFragment
                 DiscussionType.BROADCAST_MESSAGE.value);
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE,
                 MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
-                SendMessageFragment.class, args);
+        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(SendMessageFragment.class, args);
     }
 
     @Override public void onStop()

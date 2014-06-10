@@ -41,6 +41,7 @@
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>android-support</groupId>
       <artifactId>support-library</artifactId>
@@ -48,6 +49,7 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/libs/android-support-v4.jar</systemPath>
     </dependency>
+
     <dependency>
       <groupId>com.localytics.android</groupId>
       <artifactId>library</artifactId>
@@ -74,6 +76,7 @@
         </exclusion>
       </exclusions>
     </dependency>
+
     <dependency>
       <groupId>com.jakewharton.timber</groupId>
       <artifactId>timber</artifactId>
@@ -154,6 +157,12 @@
       <groupId>oauth.signpost</groupId>
       <artifactId>signpost-commonshttp4</artifactId>
       <version>1.2.1.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -301,6 +310,17 @@
     </dependency>
 
     <!--/git-submodules dependencies-->
+
+    <!-- editor libraries -->
+
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>13.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- /end editor libraries -->
 
     <!--test libraries-->
 

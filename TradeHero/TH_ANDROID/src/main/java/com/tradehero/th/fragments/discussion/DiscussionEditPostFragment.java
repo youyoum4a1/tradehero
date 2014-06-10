@@ -159,6 +159,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        unsetDiscussionEditMiddleCallback();
+    }
+
     @Override public void onDetach()
     {
         searchStockPeopleFragment = null;

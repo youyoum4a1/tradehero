@@ -394,6 +394,7 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
+    // TODO rework this inner class to identify the null elements.
     private class NotificationMarkAsReadCallback implements Callback<Response>
     {
         private final int pushId;

@@ -25,7 +25,7 @@ public class SecuritySearchProviderFragment extends SecuritySearchFragment
     {
         super.onCreate(savedInstanceState);
         providerId = getProviderId(getArguments());
-        if (savedInstanceState != null)
+        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_KEY_PROVIDER_ID))
         {
             providerId = getProviderId(savedInstanceState);
         }

@@ -8,6 +8,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 public class PositionDTO extends PositionDTOCompact
 {
@@ -93,7 +95,9 @@ public class PositionDTO extends PositionDTOCompact
         return new SecurityIntegerId(securityId);
     }
 
-    public static List<PositionDTOKey> getFiledPositionIds(List<PositionDTO> positionDTOs)
+    @Contract("null -> null")
+    @Nullable
+    public static List<PositionDTOKey> getFiledPositionIds(@Nullable List<PositionDTO> positionDTOs)
     {
         if (positionDTOs == null)
         {

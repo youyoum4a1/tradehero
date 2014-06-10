@@ -20,6 +20,8 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class AlertDialogUtil
 {
@@ -30,6 +32,7 @@ public class AlertDialogUtil
         super();
     }
 
+    @NotNull
     public DialogInterface.OnClickListener createDefaultCancelListener()
     {
         return new DialogInterface.OnClickListener()
@@ -41,16 +44,22 @@ public class AlertDialogUtil
         };
     }
 
-    public AlertDialog popWithNegativeButton(final Context context, int titleResId,
-            int descriptionResId, int cancelResId)
+    @NotNull
+    public AlertDialog popWithNegativeButton(
+            @NotNull final Context context,
+            int titleResId, int descriptionResId,
+            int cancelResId)
     {
         return popWithNegativeButton(context, titleResId, descriptionResId, cancelResId,
                 createDefaultCancelListener());
     }
 
-    public AlertDialog popWithNegativeButton(final Context context, int titleResId,
-            int descriptionResId, int cancelResId,
-            DialogInterface.OnClickListener cancelListener)
+    @NotNull
+    public AlertDialog popWithNegativeButton(
+            @NotNull final Context context,
+            int titleResId, int descriptionResId,
+            int cancelResId,
+            @Nullable DialogInterface.OnClickListener cancelListener)
     {
         return popWithNegativeButton(context,
                 context.getString(titleResId),
@@ -59,16 +68,22 @@ public class AlertDialogUtil
                 cancelListener);
     }
 
-    public AlertDialog popWithNegativeButton(final Context context, String titleRes,
-            String descriptionRes, String cancelRes)
+    @NotNull
+    public AlertDialog popWithNegativeButton(
+            @NotNull final Context context,
+            @Nullable String titleRes, @Nullable String descriptionRes,
+            @NotNull String cancelRes)
     {
         return popWithNegativeButton(context, titleRes, descriptionRes, cancelRes,
                 createDefaultCancelListener());
     }
 
-    public AlertDialog popWithNegativeButton(final Context context, String titleRes,
-            String descriptionRes, String cancelRes,
-            DialogInterface.OnClickListener cancelListener)
+    @NotNull
+    public AlertDialog popWithNegativeButton(
+            @NotNull final Context context,
+            @Nullable String titleRes, @Nullable String descriptionRes,
+            @NotNull String cancelRes,
+            @Nullable DialogInterface.OnClickListener cancelListener)
     {
         return popWithNegativeButton(context, titleRes,
                 descriptionRes, cancelRes,
@@ -76,11 +91,14 @@ public class AlertDialogUtil
                 cancelListener);
     }
 
-    public AlertDialog popWithNegativeButton(Context context, String titleRes,
-            String descriptionRes, String cancelRes,
-            final ListAdapter detailsAdapter,
-            final OnClickListener adapterListener,
-            DialogInterface.OnClickListener cancelListener)
+    @NotNull
+    public AlertDialog popWithNegativeButton(
+            @NotNull final Context context,
+            @Nullable String titleRes, @Nullable String descriptionRes,
+            @NotNull String cancelRes,
+            @Nullable final ListAdapter detailsAdapter,
+            @Nullable final OnClickListener adapterListener,
+            @Nullable DialogInterface.OnClickListener cancelListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
@@ -100,6 +118,7 @@ public class AlertDialogUtil
             alertDialogBuilder
                     .setSingleChoiceItems(detailsAdapter, 0, new DialogInterface.OnClickListener()
                     {
+                        @SuppressWarnings("unchecked")
                         @Override public void onClick(DialogInterface dialogInterface, int i)
                         {
                             if (adapterListener != null)
@@ -116,18 +135,24 @@ public class AlertDialogUtil
         return alertDialog;
     }
 
-    public AlertDialog popWithOkCancelButton(final Context context, int titleResId,
-            int descriptionResId, int okResId, int cancelResId,
-            final DialogInterface.OnClickListener okClickListener)
+    @NotNull
+    public AlertDialog popWithOkCancelButton(
+            @NotNull final Context context,
+            int titleResId, int descriptionResId,
+            int okResId, int cancelResId,
+            @Nullable final DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(context, titleResId, descriptionResId, okResId, cancelResId,
                 okClickListener, createDefaultCancelListener());
     }
 
-    public AlertDialog popWithOkCancelButton(final Context context, int titleResId,
-            int descriptionResId, int okResId, int cancelResId,
-            final DialogInterface.OnClickListener okClickListener,
-            final DialogInterface.OnClickListener cancelClickListener)
+    @NotNull
+    public AlertDialog popWithOkCancelButton(
+            @NotNull final Context context,
+            int titleResId, int descriptionResId,
+            int okResId, int cancelResId,
+            @Nullable final DialogInterface.OnClickListener okClickListener,
+            @Nullable final DialogInterface.OnClickListener cancelClickListener)
     {
         return popWithOkCancelButton(context,
                 context.getString(titleResId),
@@ -138,18 +163,24 @@ public class AlertDialogUtil
                 cancelClickListener);
     }
 
-    public AlertDialog popWithOkCancelButton(final Context context, String title,
-            String description, int okResId, int cancelResId,
-            final DialogInterface.OnClickListener okClickListener)
+    @NotNull
+    public AlertDialog popWithOkCancelButton(
+            @NotNull final Context context,
+            @NotNull String title, @NotNull String description,
+            int okResId, int cancelResId,
+            @Nullable final DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(context, title, description, okResId, cancelResId,
                 okClickListener, createDefaultCancelListener());
     }
 
-    public AlertDialog popWithOkCancelButton(final Context context, String title,
-            String description, int okResId, int cancelResId,
-            final DialogInterface.OnClickListener okClickListener,
-            final DialogInterface.OnClickListener cancelClickListener)
+    @NotNull
+    public AlertDialog popWithOkCancelButton(
+            @NotNull final Context context,
+            @NotNull String title, @NotNull String description,
+            int okResId, int cancelResId,
+            @Nullable final DialogInterface.OnClickListener okClickListener,
+            @Nullable final DialogInterface.OnClickListener cancelClickListener)
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
@@ -165,7 +196,10 @@ public class AlertDialogUtil
         return alertDialog;
     }
 
-    public Dialog popTutorialContent(final Context context, int layoutResourceId)
+    @NotNull
+    public Dialog popTutorialContent(
+            @NotNull final Context context,
+            int layoutResourceId)
     {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -190,7 +224,10 @@ public class AlertDialogUtil
         return dialog;
     }
 
-    public AlertDialog popMarketClosed(final Context context, SecurityId securityId)
+    @NotNull
+    public AlertDialog popMarketClosed(
+            @NotNull final Context context,
+            @Nullable SecurityId securityId)
     {
         if (securityId == null)
         {
@@ -209,7 +246,11 @@ public class AlertDialogUtil
         }
     }
 
-    public void showFollowDialog(Context context, UserBaseDTO userBaseDTO, final int followType, final OnFollowRequestedListener followRequestedListener)
+    public void showFollowDialog(
+            @NotNull final Context context,
+            @Nullable UserBaseDTO userBaseDTO,
+            final int followType,
+            @NotNull final OnFollowRequestedListener followRequestedListener)
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
@@ -252,7 +293,7 @@ public class AlertDialogUtil
         });
     }
 
-    public void showProgressDialog(Context context)
+    public void showProgressDialog(@NotNull final Context context)
     {
         if (mProgressDialog != null)
         {
@@ -264,7 +305,7 @@ public class AlertDialogUtil
         mProgressDialog.show();
     }
 
-    public void showProgressDialog(Context context, String content)
+    public void showProgressDialog(@NotNull final Context context, @Nullable String content)
     {
         if (mProgressDialog != null)
         {

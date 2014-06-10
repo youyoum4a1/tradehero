@@ -1299,8 +1299,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (securityId != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                    securityId.getArgs());
+            WatchlistEditFragment.putSecurityId(args, securityId);
             getNavigator().pushFragment(WatchlistEditFragment.class, args);
         }
         else

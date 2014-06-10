@@ -18,6 +18,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
@@ -212,16 +213,16 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         SecurityId securityId = getSecurityId();
         if (securityId != null)
         {
-            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            WatchlistEditFragment.putSecurityId(args, securityId);
             if (watchlistPositionCache.get().get(securityId) != null)
             {
                 localyticsSession.tagEvent(LocalyticsConstants.Monitor_EditWatchlist);
-                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.watchlist_edit_title));
+                DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
             }
             else
             {
                 localyticsSession.tagEvent(LocalyticsConstants.Monitor_CreateWatchlist);
-                args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.watchlist_add_title));
+                DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);

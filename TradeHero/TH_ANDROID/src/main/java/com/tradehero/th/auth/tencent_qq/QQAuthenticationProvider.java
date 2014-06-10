@@ -67,6 +67,7 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     {
         Context context = baseContext.get();
         mTencent = Tencent.createInstance(APP_ID, context.getApplicationContext());
+        mTencent.logout((Activity) context);
         if (!mTencent.isSessionValid())
         {
             IUiListener listener = new BaseUiListener()

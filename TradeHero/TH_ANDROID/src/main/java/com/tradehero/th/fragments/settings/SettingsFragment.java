@@ -60,6 +60,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -110,6 +111,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject LocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
@@ -930,10 +932,24 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             startActivity(
                     new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
-        } catch (android.content.ActivityNotFoundException anfe)
+        }
+        catch (android.content.ActivityNotFoundException anfe)
         {
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
+            try
+            {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
+            }
+            catch (Exception e)
+            {
+                Timber.e(e, "Cannot send to Google Play store");
+                alertDialogUtil.get().popWithNegativeButton(
+                        getActivity(),
+                        R.string.webview_error_no_browser_for_intent_title,
+                        R.string.webview_error_no_browser_for_intent_description,
+                        R.string.cancel);
+
+            }
         }
     }
 

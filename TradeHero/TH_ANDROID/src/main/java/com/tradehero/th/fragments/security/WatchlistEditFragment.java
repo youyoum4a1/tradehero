@@ -43,8 +43,7 @@ import timber.log.Timber;
 
 public class WatchlistEditFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
-    public static final String BUNDLE_KEY_TITLE = WatchlistEditFragment.class.getName() + ".title";
+    private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
 
     private ImageView securityLogo;
     private TextView securityTitle;
@@ -70,6 +69,11 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject LocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
+
+    public static void putSecurityId(Bundle args, SecurityId securityId)
+    {
+        args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -219,22 +223,8 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        Bundle argument = getArguments();
-
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-
-        String title = argument.getString(BUNDLE_KEY_TITLE);
-        if (title != null && !title.isEmpty())
-        {
-            setActionBarTitle(title);
-        }
-    }
-
-    private void setActionBarTitle(String title)
-    {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(title);
     }
 
     @Override public void onResume()

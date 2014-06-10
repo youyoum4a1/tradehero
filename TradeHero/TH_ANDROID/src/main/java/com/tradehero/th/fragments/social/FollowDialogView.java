@@ -21,6 +21,7 @@ import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Refactor the code inside AlertDialogUtil
@@ -40,7 +41,7 @@ public class FollowDialogView extends LinearLayout
     @Inject @ForUserPhoto Lazy<Transformation> peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
 
-    private UserBaseDTO userBaseDTO;
+    @Nullable private UserBaseDTO userBaseDTO;
     private OnFollowRequestedListener followRequestedListener;
 
     //<editor-fold desc="Constructors">
@@ -79,7 +80,7 @@ public class FollowDialogView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void display(UserBaseDTO userBaseDTO)
+    public void display(@Nullable UserBaseDTO userBaseDTO)
     {
         this.userBaseDTO = userBaseDTO;
 

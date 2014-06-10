@@ -99,7 +99,7 @@ public class AbstractPositionItemAdapter
                         positionDTO.latestTradeUtc));
 
                 newItemTypes.add(PositionItemType.Locked);
-                newItems.add(lockedPositions.get(0));
+                newItems.add(positionDTO);
             }
             else if (openPositions.size() > 0)
             {

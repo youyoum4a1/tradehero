@@ -28,6 +28,7 @@
   <string name="dashboard_community">社交中心</string>
   <string name="dashboard_home">首页</string>
   <string name="dashboard_portfolio">投资组合</string>
+  <string name="dashboard_referral">邀请好友</string>
   <string name="dashboard_store">商店</string>
   <string name="dashboard_headline">头条</string>
   <string name="message_center">消息中心</string>

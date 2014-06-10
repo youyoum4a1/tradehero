@@ -28,6 +28,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class UserProfileResideMenuItem extends LinearLayout
         implements DTOView<UserProfileDTO>
@@ -145,7 +146,16 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     private Drawable getErrorDrawable()
     {
-        Bitmap defaultUserPhotoBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.superman_facebook);
+        Bitmap defaultUserPhotoBitmap = null;
+        try
+        {
+            defaultUserPhotoBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.superman_facebook);
+        }
+        catch (OutOfMemoryError e)
+        {
+            Timber.e(e, null);
+            return null;
+        }
         return new BitmapDrawable(getResources(), userPhotoTransformation.transform(defaultUserPhotoBitmap));
     }
 
