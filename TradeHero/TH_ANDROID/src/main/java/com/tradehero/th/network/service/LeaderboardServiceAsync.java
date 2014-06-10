@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import java.util.List;
@@ -14,7 +14,7 @@ interface LeaderboardServiceAsync
 {
     //<editor-fold desc="Get Leaderboard Definitions">
     @GET("/leaderboards")
-    void getLeaderboardDefinitions(Callback<List<LeaderboardDefDTO>> callback);
+    void getLeaderboardDefinitions(Callback<LeaderboardDefDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Leaderboard">
