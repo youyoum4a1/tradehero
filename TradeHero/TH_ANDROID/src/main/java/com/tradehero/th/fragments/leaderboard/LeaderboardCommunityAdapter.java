@@ -197,25 +197,4 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
         }
         return convertView;
     }
-
-    public static enum LeaderboardCommunityType
-    {
-        Competition(null), // for competition
-        HeroFollowerAndFriends(LeaderboardDefListKey.getConnected()), // for managing heroes & followers
-        SkillAndCountry(LeaderboardDefListKey.getMostSkilled()),
-        TimeRestricted(LeaderboardDefListKey.getTimePeriod()),
-        SectorAndExchange(LeaderboardDefListKey.getDrillDown()); // all fake :v
-
-        private final LeaderboardDefListKey key;
-
-        LeaderboardCommunityType(LeaderboardDefListKey leaderboardDefListKey)
-        {
-            this.key = leaderboardDefListKey;
-        }
-
-        public LeaderboardDefListKey getKey()
-        {
-            return key;
-        }
-    }
 }
