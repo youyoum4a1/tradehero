@@ -4,13 +4,13 @@ import com.tradehero.RobolectricMavenTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class ResetPortfolioIntentTest
 {
     @Test public void testPathCorrect()
     {
-        assertEquals("tradehero://reset-portfolio", new ResetPortfolioIntent().getUriPath());
+        assertThat("tradehero://reset-portfolio").isEqualTo(new ResetPortfolioIntent().getUriPath());
     }
 }

@@ -6,7 +6,6 @@ import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 import org.junit.After;
@@ -24,12 +23,12 @@ public class SecuritySellIntentTest
 {
     @Before public void setUp()
     {
-        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
+        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
     }
 
     @After public void tearDown()
     {
-        THIntent.currentActivityHolder = null;
+        THIntent.context = null;
     }
 
     @Test public void securityActionUriPathIsWellFormed()
