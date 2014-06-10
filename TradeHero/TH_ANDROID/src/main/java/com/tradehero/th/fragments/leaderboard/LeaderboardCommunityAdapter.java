@@ -79,7 +79,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     // hardcoded stuffs +__+
     private void putExtraItems(Map<LeaderboardCommunityType, List<LeaderboardDefKey>> typeMap)
     {
-        List<LeaderboardDefKey> heroAndFollower = typeMap.get(LeaderboardCommunityType.HeroAndFollower);
+        List<LeaderboardDefKey> heroAndFollower = typeMap.get(LeaderboardCommunityType.HeroFollowerAndFriends);
         if (heroAndFollower != null && heroAndFollower.size() < 3)
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
@@ -100,7 +100,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             heroAndFollower.add(1, fakeDto.getLeaderboardDefKey());
         }
 
-        List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
+        List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndCountry);
         if (skillAndFriend != null && skillAndFriend.size() < DEFINE_ROW_NUMBERS_OF_MOSTED_SKILLED_AND_FRIENDS)
         {
             LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
@@ -262,8 +262,8 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
     public static enum LeaderboardCommunityType
     {
         Competition(null), // for competition
-        HeroAndFollower(null), // for managing heroes & followers
-        SkillAndFriend(LeaderboardDefListKey.getMostSkilled()),
+        HeroFollowerAndFriends(null), // for managing heroes & followers
+        SkillAndCountry(LeaderboardDefListKey.getMostSkilled()),
         TimeRestricted(LeaderboardDefListKey.getTimePeriod()),
         SectorAndExchange(null); // all fake :v
 

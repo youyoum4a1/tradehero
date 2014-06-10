@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -23,76 +26,43 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 {
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
-    protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchListener;
     protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTask;
 
     private LeaderboardDefListAdapter leaderboardDefListAdapter;
-    private ListView contentListView;
+    @InjectView(android.R.id.list) protected ListView contentListView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardDefListCacheFetchListener = new LeaderboardDefListViewFragmentDefKeyListListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_def_listview, container, false);
+        ButterKnife.inject(this, view);
         initViews(view);
         return view;
     }
 
     @Override protected void initViews(View view)
     {
-        contentListView = (ListView) view.findViewById(android.R.id.list);
+        leaderboardDefListAdapter =
+                new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_definition_item_view);
+        contentListView.setAdapter(leaderboardDefListAdapter);
     }
 
     @Override public void onResume()
     {
-        Bundle args = getArguments();
-
-        leaderboardDefListAdapter =
-                new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_definition_item_view);
-        contentListView.setAdapter(leaderboardDefListAdapter);
-        contentListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                Object item = leaderboardDefListAdapter.getItem(position);
-                if (item instanceof LeaderboardDefKey)
-                {
-                    LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
-                    if (dto != null)
-                    {
-                        pushLeaderboardListViewFragment(dto);
-                    }
-                }
-            }
-        });
-        updateLeaderboardDefListKey(args);
+        updateLeaderboardDefListKey(getArguments());
         refresh();
         super.onResume();
-    }
-
-    @Override public void onPause()
-    {
-        if (contentListView != null)
-        {
-            contentListView.setOnItemClickListener(null);
-        }
-        super.onPause();
     }
 
     @Override public void onDestroyView()
     {
         detachLeaderboardDefListCacheFetchTask();
+        ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        leaderboardDefListCacheFetchListener = null;
-        super.onDestroy();
     }
 
     protected void detachLeaderboardDefListCacheFetchTask()
@@ -102,6 +72,20 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
             leaderboardDefListCacheFetchTask.setListener(null);
         }
         leaderboardDefListCacheFetchTask = null;
+    }
+
+    @OnItemClick(android.R.id.list)
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Object item = parent.getItemAtPosition(position);
+        if (item instanceof LeaderboardDefKey)
+        {
+            LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
+            if (dto != null)
+            {
+                pushLeaderboardListViewFragment(dto);
+            }
+        }
     }
 
     protected void refresh()
@@ -114,19 +98,16 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 
     private void updateLeaderboardDefListKey(Bundle bundle)
     {
-        LeaderboardDefListKey key = new LeaderboardDefListKey(bundle);
         detachLeaderboardDefListCacheFetchTask();
-        leaderboardDefListCacheFetchTask  = leaderboardDefListCache.get().getOrFetch(key, leaderboardDefListCacheFetchListener);
+        leaderboardDefListCacheFetchTask  = leaderboardDefListCache.get().getOrFetch(
+                new LeaderboardDefListKey(bundle),
+                createLeaderboardDefKeyListListener());
         leaderboardDefListCacheFetchTask.execute();
     }
 
-    protected void handleDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+    protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createLeaderboardDefKeyListListener()
     {
-        if (leaderboardDefListAdapter != null)
-        {
-            leaderboardDefListAdapter.setItems(value);
-            leaderboardDefListAdapter.notifyDataSetChanged();
-        }
+        return new LeaderboardDefListViewFragmentDefKeyListListener();
     }
 
     protected class LeaderboardDefListViewFragmentDefKeyListListener implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
@@ -145,6 +126,15 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
             Timber.e("Error fetching the leaderboard def key list %s", key, error);
+        }
+    }
+
+    protected void handleDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+    {
+        if (leaderboardDefListAdapter != null)
+        {
+            leaderboardDefListAdapter.setItems(value);
+            leaderboardDefListAdapter.notifyDataSetChanged();
         }
     }
 }

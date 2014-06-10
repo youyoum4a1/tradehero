@@ -37,7 +37,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.userProfileCacheListener = new BaseLeaderboardFragmentProfileCacheListener();
+        this.userProfileCacheListener = createUserProfileListener();
     }
 
     //<editor-fold desc="ActionBar">
@@ -61,9 +61,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Override public void onResume()
     {
         super.onResume();
-        detachUserProfileCache();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        fetchCurrentUserProfile();
     }
 
     @Override public void onDestroyView()
@@ -84,6 +82,13 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         {
             userProfileCache.unregister(userProfileCacheListener);
         }
+    }
+
+    protected void fetchCurrentUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     protected int getMenuResource()
@@ -148,6 +153,11 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    {
+        return new BaseLeaderboardFragmentProfileCacheListener();
     }
 
     protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
