@@ -11,7 +11,7 @@
 
   <supports-screens
       android:anyDensity="true"
-      android:resizeable="true"/>TreeSetLearningTest.java
+      android:resizeable="true"/>
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
