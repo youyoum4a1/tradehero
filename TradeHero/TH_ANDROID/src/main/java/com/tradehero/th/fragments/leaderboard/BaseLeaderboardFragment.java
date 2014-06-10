@@ -8,6 +8,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -18,12 +19,13 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
         implements BaseFragment.TabBarVisibilityInformer
 {
-    public static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
+    private static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_TITLE = BaseLeaderboardFragment.class.getName() + ".leaderboardDefTitle";
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_DESC = BaseLeaderboardFragment.class.getName() + ".leaderboardDefDesc";
 
@@ -31,12 +33,24 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
 
+    protected LeaderboardDefKey leaderboardDefKey;
     protected UserProfileDTO currentUserProfileDTO;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+
+    public static void putLeaderboardDefKey(@NotNull Bundle args, @NotNull LeaderboardDefKey leaderboardDefKey)
+    {
+        args.putInt(BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefKey.key);
+    }
+
+    public static LeaderboardDefKey getLeadboardDefKey(@NotNull Bundle args)
+    {
+        return new LeaderboardDefKey(args.getInt(BUNDLE_KEY_LEADERBOARD_ID));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        leaderboardDefKey = getLeadboardDefKey(getArguments());
         this.userProfileCacheListener = createUserProfileListener();
     }
 
@@ -104,14 +118,14 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
-        bundle.putInt(BUNDLE_KEY_LEADERBOARD_ID, dto.id);
         bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
         bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
 
         switch (dto.id)
         {
             case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
-                getNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, bundle);
+                FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
+                getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, bundle);
                 break;
             case LeaderboardDefDTO.LEADERBOARD_HERO_ID :
                 pushHeroFragment();
@@ -121,7 +135,8 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
                 break;
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s",bundle);
-                getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
+                getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }

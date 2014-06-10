@@ -372,8 +372,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 providerId.getArgs());
         args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_COMPETITION_ID,
                 competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
-        args.putInt(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID,
-                leaderboardDefDTO.id);
+        CompetitionLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE,
                 competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,

@@ -63,7 +63,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     @Override protected PerPagedLeaderboardKey getInitialLeaderboardKey()
     {
-        return new PerPagedLeaderboardKey(leaderboardId, null, null);
+        return new PerPagedLeaderboardKey(leaderboardDefKey.key, null, null);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -91,7 +91,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     @Override protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_competition_mode);
+                getActivity(), getActivity().getLayoutInflater(), leaderboardDefKey.key, R.layout.lbmu_item_competition_mode);
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
