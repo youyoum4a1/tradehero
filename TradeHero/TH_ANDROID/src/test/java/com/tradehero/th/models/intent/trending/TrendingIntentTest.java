@@ -1,6 +1,6 @@
 package com.tradehero.th.models.intent.trending;
 
-import com.tradehero.TestConstants;
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
@@ -10,13 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.MANIFEST_PATH)
+@RunWith(RobolectricMavenTestRunner.class)
 public class TrendingIntentTest
 {
     @Before public void setUp()

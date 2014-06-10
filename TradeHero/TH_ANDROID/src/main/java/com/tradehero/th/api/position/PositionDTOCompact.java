@@ -5,6 +5,7 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class PositionDTOCompact extends ExtendedDTO
 {
@@ -61,7 +62,7 @@ public class PositionDTOCompact extends ExtendedDTO
         return new PositionCompactId(id);
     }
 
-    @JsonIgnore
+    @JsonIgnore @NotNull
     public String getNiceCurrency()
     {
         if (currencyDisplay != null && !currencyDisplay.isEmpty())

@@ -1,19 +1,26 @@
 package com.tradehero.th.api.security;
 
-import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
-import com.tradehero.th.api.security.key.*;
+import com.tradehero.th.api.security.key.SearchSecurityListType;
+import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.security.key.SecurityListTypeFactory;
+import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
+import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
+import com.tradehero.th.api.security.key.TrendingSecurityListType;
+import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class SecurityListTypeFactoryTest
 {

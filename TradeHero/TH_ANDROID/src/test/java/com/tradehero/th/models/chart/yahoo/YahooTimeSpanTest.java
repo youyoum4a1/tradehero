@@ -1,17 +1,15 @@
 package com.tradehero.th.models.chart.yahoo;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = Config.NONE)
+@RunWith(RobolectricMavenTestRunner.class)
 public class YahooTimeSpanTest
 {
     @Before
