@@ -522,9 +522,15 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     @Override public void onPause()
     {
         super.onPause();
-        InputMethodManager inputMethodManager;
-        inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        try
+        {
+            InputMethodManager inputMethodManager;
+            inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e)
+        {
+            Timber.d("SocialFriendsFragment onPause Error" + e.toString());
+        }
     }
 
     @Override
