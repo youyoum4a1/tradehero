@@ -6,6 +6,7 @@ import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import dagger.Lazy;
@@ -67,7 +68,7 @@ import javax.inject.Singleton;
             {
                 timePeriodKeys.add(key);
             }
-            else if (leaderboardDefDTO.id == LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID)
+            else if (leaderboardDefDTO.id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID)
             {
                 mostSkilledKeys.add(key);
             }

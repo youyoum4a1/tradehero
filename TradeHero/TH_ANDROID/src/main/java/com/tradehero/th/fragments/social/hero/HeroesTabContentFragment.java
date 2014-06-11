@@ -17,6 +17,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -359,7 +360,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         //getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
 
         LeaderboardDefKey key =
-                new LeaderboardDefKey(LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
+                new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
         LeaderboardDefDTO dto = leaderboardDefCache.get().get(key);
         Bundle bundle = new Bundle(getArguments());
         if (dto != null)
@@ -370,7 +371,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         }
         else
         {
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID));
+            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID));
             bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_leaderboards));
         }
         getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
