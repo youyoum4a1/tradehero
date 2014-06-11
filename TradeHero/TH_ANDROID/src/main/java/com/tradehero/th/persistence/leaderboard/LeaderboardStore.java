@@ -6,7 +6,7 @@ import com.tradehero.common.persistence.LeaderboardQuery;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;

@@ -3,7 +3,7 @@ package com.tradehero.th.api.leaderboard;
 import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 
 public class SectorContainerLeaderboardDefDTO extends DrillDownLeaderboardDefDTO
 {

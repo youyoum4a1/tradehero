@@ -10,7 +10,8 @@ import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -24,7 +25,7 @@ public class AbstractLeaderboardDefView extends RelativeLayout
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge;
+    @Inject protected LeaderboardDefDTOKnowledge leaderboardDefDTOKnowledge;
 
     @InjectView(R.id.leaderboard_def_item_name) TextView leaderboardDefName;
     @InjectView(R.id.leaderboard_def_item_icon) ImageView leaderboardDefIcon;
@@ -104,7 +105,7 @@ public class AbstractLeaderboardDefView extends RelativeLayout
     {
         leaderboardDefName.setText(dto.name);
 
-        int leaderboardDefIconResourceId = leaderboardDefKeyKnowledge.getLeaderboardDefIcon(dto.getLeaderboardDefKey());
+        int leaderboardDefIconResourceId = leaderboardDefDTOKnowledge.getLeaderboardDefIcon(dto);
         if (leaderboardDefIconResourceId != 0)
         {
             leaderboardDefIcon.setImageResource(leaderboardDefIconResourceId);
