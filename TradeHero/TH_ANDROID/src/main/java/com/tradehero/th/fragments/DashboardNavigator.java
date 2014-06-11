@@ -348,11 +348,7 @@ public class DashboardNavigator extends Navigator
 
         if (!isBackStackEmpty())
         {
-            manager.executePendingTransactions();
-            if (mTabHost != null)
-            {
-                updateTabBarOnNavigate(null);
-            }
+            executePending(null);
         }
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
     }

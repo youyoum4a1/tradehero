@@ -64,7 +64,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject SecurityCompactCache securityCompactCache;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
+    @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
@@ -149,14 +149,14 @@ public class WatchlistEditFragment extends DashboardFragment
                 detachMiddleCallbackUpdate();
                 if (existingWatchlistPosition != null)
                 {
-                    middleCallbackUpdate = watchlistServiceWrapper.get().updateWatchlistEntry(
+                    middleCallbackUpdate = watchlistServiceWrapper.updateWatchlistEntry(
                             existingWatchlistPosition.getPositionCompactId(),
                             watchPositionItemForm,
                             createWatchlistUpdateCallback());
                 }
                 else
                 {
-                    middleCallbackUpdate = watchlistServiceWrapper.get().createWatchlistEntry(
+                    middleCallbackUpdate = watchlistServiceWrapper.createWatchlistEntry(
                             watchPositionItemForm,
                             createWatchlistUpdateCallback());
                 }
@@ -211,7 +211,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             showProgressBar();
             detachMiddleCallbackDelete();
-            middleCallbackDelete = watchlistServiceWrapper.get().deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), createWatchlistDeleteCallback());
+            middleCallbackDelete = watchlistServiceWrapper.deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), createWatchlistDeleteCallback());
         }
         else
         {
