@@ -4,8 +4,13 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.leaderboard.CountryCodeList;
 import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTOList;
+import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import java.util.Date;
 
@@ -43,6 +48,27 @@ public class LeaderboardDefDTO extends ExtendedDTO
     public LeaderboardDefKey getLeaderboardDefKey()
     {
         return new LeaderboardDefKey(id);
+    }
+
+    public LeaderboardDefListKey getLeaderboardDefListKey()
+    {
+        if (exchangeRestrictions)
+        {
+            return new ExchangeLeaderboardDefListKey();
+        }
+        if (sectorRestrictions)
+        {
+            return new SectorLeaderboardDefListKey();
+        }
+        if (isTimeRestrictedLeaderboard())
+        {
+            return new TimePeriodLeaderboardDefListKey();
+        }
+        if (id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID)
+        {
+            return new MostSkilledLeaderboardDefListKey();
+        }
+        throw new IllegalStateException("Unhandled situation " + this);
     }
 
     public boolean isTimeRestrictedLeaderboard()

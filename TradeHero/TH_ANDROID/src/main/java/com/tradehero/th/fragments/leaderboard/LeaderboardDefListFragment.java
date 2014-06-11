@@ -16,6 +16,7 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import dagger.Lazy;
@@ -26,6 +27,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 {
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject protected LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
     protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTask;
 
     private LeaderboardDefListAdapter leaderboardDefListAdapter;
@@ -100,7 +102,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     {
         detachLeaderboardDefListCacheFetchTask();
         leaderboardDefListCacheFetchTask  = leaderboardDefListCache.get().getOrFetch(
-                new LeaderboardDefListKey(bundle),
+                leaderboardDefListKeyFactory.create(bundle),
                 createLeaderboardDefKeyListListener());
         leaderboardDefListCacheFetchTask.execute();
     }

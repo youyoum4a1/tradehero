@@ -1,10 +1,13 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
+import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
+import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 import javax.inject.Inject;
 
-class MainLeaderboardDefListKeyFactory extends LeaderboardDefListKeyFactory
+class MainLeaderboardDefListKeyFactory
 {
     //<editor-fold desc="Constructors">
     @Inject public MainLeaderboardDefListKeyFactory()
@@ -20,13 +23,13 @@ class MainLeaderboardDefListKeyFactory extends LeaderboardDefListKeyFactory
             case Competition:
                 return null;
             case Connected:
-                return createConnected();
+                return new ConnectedLeaderboardDefListKey();
             case SkillAndCountry:
-                return createMostSkilled();
+                return new MostSkilledLeaderboardDefListKey();
             case TimeRestricted:
-                return createTimePeriod();
+                return new TimePeriodLeaderboardDefListKey();
             case DrillDown:
-                return createDrillDown();
+                return new DrillDownLeaderboardDefListKey();
 
             default:
                 throw new IllegalArgumentException("Unhandled LeaderboardCommunityType." + leaderboardCommunityType);

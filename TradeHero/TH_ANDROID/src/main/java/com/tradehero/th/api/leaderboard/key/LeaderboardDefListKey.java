@@ -5,7 +5,7 @@ import com.tradehero.common.persistence.AbstractStringDTOKey;
 
 public class LeaderboardDefListKey extends AbstractStringDTOKey
 {
-    private static final String BUNDLE_KEY_KEY = LeaderboardDefKey.class.getName() + ".key";
+    static final String BUNDLE_KEY_KEY = LeaderboardDefKey.class.getName() + ".key";
 
     private static final String ALL = "all";
 

@@ -22,13 +22,14 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.leaderboard.SectorLeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.ExchangeLeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
+import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
+import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -66,7 +67,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject LocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
-    @Inject LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -374,11 +374,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             DrillDownLeaderboardDefDTO drillDownLeaderboardDefDTO = (DrillDownLeaderboardDefDTO) leaderboardDefDTO;
             localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
-            if (drillDownLeaderboardDefDTO instanceof SectorLeaderboardDefDTO)
+            if (drillDownLeaderboardDefDTO instanceof SectorContainerLeaderboardDefDTO)
             {
                 pushLeaderboardDefSector();
             }
-            else if (drillDownLeaderboardDefDTO instanceof ExchangeLeaderboardDefDTO)
+            else if (drillDownLeaderboardDefDTO instanceof ExchangeContainerLeaderboardDefDTO)
             {
                 pushLeaderboardDefExchange();
             }
@@ -403,7 +403,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             OwnedPortfolioId associatedPortfolioId =
                     new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
             MainCompetitionFragment.putApplicablePortfolioId(args, associatedPortfolioId);
-            getNavigator().pushFragment(MainCompetitionFragment.class, args);
+            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -414,7 +414,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
-            webFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
@@ -422,24 +422,24 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void pushLeaderboardDefSector()
     {
         Bundle bundle = new Bundle(getArguments());
-        (leaderboardDefListKeyFactory.createSector()).putParameters(bundle);
+        (new SectorLeaderboardDefListKey()).putParameters(bundle);
         bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_sector));
-        getNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
+        getDashboardNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
     }
 
     private void pushLeaderboardDefExchange()
     {
         Bundle bundle = new Bundle(getArguments());
-        (leaderboardDefListKeyFactory.createExchange()).putParameters(bundle);
+        (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
         bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
-        getNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
+        getDashboardNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
     }
 
     private void pushSearchFragment()
     {
         Bundle args = new Bundle();
         args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.PEOPLE.name());
-        getNavigator().pushFragment(SearchStockPeopleFragment.class, args);
+        getDashboardNavigator().pushFragment(SearchStockPeopleFragment.class, args);
     }
 
     private void pushInvitationFragment()
