@@ -8,7 +8,6 @@ import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -18,12 +17,12 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class LeaderboardCompetitionView extends ImageView
-        implements DTOView<ProviderId>
+        implements DTOView<CommunityPageDTO>
 {
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<ProviderCache> providerCache;
     @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
-    private ProviderId providerId;
+    private CommunityPageDTO communityPageDTO;
     private ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
@@ -57,12 +56,12 @@ public class LeaderboardCompetitionView extends ImageView
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(ProviderId dto)
+    @Override public void display(CommunityPageDTO dto)
     {
-        this.providerId = dto;
-        if (providerId != null)
+        this.communityPageDTO = dto;
+        if (communityPageDTO != null)
         {
-            providerDTO = providerCache.get().get(providerId);
+            providerDTO = providerCache.get().get(((ProviderCommunityPageDTO) communityPageDTO).providerId);
             if (providerDTO != null)
             {
                 linkWith(providerDTO, true);

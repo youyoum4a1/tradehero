@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard.main;
+package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -9,47 +9,42 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class LeaderboardDefView extends RelativeLayout implements DTOView<LeaderboardDefKey>
+public class AbstractLeaderboardDefView extends RelativeLayout
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
 
     @InjectView(R.id.leaderboard_def_item_name) TextView leaderboardDefName;
     @InjectView(R.id.leaderboard_def_item_icon) ImageView leaderboardDefIcon;
     @InjectView(R.id.leaderboard_def_item_user_rank) TextView leaderboardDefUserRank;
     @InjectView(R.id.leaderboard_def_item_desc) TextView leaderboardDefDesc;
 
-    private LeaderboardDefDTO dto;
+    protected LeaderboardDefDTO dto;
 
     private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileRequestTask;
-    private LeaderboardDefKey leaderboardDefKey;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardDefView(Context context)
+    public AbstractLeaderboardDefView(Context context)
     {
         super(context);
     }
 
-    public LeaderboardDefView(Context context, AttributeSet attrs)
+    public AbstractLeaderboardDefView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public LeaderboardDefView(Context context, AttributeSet attrs, int defStyle)
+    public AbstractLeaderboardDefView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -85,7 +80,7 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
         userProfileRequestTask = null;
     }
 
-    private void linkWith(LeaderboardDefDTO dto, boolean andDisplay)
+    protected void linkWith(LeaderboardDefDTO dto, boolean andDisplay)
     {
         this.dto = dto;
         if (dto == null)
@@ -262,15 +257,6 @@ public class LeaderboardDefView extends RelativeLayout implements DTOView<Leader
 
             default:
                 return 0;
-        }
-    }
-
-    @Override public void display(LeaderboardDefKey dto)
-    {
-        this.leaderboardDefKey = dto;
-        if (leaderboardDefKey != null)
-        {
-            linkWith(leaderboardDefCache.get().get(leaderboardDefKey), true);
         }
     }
 }
