@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import com.baidu.frontia.api.FrontiaPushMessageReceiver;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -18,12 +17,14 @@ import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.DaggerUtils;
-import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.converter.ConversionException;
+import retrofit.converter.Converter;
+import retrofit.mime.TypedString;
 import timber.log.Timber;
 
 public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
@@ -33,7 +34,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
     @Inject CurrentUserId currentUserId;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject THNotificationBuilder thNotificationBuilder;
-    @Inject ObjectMapper objectMapper;
+    @Inject Converter converter;
 
     @Inject @BaiduPushDeviceIdentifierSentFlag BooleanPreference pushDeviceIdentifierSentFlag;
     @Inject @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier;
@@ -85,7 +86,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     private void showNotification(Context context, BaiduPushMessageDTO baiduPushMessageDTO)
     {
-        Notification notification = thNotificationBuilder.buildNotification(baiduPushMessageDTO.description, baiduPushMessageDTO.getId());
+        Notification notification = thNotificationBuilder.buildNotification(baiduPushMessageDTO.getDescription(), baiduPushMessageDTO.getId());
 
         if (notification != null)
         {
@@ -99,9 +100,10 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         BaiduPushMessageDTO baiduPushMessageDTO = null;
         try
         {
-            baiduPushMessageDTO = objectMapper.readValue(message, BaiduPushMessageDTO.class);
+            TypedString typedString = new TypedString(message);
+            baiduPushMessageDTO = (BaiduPushMessageDTO) converter.fromBody(typedString, BaiduPushMessageDTO.class);
         }
-        catch (IOException e)
+        catch (ConversionException e)
         {
             return;
         }
