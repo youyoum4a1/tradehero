@@ -79,10 +79,10 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         fetchCurrentUserProfile();
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachUserProfileCache();
-        super.onDestroyView();
+        super.onStop();
     }
 
     @Override public void onDestroy()
