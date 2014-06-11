@@ -2,11 +2,13 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -28,8 +30,11 @@ public class AbstractLeaderboardDefView extends RelativeLayout
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected LeaderboardDefDTOKnowledge leaderboardDefDTOKnowledge;
 
-    @InjectView(R.id.leaderboard_def_item_name) TextView leaderboardDefName;
+    @InjectView(R.id.leaderboard_def_item_icon_container) View leaderboardDefIconContainer;
     @InjectView(R.id.leaderboard_def_item_icon) ImageView leaderboardDefIcon;
+    @InjectView(R.id.leaderboard_def_item_icon_2) @Optional ImageView leaderboardDefIcon2;
+    @InjectView(R.id.leaderboard_def_item_icon_3) @Optional ImageView leaderboardDefIcon3;
+    @InjectView(R.id.leaderboard_def_item_name) TextView leaderboardDefName;
     @InjectView(R.id.leaderboard_def_item_user_rank) TextView leaderboardDefUserRank;
     @InjectView(R.id.leaderboard_def_item_desc) TextView leaderboardDefDesc;
 
@@ -106,16 +111,7 @@ public class AbstractLeaderboardDefView extends RelativeLayout
     {
         leaderboardDefName.setText(dto.name);
 
-        List<Integer> iconResIds = leaderboardDefDTOKnowledge.getLeaderboardDefIcon(dto);
-        if (iconResIds.size() > 0)
-        {
-            leaderboardDefIcon.setImageResource(iconResIds.get(0));
-            leaderboardDefIcon.setVisibility(VISIBLE);
-        }
-        else
-        {
-            leaderboardDefIcon.setVisibility(GONE);
-        }
+        displayIcon();
 
         if (dto.isExchangeRestricted() || dto.isSectorRestricted())
         {
@@ -134,6 +130,52 @@ public class AbstractLeaderboardDefView extends RelativeLayout
         }
 
         updateRankTitle();
+    }
+
+    protected void displayIcon()
+    {
+        List<Integer> iconResIds = leaderboardDefDTOKnowledge.getLeaderboardDefIcon(dto);
+        if (iconResIds.size() > 0)
+        {
+            try
+            {
+                leaderboardDefIconContainer.setVisibility(VISIBLE);
+                leaderboardDefIcon.setImageResource(iconResIds.get(0));
+                if (leaderboardDefIcon2 != null)
+                {
+                    if (iconResIds.size() > 1)
+                    {
+                        leaderboardDefIcon2.setVisibility(VISIBLE);
+                        leaderboardDefIcon2.setImageResource(iconResIds.get(1));
+                    }
+                    else
+                    {
+                        leaderboardDefIcon2.setVisibility(GONE);
+                    }
+                }
+
+                if (leaderboardDefIcon3 != null)
+                {
+                    if (iconResIds.size() > 2)
+                    {
+                        leaderboardDefIcon3.setVisibility(VISIBLE);
+                        leaderboardDefIcon3.setImageResource(iconResIds.get(2));
+                    }
+                    else
+                    {
+                        leaderboardDefIcon3.setVisibility(GONE);
+                    }
+                }
+            }
+            catch (OutOfMemoryError e)
+            {
+                leaderboardDefIconContainer.setVisibility(GONE);
+            }
+        }
+        else
+        {
+            leaderboardDefIconContainer.setVisibility(GONE);
+        }
     }
 
     private void updateRankTitle()
