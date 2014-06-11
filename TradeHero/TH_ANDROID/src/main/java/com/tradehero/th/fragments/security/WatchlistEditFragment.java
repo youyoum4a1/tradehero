@@ -35,6 +35,7 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -306,7 +307,7 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         if (securityTitle != null)
         {
-            securityTitle.setText(String.format("%s:%s", securityKeyId.exchange, securityKeyId.securitySymbol));
+            securityTitle.setText(SecurityUtils.getDisplayableSecurityName(securityKeyId));
         }
     }
 
