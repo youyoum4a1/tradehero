@@ -1,11 +1,10 @@
 package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTOList;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

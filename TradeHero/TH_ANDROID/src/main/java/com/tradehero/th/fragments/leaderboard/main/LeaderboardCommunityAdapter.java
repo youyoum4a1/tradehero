@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.DaggerUtils;

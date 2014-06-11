@@ -1,6 +1,7 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
+import com.tradehero.th.api.leaderboard.SectorLeaderboardDefDTO;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 

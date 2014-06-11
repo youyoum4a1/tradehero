@@ -1,10 +1,10 @@
 package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.leaderboard.ConnectedLeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.DrillDownLeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
+import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;

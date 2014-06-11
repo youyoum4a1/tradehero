@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.def;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;

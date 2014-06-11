@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
 import com.tradehero.th.R;
@@ -9,7 +9,7 @@ public class FollowerLeaderboardDefDTO extends ConnectedLeaderboardDefDTO
     public FollowerLeaderboardDefDTO(Context context)
     {
         super();
-        id = LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID;
+        id = LEADERBOARD_FOLLOWER_ID;
         name = context.getString(R.string.leaderboard_community_followers);
     }
     //</editor-fold>

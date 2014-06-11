@@ -1,7 +1,7 @@
-package com.tradehero.th.models.leaderboard;
+package com.tradehero.th.models.leaderboard.def;
 
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTOFactory;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTOList;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
 
