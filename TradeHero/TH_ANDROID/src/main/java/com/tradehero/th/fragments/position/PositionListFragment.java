@@ -45,6 +45,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -76,6 +77,7 @@ public class PositionListFragment
     @Inject UserProfileCache userProfileCache;
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
+    @Inject PortfolioCache portfolioCache;
 
     private PortfolioHeaderView portfolioHeaderView;
     @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
@@ -582,10 +584,14 @@ public class PositionListFragment
 
     private void displayHeaderView()
     {
-        if (this.portfolioHeaderView != null)
+        if (portfolioHeaderView != null && userProfileDTO != null)
         {
             Timber.d("displayHeaderView %s",portfolioHeaderView.getClass().getSimpleName());
-            this.portfolioHeaderView.linkWith(this.userProfileDTO);
+            portfolioHeaderView.linkWith(userProfileDTO);
+        }
+        if (getPositionsDTOKey instanceof OwnedPortfolioId)
+        {
+            portfolioHeaderView.linkWith(portfolioCache.get((OwnedPortfolioId)getPositionsDTOKey));
         }
     }
 

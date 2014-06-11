@@ -361,7 +361,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         if (mLeaderboardUserDTO != null && mLeaderboardUserDTO.displayName != null)
         {
-            if (tradeCountTv != null)
+            if (tradeCountTv != null && mLeaderboardUserDTO.avgNumberOfTradesPerMonth != null)
             {
                 tradeCountTv.setEndValue(
                         mLeaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue());

@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -32,6 +33,8 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
@@ -81,7 +84,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener(); }
+        this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -107,19 +111,18 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onResume();
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Community);
-        loadData();
 
         // We came back into view so we have to forget the web fragment
         detachWebFragment();
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachLeaderboardDefListCacheFetchTask();
         detachProviderListFetchTask();
         currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
         leaderboardDefListView.setOnItemClickListener(null);
-        super.onDestroyView();
+        super.onStop();
     }
 
     @Override public void onDestroy()
@@ -190,6 +193,20 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     }
 
     //<editor-fold desc="Data Fetching">
+    @Override protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    {
+        return new LeaderboardCommunityUserProfileCacheListener();
+    }
+
+    protected class LeaderboardCommunityUserProfileCacheListener extends BaseLeaderboardFragmentProfileCacheListener
+    {
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        {
+            super.onDTOReceived(key, value);
+            loadLeaderboardData();
+        }
+    }
+
     private void detachLeaderboardDefListCacheFetchTask()
     {
         if (leaderboardDefListFetchTask != null)
@@ -208,7 +225,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         providerListFetchTask = null;
     }
 
-    private void loadData()
+    private void loadLeaderboardData()
     {
         // get the data
         fetchLeaderboardDefList();
@@ -343,7 +360,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
         prepareAdapter();
-        leaderboardDefListAdapter.addAll(communityPageDTOFactory.collectFromCaches());
+        leaderboardDefListAdapter.addAll(communityPageDTOFactory.collectFromCaches(currentUserProfileDTO.countryCode));
         leaderboardDefListAdapter.notifyDataSetChanged();
     }
 
@@ -363,7 +380,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             //if error view is click it means to reload the data
             communityScreen.setDisplayedChildByLayoutId(R.id.progress);
-            loadData();
+            loadLeaderboardData();
         }
     }
 

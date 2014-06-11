@@ -18,6 +18,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -105,10 +106,11 @@ public class AbstractLeaderboardDefView extends RelativeLayout
     {
         leaderboardDefName.setText(dto.name);
 
-        int leaderboardDefIconResourceId = leaderboardDefDTOKnowledge.getLeaderboardDefIcon(dto);
-        if (leaderboardDefIconResourceId != 0)
+        List<Integer> iconResIds = leaderboardDefDTOKnowledge.getLeaderboardDefIcon(dto);
+        if (iconResIds.size() > 0)
         {
-            leaderboardDefIcon.setImageResource(leaderboardDefIconResourceId);
+            leaderboardDefIcon.setImageResource(iconResIds.get(0));
+            leaderboardDefIcon.setVisibility(VISIBLE);
         }
         else
         {
@@ -118,6 +120,7 @@ public class AbstractLeaderboardDefView extends RelativeLayout
         if (dto.isExchangeRestricted() || dto.isSectorRestricted())
         {
             leaderboardDefDesc.setText(dto.desc);
+            leaderboardDefDesc.setVisibility(VISIBLE);
         }
         else
         {
@@ -142,7 +145,8 @@ public class AbstractLeaderboardDefView extends RelativeLayout
             if (dto.id > 0)
             {
                 leaderboardDefUserRank.setText(getContext().getString(R.string.leaderboard_not_ranked));
-            }else
+            }
+            else
             {
                 leaderboardDefUserRank.setText("");
             }
