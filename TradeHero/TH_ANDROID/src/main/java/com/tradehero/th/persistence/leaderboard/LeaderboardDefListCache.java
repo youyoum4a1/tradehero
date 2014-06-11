@@ -28,6 +28,10 @@ import javax.inject.Singleton;
 
     @Override protected LeaderboardDefKeyList fetch(LeaderboardDefListKey listKey) throws Throwable
     {
+        if (!listKey.equals(new LeaderboardDefListKey()))
+        {
+            throw new IllegalArgumentException("Unhandled key " + listKey);
+        }
         List<LeaderboardDefDTO> leaderboardDefinitions = leaderboardServiceWrapper.get().getLeaderboardDefinitions();
         if (leaderboardDefinitions != null)
         {

@@ -7,16 +7,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class LeaderboardCommunityAdapter extends ArrayAdapter<CommunityPageDTO>
         implements StickyListHeadersAdapter
 {
-    @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory;
 
     private final int competitionCompactViewResourceId;

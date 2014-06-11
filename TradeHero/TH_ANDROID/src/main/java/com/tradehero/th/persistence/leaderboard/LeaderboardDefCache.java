@@ -22,12 +22,10 @@ import javax.inject.Singleton;
 
     @Override protected LeaderboardDefDTO fetch(LeaderboardDefKey key) throws Throwable
     {
-        // if leaderboardDef is not in the cache, request for all lbdef again to refresh the cache
-        // TODO leaderboardDefListCache.get().fetch(key);
-        return get(key);
+        throw new IllegalStateException("Cannot fetch on this cache");
     }
 
-    public LeaderboardDefDTOList getOrFetch(List<LeaderboardDefKey> keys) throws Throwable
+    public LeaderboardDefDTOList get(List<LeaderboardDefKey> keys) throws Throwable
     {
         if (keys == null)
         {
@@ -37,7 +35,7 @@ import javax.inject.Singleton;
         LeaderboardDefDTOList ret = new LeaderboardDefDTOList();
         for (LeaderboardDefKey key: keys)
         {
-            ret.add(getOrFetch(key, false));
+            ret.add(get(key));
         }
         return ret;
     }

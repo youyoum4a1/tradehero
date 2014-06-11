@@ -31,7 +31,7 @@ class CommunityPageDTOFactory
                 try
                 {
                     collected.addAllLeaderboardDefDTO(
-                            leaderboardDefCache.getOrFetch(
+                            leaderboardDefCache.get(
                                     leaderboardDefListCache.get(type.getKey())));
                 }
                 catch (Throwable throwable)
