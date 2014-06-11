@@ -18,6 +18,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -105,10 +106,10 @@ public class AbstractLeaderboardDefView extends RelativeLayout
     {
         leaderboardDefName.setText(dto.name);
 
-        int leaderboardDefIconResourceId = leaderboardDefDTOKnowledge.getLeaderboardDefIcon(dto);
-        if (leaderboardDefIconResourceId != 0)
+        List<Integer> iconResIds = leaderboardDefDTOKnowledge.getLeaderboardDefIcon(dto);
+        if (iconResIds.size() > 0)
         {
-            leaderboardDefIcon.setImageResource(leaderboardDefIconResourceId);
+            leaderboardDefIcon.setImageResource(iconResIds.get(0));
             leaderboardDefIcon.setVisibility(VISIBLE);
         }
         else

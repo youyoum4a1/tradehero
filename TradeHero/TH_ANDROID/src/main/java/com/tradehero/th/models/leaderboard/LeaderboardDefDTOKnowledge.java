@@ -3,6 +3,8 @@ package com.tradehero.th.models.leaderboard;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,29 +20,30 @@ public class LeaderboardDefDTOKnowledge
     }
     //</editor-fold>
 
-    public int getLeaderboardDefIcon(@NotNull LeaderboardDefDTO leaderboardDefDTO)
+    @NotNull
+    public List<Integer> getLeaderboardDefIcon(@NotNull LeaderboardDefDTO leaderboardDefDTO)
     {
+        List<Integer> iconResIds = new ArrayList<>();
         int byKey = leaderboardDefKeyKnowledge.getLeaderboardDefIcon(leaderboardDefDTO.getLeaderboardDefKey());
         if (byKey != 0)
         {
-            return byKey;
+            iconResIds.add(byKey);
         }
-        if (leaderboardDefDTO.countryCodes == null)
+        else if (leaderboardDefDTO.countryCodes != null)
         {
-            return 0;
-        }
-        Country fromCode;
-        for (String countryCode : leaderboardDefDTO.countryCodes)
-        {
-            try
+            Country fromCode;
+            for (String countryCode : leaderboardDefDTO.countryCodes)
             {
-                return Country.valueOf(countryCode).logoId;
-            }
-            catch (IllegalArgumentException e)
-            {
-                e.printStackTrace();
+                try
+                {
+                    iconResIds.add(Country.valueOf(countryCode).logoId);
+                }
+                catch (IllegalArgumentException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
-        return 0;
+        return iconResIds;
     }
 }
