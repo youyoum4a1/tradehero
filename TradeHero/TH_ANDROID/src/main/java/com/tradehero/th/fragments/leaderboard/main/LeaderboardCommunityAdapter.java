@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.tradehero.th.fragments.leaderboard.main;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,9 +7,8 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.fragments.competition.LeaderboardCompetitionView;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -24,7 +23,7 @@ import timber.log.Timber;
 public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
         implements StickyListHeadersAdapter
 {
-    private Map<LeaderboardCommunityType, List<LeaderboardDefKey>> items = new HashMap<>();
+    private Map<LeaderboardCommunityType, LeaderboardDefKeyList> items = new HashMap<>();
     private List<ProviderId> providerDTOs = new ArrayList<>();
 
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
@@ -49,7 +48,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
     @Override public void notifyDataSetChanged()
     {
-        Map<LeaderboardCommunityType, List<LeaderboardDefKey>> typeMap = new HashMap<>();
+        Map<LeaderboardCommunityType, LeaderboardDefKeyList> typeMap = new HashMap<>();
 
         for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
         {
@@ -61,7 +60,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             }
             else
             {
-                typeMap.put(type, new ArrayList<LeaderboardDefKey>());
+                typeMap.put(type, new LeaderboardDefKeyList());
             }
         }
 
@@ -183,7 +182,6 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
 
     @Override public long getHeaderId(int position)
     {
-
         return getItemViewType(position);
     }
     //</editor-fold>

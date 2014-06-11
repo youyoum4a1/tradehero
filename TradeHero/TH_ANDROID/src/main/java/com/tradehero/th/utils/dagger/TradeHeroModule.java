@@ -45,9 +45,9 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItem
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFriendsItemView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListAdapter;

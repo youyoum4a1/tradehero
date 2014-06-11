@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.tradehero.th.fragments.leaderboard.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,6 +32,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;

@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.dashboard;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
