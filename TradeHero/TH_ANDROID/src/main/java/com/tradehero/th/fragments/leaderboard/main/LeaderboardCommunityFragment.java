@@ -28,6 +28,7 @@ import com.tradehero.th.api.leaderboard.def.ExchangeLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -65,6 +66,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject LocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
+    @Inject LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -420,7 +422,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void pushLeaderboardDefSector()
     {
         Bundle bundle = new Bundle(getArguments());
-        (LeaderboardDefListKey.getSector()).putParameters(bundle);
+        (leaderboardDefListKeyFactory.createSector()).putParameters(bundle);
         bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_sector));
         getNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
     }
@@ -428,7 +430,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void pushLeaderboardDefExchange()
     {
         Bundle bundle = new Bundle(getArguments());
-        (LeaderboardDefListKey.getExchange()).putParameters(bundle);
+        (leaderboardDefListKeyFactory.createExchange()).putParameters(bundle);
         bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
         getNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
     }
