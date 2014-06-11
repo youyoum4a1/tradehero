@@ -38,8 +38,6 @@ public class WatchlistEditFragmentTest
     private static final String GOOGLE_NAME = "Google Inc";
     private static final Double GOOGLE_STOCK_WATCHING_PRICE = 554.51;
     private static final Integer GOOGLE_STOCK_WATCHING_QUANTITY = 1;
-    private static final String GOOGLE_LOGO_URL =
-            "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/tradeherocompanypictures/162075.pass%2399.1.Google%20Inc.9918673.jpg.THCROPSIZED.jpg";
 
     private WatchlistEditFragment watchlistFragment;
     private DashboardNavigator dashboardNavigator;
@@ -54,7 +52,6 @@ public class WatchlistEditFragmentTest
         SecurityCompactDTO googleSecurityCompactDTO = new SecurityCompactDTO();
         googleSecurityCompactDTO.id = 162075;
         googleSecurityCompactDTO.name = GOOGLE_NAME;
-        googleSecurityCompactDTO.imageBlobUrl = GOOGLE_LOGO_URL;
         googleSecurityCompactDTO.lastPrice = GOOGLE_STOCK_WATCHING_PRICE;
 
         SecurityCompactCache securityCompactCache = spy(new SecurityCompactCache());
