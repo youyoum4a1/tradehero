@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="follow">Follow</string>
+  <string name="follow_all">Follow All</string>
   <string name="message">Message</string>
   <string name="upgrade_to_premium">Upgrade to Premium</string>
   <string name="following_premium">Following\n(Premium)</string>

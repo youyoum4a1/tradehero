@@ -7,11 +7,9 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.fragments.competition.LeaderboardCompetitionView;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -26,13 +24,10 @@ import timber.log.Timber;
 public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefKey, LeaderboardDefView>
         implements StickyListHeadersAdapter
 {
-    private static final int DEFINE_ROW_NUMBERS_OF_MOSTED_SKILLED_AND_FRIENDS = 2;
-
     private Map<LeaderboardCommunityType, List<LeaderboardDefKey>> items = new HashMap<>();
     private List<ProviderId> providerDTOs = new ArrayList<>();
 
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-    @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
 
     private final int competitionCompactViewResourceId;
 
@@ -70,64 +65,8 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             }
         }
 
-        putExtraItems(typeMap);
-
         items = typeMap;
         super.notifyDataSetChanged();
-    }
-
-    // hardcoded stuffs +__+
-    private void putExtraItems(Map<LeaderboardCommunityType, List<LeaderboardDefKey>> typeMap)
-    {
-        List<LeaderboardDefKey> heroAndFollower = typeMap.get(LeaderboardCommunityType.HeroAndFollower);
-        if (heroAndFollower != null && heroAndFollower.size() < 3)
-        {
-            LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
-            //add an entry 'myheros'
-            fakeDto = new LeaderboardDefDTO();
-            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_HERO_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_community_heros);
-
-            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            heroAndFollower.add(0, fakeDto.getLeaderboardDefKey());
-
-            //add an entry 'followers'
-            fakeDto = new LeaderboardDefDTO();
-            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_community_followers);
-
-            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            heroAndFollower.add(1, fakeDto.getLeaderboardDefKey());
-        }
-
-        List<LeaderboardDefKey> skillAndFriend = typeMap.get(LeaderboardCommunityType.SkillAndFriend);
-        if (skillAndFriend != null && skillAndFriend.size() < DEFINE_ROW_NUMBERS_OF_MOSTED_SKILLED_AND_FRIENDS)
-        {
-            LeaderboardDefDTO fakeDto = new LeaderboardDefDTO();
-            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_FRIEND_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_community_friends);
-            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            skillAndFriend.add(fakeDto.getLeaderboardDefKey());
-        }
-
-        List<LeaderboardDefKey> sectorAndExchange = typeMap.get(LeaderboardCommunityType.SectorAndExchange);
-
-        if (sectorAndExchange != null)
-        {
-            LeaderboardDefDTO fakeDto;
-
-            fakeDto = new LeaderboardDefDTO();
-            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_community_by_exchange);
-            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            sectorAndExchange.add(fakeDto.getLeaderboardDefKey());
-
-            fakeDto = new LeaderboardDefDTO();
-            fakeDto.id = LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID;
-            fakeDto.name = getContext().getString(R.string.leaderboard_community_by_sector);
-            leaderboardDefCache.get().put(fakeDto.getLeaderboardDefKey(), fakeDto);
-            sectorAndExchange.add(fakeDto.getLeaderboardDefKey());
-        }
     }
 
     @Override public int getCount()
@@ -257,26 +196,5 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefK
             convertView = (LeaderboardCompetitionView) inflater.inflate(competitionCompactViewResourceId, parent, false);
         }
         return convertView;
-    }
-
-    public static enum LeaderboardCommunityType
-    {
-        Competition(null), // for competition
-        HeroAndFollower(null), // for managing heroes & followers
-        SkillAndFriend(LeaderboardDefListKey.getMostSkilled()),
-        TimeRestricted(LeaderboardDefListKey.getTimePeriod()),
-        SectorAndExchange(null); // all fake :v
-
-        private final LeaderboardDefListKey key;
-
-        LeaderboardCommunityType(LeaderboardDefListKey leaderboardDefListKey)
-        {
-            this.key = leaderboardDefListKey;
-        }
-
-        public LeaderboardDefListKey getKey()
-        {
-            return key;
-        }
     }
 }

@@ -3,6 +3,7 @@
 
   <string name="invite">친구</string>
   <string name="invite_friends">친구 초대</string>
+  <string name="invite_all">모두 친구</string>
   <string name="invite_friend_refer_friend_empty_view">친구 목록이 없습니다. 페이스북, 트위터, LinkedIn 계정을 연결하여 친구를 초대하세요</string>
   <string name="invite_friend_send_invitations">초대하기</string>
   <string name="invite_friend_refer_friend_announcement">초대한 친구가 조인할때마다 트레이드히어로 게임머니를 받으세요</string>

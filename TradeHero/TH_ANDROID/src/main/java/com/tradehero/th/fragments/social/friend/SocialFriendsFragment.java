@@ -1,11 +1,13 @@
 package com.tradehero.th.fragments.social.friend;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
 import butterknife.ButterKnife;
@@ -35,10 +37,11 @@ import timber.log.Timber;
 /**
  * Created by wangliang on 14-5-26.
  */
-public abstract class SocialFriendsFragment extends DashboardFragment implements SocialFriendItemView.OnElementClickListener, View.OnClickListener {
+public abstract class SocialFriendsFragment extends DashboardFragment implements SocialFriendItemView.OnElementClickListener, View.OnClickListener
+{
 
     @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
-    @InjectView(R.id.search_social_friends)EditText searchEdit;
+    @InjectView(R.id.search_social_friends) EditText searchEdit;
     @Inject FriendsListCache friendsListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
@@ -50,7 +53,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     private SocialFriendsAdapter socialFriendsListAdapter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
@@ -66,28 +70,32 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View v = inflater.inflate(R.layout.fragment_social_friends, container, false);
-        ButterKnife.inject(this,v);
+        ButterKnife.inject(this, v);
         return v;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
         initView();
     }
 
     @Override
-    public void onInviteButtonClick(UserFriendsDTO userFriendsDTO) {
+    public void onInviteButtonClick(UserFriendsDTO userFriendsDTO)
+    {
         List<UserFriendsDTO> usersToInvite = Arrays.asList(userFriendsDTO);
         handleInviteUsers(usersToInvite);
         Timber.d("onInviteButtonClick %s", userFriendsDTO);
     }
 
     @Override
-    public void onFollowButtonClick(UserFriendsDTO userFriendsDTO) {
-        Timber.d("onFollowButtonClick %s",userFriendsDTO);
+    public void onFollowButtonClick(UserFriendsDTO userFriendsDTO)
+    {
+        Timber.d("onFollowButtonClick %s", userFriendsDTO);
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
         handleFollowUsers(usersToFollow);
     }
@@ -95,7 +103,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        socialFriendHandler.followFriends(usersToFollow,new FollowFriendCallback(usersToFollow));
+        socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
     }
 
     // TODO subclass like FaccbookSocialFriendsFragment should override this methos because the logic of inviting friends is finished on the client side
@@ -119,7 +127,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View v)
+    {
         if (v.getId() == R.id.social_invite_all)
         {
             List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
@@ -147,7 +156,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         if (friendDTOList != null)
         {
             List<UserFriendsDTO> list = new ArrayList<>();
-            for (UserFriendsDTO o:friendDTOList)
+            for (UserFriendsDTO o : friendDTOList)
             {
                 if (o.isTradeHeroUser())
                 {
@@ -164,7 +173,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         if (friendDTOList != null)
         {
             List<UserFriendsDTO> list = new ArrayList<>();
-            for (UserFriendsDTO o:friendDTOList)
+            for (UserFriendsDTO o : friendDTOList)
             {
                 if (!o.isTradeHeroUser())
                 {
@@ -190,9 +199,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
         if (friendsListKey == null)
         {
-            friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(),getSocialNetwork());
+            friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
         }
-        DTOCache.GetOrFetchTask fetchTask = friendsListCache.getOrFetch(friendsListKey,true,createFriendsFetchListener());
+        DTOCache.GetOrFetchTask fetchTask = friendsListCache.getOrFetch(friendsListKey, true, createFriendsFetchListener());
         fetchTask.execute();
         //fetchTask.getStatus();
     }
@@ -245,7 +254,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         int size = friendDTOList.size();
         boolean hasUserToFollow = false;
         boolean hasUserToInvite = false;
-        for (int i=0;i<size;i++)
+        for (int i = 0; i < size; i++)
         {
             if (hasUserToFollow && hasUserToInvite)
             {
@@ -273,10 +282,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
     }
 
-
     /**
      * Cannot invite Weibo friends, so hide 'invite all' and remove the one that cannot be invited.
-     * @return
      */
     protected boolean canInvite()
     {
@@ -285,7 +292,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     /**
      * Invite all friends of facebook is a bit of complex, so just hide 'invite all'.
-     * @return
      */
     protected boolean canInviteAll()
     {
@@ -327,7 +333,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     {
         ListView listView = friendsRootView.listView;
         return listView.getAdapter() != null && listView.getAdapter().getCount() > 0;
-
     }
 
     protected DTOCache.Listener<FriendsListKey, FriendDTOList> createFriendsFetchListener()
@@ -335,28 +340,34 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         return new FriendFetchListener();
     }
 
-    class SearchChangeListener implements TextWatcher {
+    class SearchChangeListener implements TextWatcher
+    {
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
+        }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
+        }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (socialFriendsListAdapter != null )
+        @Override
+        public void afterTextChanged(Editable s)
+        {
+            if (socialFriendsListAdapter != null)
+            {
+                if (s != null && s.toString().trim().length() > 0)
                 {
-                    if (s != null && s.toString().trim().length() > 0) {
-                        socialFriendsListAdapter.getFilter().filter(s.toString());
-                    } else {
-                        socialFriendsListAdapter.getFilter().filter(s.toString());
-                    }
+                    socialFriendsListAdapter.getFilter().filter(s.toString());
+                }
+                else
+                {
+                    socialFriendsListAdapter.getFilter().filter(s.toString());
                 }
             }
-
+        }
     }
 
     protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
@@ -383,12 +394,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     {
         if (friendDTOList != null && usersToFollow != null)
         {
-            for (UserFriendsDTO userFriendsDTO:usersToFollow)
+            for (UserFriendsDTO userFriendsDTO : usersToFollow)
             {
                 boolean removed = friendDTOList.remove(userFriendsDTO);
-                Timber.d("handleFollowSuccess remove: %s, result: %s",userFriendsDTO,removed);
+                Timber.d("handleFollowSuccess remove: %s, result: %s", userFriendsDTO, removed);
             }
-
         }
         socialFriendsListAdapter.clear();
         socialFriendsListAdapter.addAll(friendDTOList);
@@ -410,10 +420,10 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         THToast.show(R.string.invite_friend_request_error);
     }
 
-    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO> {
+    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
+    {
 
         List<UserFriendsDTO> usersToFollow;
-
 
         private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
         {
@@ -422,8 +432,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
 
         @Override
-        public void success(UserProfileDTO userProfileDTO, Response response) {
-            super.success(userProfileDTO,response);
+        public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            super.success(userProfileDTO, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)
             {
                 // TODO
@@ -434,16 +445,19 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
             super.failure(retrofitError);
             handleFollowError();
         }
-    };
+    }
 
-    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response> {
+    ;
+
+    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
+    {
 
         List<UserFriendsDTO> usersToInvite;
-
 
         private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
         {
@@ -452,8 +466,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
 
         @Override
-        public void success(Response data, Response response) {
-            super.success(data,response);
+        public void success(Response data, Response response)
+        {
+            super.success(data, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)
             {
                 handleInviteSuccess(usersToInvite);
@@ -463,11 +478,14 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
             super.failure(retrofitError);
             handleInviteError();
         }
-    };
+    }
+
+    ;
 
     class FriendFetchListener implements DTOCache.Listener<FriendsListKey, FriendDTOList>
     {
@@ -492,7 +510,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
             if (hasListData())
             {
                 //when already fetch the data,do not show error view
-               displayContentView();
+                displayContentView();
             }
             else
             {
@@ -501,8 +519,17 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
     }
 
+    @Override public void onPause()
+    {
+        super.onPause();
+        InputMethodManager inputMethodManager;
+        inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
     @Override
-    public boolean isTabBarVisible() {
+    public boolean isTabBarVisible()
+    {
         return false;
     }
 }

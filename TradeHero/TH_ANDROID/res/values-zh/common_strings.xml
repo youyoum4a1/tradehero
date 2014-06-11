@@ -15,10 +15,6 @@
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy年 MM月 dd日 kk:mm z</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm">MM月 dd日 HH:mm</string>
 
-  <!-- TEMP stuff -->
-  <string name="test_email">dev@tradehero.mobi</string>
-  <string name="test_password">asd123</string>
-
   <!-- Splash screen -->
   <string name="splash_copyright_2">新加坡总公司执照号 201003309N</string>
   <string name="splash_copyright_3">专利申请中</string>

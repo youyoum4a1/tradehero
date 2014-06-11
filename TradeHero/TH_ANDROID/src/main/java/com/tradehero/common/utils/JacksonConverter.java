@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 public class JacksonConverter implements Converter
 {
-    private static final String MIME_TYPE = "application/json; charset=UTF-8";
+    public static final String MIME_TYPE = "application/json; charset=UTF-8";
 
     private final ObjectMapper objectMapper;
 

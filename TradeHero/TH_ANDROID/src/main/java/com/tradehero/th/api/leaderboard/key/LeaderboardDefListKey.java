@@ -7,6 +7,8 @@ public class LeaderboardDefListKey extends AbstractStringDTOKey
 {
     private static final String BUNDLE_KEY_KEY = LeaderboardDefKey.class.getName() + ".key";
     private static final String ALL_LEADERBOARD_DEF = "ALL_LEADERBOARD_DEF";
+    private static final String CONNECTED_LEADERBOARD_DEF = "CONNECTED_LEADERBOARD_DEF";
+    private static final String DRILL_DOWN_LEADERBOARD_DEF = "DRILL_DOWN_LEADERBOARD_DEF";
     private static final String LEADERBOARD_DEF_COMMUNITY = "LEADERBOARD_DEF_COMMUNITY";
     private static final String ALL_LEADERBOARD_DEF_MOST_SKILLED = "ALL_LEADERBOARD_DEF_MOST_SKILLED";
     private static final String LEADERBOARD_DEF_SECTOR = "LEADERBOARD_DEF_SECTOR";
@@ -33,6 +35,16 @@ public class LeaderboardDefListKey extends AbstractStringDTOKey
     @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
+    }
+
+    public static LeaderboardDefListKey getConnected()
+    {
+        return new LeaderboardDefListKey(CONNECTED_LEADERBOARD_DEF);
+    }
+
+    public static LeaderboardDefListKey getDrillDown()
+    {
+        return new LeaderboardDefListKey(DRILL_DOWN_LEADERBOARD_DEF);
     }
 
     public static LeaderboardDefListKey getCommunity()

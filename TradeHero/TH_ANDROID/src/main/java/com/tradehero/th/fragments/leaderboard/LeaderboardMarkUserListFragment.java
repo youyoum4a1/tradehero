@@ -15,6 +15,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -48,7 +49,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     private TextView leaderboardMarkUserMarkingTime;
 
-    protected int leaderboardId;
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
     protected LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
 
@@ -60,7 +60,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
         currentLeaderboardKey = getInitialLeaderboardKey();
     }
 
@@ -73,12 +72,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         savedPreference = new PerPagedFilteredLeaderboardKeyPreference(
                 preferences,
-                PREFERENCE_KEY_PREFIX + leaderboardId,
-                LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardId).getFilterStringSet());
+                PREFERENCE_KEY_PREFIX + leaderboardDefKey,
+                LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardDefKey.key).getFilterStringSet());
         PerPagedFilteredLeaderboardKey initialKey = ((PerPagedFilteredLeaderboardKeyPreference) savedPreference)
                 .getPerPagedFilteredLeaderboardKey();
         // We override here to make sure we do not pick up key, page or perPage from the preference
-        return new PerPagedFilteredLeaderboardKey(initialKey, leaderboardId, null, null);
+        return new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, null);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -189,13 +188,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
-                leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+                leaderboardDefKey.key, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
     }
 
     protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
+                getActivity(), getActivity().getLayoutInflater(), leaderboardDefKey.key, R.layout.lbmu_item_roi_mode);
     }
 
     @Override public void onResume()
