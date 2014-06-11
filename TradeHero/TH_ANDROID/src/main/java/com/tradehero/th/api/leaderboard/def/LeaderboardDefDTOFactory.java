@@ -5,6 +5,7 @@ import com.tradehero.th.api.leaderboard.SectorLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
 import java.util.HashMap;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -12,11 +13,15 @@ import org.jetbrains.annotations.NotNull;
 public class LeaderboardDefDTOFactory
 {
     @NotNull private final Context context;
+    @NotNull private final LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
 
     //<editor-fold desc="Constructors">
-    @Inject public LeaderboardDefDTOFactory(@NotNull Context context)
+    @Inject public LeaderboardDefDTOFactory(
+            @NotNull Context context,
+            @NotNull LeaderboardDefListKeyFactory leaderboardDefListKeyFactory)
     {
         this.context = context;
+        this.leaderboardDefListKeyFactory = leaderboardDefListKeyFactory;
     }
     //</editor-fold>
 
@@ -73,12 +78,12 @@ public class LeaderboardDefDTOFactory
             }
         }
 
-        filed.put(LeaderboardDefListKey.getMostSkilled(), mostSkilledKeys);
-        filed.put(LeaderboardDefListKey.getExchange(), exchangeKeys);
-        filed.put(LeaderboardDefListKey.getSector(), sectorKeys);
-        filed.put(LeaderboardDefListKey.getTimePeriod(), timePeriodKeys);
-        filed.put(LeaderboardDefListKey.getConnected(), connectedKeys);
-        filed.put(LeaderboardDefListKey.getDrillDown(), drillDownKeys);
+        filed.put(leaderboardDefListKeyFactory.createMostSkilled(), mostSkilledKeys);
+        filed.put(leaderboardDefListKeyFactory.createExchange(), exchangeKeys);
+        filed.put(leaderboardDefListKeyFactory.createSector(), sectorKeys);
+        filed.put(leaderboardDefListKeyFactory.createTimePeriod(), timePeriodKeys);
+        filed.put(leaderboardDefListKeyFactory.createConnected(), connectedKeys);
+        filed.put(leaderboardDefListKeyFactory.createDrillDown(), drillDownKeys);
         filed.put(new LeaderboardDefListKey(), allKeys);
 
         return filed;

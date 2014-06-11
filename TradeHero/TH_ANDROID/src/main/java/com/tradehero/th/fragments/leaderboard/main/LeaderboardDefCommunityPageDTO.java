@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.leaderboard.main;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import org.jetbrains.annotations.NotNull;
 
-public class LeaderboardDefCommunityPageDTO implements CommunityPageDTO
+class LeaderboardDefCommunityPageDTO implements CommunityPageDTO
 {
     @NotNull
     public final LeaderboardDefDTO leaderboardDefDTO;
