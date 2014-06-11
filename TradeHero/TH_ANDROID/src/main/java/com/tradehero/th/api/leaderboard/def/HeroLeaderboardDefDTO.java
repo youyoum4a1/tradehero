@@ -1,7 +1,8 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
 
 public class HeroLeaderboardDefDTO extends ConnectedLeaderboardDefDTO
 {
@@ -9,7 +10,7 @@ public class HeroLeaderboardDefDTO extends ConnectedLeaderboardDefDTO
     public HeroLeaderboardDefDTO(Context context)
     {
         super();
-        id = LeaderboardDefDTO.LEADERBOARD_HERO_ID;
+        id = LeaderboardDefKeyKnowledge.HERO_ID;
         name = context.getString(R.string.leaderboard_community_heros);
     }
     //</editor-fold>

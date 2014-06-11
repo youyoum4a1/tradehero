@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.tradehero.th.fragments.leaderboard.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +13,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
-import com.squareup.picasso.Picasso;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -23,15 +22,19 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefKeyList;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.SectorLeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.ExchangeLeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -42,12 +45,12 @@ import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -55,14 +58,13 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     implements WithTutorial,View.OnClickListener
 {
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-    @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject Lazy<ProviderListCache> providerListCache;
     @Inject Lazy<ProviderCache> providerCache;
-    @Inject Picasso picasso;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject LocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject CommunityPageDTOFactory communityPageDTOFactory;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -180,8 +182,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
                 getActivity(),
-                getActivity().getLayoutInflater(),
-                R.layout.leaderboard_definition_item_view,
+                R.layout.leaderboard_definition_item_view_community,
                 R.layout.leaderboard_competition_item_view);
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
     }
@@ -216,7 +217,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         detachLeaderboardDefListCacheFetchTask();
         leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
-                LeaderboardDefListKey.getCommunity(), createDefKeyListListener());
+                new LeaderboardDefListKey(), createDefKeyListListener());
         leaderboardDefListFetchTask.execute();
     }
 
@@ -277,38 +278,27 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
         {
             Object item = adapterView.getItemAtPosition(position);
-            if (item instanceof LeaderboardDefKey)
+            if (item instanceof LeaderboardDefCommunityPageDTO)
             {
-                LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
-                if (dto != null)
-                {
-                    switch (dto.id)
-                    {
-                        case LeaderboardDefDTO.LEADERBOARD_DEF_SECTOR_ID:
-                            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
-                            pushLeaderboardDefSector();
-                            break;
-                        case LeaderboardDefDTO.LEADERBOARD_DEF_EXCHANGE_ID:
-                            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
-                            pushLeaderboardDefExchange();
-                            break;
-                        default:
-                            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
-                            pushLeaderboardListViewFragment(dto);
-                            break;
-                    }
-                }
+                handleLeaderboardItemClicked(((LeaderboardDefCommunityPageDTO) item).leaderboardDefDTO);
             }
-            if (item instanceof ProviderId)
+            else if (item instanceof ProviderCommunityPageDTO)
             {
-                handleCompetitionItemClicked(providerCache.get().get((ProviderId) item));
+                handleCompetitionItemClicked(providerCache.get().get(((ProviderCommunityPageDTO) item).providerId));
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled item type " + item);
             }
         }
     }
 
-    private void displayCompetitionProviders(List<ProviderId> providerIds)
+    private void displayCompetitionProviders(@NotNull List<ProviderId> providerIds)
     {
-        leaderboardDefListAdapter.setCompetitionItems(providerIds);
+        for (ProviderId providerId : providerIds)
+        {
+            leaderboardDefListAdapter.insert(new ProviderCommunityPageDTO(providerId), 0);
+        }
     }
 
     @Override public int getTutorialLayout()
@@ -350,6 +340,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void handleLeaderboardDefKeyListReceived()
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
+        prepareAdapter();
+        leaderboardDefListAdapter.addAll(communityPageDTOFactory.collectFromCaches());
         leaderboardDefListAdapter.notifyDataSetChanged();
     }
 
@@ -374,6 +366,32 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     }
 
     //<editor-fold desc="Navigation">
+    private void handleLeaderboardItemClicked(@NotNull LeaderboardDefDTO leaderboardDefDTO)
+    {
+        if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
+        {
+            DrillDownLeaderboardDefDTO drillDownLeaderboardDefDTO = (DrillDownLeaderboardDefDTO) leaderboardDefDTO;
+            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
+            if (drillDownLeaderboardDefDTO instanceof SectorLeaderboardDefDTO)
+            {
+                pushLeaderboardDefSector();
+            }
+            else if (drillDownLeaderboardDefDTO instanceof ExchangeLeaderboardDefDTO)
+            {
+                pushLeaderboardDefExchange();
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled drillDownLeaderboardDefDTO " + drillDownLeaderboardDefDTO);
+            }
+        }
+        else
+        {
+            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
+            pushLeaderboardListViewFragment(leaderboardDefDTO);
+        }
+    }
+
     private void handleCompetitionItemClicked(ProviderDTO providerDTO)
     {
         if (providerDTO != null && providerDTO.isUserEnrolled)

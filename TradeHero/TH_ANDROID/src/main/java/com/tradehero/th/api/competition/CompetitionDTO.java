@@ -2,7 +2,7 @@ package com.tradehero.th.api.competition;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 
 public class CompetitionDTO implements DTO
 {

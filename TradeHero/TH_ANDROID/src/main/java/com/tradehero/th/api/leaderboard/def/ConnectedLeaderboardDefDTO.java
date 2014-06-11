@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.def;
 
 public class ConnectedLeaderboardDefDTO extends LeaderboardDefDTO
 {

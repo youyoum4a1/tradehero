@@ -36,9 +36,6 @@ public class LeaderboardDefListKeyTest
 
         assertTrue(LeaderboardDefListKey.getTimePeriod().equals(LeaderboardDefListKey.getTimePeriod()));
         assertEquals(LeaderboardDefListKey.getTimePeriod(), LeaderboardDefListKey.getTimePeriod());
-
-        assertTrue(LeaderboardDefListKey.getCommunity().equals(LeaderboardDefListKey.getCommunity()));
-        assertEquals(LeaderboardDefListKey.getCommunity(), LeaderboardDefListKey.getCommunity());
     }
 
     @Test public void testNotEqualsOthers()
@@ -49,8 +46,6 @@ public class LeaderboardDefListKeyTest
 
         assertFalse(LeaderboardDefListKey.getExchange().equals(LeaderboardDefListKey.getTimePeriod()));
 
-        assertFalse(LeaderboardDefListKey.getTimePeriod().equals(LeaderboardDefListKey.getCommunity()));
-
-        assertFalse(LeaderboardDefListKey.getCommunity().equals(LeaderboardDefListKey.getMostSkilled()));
+        assertFalse(LeaderboardDefListKey.getTimePeriod().equals(LeaderboardDefListKey.getExchange()));
     }
 }

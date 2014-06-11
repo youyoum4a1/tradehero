@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.def;
 
 import com.android.internal.util.Predicate;
 import java.util.ArrayList;

@@ -7,8 +7,9 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -123,14 +124,14 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
         switch (dto.id)
         {
-            case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
+            case LeaderboardDefKeyKnowledge.FRIEND_ID:
                 FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
                 getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, bundle);
                 break;
-            case LeaderboardDefDTO.LEADERBOARD_HERO_ID :
+            case LeaderboardDefKeyKnowledge.HERO_ID:
                 pushHeroFragment();
                 break;
-            case LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID :
+            case LeaderboardDefKeyKnowledge.FOLLOWER_ID:
                 pushFollowerFragment();
                 break;
             default:

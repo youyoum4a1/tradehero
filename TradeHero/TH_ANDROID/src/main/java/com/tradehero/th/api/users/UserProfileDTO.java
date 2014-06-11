@@ -3,8 +3,8 @@ package com.tradehero.th.api.users;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
@@ -66,7 +66,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public LeaderboardKey getMostSkilledLbmuKey()
     {
-        return new LeaderboardKey(LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
+        return new LeaderboardKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
     }
 
     public boolean isFollowingUser(int userId)

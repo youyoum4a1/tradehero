@@ -1,6 +1,7 @@
-package com.tradehero.th.api.leaderboard;
+package com.tradehero.th.api.leaderboard.def;
 
 import com.android.internal.util.Predicate;
+import com.tradehero.th.api.leaderboard.CountryCodeListContainCodePredicate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

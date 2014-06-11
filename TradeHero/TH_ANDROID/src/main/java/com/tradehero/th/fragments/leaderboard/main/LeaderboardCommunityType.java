@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.tradehero.th.fragments.leaderboard.main;
 
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import org.jetbrains.annotations.Nullable;

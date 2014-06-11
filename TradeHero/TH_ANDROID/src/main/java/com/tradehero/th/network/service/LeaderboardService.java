@@ -1,10 +1,9 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTOList;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import java.util.List;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
