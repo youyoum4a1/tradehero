@@ -53,7 +53,6 @@ import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -78,6 +77,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private BaseWebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
+    private ProviderIdList providerIds;
     protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
     private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
 
@@ -99,7 +99,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override protected void initViews(View view)
     {
         leaderboardDefListView.setOnItemClickListener(createItemClickListener());
-        prepareAdapter();
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
         {
@@ -183,15 +182,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         this.webFragment = null;
     }
 
-    private void prepareAdapter()
-    {
-        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
-                getActivity(),
-                R.layout.leaderboard_definition_item_view_community,
-                R.layout.leaderboard_competition_item_view);
-        leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
-    }
-
     //<editor-fold desc="Data Fetching">
     @Override protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
     {
@@ -249,7 +239,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
         {
-            handleLeaderboardDefKeyListReceived();
+            recreateAdapter();
         }
 
         @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
@@ -275,7 +265,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
         {
-            displayCompetitionProviders(value);
+            providerIds = value;
+            recreateAdapter();
         }
 
         @Override public void onErrorThrown(ProviderListKey key, Throwable error)
@@ -309,14 +300,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             {
                 throw new IllegalArgumentException("Unhandled item type " + item);
             }
-        }
-    }
-
-    private void displayCompetitionProviders(@NotNull List<ProviderId> providerIds)
-    {
-        for (ProviderId providerId : providerIds)
-        {
-            leaderboardDefListAdapter.insert(new ProviderCommunityPageDTO(providerId), 0);
         }
     }
 
@@ -356,12 +339,27 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         }
     }
 
-    private void handleLeaderboardDefKeyListReceived()
+    protected void recreateAdapter()
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
-        prepareAdapter();
+        leaderboardDefListAdapter = createAdapter();
+        if (providerIds != null)
+        {
+            for (ProviderId providerId : providerIds)
+            {
+                leaderboardDefListAdapter.add(new ProviderCommunityPageDTO(providerId));
+            }
+        }
         leaderboardDefListAdapter.addAll(communityPageDTOFactory.collectFromCaches(currentUserProfileDTO.countryCode));
-        leaderboardDefListAdapter.notifyDataSetChanged();
+        leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
+    }
+
+    protected LeaderboardCommunityAdapter createAdapter()
+    {
+        return new LeaderboardCommunityAdapter(
+                getActivity(),
+                R.layout.leaderboard_definition_item_view_community,
+                R.layout.leaderboard_competition_item_view);
     }
 
     /**
