@@ -4,7 +4,7 @@ import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
@@ -24,6 +24,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public List<Integer> premiumHeroIds;
     public Integer followerCount;
     /**newly added fields*/
+    public int allHeroCount;
     public int allFollowerCount;
     public int freeFollowerCount;
     public int paidFollowerCount;

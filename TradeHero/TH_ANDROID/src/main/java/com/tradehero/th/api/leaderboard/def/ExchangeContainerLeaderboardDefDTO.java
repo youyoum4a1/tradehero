@@ -2,12 +2,12 @@ package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 
-public class ExchangeLeaderboardDefDTO extends DrillDownLeaderboardDefDTO
+public class ExchangeContainerLeaderboardDefDTO extends DrillDownLeaderboardDefDTO
 {
     //<editor-fold desc="Constructors">
-    public ExchangeLeaderboardDefDTO(Context context)
+    public ExchangeContainerLeaderboardDefDTO(Context context)
     {
         super();
         id = LeaderboardDefKeyKnowledge.EXCHANGE_ID;

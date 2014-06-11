@@ -3,12 +3,12 @@ package com.tradehero.th.api.leaderboard;
 import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 
-public class SectorLeaderboardDefDTO extends DrillDownLeaderboardDefDTO
+public class SectorContainerLeaderboardDefDTO extends DrillDownLeaderboardDefDTO
 {
     //<editor-fold desc="Constructors">
-    public SectorLeaderboardDefDTO(Context context)
+    public SectorContainerLeaderboardDefDTO(Context context)
     {
         super();
         id = LeaderboardDefKeyKnowledge.SECTOR_ID;

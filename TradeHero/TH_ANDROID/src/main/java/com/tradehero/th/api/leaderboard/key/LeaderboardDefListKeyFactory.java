@@ -1,16 +1,11 @@
 package com.tradehero.th.api.leaderboard.key;
 
+import android.os.Bundle;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class LeaderboardDefListKeyFactory
 {
-    private static final String CONNECTED = "connected";
-    private static final String MOST_SKILLED = "MostSkilled";
-    private static final String TIME_PERIOD = "TimePeriod";
-    private static final String DRILL_DOWN = "drillDown";
-    private static final String SECTOR = "Sector";
-    private static final String EXCHANGE = "Exchange";
-
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefListKeyFactory()
     {
@@ -18,35 +13,30 @@ public class LeaderboardDefListKeyFactory
     }
     //</editor-fold>
 
-    public LeaderboardDefListKey createConnected()
+    public LeaderboardDefListKey create(@NotNull Bundle args)
     {
-        return new LeaderboardDefListKey(CONNECTED);
+        switch (args.getString(LeaderboardDefListKey.BUNDLE_KEY_KEY))
+        {
+            case ConnectedLeaderboardDefListKey.CONNECTED:
+                return new ConnectedLeaderboardDefListKey(args);
+
+            case DrillDownLeaderboardDefListKey.DRILL_DOWN:
+                return new DrillDownLeaderboardDefListKey(args);
+
+            case ExchangeLeaderboardDefListKey.EXCHANGE:
+                return new ExchangeLeaderboardDefListKey(args);
+
+            case MostSkilledLeaderboardDefListKey.MOST_SKILLED:
+                return new MostSkilledLeaderboardDefListKey(args);
+
+            case SectorLeaderboardDefListKey.SECTOR:
+                return new SectorLeaderboardDefListKey(args);
+
+            case TimePeriodLeaderboardDefListKey.TIME_PERIOD:
+                return new TimePeriodLeaderboardDefListKey(args);
+
+            default:
+                throw new IllegalArgumentException("Unhandled key value " + args.getString(LeaderboardDefListKey.BUNDLE_KEY_KEY));
+        }
     }
-
-    public LeaderboardDefListKey createDrillDown()
-    {
-        return new LeaderboardDefListKey(DRILL_DOWN);
-    }
-
-    public LeaderboardDefListKey createMostSkilled()
-    {
-        return new LeaderboardDefListKey(MOST_SKILLED);
-    }
-
-    public LeaderboardDefListKey createSector()
-    {
-        return new LeaderboardDefListKey(SECTOR);
-    }
-
-    public LeaderboardDefListKey createTimePeriod()
-    {
-        return new LeaderboardDefListKey(TIME_PERIOD);
-    }
-
-    public LeaderboardDefListKey createExchange()
-    {
-        return new LeaderboardDefListKey(EXCHANGE);
-    }
-
-
 }

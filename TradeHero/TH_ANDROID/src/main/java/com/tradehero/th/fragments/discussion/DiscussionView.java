@@ -392,7 +392,8 @@ public class DiscussionView extends FrameLayout
             AbstractDiscussionCompactDTO discussionDTO = discussionCache.get(discussionKey);
             if (discussionDTO != null)
             {
-                ++discussionDTO.commentCount;
+                discussionDTO.commentCount = discussionListAdapter.getCount();
+                //++discussionDTO.commentCount;
                 displayTopicView();
             }
         }

@@ -1,7 +1,6 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +15,6 @@ import static org.junit.Assert.assertTrue;
 @Config(manifest = Config.NONE)
 public class LeaderboardDefListKeyTest
 {
-    @Inject protected LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
-    
     @Before public void setUp()
     {
     }
@@ -28,27 +25,27 @@ public class LeaderboardDefListKeyTest
 
     @Test public void testEqualsItself()
     {
-        assertTrue(leaderboardDefListKeyFactory.createMostSkilled().equals(leaderboardDefListKeyFactory.createMostSkilled()));
-        assertEquals(leaderboardDefListKeyFactory.createMostSkilled(), leaderboardDefListKeyFactory.createMostSkilled());
+        assertTrue(new MostSkilledLeaderboardDefListKey().equals(new MostSkilledLeaderboardDefListKey()));
+        assertEquals(new MostSkilledLeaderboardDefListKey(), new MostSkilledLeaderboardDefListKey());
 
-        assertTrue(leaderboardDefListKeyFactory.createSector().equals(leaderboardDefListKeyFactory.createSector()));
-        assertEquals(leaderboardDefListKeyFactory.createSector(), leaderboardDefListKeyFactory.createSector());
+        assertTrue(new SectorLeaderboardDefListKey().equals(new SectorLeaderboardDefListKey()));
+        assertEquals(new SectorLeaderboardDefListKey(), new SectorLeaderboardDefListKey());
 
-        assertTrue(leaderboardDefListKeyFactory.createExchange().equals(leaderboardDefListKeyFactory.createExchange()));
-        assertEquals(leaderboardDefListKeyFactory.createExchange(), leaderboardDefListKeyFactory.createExchange());
+        assertTrue(new ExchangeLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
+        assertEquals(new ExchangeLeaderboardDefListKey(), new ExchangeLeaderboardDefListKey());
 
-        assertTrue(leaderboardDefListKeyFactory.createTimePeriod().equals(leaderboardDefListKeyFactory.createTimePeriod()));
-        assertEquals(leaderboardDefListKeyFactory.createTimePeriod(), leaderboardDefListKeyFactory.createTimePeriod());
+        assertTrue(new TimePeriodLeaderboardDefListKey().equals(new TimePeriodLeaderboardDefListKey()));
+        assertEquals(new TimePeriodLeaderboardDefListKey(), new TimePeriodLeaderboardDefListKey());
     }
 
     @Test public void testNotEqualsOthers()
     {
-        assertFalse(leaderboardDefListKeyFactory.createMostSkilled().equals(leaderboardDefListKeyFactory.createSector()));
+        assertFalse(new MostSkilledLeaderboardDefListKey().equals(new SectorLeaderboardDefListKey()));
 
-        assertFalse(leaderboardDefListKeyFactory.createSector().equals(leaderboardDefListKeyFactory.createExchange()));
+        assertFalse(new SectorLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
 
-        assertFalse(leaderboardDefListKeyFactory.createExchange().equals(leaderboardDefListKeyFactory.createTimePeriod()));
+        assertFalse(new ExchangeLeaderboardDefListKey().equals(new TimePeriodLeaderboardDefListKey()));
 
-        assertFalse(leaderboardDefListKeyFactory.createTimePeriod().equals(leaderboardDefListKeyFactory.createExchange()));
+        assertFalse(new TimePeriodLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
     }
 }
