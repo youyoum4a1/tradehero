@@ -61,7 +61,7 @@ public class WatchlistEditFragment extends DashboardFragment
     private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
     private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
 
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject SecurityCompactCache securityCompactCache;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
@@ -140,7 +140,7 @@ public class WatchlistEditFragment extends DashboardFragment
                  throw new Exception(getString(R.string.watchlist_quantity_should_not_be_zero));
             }
             // add new watchlist
-            SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityKeyId);
+            SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityKeyId);
             if (securityCompactDTO != null)
             {
                 WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
@@ -332,7 +332,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
 
         detachSecurityCompactFetchTask();
-        securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, createSecurityCompactCacheListener(andDisplay));
+        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, createSecurityCompactCacheListener(andDisplay));
         securityCompactCacheFetchTask.execute();
     }
 
