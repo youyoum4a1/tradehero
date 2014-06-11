@@ -109,6 +109,7 @@ public class AbstractLeaderboardDefView extends RelativeLayout
         if (leaderboardDefIconResourceId != 0)
         {
             leaderboardDefIcon.setImageResource(leaderboardDefIconResourceId);
+            leaderboardDefIcon.setVisibility(VISIBLE);
         }
         else
         {
@@ -118,6 +119,7 @@ public class AbstractLeaderboardDefView extends RelativeLayout
         if (dto.isExchangeRestricted() || dto.isSectorRestricted())
         {
             leaderboardDefDesc.setText(dto.desc);
+            leaderboardDefDesc.setVisibility(VISIBLE);
         }
         else
         {
@@ -142,7 +144,8 @@ public class AbstractLeaderboardDefView extends RelativeLayout
             if (dto.id > 0)
             {
                 leaderboardDefUserRank.setText(getContext().getString(R.string.leaderboard_not_ranked));
-            }else
+            }
+            else
             {
                 leaderboardDefUserRank.setText("");
             }

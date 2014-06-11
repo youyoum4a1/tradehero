@@ -8,6 +8,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @Singleton public class LeaderboardDefCache extends StraightDTOCache<LeaderboardDefKey, LeaderboardDefDTO>
@@ -26,7 +27,8 @@ import org.jetbrains.annotations.NotNull;
         throw new IllegalStateException("Cannot fetch on this cache");
     }
 
-    public LeaderboardDefDTOList get(List<LeaderboardDefKey> keys) throws Throwable
+    @Contract("null -> null; !null -> !null")
+    public LeaderboardDefDTOList get(List<LeaderboardDefKey> keys)
     {
         if (keys == null)
         {
