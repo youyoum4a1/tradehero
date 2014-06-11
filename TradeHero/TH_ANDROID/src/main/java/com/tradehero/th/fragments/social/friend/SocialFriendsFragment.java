@@ -24,6 +24,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     @Inject FriendsListCache friendsListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    @Inject UserProfileCache userProfileCache;
 
     protected SocialFriendHandler socialFriendHandler;
 
@@ -439,6 +441,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
             {
                 // TODO
                 handleFollowSuccess(usersToFollow);
+                userProfileCache.put(userProfileDTO.getBaseKey(),userProfileDTO);
                 return;
             }
             handleFollowError();
