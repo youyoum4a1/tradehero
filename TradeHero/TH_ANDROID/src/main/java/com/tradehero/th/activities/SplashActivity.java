@@ -9,6 +9,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
+import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tendcloud.tenddata.TCAgent;
@@ -53,7 +54,7 @@ public class SplashActivity extends SherlockActivity
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<Tapstream> tapStream;
-    //@Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
+    @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -101,9 +102,8 @@ public class SplashActivity extends SherlockActivity
         tapStream.get().fireEvent(
                 new Event(getString(TapStreamType.fromType(Constants.VERSION).getOpenResId()),
                         false));
-        //mobileAppTrackerLazy.get().setReferralSources(this);
-        //mobileAppTrackerLazy.get().measureSession();
-        //mobileAppTrackerLazy.get().measureAction("1234");
+        mobileAppTrackerLazy.get().setReferralSources(this);
+        mobileAppTrackerLazy.get().measureSession();
         TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY,
                 TapStreamType.fromType(Constants.VERSION).name());
         //TCAgent.LOG_ON = false;

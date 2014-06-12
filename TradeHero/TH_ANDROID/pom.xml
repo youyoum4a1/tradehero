@@ -432,13 +432,13 @@
       <systemPath>${project.basedir}/libs/TalkingDataAnalytics.jar</systemPath>
     </dependency>
 
-    <!--<dependency>-->
-      <!--<groupId>com.mobileapptracker</groupId>-->
-      <!--<artifactId>MobileAppTracker</artifactId>-->
-      <!--<version>3.2.3</version>-->
-      <!--<scope>system</scope>-->
-      <!--<systemPath>${project.basedir}/libs/MobileAppTracker-3.2.3.jar</systemPath>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>com.mobileapptracker</groupId>
+      <artifactId>MobileAppTracker</artifactId>
+      <version>3.2.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/MobileAppTracker-3.2.3.jar</systemPath>
+    </dependency>
 
     <dependency>
       <groupId>com.sina.weibo</groupId>

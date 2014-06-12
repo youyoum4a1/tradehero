@@ -257,11 +257,11 @@
         android:process=":bdservice_v1"/>
     <!--END Baidu inter-process communication-->
 
-    <!--<receiver android:name="com.mobileapptracker.Tracker" android:exported="true">-->
-      <!--<intent-filter>-->
-        <!--<action android:name="com.android.vending.INSTALL_REFERRER" />-->
-      <!--</intent-filter>-->
-    <!--</receiver>-->
+    <receiver android:name="com.mobileapptracker.Tracker" android:exported="true">
+      <intent-filter>
+        <action android:name="com.android.vending.INSTALL_REFERRER" />
+      </intent-filter>
+    </receiver>
 
     <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
     <meta-data android:name="LOCALYTICS_APP_KEY" android:value="f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207"/>

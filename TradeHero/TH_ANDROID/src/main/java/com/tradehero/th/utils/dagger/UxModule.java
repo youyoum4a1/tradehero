@@ -2,6 +2,7 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import com.localytics.android.LocalyticsSession;
+import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
 import com.tradehero.th.base.Application;
@@ -64,12 +65,10 @@ public class UxModule
         return config;
     }
 
-    ////MAT
-    //@Provides @Singleton MobileAppTracker provideMAT(Application app, Context context)
-    //{
-    //    MobileAppTracker.init(context, MAT_APP_ID, MAT_APP_KEY);
-    //    //mobileAppTracker = MobileAppTracker.getInstance();
-    //    //mobileAppTracker.setReferralSources(this);
-    //    return MobileAppTracker.getInstance();
-    //}
+    //MAT
+    @Provides @Singleton MobileAppTracker provideMAT(Context context)
+    {
+        MobileAppTracker.init(context, MAT_APP_ID, MAT_APP_KEY);
+        return MobileAppTracker.getInstance();
+    }
 }
