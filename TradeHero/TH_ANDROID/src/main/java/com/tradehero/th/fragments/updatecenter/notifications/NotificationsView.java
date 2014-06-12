@@ -39,6 +39,7 @@ import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -60,8 +61,8 @@ public class NotificationsView extends BetterViewAnimator
     private boolean loading;
     private int nextPageDelta;
 
-    private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
-    private Map<Integer, Callback<Response>> callbackMap;
+    @NotNull private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
+    @NotNull private Map<Integer, Callback<Response>> callbackMap;
 
     private DTOCache.Listener<NotificationListKey, NotificationKeyList> notificationFetchListener;
     private DTOCache.GetOrFetchTask<NotificationListKey, NotificationKeyList> notificationFetchTask;
@@ -73,11 +74,19 @@ public class NotificationsView extends BetterViewAnimator
     public NotificationsView(Context context)
     {
         super(context);
+        init();
     }
 
     public NotificationsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init();
+    }
+
+    protected void init()
+    {
+        callbackMap = new HashMap<>();
+        middleCallbackMap = new HashMap<>();
     }
     //</editor-fold>
 
@@ -111,8 +120,6 @@ public class NotificationsView extends BetterViewAnimator
 
         createNotificationFetchListener();
 
-        initCallbackMap();
-
         // for now, we have only one type of notification list
         notificationListKey = new NotificationListKey();
 
@@ -132,12 +139,6 @@ public class NotificationsView extends BetterViewAnimator
     private void createOnRefreshListener()
     {
         notificationPullToRefreshListener = new NotificationRefreshRequestListener();
-    }
-
-    private void initCallbackMap()
-    {
-        callbackMap = new HashMap<>();
-        middleCallbackMap = new HashMap<>();
     }
 
     private void unsetMiddleCallback()
@@ -288,7 +289,7 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    private void reportNotificationRead(int pushId)
+    protected void reportNotificationRead(int pushId)
     {
         MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
         if (middleCallback == null)
