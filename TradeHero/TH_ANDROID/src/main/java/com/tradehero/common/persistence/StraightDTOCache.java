@@ -15,7 +15,7 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         this.lruCache = new THLruCache<>(maxSize);
     }
 
-    @Contract("null -> null")
+    @Contract("null -> null; !null -> _")
     @Nullable
     @Override public DTOType get(@Nullable DTOKeyType key)
     {

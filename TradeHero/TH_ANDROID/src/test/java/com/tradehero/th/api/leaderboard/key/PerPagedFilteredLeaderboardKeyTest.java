@@ -33,7 +33,7 @@ public class PerPagedFilteredLeaderboardKeyTest extends BasePerPagedFilteredLead
         String value = iterator.next();
         assertEquals("winRatio:4.3", value);
         value = iterator.next();
-        assertEquals("maxPosRoiVolatility:0.1", value);
+        assertEquals("minConsistency:0.1", value);
         value = iterator.next();
         assertEquals("averageHoldingDays:6.7", value);
         value = iterator.next();
@@ -49,7 +49,7 @@ public class PerPagedFilteredLeaderboardKeyTest extends BasePerPagedFilteredLead
         assertEquals(4, set.size());
         Iterator<String> iterator = set.iterator();
         String value = iterator.next();
-        assertEquals("maxPosRoiVolatility:0.1", value);
+        assertEquals("minConsistency:0.1", value);
         value = iterator.next();
         assertEquals("averageHoldingDays:6.7", value);
         value = iterator.next();
@@ -62,12 +62,12 @@ public class PerPagedFilteredLeaderboardKeyTest extends BasePerPagedFilteredLead
     {
         PerPagedFilteredLeaderboardKey key = new PerPagedFilteredLeaderboardKey(1, 2, 3, 4.3f, 5.6f, 6.7f, 8.9f, 0.1f);
         Set<String> set = key.getFilterStringSet();
-        PerPagedFilteredLeaderboardKey recreated = new PerPagedFilteredLeaderboardKey(set);
+        PerPagedFilteredLeaderboardKey recreated = new PerPagedFilteredLeaderboardKey(set, null);
         System.out.println("winRatio " + recreated.winRatio);
         assertTrue(recreated.winRatio.equals(4.3f));
         assertTrue(recreated.averageMonthlyTradeCount.equals(5.6f));
         assertTrue(recreated.averageHoldingDays.equals(6.7f));
         assertTrue(recreated.minSharpeRatio.equals(8.9f));
-        assertTrue(recreated.maxPosRoiVolatility.equals(0.1f));
+        assertTrue(recreated.minConsistency.equals(0.1f));
     }
 }

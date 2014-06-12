@@ -9,6 +9,7 @@
     android:gravity="top"
     android:padding="5dp"
     >
+
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -16,11 +17,13 @@
       android:textSize="@dimen/text_header"
       android:text="@string/leaderboard_keep_friends_close"
       />
+
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/leaderboard_friend_empty_text_invite_friends"
       />
+
   <TextView
       android:id="@+id/connect_accounts"
       android:layout_width="match_parent"
@@ -30,4 +33,5 @@
       android:paddingTop="@dimen/common_margin_10"
       android:gravity="center_horizontal"
       />
+
 </LinearLayout>

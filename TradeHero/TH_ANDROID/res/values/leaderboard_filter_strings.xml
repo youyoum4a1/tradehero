@@ -32,4 +32,18 @@
   <string name="leaderboard_filter_holding_period_min_description">Short</string>
   <string name="leaderboard_filter_holding_period_max_description">Long</string>
 
+  <!-- For Relative Performance -->
+  <string name="leaderboard_filter_relative_performance_header">Relative Performance</string>
+  <string name="leaderboard_filter_relative_performance_value_unit"/>
+  <string name="leaderboard_filter_relative_performance_description">Sharpe Ratio - S&amp;P 500 - higher is better!</string>
+  <string name="leaderboard_filter_relative_performance_min_description">Underperforms</string>
+  <string name="leaderboard_filter_relative_performance_max_description">Overperforms</string>
+
+  <!-- For Consistency -->
+  <string name="leaderboard_filter_consistency_header">Consistency</string>
+  <string name="leaderboard_filter_consistency_value_unit"/>
+  <string name="leaderboard_filter_consistency_description">Higher is better!</string>
+  <string name="leaderboard_filter_consistency_min_description">Inconsistent</string>
+  <string name="leaderboard_filter_consistency_max_description">Consistent</string>
+
 </resources>

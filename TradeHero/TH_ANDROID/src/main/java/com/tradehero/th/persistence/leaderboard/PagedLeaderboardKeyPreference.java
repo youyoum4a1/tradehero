@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.leaderboard;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import java.util.Set;
@@ -7,9 +8,9 @@ import javax.inject.Inject;
 
 public class PagedLeaderboardKeyPreference extends LeaderboardKeyPreference
 {
-    @Inject public PagedLeaderboardKeyPreference(SharedPreferences preference, String key, Set<String> defaultValue)
+    @Inject public PagedLeaderboardKeyPreference(Context context, SharedPreferences preference, String key, Set<String> defaultValue)
     {
-        super(preference, key, defaultValue);
+        super(context, preference, key, defaultValue);
     }
 
     public PagedLeaderboardKey getPagedLeaderboardKey()
@@ -19,6 +20,11 @@ public class PagedLeaderboardKeyPreference extends LeaderboardKeyPreference
         {
             return null;
         }
-        return new PagedLeaderboardKey(set);
+        return new PagedLeaderboardKey(set, createDefaultValues());
+    }
+
+    @Override public PagedLeaderboardKey createDefaultValues()
+    {
+        return new PagedLeaderboardKey(Integer.MIN_VALUE, PagedLeaderboardKey.FIRST_PAGE);
     }
 }

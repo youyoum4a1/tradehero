@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import org.jetbrains.annotations.Nullable;
 
 public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 {
@@ -21,10 +22,10 @@ public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         this.includeFoF = other.includeFoF;
     }
 
-    public FriendsPerPagedLeaderboardKey(Bundle args)
+    public FriendsPerPagedLeaderboardKey(Bundle args, @Nullable FriendsPerPagedLeaderboardKey defaultValues)
     {
-        super(args);
-        this.includeFoF = args.containsKey(BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND) ? args.getBoolean(BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND) : null;
+        super(args, defaultValues);
+        this.includeFoF = args.containsKey(BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND) ? args.getBoolean(BUNDLE_KEY_INCLUDE_FRIEND_OF_FRIEND) : ((defaultValues != null) ? defaultValues.includeFoF : null);
     }
     //</editor-fold>
 

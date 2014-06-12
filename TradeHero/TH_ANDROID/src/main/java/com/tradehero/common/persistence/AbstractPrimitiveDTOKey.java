@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import android.os.Bundle;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements Comparable, DTOKey
 {
@@ -14,7 +15,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
         init();
     }
 
-    public AbstractPrimitiveDTOKey(Bundle args)
+    public AbstractPrimitiveDTOKey(@NotNull Bundle args)
     {
         super();
 

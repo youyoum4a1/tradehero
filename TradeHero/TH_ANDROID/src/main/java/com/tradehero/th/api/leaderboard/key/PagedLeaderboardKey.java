@@ -4,6 +4,8 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 import java.util.Iterator;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PagedLeaderboardKey extends LeaderboardKey
 {
@@ -26,16 +28,16 @@ public class PagedLeaderboardKey extends LeaderboardKey
         this.page = page;
     }
 
-    public PagedLeaderboardKey(Bundle args)
+    public PagedLeaderboardKey(@NotNull Bundle args, @Nullable PagedLeaderboardKey defaultValues)
     {
-        super(args);
-        this.page = args.containsKey(BUNDLE_KEY_PAGE) ? args.getInt(BUNDLE_KEY_PAGE) : null;
+        super(args, defaultValues);
+        this.page = args.containsKey(BUNDLE_KEY_PAGE) ? (Integer) args.getInt(BUNDLE_KEY_PAGE) : ((defaultValues != null) ? defaultValues.page : null);
     }
 
-    public PagedLeaderboardKey(Set<String> catValues)
+    public PagedLeaderboardKey(@NotNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
     {
-        super(catValues);
-        this.page = findPage(catValues);
+        super(catValues, defaultValues);
+        this.page = findPage(catValues, defaultValues);
     }
     //</editor-fold>
 
@@ -96,7 +98,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
         }
     }
 
-    public static Integer findPage(Set<String> catValues)
+    public static Integer findPage(@NotNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
     {
         Iterator<String> iterator = catValues.iterator();
         String catValue;
@@ -109,6 +111,10 @@ public class PagedLeaderboardKey extends LeaderboardKey
             {
                 return Integer.valueOf(split[1]);
             }
+        }
+        if (defaultValues != null)
+        {
+            return defaultValues.page;
         }
         return null;
     }

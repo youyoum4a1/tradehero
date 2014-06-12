@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import android.os.Bundle;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Use single integer as an identity
@@ -13,7 +14,7 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
         super(key);
     }
 
-    public AbstractIntegerDTOKey(Bundle args)
+    public AbstractIntegerDTOKey(@NotNull Bundle args)
     {
         super(args);
     }
