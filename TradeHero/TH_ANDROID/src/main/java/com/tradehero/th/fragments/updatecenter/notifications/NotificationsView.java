@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -24,8 +23,6 @@ import com.tradehero.th.api.notification.NotificationKeyList;
 import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -396,7 +393,6 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    // TODO rework this inner class to identify the null elements.
     private class NotificationMarkAsReadCallback implements Callback<Response>
     {
         private final int pushId;
@@ -408,43 +404,18 @@ public class NotificationsView extends BetterViewAnimator
 
         @Override public void success(Response response, Response response2)
         {
-            if (response.getStatus() == 200)
-            {
-                Timber.d("Notification %d is reported as read", pushId);
-                // TODO update title
+            Timber.d("Notification %d is reported as read", pushId);
+            // TODO update title
 
-                // mark it as read in the cache
-                NotificationKey notificationKey = new NotificationKey(pushId);
-                NotificationDTO notificationDTO = notificationCache.get().get(notificationKey);
-                if (notificationDTO != null && notificationDTO.unread)
-                {
-                    notificationDTO.unread = false;
-                    notificationCache.get().put(notificationKey, notificationDTO);
-                    updateUnreadStatusInUserProfileCache();
-                }
-                middleCallbackMap.remove(pushId);
-                callbackMap.remove(pushId);
-            }
+            middleCallbackMap.remove(pushId);
+            callbackMap.remove(pushId);
+            requestUpdateTabCounter();
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             Timber.d("Report failure for notification: %d", pushId);
         }
-    }
-
-    private void updateUnreadStatusInUserProfileCache()
-    {
-        // TODO synchronization problem
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO.unreadNotificationsCount > 0)
-        {
-            --userProfileDTO.unreadNotificationsCount;
-        }
-        userProfileCache.put(userBaseKey, userProfileDTO);
-
-        requestUpdateTabCounter();
     }
 
     private void requestUpdateTabCounter()
