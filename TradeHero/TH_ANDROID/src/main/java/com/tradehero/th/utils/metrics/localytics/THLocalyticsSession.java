@@ -7,6 +7,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
+import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -72,7 +74,9 @@ public class THLocalyticsSession extends LocalyticsSession
     public void tagEvent(String event)
     {
         TCAgent.onEvent(context, event);
-        super.tagEvent(event);
+        Map<String, String> dic = new HashMap<>();
+        dic.put(LocalyticsConstants.CHANNEL_MAP_KEY, TapStreamType.fromType(Constants.VERSION).name());
+        super.tagEvent(event, dic);
     }
 
 }
