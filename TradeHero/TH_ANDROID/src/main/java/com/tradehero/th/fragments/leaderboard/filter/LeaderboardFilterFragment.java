@@ -12,31 +12,49 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardFilterFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE = LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";
+    private static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE = LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";
 
     @Inject LocalyticsSession localyticsSession;
+    @Inject LeaderboardCache leaderboardCache;
     @InjectView(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
 
-    protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
+    @NotNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
+    @Nullable protected LeaderboardDTO leaderboardDTO;
+
+    public static void putPerPagedFilteredLeaderboardKey(@NotNull Bundle args, @NotNull PerPagedFilteredLeaderboardKey key)
+    {
+        args.putBundle(BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, key.getArgs());
+    }
+
+    @NotNull
+    private static PerPagedFilteredLeaderboardKey getPerPagedFilteredLeaderboardKey(@NotNull Bundle args)
+    {
+        return new PerPagedFilteredLeaderboardKey(args.getBundle(BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE), null);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null)
         {
-            this.perPagedFilteredLeaderboardKey = new PerPagedFilteredLeaderboardKey(savedInstanceState.getBundle(BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE));
+            this.perPagedFilteredLeaderboardKey = getPerPagedFilteredLeaderboardKey(savedInstanceState);
         }
         else
         {
-            this.perPagedFilteredLeaderboardKey = new PerPagedFilteredLeaderboardKey(getArguments().getBundle(BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE));
+            this.perPagedFilteredLeaderboardKey = getPerPagedFilteredLeaderboardKey(getArguments());
         }
+        leaderboardDTO = leaderboardCache.get(perPagedFilteredLeaderboardKey);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -95,7 +113,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putBundle(BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, this.perPagedFilteredLeaderboardKey.getArgs());
+        putPerPagedFilteredLeaderboardKey(outState, this.perPagedFilteredLeaderboardKey);
     }
 
     public PerPagedFilteredLeaderboardKey getPerPagedFilteredLeaderboardKey()
@@ -125,14 +143,14 @@ public class LeaderboardFilterFragment extends DashboardFragment
     {
         if (filterSliderContainer != null)
         {
-            filterSliderContainer.setFilteredLeaderboardKey(this.perPagedFilteredLeaderboardKey);
+            filterSliderContainer.setParameters(this.perPagedFilteredLeaderboardKey, leaderboardDTO);
         }
     }
 
     protected void returnToLeaderboard()
     {
         collectPagedFilteredLeaderboardKey();
-        getNavigator().popFragment();
+        getDashboardNavigator().popFragment();
     }
 
     @Override public boolean isTabBarVisible()

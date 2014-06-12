@@ -215,7 +215,7 @@ public class UserStatisticView extends LinearLayout
     {
         try
         {
-            Double minConsistency = 0.004;
+            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
             Double maxConsistency = getAvgConsistency();
             Double consistency = leaderboardUserDTO.getConsistency();
             consistency = (consistency < minConsistency) ? minConsistency : consistency;
@@ -267,6 +267,6 @@ public class UserStatisticView extends LinearLayout
         {
             return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
         }
-        return 0.004;
+        return LeaderboardUserDTO.MIN_CONSISTENCY;
     }
 }

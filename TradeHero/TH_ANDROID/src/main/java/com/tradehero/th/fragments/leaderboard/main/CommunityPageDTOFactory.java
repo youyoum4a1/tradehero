@@ -13,15 +13,15 @@ import timber.log.Timber;
 
 class CommunityPageDTOFactory
 {
-    private final LeaderboardDefListCache leaderboardDefListCache;
-    private final LeaderboardDefCache leaderboardDefCache;
-    private final MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
+    @NotNull private final LeaderboardDefListCache leaderboardDefListCache;
+    @NotNull private final LeaderboardDefCache leaderboardDefCache;
+    @NotNull private final MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
 
     //<editor-fold desc="Constructors">
     @Inject CommunityPageDTOFactory(
-            LeaderboardDefListCache leaderboardDefListCache,
-            LeaderboardDefCache leaderboardDefCache,
-            MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory)
+            @NotNull LeaderboardDefListCache leaderboardDefListCache,
+            @NotNull LeaderboardDefCache leaderboardDefCache,
+            @NotNull MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory)
     {
         this.leaderboardDefListCache = leaderboardDefListCache;
         this.leaderboardDefCache = leaderboardDefCache;
@@ -31,22 +31,20 @@ class CommunityPageDTOFactory
 
     @NotNull public CommunityPageDTOList collectFromCaches(@Nullable String countryCode)
     {
-        CommunityPageDTOList collected = new CommunityPageDTOList();
-        LeaderboardDefListKey key;
+        @NotNull CommunityPageDTOList collected = new CommunityPageDTOList();
+        @Nullable LeaderboardDefListKey key;
+        @Nullable LeaderboardDefDTOList cached;
         for (LeaderboardCommunityType type : LeaderboardCommunityType.values())
         {
             key = leaderboardDefListKeyFactory.createFrom(type);
+            Timber.e("Type %s, key %s", type, key);
             if (key != null)
             {
-                try
+                cached = leaderboardDefCache.get(
+                        leaderboardDefListCache.get(key));
+                if (cached != null)
                 {
-                    collected.addAllLeaderboardDefDTO(
-                            leaderboardDefCache.get(
-                                    leaderboardDefListCache.get(key)));
-                }
-                catch (Throwable throwable)
-                {
-                    Timber.e(throwable, null);
+                    collected.addAllLeaderboardDefDTO(cached);
                 }
                 if (countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey()))
                 {

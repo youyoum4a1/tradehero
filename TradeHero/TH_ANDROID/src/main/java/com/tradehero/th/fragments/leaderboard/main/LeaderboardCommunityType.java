@@ -6,5 +6,5 @@ enum LeaderboardCommunityType
     Connected,
     SkillAndCountry,
     TimeRestricted,
-    DrillDown;
+    DrillDown
 }

@@ -82,9 +82,12 @@ import retrofit.Callback;
             return leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-                    perPagedFilteredLeaderboardKey.averageHoldingDays,
+
+                    // HACK https://www.pivotaltracker.com/story/show/73042972
+                    Math.max(1, perPagedFilteredLeaderboardKey.averageHoldingDays),
+
                     perPagedFilteredLeaderboardKey.minSharpeRatio,
-                    perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
+                    perPagedFilteredLeaderboardKey.minConsistency == null ? null : 1 / perPagedFilteredLeaderboardKey.minConsistency,
                     perPagedFilteredLeaderboardKey.page,
                     perPagedFilteredLeaderboardKey.perPage);
         }
@@ -111,18 +114,6 @@ import retrofit.Callback;
         return leaderboardService.getLeaderboard(leaderboardKey.key, null, null);
     }
 
-    public LeaderboardFriendsDTO getNewFriendsLeaderboard()
-    {
-        return leaderboardService.getNewFriendsLeaderboard();
-    }
-
-    public MiddleCallback<LeaderboardFriendsDTO> getNewFriendsLeaderboard(Callback<LeaderboardFriendsDTO> callback)
-    {
-        MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
-        return middleCallback;
-    }
-
     public MiddleCallback<LeaderboardDTO> getLeaderboard(LeaderboardKey leaderboardKey, Callback<LeaderboardDTO> callback)
     {
         MiddleCallback<LeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
@@ -142,9 +133,11 @@ import retrofit.Callback;
             leaderboardServiceAsync.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-                    perPagedFilteredLeaderboardKey.averageHoldingDays,
+
+                    // HACK https://www.pivotaltracker.com/story/show/73042972
+                    Math.max(1, perPagedFilteredLeaderboardKey.averageHoldingDays),
                     perPagedFilteredLeaderboardKey.minSharpeRatio,
-                    perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
+                    perPagedFilteredLeaderboardKey.minConsistency == null ? null : 1 / perPagedFilteredLeaderboardKey.minConsistency,
                     perPagedFilteredLeaderboardKey.page,
                     perPagedFilteredLeaderboardKey.perPage,
                     middleCallback);
@@ -180,6 +173,18 @@ import retrofit.Callback;
         {
             leaderboardServiceAsync.getLeaderboard(leaderboardKey.key, null, null, middleCallback);
         }
+        return middleCallback;
+    }
+
+    public LeaderboardFriendsDTO getNewFriendsLeaderboard()
+    {
+        return leaderboardService.getNewFriendsLeaderboard();
+    }
+
+    public MiddleCallback<LeaderboardFriendsDTO> getNewFriendsLeaderboard(Callback<LeaderboardFriendsDTO> callback)
+    {
+        MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
         return middleCallback;
     }
     //</editor-fold>
