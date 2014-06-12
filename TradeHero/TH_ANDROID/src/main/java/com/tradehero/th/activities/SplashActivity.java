@@ -106,6 +106,7 @@ public class SplashActivity extends SherlockActivity
         //mobileAppTrackerLazy.get().measureAction("1234");
         TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY,
                 TapStreamType.fromType(Constants.VERSION).name());
+        //TCAgent.LOG_ON = false;
 
         if (!Constants.RELEASE)
         {
