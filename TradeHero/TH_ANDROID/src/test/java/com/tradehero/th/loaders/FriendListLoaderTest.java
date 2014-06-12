@@ -1,16 +1,14 @@
 package com.tradehero.th.loaders;
 
 import android.content.Context;
+import com.tradehero.RobolectricMavenTestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = Config.NONE)
+@RunWith(RobolectricMavenTestRunner.class)
 public class FriendListLoaderTest
 {
     private Context context;

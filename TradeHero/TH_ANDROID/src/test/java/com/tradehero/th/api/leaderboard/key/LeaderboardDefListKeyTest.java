@@ -1,17 +1,17 @@
 package com.tradehero.th.api.leaderboard.key;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class LeaderboardDefListKeyTest
 {
@@ -25,32 +25,27 @@ public class LeaderboardDefListKeyTest
 
     @Test public void testEqualsItself()
     {
-        assertTrue(LeaderboardDefListKey.getMostSkilled().equals(LeaderboardDefListKey.getMostSkilled()));
-        assertEquals(LeaderboardDefListKey.getMostSkilled(), LeaderboardDefListKey.getMostSkilled());
+        assertTrue(new MostSkilledLeaderboardDefListKey().equals(new MostSkilledLeaderboardDefListKey()));
+        assertEquals(new MostSkilledLeaderboardDefListKey(), new MostSkilledLeaderboardDefListKey());
 
-        assertTrue(LeaderboardDefListKey.getSector().equals(LeaderboardDefListKey.getSector()));
-        assertEquals(LeaderboardDefListKey.getSector(), LeaderboardDefListKey.getSector());
+        assertTrue(new SectorLeaderboardDefListKey().equals(new SectorLeaderboardDefListKey()));
+        assertEquals(new SectorLeaderboardDefListKey(), new SectorLeaderboardDefListKey());
 
-        assertTrue(LeaderboardDefListKey.getExchange().equals(LeaderboardDefListKey.getExchange()));
-        assertEquals(LeaderboardDefListKey.getExchange(), LeaderboardDefListKey.getExchange());
+        assertTrue(new ExchangeLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
+        assertEquals(new ExchangeLeaderboardDefListKey(), new ExchangeLeaderboardDefListKey());
 
-        assertTrue(LeaderboardDefListKey.getTimePeriod().equals(LeaderboardDefListKey.getTimePeriod()));
-        assertEquals(LeaderboardDefListKey.getTimePeriod(), LeaderboardDefListKey.getTimePeriod());
-
-        assertTrue(LeaderboardDefListKey.getCommunity().equals(LeaderboardDefListKey.getCommunity()));
-        assertEquals(LeaderboardDefListKey.getCommunity(), LeaderboardDefListKey.getCommunity());
+        assertTrue(new TimePeriodLeaderboardDefListKey().equals(new TimePeriodLeaderboardDefListKey()));
+        assertEquals(new TimePeriodLeaderboardDefListKey(), new TimePeriodLeaderboardDefListKey());
     }
 
     @Test public void testNotEqualsOthers()
     {
-        assertFalse(LeaderboardDefListKey.getMostSkilled().equals(LeaderboardDefListKey.getSector()));
+        assertFalse(new MostSkilledLeaderboardDefListKey().equals(new SectorLeaderboardDefListKey()));
 
-        assertFalse(LeaderboardDefListKey.getSector().equals(LeaderboardDefListKey.getExchange()));
+        assertFalse(new SectorLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
 
-        assertFalse(LeaderboardDefListKey.getExchange().equals(LeaderboardDefListKey.getTimePeriod()));
+        assertFalse(new ExchangeLeaderboardDefListKey().equals(new TimePeriodLeaderboardDefListKey()));
 
-        assertFalse(LeaderboardDefListKey.getTimePeriod().equals(LeaderboardDefListKey.getCommunity()));
-
-        assertFalse(LeaderboardDefListKey.getCommunity().equals(LeaderboardDefListKey.getMostSkilled()));
+        assertFalse(new TimePeriodLeaderboardDefListKey().equals(new ExchangeLeaderboardDefListKey()));
     }
 }

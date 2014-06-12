@@ -70,6 +70,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
 
     private DTOCache.GetOrFetchTask<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchTask;
+    private MessageHeaderId messageHeaderId;
 
     public static void putCorrespondentUserBaseKey(Bundle args, UserBaseKey correspondentBaseKey)
     {
@@ -203,6 +204,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     private void linkWith(MessageHeaderId messageHeaderId, boolean andDisplay)
     {
+        this.messageHeaderId = messageHeaderId;
         detachMessageHeaderFetchTask();
         messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false,
                 createMessageHeaderCacheListener());
@@ -228,6 +230,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         if (getDiscussionKey() != null && discussionView != null)
         {
             discussionView.refresh();
+
+            if (messageHeaderId != null)
+            {
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
+                if (messageHeaderDTO != null)
+                {
+                    reportMessageRead(messageHeaderDTO);
+                }
+            }
         }
     }
 
@@ -380,11 +391,14 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         {
             Timber.d("MessageHeaderDTO=%s", value);
             ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-            actionBar.setTitle(value.title);
-            actionBar.setSubtitle(value.subTitle);
+            if (actionBar != null)
+            {
+                actionBar.setTitle(value.title);
+                actionBar.setSubtitle(value.subTitle);
+            }
             correspondentId = new UserBaseKey(value.recipientUserId);
             fetchCorrespondentProfile();
-            if (value != null && value.unread)
+            if (value.unread)
             {
                 reportMessageRead(value);
             }

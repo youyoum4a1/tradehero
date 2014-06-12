@@ -14,10 +14,11 @@ import retrofit.converter.Converter;
 import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
+import timber.log.Timber;
 
 public class JacksonConverter implements Converter
 {
-    private static final String MIME_TYPE = "application/json; charset=UTF-8";
+    public static final String MIME_TYPE = "application/json; charset=UTF-8";
 
     private final ObjectMapper objectMapper;
 
@@ -35,6 +36,14 @@ public class JacksonConverter implements Converter
         }
         catch (final JsonParseException|JsonMappingException e)
         {
+            try
+            {
+                Timber.e(e, "With body %s", new String(IOUtils.streamToBytes(body.in())));
+            }
+            catch (IOException e1)
+            {
+                // Do nothing
+            }
             throw new ConversionException(e);
         }
         catch (final IOException e)

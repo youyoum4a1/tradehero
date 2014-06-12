@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.security;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
@@ -7,14 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class SecurityCompactListCacheTest
 {

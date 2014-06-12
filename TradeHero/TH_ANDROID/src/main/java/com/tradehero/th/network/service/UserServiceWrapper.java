@@ -5,6 +5,7 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
@@ -13,6 +14,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
@@ -534,6 +536,42 @@ import java.util.List;
         return middleCallback;
     }
     //</editor-fold>
+
+    public List<UserFriendsDTO> getSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum)
+    {
+        return userService.getSocialFriends(userKey.key,socialNetworkEnum);
+    }
+
+    public MiddleCallback<List<UserFriendsDTO>> getSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,Callback<List<UserFriendsDTO>> callback)
+    {
+        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.getSocialFriends(userKey.key,socialNetworkEnum,middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<List<UserFriendsDTO>> searchSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,String query, Callback<List<UserFriendsDTO>> callback)
+    {
+        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.searchSocialFriends(userKey.key, socialNetworkEnum, query, middleCallback);
+        return middleCallback;
+    }
+
+    public List<UserFriendsDTO> searchSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,String query)
+    {
+        return userService.searchSocialFriends(userKey.key,socialNetworkEnum,query);
+    }
+
+    public Response followBatchFree(FollowFriendsForm followFriendsForm)
+    {
+        return userService.followBatchFree(followFriendsForm);
+    }
+
+    public MiddleCallback<UserProfileDTO> followBatchFree(FollowFriendsForm followFriendsForm,Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.followBatchFree(followFriendsForm,middleCallback);
+        return middleCallback;
+    }
 
     //<editor-fold desc="Invite Friends">
     public Response inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO)

@@ -36,6 +36,19 @@ public enum TapStreamType
     NineOneM(29, R.string.tap_stream_type_91m_install, R.string.tap_stream_type_91m_open),
     DianPing(30, R.string.tap_stream_type_dianping_install, R.string.tap_stream_type_dianping_open),
     AiQiYi(31, R.string.tap_stream_type_aiqiyi_install, R.string.tap_stream_type_aiqiyi_open),
+    DingKai(32, R.string.tap_stream_type_dingkai_install, R.string.tap_stream_type_dingkai_open),
+    Adsage(33, R.string.tap_stream_type_adsage_install, R.string.tap_stream_type_adsage_open),
+    Wandoujiaad(34, R.string.tap_stream_type_wandoujiaad_install, R.string.tap_stream_type_wandoujiaad_open),
+    Channel1(35, R.string.tap_stream_type_channel1_install, R.string.tap_stream_type_channel1_open),
+    Channel2(36, R.string.tap_stream_type_channel2_install, R.string.tap_stream_type_channel2_open),
+    Channel3(37, R.string.tap_stream_type_channel3_install, R.string.tap_stream_type_channel3_open),
+    Channel4(38, R.string.tap_stream_type_channel4_install, R.string.tap_stream_type_channel4_open),
+    Channel5(39, R.string.tap_stream_type_channel5_install, R.string.tap_stream_type_channel5_open),
+    Channel6(40, R.string.tap_stream_type_channel6_install, R.string.tap_stream_type_channel6_open),
+    Channel7(41, R.string.tap_stream_type_channel7_install, R.string.tap_stream_type_channel7_open),
+    Channel8(42, R.string.tap_stream_type_channel8_install, R.string.tap_stream_type_channel8_open),
+    Channel9(43, R.string.tap_stream_type_channel9_install, R.string.tap_stream_type_channel9_open),
+    Channel10(44, R.string.tap_stream_type_channel10_install, R.string.tap_stream_type_channel10_open),
     ;
 
     private final int type;

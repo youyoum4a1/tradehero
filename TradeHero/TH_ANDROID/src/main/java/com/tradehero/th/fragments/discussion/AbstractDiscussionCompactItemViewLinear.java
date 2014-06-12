@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import butterknife.ButterKnife;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;

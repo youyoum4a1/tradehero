@@ -6,8 +6,9 @@
     import java.util.ArrayList;
     import java.util.Date;
     import java.util.List;
+    import timber.log.Timber;
 
-public class SecurityCompactDTO extends ExtendedDTO
+    public class SecurityCompactDTO extends ExtendedDTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
@@ -131,6 +132,11 @@ public class SecurityCompactDTO extends ExtendedDTO
         }
         catch (IllegalArgumentException ex)
         {
+            return defaultResId;
+        }
+        catch (NullPointerException ex) // there isn't any client Exchange resource with the given value exchange
+        {
+            Timber.e("Missing exchange resource for %s", exchange);
             return defaultResId;
         }
     }

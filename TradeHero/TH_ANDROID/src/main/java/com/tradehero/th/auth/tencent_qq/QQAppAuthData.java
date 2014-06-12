@@ -19,7 +19,7 @@ public class QQAppAuthData
         try
         {
             data.openid = (String) o.get("openid");
-            data.expires_in = (String) o.get("expires_in");
+            data.expires_in = String.valueOf(o.get("expires_in"));
             data.access_token = (String) o.get("access_token");
         } catch (JSONException e)
         {

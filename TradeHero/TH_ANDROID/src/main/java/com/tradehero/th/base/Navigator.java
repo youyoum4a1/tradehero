@@ -88,7 +88,7 @@ public class Navigator
         this.fragmentContentId = fragmentContentId;
     }
 
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] anim, String backStackName)
+    public <T extends Fragment> T pushFragment(Class<T> fragmentClass, Bundle args, int[] anim, String backStackName)
     {
         resetBackPressCount();
 
@@ -114,20 +114,20 @@ public class Navigator
         ft.addToBackStack(backStackName);
         ft.commitAllowingStateLoss();
 
-        return fragment;
+        return (T) fragment;
     }
 
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, String addBackStack)
+    public <T extends Fragment> T pushFragment(Class<T> fragmentClass, Bundle args, String addBackStack)
     {
         return pushFragment(fragmentClass, args, null, addBackStack);
     }
 
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass)
+    public <T extends Fragment> T pushFragment(Class<T> fragmentClass)
     {
         return pushFragment(fragmentClass, null);
     }
 
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args)
+    public <T extends Fragment> T pushFragment(Class<T> fragmentClass, Bundle args)
     {
         return pushFragment(fragmentClass, args, null, null);
     }
@@ -142,7 +142,16 @@ public class Navigator
             if (backPressedCount > 0)
             {
                 resetBackPressCount();
-                exitApp();
+
+                if (context instanceof Activity)
+                {
+                    ((Activity) context).finish();
+                }
+                else
+                {
+                    // Question: do we really need this?
+                    exitApp();
+                }
             }
             else
             {

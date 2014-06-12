@@ -1,54 +1,31 @@
 package com.tradehero.th.api.position;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.IOException;
+import com.tradehero.th.api.UniqueFieldDTODeserialiser;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import javax.inject.Inject;
 
-public class PositionDTODeserialiser extends StdDeserializer<PositionDTO>
+public class PositionDTODeserialiser extends UniqueFieldDTODeserialiser<PositionDTO>
 {
-    private Map<String, Class<? extends PositionDTO>> uniqueAttributes;
-
     //<editor-fold desc="Constructors">
-    PositionDTODeserialiser()
+    @Inject public PositionDTODeserialiser()
     {
-        super(PositionDTO.class);
-        uniqueAttributes = new HashMap<>();
+        super(createUniqueAttributes(), PositionDTO.class);
+
     }
     //</editor-fold>
 
-    void registerPositionDTO(
-            String uniqueAttribute,
-            Class<? extends PositionDTO> positionDTOClass)
+    private static Map<String, Class<? extends PositionDTO>> createUniqueAttributes()
     {
-        uniqueAttributes.put(uniqueAttribute, positionDTOClass);
+        Map<String, Class<? extends PositionDTO>> uniqueAttributes = new HashMap<>();
+        uniqueAttributes.put(PositionInPeriodDTO.TOTAL_PL_IN_PERIOD_REF_CCY, PositionInPeriodDTO.class);
+        uniqueAttributes.put(WatchlistPositionDTO.WATCHLIST_PRICE_FIELD, WatchlistPositionDTO.class);
+        return uniqueAttributes;
     }
 
-    @Override
-    public PositionDTO deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException
+    @Override protected Class<? extends PositionDTO> getDefaultClass()
     {
-        ObjectMapper mapper = (ObjectMapper) jp.getCodec();
-        ObjectNode root = mapper.readTree(jp);
-        Class<? extends PositionDTO> positionDTOClass = PositionDTO.class;
-        Iterator<Map.Entry<String, JsonNode>> elementsIterator =
-                root.fields();
-        while (elementsIterator.hasNext())
-        {
-            Map.Entry<String, JsonNode> element = elementsIterator.next();
-            String name = element.getKey();
-            if (uniqueAttributes.containsKey(name))
-            {
-                positionDTOClass = uniqueAttributes.get(name);
-                break;
-            }
-        }
-        return mapper.readValue(jp, positionDTOClass);
+        return PositionDTO.class;
     }
 }

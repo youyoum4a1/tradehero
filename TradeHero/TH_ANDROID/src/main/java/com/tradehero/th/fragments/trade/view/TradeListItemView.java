@@ -7,37 +7,41 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.fragments.trade.AbstractTradeListItemAdapter;
+import com.tradehero.th.fragments.trade.TradeListItemAdapter;
+import com.tradehero.th.models.position.PositionDTOUtils;
+import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeCache;
-import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.ocpsoft.prettytime.PrettyTime;
 
-public class TradeListItemView extends LinearLayout implements DTOView<AbstractTradeListItemAdapter.ExpandableTradeItem>
+public class TradeListItemView extends LinearLayout implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
 {
-    private AbstractTradeListItemAdapter.ExpandableTradeItem tradeItem;
+    private TradeListItemAdapter.ExpandableTradeItem tradeItem;
     private TradeDTO trade;
     private PositionDTO position;
-
-    private String currencyDisplay; //cached value - cleared in onDetach
+    private boolean prettyDate = true;
 
     @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
+    @Inject TradeDTOUtils tradeDTOUtils;
+    @Inject Lazy<PositionDTOUtils> positionDTOUtils;
+    @Inject PrettyTime prettyTime;
 
     // all the 3 caches below are needed to get the security currencyDisplay display
     // 1) use the position cache to get the the PositionDTO containing the securityId (type SecurityIntegerId)
@@ -49,14 +53,18 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
 
     @InjectView(R.id.ic_position_profit_indicator_left) protected ColorIndicator profitIndicatorView;
     @InjectView(R.id.trade_date_label) protected TextView dateTextView;
-    @InjectView(R.id.trade_quantity_label) protected TextView quantityTextView;
+    @InjectView(R.id.traded_quantity_verbose) protected TextView tradedQuantityVerbose;
+    @InjectView(R.id.holding_quantity_verbose) protected TextView holdingQuantityVerbose;
     @InjectView(R.id.trade_avg_price) protected TextView averagePriceTextView;
-    @InjectView(R.id.trade_realized_pl) protected TextView realizedPLTextView;
-    @InjectView(R.id.trade_unrealized_pl_container) protected View unrealizedPLContainer;
-    @InjectView(R.id.trade_unrealized_pl) protected TextView unrealizedPLTextView;
-    @InjectView(R.id.trade_quantity) protected TextView positionQuantityTextView;
+    @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
+    @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
+    @InjectView(R.id.unrealised_pl_container) protected View unrealisedPLContainer;
+    @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
+    @InjectView(R.id.unrealised_pl_value) protected TextView unrealizedPLValue;
+    @InjectView(R.id.trade_value_header) protected TextView tradeValueHeader;
+    @InjectView(R.id.trade_value) protected TextView tradeValue;
     @InjectView(R.id.trade_list_comment_section) protected View commentSection;
-    @InjectView(R.id.trade_list_comment) protected TextView commentTextView;
+    @InjectView(R.id.trade_list_comment) protected TextView commentText;
 
     //<editor-fold desc="Constructors">
     public TradeListItemView(Context context)
@@ -80,31 +88,32 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
         super.onFinishInflate();
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
-        initViews();
     }
 
-    protected void initViews()
+    @Override protected void onAttachedToWindow()
     {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        this.currencyDisplay = null;
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(AbstractTradeListItemAdapter.ExpandableTradeItem expandableItem)
+    @Override public void display(TradeListItemAdapter.ExpandableTradeItem expandableItem)
     {
         linkWith(expandableItem, true);
     }
 
-    public void linkWith(AbstractTradeListItemAdapter.ExpandableTradeItem item, boolean andDisplay)
+    public void linkWith(TradeListItemAdapter.ExpandableTradeItem item, boolean andDisplay)
     {
         this.tradeItem = item;
         if (this.tradeItem != null)
         {
-            this.position = positionCache.get().get(new OwnedPositionId(tradeItem.getModel()));
-            this.trade = tradeCache.get().get(tradeItem.getModel());
+            this.position = positionCache.get().get(tradeItem.getModel().positionDTOKey);
+            this.trade = tradeCache.get().get(tradeItem.getModel().ownedTradeId);
         }
         else
         {
@@ -136,96 +145,231 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
             this.profitIndicatorView.linkWith(getNumberToDisplay());
         }
 
-        if (this.quantityTextView != null && trade != null)
-        {
-            String quantityString = String.format("%+,d @ %s %,.2f", trade.quantity, getSecurityCurrencyDisplay(), trade.unit_price);
-            this.quantityTextView.setText(quantityString);
-        }
+        displayTradeBoughtText();
+        displayTradeDate();
+        displayHoldingQuantity();
+    }
 
-        if (this.dateTextView != null && trade != null && trade.date_time != null)
+    private void displayTradeBoughtText()
+    {
+        if (tradedQuantityVerbose != null)
         {
-            SimpleDateFormat sdf = new SimpleDateFormat("d MMM H:m z");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-            String dateString = sdf.format(trade.date_time);
-            dateTextView.setText(dateString);
+            tradedQuantityVerbose.setText(getTradeBoughtText());
         }
+    }
+
+    protected String getTradeBoughtText()
+    {
+        if (trade != null && position != null)
+        {
+            int textResId = trade.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
+            THSignedNumber tradeValue = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    trade.unitPrice,
+                    THSignedNumber.WITHOUT_SIGN,
+                    getCurrencyDisplay());
+            return getContext().getString(
+                    textResId,
+                    Math.abs(trade.quantity),
+                    tradeValue.toString());
+        }
+        else
+        {
+            return getContext().getString(R.string.na);
+        }
+    }
+
+    private void displayHoldingQuantity()
+    {
+        if (this.holdingQuantityVerbose != null)
+        {
+            this.holdingQuantityVerbose.setText(getHoldingQuantityText());
+        }
+    }
+
+    protected String getHoldingQuantityText()
+    {
+        if (trade != null)
+        {
+            return getContext().getString(
+                tradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
+                trade.quantityAfterTrade);
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    private void displayTradeDate()
+    {
+        if (dateTextView != null)
+        {
+            dateTextView.setText(getTradeDateText());
+        }
+    }
+
+    @NotNull
+    protected String getTradeDateText()
+    {
+        if (trade != null && trade.dateTime != null)
+        {
+            if (prettyDate)
+            {
+                return prettyTime.format(trade.dateTime);
+            }
+            else
+            {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM d HH:mm");
+                sdf.setTimeZone(TimeZone.getDefault());
+                return sdf.format(trade.dateTime);
+            }
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    @OnClick(R.id.trade_date_label)
+    protected void toggleTradeDateLook(View view)
+    {
+        prettyDate = !prettyDate;
+        displayTradeDate();
     }
 
     private void displayExpandableSection()
     {
+        displayAveragePrice();
+        displayUnrealisedPLContainer();
+        displayUnrealisedPLValueHeader();
+        displayUnrealisedPLValue();
+        displayRealisedPLValueHeader();
+        displayRealisedPLValue();
+        displayTradeValue();
+        displayCommentSection();
+        displayCommentText();
+    }
+
+    private void displayAveragePrice()
+    {
         if (this.averagePriceTextView != null && trade != null && position != null)
         {
-            String avgPriceString = String.format("%s %,.2f", position.getNiceCurrency(), trade.average_price_after_trade);
+            String avgPriceString = String.format("%s %,.2f", position.getNiceCurrency(), trade.averagePriceAfterTradeRefCcy);
             this.averagePriceTextView.setText(avgPriceString);
         }
+    }
 
-        if (this.realizedPLTextView != null && trade != null && position != null)
+    private void displayUnrealisedPLContainer()
+    {
+        if (this.unrealisedPLContainer != null && tradeItem != null && position != null)
         {
-            String realizedPLString = String.format("%s %+,.2f", position.getNiceCurrency(), trade.realized_pl_after_trade);
-            this.realizedPLTextView.setText(realizedPLString);
-            this.realizedPLTextView.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(trade.realized_pl_after_trade)));
+            this.unrealisedPLContainer.setVisibility((tradeItem.isLastTrade() && position.isOpen()) ? VISIBLE : GONE);
         }
+    }
 
-        if (this.unrealizedPLContainer != null && tradeItem != null && position != null)
+    private void displayUnrealisedPLValueHeader()
+    {
+        if (unrealisedPLValueHeader != null)
         {
-            this.unrealizedPLContainer.setVisibility(tradeItem.isLastTrade() && position.isClosed() ? GONE : VISIBLE);
-        }
-
-        if (this.unrealizedPLTextView != null && tradeItem != null && position != null)
-        {
-            if (tradeItem.isLastTrade() && position.isClosed())
+            if (position != null && position.unrealizedPLRefCcy != null && position.unrealizedPLRefCcy < 0)
             {
-                this.unrealizedPLTextView.setText(R.string.na);
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_loss_header);
             }
             else
             {
-                String realizedPLString = String.format("%s %+,.2f", position.getNiceCurrency(), position.unrealizedPLRefCcy);
-                this.unrealizedPLTextView.setText(realizedPLString);
-                unrealizedPLTextView.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(position.unrealizedPLRefCcy)));
+                unrealisedPLValueHeader.setText(R.string.position_unrealised_profit_header);
             }
         }
+    }
 
-        if (this.positionQuantityTextView != null && trade != null)
+    private void displayUnrealisedPLValue()
+    {
+        if (this.unrealizedPLValue != null && tradeItem != null && position != null)
         {
-            String quantityAfterTradeString = String.format("%,d", trade.quantity_after_trade);
-            this.positionQuantityTextView.setText(quantityAfterTradeString);
+            if (tradeItem.isLastTrade() && position.isOpen())
+            {
+                positionDTOUtils.get().setUnrealizedPLLook(unrealizedPLValue, position);
+            }
+            else
+            {
+                this.unrealizedPLValue.setText(R.string.na);
+            }
         }
+    }
 
+    private void displayRealisedPLValueHeader()
+    {
+        if (realisedPLValueHeader != null)
+        {
+            if (trade != null && trade.realizedPLAfterTradeRefCcy < 0)
+            {
+                realisedPLValueHeader.setText(R.string.position_realised_loss_header);
+            }
+            else
+            {
+                realisedPLValueHeader.setText(R.string.position_realised_profit_header);
+            }
+        }
+    }
+
+    private void displayRealisedPLValue()
+    {
+        if (this.realisedPLValue != null && trade != null && position != null)
+        {
+            tradeDTOUtils.setRealizedPLLook(realisedPLValue, trade, position.getNiceCurrency());
+        }
+    }
+
+    private void displayTradeValue()
+    {
+        if (tradeValue != null)
+        {
+            tradeValue.setText(getTradeValueText());
+        }
+    }
+
+    protected String getTradeValueText()
+    {
+        if (trade != null)
+        {
+            THSignedNumber tradeValue = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    trade.quantity * trade.unitPrice,
+                    THSignedNumber.WITHOUT_SIGN,
+                    getCurrencyDisplay());
+            return String.format("%s %s", getCurrencyDisplay(), tradeValue.toString());
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    private void displayCommentSection()
+    {
         if (this.commentSection != null && trade != null)
         {
             this.commentSection.setVisibility( trade.commentText == null ? GONE : VISIBLE);
         }
-        if (this.commentTextView != null && trade != null)
+    }
+
+    private void displayCommentText()
+    {
+        if (this.commentText != null && trade != null)
         {
-            this.commentTextView.setText(trade.commentText);
+            this.commentText.setText(trade.commentText);
         }
     }
 
-    private String getSecurityCurrencyDisplay()
+    @NotNull
+    private String getCurrencyDisplay()
     {
-        if (currencyDisplay == null)
+        if (position == null)
         {
-            if (position == null)
-            {
-                return null;
-            }
-
-            SecurityId securityId = securityIdCache.get().get(position.getSecurityIntegerId());
-            if (securityId == null)
-            {
-                return null;
-            }
-
-            SecurityCompactDTO security = securityCache.get().get(securityId);
-            if (security == null)
-            {
-                return null;
-            }
-
-            currencyDisplay = security.currencyDisplay;
+            return "null";
         }
-        return currencyDisplay;
+        return position.getNiceCurrency();
     }
 
     private double getNumberToDisplay()
@@ -240,7 +384,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<AbstractT
         }
         else
         {
-            return trade.realized_pl_after_trade;
+            return trade.realizedPLAfterTradeRefCcy;
         }
     }
 }

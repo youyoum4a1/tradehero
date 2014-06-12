@@ -204,7 +204,7 @@ public class UserStatisticView extends LinearLayout
 
     private void displayTradeCount()
     {
-        if (tradeCountTv != null)
+        if (tradeCountTv != null && leaderboardUserDTO.avgNumberOfTradesPerMonth != null)
         {
             tradeCountTv.setEndValue(leaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue());
             tradeCountTv.setFractionDigits(2);

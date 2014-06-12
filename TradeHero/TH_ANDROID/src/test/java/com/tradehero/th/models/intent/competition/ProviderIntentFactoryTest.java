@@ -2,32 +2,28 @@ package com.tradehero.th.models.intent.competition;
 
 import android.content.Intent;
 import android.net.Uri;
-import com.tradehero.TestConstants;
-import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.models.intent.THIntent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
+@RunWith(RobolectricMavenTestRunner.class)
 public class ProviderIntentFactoryTest
 {
     @Before public void setUp()
     {
-        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
+        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
     }
 
     @After public void tearDown()
     {
-        THIntent.currentActivityHolder = null;
+        THIntent.context = null;
     }
 
     @Test public void createsPageIntent()

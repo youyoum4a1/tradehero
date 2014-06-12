@@ -15,6 +15,8 @@ import com.tradehero.th.persistence.translation.TranslationKeyList;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SocialShareTranslationHelper extends SocialShareHelper
 {
@@ -22,7 +24,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     protected final AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory;
     protected final TranslationCache translationCache;
 
-    private AbstractDiscussionCompactDTO toTranslate;
+    @Nullable private AbstractDiscussionCompactDTO toTranslate;
     private TranslationKeyList remainingKeys;
     private AbstractDiscussionCompactDTO translated;
 
@@ -48,7 +50,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     }
 
     //<editor-fold desc="Listener Handling">
-    @Override public void setMenuClickedListener(SocialShareHelper.OnMenuClickedListener menuClickedListener)
+    @Override public void setMenuClickedListener(@Nullable SocialShareHelper.OnMenuClickedListener menuClickedListener)
     {
         if (menuClickedListener != null && !(menuClickedListener instanceof OnMenuClickedListener))
         {
@@ -95,12 +97,12 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     }
     //</editor-fold>
 
-    public String getTargetLanguage()
+    @NotNull public String getTargetLanguage()
     {
         return currentActivityHolder.getCurrentActivity().getResources().getConfiguration().locale.getLanguage();
     }
 
-    public boolean canTranslate(AbstractDiscussionCompactDTO discussionToTranslate)
+    public boolean canTranslate(@Nullable AbstractDiscussionCompactDTO discussionToTranslate)
     {
         return discussionToTranslate != null &&
                 translationKeyFactory.isValidLangCode(discussionToTranslate.langCode) &&
@@ -123,7 +125,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
-    @Override protected NewsDialogLayout.OnMenuClickedListener createShareMenuClickedListener()
+    @NotNull @Override protected NewsDialogLayout.OnMenuClickedListener createShareMenuClickedListener()
     {
         return new SocialShareTranslationHelperShareMenuClickedListener();
     }
@@ -140,9 +142,9 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
-    public void translate(AbstractDiscussionCompactDTO toTranslate)
+    public void translate(@Nullable AbstractDiscussionCompactDTO toTranslate)
     {
-        if (toTranslate != null)
+        if (toTranslate != null && toTranslate.langCode != null)
         {
             this.toTranslate = toTranslate;
             this.translated = abstractDiscussionCompactDTOFactory.clone(toTranslate);
@@ -171,7 +173,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
-    protected DTOCacheNew.Listener<TranslationKey, TranslationResult> createTranslationCacheListener()
+    @NotNull protected DTOCacheNew.Listener<TranslationKey, TranslationResult> createTranslationCacheListener()
     {
         return new SocialShareTranslationHelperTranslationCacheListener();
     }

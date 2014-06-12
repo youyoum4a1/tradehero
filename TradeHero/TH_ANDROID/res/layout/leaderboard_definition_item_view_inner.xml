@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+  <RelativeLayout
+      android:id="@+id/leaderboard_def_item_icon_container"
+      android:layout_width="@dimen/leaderboard_def_item_icon_container"
+      android:layout_height="@dimen/leaderboard_def_item_icon_container"
+      android:layout_marginLeft="@dimen/leaderboard_title_text_padding"
+      >
+
+    <ImageView
+        android:id="@+id/leaderboard_def_item_icon_3"
+        android:layout_width="@dimen/leaderboard_def_item_icon"
+        android:layout_height="@dimen/leaderboard_def_item_icon"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:paddingRight="@dimen/leaderboard_title_text_padding"
+        android:contentDescription="@null"
+        tools:src="@drawable/square_ae"
+        />
+
+    <ImageView
+        android:id="@+id/leaderboard_def_item_icon"
+        android:layout_width="@dimen/leaderboard_def_item_icon"
+        android:layout_height="@dimen/leaderboard_def_item_icon"
+        android:layout_centerInParent="true"
+        android:contentDescription="@null"
+        tools:src="@drawable/square_ad"
+        />
+
+    <ImageView
+        android:id="@+id/leaderboard_def_item_icon_2"
+        android:layout_width="@dimen/leaderboard_def_item_icon"
+        android:layout_height="@dimen/leaderboard_def_item_icon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="@dimen/leaderboard_title_text_padding"
+        android:contentDescription="@null"
+        android:alpha="0.7"
+        tools:src="@drawable/square_ag"
+        />
+
+  </RelativeLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_toRightOf="@id/leaderboard_def_item_icon_container"
+      android:orientation="vertical"
+      android:gravity="center_vertical"
+      android:paddingLeft="@dimen/leaderboard_title_text_padding"
+      >
+
+    <TextView android:id="@+id/leaderboard_def_item_name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/leaderboard_title_text_size"
+        android:textStyle="bold"
+        tools:text="Vietnam"
+        />
+
+    <TextView android:id="@+id/leaderboard_def_item_desc"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        tools:text="Exchanges: VND"
+        />
+
+  </LinearLayout>
+
+  <ImageView
+      android:id="@+id/leaderboard_def_item_action_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:contentDescription="@null"
+      android:src="@drawable/expand"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:paddingRight="15dp"
+      android:paddingLeft="15dp"
+      />
+
+  <TextView
+      android:id="@+id/leaderboard_def_item_user_rank"
+      android:layout_toLeftOf="@id/leaderboard_def_item_action_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_centerVertical="true"
+      android:gravity="center_vertical"
+      tools:text="100"
+      />
+
+</merge>

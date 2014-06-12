@@ -1,6 +1,5 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;

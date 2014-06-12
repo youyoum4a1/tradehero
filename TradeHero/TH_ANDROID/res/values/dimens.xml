@@ -26,7 +26,8 @@
   <dimen name="temp_leaderboard_user_item_action_buttons_height">30dp</dimen>
   <dimen name="leaderboard_user_item_action_button_vertical_padding">5dp</dimen>
   <dimen name="leaderboard_user_item_action_button_margin">5dp</dimen>
-  <dimen name="leaderboard_def_item_icon">50dp</dimen>
+  <dimen name="leaderboard_def_item_icon_container">50dp</dimen>
+  <dimen name="leaderboard_def_item_icon">36dp</dimen>
   <dimen name="timeline_item_margin">10dp</dimen>
   <dimen name="timeline_side_spacing">10dp</dimen>
   <dimen name="timeline_item_padding">10dip</dimen>
@@ -131,7 +132,10 @@
   <dimen name="common_margin_4">4dp</dimen>
   <dimen name="common_margin_10">10dp</dimen>
   <dimen name="common_margin_15">15dp</dimen>
+  <dimen name="common_margin_20">20dp</dimen>
   <dimen name="common_margin_50">50dp</dimen>
+  <dimen name="common_margin_100">100dp</dimen>
+  <dimen name="common_margin_110">110dp</dimen>
   <dimen name="common_height_40">40dp</dimen>
   <dimen name="stock_item_width">200dp</dimen>
 

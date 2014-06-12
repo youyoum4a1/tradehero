@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
@@ -456,7 +457,7 @@ public class TrendingFragment extends SecurityListFragment
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();
-            args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
+            ProviderSecurityListFragment.putProviderId(args, providerDTO.getProviderId());
             ProviderSecurityListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
             getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
         }

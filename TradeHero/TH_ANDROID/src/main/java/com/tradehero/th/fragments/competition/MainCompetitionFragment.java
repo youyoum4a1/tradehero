@@ -20,7 +20,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -325,7 +325,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushTradeNowElement(CompetitionZoneTradeNowDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
-        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+        ProviderSecurityListFragment.putProviderId(args, providerId);
         ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
@@ -337,9 +337,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (ownedPortfolioId != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            getNavigator().pushFragment(PositionListFragment.class, args);
+            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+            getDashboardNavigator().pushFragment(PositionListFragment.class, args);
         }
     }
 
@@ -348,7 +348,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
         ProviderVideoListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
-        getNavigator().pushFragment(ProviderVideoListFragment.class, args);
+        getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
     }
 
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
@@ -372,8 +372,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 providerId.getArgs());
         args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_COMPETITION_ID,
                 competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
-        args.putInt(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID,
-                leaderboardDefDTO.id);
+        CompetitionLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE,
                 competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,

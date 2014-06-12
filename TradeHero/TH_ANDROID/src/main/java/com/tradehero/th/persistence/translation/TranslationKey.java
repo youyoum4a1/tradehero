@@ -1,23 +1,25 @@
 package com.tradehero.th.persistence.translation;
 
 import com.tradehero.common.persistence.DTOKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TranslationKey implements DTOKey
 {
-    public final String from;
-    public final String to;
+    @NotNull public final String from;
+    @NotNull public final String to;
     public final int textHashCode;
 
     // It does not participate to the key, but is still necessary to achieve translation
-    public String translatableText;
+    @Nullable public String translatableText;
 
     //<editor-fold desc="Constructors">
-    public TranslationKey(String from, String to, String translatableText)
+    public TranslationKey(@NotNull String from, @NotNull String to, @NotNull String translatableText)
     {
         this(from, to, translatableText.hashCode(), translatableText);
     }
 
-    public TranslationKey(String from, String to, int textHashCode, String translatableText)
+    public TranslationKey(@NotNull String from, @NotNull String to, int textHashCode, @Nullable String translatableText)
     {
         this.from = from;
         this.to = to;
@@ -33,7 +35,7 @@ public class TranslationKey implements DTOKey
                 textHashCode;
     }
 
-    @Override public boolean equals(Object obj)
+    @Override public boolean equals(@Nullable Object obj)
     {
         if (obj == this)
         {
@@ -46,12 +48,12 @@ public class TranslationKey implements DTOKey
         return equalClass(obj) && equalFields((TranslationKey) obj);
     }
 
-    protected boolean equalClass(Object other)
+    protected boolean equalClass(@NotNull Object other)
     {
         return other.getClass().equals(getClass());
     }
 
-    protected boolean equalFields(TranslationKey other)
+    protected boolean equalFields(@NotNull TranslationKey other)
     {
         return from.equals(other.from) &&
                 to.equals(other.to) &&

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="follow">팔로우</string>
+  <string name="follow_all">친구 팔로우</string>
   <string name="message">메세지</string>
   <string name="upgrade_to_premium">프리미엄 업그레이드</string>
   <string name="following_premium">팔로우중\n(프리미엄)</string>
@@ -10,6 +11,7 @@
   <string name="leaderboard_empty">지금 트레이드를 시작하여 리더보드에 첫번째로 이름을 올리세요! 
   </string>
   <string name="action_search">검색</string>
+  <string name="action_invite">Invite Friends</string>    <!--TODO translation-->
   <string name="update">업데이트</string>
   <string name="empty_video_list">지금 재생 가능한 비디오가 없습니다.</string>
   <string name="loading_required_information">요청한 정보 로딩중</string>

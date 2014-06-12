@@ -5,6 +5,7 @@ public class InviteDTO
     public String email;
     public String fbId;
     public String liId;
+    public String twId;
 
     public InviteDTO()
     {

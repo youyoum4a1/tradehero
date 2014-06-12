@@ -1,5 +1,6 @@
 package com.tradehero.th.api.portfolio;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.users.UserBaseDTO;
 import java.io.ByteArrayOutputStream;
@@ -12,7 +13,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static junit.framework.Assert.assertFalse;
@@ -20,7 +20,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class DisplayablePortfolioDTOComparableTest
 {

@@ -1,9 +1,9 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.position.GetLeaderboardPositionsDTO;
-import java.util.List;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
+import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.tradehero.th.api.position.GetPositionsDTO;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -12,7 +12,7 @@ public interface LeaderboardService
 {
     //<editor-fold desc="Get Leaderboard Definitions">
     @GET("/leaderboards")
-    List<LeaderboardDefDTO> getLeaderboardDefinitions();
+    LeaderboardDefDTOList getLeaderboardDefinitions();
     //</editor-fold>
 
     //<editor-fold desc="Get Leaderboard">
@@ -58,7 +58,7 @@ public interface LeaderboardService
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
     @GET("/leaderboardMarkUser/{leaderboardbMarkUserId}/positions")
-    GetLeaderboardPositionsDTO getPositionsForLeaderboardMarkUser(
+    GetPositionsDTO getPositionsForLeaderboardMarkUser(
             @Path("leaderboardbMarkUserId") int leaderboardbMarkUserId,
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage);
@@ -70,6 +70,9 @@ public interface LeaderboardService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             @Query("includeFoF") Boolean includeFoF);
+
+    @GET("/leaderboards/newfriends")
+    LeaderboardFriendsDTO getNewFriendsLeaderboard();
 
     /**
      *

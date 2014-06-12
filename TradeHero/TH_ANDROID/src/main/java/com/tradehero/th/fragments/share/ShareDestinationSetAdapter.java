@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOSetAdapter;
 import com.tradehero.th.models.share.ShareDestination;
-import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Set;

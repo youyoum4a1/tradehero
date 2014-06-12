@@ -391,10 +391,10 @@ public class WatchlistPositionFragment extends DashboardFragment
             Bundle args = new Bundle();
             if (securityId != null)
             {
-                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                WatchlistEditFragment.putSecurityId(args, securityId);
                 if (watchlistPositionCache.get(securityId) != null)
                 {
-                    args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
+                    DashboardFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
                 }
             }
             getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);

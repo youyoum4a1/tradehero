@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.translation;
 
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.translation.TranslationToken;
 
 public class TranslationTokenKey implements DTOKey
 {

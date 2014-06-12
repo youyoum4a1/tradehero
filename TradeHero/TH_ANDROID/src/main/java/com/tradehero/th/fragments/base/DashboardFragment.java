@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -17,7 +18,17 @@ import timber.log.Timber;
 abstract public class DashboardFragment extends BaseFragment
     implements BaseFragment.TabBarVisibilityInformer
 {
+    private static final String BUNDLE_KEY_TITLE = DashboardFragment.class.getName() + ".title";
+
     @Inject protected AlertDialogUtil alertDialogUtil;
+
+    public static void putActionBarTitle(Bundle args, String title)
+    {
+        if (args != null)
+        {
+            args.putString(BUNDLE_KEY_TITLE, title);
+        }
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -36,6 +47,25 @@ abstract public class DashboardFragment extends BaseFragment
             inflater.inflate(R.menu.menu_with_tutorial, menu);
         }
         super.onCreateOptionsMenu(menu, inflater);
+
+
+        Bundle argument = getArguments();
+
+        if (argument != null && argument.containsKey(BUNDLE_KEY_TITLE))
+        {
+            String title = argument.getString(BUNDLE_KEY_TITLE);
+
+            if (title != null && !title.isEmpty())
+            {
+                setActionBarTitle(title);
+            }
+        }
+    }
+
+    protected void setActionBarTitle(String title)
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setTitle(title);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

@@ -84,7 +84,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
@@ -309,7 +308,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
         UserBaseKey newUserBaseKey =
                 new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         //create adapter and so on
@@ -669,8 +667,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         Bundle args = new Bundle();
 
         PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                ownedPortfolioId.getArgs());
+        PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+        PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
         DashboardNavigator navigator =
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         navigator.pushFragment(PositionListFragment.class, args);
@@ -882,7 +880,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
         }

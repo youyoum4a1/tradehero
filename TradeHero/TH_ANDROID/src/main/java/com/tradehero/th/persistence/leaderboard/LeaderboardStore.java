@@ -6,7 +6,7 @@ import com.tradehero.common.persistence.LeaderboardQuery;
 import com.tradehero.common.persistence.PersistableResource;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.network.retrofit.BasicRetrofitErrorHandler;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
@@ -49,7 +49,7 @@ public class LeaderboardStore implements PersistableResource<LeaderboardDTO>
                 {
                     switch (leaderboardId)
                     {
-                        case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
+                        case LeaderboardDefKeyKnowledge.FRIEND_ID:
                             leaderboardDTO = leaderboardService.get().getFriendsLeaderboard(query.getPage(), perPage, includeFoF, query.getSortType());
                             break;
                         default:
