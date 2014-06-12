@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.security;
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
@@ -12,20 +11,26 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class SecurityCompactCache extends StraightDTOCache<SecurityId, SecurityCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
-    @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
-    @Inject protected SecurityIdCache securityIdCache;
-    @Inject protected SecurityCompactDTOFactory securityCompactDTOFactory;
+    @NotNull protected final Lazy<SecurityServiceWrapper> securityServiceWrapper;
+    @NotNull protected final Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @NotNull protected final SecurityIdCache securityIdCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public SecurityCompactCache()
+    @Inject public SecurityCompactCache(
+            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
+            @NotNull Lazy<SecurityPositionDetailCache> securityPositionDetailCache,
+            @NotNull SecurityIdCache securityIdCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.securityServiceWrapper = securityServiceWrapper;
+        this.securityPositionDetailCache = securityPositionDetailCache;
+        this.securityIdCache = securityIdCache;
     }
     //</editor-fold>
 
@@ -70,9 +75,7 @@ import javax.inject.Singleton;
     {
         // We save the correspondence between int id and exchange/symbol for future reference
         securityIdCache.put(value.getSecurityIntegerId(), key);
-
-        // We make sure the proper type is recreated on the fly.
-        return super.put(key, securityCompactDTOFactory.clonePerType(value));
+        return super.put(key, value);
     }
 
     public List<SecurityCompactDTO> put(List<SecurityCompactDTO> values)

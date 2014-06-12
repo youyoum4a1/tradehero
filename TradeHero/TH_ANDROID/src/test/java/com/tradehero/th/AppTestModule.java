@@ -1,17 +1,17 @@
 package com.tradehero.th;
 
 import com.tradehero.th.activities.ActivityTestModule;
-import com.tradehero.th.api.ApiModule;
+import com.tradehero.th.api.ApiTestModule;
 import com.tradehero.th.fragments.FragmentTestModule;
 import com.tradehero.th.models.ModelsTestModule;
 import dagger.Module;
 
 @Module(
         includes = {
-                ApiModule.class,
+                ApiTestModule.class,
                 ModelsTestModule.class,
                 ActivityTestModule.class,
-                FragmentTestModule.class
+                FragmentTestModule.class,
         },
         complete = false,
         library = true

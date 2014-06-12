@@ -13,9 +13,14 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.SecurityUtils;
+import dagger.Lazy;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +44,10 @@ public class WatchlistEditFragmentTest
     private static final Double GOOGLE_STOCK_WATCHING_PRICE = 554.51;
     private static final Integer GOOGLE_STOCK_WATCHING_QUANTITY = 1;
 
+    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
+    @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @Inject protected SecurityIdCache securityIdCache;
+
     private WatchlistEditFragment watchlistFragment;
     private DashboardNavigator dashboardNavigator;
 
@@ -54,7 +63,7 @@ public class WatchlistEditFragmentTest
         googleSecurityCompactDTO.name = GOOGLE_NAME;
         googleSecurityCompactDTO.lastPrice = GOOGLE_STOCK_WATCHING_PRICE;
 
-        SecurityCompactCache securityCompactCache = spy(new SecurityCompactCache());
+        SecurityCompactCache securityCompactCache = spy(new SecurityCompactCache(securityServiceWrapper, securityPositionDetailCache, securityIdCache));
         when(securityCompactCache.get(any(SecurityId.class))).thenReturn(googleSecurityCompactDTO);
 
         Bundle args = new Bundle();

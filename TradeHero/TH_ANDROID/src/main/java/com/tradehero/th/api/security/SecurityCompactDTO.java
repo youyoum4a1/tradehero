@@ -1,16 +1,47 @@
-    package com.tradehero.th.api.security;
+package com.tradehero.th.api.security;
 
-    import com.tradehero.th.api.ExtendedDTO;
-    import com.tradehero.th.api.market.Exchange;
-    import com.tradehero.th.utils.SecurityUtils;
-    import java.util.ArrayList;
-    import java.util.Date;
-    import java.util.List;
-    import timber.log.Timber;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.api.market.Exchange;
+import com.tradehero.th.utils.SecurityUtils;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import timber.log.Timber;
 
-    public class SecurityCompactDTO extends ExtendedDTO
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "securityType")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.EQUITY_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.FUND_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = WarrantDTO.class, name = WarrantDTO.WARRANT_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.BOND_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.UNIT_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.TRADABLE_RIGHTS_ISSUE_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.PREFERENCE_SHARE_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.DEPOSITORY_RECEIPTS_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.COVERED_WARRANT_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.PREFERRED_SEC_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.STAPLED_SEC_DTO_DESERIALISING_TYPE),
+})
+public class SecurityCompactDTO extends ExtendedDTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
+
+    public static final String EQUITY_DTO_DESERIALISING_TYPE = "1";
+    public static final String FUND_DTO_DESERIALISING_TYPE = "2";
+    public static final String WARRANT_DTO_DESERIALISING_TYPE = "3";
+    public static final String BOND_DTO_DESERIALISING_TYPE = "4";
+    public static final String UNIT_DTO_DESERIALISING_TYPE = "5";
+    public static final String TRADABLE_RIGHTS_ISSUE_DTO_DESERIALISING_TYPE = "6";
+    public static final String PREFERENCE_SHARE_DTO_DESERIALISING_TYPE = "7";
+    public static final String DEPOSITORY_RECEIPTS_DTO_DESERIALISING_TYPE = "8";
+    public static final String COVERED_WARRANT_DTO_DESERIALISING_TYPE = "9";
+    public static final String PREFERRED_SEC_DTO_DESERIALISING_TYPE = "10";
+    public static final String STAPLED_SEC_DTO_DESERIALISING_TYPE = "11";
 
     public Integer id;
     public String symbol;

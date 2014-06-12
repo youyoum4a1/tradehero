@@ -6,40 +6,28 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
+import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOFactory;
-import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.security.DTOProcessorSecurityCompactListReceived;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import retrofit.Callback;
 
 @Singleton public class ProviderServiceWrapper
 {
     private final ProviderService providerService;
     private final ProviderServiceAsync providerServiceAsync;
-    private final SecurityCompactDTOFactory securityCompactDTOFactory;
 
     @Inject public ProviderServiceWrapper(
             ProviderService providerService,
-            ProviderServiceAsync providerServiceAsync,
-            SecurityCompactDTOFactory securityCompactDTOFactory)
+            ProviderServiceAsync providerServiceAsync)
     {
         super();
         this.providerService = providerService;
         this.providerServiceAsync = providerServiceAsync;
-        this.securityCompactDTOFactory = securityCompactDTOFactory;
-    }
-
-    protected DTOProcessor<List<SecurityCompactDTO>> createSecurityCompactListReceivedDTOProcessor()
-    {
-        return new DTOProcessorSecurityCompactListReceived(securityCompactDTOFactory);
     }
 
     //<editor-fold desc="Get Providers">
@@ -87,12 +75,12 @@ import retrofit.Callback;
         {
             throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
-        return createSecurityCompactListReceivedDTOProcessor().process(received);
+        return received;
     }
 
     public MiddleCallback<List<SecurityCompactDTO>> getProviderSecurities(ProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
     {
-        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback, createSecurityCompactListReceivedDTOProcessor());
+        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         if (key instanceof SearchProviderSecurityListType)
         {
             SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
