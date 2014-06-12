@@ -7,17 +7,17 @@ import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {
     protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFilterSliderContainer(Context context)

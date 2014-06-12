@@ -11,6 +11,7 @@ import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
+import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -25,6 +26,7 @@ import com.tradehero.th.persistence.market.ExchangeListCache;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import dagger.Lazy;
@@ -32,6 +34,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
+
+//import com.mobileapptracker.MobileAppTracker;
 
 public class SplashActivity extends SherlockActivity
 {
@@ -49,6 +53,7 @@ public class SplashActivity extends SherlockActivity
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<Tapstream> tapStream;
+    //@Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -93,7 +98,14 @@ public class SplashActivity extends SherlockActivity
 
         localyticsSession.get().open();
         AppEventsLogger.activateApp(this, facebookAppId);
-        tapStream.get().fireEvent(new Event(getString(TapStreamType.fromType(Constants.VERSION).getOpenResId()), false));
+        tapStream.get().fireEvent(
+                new Event(getString(TapStreamType.fromType(Constants.VERSION).getOpenResId()),
+                        false));
+        //mobileAppTrackerLazy.get().setReferralSources(this);
+        //mobileAppTrackerLazy.get().measureSession();
+        //mobileAppTrackerLazy.get().measureAction("1234");
+        TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY,
+                TapStreamType.fromType(Constants.VERSION).name());
 
         if (!Constants.RELEASE)
         {

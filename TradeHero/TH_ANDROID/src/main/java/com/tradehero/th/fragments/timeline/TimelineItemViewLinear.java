@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -27,6 +26,7 @@ import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -34,7 +34,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     //<editor-fold desc="Constructors">
     public TimelineItemViewLinear(Context context)

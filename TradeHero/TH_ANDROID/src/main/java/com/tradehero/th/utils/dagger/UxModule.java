@@ -17,6 +17,8 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
+//import com.mobileapptracker.MobileAppTracker;
+
 @Module(
         injects = {
                 SignInFragment.class,
@@ -31,6 +33,9 @@ public class UxModule
 {
     private static final String TAPSTREAM_KEY = "Om-yveoZQ7CMU7nUGKlahw";
     private static final String TAPSTREAM_APP_NAME = "tradehero";
+    private static final String MAT_APP_ID = "19686";
+    private static final String MAT_APP_KEY = "c65b99d5b751944e3637593edd04ce01";
+    public static final String TD_APP_ID_KEY = "5991FF8EFB8EFF717C206FCCF9C969A8";
 
     // localytics
     @Provides @Singleton LocalyticsSession provideLocalyticsSession(THLocalyticsSession localyticsSession)
@@ -54,7 +59,17 @@ public class UxModule
     {
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice
-        config.setInstallEventName(context.getString(TapStreamType.fromType(Constants.VERSION).getInstallResId()));
+        config.setInstallEventName(context.getString(
+                TapStreamType.fromType(Constants.VERSION).getInstallResId()));
         return config;
     }
+
+    ////MAT
+    //@Provides @Singleton MobileAppTracker provideMAT(Application app, Context context)
+    //{
+    //    MobileAppTracker.init(context, MAT_APP_ID, MAT_APP_KEY);
+    //    //mobileAppTracker = MobileAppTracker.getInstance();
+    //    //mobileAppTracker.setReferralSources(this);
+    //    return MobileAppTracker.getInstance();
+    //}
 }

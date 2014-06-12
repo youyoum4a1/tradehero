@@ -18,7 +18,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -45,6 +44,7 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     @InjectView(R.id.search_empty_container) RelativeLayout searchEmptyContainer;
     @InjectView(R.id.search_empty_textview) TextView searchEmptyTextView;
