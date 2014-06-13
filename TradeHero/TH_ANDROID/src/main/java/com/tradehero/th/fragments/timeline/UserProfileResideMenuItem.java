@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -110,20 +111,10 @@ public class UserProfileResideMenuItem extends LinearLayout
 
         if (andDisplay)
         {
+            displayAvatar();
+
             if (userProfileDTO != null)
             {
-                if (userProfileDTO.picture != null)
-                {
-                    picasso.get().load(userProfileDTO.picture)
-                            .error(getErrorDrawable())
-                            .transform(userPhotoTransformation)
-                            .into(userProfileAvatar);
-                }
-                else
-                {
-                    showDefaultUserPhoto();
-                }
-
                 userDisplayName.setText(userProfileDTO.displayName);
 
                 if (userProfileDTO.portfolio.roiSinceInception == null)
@@ -140,6 +131,34 @@ public class UserProfileResideMenuItem extends LinearLayout
             else
             {
                 resetView();
+            }
+        }
+    }
+
+    private void displayAvatar()
+    {
+        if (userProfileAvatar != null)
+        {
+            if (userProfileDTO != null && userProfileDTO.picture != null)
+            {
+                picasso.get().load(userProfileDTO.picture)
+                        .error(getErrorDrawable())
+                        .transform(userPhotoTransformation)
+                        .into(userProfileAvatar, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                showDefaultUserPhoto();
+                            }
+                        });
+            }
+            else
+            {
+                showDefaultUserPhoto();
             }
         }
     }
@@ -167,9 +186,12 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     private void showDefaultUserPhoto()
     {
-        picasso.get().load(R.drawable.superman_facebook)
-                .transform(userPhotoTransformation)
-                .into(userProfileAvatar);
+        if (userProfileAvatar != null)
+        {
+            picasso.get().load(R.drawable.superman_facebook)
+                    .transform(userPhotoTransformation)
+                    .into(userProfileAvatar);
+        }
     }
 
     private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
