@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 public class PerPagedFilteredLeaderboardKeyPreference extends PerPagedLeaderboardKeyPreference
 {
-    @Inject public PerPagedFilteredLeaderboardKeyPreference(Context context, SharedPreferences preference, String key, Set<String> defaultValue)
+    public PerPagedFilteredLeaderboardKeyPreference(Context context, SharedPreferences preference, String key, Set<String> defaultValue)
     {
         super(context, preference, key, defaultValue);
     }
