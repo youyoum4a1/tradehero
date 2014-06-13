@@ -28,6 +28,8 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
 
@@ -37,20 +39,20 @@ import java.util.List;
 
 @Singleton public class UserServiceWrapper
 {
-    private final UserService userService;
-    private final UserServiceAsync userServiceAsync;
-    private final UserProfileCache userProfileCache;
-    private final UserMessagingRelationshipCache userMessagingRelationshipCache;
-    private final Lazy<HeroListCache> heroListCache;
-    private final GetPositionsCache getPositionsCache;
+    @NotNull private final UserService userService;
+    @NotNull private final UserServiceAsync userServiceAsync;
+    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @NotNull private final Lazy<HeroListCache> heroListCache;
+    @NotNull private final GetPositionsCache getPositionsCache;
 
     @Inject public UserServiceWrapper(
-            UserService userService,
-            UserServiceAsync userServiceAsync,
-            UserProfileCache userProfileCache,
-            UserMessagingRelationshipCache userMessagingRelationshipCache,
-            Lazy<HeroListCache> heroListCache,
-            GetPositionsCache getPositionsCache)
+            @NotNull UserService userService,
+            @NotNull UserServiceAsync userServiceAsync,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
+            @NotNull Lazy<HeroListCache> heroListCache,
+            @NotNull GetPositionsCache getPositionsCache)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -61,29 +63,29 @@ import java.util.List;
     }
 
     //<editor-fold desc="DTO Processors">
-    protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
         return new DTOProcessorUpdateUserProfile(userProfileCache);
     }
 
-    protected DTOProcessor<UserProfileDTO> createFollowUserProcessor(UserBaseKey userToFollow)
+    @NotNull protected DTOProcessor<UserProfileDTO> createFollowUserProcessor(@NotNull UserBaseKey userToFollow)
     {
         return new DTOProcessorFollowUser(userProfileCache,
                 heroListCache.get(), getPositionsCache, userMessagingRelationshipCache,
                 userToFollow);
     }
 
-    protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(UserBaseKey playerId)
+    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
     {
         return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
     }
 
-    protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(UserBaseKey playerId)
+    @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
     {
         return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
     }
 
-    protected DTOProcessor<Response> createUserDeletedProcessor(UserBaseKey playerId)
+    @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
     {
         return new DTOProcessorUserDeleted(userProfileCache, playerId);
     }
@@ -537,6 +539,7 @@ import java.util.List;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Get Social Friends">
     public List<UserFriendsDTO> getSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum)
     {
         return userService.getSocialFriends(userKey.key,socialNetworkEnum);
@@ -548,7 +551,9 @@ import java.util.List;
         userServiceAsync.getSocialFriends(userKey.key,socialNetworkEnum,middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Search Social Friends">
     public MiddleCallback<List<UserFriendsDTO>> searchSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,String query, Callback<List<UserFriendsDTO>> callback)
     {
         MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
@@ -560,7 +565,9 @@ import java.util.List;
     {
         return userService.searchSocialFriends(userKey.key,socialNetworkEnum,query);
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Follow Batch Free">
     public Response followBatchFree(FollowFriendsForm followFriendsForm)
     {
         return userService.followBatchFree(followFriendsForm);
@@ -572,6 +579,7 @@ import java.util.List;
         userServiceAsync.followBatchFree(followFriendsForm,middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
     public Response inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO)
@@ -602,36 +610,36 @@ import java.util.List;
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    public UserProfileDTO follow(UserBaseKey userBaseKey)
+    public UserProfileDTO follow(@NotNull UserBaseKey userBaseKey)
     {
         return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key));
     }
 
-    public MiddleCallback<UserProfileDTO> follow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> follow(@NotNull UserBaseKey userBaseKey, @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.follow(userBaseKey.key, middleCallback);
         return middleCallback;
     }
 
-    public UserProfileDTO freeFollow(UserBaseKey userBaseKey)
+    public UserProfileDTO freeFollow(@NotNull UserBaseKey userBaseKey)
     {
         return createFollowUserProcessor(userBaseKey).process(userService.freeFollow(userBaseKey.key));
     }
 
-    public MiddleCallback<UserProfileDTO> freeFollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> freeFollow(@NotNull UserBaseKey userBaseKey, @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.freeFollow(userBaseKey.key, callback);
         return middleCallback;
     }
 
-    public UserProfileDTO follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO)
+    public UserProfileDTO follow(@NotNull UserBaseKey userBaseKey, @NotNull GooglePlayPurchaseDTO purchaseDTO)
     {
         return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseDTO));
     }
 
-    public MiddleCallback<UserProfileDTO> follow(UserBaseKey userBaseKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> follow(@NotNull UserBaseKey userBaseKey, @NotNull GooglePlayPurchaseDTO purchaseDTO, @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallback);
