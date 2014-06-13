@@ -7,6 +7,7 @@ import com.tradehero.th.api.market.ExchangeStringId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class ExchangeIdCache extends StraightDTOCacheNew<ExchangeStringId, ExchangeIntegerId>
 {
@@ -19,7 +20,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override public ExchangeIntegerId fetch(ExchangeStringId key) throws Throwable
+    @Override public ExchangeIntegerId fetch(@NotNull ExchangeStringId key) throws Throwable
     {
         throw new IllegalArgumentException("Cannot fetch here");
     }

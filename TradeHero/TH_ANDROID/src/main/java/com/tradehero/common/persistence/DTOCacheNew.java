@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * See DTOKeyIdList to avoid duplicating data in caches.
@@ -19,8 +20,8 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
      * @param key
      * @return
      */
-    DTOType get(DTOKeyType key);
-    DTOType fetch(DTOKeyType key) throws Throwable;
+    DTOType get(@NotNull DTOKeyType key);
+    DTOType fetch(@NotNull DTOKeyType key) throws Throwable;
     DTOType getOrFetchSync(DTOKeyType key) throws Throwable;
     DTOType getOrFetchSync(DTOKeyType key, boolean force) throws Throwable;
     void register(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);

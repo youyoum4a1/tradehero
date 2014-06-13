@@ -10,6 +10,7 @@ import com.tradehero.th.persistence.ListCacheMaxSize;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class NewsItemCompactListCacheNew extends StraightDTOCacheNew<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
 {
@@ -25,7 +26,7 @@ import javax.inject.Singleton;
         this.newsItemCompactCacheNew = newsItemCompactCacheNew;
     }
 
-    @Override public PaginatedDTO<NewsItemCompactDTO> fetch(NewsItemListKey key) throws Throwable
+    @Override public PaginatedDTO<NewsItemCompactDTO> fetch(@NotNull NewsItemListKey key) throws Throwable
     {
         return newsServiceWrapper.getNews(key);
     }

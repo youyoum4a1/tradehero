@@ -7,6 +7,7 @@ import com.tradehero.th.network.service.MarketService;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class ExchangeListCache extends StraightDTOCacheNew<ExchangeListType, ExchangeDTOList>
 {
@@ -22,7 +23,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override public ExchangeDTOList fetch(ExchangeListType key) throws Throwable
+    @Override public ExchangeDTOList fetch(@NotNull ExchangeListType key) throws Throwable
     {
         return new ExchangeDTOList(marketService.get().getExchanges());
     }

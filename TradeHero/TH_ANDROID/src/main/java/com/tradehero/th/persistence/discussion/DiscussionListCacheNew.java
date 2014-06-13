@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKey, DiscussionKeyList>
@@ -35,7 +36,7 @@ public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKe
         this.discussionCache = discussionCache;
     }
 
-    @Override public DiscussionKeyList fetch(DiscussionListKey discussionListKey) throws Throwable
+    @Override public DiscussionKeyList fetch(@NotNull DiscussionListKey discussionListKey) throws Throwable
     {
         if (discussionListKey instanceof MessageDiscussionListKey)
         {

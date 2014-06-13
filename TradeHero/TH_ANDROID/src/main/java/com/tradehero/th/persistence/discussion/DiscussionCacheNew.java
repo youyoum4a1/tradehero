@@ -16,6 +16,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class DiscussionCacheNew extends StraightDTOCacheNew<DiscussionKey, AbstractDiscussionCompactDTO>
 {
@@ -35,7 +36,7 @@ import javax.inject.Singleton;
         this.newsCache = newsCache;
     }
 
-    @Override public AbstractDiscussionCompactDTO fetch(DiscussionKey discussionKey) throws Throwable
+    @Override public AbstractDiscussionCompactDTO fetch(@NotNull DiscussionKey discussionKey) throws Throwable
     {
         if (discussionKey instanceof TimelineItemDTOKey)
         {
