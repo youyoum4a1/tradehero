@@ -643,7 +643,7 @@ import java.util.List;
 
     public UserProfileDTO follow(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO)
+            @NotNull PurchaseReportDTO purchaseReportDTO)
     {
         return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseReportDTO));
     }
