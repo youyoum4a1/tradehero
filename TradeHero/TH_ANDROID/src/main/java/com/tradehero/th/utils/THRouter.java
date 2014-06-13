@@ -9,6 +9,24 @@ import javax.inject.Inject;
 
 public class THRouter extends Router
 {
+    public static final String USER_TIMELINE = "user/:userId";
+    public static final String USER_ME = "user/me";
+    public static final String STORE = "store";
+    public static final String PORTFOLIO_POSITION = "user/:userId/portfolio/:portfolioId";
+    public static final String POSITION_TRADE_HISTORY = "user/:userId/portfolio/:portfolioId/position/:positionId";
+    public static final String SETTING = "settings";
+    public static final String STORE_RESET_PORTFOLIO = "store/reset-portfolio";
+    public static final String RESET_PORTFOLIO = "reset-portfolio";
+    public static final String SECURITY = "security/:securityId_:exchange_:securitySymbol";
+    public static final String PROVIDER_LIST = "providers";
+    public static final String PROVIDER = "providers/:providerId";
+    public static final String PROVIDER_ENROLL = "providers-enroll/:providerId";
+    public static final String PROVIDER_ENROLL_WITH_PAGE = "providers-enroll/:providerId/pages/:encodedUrl";
+    public static final String REFER_FRIENDS = "refer-friends";
+    public static final String NOTIFICATION = "notifications";
+    public static final String TRENDING = "trending-securities";
+    public static final String MESSAGE = "messages";
+
     @Inject public THRouter(Context context)
     {
         super(context);
