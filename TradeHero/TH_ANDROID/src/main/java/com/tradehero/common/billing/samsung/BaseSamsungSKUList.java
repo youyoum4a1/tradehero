@@ -3,7 +3,6 @@ package com.tradehero.common.billing.samsung;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import java.util.Collection;
 
-
 public class BaseSamsungSKUList<SamsungSKUType extends SamsungSKU>
         extends BaseProductIdentifierList<SamsungSKUType>
 {

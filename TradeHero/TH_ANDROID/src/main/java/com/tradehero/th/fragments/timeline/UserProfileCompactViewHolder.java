@@ -83,7 +83,7 @@ public class UserProfileCompactViewHolder
                 THSignedNumber thPlSinceInception = new THSignedNumber(
                         THSignedNumber.TYPE_MONEY,
                         pl,
-                        true,
+                        THSignedNumber.WITH_SIGN,
                         SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
                         THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
                 profitValue.setText(thPlSinceInception.toString());
@@ -169,7 +169,7 @@ public class UserProfileCompactViewHolder
             if (userProfileDTO != null)
             {
                 heroesCount.setText(Integer.toString(
-                        userProfileDTO.heroIds == null ? 0 : userProfileDTO.heroIds.size()));
+                        userProfileDTO.heroIds == null ? userProfileDTO.allHeroCount : userProfileDTO.heroIds.size()));
             }
             else
             {

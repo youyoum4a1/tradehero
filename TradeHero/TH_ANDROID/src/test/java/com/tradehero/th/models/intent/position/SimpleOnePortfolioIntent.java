@@ -3,11 +3,8 @@ package com.tradehero.th.models.intent.position;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 
-
 public class SimpleOnePortfolioIntent extends OnePortfolioIntent
 {
-    public static final String TAG = SimpleOnePortfolioIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     protected SimpleOnePortfolioIntent(PortfolioId portfolioId)
     {

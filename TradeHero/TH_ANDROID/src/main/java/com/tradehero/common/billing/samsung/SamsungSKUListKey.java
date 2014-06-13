@@ -6,7 +6,6 @@ import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
-
 public class SamsungSKUListKey extends AbstractStringDTOKey
         implements ProductIdentifierListKey
 {

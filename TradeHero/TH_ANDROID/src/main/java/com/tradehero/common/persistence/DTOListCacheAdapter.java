@@ -6,7 +6,6 @@ import com.tradehero.th.adapters.DTOAdapter;
 import com.tradehero.th.api.DTOView;
 import java.util.Collection;
 
-
 public abstract class DTOListCacheAdapter<
         DTOKeyType extends DTOKey,
         DTOViewType extends DTOView<DTOKeyType>

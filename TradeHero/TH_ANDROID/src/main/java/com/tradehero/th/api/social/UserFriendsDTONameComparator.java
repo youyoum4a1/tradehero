@@ -2,11 +2,8 @@ package com.tradehero.th.api.social;
 
 import java.util.Comparator;
 
-
 public class UserFriendsDTONameComparator implements Comparator<UserFriendsDTO>
 {
-    public static final String TAG = UserFriendsDTONameComparator.class.getSimpleName();
-
     @Override public int compare(UserFriendsDTO lhs, UserFriendsDTO rhs)
     {
         if (lhs == rhs)

@@ -4,11 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.th.R;
 
 public class PositionNothingView extends RelativeLayout
 {
-    private TextView description;
+    @InjectView(R.id.position_nothing_description) protected TextView description;
 
     //<editor-fold desc="Constructors">
     public PositionNothingView(Context context, AttributeSet attrs, int defStyle)
@@ -30,12 +32,7 @@ public class PositionNothingView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
-    }
-
-    private void initViews()
-    {
-        description = (TextView) findViewById(R.id.position_nothing_description);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()

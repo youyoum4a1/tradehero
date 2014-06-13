@@ -56,7 +56,17 @@ public class LeaderboardMarkUserListAdapter extends
         final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
+            //if(expandingLayout instanceof ExpandingLayout)
+            //{
+            //    ((ExpandingLayout)expandingLayout).expand(dto.isExpanded());
+            //}
+            //else
+            //{
+            //    expandingLayout.setVisibility(dto.isExpanded() ? View.VISIBLE : View.GONE);
+            //}
+            //TODO
             expandingLayout.setVisibility(dto.isExpanded() ? View.VISIBLE : View.GONE);
+
         }
     }
 

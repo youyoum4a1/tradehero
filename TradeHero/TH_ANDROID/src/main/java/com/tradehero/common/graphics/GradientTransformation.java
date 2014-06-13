@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Shader;
 import com.squareup.picasso.Transformation;
 
-
 public class GradientTransformation implements Transformation
 {
     private final int endColor;

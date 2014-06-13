@@ -4,7 +4,6 @@ import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
-
 public abstract class ClickableTagProcessor extends RichSpanTextProcessor
 {
     @Override protected Span getSpanElement(String replacement, String[] matchStrings)

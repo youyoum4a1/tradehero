@@ -2,10 +2,8 @@ package com.tradehero.th.api.watchlist.key;
 
 import android.os.Bundle;
 
-
 public class SecurityPerPagedWatchlistKey extends PerPagedWatchlistKey
 {
-    public static final String TAG = SecurityPerPagedWatchlistKey.class.getSimpleName();
     public static final String BUNDLE_KEY_SECURITY_ID = SecurityPerPagedWatchlistKey.class.getName() + ".securityId";
 
     public final Integer securityId;

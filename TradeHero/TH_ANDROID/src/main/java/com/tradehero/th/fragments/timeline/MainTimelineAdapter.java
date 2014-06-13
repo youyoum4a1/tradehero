@@ -9,7 +9,6 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -30,11 +29,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class MainTimelineAdapter extends ArrayAdapter
     implements StickyListHeadersAdapter,
-        AbsListView.OnScrollListener,
         PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>
 {
-    public static final String TAG = MainTimelineAdapter.class.getSimpleName();
-
     public static final int TIMELINE_ITEM_TYPE = 0;
     public static final int PORTFOLIO_ITEM_TYPE = 1;
     public static final int STATS_ITEM_TYPE = 2;
@@ -114,42 +110,6 @@ public class MainTimelineAdapter extends ArrayAdapter
         }
     }
 
-    //<editor-fold desc="AbsListView.OnScrollListener">
-    private int currentScrollState;
-
-    @Override public void onScrollStateChanged(final AbsListView absListView, int scrollState)
-    {
-        currentScrollState = scrollState;
-    }
-
-    @Override public void onScroll(final AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-    {
-        switch (currentTabType)
-        {
-            case TIMELINE:
-                if (getCount() == 0)
-                {
-                    return;
-                }
-                // update loader last & first visible item
-                if (getTimelineLoader() != null)
-                {
-                    int lastItemId = firstVisibleItem + visibleItemCount > getCount() ? getCount() - 1 : firstVisibleItem + visibleItemCount - 1;
-                    //strange behavior of onScroll, sometime firstVisibleItem >= getCount(), which is logically wrong, that's why I have to do this check
-                    int firstItemId = Math.min(firstVisibleItem, getCount() - 1);
-                    //getTimelineLoader().setFirstVisibleItem((TimelineItem) getItem(firstItemId));
-                    //getTimelineLoader().setLastVisibleItem((TimelineItem) getItem(lastItemId));
-                }
-                break;
-
-
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="PullToRefreshBase.OnLastItemVisibleListener">
-    //</editor-fold>
-
     //<editor-fold desc="StickyListHeadersAdapter">
     @Override public long getHeaderId(int position)
     {
@@ -194,13 +154,11 @@ public class MainTimelineAdapter extends ArrayAdapter
                 break;
 
             case PORTFOLIO_LIST:
-                // TODO
                 notifyBeginRefresh(currentTabType);
                 break;
 
             case STATS:
-                // TODO
-                notifyLoadFinished();
+                notifyBeginRefresh(currentTabType);
                 break;
 
             default:

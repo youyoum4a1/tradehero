@@ -79,5 +79,4 @@ interface DiscussionServiceAsync
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO,
             Callback<DiscussionDTO> callback);
     //</editor-fold>
-
 }

@@ -3,22 +3,15 @@ package com.tradehero.th.auth;
 import android.content.Context;
 import java.lang.ref.WeakReference;
 
-
 public abstract class SocialAuthenticationProvider implements THAuthenticationProvider
 {
-    protected static final String SCREEN_NAME_KEY = "screen_name";
-    protected static final String ID_KEY = "id";
+    public static final String SCREEN_NAME_KEY = "screen_name";
+    public static final String ID_KEY = "id";
+    public static final String EMAIL_KEY = "email";
     public static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
     public static final String AUTH_TOKEN_KEY = "auth_token";
     public static final String CONSUMER_KEY_KEY = "consumer_key";
     public static final String CONSUMER_SECRET_KEY = "consumer_secret";
-
-    public static final String FACEBOOK_AUTH_TYPE = "TH-Facebook";
-    public static final String TWITTER_AUTH_TYPE = "TH-Twitter";
-    public static final String LINKEDIN_AUTH_TYPE = "TH-LinkedIn";
-    public static final String WEIBO_AUTH_TYPE = "TH-Weibo";
-    public static final String TRADEHERO_AUTH_TYPE = "Basic";
-    public static final String WECHAT_AUTH_TYPE = "TH-Wehat";
 
     protected WeakReference<Context> baseContext;
     protected THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;

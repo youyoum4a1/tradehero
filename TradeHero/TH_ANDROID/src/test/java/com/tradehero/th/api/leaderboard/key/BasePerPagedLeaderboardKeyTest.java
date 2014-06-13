@@ -1,10 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
-
 public class BasePerPagedLeaderboardKeyTest extends BasePagedLeaderboardKeyTest
 {
-    public static final String TAG = BasePerPagedLeaderboardKeyTest.class.getSimpleName();
-
     protected PerPagedLeaderboardKey getPer5Paged3Key1()
     {
         return new PerPagedLeaderboardKey(1, 3, 5);

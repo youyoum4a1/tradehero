@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import com.tradehero.th.R;
 
-
 public class ActivityHelper
 {
     public static void launchAuthentication(Context activity)

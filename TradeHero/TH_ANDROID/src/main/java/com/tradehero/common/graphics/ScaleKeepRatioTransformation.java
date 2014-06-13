@@ -3,7 +3,6 @@ package com.tradehero.common.graphics;
 import android.graphics.Bitmap;
 import com.squareup.picasso.Transformation;
 
-
 public class ScaleKeepRatioTransformation implements Transformation
 {
     private final int width;
@@ -11,6 +10,7 @@ public class ScaleKeepRatioTransformation implements Transformation
     private final int maxHeight;
     private final int maxWidth;
 
+    //<editor-fold desc="Constructors">
     public ScaleKeepRatioTransformation(int width, int height)
     {
         this(width, height, Integer.MAX_VALUE, Integer.MAX_VALUE);
@@ -30,6 +30,7 @@ public class ScaleKeepRatioTransformation implements Transformation
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
     }
+    //</editor-fold>
 
     @Override public Bitmap transform(Bitmap source)
     {

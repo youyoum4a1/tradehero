@@ -5,6 +5,7 @@ import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
@@ -13,6 +14,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
+import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.*;
@@ -173,6 +175,18 @@ public interface UserService
     @GET("/users/{userId}/getFriends")
     List<UserFriendsDTO> getFriends(
             @Path("userId") int userId);
+
+    @GET("/users/{userId}/GetNewFriends")
+    List<UserFriendsDTO> getSocialFriends(
+            @Path("userId") int userId, @Query("socialNetwork") SocialNetworkEnum socialNetwork);
+
+    @GET("/users/{userId}/SearchFriends")
+    List<UserFriendsDTO> searchSocialFriends(@Path("userId") int userId, @Query("socialNetwork") SocialNetworkEnum socialNetwork, @Query("q")String query);
+
+
+    @POST("/users/BatchFollow/free")
+    Response followBatchFree(@Body FollowFriendsForm followFriendsForm);
+
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
@@ -194,21 +208,9 @@ public interface UserService
     UserProfileDTO follow(
             @Path("userId") int userId);
 
-    // TODO use UserServiceWrapper and UserServiceAsync
-    @Deprecated
-    @POST("/users/{userId}/follow")
-    void follow(
-            @Path("userId") int userId,
-            Callback<UserProfileDTO> callback);
-
     @POST("/users/{userId}/follow/free")
     UserProfileDTO freeFollow(
             @Path("userId") int userId);
-
-    @POST("/users/{userId}/follow/free")
-    void freeFollow(
-            @Path("userId") int userId,
-            Callback<UserProfileDTO> callback);
 
     @POST("/users/{userId}/follow")
     UserProfileDTO follow(

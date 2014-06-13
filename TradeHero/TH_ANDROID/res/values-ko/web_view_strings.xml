@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="webview_back">뒤로</string>
+  <string name="webview_forward">앞으로</string>
+
+</resources>

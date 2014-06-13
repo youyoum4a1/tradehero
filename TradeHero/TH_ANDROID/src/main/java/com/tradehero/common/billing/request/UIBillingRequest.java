@@ -18,7 +18,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class UIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

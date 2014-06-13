@@ -7,7 +7,6 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
 
-
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 {
     public double initialCash;

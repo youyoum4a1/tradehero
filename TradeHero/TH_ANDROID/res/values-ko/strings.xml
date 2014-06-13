@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="follow">팔로우</string>
+  <string name="follow_all">친구 팔로우</string>
+  <string name="message">메세지</string>
+  <string name="upgrade_to_premium">프리미엄 업그레이드</string>
+  <string name="following_premium">팔로우중\n(프리미엄)</string>
+  <string name="select_endpoint">Select Api Endpoint</string>
+  <string name="current_endpoint">"Current Endpoint: "</string>
+  <string name="action_menu_about">About</string>
+  <string name="leaderboard_empty">지금 트레이드를 시작하여 리더보드에 첫번째로 이름을 올리세요! 
+  </string>
+  <string name="action_search">검색</string>
+  <string name="action_invite">Invite Friends</string>    <!--TODO translation-->
+  <string name="update">업데이트</string>
+  <string name="empty_video_list">지금 재생 가능한 비디오가 없습니다.</string>
+  <string name="loading_required_information">요청한 정보 로딩중</string>
+  <string name="server_response">"서버 응답: "</string>
+  <string name="link">링크 %1$s</string>
+  <string name="link_description">공유하기전에 %1$s 계정을 연결하세요…</string>
+  <string name="link_now">지금 연결!</string>
+  <string name="later">나중에</string>
+  <string name="please_update">지금 사용하고 계신 버전은 오래된 버전입니다. 계속 트레이드히어로를 이용하려면 업데이트하세요</string>
+  <string name="upgrade_needed">업그레이드 필요</string>
+  <string name="update_now">지금 업데이트</string>
+  <string name="update_guide">트레이트히어로 다시 인스톨하기</string>
+  <string name="suggest_to_upgrade">새로운 버전이 나왔습니다. 업데이트하여 더욱 편리하게 사용하세요. 지금 업데이트하시겠습니까?</string>
+  <string name="press_back_again_to_exit">뒤로 버튼을 누르면 종료합니다.</string>
+  <string name="discussion">토론</string>
+  <string name="more_character">…</string>
+  <string name="buy_sell">매수/매도</string>
+  <string name="translate">번역</string>
+  <string name="share_to">…에 공유</string>
+  <string name="comment">코멘트</string>
+  <string name="timeline_discussion_post">포스트</string>
+  <string name="timeline_discussion_comment_box_hint">코멘트를 입력하세요…</string>
+  <string name="discussion_loaded">모든 토론을 불러옴</string>
+  <string name="discussion_loading">토론 불러오는 중…</string>
+  <string name="discussion_empty">토론을 이끄는 첫 사용자가 되세요.</string>
+  <!--<string name="network_error">Sorry,network error.</string>-->
+
+  <string name="news_view_on_web">웹에서 보기</string>
+  <string name="add_a_comment">코멘트 추가…</string>
+  <string name="start_new_discussion">새토론 시작하기</string>
+  <string name="error_empty_comment">입력된 코멘트가 없습니다</string>
+  <string name="error_not_enough_information">정보가 부족합니다. 다시 시도하세요</string>
+  <string name="via">" via "</string>
+
+  <string name="broadcast_success">메세지 보내기 성공</string>
+  <string name="broadcast_error">메세지 보내기 오류</string>
+  <string name="broadcast_message_title">전체 메세지</string>
+  <string name="broadcast_message_action_send">보내기</string>
+  <string name="broadcast_message_change_type_hint">메세지 받을 팔로워 선택</string>
+  <string name="broadcast_message_no_follower_hint">선택한 팔로워에게는 메세지를 보낼 수 없습니다.</string>
+  <string name="broadcast_message_content_length_hint">입력된 메세지가 없습니다</string>
+  <string name="broadcast_message_sending_hint">메세지 보내는중…</string>
+  <string name="broadcast_message_waiting">기다리는중</string>
+  <string name="social_followers">팔로워</string>
+  <string name="social_heroes">히어로</string>
+
+  <string name="common_loading_error">알수없는 오류입니다.</string>
+  <string name="no_message">아직 메세지가 없습니다.</string>
+  <string name="message_fetch_error">알수없는 오류. 다시 시도하세요.</string>
+  <string name="notification_list_empty">아직 새로운 알림이 없습니다. \n새로고치려면 화면을 아래로 당기세요!</string>
+  <string name="security_discussion_add">+ 새로운 토론 시작</string>
+  <string name="post">게시</string>
+  <string name="discussion_new_post_hint"> %s에 대해 어떻게 생각하세요?</string>
+  <string name="error_discussion_empty_post">입력된 토론이 없습니다</string>
+  <string name="at">"@"</string>
+  <string name="hashtag">$</string>
+  <string name="discussion_edit_post_subtitle">%s에 대하여</string>
+  <string name="team_credit">Made with love in Singapore and Shanghai</string>
+  <string name="about_screen_secure_by">Secure by:</string>
+  <string name="about_screen_text_processing_by">Text processing by:</string>
+  <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
+  <string name="send_fake_push">가짜 알림 메세지 보내기</string>
+
+  <string name="buy_sell_loading_ask_price">요청가 로딩중…</string>
+  <string name="buy_sell_loading_bid_price">입찰가 로딩중…</string>
+  <string name="sell">매도</string>
+  <string name="buy">매수</string>
+  <string name="chart_loading_image">차트 이미지 로딩중…</string>
+  <string name="sure_to_delete_message">Delete this message?</string>
+  <string name="currency">KRW</string>
+</resources>

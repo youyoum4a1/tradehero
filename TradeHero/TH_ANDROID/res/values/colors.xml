@@ -8,12 +8,11 @@
   <color name="timeline_item_link">#364667</color>
   <color name="trending_grid_item_stock_name">#384152</color>
   <color name="leaderboard_ranking_position">#4d6d9d</color>
-  <color name="timeline_list_item_action_buttons_background">#fafafa</color>
   <color name="timeline_list_item_background">@color/white</color>
   <color name="timeline_background_color">#E3E8EE</color>
   <color name="timeline_action_button_text_color">#80929292</color>
   <color name="timeline_action_button_text_color_shadow">#000000</color>
-  <color name="timeline_action_button_text_color_pressed">#007aff</color>
+  <color name="timeline_action_button_text_color_pressed">#1376FB</color>
   <color name="notification_background_color">#181818</color>
   <color name="dashboard_background_color">#E3E8EE</color>
   <color name="profile_view_gradient_top">#80ffffff</color>
@@ -32,7 +31,7 @@
   <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
   <color name="connect_accounts">#1376FB</color>
 
-  <color name="actionbar_menu_text_color">@color/white</color>
+  <color name="actionbar_menu_text_color">@android:color/darker_gray</color>
   <color name="leaderboard_user_item_text_color">#4C566B</color>
   <color name="invite_friend_button_color">#1376FB</color>
   <color name="button_yellow">#72ffd36b</color>
@@ -44,5 +43,28 @@
 
   <color name="broadcast_message_item_bg">#dfefff</color>
   <color name="private_message_item_bg">@color/white</color>
+  <color name="light_green1">#30D720</color>
+  <color name="light_green">#6ED200</color>
+  <color name="dark_green">#54A700</color>
+  <color name="light_yellow">#FFD000</color>
+  <color name="dark_dark_yellow">#FAB000</color>
+  <color name="discussion_action_buttons_border_top_color">#fafafa</color>
 
+  <string-array name="rangeColors2" translatable="false">
+    <item>#FF0C2B</item>
+    <item>#FF1D0C</item>
+
+    <item>#FF390E</item>
+    <item>#FF530F</item>
+
+    <item>#FF7C11</item>
+    <item>#FF9E13</item>
+    <item>#FFC81A</item>
+    <item>#FFF718</item>
+    <item>#D8FF14</item>
+    <item>#A4FF12</item>
+    <item>#70FF17</item>
+    <item>#3FFF12</item>
+    <item>#16FF11</item>
+  </string-array>
 </resources>

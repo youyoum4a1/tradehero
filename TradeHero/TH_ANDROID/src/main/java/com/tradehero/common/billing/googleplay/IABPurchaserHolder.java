@@ -4,7 +4,6 @@ import android.content.Intent;
 import com.tradehero.common.billing.BillingPurchaserHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-
 public interface IABPurchaserHolder<
         IABSKUType extends IABSKU,
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,

@@ -7,7 +7,6 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
-
 @Module(
         //addsTo = UIModule.class,
         injects = {

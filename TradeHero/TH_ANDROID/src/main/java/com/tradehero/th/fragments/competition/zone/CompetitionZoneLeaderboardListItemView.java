@@ -9,7 +9,6 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboar
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {
-    public static final String TAG = CompetitionZoneLeaderboardListItemView.class.getSimpleName();
     public static final int COLOR_ACTIVE = R.color.black;
     public static final int COLOR_INACTIVE = R.color.text_gray_normal;
 

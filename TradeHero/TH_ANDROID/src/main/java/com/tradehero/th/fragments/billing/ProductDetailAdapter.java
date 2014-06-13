@@ -16,15 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-
 abstract public class ProductDetailAdapter<
         ProductIdentifierType extends ProductIdentifier,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
         ProductDetailViewType extends ProductDetailView<ProductIdentifierType, THProductDetailType>>
         extends ArrayDTOAdapter<THProductDetailType, ProductDetailViewType>
 {
-    public static final String TAG = ProductDetailAdapter.class.getSimpleName();
-
     public static final int ITEM_TYPE_HEADER = 0;
     public static final int ITEM_TYPE_VALUE = 1;
 

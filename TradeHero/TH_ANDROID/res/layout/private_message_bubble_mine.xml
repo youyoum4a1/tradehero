@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.message.PrivateMessageBubbleView
+<com.tradehero.th.fragments.social.message.PrivateMessageBubbleViewLinear
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -40,6 +40,7 @@
           android:layout_height="wrap_content"
           android:textColor="@color/white"
           android:autoLink="all"
+          android:textIsSelectable="true"
           tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
 
     </LinearLayout>
@@ -60,12 +61,11 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/white"
+          android:textIsSelectable="true"
           tools:text="Hey. Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey Hey"/>
 
     </RelativeLayout>
 
-
   </RelativeLayout>
 
-
-</com.tradehero.th.fragments.social.message.PrivateMessageBubbleView>
+</com.tradehero.th.fragments.social.message.PrivateMessageBubbleViewLinear>

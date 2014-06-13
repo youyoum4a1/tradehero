@@ -13,7 +13,6 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-
 public interface AlertPlanService
 {
     //<editor-fold desc="Get Alert Plans">

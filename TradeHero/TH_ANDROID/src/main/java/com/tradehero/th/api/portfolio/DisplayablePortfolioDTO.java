@@ -6,11 +6,8 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.io.IOException;
 
-
 public class DisplayablePortfolioDTO implements Comparable
 {
-    public static final String TAG = DisplayablePortfolioDTO.class.getSimpleName();
-
     public OwnedPortfolioId ownedPortfolioId;
     public UserBaseDTO userBaseDTO;
     public PortfolioDTO portfolioDTO;

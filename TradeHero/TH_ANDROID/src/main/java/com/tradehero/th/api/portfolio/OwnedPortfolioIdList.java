@@ -3,11 +3,8 @@ package com.tradehero.th.api.portfolio;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
 
-
 public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
 {
-    public static final String TAG = OwnedPortfolioIdList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public OwnedPortfolioIdList()
     {
@@ -25,18 +22,13 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
     }
     //</editor-fold>
 
-    //@Override public String toString()
-    //{
-    //    StringBuilder builder = new StringBuilder();
-    //    builder.append("[");
-    //    String separator = "";
-    //    for (OwnedPortfolioId ownedPortfolioId : this)
-    //    {
-    //        builder.append(separator);
-    //        builder.append(ownedPortfolioId);
-    //        separator = ", ";
-    //    }
-    //    builder.append("]");
-    //    return builder.toString();
-    //}
+    public PortfolioIdList getPortfolioIds()
+    {
+        PortfolioIdList ids = new PortfolioIdList();
+        for (OwnedPortfolioId ownedPortfolioId: this)
+        {
+            ids.add(ownedPortfolioId.getPortfolioIdKey());
+        }
+        return ids;
+    }
 }

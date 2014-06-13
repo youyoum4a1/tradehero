@@ -16,7 +16,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 import timber.log.Timber;
 
-
 public class LruFileCache extends LruCache
 {
     public static final String DEFAULT_DIR_NAME = LruFileCache.class.getPackage().getName();

@@ -11,6 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
@@ -19,7 +20,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -67,7 +68,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> profileCacheFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected List<CompetitionId> competitionIds;
     private DTOCache.GetOrFetchTask<ProviderId, CompetitionIdList> competitionListCacheFetchTask;
 
@@ -94,7 +95,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.listView = (AbsListView) view.findViewById(R.id.competition_zone_list);
         if (this.listView != null)
         {
-            this.listView.setOnItemClickListener(new MainCompetitionFragmentItemClickListener());
+            this.listView.setOnItemClickListener(createAdapterViewItemClickListener());
         }
         placeAdapterInList();
     }
@@ -121,11 +122,10 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override public void onStart()
     {
         super.onStart();
-        detachUserProfileCacheTask();
-        profileCacheFetchTask = userProfileCache.getOrFetch(
-                currentUserId.toUserBaseKey(),
-                createProfileCacheListener());
-        profileCacheFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCacheListener = createProfileCacheListener();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
 
         detachCompetitionListCacheTask();
         competitionListCacheFetchTask = competitionListCache.getOrFetch(
@@ -147,7 +147,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onStop()
     {
-        detachUserProfileCacheTask();
+        detachUserProfileCache();
         detachCompetitionListCacheTask();
         super.onStop();
     }
@@ -175,13 +175,13 @@ public class MainCompetitionFragment extends CompetitionFragment
         super.onDestroy();
     }
 
-    private void detachUserProfileCacheTask()
+    private void detachUserProfileCache()
     {
-        if (profileCacheFetchTask != null)
+        if (userProfileCacheListener != null)
         {
-            profileCacheFetchTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        profileCacheFetchTask = null;
+        userProfileCacheListener = null;
     }
 
     private void detachCompetitionListCacheTask()
@@ -325,10 +325,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushTradeNowElement(CompetitionZoneTradeNowDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
-        args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-        args.putBundle(
-                ProviderSecurityListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                getApplicablePortfolioId().getArgs());
+        ProviderSecurityListFragment.putProviderId(args, providerId);
+        ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
@@ -339,9 +337,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (ownedPortfolioId != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            getNavigator().pushFragment(PositionListFragment.class, args);
+            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+            getDashboardNavigator().pushFragment(PositionListFragment.class, args);
         }
     }
 
@@ -349,9 +347,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         Bundle args = new Bundle();
         args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
-        args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                providerDTO.associatedPortfolio.getPortfolioId().getArgs());
-        getNavigator().pushFragment(ProviderVideoListFragment.class, args);
+        ProviderVideoListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
+        getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
     }
 
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
@@ -375,15 +372,12 @@ public class MainCompetitionFragment extends CompetitionFragment
                 providerId.getArgs());
         args.putBundle(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_COMPETITION_ID,
                 competitionZoneDTO.competitionDTO.getCompetitionId().getArgs());
-        args.putInt(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_ID,
-                leaderboardDefDTO.id);
+        CompetitionLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefDTO.getLeaderboardDefKey());
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE,
                 competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,
                 leaderboardDefDTO.desc);
-        args.putBundle(
-                CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                getApplicablePortfolioId().getArgs());
+        CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
             getNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,
@@ -418,7 +412,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         return new MainCompetitionFragmentItemClickListener();
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
     {
         return new MainCompetitionUserProfileCacheListener();
     }
@@ -496,10 +490,9 @@ public class MainCompetitionFragment extends CompetitionFragment
     }
 
     private class MainCompetitionUserProfileCacheListener
-            implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value)
         {
             linkWith(value, true);
         }

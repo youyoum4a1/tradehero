@@ -85,7 +85,6 @@ public class HeroListItemView extends RelativeLayout
         picasso.get().load(R.drawable.superman_facebook)
                 .transform(peopleIconTransformation)
                 .into(userIcon);
-        Timber.d("HeroListItemView onAttachedToWindow hashCode:%d", this.hashCode());
     }
 
     @OnClick(R.id.ic_status) void onStatusIconClicked()
@@ -183,8 +182,10 @@ public class HeroListItemView extends RelativeLayout
     {
         if (heroDTO != null)
         {
-            resetUserIcon();
+            //resetUserIcon();
+            displayDefaultUserIcon();
             picasso.get().load(heroDTO.picture)
+                    .placeholder(userIcon.getDrawable())
                     .transform(peopleIconTransformation)
                     .error(R.drawable.superman_facebook)
                     .into(userIcon, new Callback()
@@ -260,9 +261,9 @@ public class HeroListItemView extends RelativeLayout
     {
         if (countryLogo != null)
         {
-            if (heroDTO != null)
+            if (heroDTO != null && heroDTO.countryCode != null)
             {
-                countryLogo.setImageResource(getConutryLogoId(heroDTO.countryCode));
+                countryLogo.setImageResource(getCountryLogoId(heroDTO.countryCode));
             }
             else
             {
@@ -271,17 +272,18 @@ public class HeroListItemView extends RelativeLayout
         }
     }
 
-    public int getConutryLogoId(String country)
+    public int getCountryLogoId(String country)
     {
-        return getConutryLogoId(0, country);
+        return getCountryLogoId(0, country);
     }
 
-    public int getConutryLogoId(int defaultResId, String country)
+    public int getCountryLogoId(int defaultResId, String country)
     {
         try
         {
             return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException ex)
+        }
+        catch (IllegalArgumentException|NullPointerException ex)
         {
             return defaultResId;
         }

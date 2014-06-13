@@ -30,6 +30,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -41,11 +42,13 @@ import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId>
@@ -68,9 +71,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     @InjectView(R.id.position_watchlist_delete) protected Button deleteButton;
     @InjectView(R.id.position_watchlist_more) protected Button moreButton;
 
-    private WatchlistPositionDTO watchlistPositionDTO;
+    @Nullable private WatchlistPositionDTO watchlistPositionDTO;
     private SecurityId securityId;
-
     private MiddleCallbackWeakList<WatchlistPositionDTO> middleCallbackWatchlistDeletes;
 
     private PopupMenu morePopupMenu;
@@ -192,7 +194,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         };
     }
 
-    private THCallback<WatchlistPositionDTO> createWatchlistDeletionCallback()
+    @NotNull private THCallback<WatchlistPositionDTO> createWatchlistDeletionCallback()
     {
         return new THCallback<WatchlistPositionDTO>()
         {
@@ -292,40 +294,49 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
 
     public void displayPlPercentage(boolean showInPercentage)
     {
-        SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
-
-        if (securityCompactDTO != null)
+        if (gainLossLabel != null)
         {
-            Double lastPrice = securityCompactDTO.lastPrice;
-            Double watchlistPrice = watchlistPositionDTO.watchlistPrice;
-            // pl percentage
-            if (watchlistPrice != 0)
+            if (watchlistPositionDTO != null)
             {
-                double gainLoss = (lastPrice - watchlistPrice);
-                double pl = gainLoss * 100 / watchlistPrice;
-
-                if (showInPercentage)
+                SecurityCompactDTO securityCompactDTO = watchlistPositionDTO.securityDTO;
+                if (securityCompactDTO != null)
                 {
-                    gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format),
-                            new DecimalFormat("##.##").format(pl)
-                    ));
+                    Double lastPrice = securityCompactDTO.lastPrice;
+                    Double watchlistPrice = watchlistPositionDTO.watchlistPrice;
+                    // pl percentage
+                    if (watchlistPrice != 0)
+                    {
+                        double gainLoss = (lastPrice - watchlistPrice);
+                        double pl = gainLoss * 100 / watchlistPrice;
+
+                        if (showInPercentage)
+                        {
+                            gainLossLabel.setText(String.format(getContext().getString(R.string.watchlist_pl_percentage_format),
+                                    new DecimalFormat("##.##").format(pl)
+                            ));
+                        }
+                        else
+                        {
+                            gainLossLabel.setText(watchlistPositionDTO.securityDTO.currencyDisplay + " " +
+                                    new DecimalFormat("##.##").format(gainLoss));
+                        }
+
+                        gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(pl)));
+                    }
+                    else
+                    {
+                        gainLossLabel.setText("");
+                    }
                 }
                 else
                 {
-                    gainLossLabel.setText(watchlistPositionDTO.securityDTO.currencyDisplay + " " +
-                            new DecimalFormat("##.##").format(gainLoss));
+                    gainLossLabel.setText("");
                 }
-
-                gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(pl)));
             }
             else
             {
                 gainLossLabel.setText("");
             }
-        }
-        else
-        {
-            gainLossLabel.setText("");
         }
     }
 
@@ -411,7 +422,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             shares = 0;
         }
 
-        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, formattedPrice, false, currencyDisplay);
+        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, formattedPrice, THSignedNumber.WITHOUT_SIGN, currencyDisplay);
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.watchlist_number_of_shares),
                 shares, thSignedNumber.toString()
@@ -480,9 +491,12 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private void deleteSelf()
     {
         // not to show dialog but request deletion in background
-        middleCallbackWatchlistDeletes.add(watchlistServiceWrapper.get().deleteWatchlist(
+        if (watchlistPositionDTO != null)
+        {
+            middleCallbackWatchlistDeletes.add(watchlistServiceWrapper.get().deleteWatchlist(
                     watchlistPositionDTO,
                     createWatchlistDeletionCallback()));
+        }
     }
 
     private PopupMenu createMoreOptionsPopupMenu()
@@ -524,8 +538,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         Bundle args = new Bundle();
         if (securityId != null)
         {
-            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getContext().getString(R.string.watchlist_edit_title));
+            WatchlistEditFragment.putSecurityId(args, securityId);
+            DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
     }

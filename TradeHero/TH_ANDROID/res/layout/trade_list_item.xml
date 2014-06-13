@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.trade.view.TradeListItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -21,32 +22,43 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:padding="5dp">
+      android:padding="8dp">
+
+    <TextView
+        android:id="@+id/traded_quantity_verbose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:textStyle="bold"
+        tools:text="Sold 1 share @ US$ 562.12"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="5dp">
+        >
+
+      <TextView
+          android:id="@+id/holding_quantity_verbose"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Holding 18 shares"
+          />
 
       <TextView
           android:id="@+id/trade_date_label"
-          android:layout_width="0dp"
-          android:layout_weight="2"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:gravity="right"/>
-
-      <TextView
-          android:id="@+id/trade_quantity_label"
-          android:layout_width="0dp"
-          android:layout_weight="3"
-          android:layout_height="wrap_content"
-          android:paddingLeft="10dp"
+          android:layout_gravity="right"
+          android:gravity="right"
+          android:textColor="@color/gray_1"
+          tools:text="1 mo ago"
           />
 
     </LinearLayout>
 
-    <LinearLayout
+    <com.tradehero.th.fragments.leaderboard.ExpandingLayout
         android:id="@+id/expanding_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,7 +69,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
-          android:paddingBottom="2dp">
+          android:paddingBottom="2dp"
+          android:visibility="gone">
 
         <TextView
             android:layout_width="0dp"
@@ -73,6 +86,35 @@
             android:layout_weight="3"
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
+            tools:text="US$ 350"
+            />
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:id="@+id/unrealised_pl_container"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:paddingBottom="2dp">
+
+        <TextView
+            android:id="@+id/unrealised_pl_value_header"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:textColor="@color/light_grey"
+            tools:text="Will Profit"
+            />
+
+        <TextView
+            android:id="@+id/unrealised_pl_value"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:paddingLeft="10dp"
+            android:layout_height="wrap_content"
+            tools:text="US$ 400"
             />
 
       </LinearLayout>
@@ -84,44 +126,22 @@
           android:paddingBottom="2dp">
 
         <TextView
+            android:id="@+id/realised_pl_value_header"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="@string/trade_list_realized_pl"
             android:gravity="right"
-            android:textColor="@color/light_grey"/>
-
-        <TextView
-            android:id="@+id/trade_realized_pl"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:paddingLeft="10dp"
-            android:layout_height="wrap_content"
+            android:textColor="@color/light_grey"
+            tools:text="Profit"
             />
 
-      </LinearLayout>
-
-      <LinearLayout
-          android:id="@+id/trade_unrealized_pl_container"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          android:paddingBottom="2dp">
-
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:text="@string/trade_list_unrealized_pl"
-            android:gravity="right"
-            android:textColor="@color/light_grey"/>
-
-        <TextView
-            android:id="@+id/trade_unrealized_pl"
+            android:id="@+id/realised_pl_value"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
+            tools:text="US$ 435"
             />
 
       </LinearLayout>
@@ -133,19 +153,22 @@
           android:paddingBottom="2dp">
 
         <TextView
+            android:id="@+id/trade_value_header"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
-            android:text="@string/trade_list_quantity"
             android:gravity="right"
-            android:textColor="@color/light_grey"/>
+            android:textColor="@color/light_grey"
+            android:text="@string/trade_trade_value_header"
+            />
 
         <TextView
-            android:id="@+id/trade_quantity"
+            android:id="@+id/trade_value"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:paddingLeft="10dp"
             android:layout_height="wrap_content"
+            tools:text="US$ 4350"
             />
 
       </LinearLayout>
@@ -182,11 +205,13 @@
         <TextView
             android:id="@+id/trade_list_comment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:text="Feeling like it"
+            />
 
       </LinearLayout>
 
-    </LinearLayout>
+    </com.tradehero.th.fragments.leaderboard.ExpandingLayout>
 
   </LinearLayout>
 

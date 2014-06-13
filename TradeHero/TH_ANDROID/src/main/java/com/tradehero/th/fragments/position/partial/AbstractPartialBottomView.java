@@ -4,11 +4,11 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
+import butterknife.ButterKnife;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.PositionUtils;
 import javax.inject.Inject;
 
 abstract public class AbstractPartialBottomView<
@@ -20,7 +20,7 @@ abstract public class AbstractPartialBottomView<
     protected ExpandableListItemType expandableListItem;
     protected PositionDTOType positionDTO;
 
-    @Inject protected PositionUtils positionUtils;
+    @Inject protected PositionDTOUtils positionDTOUtils;
 
     //<editor-fold desc="Constructors">
     public AbstractPartialBottomView(Context context)
@@ -43,11 +43,7 @@ abstract public class AbstractPartialBottomView<
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        initViews();
-    }
-
-    protected void initViews()
-    {
+        ButterKnife.inject(this);
     }
 
     protected View getExpandingView()

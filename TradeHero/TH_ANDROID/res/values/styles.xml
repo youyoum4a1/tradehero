@@ -1,4 +1,6 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
   <!--
       Base application theme, dependent on API level. This theme is replaced
@@ -8,12 +10,13 @@
     <item name="android:windowActionBar">true</item>
     <item name="android:windowNoTitle">false</item>
     <item name="android:windowActionBarOverlay">true</item>
-    <item name="android:actionMenuTextColor">@color/actionbar_menu_text_color</item>
   </style>
+
   <style name="TradeHero.Settings" parent="TradeHero">
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
     <item name="android:windowActionBarOverlay">false</item>
   </style>
+
   <style name="AppBaseTheme.NoActionBar" parent="TradeHero">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
@@ -106,10 +109,22 @@
     <item name="android:shadowColor">#000000</item>
   </style>
 
+  <style name="TradeHero.SocialAuthenticationButton" parent="TradeHero.ButtonTextShadow">
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textSize">30sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:layout_marginTop">@dimen/common_margin_10</item>
+    <item name="android:layout_height">78dip</item>
+    <item name="android:layout_width">match_parent</item>
+  </style>
+
   <style name="TradeHero.Dashboard" parent="TradeHero">
     <item name="android:windowActionBarOverlay">false</item>
     <item name="android:actionBarStyle">@style/TradeHero.Dashboard.ActionBar</item>
+    <!--<item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>-->
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
+    <!--<item name="android:actionBarItemBackground">@drawable/actionbar_item_bg</item>-->
+    <!--<item name="actionBarItemBackground">@drawable/actionbar_item_bg</item>-->
   </style>
 
   <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">
@@ -120,20 +135,22 @@
     <item name="android:paddingLeft">6dip</item>
     <item name="android:drawablePadding">2dip</item>
     <item name="android:textColor">@color/black</item>
-    <!--<item name="android:background">@drawable/authentication_sign_up_textbox</item>-->
+    <!--<item name="android:background">@drawable/textbox_light_background</item>-->
   </style>
 
-
   <style name="TradeHero.Dashboard.ActionBar" parent="Widget.Sherlock.ActionBar">
-    <item name="android:background">@drawable/topbarrectangle_default</item>
     <item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>
     <item name="android:actionMenuTextColor">@style/TradeHero.Dashboard.ActionBar.MenuTextColor
     </item>
   </style>
 
+    <style name="TradeHero.Dashboard.ActionBarButton" parent="Widget.Sherlock.Light.ActionButton">
+        <item name="android:background">@drawable/topbarrectangle_default</item>
+    </style>
+
   <style name="TradeHero.Dashboard.ActionBar.TitleTextStyle"
       parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
-    <item name="android:textColor">@color/white</item>
+    <item name="android:textColor">@color/black</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.Menu"
@@ -170,22 +187,10 @@
     <item name="android:drawableLeft">@drawable/icn_info_normal_small</item>
   </style>
 
-  <style name="TH_VoteView">
+  <style name="TH.VoteView" parent="TH.DiscussionActionButtons.Text">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginLeft">@dimen/timeline_action_buttons_horizontal_padding</item>
-    <item name="android:layout_marginRight">@dimen/timeline_action_buttons_horizontal_padding</item>
-    <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
-    <item name="android:textStyle">bold</item>
-  </style>
-
-  <style name="TH_VoteView_big">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginLeft">@dimen/timeline_action_buttons_horizontal_padding_big</item>
-    <item name="android:layout_marginRight">@dimen/timeline_action_buttons_horizontal_padding_big</item>
-    <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
-    <item name="android:textStyle">bold</item>
+    <item name="android:gravity">center_vertical</item>
   </style>
 
   <style name="TH.Btn_BuySell_Action">
@@ -194,11 +199,11 @@
     <item name="android:layout_weight">1</item>
     <item name="android:textSize">14sp</item>
     <item name="android:textColor">@color/tab_scroll_color</item>
-    <item name="android:textStyle">bold</item>
     <item name="android:singleLine">true</item>
     <item name="android:ellipsize">middle</item>
     <item name="android:layout_marginLeft">5dp</item>
     <item name="android:layout_marginRight">5dp</item>
+    <item name="android:background">@color/white</item>
   </style>
 
   <style name="TH.Time_Text">
@@ -224,6 +229,7 @@
     <item name="android:textColor">@color/btn_twitter_color_end</item>
     <item name="android:gravity">center</item>
     <item name="android:background">@drawable/security_btn_buy</item>
+    <item name="android:textSize">12sp</item>
   </style>
 
   <style name="TH.UserNameTitle">
@@ -257,4 +263,46 @@
     <item name="android:checked">false</item>
     <item name="android:gravity">center</item>
   </style>
+
+  <style name="TH.GaugeView">
+    <item name="android:layout_height">60dp</item>
+    <item name="showText">true</item>
+    <item name="showRanges">true</item>
+    <item name="rangeColors">@array/rangeColors2</item>
+    <item name="showOuterBorder">false</item>
+    <item name="showInnerRim">false</item>
+    <item name="showOuterShadow">false</item>
+    <item name="showOuterRim">false</item>
+    <item name="showNeedle">true</item>
+    <item name="animationDuration">4000</item>
+    <item name="drawCenterIndicator">false</item>
+    <item name="android:layout_marginBottom">10dp</item>
+  </style>
+
+  <style name="TH.NumericalAnimatedTextView">
+    <item name="android:gravity">center</item>
+    <item name="animatedDuration">2500</item>
+    <item name="animatedInterval">50</item>
+    <item name="showAnimation">true</item>
+    <item name="textSize">18sp</item>
+  </style>
+
+  <style name="TH.DiscussionActionButtons">
+    <item name="android:paddingLeft">@dimen/discussion_action_buttons_horizontal_padding</item>
+    <item name="android:paddingRight">@dimen/discussion_action_buttons_horizontal_padding</item>
+    <item name="android:paddingTop">@dimen/discussion_action_buttons_vertical_padding</item>
+    <item name="android:paddingBottom">@dimen/discussion_action_buttons_vertical_padding</item>
+  </style>
+
+  <style name="TH.DiscussionActionButtons.Text" parent="TH.DiscussionActionButtons">
+    <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
+    <!--<item name="android:textStyle">bold</item>-->
+    <item name="android:textSize">16sp</item>
+    <!--<item name="android:shadowColor">@color/timeline_action_button_text_color_shadow</item>-->
+    <!--<item name="android:shadowDy">1</item>-->
+    <!--<item name="android:shadowRadius">1</item>-->
+    <item name="android:layout_gravity">center_vertical</item>
+    <item name="android:drawablePadding">@dimen/discussion_action_buttons_drawable_padding</item>
+  </style>
+  <dimen name="discussion_action_buttons_drawable_padding">5dp</dimen>
 </resources>

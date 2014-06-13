@@ -21,7 +21,7 @@
   <string name="authentication_not_registered">请返回登陆页面</string>
   <string name="authentication_forgot_password">忘记密码?</string>
   <string name="authentication_forgot_password_email">电子邮件</string>
-  <string name="authentication_connecting_tradehero">正在验证 %s, 连线股货英雄中</string>
+  <string name="authentication_connecting_tradehero">正在验证 %s, 连线全民股神中</string>
   <string name="authentication_connecting_tradehero_only">处理中</string>
   <string name="facebook">Facebook</string>
   <string name="authentication_connecting_to_facebook">连接 Facebook</string>
@@ -31,6 +31,9 @@
   <string name="authentication_twitter_email">电子邮件</string>
   <string name="authentication_twitter_connecting">连接 Twitter</string>
   <string name="sina_weibo">微博</string>
+  <string name="tencent_qq">QQ</string>
   <string name="authentication_connecting_to_weibo">连接微博</string>
-
+  <string name="authentication_connecting_to_qq">连接QQ</string>
+  <string name="wechat">微信</string>
+  <string name="authentication_error_creating_signup_form">生成注册信息有误</string>
 </resources>

@@ -3,10 +3,8 @@ package com.tradehero.th.api.trade;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-
 public class TradeId extends AbstractIntegerDTOKey
 {
-    public final static String TAG = TradeId.class.getSimpleName();
     public static final String BUNDLE_KEY_KEY = TradeId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
@@ -28,6 +26,6 @@ public class TradeId extends AbstractIntegerDTOKey
 
     @Override public String toString()
     {
-        return String.format("[%s key=%d]", TAG, key);
+        return String.format("[TradeId key=%d]", key);
     }
 }

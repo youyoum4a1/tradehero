@@ -10,7 +10,7 @@
     >
 
   <TableLayout
-      android:id="@+id/position_period_bottom_in_period_container"
+      android:id="@+id/position_list_bottom_in_period_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       >
@@ -42,7 +42,7 @@
       android:id="@+id/image_separator"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/position_period_bottom_in_period_container"
+      android:layout_below="@id/position_list_bottom_in_period_container"
       android:layout_margin="4dp"
       android:src="@drawable/bg_gradient_separator_horizontal"
       />

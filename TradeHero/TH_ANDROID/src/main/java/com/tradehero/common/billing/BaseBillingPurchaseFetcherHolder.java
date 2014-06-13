@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 abstract public class BaseBillingPurchaseFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,

@@ -12,11 +12,8 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-
 public class OwnedPortfolioFetchAssistant extends DTOFetchAssistant<OwnedPortfolioId, PortfolioDTO>
 {
-    public static final String TAG = OwnedPortfolioFetchAssistant.class.getSimpleName();
-
     @Inject protected Lazy<PortfolioCache> portfolioCache;
     private final Context context;
 

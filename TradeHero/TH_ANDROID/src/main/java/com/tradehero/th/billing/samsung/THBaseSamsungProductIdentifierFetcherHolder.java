@@ -9,7 +9,6 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-
 public class THBaseSamsungProductIdentifierFetcherHolder
     extends BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListKey,

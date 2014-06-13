@@ -2,11 +2,8 @@ package com.tradehero.th.models.intent;
 
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 
-
 public class SimpleTHIntent extends THIntent
 {
-    public static final String TAG = SimpleTHIntent.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public SimpleTHIntent()
     {

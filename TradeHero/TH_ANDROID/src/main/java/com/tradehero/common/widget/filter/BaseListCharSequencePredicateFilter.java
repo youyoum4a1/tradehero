@@ -3,11 +3,8 @@ package com.tradehero.common.widget.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class BaseListCharSequencePredicateFilter<T> implements ListCharSequencePredicateFilter<T>
 {
-    public static final String TAG = BaseListCharSequencePredicateFilter.class.getSimpleName();
-
     protected CharSequencePredicate<? super T> predicate;
 
     //<editor-fold desc="Constructors">

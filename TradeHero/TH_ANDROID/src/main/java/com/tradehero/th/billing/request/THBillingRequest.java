@@ -30,8 +30,6 @@ public class THBillingRequest<
         ProductPurchaseType,
         BillingExceptionType>
 {
-    public static final String TAG = THBillingRequest.class.getSimpleName();
-
     public boolean reportPurchase;
     public ProductPurchaseType purchaseToReport;
     public THPurchaseReporter.OnPurchaseReportedListener<

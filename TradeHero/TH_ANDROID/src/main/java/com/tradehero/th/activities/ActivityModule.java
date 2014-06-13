@@ -7,7 +7,6 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
-
 @Module(
         injects = {
         },
@@ -18,8 +17,6 @@ import javax.inject.Singleton;
 )
 public class ActivityModule
 {
-    public static final String TAG = ActivityModule.class.getSimpleName();
-
     @Provides @ForUIThread Handler provideUIHandler()
     {
         return new Handler(Looper.getMainLooper());

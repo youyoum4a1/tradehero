@@ -11,11 +11,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import timber.log.Timber;
 
-
 public class YahooNewsHeadline implements NewsHeadline
 {
-    private final static String TAG = YahooNewsHeadline.class.getSimpleName();
-
     private final static DateFormat dateFormat = getDateFormat();
     private String title;
     private String url;
@@ -55,7 +52,7 @@ public class YahooNewsHeadline implements NewsHeadline
         }
         catch (ParseException e)
         {
-            Timber.e(TAG, "Failed to parse date", e);
+            Timber.e(e, "Failed to parse date");
         }
         return null;
     }

@@ -1,25 +1,20 @@
 package com.tradehero.th.api.security;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WarrantDTOTest
 {
-    public static final String TAG = WarrantDTOTest.class.getSimpleName();
-
     public static final String EXT_KEY_WARRANT_TYPE = "warrantType";
     public static final String EXT_KEY_EXPIRY_DATE = "expiryDate";
     public static final String EXT_KEY_STRIKE_PRICE = "strikePrice";

@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu
-    xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <item
-      android:id="@+id/btn_search"
-      android:icon="@drawable/ic_action_search"
-      android:enabled="true"
-      android:title="@string/action_search"
-      android:showAsAction="always"
-    />
+    <item
+            android:id="@+id/btn_search"
+            android:icon="@drawable/ic_action_search"
+            android:enabled="true"
+            android:title="@string/action_search"
+            android:showAsAction="always"
+            />
 
+    <!--- TODO change the icon-->
+    <item
+            android:id="@+id/btn_add"
+            android:icon="@drawable/btn_friends_add"
+            android:enabled="true"
+            android:visible="false"
+            android:showAsAction="always"
+            android:title="@string/action_invite"
+            />
 </menu>

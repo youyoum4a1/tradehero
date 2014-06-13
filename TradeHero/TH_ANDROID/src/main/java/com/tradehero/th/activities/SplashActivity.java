@@ -11,7 +11,6 @@ import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -19,10 +18,10 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeListCache;
-import com.tradehero.th.persistence.prefs.SessionToken;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -36,19 +35,18 @@ import retrofit.RetrofitError;
 
 public class SplashActivity extends SherlockActivity
 {
-    public static final String TAG = SplashActivity.class.getSimpleName();
     public static final String KEY_PREFS = SplashActivity.class.getName();
     private static final String KEY_FIRST_BOOT = "key_first_boot";
 
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
-    @Inject protected UserServiceWrapper userServiceWrapper;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected ExchangeListCache exchangeListCache;
-    @Inject protected ProviderListCache providerListCache;
+    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject ExchangeListCache exchangeListCache;
+    @Inject ProviderListCache providerListCache;
     @Inject @FacebookAppId String facebookAppId;
 
-    @Inject @SessionToken StringPreference currentSessionToken;
+    @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<Tapstream> tapStream;
 
@@ -114,6 +112,7 @@ public class SplashActivity extends SherlockActivity
     protected void initialisation()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
+        // TODO use Dagger to inject pref?
         SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
 
         if (preferences.getBoolean(KEY_FIRST_BOOT, true))
@@ -146,15 +145,15 @@ public class SplashActivity extends SherlockActivity
 
     public boolean canLoadApp()
     {
-        // TODO HAcK to ensure DashboardActivity has exchange list
-        boolean canLoad = currentSessionToken.isSet() && currentUserId.toUserBaseKey().key != 0;
+        // TODO HACK to ensure DashboardActivity has exchange list
+        boolean canLoad = mainCredentialsPreference.getCredentials() != null && currentUserId.toUserBaseKey().key != 0;
         try
         {
             UserProfileDTO profileDTO = userServiceWrapper.getUser(currentUserId.toUserBaseKey());
             canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
-                exchangeListCache.getOrFetch(new ExchangeListType());
+                exchangeListCache.getOrFetchAsync(new ExchangeListType());
             }
             catch (Throwable throwable)
             {

@@ -12,7 +12,7 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 {
     protected TextView headerText;
     protected TextView timeBaseText;
-    protected SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
+    protected SimpleDateFormat sdf;
 
     //<editor-fold desc="Constructors">
     public PositionSectionHeaderItemView(Context context)
@@ -34,6 +34,7 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        sdf = new SimpleDateFormat(getContext().getString(R.string.data_format_dd_mmm_yyyy));
         initViews();
     }
 

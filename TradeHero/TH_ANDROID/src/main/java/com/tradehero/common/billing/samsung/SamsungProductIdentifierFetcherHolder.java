@@ -6,7 +6,6 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 
-
 public interface SamsungProductIdentifierFetcherHolder<
         SamsungSKUListKeyType extends SamsungSKUListKey,
         SamsungSKUType extends SamsungSKU,

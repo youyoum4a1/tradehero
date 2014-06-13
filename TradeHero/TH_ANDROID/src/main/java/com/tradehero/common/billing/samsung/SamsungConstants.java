@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.samsung;
 
-
 public class SamsungConstants
 {
     public static final String NAME = "Samsung Store";

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
 
-
 abstract public class BaseIABPurchaseConsumerHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,

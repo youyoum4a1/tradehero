@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import timber.log.Timber;
 
-
 abstract public class ProductDetailCache<
             ProductIdentifierType extends ProductIdentifier,
             ProductDetailsType extends ProductDetail<ProductIdentifierType>,

@@ -335,6 +335,4 @@ abstract public class BillingAlertDialogUtil<
                 R.string.iap_send_support_email_restore_fail_cancel,
                 clickListener);
     }
-
-
 }

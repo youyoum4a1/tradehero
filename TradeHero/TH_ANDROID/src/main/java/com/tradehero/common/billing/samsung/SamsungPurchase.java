@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
 
-
 abstract public class SamsungPurchase<
         SamsungSKUType extends SamsungSKU,
         SamsungOrderIdType extends SamsungOrderId>

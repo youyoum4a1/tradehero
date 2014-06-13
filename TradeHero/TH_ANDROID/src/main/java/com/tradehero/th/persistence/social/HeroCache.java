@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.social;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
@@ -8,8 +8,9 @@ import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-@Singleton public class HeroCache extends StraightDTOCache<FollowerHeroRelationId, HeroDTO>
+@Singleton public class HeroCache extends StraightDTOCacheNew<FollowerHeroRelationId, HeroDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -20,7 +21,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected HeroDTO fetch(FollowerHeroRelationId key)
+    @Override public HeroDTO fetch(@NotNull FollowerHeroRelationId key)
     {
         throw new UnsupportedOperationException("Not implemented");
     }

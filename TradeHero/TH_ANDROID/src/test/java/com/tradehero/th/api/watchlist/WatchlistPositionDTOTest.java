@@ -1,23 +1,20 @@
 package com.tradehero.th.api.watchlist;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Date;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertTrue;
 
-
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WatchlistPositionDTOTest extends BaseWatchlistPositionDTOTest
 {
-    public static final String TAG = WatchlistPositionDTOTest.class.getSimpleName();
-
     @Before @Override public void setUp()
     {
         super.setUp();

@@ -3,6 +3,7 @@ package com.tradehero.th.auth;
 import android.content.Context;
 import com.tradehero.th.auth.operator.LinkedIn;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
@@ -10,10 +11,10 @@ import org.json.JSONException;
 @Singleton
 public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 {
-    private static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
-    private static final String AUTH_TOKEN_KEY = "auth_token";
-    private static final String CONSUMER_KEY_KEY = "consumer_key";
-    private static final String CONSUMER_SECRET_KEY = "consumer_secret";
+    public static final String AUTH_TOKEN_SECRET_KEY = "auth_token_secret";
+    public static final String AUTH_TOKEN_KEY = "auth_token";
+    public static final String CONSUMER_KEY_KEY = "consumer_key";
+    public static final String CONSUMER_SECRET_KEY = "consumer_secret";
     private final LinkedIn linkedIn;
 
     @Inject public LinkedInAuthenticationProvider(LinkedIn linkedIn)
@@ -123,7 +124,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
 
     @Override public String getAuthType()
     {
-        return SocialAuthenticationProvider.LINKEDIN_AUTH_TYPE;
+        return LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE;
     }
 
     @Override public String getAuthHeaderParameter()

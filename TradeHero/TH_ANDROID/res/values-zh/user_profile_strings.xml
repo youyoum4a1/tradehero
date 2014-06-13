@@ -26,6 +26,10 @@
   <string name="user_profile_cash_on_hand">手头现金</string>
   <string name="user_profile_first_last_name_display">%1$s %2$s</string> <!-- It is good to have it here as other localisations may swap those -->
 
+  <string name="user_profile_choose_image_from_choice">请选择您的头像照片：</string>
+  <string name="user_profile_choose_image_from_camera">从相机拍照</string>
+  <string name="user_profile_choose_image_from_library">从相册选择</string>
+
   <string name="error_fetch_user_profile">获取用户资料信息发生错误</string>
   <string name="error_fetch_your_user_profile">获取个人资料信息发生错误</string>
   <string name="error_fetch_people_list_info">获取人员列表信息发生错误</string>

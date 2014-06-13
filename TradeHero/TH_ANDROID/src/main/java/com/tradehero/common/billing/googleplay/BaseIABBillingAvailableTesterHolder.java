@@ -6,7 +6,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class BaseIABBillingAvailableTesterHolder
     extends BaseBillingAvailableTesterHolder<IABException>
     implements IABBillingAvailableTesterHolder<IABException>

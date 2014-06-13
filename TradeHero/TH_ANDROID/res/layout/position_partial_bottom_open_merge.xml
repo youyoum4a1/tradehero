@@ -14,12 +14,12 @@
       >
 
     <TextView
-        android:id="@+id/unrealised_pl_header"
+        android:id="@+id/unrealised_pl_value_header"
         android:layout_marginRight="2dp"
         android:layout_gravity="right"
         style="@style/TH.SmallTitle"
         android:gravity="right"
-        android:text="@string/position_unrealised_pl_header"
+        tools:text="Unrealized Profit"
         />
 
     <TextView
@@ -37,12 +37,12 @@
       >
 
     <TextView
-        android:id="@+id/realised_pl_header"
+        android:id="@+id/realised_pl_value_header"
         android:layout_marginRight="2dp"
         android:layout_gravity="right"
         style="@style/TH.SmallTitle"
         android:gravity="right"
-        android:text="@string/position_realised_pl_header"
+        tools:text="Realized Profit"
         />
 
     <TextView

@@ -2,7 +2,6 @@ package com.tradehero.th.api.leaderboard.position;
 
 import android.os.Bundle;
 
-
 public class PagedLeaderboardMarkUserId extends LeaderboardMarkUserId
 {
     public final static String BUNDLE_KEY_PAGE = PagedLeaderboardMarkUserId.class.getName() + ".page";

@@ -25,8 +25,6 @@ import javax.inject.Singleton;
 )
 public class IntentDaggerModule
 {
-    public static final String TAG = IntentDaggerModule.class.getSimpleName();
-
     public IntentDaggerModule()
     {
     }
@@ -51,7 +49,6 @@ public class IntentDaggerModule
     {
         return factory;
     }
-
     @Provides(type = Provides.Type.SET)
     THIntentFactory provideInteractorIntentFactory(ResetPortfolioIntentFactory factory)
     {

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  <com.tradehero.th.fragments.timeline.UserStatisticView
+      android:id="@+id/user_statistic_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_horizontal"
+      android:weightSum="3"
+      tools:background="#f99"
+      >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+      <com.tradehero.common.widget.GaugeView
+          android:id="@+id/leaderboard_gauge_tradeconsistency"
+          android:layout_width="match_parent"
+          style="@style/TH.GaugeView"
+          />
+
+      <com.tradehero.common.widget.NumericalAnimatedTextView
+          android:id="@+id/leaderboard_position_tv"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.NumericalAnimatedTextView"
+          />
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_positions"
+          android:gravity="center"
+          android:textSize="@dimen/leaderboard_numerical_label_text_size"
+          />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+      <com.tradehero.common.widget.GaugeView
+          android:id="@+id/leaderboard_gauge_winrate"
+          android:layout_width="match_parent"
+          style="@style/TH.GaugeView"
+          />
+
+      <com.tradehero.common.widget.NumericalAnimatedTextView
+          android:id="@+id/leaderboard_tradecount_tv"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.NumericalAnimatedTextView"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_monthly_trade_count"
+          android:gravity="center"
+          android:textSize="@dimen/leaderboard_numerical_label_text_size"
+          />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+      <com.tradehero.common.widget.GaugeView
+          android:id="@+id/leaderboard_gauge_performance"
+          android:layout_width="match_parent"
+          style="@style/TH.GaugeView"
+          />
+
+      <com.tradehero.common.widget.NumericalAnimatedTextView
+          android:id="@+id/leaderboard_dayshold_tv"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.NumericalAnimatedTextView"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/leaderboard_avg_days_held"
+          android:gravity="center"
+          android:textSize="@dimen/leaderboard_numerical_label_text_size"
+          />
+    </LinearLayout>
+  </com.tradehero.th.fragments.timeline.UserStatisticView>
+</merge>

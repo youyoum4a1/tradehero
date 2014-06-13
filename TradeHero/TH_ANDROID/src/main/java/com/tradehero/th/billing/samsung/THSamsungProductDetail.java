@@ -1,21 +1,16 @@
 package com.tradehero.th.billing.samsung;
 
-import com.android.internal.util.Predicate;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
-import com.tradehero.common.billing.samsung.SamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
 
-
 public class THSamsungProductDetail
         extends BaseSamsungProductDetail<SamsungSKU>
         implements THProductDetail<SamsungSKU>
 {
-    public static final String TAG = THSamsungProductDetail.class.getSimpleName();
-
     public int iconResId;
     public boolean hasFurtherDetails = false;
     public int furtherDetailsResId = R.string.na;

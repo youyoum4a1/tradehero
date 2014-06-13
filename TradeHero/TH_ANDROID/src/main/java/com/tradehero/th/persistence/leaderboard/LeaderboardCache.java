@@ -13,7 +13,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class LeaderboardCache extends PartialDTOCache<LeaderboardKey, LeaderboardDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
@@ -91,7 +90,10 @@ import javax.inject.Singleton;
         public List<LeaderboardUserId> userIds;
         public int userIsAtPositionZeroBased;
         public Date markUtc;
-        
+        public int minPositionCount;
+        public double maxSharpeRatioInPeriodVsSP500;
+        public double maxStdDevPositionRoiInPeriod;
+        public double avgStdDevPositionRoiInPeriod;
 
         public LeaderboardCutDTO(
                 LeaderboardDTO leaderboardDTO,
@@ -106,6 +108,10 @@ import javax.inject.Singleton;
 
             this.userIsAtPositionZeroBased = leaderboardDTO.userIsAtPositionZeroBased;
             this.markUtc = leaderboardDTO.markUtc;
+            this.minPositionCount = leaderboardDTO.minPositionCount;
+            this.maxSharpeRatioInPeriodVsSP500 = leaderboardDTO.maxSharpeRatioInPeriodVsSP500;
+            this.maxStdDevPositionRoiInPeriod = leaderboardDTO.maxStdDevPositionRoiInPeriod;
+            this.avgStdDevPositionRoiInPeriod = leaderboardDTO.avgStdDevPositionRoiInPeriod;
         }
 
         public LeaderboardDTO create(LeaderboardUserCache leaderboardUserCache)
@@ -115,7 +121,11 @@ import javax.inject.Singleton;
                     name,
                     leaderboardUserCache.get(userIds),
                     userIsAtPositionZeroBased,
-                    markUtc
+                    markUtc,
+                    minPositionCount,
+                    maxSharpeRatioInPeriodVsSP500,
+                    maxStdDevPositionRoiInPeriod,
+                    avgStdDevPositionRoiInPeriod
             );
         }
     }

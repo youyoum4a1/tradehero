@@ -2,7 +2,6 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductPurchase;
 
-
 public interface IABPurchase<
             IABSKUType extends IABSKU,
             IABOrderIdType extends IABOrderId>

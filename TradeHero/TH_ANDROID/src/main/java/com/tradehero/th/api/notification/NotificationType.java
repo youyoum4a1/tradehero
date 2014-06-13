@@ -1,6 +1,5 @@
 package com.tradehero.th.api.notification;
 
-
 public enum NotificationType
 {
     None(0),

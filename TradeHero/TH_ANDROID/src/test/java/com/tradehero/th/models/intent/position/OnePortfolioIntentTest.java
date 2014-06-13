@@ -1,14 +1,11 @@
 package com.tradehero.th.models.intent.position;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import com.tradehero.TestConstants;
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 import org.junit.After;
@@ -16,27 +13,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.TRADEHERO_MANIFEST_PATH)
+@RunWith(RobolectricMavenTestRunner.class)
 public class OnePortfolioIntentTest
 {
-    public static final String TAG = OnePortfolioIntentTest.class.getSimpleName();
-
     @Before public void setUp()
     {
-        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
+        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
     }
 
     @After public void tearDown()
     {
-        THIntent.currentActivityHolder = null;
+        THIntent.context = null;
     }
 
     @Test public void portfolioActionUriPathIsWellFormed()
@@ -104,7 +95,9 @@ public class OnePortfolioIntentTest
         OnePortfolioIntent intent = new SimpleOnePortfolioIntent(portfolioId);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(567, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+        assertTrue(false);
+        // Need to change the Intent
+        //assertEquals(567, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -116,6 +109,8 @@ public class OnePortfolioIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(567, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
+        assertTrue(false);
+        // Need to change the Intent
+        //assertEquals(567, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
 }

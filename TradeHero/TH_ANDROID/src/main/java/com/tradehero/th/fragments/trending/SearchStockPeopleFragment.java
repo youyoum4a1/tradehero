@@ -1,13 +1,11 @@
 package com.tradehero.th.fragments.trending;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -50,8 +48,6 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -79,8 +75,9 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     @Inject LocalyticsSession localyticsSession;
 
-    @InjectView(R.id.search_empty_container) RelativeLayout serchEmptyContainer;
-    @InjectView(R.id.search_empty_view) TextView searchEmptyView;
+    @InjectView(R.id.search_empty_container) RelativeLayout searchEmptyContainer;
+    @InjectView(R.id.search_empty_textview) TextView searchEmptyTextView;
+    @InjectView(R.id.search_empty_textview_wrapper) RelativeLayout searchEmptyTextViewWrapper;
     @InjectView(R.id.listview) ListView listView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
@@ -93,9 +90,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private SearchTextWatcher mSearchTextWatcher;
 
     private boolean isQuerying;
-
-    private SecurityIdListCacheListener securityIdListCacheListener;
-    private PeopleListCacheListener peopleListCacheListener;
 
     private SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     private PeopleItemViewAdapter peopleItemViewAdapter;
@@ -135,9 +129,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     protected void initViews(View view, LayoutInflater inflater)
     {
-        nearEndScrollListener = new SearchFlagNearEdgeScrollListener();
-        securityIdListCacheListener = new SecurityIdListCacheListener();
-        peopleListCacheListener = new PeopleListCacheListener();
+        nearEndScrollListener = createFlagNearEdgeScrollListener();
 
         securityItemViewAdapter = new SimpleSecurityItemViewAdapter(getActivity(), inflater,
                 R.layout.search_security_item);
@@ -149,7 +141,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             listView.setAdapter(securityItemViewAdapter);
             listView.setOnItemClickListener(new SearchOnItemClickListener());
             listView.setOnScrollListener(nearEndScrollListener);
-            listView.setEmptyView(serchEmptyContainer);
+            listView.setEmptyView(searchEmptyContainer);
+        }
+        if (searchEmptyTextViewWrapper != null)
+        {
+            searchEmptyTextViewWrapper.setVisibility(View.GONE);
         }
     }
 
@@ -341,6 +337,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        cancelSearchTasks();
         DeviceUtil.dismissKeyboard(getActivity());
 
         if (listView != null)
@@ -348,6 +345,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             listView.setOnItemClickListener(null);
             listView.setOnScrollListener(null);
         }
+        listView = null;
+        nearEndScrollListener = null;
 
         View rootView = getView();
         if (rootView != null && requestDataTask != null)
@@ -358,10 +357,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         securityItemViewAdapter = null;
         peopleItemViewAdapter = null;
         listView = null;
-
-        cancelSearchTasks();
-        securityIdListCacheListener = null;
-        peopleListCacheListener = null;
 
         super.onDestroyView();
     }
@@ -460,7 +455,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
             securitySearchTask = securityCompactListCache.get()
-                    .getOrFetch(searchSecurityListType, securityIdListCacheListener);
+                    .getOrFetch(searchSecurityListType, createSecurityIdListCacheListener());
             securitySearchTask.execute();
         }
     }
@@ -474,13 +469,12 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
             peopleSearchTask = userBaseKeyListCache.get()
-                    .getOrFetch(searchUserListType, peopleListCacheListener);
+                    .getOrFetch(searchUserListType, createUserCacheListener());
             peopleSearchTask.execute();
         }
     }
 
-    private void linkWith(List<SecurityId> securityIds, boolean andDisplay,
-            SecurityId typeQualifier)
+    private void linkWith(List<SecurityId> securityIds, boolean andDisplay, SecurityId typeQualifier)
     {
         this.securityIds = securityIds;
 
@@ -563,11 +557,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
 
     private void pushTradeFragmentIn(SecurityId securityId)
     {
-        if (securityId == null)
-        {
-            Timber.e("Cannot handle null SecurityId", new IllegalArgumentException());
-            return;
-        }
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         getNavigator().pushFragment(BuySellFragment.class, args);
@@ -587,7 +576,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         Bundle args = new Bundle();
         args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
 
-        getNavigator().pushFragment(PushableTimelineFragment.class, args);
+       getNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 
     //<editor-fold desc="Accessors">
@@ -630,6 +619,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     //</editor-fold>
 
     //<editor-fold desc="Listeners">
+    private FlagNearEdgeScrollListener createFlagNearEdgeScrollListener()
+    {
+        return new SearchFlagNearEdgeScrollListener();
+    }
+
     private class SearchFlagNearEdgeScrollListener extends FlagNearEdgeScrollListener
     {
         @Override public void raiseEndFlag()
@@ -662,8 +656,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     // pop out current fragment and push in watchlist edit fragment
                     // TODO remove this hack
                     Bundle args = new Bundle();
-                    args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                            clickedItem.getSecurityId().getArgs());
+                    WatchlistEditFragment.putSecurityId(args, clickedItem.getSecurityId());
                     args.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT,
                             WatchlistPositionFragment.class.getName());
                     getNavigator().pushFragment(WatchlistEditFragment.class, args);
@@ -707,6 +700,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
+    private DTOCache.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
+    {
+        return new SecurityIdListCacheListener();
+    }
+
     private class SecurityIdListCacheListener
             implements DTOCache.Listener<SecurityListType, SecurityIdList>
     {
@@ -730,7 +728,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     securityItemViewAdapter.setItems(null);
-                    searchEmptyView.setText(R.string.trending_search_no_stock_found);
+                    searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+                    searchEmptyTextViewWrapper.setVisibility(View.VISIBLE);
                 }
             }
             else
@@ -752,6 +751,11 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             THToast.show(getString(R.string.error_fetch_security_list_info));
             Timber.e("Error fetching the list of securities " + key, error);
         }
+    }
+
+    private DTOCache.Listener<UserListType, UserBaseKeyList> createUserCacheListener()
+    {
+        return new PeopleListCacheListener();
     }
 
     private class PeopleListCacheListener
@@ -777,12 +781,16 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 if (lastLoadedPage == FIRST_PAGE)
                 {
                     peopleItemViewAdapter.clear();
-                    searchEmptyView.setText(R.string.trending_search_no_people_found);
+                    searchEmptyTextView.setText(R.string.trending_search_no_people_found);
+                    searchEmptyTextViewWrapper.setVisibility(View.VISIBLE);
                 }
             }
             else
             {
-                userBaseKeys.addAll(value);
+                if (userBaseKeys != null)
+                {
+                    userBaseKeys.addAll(value);
+                }
                 peopleItemViewAdapter.clear();
                 peopleItemViewAdapter.addAll(userBaseKeys);
             }

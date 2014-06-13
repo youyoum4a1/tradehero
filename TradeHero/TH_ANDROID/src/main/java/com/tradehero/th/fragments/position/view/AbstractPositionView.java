@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
@@ -18,15 +21,15 @@ public abstract class AbstractPositionView<
             ExpandableListItemType extends ExpandableListItem<PositionDTOType>>
         extends LinearLayout
 {
-    protected PositionPartialTopView topView;
-    protected AbstractPartialBottomView<PositionDTOType, ExpandableListItemType> bottomView;
+    @InjectView(R.id.position_partial_top) protected PositionPartialTopView topView;
+    @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTOType, ExpandableListItemType>*/ bottomView;
 
-    protected ColorIndicator colorIndicator;
-    protected View btnBuy;
-    protected View btnSell;
-    protected View btnAddAlert;
-    protected View btnStockInfo;
-    protected View historyButton;
+    @InjectView(R.id.color_indicator) protected ColorIndicator colorIndicator;
+    @InjectView(R.id.btn_buy_now) protected View btnBuy;
+    @InjectView(R.id.btn_sell_now) protected View btnSell;
+    @InjectView(R.id.btn_add_alert) protected View btnAddAlert;
+    @InjectView(R.id.btn_stock_info) protected View btnStockInfo;
+    @InjectView(R.id.btn_trade_history) protected View historyButton;
 
     protected boolean hasHistoryButton = true;
     protected ExpandableListItemType expandableListItem;
@@ -54,139 +57,95 @@ public abstract class AbstractPositionView<
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
-    }
-
-    protected void initViews()
-    {
-        colorIndicator = (ColorIndicator) findViewById(R.id.color_indicator);
-        btnBuy = findViewById(R.id.btn_buy_now);
-        btnSell = findViewById(R.id.btn_sell_now);
-        btnAddAlert = findViewById(R.id.btn_add_alert);
-        btnStockInfo = findViewById(R.id.btn_stock_info);
-
-        topView = (PositionPartialTopView) findViewById(R.id.position_partial_top);
-        if (topView != null)
-        {
-            historyButton = topView.getTradeHistoryButton();
-        }
-        bottomView = (AbstractPartialBottomView) findViewById(R.id.expanding_layout);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
-        if (btnBuy != null)
-        {
-            btnBuy.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener<PositionDTOType> listenerCopy = listener;
-                    if (listenerCopy != null)
-                    {
-                        listenerCopy.onBuyClicked(getPositionDTO());
-                    }
-                }
-            });
-        }
-
-        if (btnSell != null)
-        {
-            btnSell.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener<PositionDTOType> listenerCopy = listener;
-                    if (listenerCopy != null)
-                    {
-                        listenerCopy.onSellClicked(getPositionDTO());
-                    }
-                }
-            });
-        }
-
-        if (btnAddAlert != null)
-        {
-            btnAddAlert.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener<PositionDTOType> listenerCopy = listener;
-                    if (listenerCopy != null)
-                    {
-                        listenerCopy.onAddAlertClicked(getPositionDTO());
-                    }
-                }
-            });
-        }
-
-        if (btnStockInfo != null)
-        {
-            btnStockInfo.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener<PositionDTOType> listenerCopy = listener;
-                    if (listenerCopy != null)
-                    {
-                        listenerCopy.onStockInfoClicked(getPositionDTO());
-                    }
-                }
-            });
-        }
-
-        if (historyButton != null)
-        {
-            historyButton.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    PositionListener<PositionDTOType> listenerCopy = listener;
-                    if (listenerCopy != null)
-                    {
-                        listenerCopy.onTradeHistoryClicked(getPositionDTO());
-                    }
-                }
-            });
-        }
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        if (btnBuy != null)
-        {
-            btnBuy.setOnClickListener(null);
-        }
-        btnBuy = null;
-
-        if (btnSell != null)
-        {
-            btnSell.setOnClickListener(null);
-        }
-        btnSell = null;
-
-        if (btnAddAlert != null)
-        {
-            btnAddAlert.setOnClickListener(null);
-        }
-        btnAddAlert = null;
-
-        if (btnStockInfo != null)
-        {
-            btnStockInfo.setOnClickListener(null);
-        }
-        btnStockInfo = null;
-
-        if (historyButton != null)
-        {
-            historyButton.setOnClickListener(null);
-        }
-        historyButton = null;
-
+        ButterKnife.reset(this);
         this.listener = null;
-
         super.onDetachedFromWindow();
+    }
+
+    @OnClick(R.id.btn_buy_now)
+    protected void handleBuyClicked(View v)
+    {
+        notifyBuyClicked();
+    }
+
+    protected void notifyBuyClicked()
+    {
+        PositionListener<PositionDTOType> listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onBuyClicked(getPositionDTO());
+        }
+    }
+
+    @OnClick(R.id.btn_sell_now)
+    protected void handleSellClicked(View v)
+    {
+        notifySellClicked();
+    }
+
+    protected void notifySellClicked()
+    {
+        PositionListener<PositionDTOType> listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onSellClicked(getPositionDTO());
+        }
+    }
+
+    @OnClick(R.id.btn_add_alert)
+    protected void handleAddAlertClicked(View v)
+    {
+        notifyAddAlertClicked();
+    }
+
+    protected void notifyAddAlertClicked()
+    {
+        PositionListener<PositionDTOType> listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onAddAlertClicked(getPositionDTO());
+        }
+    }
+
+    @OnClick(R.id.btn_stock_info)
+    protected void handleStockInfoClicked(View v)
+    {
+        notifyStockInfoClicked();
+    }
+
+    protected void notifyStockInfoClicked()
+    {
+        PositionListener<PositionDTOType> listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onStockInfoClicked(getPositionDTO());
+        }
+    }
+
+    @OnClick(R.id.btn_trade_history)
+    protected void handleTradeHistoryClicked(View v)
+    {
+        notifyTradeHistoryClicked();
+    }
+
+    protected void notifyTradeHistoryClicked()
+    {
+        PositionListener<PositionDTOType> listenerCopy = listener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onTradeHistoryClicked(getPositionDTO());
+        }
     }
 
     public void linkWithHasHistoryButton(boolean hasHistoryButton, boolean andDisplay)
@@ -234,7 +193,7 @@ public abstract class AbstractPositionView<
     public PositionDTOType getPositionDTO()
     {
         Timber.d("getPositionDTO %s", positionDTO);
-        Timber.d("getPositionDTO %s", positionDTO.getOwnedPositionId());
+        Timber.d("getPositionDTO %s", positionDTO.getPositionDTOKey());
         return positionDTO;
     }
 

@@ -1,58 +1,101 @@
 package com.tradehero.th.persistence.position;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOFactory;
+import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.position.PositionDTOList;
+import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-
-@Singleton public class PositionCache extends StraightDTOCache<OwnedPositionId, PositionDTO>
+@Singleton public class PositionCache extends StraightDTOCache<PositionDTOKey, PositionDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 5000;
 
-    @Inject protected Lazy<PositionCompactIdCache> positionCompactIdCache;
-    @Inject protected Lazy<TradeListCache> tradeListCache;
-    @Inject protected PositionDTOFactory positionDTOFactory;
+    @NotNull protected Lazy<PositionCompactIdCache> positionCompactIdCache;
+    @NotNull protected Lazy<LeaderboardPositionIdCache> positionIdCache;
+    @NotNull protected Lazy<TradeListCache> tradeListCache;
+    @NotNull protected PositionDTOFactory positionDTOFactory;
 
     //<editor-fold desc="Constructors">
-    @Inject public PositionCache()
+    @Inject public PositionCache(
+            @NotNull Lazy<PositionCompactIdCache> positionCompactIdCache,
+            @NotNull Lazy<LeaderboardPositionIdCache> positionIdCache,
+            @NotNull Lazy<TradeListCache> tradeListCache,
+            @NotNull PositionDTOFactory positionDTOFactory)
     {
         super(DEFAULT_MAX_SIZE);
+        this.positionCompactIdCache = positionCompactIdCache;
+        this.positionIdCache = positionIdCache;
+        this.tradeListCache = tradeListCache;
+        this.positionDTOFactory = positionDTOFactory;
     }
     //</editor-fold>
 
-    @Override protected PositionDTO fetch(OwnedPositionId key)
+    @Override protected PositionDTO fetch(@NotNull PositionDTOKey key)
     {
         throw new IllegalStateException("You should not fetch PositionDTO individually");
     }
 
-    @Override public PositionDTO put(OwnedPositionId key, PositionDTO value)
+    @Nullable
+    @Override public PositionDTO put(@NotNull PositionDTOKey key, @NotNull PositionDTO value)
     {
         // Save the correspondence between integer id and compound key.
-        positionCompactIdCache.get().put(value.getPositionCompactId(), key);
+        if (key instanceof OwnedPositionId)
+        {
+            positionCompactIdCache.get().put(value.getPositionCompactId(), (OwnedPositionId) key);
+        }
+        else if (key instanceof OwnedLeaderboardPositionId)
+        {
+            if (value instanceof PositionInPeriodDTO)
+            {
+                positionIdCache.get().put(((PositionInPeriodDTO) value).getLbPositionId(), (OwnedLeaderboardPositionId) key);
+            }
+            else
+            {
+                positionCompactIdCache.get().put(value.getPositionCompactId(), value.getOwnedPositionId());
+            }
+        }
         invalidateMatchingTrades(key);
 
         return super.put(key, positionDTOFactory.clonePerType(value));
     }
 
-    @Override public void invalidate(OwnedPositionId key)
+    @Override public void invalidate(@NotNull PositionDTOKey key)
     {
         invalidateMatchingTrades(key);
         super.invalidate(key);
     }
 
-    protected void invalidateMatchingTrades(OwnedPositionId key)
+    protected void invalidateMatchingTrades(@NotNull PositionDTOKey key)
     {
-        tradeListCache.get().invalidate(key);
+        if (key instanceof OwnedPositionId)
+        {
+            tradeListCache.get().invalidate((OwnedPositionId) key);
+        }
+        else if (key instanceof OwnedLeaderboardPositionId)
+        {
+            // TODO
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled key type " + key.getClass());
+        }
     }
 
-    public PositionDTOList<PositionDTO> put(Integer portfolioId, List<PositionDTO> values)
+    @Contract("null -> null")
+    @Nullable
+    public PositionDTOList<PositionDTO> put(@Nullable List<PositionDTO> values)
     {
         if (values == null)
         {
@@ -63,13 +106,15 @@ import javax.inject.Singleton;
 
         for (PositionDTO positionDTO: values)
         {
-            previousValues.add(put(positionDTO.getOwnedPositionId(portfolioId), positionDTO));
+            previousValues.add(put(positionDTO.getPositionDTOKey(), positionDTO));
         }
 
         return previousValues;
     }
 
-    public PositionDTOList<PositionDTO> get(List<OwnedPositionId> keys)
+    @Contract("null -> null")
+    @Nullable
+    public PositionDTOList<PositionDTO> get(@Nullable List<PositionDTOKey> keys)
     {
         if (keys == null)
         {
@@ -78,7 +123,7 @@ import javax.inject.Singleton;
 
         PositionDTOList<PositionDTO> positionDTOs = new PositionDTOList<>();
 
-        for (OwnedPositionId key: keys)
+        for (PositionDTOKey key: keys)
         {
             positionDTOs.add(get(key));
         }

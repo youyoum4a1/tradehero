@@ -3,11 +3,8 @@ package com.tradehero.th.api.competition.key;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.key.SecurityListType;
 
-
 public class WarrantProviderSecurityListType extends ProviderSecurityListType
 {
-    public static final String TAG = WarrantProviderSecurityListType.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public WarrantProviderSecurityListType(ProviderSecurityListType other)
     {

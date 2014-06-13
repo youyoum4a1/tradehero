@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="watchlist_not_enough_info">정보가 아직 부족합니다.</string>
+
+  <string name="watchlist_title">관심종목</string>
+  <string name="watchlist_add_title">관심종목에 추가</string>
+  <string name="watchlist_edit_title">관심종복 편집</string>
+
+  <string name="watchlist_button_done">완료</string>
+  <string name="watchlist_button_delete">삭제</string>
+  <string name="watchlist_average_price_header">평균가 (US$)</string>
+  <string name="watchlist_quantity_header">수량</string>
+  <string name="watchlist_quantity_initial">1</string>
+  <string name="watchlist_view_graph">그래프 보기</string>
+  <string name="watchlist_number_of_shares"><![CDATA[<b>%1$d</b> shares @ <b>%2$s</b>]]></string>
+  <string name="watchlist_pl_percentage_format">%s %%</string>
+  <string name="watchlist_last_price_format"><![CDATA[%1$s <b>%2$s</b>]]></string>
+  <string name="watchlist_current_value">현재 가치</string>
+  <string name="watchlist_original_value">Original Value</string>
+  <string name="watchlist_gain_loss">수익/손실</string>
+  <string name="watchlist_updating">업데이트중…</string>
+  <string name="watchlist_delete">삭제</string>
+  <string name="watchlist_item_deleted_successfully">관심종목: %d가 삭제되었습니다</string>
+  <string name="watchlist_item_deleted_failed">관심종목에서 %d삭제 시도에 실패하였습니다</string>
+  <string name="watchlist_more">더보기</string>
+  <string name="watchlist_quantity_should_not_be_zero">수량이 최소 1 이상이어야 합니다</string>
+  <string name="watchlist_empty_view">관심종목에 추가하려면\'+\'버튼을 누르세요 </string>
+  <string name="watchlist_new_discussion">새토론</string>
+  <string name="watchlist_not_yet_implemented">아직 처리되지 않았습니다. 잠시 기다려주세요.</string>
+
+  <string name="error_fetch_portfolio_watchlist">관심종복 데이터를 불러오는데 오류 발생</string>
+
+  <string name="watchlist_marking_date_format">dd MMM yyyy HH:mm</string>
+  <string name="watchlist_marking_date">마지막 업데이트: %1$s</string>
+
+</resources>

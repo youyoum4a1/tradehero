@@ -5,10 +5,8 @@ import android.util.AttributeSet;
 import android.widget.Button;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
-
 abstract public class TimeSpanButton extends Button
 {
-    public static final String TAG = TimeSpanButton.class.getSimpleName();
     public static final float ALPHA_DISABLED = 0.5f;
 
     protected ChartTimeSpan chartTimeSpan;

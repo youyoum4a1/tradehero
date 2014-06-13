@@ -1,10 +1,12 @@
 package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum DiscussionType
 {
+    UNKNOWN(0, "Unknown"),
     COMMENT(1, "comment"),
     TIMELINE_ITEM(2, "timelineitem"),
     SECURITY(3, "security"),
@@ -21,7 +23,21 @@ public enum DiscussionType
         this.description = description;
     }
 
-    @JsonCreator public static DiscussionType fromDescription(String description)
+    @JsonCreator public static DiscussionType getInstance(String o)
+    {
+        try
+        {
+            int value = Integer.parseInt(o);
+            return fromValue(value);
+        }
+        catch (NumberFormatException ex)
+        {
+            return fromDescription(o);
+        }
+    }
+
+    //@JsonCreator
+    public static DiscussionType fromDescription(String description)
     {
         for (DiscussionType discussionType : values())
         {
@@ -30,10 +46,11 @@ public enum DiscussionType
                 return discussionType;
             }
         }
-        throw new IllegalArgumentException("Description " + description + " does not map to a DiscussionType");
+        return UNKNOWN;
     }
 
-    @JsonCreator public static DiscussionType fromValue(int value)
+    //@JsonCreator
+    public static DiscussionType fromValue(int value)
     {
         for (DiscussionType discussionType : values())
         {
@@ -42,7 +59,7 @@ public enum DiscussionType
                 return discussionType;
             }
         }
-        throw new IllegalArgumentException("Value " + value + " does not map to a DiscussionType");
+        return UNKNOWN;
     }
 
     @JsonValue final String value()

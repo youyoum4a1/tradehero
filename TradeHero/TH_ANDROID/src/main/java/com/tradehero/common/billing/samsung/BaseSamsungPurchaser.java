@@ -7,7 +7,6 @@ import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import timber.log.Timber;
 
-
 abstract public class BaseSamsungPurchaser<
         SamsungSKUType extends SamsungSKU,
         SamsungPurchaseOrderType extends SamsungPurchaseOrder<SamsungSKUType>,

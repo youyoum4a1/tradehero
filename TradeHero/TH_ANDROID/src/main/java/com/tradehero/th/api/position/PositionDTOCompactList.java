@@ -7,11 +7,8 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 public class PositionDTOCompactList extends ArrayList<PositionDTOCompact>
 {
-    public static final String TAG = PositionDTOCompactList.class.getSimpleName();
-
     //<editor-fold desc="Constructors">
     public PositionDTOCompactList(int capacity)
     {

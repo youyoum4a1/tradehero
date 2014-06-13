@@ -4,11 +4,8 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import javax.inject.Inject;
 
-
 public class SecurityPositionDetailDTOUtil
 {
-    public static final String TAG = SecurityPositionDetailDTOUtil.class.getSimpleName();
-
     @Inject protected PositionDTOCompactListUtil positionDTOCompactListUtil;
 
     @Inject public SecurityPositionDetailDTOUtil()

@@ -27,8 +27,6 @@ import dagger.Provides;
 )
 public class FilterModule
 {
-    public static final String TAG = FilterModule.class.getSimpleName();
-
     public FilterModule()
     {
     }

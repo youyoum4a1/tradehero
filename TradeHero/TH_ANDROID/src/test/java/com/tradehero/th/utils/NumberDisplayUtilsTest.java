@@ -1,17 +1,16 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class NumberDisplayUtilsTest
 {

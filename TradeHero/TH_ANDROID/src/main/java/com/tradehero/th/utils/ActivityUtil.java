@@ -6,11 +6,8 @@ import com.tradehero.th.R;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class ActivityUtil
 {
-    public static final String TAG = ActivityUtil.class.getSimpleName();
-
     @Inject public ActivityUtil()
     {
     }

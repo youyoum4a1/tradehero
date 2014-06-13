@@ -2,13 +2,12 @@ package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -20,7 +19,9 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKeyFactory;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
@@ -28,6 +29,8 @@ import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 public class PrivateDiscussionView extends DiscussionView
 {
@@ -36,7 +39,7 @@ public class PrivateDiscussionView extends DiscussionView
     @Inject protected MessageDiscussionListKeyFactory messageDiscussionListKeyFactory;
     private MessageHeaderDTO messageHeaderDTO;
 
-    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionDTO> discussionFetchTask;
+    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchTask;
     protected DiscussionDTO initiatingDiscussion;
 
     protected MessageType messageType;
@@ -70,8 +73,13 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        setRecipientOnPostCommentView();
         setLoaded();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        setRecipientOnPostCommentView();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -123,7 +131,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
-        MessageHeaderId messageHeaderId = new MessageHeaderId(discussionKey.id);
+        MessageHeaderId messageHeaderId = new MessageHeaderUserId(discussionKey.id, recipient);
         this.messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
         super.linkWith(discussionKey, andDisplay);
 
@@ -161,7 +169,7 @@ public class PrivateDiscussionView extends DiscussionView
         return discussionListKeyFactory.create(messageHeaderDTO);
     }
 
-    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO> createDiscussionCacheListener()
+    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionCacheListener()
     {
         return new PrivateDiscussionViewDiscussionCacheListener();
     }
@@ -205,7 +213,7 @@ public class PrivateDiscussionView extends DiscussionView
         return inflated;
     }
 
-    public void setRecipient(UserBaseKey recipient)
+    public void setRecipient(@NotNull UserBaseKey recipient)
     {
         this.recipient = recipient;
         setRecipientOnPostCommentView();
@@ -213,7 +221,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     private void setRecipientOnPostCommentView()
     {
-        if (postCommentView != null)
+        if (postCommentView != null && recipient != null)
         {
             ((PrivatePostCommentView) postCommentView).setRecipient(recipient);
         }
@@ -261,9 +269,9 @@ public class PrivateDiscussionView extends DiscussionView
         return new PrivateDiscussionViewCommentPostedListener();
     }
 
-    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionDTO>
+    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
-        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionDTO value, boolean fromCache)
+        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value, boolean fromCache)
         {
             linkWithInitiating((PrivateDiscussionDTO) value, true);
         }
@@ -292,7 +300,7 @@ public class PrivateDiscussionView extends DiscussionView
                     R.layout.private_message_bubble_other);
         }
 
-        @Override public View getView(int position, View convertView, ViewGroup parent)
+        @Override public AbstractDiscussionCompactItemViewLinear<DiscussionKey> getView(int position, View convertView, ViewGroup parent)
         {
             if (position == 0)
             {
@@ -303,10 +311,14 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId,MessageHeaderDTO>
+    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
     {
         @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
         {
+            if (value == null)
+            {
+                Timber.e(new NullPointerException("Server returned MessageHeaderDTO null for key " + key), "");
+            }
             setRecipient(new UserBaseKey(value.recipientUserId));
             linkWith(discussionKey, true);
             refresh();

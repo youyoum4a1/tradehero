@@ -7,9 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
-  <com.handmark.pulltorefresh.library.FixedPullToRefreshSwipeListView
+  <com.handmark.pulltorefresh.library.PullToRefreshSwipeListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/pull_to_refresh_watchlist_listview"
       android:layout_width="match_parent"
@@ -29,7 +27,6 @@
       ptr:ptrListViewExtrasEnabled="false"
       android:fadingEdge="none"
       android:scrollbars="none"
-
       />
 
   <!--<com.fortysevendeg.android.swipelistview.SwipeListView-->

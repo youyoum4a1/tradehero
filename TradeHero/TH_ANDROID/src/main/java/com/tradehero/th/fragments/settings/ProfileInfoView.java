@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,8 +32,10 @@ import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTOFactory;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromLibraryDTO;
+import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
@@ -220,8 +223,18 @@ public class ProfileInfoView extends LinearLayout
     public void handleDataFromLibrary(Intent data)
     {
         Uri selectedImageUri = data.getData();
-        String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
-        setNewImagePath(selectedPath);
+        if (selectedImageUri != null)
+        {
+            String selectedPath = FileUtils.getPath(getContext(), selectedImageUri);
+            setNewImagePath(selectedPath);
+        }
+        else
+        {
+            alertDialogUtil.popWithNegativeButton(getContext(),
+                    R.string.error_fetch_image_library,
+                    R.string.error_fetch_image_library,
+                    R.string.cancel);
+        }
     }
 
     public void setNewImagePath(String newImagePath)
@@ -239,11 +252,7 @@ public class ProfileInfoView extends LinearLayout
         created.displayName = getTextValue(displayName);
         created.firstName = getTextValue(firstName);
         created.lastName = getTextValue(lastName);
-        if (newImagePath != null)
-        {
-            created.profilePicture = bitmapTypedOutputFactory.createForProfilePhoto(
-                    getResources(), bitmapForProfileFactory, newImagePath);
-        }
+        created.profilePicture = safeCreateProfilePhoto();
         return created;
     }
 
@@ -257,9 +266,26 @@ public class ProfileInfoView extends LinearLayout
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
         if (newImagePath != null)
         {
-            map.put(UserFormFactory.KEY_PROFILE_PICTURE, bitmapTypedOutputFactory.createForProfilePhoto(
-                    getResources(), bitmapForProfileFactory, newImagePath));
+            map.put(UserFormFactory.KEY_PROFILE_PICTURE, safeCreateProfilePhoto());
         }
+    }
+
+    protected BitmapTypedOutput safeCreateProfilePhoto()
+    {
+        BitmapTypedOutput created = null;
+        if (newImagePath != null)
+        {
+            try
+            {
+                created = bitmapTypedOutputFactory.createForProfilePhoto(
+                        getResources(), bitmapForProfileFactory, newImagePath);
+            }
+            catch (OutOfMemoryError e)
+            {
+                THToast.show(R.string.error_decode_image_memory);
+            }
+        }
+        return created;
     }
 
     private void populateUserFormMapFromEditable(Map<String, Object> toFill, String key, Editable toPick)
@@ -296,7 +322,15 @@ public class ProfileInfoView extends LinearLayout
     {
         if (newImagePath != null)
         {
-            displayProfileImage(bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath));
+            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
+            if (decoded != null)
+            {
+                displayProfileImage(decoded);
+            }
+            else
+            {
+                displayDefaultProfileImage();
+            }
         }
         else if (userBaseDTO != null)
         {
@@ -353,11 +387,12 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
+    // TODO pass something else
     public void populateCredentials(JSONObject credentials)
     {
         if (credentials == null)
         {
-            Timber.e(new NullPointerException("credentials were null current auth type " +  THUser.currentAuthenticationType.get()), "");
+            Timber.e(new NullPointerException("credentials were null current auth type " +  THUser.getAuthHeader()), "");
             THToast.show(R.string.error_fetch_your_user_profile);
         }
         else
@@ -385,6 +420,13 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
+    public EmailCredentialsDTO getEmailCredentialsDTO()
+    {
+        return new EmailCredentialsDTO(
+                email.getText().toString(),
+                password.getText().toString());
+    }
+
     @OnClick(R.id.image_optional) @Optional
     protected void showImageFromDialog()
     {
@@ -394,7 +436,7 @@ public class ProfileInfoView extends LinearLayout
         adapter.addAll(chooseImageFromDTOFactory.getAll(getContext()));
         alertDialogUtil.popWithNegativeButton(getContext(),
                 getContext().getString(R.string.user_profile_choose_image_from_choice),
-                null, getContext().getString(R.string.user_profile_choose_image_from_cancel),
+                null, getContext().getString(R.string.cancel),
                 adapter, createChooseImageDialogClickListener(),
                 null);
     }

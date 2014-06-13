@@ -8,7 +8,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 public class PositionDTO extends PositionDTOCompact
 {
@@ -66,26 +67,27 @@ public class PositionDTO extends PositionDTOCompact
         return new OwnedPositionId(userId, portfolioId, id);
     }
 
-    public static List<OwnedPositionId> getOwnedPositionIds(List<PositionDTO> positionDTOs)
+    @JsonIgnore
+    public PositionDTOKey getPositionDTOKey()
+    {
+        return getOwnedPositionId();
+    }
+
+    public static List<PositionDTOKey> getPositionDTOKeys(List<PositionDTO> positionDTOs)
     {
         if (positionDTOs == null)
         {
             return null;
         }
 
-        List<OwnedPositionId> positionIds = new ArrayList<>();
+        List<PositionDTOKey> positionIds = new ArrayList<>();
 
         for (PositionDTO positionDTO: positionDTOs)
         {
-            positionIds.add(positionDTO.getOwnedPositionId());
+            positionIds.add(positionDTO.getPositionDTOKey());
         }
 
         return positionIds;
-    }
-
-    public OwnedPositionId getOwnedPositionId(Integer portfolioId)
-    {
-        return new OwnedPositionId(userId, portfolioId, id);
     }
 
     public SecurityIntegerId getSecurityIntegerId()
@@ -93,21 +95,23 @@ public class PositionDTO extends PositionDTOCompact
         return new SecurityIntegerId(securityId);
     }
 
-    public static List<OwnedPositionId> getFiledPositionIds(Integer portfolioId, List<PositionDTO> positionDTOs)
+    @Contract("null -> null")
+    @Nullable
+    public static List<PositionDTOKey> getFiledPositionIds(@Nullable List<PositionDTO> positionDTOs)
     {
         if (positionDTOs == null)
         {
             return null;
         }
 
-        List<OwnedPositionId> ownedPositionIds = new ArrayList<>();
+        List<PositionDTOKey> positionDTOKeys = new ArrayList<>();
 
         for (PositionDTO positionDTO: positionDTOs)
         {
-            ownedPositionIds.add(positionDTO.getOwnedPositionId(portfolioId));
+            positionDTOKeys.add(positionDTO.getPositionDTOKey());
         }
 
-        return ownedPositionIds;
+        return positionDTOKeys;
     }
 
     public Double getROISinceInception()

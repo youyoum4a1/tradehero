@@ -4,7 +4,6 @@ import com.tradehero.common.billing.BillingLogicHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.request.BillingRequest;
 
-
 public interface IABLogicHolder<
         IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 
-
 public class TwitterEmailFragment extends AuthenticationFragment
 {
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

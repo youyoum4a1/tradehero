@@ -18,6 +18,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.special.ResideMenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -52,7 +53,6 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import timber.log.Timber;
 
-
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 {
     @InjectView(R.id.stock_logo) ImageView stockLogo;
@@ -71,50 +71,34 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     @InjectView(R.id.alert_edit_toggle_percentage_change) Switch targetPercentageChangeToggle;
     @InjectView(R.id.alert_edit_toggle_target_price) Switch targetPriceToggle;
-    protected CompoundButton.OnCheckedChangeListener percentageCheckedChangeListener;
-    protected CompoundButton.OnCheckedChangeListener targetPriceCheckedChangeListener;
 
     @InjectView(R.id.alert_edit_price_changer_target_price_seek_bar) SeekBar targetPriceSeekBar;
     @InjectView(R.id.alert_edit_price_changer_percentage_seek_bar) SeekBar percentageSeekBar;
-    protected SeekBar.OnSeekBarChangeListener priceSeekBarChangeListener;
-    protected SeekBar.OnSeekBarChangeListener percentageSeekBarChangeListener;
 
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
     @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
     @Inject protected SecurityCompactCache securityCompactCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
-    protected Callback<AlertCompactDTO> alertUpdateCallback;
     @Inject protected Picasso picasso;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject ResideMenu resideMenu;
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
     protected SecurityCompactDTO securityCompactDTO;
-    protected DTOCache.Listener<SecurityId, SecurityCompactDTO> securityCompactCallback;
     protected DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
     protected ProgressDialog progressDialog;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    protected Callback<AlertCompactDTO> createAlertUpdateCallback()
     {
-        super.onCreate(savedInstanceState);
-        createAlertUpdateCallback();
-        createTargetPriceCheckedChangeListener();
-        createPriceSeekBarChangeListener();
-        createPercentageCheckedChangeListener();
-        createPercentageSeekBarChangeListener();
-        createSecurityCompactCallback();
+        return new AlertCreateCallback();
     }
 
-    protected void createAlertUpdateCallback()
+    protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
     {
-        alertUpdateCallback = new AlertCreateCallback();
-    }
-
-    protected void createTargetPriceCheckedChangeListener()
-    {
-        targetPriceCheckedChangeListener = new CompoundButton.OnCheckedChangeListener()
+        return new CompoundButton.OnCheckedChangeListener()
         {
             @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
@@ -123,9 +107,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         };
     }
 
-    protected void createPriceSeekBarChangeListener()
+    protected SeekBar.OnSeekBarChangeListener createPriceSeekBarChangeListener()
     {
-        priceSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener()
+        return new SeekBar.OnSeekBarChangeListener()
         {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
@@ -134,19 +118,17 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
             @Override public void onStartTrackingTouch(SeekBar seekBar)
             {
-
             }
 
             @Override public void onStopTrackingTouch(SeekBar seekBar)
             {
-
             }
         };
     }
 
-    protected void createPercentageCheckedChangeListener()
+    protected CompoundButton.OnCheckedChangeListener createPercentageCheckedChangeListener()
     {
-        percentageCheckedChangeListener = new CompoundButton.OnCheckedChangeListener()
+        return new CompoundButton.OnCheckedChangeListener()
         {
             @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
@@ -155,9 +137,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         };
     }
 
-    protected void createPercentageSeekBarChangeListener()
+    protected SeekBar.OnSeekBarChangeListener createPercentageSeekBarChangeListener()
     {
-        percentageSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener()
+        return new SeekBar.OnSeekBarChangeListener()
         {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
@@ -174,36 +156,12 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         };
     }
 
-    protected void createSecurityCompactCallback()
-    {
-        securityCompactCallback = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
-        {
-            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
-            {
-                hideDialog();
-                linkWith(value, true);
-            }
-
-            @Override public void onErrorThrown(SecurityId key, Throwable error)
-            {
-                hideDialog();
-                THToast.show(new THException(error));
-            }
-
-            private void hideDialog()
-            {
-                if (progressDialog != null)
-                {
-                    progressDialog.hide();
-                }
-            }
-        };
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.alert_edit_fragment, container, false);
         initViews(view);
+        resideMenu.addIgnoredView(targetPriceSeekBar);
+        resideMenu.addIgnoredView(percentageSeekBar);
         return view;
     }
 
@@ -225,8 +183,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         alertToggle.setVisibility(View.GONE);
-        targetPercentageChangeToggle.setOnCheckedChangeListener(percentageCheckedChangeListener);
-        targetPriceToggle.setOnCheckedChangeListener(targetPriceCheckedChangeListener);
+        targetPercentageChangeToggle.setOnCheckedChangeListener(createPercentageCheckedChangeListener());
+        targetPriceToggle.setOnCheckedChangeListener(createTargetPriceCheckedChangeListener());
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -247,18 +205,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         percentageSeekBar.setOnSeekBarChangeListener(null);
         targetPriceSeekBar.setOnSeekBarChangeListener(null);
         detachSecurityCompactCacheFetchTask();
+        resideMenu.removeIgnoredView(targetPriceSeekBar);
+        resideMenu.removeIgnoredView(percentageSeekBar);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        alertUpdateCallback = null;
-        targetPriceCheckedChangeListener = null;
-        priceSeekBarChangeListener = null;
-        percentageCheckedChangeListener = null;
-        percentageSeekBarChangeListener = null;
-        securityCompactCallback = null;
-        super.onDestroy();
     }
 
     protected void detachSecurityCompactCacheFetchTask()
@@ -276,7 +225,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         detachSecurityCompactCacheFetchTask();
-        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, securityCompactCallback);
+        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, createSecurityCompactCacheListener());
         securityCompactCacheFetchTask.execute();
     }
 
@@ -378,11 +327,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         if (andDisplay)
         {
             updateSwitchVisibility();
-
             displayTargetPrice();
-
             displayActiveUntil();
-
             displayPriceChangeSeekBar();
         }
     }
@@ -410,8 +356,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         displayTargetPricePercentageHandler();
 
-        percentageSeekBar.setOnSeekBarChangeListener(percentageSeekBarChangeListener);
-        targetPriceSeekBar.setOnSeekBarChangeListener(priceSeekBarChangeListener);
+        percentageSeekBar.setOnSeekBarChangeListener(createPercentageSeekBarChangeListener());
+        targetPriceSeekBar.setOnSeekBarChangeListener(createPriceSeekBarChangeListener());
     }
 
     protected void displayTargetPricePercentageHandler()
@@ -437,7 +383,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             return; // TODO better than that
         }
-        THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
+        THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, THSignedNumber.WITHOUT_SIGN);
         targetPrice.setText(thTargetPrice.toString());
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
@@ -493,7 +439,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, false);
+            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, THSignedNumber.WITHOUT_SIGN);
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
@@ -527,7 +473,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                 thCurrentPrice = new THSignedNumber(
                         THSignedNumber.TYPE_MONEY,
                         securityCompactDTO.lastPrice,
-                        false,
+                        THSignedNumber.WITHOUT_SIGN,
                         securityCompactDTO.currencyDisplay);
             }
             currentPrice.setText(thCurrentPrice == null ? "-" : thCurrentPrice.toString());
@@ -616,7 +562,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void updatePercentageChangeValues(boolean isChecked)
     {
-        THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, (double) getSeekingMovementPercentage(), true);
+        THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, (double) getSeekingMovementPercentage(), THSignedNumber.WITH_SIGN);
         percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString(0) : "-"));
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
@@ -624,7 +570,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             THSignedNumber thPercentageChangePriceValue = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
                     getSeekingMovementPrice(),
-                    false,
+                    THSignedNumber.WITHOUT_SIGN,
                     securityCompactDTO.currencyDisplay
             );
             percentageChangePriceValue.setText(getFormattedPercentageChangeTargetValue(isChecked ? thPercentageChangePriceValue.toString() : "-"));
@@ -675,7 +621,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         Double seekingTargetPrice = getSeekingTargetPrice();
         if (seekingTargetPrice != null)
         {
-            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, seekingTargetPrice, false);
+            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, seekingTargetPrice, THSignedNumber.WITHOUT_SIGN);
             targetPriceChange.setText(getFormattedTargetPriceChange(handlerEnabled ? thSignedNumber.toString() : "-"));
             targetPriceSeekBar.setEnabled(targetPriceToggle.isChecked());
         }
@@ -712,5 +658,34 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     @Override public boolean isTabBarVisible()
     {
         return false;
+    }
+
+    protected DTOCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    {
+        return new BaseAlertEditSecurityCompactCacheListener();
+    }
+
+    protected class BaseAlertEditSecurityCompactCacheListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+    {
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value,
+                boolean fromCache)
+        {
+            hideDialog();
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        {
+            hideDialog();
+            THToast.show(new THException(error));
+        }
+
+        private void hideDialog()
+        {
+            if (progressDialog != null)
+            {
+                progressDialog.hide();
+            }
+        }
     }
 }

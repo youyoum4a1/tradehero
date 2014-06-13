@@ -8,7 +8,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-
 public class RoundedCornerTransformation  implements com.squareup.picasso.Transformation
 {
     public static final int DEFAULT_PIXEL_RADIUS = 10;

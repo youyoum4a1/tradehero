@@ -10,12 +10,9 @@ import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import java.util.List;
 import java.util.Map;
 
-
 public class UserPortfolioFetchAssistant extends BasicFetchAssistant<UserBaseKey, OwnedPortfolioId>
     implements FetchAssistant.OnInfoFetchedListener<UserBaseKey, UserProfileDTO>
 {
-    public static final String TAG = UserPortfolioFetchAssistant.class.getSimpleName();
-
     private final UserProfileFetchAssistant userProfileFetchAssistant;
 
     public UserPortfolioFetchAssistant(Context context, List<UserBaseKey> keysToFetch)

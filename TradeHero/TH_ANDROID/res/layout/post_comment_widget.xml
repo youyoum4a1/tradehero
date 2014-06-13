@@ -3,6 +3,7 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
+
   <com.tradehero.th.fragments.discussion.PostCommentView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -38,16 +39,25 @@
 
     </com.tradehero.common.widget.BetterViewAnimator>
 
-    <EditText
-        android:id="@+id/post_comment_text"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
+    <LinearLayout
         android:layout_toLeftOf="@id/post_comment_action_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text|textImeMultiLine|textMultiLine"
-        android:hint="@string/timeline_discussion_comment_box_hint"
-        />
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
+
+      <!--<include-->
+          <!--layout="@layout/discussion_edit_post_mention_buttons"-->
+          <!--/>-->
+      <EditText
+          android:id="@+id/post_comment_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+          android:hint="@string/timeline_discussion_comment_box_hint"
+          />
+
+    </LinearLayout>
 
   </com.tradehero.th.fragments.discussion.PostCommentView>
 

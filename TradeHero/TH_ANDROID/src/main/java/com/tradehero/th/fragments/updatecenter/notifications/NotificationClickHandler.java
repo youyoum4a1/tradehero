@@ -17,6 +17,7 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -125,7 +126,7 @@ public class NotificationClickHandler
                     NewsItemDTOKey newsItemDTOKey = new NewsItemDTOKey(notificationDTO.replyableId);
 
                     Bundle bundle = new Bundle();
-                    bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, newsItemDTOKey.getArgs());
+                    NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
                     navigator.pushFragment(NewsDiscussionFragment.class, bundle);
                 }
                 break;
@@ -135,12 +136,27 @@ public class NotificationClickHandler
                     SecurityDiscussionKey securityDiscussionKey = new SecurityDiscussionKey(notificationDTO.replyableId);
 
                     Bundle bundle = new Bundle();
-                    bundle.putBundle(SecurityDiscussionCommentFragment.DISCUSSION_KEY_BUNDLE_KEY, securityDiscussionKey.getArgs());
+                    SecurityDiscussionCommentFragment.putDiscussionKey(bundle, securityDiscussionKey);
                     navigator.pushFragment(SecurityDiscussionCommentFragment.class, bundle);
                 }
                 break;
 
                 case PRIVATE_MESSAGE:
+                {
+                    Bundle args = new Bundle();
+                    if (notificationDTO.referencedUserId != null)
+                    {
+                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
+                    }
+
+                    if (notificationDTO.threadId != null)
+                    {
+                        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                    }
+                    navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+                }
+                break;
+
                 case BROADCAST_MESSAGE:
                 {
                     Bundle args = new Bundle();
@@ -162,7 +178,7 @@ public class NotificationClickHandler
                     TimelineItemDTOKey timelineItemDTOKey = new TimelineItemDTOKey(notificationDTO.replyableId);
 
                     Bundle bundle = new Bundle();
-                    bundle.putBundle(TimelineDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, timelineItemDTOKey.getArgs());
+                    TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
                     navigator.pushFragment(TimelineDiscussionFragment.class, bundle);
                 }
                 break;
@@ -234,7 +250,8 @@ public class NotificationClickHandler
                 {
                     Bundle args = new Bundle();
                     OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
-                    args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+                    PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+                    PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
                     navigator.pushFragment(PositionListFragment.class, args);
                 }
             }

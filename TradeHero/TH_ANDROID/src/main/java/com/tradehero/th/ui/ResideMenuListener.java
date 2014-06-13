@@ -4,7 +4,6 @@ import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import javax.inject.Inject;
 
-
 public class ResideMenuListener implements ResideMenu.OnMenuListener
 {
     @Inject public ResideMenuListener()

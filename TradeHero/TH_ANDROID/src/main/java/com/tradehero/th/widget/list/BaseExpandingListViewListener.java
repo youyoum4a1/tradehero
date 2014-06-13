@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableItem;
+import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
 import javax.inject.Inject;
-
 
 public class BaseExpandingListViewListener implements ExpandingListView.ExpandingListItemListener
 {
@@ -22,7 +22,14 @@ public class BaseExpandingListViewListener implements ExpandingListView.Expandin
             final View expandingLayout = view.findViewById(R.id.expanding_layout);
             if (expandingLayout != null)
             {
-                expandingLayout.setVisibility(View.VISIBLE);
+                if (expandingLayout instanceof ExpandingLayout)
+                {
+                    ((ExpandingLayout)expandingLayout).expand(true);
+                }
+                else
+                {
+                    expandingLayout.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -34,7 +41,14 @@ public class BaseExpandingListViewListener implements ExpandingListView.Expandin
             final View expandingLayout = view.findViewById(R.id.expanding_layout);
             if (expandingLayout != null)
             {
-                expandingLayout.setVisibility(View.GONE);
+                if (expandingLayout instanceof ExpandingLayout)
+                {
+                    ((ExpandingLayout)expandingLayout).expand(false);
+                }
+                else
+                {
+                    expandingLayout.setVisibility(View.GONE);
+                }
             }
         }
     }

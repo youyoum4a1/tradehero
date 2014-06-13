@@ -3,13 +3,11 @@ package com.tradehero.th.api.security;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public enum WarrantType
 {
     CALL("C"),
     PUT("P");
 
-    private static final String TAG = WarrantType.class.getSimpleName();
     private static Map<String, WarrantType> shortCodeMap;
 
     public final String shortCode;

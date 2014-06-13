@@ -1,8 +1,8 @@
 package com.tradehero.th.persistence.user;
 
 import android.content.Context;
-import com.tradehero.common.persistence.DTOCache;
-import com.tradehero.common.persistence.DTOFetchAssistant;
+import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.DTOFetchAssistantNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -12,11 +12,8 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 
-
-public class UserProfileFetchAssistant extends DTOFetchAssistant<UserBaseKey, UserProfileDTO>
+public class UserProfileFetchAssistant extends DTOFetchAssistantNew<UserBaseKey, UserProfileDTO>
 {
-    public static final String TAG = UserProfileFetchAssistant.class.getSimpleName();
-
     private final Context context;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
@@ -35,7 +32,7 @@ public class UserProfileFetchAssistant extends DTOFetchAssistant<UserBaseKey, Us
     }
     //</editor-fold>
 
-    @Override protected DTOCache<UserBaseKey, UserProfileDTO> getCache()
+    @Override protected DTOCacheNew<UserBaseKey, UserProfileDTO> getCache()
     {
         return userProfileCache.get();
     }

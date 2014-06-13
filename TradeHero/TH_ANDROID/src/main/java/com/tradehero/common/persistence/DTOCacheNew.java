@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * See DTOKeyIdList to avoid duplicating data in caches.
@@ -19,8 +20,8 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
      * @param key
      * @return
      */
-    DTOType get(DTOKeyType key);
-    DTOType fetch(DTOKeyType key) throws Throwable;
+    DTOType get(@NotNull DTOKeyType key);
+    DTOType fetch(@NotNull DTOKeyType key) throws Throwable;
     DTOType getOrFetchSync(DTOKeyType key) throws Throwable;
     DTOType getOrFetchSync(DTOKeyType key, boolean force) throws Throwable;
     void register(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);
@@ -33,8 +34,14 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 
     public static interface Listener<DTOKeyType, DTOType>
     {
-        void onDTOReceived(DTOKeyType key, DTOType value, boolean fromCache);
+        void onDTOReceived(DTOKeyType key, DTOType value);
         void onErrorThrown(DTOKeyType key, Throwable error);
+    }
+
+    public static interface HurriedListener<DTOKeyType, DTOType>
+            extends Listener<DTOKeyType, DTOType>
+    {
+        void onPreCachedDTOReceived(DTOKeyType key, DTOType value);
     }
 
     abstract public static class CacheValue<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -78,15 +85,25 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             return fetchTask == null || fetchTask.isCancelled() || fetchTask.getStatus() == AsyncTask.Status.FINISHED;
         }
 
-        public void notifyListenersReceived(DTOKeyType key, DTOType value, boolean fromCache)
+        public void notifyHurriedListenersPreReceived(DTOKeyType key, DTOType value)
         {
-            Listener<DTOKeyType, DTOType> listener;
-            for (Listener<DTOKeyType, DTOType> dtoKeyTypeDTOTypeListener : new HashSet<>(listeners))
+            for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
-                listener = dtoKeyTypeDTOTypeListener;
+                if (listener instanceof HurriedListener)
+                {
+                    ((HurriedListener<DTOKeyType, DTOType>) listener)
+                            .onPreCachedDTOReceived(key, value);
+                }
+            }
+        }
+
+        public void notifyListenersReceived(DTOKeyType key, DTOType value)
+        {
+            for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
+            {
                 if (listener != null)
                 {
-                    listener.onDTOReceived(key, value, fromCache);
+                    listener.onDTOReceived(key, value);
                 }
                 unregisterListener(listener);
             }
@@ -94,10 +111,8 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 
         public void notifyListenersFailed(DTOKeyType key, Throwable error)
         {
-            Listener<DTOKeyType, DTOType> listener;
-            for (Listener<DTOKeyType, DTOType> dtoKeyTypeDTOTypeListener : new HashSet<>(listeners))
+            for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
-                listener = dtoKeyTypeDTOTypeListener;
                 if (listener != null)
                 {
                     listener.onErrorThrown(key, error);

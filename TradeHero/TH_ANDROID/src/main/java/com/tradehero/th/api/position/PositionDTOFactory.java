@@ -6,12 +6,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class PositionDTOFactory
 {
-    public static final String TAG = PositionDTOFactory.class.getSimpleName();
-
-    public static final String WATCHLIST_PRICE_FIELD = "watchlistPrice";
+    public static final String WATCHLIST_PRICE_FIELD = WatchlistPositionDTO.WATCHLIST_PRICE_FIELD;
     public static final String WATCHLIST_SECURITY_FIELD = "securityDTO";
 
     @Inject public PositionDTOFactory()

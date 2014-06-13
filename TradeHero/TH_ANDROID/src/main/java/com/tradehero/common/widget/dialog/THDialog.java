@@ -3,20 +3,20 @@ package com.tradehero.common.widget.dialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.view.*;
-import android.widget.*;
-import android.view.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.tradehero.th.R;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 public class THDialog {
 
@@ -32,6 +32,23 @@ public class THDialog {
         void onDialogDismiss();
     }
 
+    @Deprecated // Translations should be shown inline
+    public static void showTranslationResult(Context context, String text)
+    {
+        THDialog.showCenterDialog(
+                context,
+                context.getString(R.string.translation_result),
+                text, null,
+                context.getResources().getString(android.R.string.ok),
+                new android.content.DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(android.content.DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+    }
 
     public static Dialog showCenterDialog(final Context context,
                                           String title,
@@ -70,7 +87,7 @@ public class THDialog {
     }
 
 
-    public static Dialog showUpDialog(final Context context,final int layoutRes,final DialogCallback callback) {
+   public static Dialog showUpDialog(final Context context,final int layoutRes,final DialogCallback callback) {
         final Dialog dlg = createDialog(context,R.style.TH_common_up_dialog,layoutRes);
         setDialogAttribute(dlg,null);
         if (callback != null) {
@@ -101,7 +118,8 @@ public class THDialog {
     }
 
 
-    public static Dialog showUpDialog(final Context context, final String title, final String[] items, String exit, final OnDialogItemClickListener callback, android.content.DialogInterface.OnCancelListener cancelListener) {
+
+  public static Dialog showUpDialog(final Context context, final String title, final String[] items, String exit, final OnDialogItemClickListener callback, android.content.DialogInterface.OnCancelListener cancelListener) {
         String cancel = null;//context.getString(android.R.string.cancel);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

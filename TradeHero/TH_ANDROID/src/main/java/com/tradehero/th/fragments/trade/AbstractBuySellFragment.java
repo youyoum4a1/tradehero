@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -28,7 +28,6 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -65,7 +64,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     protected FreshQuoteHolder freshQuoteHolder;
     protected QuoteDTO quoteDTO;
@@ -158,15 +157,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             }
         }
     }
-
-    public void displayExchangeSymbol(ActionBar actionBar)
-    {
-        if (actionBar != null)
-        {
-            actionBar.setTitle(
-                    securityId == null ? "-:-": String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
-        }
-    }
     //</editor-fold>
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -174,7 +164,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onSaveInstanceState(outState);
 
         detachFetchPositionDetailTask();
-        detachFetchUserProfileTask();
+        detachUserProfileCache();
         destroyFreshQuoteHolder();
 
         outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
@@ -191,7 +181,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onDestroyView()
     {
         detachFetchPositionDetailTask();
-        detachFetchUserProfileTask();
+        detachUserProfileCache();
         destroyFreshQuoteHolder();
         querying = false;
 
@@ -221,13 +211,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         fetchPositionDetailTask = null;
     }
 
-    protected void detachFetchUserProfileTask()
+    protected void detachUserProfileCache()
     {
-        if (fetchUserProfileTask != null)
+        if (userProfileCacheListener != null)
         {
-            fetchUserProfileTask.setListener(null);
+            userProfileCache.get().unregister(userProfileCacheListener);
         }
-        fetchUserProfileTask = null;
+        userProfileCacheListener = null;
     }
 
     public void setTransactionTypeBuy(boolean transactionTypeBuy)
@@ -269,89 +259,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void requestUserProfile()
     {
-        if (fetchUserProfileTask != null)
-        {
-            fetchUserProfileTask.cancel(false);
-        }
+        detachUserProfileCache();
         UserBaseKey baseKey = currentUserId.toUserBaseKey();
-        fetchUserProfileTask = userProfileCache.get().getOrFetch(baseKey, false, createUserProfileCacheListener(baseKey));
-        fetchUserProfileTask.execute();
-    }
-
-    protected boolean hasValidInfoForBuy()
-    {
-        return securityId != null && securityCompactDTO != null && quoteDTO != null && quoteDTO.ask != null;
-    }
-
-    protected boolean hasValidInfoForSell()
-    {
-        return securityId != null && securityCompactDTO != null && quoteDTO != null && quoteDTO.bid != null;
-    }
-
-    protected Double getTotalCostForBuy()
-    {
-        if (mBuyQuantity == null)
-        {
-            return null;
-        }
-        if (quoteDTO.toUSDRate == null)
-        {
-            return mBuyQuantity * quoteDTO.ask;
-        }
-        return mBuyQuantity * quoteDTO.ask * quoteDTO.toUSDRate + SecurityUtils.DEFAULT_TRANSACTION_COST;
-    }
-
-    protected Double getNetProceedsForSell()
-    {
-        if (mSellQuantity == null)
-        {
-            return null;
-        }
-        if (quoteDTO.toUSDRate == null)
-        {
-            return mSellQuantity * quoteDTO.bid;
-        }
-        return mSellQuantity * quoteDTO.bid * quoteDTO.toUSDRate - SecurityUtils.DEFAULT_TRANSACTION_COST;
-    }
-
-    public String getBuyDetails()
-    {
-        if (!hasValidInfoForBuy())
-        {
-            return getResources().getString(R.string.buy_sell_buy_details_unavailable);
-        }
-
-        return String.format(
-                getResources().getString(R.string.buy_sell_buy_details),
-                mBuyQuantity,
-                securityId.exchange,
-                securityId.securitySymbol,
-                securityCompactDTO.currencyDisplay,
-                quoteDTO.ask,
-                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere else
-                SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere else
-                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere else
-                getTotalCostForBuy());
-    }
-
-    public String getSellDetails()
-    {
-        if (!hasValidInfoForSell())
-        {
-            return getResources().getString(R.string.buy_sell_sell_details_unavailable);
-        }
-
-        return String.format(
-                getResources().getString(R.string.buy_sell_sell_details),
-                mSellQuantity,
-                securityId.exchange,
-                securityId.securitySymbol,
-                securityCompactDTO.currencyDisplay,
-                quoteDTO.bid,
-                SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere
-                SecurityUtils.DEFAULT_TRANSACTION_COST, // TODO Have this value taken from somewhere
-                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, // TODO Have this currencyDisplay taken from somewhere
-                getNetProceedsForSell());
+        userProfileCacheListener = createUserProfileCacheListener(baseKey);
+        userProfileCache.get().register(baseKey, userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(baseKey);
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -403,6 +315,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public void linkWith(final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
+        this.securityPositionDetailDTO = securityPositionDetailDTO;
         if (securityPositionDetailDTO != null)
         {
             linkWith(securityPositionDetailDTO.security, andDisplay);
@@ -583,12 +496,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener(UserBaseKey userBaseKey)
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener(UserBaseKey userBaseKey)
     {
         return new AbstractBuySellUserProfileCacheListener(userBaseKey);
     }
 
-    private class AbstractBuySellUserProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    private class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         private final UserBaseKey userBaseKey;
 
@@ -597,7 +510,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             this.userBaseKey = userBaseKey;
         }
 
-        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value)
         {
             if (key.equals(userBaseKey))
             {

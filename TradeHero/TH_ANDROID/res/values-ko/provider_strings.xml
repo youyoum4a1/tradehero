@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="error_fetch_provider_info_list">대회 제공자의 정보를 불러오는데 오류가 생겼습니다.</string>
+  <string name="error_fetch_provider_info">대회 제공자 정보를 불러오는데 오류가 생겼습니다..</string>
+  <string name="error_fetch_provider_competition_list">대회 리스트를 불러오는데 오류가 생겼습니다.</string>
+  <string name="error_fetch_provider_competition_leaderboard_list">대회 리더보드를 불러오는데 오류가 생겼습니다.</string>
+
+  <string name="provider_competition_portfolio_title">대회 포트폴리오</string>
+  <string name="provider_competition_portfolio_description">대회 보유종목</string>
+  <string name="provider_competition_wizard_title">Wizard</string>
+  <string name="provider_competition_rules_title">대회규칙</string>
+  <string name="provider_competition_terms_title">사용 약관</string>
+
+  <string name="provider_security_list_title">대회 주식</string>
+  <string name="provider_security_list_search_hint">주식명 혹은 코드로 필터링</string>
+
+  <string name="competition_leaderboard_timer_time_left_1">시간</string>
+  <string name="competition_leaderboard_timer_time_left_2">남음</string>
+  <string name="competition_leaderboard_timer_days">일</string>
+  <string name="competition_leaderboard_timer_time_separator">:</string>
+
+  <string name="competition_leaderboard_to_be_won">획득!</string>
+
+  <string name="competition_enrollment_web_view_done">완료</string>
+  <string name="competition_portfolio_unsure">이름없는 대회</string>
+
+  <!-- Macquarie WarrantHero specific strings. providerId == 3-->
+  <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
+  <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
+  <string name="competition_macquarie_warrant_hero_help_video_title">도움말 영상 - Macquarie WarrantHero</string>
+
+  <!-- Phillip-Macquarie specific strings, providerId == 22 -->
+  <string name="competition_phillip_macquarie_warrant_hero_portfolio_title">Phillip-Macquarie</string>
+
+</resources>

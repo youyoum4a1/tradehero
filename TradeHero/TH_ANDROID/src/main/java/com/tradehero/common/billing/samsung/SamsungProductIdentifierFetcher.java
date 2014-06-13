@@ -4,7 +4,6 @@ import com.sec.android.iap.lib.listener.OnGetItemListener;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 
-
 public interface SamsungProductIdentifierFetcher<
         SamsungSKUListKeyType extends SamsungSKUListKey,
         SamsungSKUType extends SamsungSKU,

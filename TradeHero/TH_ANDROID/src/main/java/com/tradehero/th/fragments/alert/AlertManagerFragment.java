@@ -42,10 +42,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-
 public class AlertManagerFragment extends BasePurchaseManagerFragment
 {
-    public static final String TAG = AlertManagerFragment.class.getSimpleName();
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
     @InjectView(R.id.manage_alerts_count) TextView alertPlanCount;
