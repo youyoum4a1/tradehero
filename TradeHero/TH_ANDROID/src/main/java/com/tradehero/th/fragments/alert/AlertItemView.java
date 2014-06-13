@@ -28,6 +28,7 @@ import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class AlertItemView extends RelativeLayout
         implements DTOView<AlertId>
@@ -176,7 +177,10 @@ public class AlertItemView extends RelativeLayout
     {
         if (alertCompactDTO.active)
         {
-            alertStatus.setText(getFormattedActiveUntilString(alertCompactDTO.activeUntilDate));
+            if (alertCompactDTO.activeUntilDate != null)
+            {
+                alertStatus.setText(getFormattedActiveUntilString(alertCompactDTO.activeUntilDate));
+            }
             alertStatus.setTextColor(getResources().getColor(R.color.black));
         }
         else
@@ -186,9 +190,9 @@ public class AlertItemView extends RelativeLayout
         }
     }
 
-    private Spanned getFormattedActiveUntilString(Date activeUntilDate)
+    private Spanned getFormattedActiveUntilString(@NotNull Date activeUntilDate)
     {
-        return Html.fromHtml(String.format(getContext().getString(R.string.stock_alert_active_until_date), DateUtils.getFormattedDate(activeUntilDate)));
+        return Html.fromHtml(getContext().getString(R.string.stock_alert_active_until_date, DateUtils.getFormattedDate(activeUntilDate)));
     }
 
     private void displayStockSymbol()

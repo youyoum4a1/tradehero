@@ -6,6 +6,7 @@ import com.tradehero.th.base.Application;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import org.jetbrains.annotations.NotNull;
 
 public class DateUtils
 {
@@ -28,18 +29,18 @@ public class DateUtils
         return sdf.format(d);
     }
 
-    public static int getNumberOfDaysBetweenDates(Date start, Date end)
+    public static int getNumberOfDaysBetweenDates(@NotNull Date start, @NotNull Date end)
     {
            return (int) (end.getTime() - start.getTime()) / MILLISECOND_PER_DAY;
     }
 
-    public static String getFormattedDate(Date utcDate)
+    public static String getFormattedDate(@NotNull Date utcDate)
     {
         SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_hh_mm));
         return requiredFormat.format(utcDate);
     }
 
-    public static String getFormattedUtcDate(Date utcDate)
+    public static String getFormattedUtcDate(@NotNull Date utcDate)
     {
         SimpleDateFormat requiredFormat = new SimpleDateFormat(Application.getResourceString(R.string.data_format_dd_mmm_yyyy_hh_mm));
         return requiredFormat.format(utcDate);

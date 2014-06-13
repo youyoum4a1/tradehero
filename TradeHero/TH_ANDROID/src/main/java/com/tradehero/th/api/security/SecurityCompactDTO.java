@@ -8,6 +8,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @JsonTypeInfo(
@@ -57,7 +58,7 @@ public class SecurityCompactDTO extends ExtendedDTO
 
     private Date lastPriceDateEST;
     //// EDT/EST converted to UTC
-    public Date lastPriceDateAndTimeUtc;
+    @Nullable public Date lastPriceDateAndTimeUtc;
 
     public Double toUSDRate;
     public Date toUSDRateDate;

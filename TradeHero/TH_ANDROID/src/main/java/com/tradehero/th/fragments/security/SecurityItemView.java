@@ -237,7 +237,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         {
             if (securityCompactDTO != null)
             {
-                date.setText(DateUtils.getFormattedUtcDate(this.securityCompactDTO.lastPriceDateAndTimeUtc));
+                if (securityCompactDTO.lastPriceDateAndTimeUtc != null)
+                {
+                    date.setText(DateUtils.getFormattedUtcDate(securityCompactDTO.lastPriceDateAndTimeUtc));
+                }
                 if (securityCompactDTO.marketOpen != null)
                 {
                     date.setTextColor(getResources().getColor(securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
