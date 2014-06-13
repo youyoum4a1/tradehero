@@ -29,6 +29,7 @@ import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class PrivateDiscussionView extends DiscussionView
@@ -72,8 +73,13 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        setRecipientOnPostCommentView();
         setLoaded();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        setRecipientOnPostCommentView();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -207,7 +213,7 @@ public class PrivateDiscussionView extends DiscussionView
         return inflated;
     }
 
-    public void setRecipient(UserBaseKey recipient)
+    public void setRecipient(@NotNull UserBaseKey recipient)
     {
         this.recipient = recipient;
         setRecipientOnPostCommentView();
@@ -215,7 +221,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     private void setRecipientOnPostCommentView()
     {
-        if (postCommentView != null)
+        if (postCommentView != null && recipient != null)
         {
             ((PrivatePostCommentView) postCommentView).setRecipient(recipient);
         }

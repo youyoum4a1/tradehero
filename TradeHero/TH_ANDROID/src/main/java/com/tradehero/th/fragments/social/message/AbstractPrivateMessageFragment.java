@@ -41,6 +41,8 @@ import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -60,7 +62,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Inject protected UserProfileCache userProfileCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
@@ -72,26 +74,20 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private DTOCache.GetOrFetchTask<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchTask;
     private MessageHeaderId messageHeaderId;
 
-    public static void putCorrespondentUserBaseKey(Bundle args, UserBaseKey correspondentBaseKey)
+    public static void putCorrespondentUserBaseKey(@NotNull Bundle args, @NotNull UserBaseKey correspondentBaseKey)
     {
         args.putBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY, correspondentBaseKey.getArgs());
+    }
+
+    @NotNull private static UserBaseKey collectCorrespondentId(@NotNull Bundle args)
+    {
+        return new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        collectCorrespondentId();
-    }
-
-    private UserBaseKey collectCorrespondentId()
-    {
-        Bundle args = getArguments();
-        if (args != null && args.containsKey(CORRESPONDENT_USER_BASE_BUNDLE_KEY))
-        {
-            return new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
-        }
-        return null;
+        correspondentId = collectCorrespondentId(getArguments());
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
@@ -118,7 +114,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         display();
-        correspondentId = collectCorrespondentId();
         if (discussionView != null)
         {
             ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
@@ -158,8 +153,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onResume()
     {
         super.onResume();
-        //TODO need this? temp remove by alex
-        //fetchCorrespondentProfile();
+        fetchCorrespondentProfile();
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -199,7 +193,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.linkWith(discussionKey, andDisplay);
 
-        linkWith(new MessageHeaderUserId(discussionKey.id, collectCorrespondentId()), true);
+        linkWith(new MessageHeaderUserId(discussionKey.id, correspondentId), true);
     }
 
     private void linkWith(MessageHeaderId messageHeaderId, boolean andDisplay)
@@ -396,8 +390,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
                 actionBar.setTitle(value.title);
                 actionBar.setSubtitle(value.subTitle);
             }
-            correspondentId = new UserBaseKey(value.recipientUserId);
-            fetchCorrespondentProfile();
             if (value.unread)
             {
                 reportMessageRead(value);
