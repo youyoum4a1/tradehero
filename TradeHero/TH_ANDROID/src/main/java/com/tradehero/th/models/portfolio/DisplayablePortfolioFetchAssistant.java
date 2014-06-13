@@ -70,7 +70,8 @@ public class DisplayablePortfolioFetchAssistant
             if (entry.getValue().size() == 0 && !entry.getValue().fetchingIds)
             {
                 entry.getValue().fetchingIds = true;
-                portfolioListCache.getOrFetch(entry.getKey(), createOwnedPortfolioIdListListener()).execute();
+                portfolioListCache.register(entry.getKey(), createOwnedPortfolioIdListListener());
+                portfolioListCache.getOrFetchAsync(entry.getKey());
             }
             else
             {
@@ -92,11 +93,11 @@ public class DisplayablePortfolioFetchAssistant
         }
     }
 
-    private DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> createOwnedPortfolioIdListListener()
+    private DTOCacheNew.Listener<UserBaseKey, OwnedPortfolioIdList> createOwnedPortfolioIdListListener()
     {
-        return new DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
+        return new DTOCacheNew.Listener<UserBaseKey, OwnedPortfolioIdList>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value, boolean fromCache)
+            @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
             {
                 Timber.d("Received id list for %s: %s", key, value);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key);

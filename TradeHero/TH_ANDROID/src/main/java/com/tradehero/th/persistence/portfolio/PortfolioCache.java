@@ -97,6 +97,6 @@ import org.jetbrains.annotations.Nullable;
     {
         super.invalidate(key);
         getPositionsCache.get().invalidate(key);
-        portfolioCompactListCache.autoFetch(key.getUserBaseKey(), true);
+        portfolioCompactListCache.getOrFetchAsync(key.getUserBaseKey(), true);
     }
 }
