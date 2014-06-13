@@ -386,10 +386,6 @@ public class UpdateCenterFragment extends BaseFragment
     {
         if (andDisplay)
         {
-            Timber.d(
-                    "changeTabTitleNumber unreadMessageThreadsCount:%d,unreadNotificationsCount:%d",
-                    userProfileDTO.unreadMessageThreadsCount,
-                    userProfileDTO.unreadNotificationsCount);
             changeTabTitleNumber(UpdateCenterTabType.Messages,
                     userProfileDTO.unreadMessageThreadsCount);
             //changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
