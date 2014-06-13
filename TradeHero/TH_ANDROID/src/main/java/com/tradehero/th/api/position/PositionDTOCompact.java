@@ -57,7 +57,7 @@ public class PositionDTOCompact extends ExtendedDTO
         return shares != 0;
     }
 
-    @JsonIgnore
+    @JsonIgnore @NotNull
     public PositionCompactId getPositionCompactId()
     {
         return new PositionCompactId(id);

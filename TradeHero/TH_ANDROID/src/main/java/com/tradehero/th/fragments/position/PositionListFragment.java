@@ -288,7 +288,6 @@ public class PositionListFragment
         }
         positionItemAdapter = new AbstractPositionItemAdapter(
                 getActivity(),
-                getActivity().getLayoutInflater(),
                 getLayoutResIds());
         positionItemAdapter.setCellListener(this);
     }

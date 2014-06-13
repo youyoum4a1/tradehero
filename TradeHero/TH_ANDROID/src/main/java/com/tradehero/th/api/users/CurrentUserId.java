@@ -2,6 +2,7 @@ package com.tradehero.th.api.users;
 
 import android.content.SharedPreferences;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import org.jetbrains.annotations.NotNull;
 
 public class CurrentUserId extends IntPreference
 {
@@ -10,7 +11,7 @@ public class CurrentUserId extends IntPreference
         super(preference, key, defaultValue);
     }
 
-    public UserBaseKey toUserBaseKey()
+    @NotNull public UserBaseKey toUserBaseKey()
     {
         return new UserBaseKey(get());
     }

@@ -47,6 +47,8 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId>
@@ -69,9 +71,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     @InjectView(R.id.position_watchlist_delete) protected Button deleteButton;
     @InjectView(R.id.position_watchlist_more) protected Button moreButton;
 
-    private WatchlistPositionDTO watchlistPositionDTO;
+    @Nullable private WatchlistPositionDTO watchlistPositionDTO;
     private SecurityId securityId;
-
     private MiddleCallbackWeakList<WatchlistPositionDTO> middleCallbackWatchlistDeletes;
 
     private PopupMenu morePopupMenu;
@@ -193,7 +194,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         };
     }
 
-    private THCallback<WatchlistPositionDTO> createWatchlistDeletionCallback()
+    @NotNull private THCallback<WatchlistPositionDTO> createWatchlistDeletionCallback()
     {
         return new THCallback<WatchlistPositionDTO>()
         {
@@ -490,9 +491,12 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private void deleteSelf()
     {
         // not to show dialog but request deletion in background
-        middleCallbackWatchlistDeletes.add(watchlistServiceWrapper.get().deleteWatchlist(
+        if (watchlistPositionDTO != null)
+        {
+            middleCallbackWatchlistDeletes.add(watchlistServiceWrapper.get().deleteWatchlist(
                     watchlistPositionDTO,
                     createWatchlistDeletionCallback()));
+        }
     }
 
     private PopupMenu createMoreOptionsPopupMenu()

@@ -19,7 +19,6 @@ public class LeaderboardPositionListFragment
         }
         positionItemAdapter = new LeaderboardPositionItemAdapter(
                 getActivity(),
-                getActivity().getLayoutInflater(),
                 getLayoutResIds(),
                 timeRestricted);
         positionItemAdapter.setCellListener(this);

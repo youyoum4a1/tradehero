@@ -8,6 +8,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
@@ -183,7 +184,7 @@ public class SecurityCompactDTO extends ExtendedDTO
         return new SecurityIntegerId(id);
     }
 
-    public SecurityId getSecurityId()
+    @NotNull public SecurityId getSecurityId()
     {
         return new SecurityId(exchange, symbol);
     }
