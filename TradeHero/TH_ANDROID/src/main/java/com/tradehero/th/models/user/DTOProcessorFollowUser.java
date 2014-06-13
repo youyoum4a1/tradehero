@@ -6,20 +6,21 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorFollowUser extends DTOProcessorUpdateUserProfile
 {
-    protected final HeroListCache heroListCache;
-    protected final GetPositionsCache getPositionsCache;
-    protected final UserMessagingRelationshipCache userMessagingRelationshipCache;
-    protected final UserBaseKey userToFollow;
+    @NotNull protected final HeroListCache heroListCache;
+    @NotNull protected final GetPositionsCache getPositionsCache;
+    @NotNull protected final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @NotNull protected final UserBaseKey userToFollow;
 
     public DTOProcessorFollowUser(
-            UserProfileCache userProfileCache,
-            HeroListCache heroListCache,
-            GetPositionsCache getPositionsCache,
-            UserMessagingRelationshipCache userMessagingRelationshipCache,
-            UserBaseKey userToFollow)
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull HeroListCache heroListCache,
+            @NotNull GetPositionsCache getPositionsCache,
+            @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
+            @NotNull UserBaseKey userToFollow)
     {
         super(userProfileCache);
         this.heroListCache = heroListCache;

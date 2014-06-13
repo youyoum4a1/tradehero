@@ -3,8 +3,8 @@ package com.tradehero.th.api.users;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
@@ -24,6 +24,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public List<Integer> premiumHeroIds;
     public Integer followerCount;
     /**newly added fields*/
+    public int allHeroCount;
     public int allFollowerCount;
     public int freeFollowerCount;
     public int paidFollowerCount;
@@ -36,6 +37,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public String paypalEmailAddress;
     public String alipayAccount;
+    public String alipayIdentityNumber;
+    public String alipayRealName;
 
     public boolean pushNotificationsEnabled;
     public boolean emailNotificationsEnabled;
@@ -64,7 +67,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public LeaderboardKey getMostSkilledLbmuKey()
     {
-        return new LeaderboardKey(LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
+        return new LeaderboardKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
     }
 
     public boolean isFollowingUser(int userId)
@@ -181,6 +184,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", portfolio=" + portfolio +
                 ", paypalEmailAddress='" + paypalEmailAddress + '\'' +
                 ", alipayAccount='" + alipayAccount + '\'' +
+                ", alipayIdentityNumber='" + alipayIdentityNumber + '\'' +
+                ", alipayRealName='" + alipayRealName + '\'' +
                 ", pushNotificationsEnabled=" + pushNotificationsEnabled +
                 ", emailNotificationsEnabled=" + emailNotificationsEnabled +
                 ", rank=" + rank +

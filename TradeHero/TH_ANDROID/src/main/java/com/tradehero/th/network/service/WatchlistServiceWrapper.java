@@ -22,24 +22,26 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class WatchlistServiceWrapper
 {
-    private final CurrentUserId currentUserId;
-    private final WatchlistService watchlistService;
-    private final WatchlistServiceAsync watchlistServiceAsync;
-    private final Lazy<WatchlistPositionCache> watchlistPositionCache;
-    private final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    private final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final WatchlistService watchlistService;
+    @NotNull private final WatchlistServiceAsync watchlistServiceAsync;
+    @NotNull private final Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @NotNull private final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
+    @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
 
     @Inject public WatchlistServiceWrapper(
-            CurrentUserId currentUserId,
-            WatchlistService watchlistService,
-            WatchlistServiceAsync watchlistServiceAsync,
-            Lazy<WatchlistPositionCache> watchlistPositionCache,
-            Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
-            PortfolioCompactListCache portfolioCompactListCache)
+            @NotNull CurrentUserId currentUserId,
+            @NotNull WatchlistService watchlistService,
+            @NotNull WatchlistServiceAsync watchlistServiceAsync,
+            @NotNull Lazy<WatchlistPositionCache> watchlistPositionCache,
+            @NotNull Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache)
     {
         super();
         this.currentUserId = currentUserId;
@@ -51,36 +53,45 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="DTO Processors">
-    protected DTOProcessor<WatchlistPositionDTO> createWatchlistUpdateProcessor()
+    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistUpdateProcessor()
     {
         return new DTOProcessorWatchlistUpdate(watchlistPositionCache.get());
     }
 
-    protected DTOProcessor<WatchlistPositionDTO> createWatchlistCreateProcessor(UserBaseKey concernedUser)
+    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistCreateProcessor(@NotNull UserBaseKey concernedUser)
     {
-        return new DTOProcessorWatchlistCreate(watchlistPositionCache.get(), concernedUser,
-                portfolioCompactListCache, userWatchlistPositionCache.get());
+        return new DTOProcessorWatchlistCreate(
+                watchlistPositionCache.get(),
+                concernedUser,
+                portfolioCompactListCache,
+                userWatchlistPositionCache.get());
     }
 
-    protected DTOProcessor<WatchlistPositionDTO> createWatchlistDeleteProcessor(UserBaseKey concernedUser)
+    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistDeleteProcessor(@NotNull UserBaseKey concernedUser)
     {
-        return new DTOProcessorWatchlistDelete(watchlistPositionCache.get(), concernedUser,
-                portfolioCompactListCache, userWatchlistPositionCache.get());
+        return new DTOProcessorWatchlistDelete(
+                watchlistPositionCache.get(),
+                concernedUser,
+                portfolioCompactListCache,
+                userWatchlistPositionCache.get());
     }
     //</editor-fold>
 
     //<editor-fold desc="Add a watch item">
-    public WatchlistPositionDTO createWatchlistEntry(WatchlistPositionFormDTO watchlistPositionFormDTO)
+    @Nullable public WatchlistPositionDTO createWatchlistEntry(@NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
-        return createWatchlistCreateProcessor(currentUserId.toUserBaseKey()).process(
-                watchlistService.createWatchlistEntry(
+        return createWatchlistCreateProcessor(
+                currentUserId.toUserBaseKey()).process(
+                    watchlistService.createWatchlistEntry(
                         watchlistPositionFormDTO)
         );
     }
 
-    public MiddleCallback<WatchlistPositionDTO> createWatchlistEntry(WatchlistPositionFormDTO watchlistPositionFormDTO, Callback<WatchlistPositionDTO> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTO> createWatchlistEntry(
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO,
+            @Nullable Callback<WatchlistPositionDTO> callback)
     {
-        MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(
+        @NotNull MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createWatchlistCreateProcessor(currentUserId.toUserBaseKey()));
         watchlistServiceAsync.createWatchlistEntry(watchlistPositionFormDTO, middleCallback);
@@ -89,238 +100,80 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Edit a watch item">
-    public WatchlistPositionDTO updateWatchlistEntry(WatchlistPositionDTO watchlistPositionDTO, WatchlistPositionFormDTO watchlistPositionFormDTO)
+    @Nullable public WatchlistPositionDTO updateWatchlistEntry(
+            @NotNull WatchlistPositionDTO watchlistPositionDTO,
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return updateWatchlistEntry(watchlistPositionDTO.getPositionCompactId(), watchlistPositionFormDTO);
     }
 
-    public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(WatchlistPositionDTO watchlistPositionDTO, WatchlistPositionFormDTO watchlistPositionFormDTO, Callback<WatchlistPositionDTO> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(
+            @NotNull WatchlistPositionDTO watchlistPositionDTO,
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO,
+            @Nullable Callback<WatchlistPositionDTO> callback)
     {
         return updateWatchlistEntry(watchlistPositionDTO.getPositionCompactId(), watchlistPositionFormDTO, callback);
     }
 
-    public WatchlistPositionDTO updateWatchlistEntry(PositionCompactId positionId, WatchlistPositionFormDTO watchlistPositionFormDTO)
+    @Nullable public WatchlistPositionDTO updateWatchlistEntry(
+            @NotNull PositionCompactId positionId,
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return createWatchlistUpdateProcessor().process(watchlistService.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO));
     }
 
-    public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(PositionCompactId positionId, WatchlistPositionFormDTO watchlistPositionFormDTO, Callback<WatchlistPositionDTO> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(
+            @NotNull PositionCompactId positionId,
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO,
+            @Nullable Callback<WatchlistPositionDTO> callback)
     {
-        MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<WatchlistPositionDTO>(callback, createWatchlistUpdateProcessor());
+        MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(callback, createWatchlistUpdateProcessor());
         watchlistServiceAsync.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">
-    public WatchlistPositionDTOList getAllByUser(PagedWatchlistKey pagedWatchlistKey)
+    @Nullable public WatchlistPositionDTOList getAllByUser(@NotNull PagedWatchlistKey pagedWatchlistKey)
     {
-        if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
+        if (pagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
         {
-            return getAllByUser((PerPagedWatchlistKey) pagedWatchlistKey);
-        }
-
-        if (pagedWatchlistKey.page == null)
-        {
-            return watchlistService.getAllByUser();
-        }
-        return watchlistService.getAllByUser(pagedWatchlistKey.page);
-    }
-
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(PagedWatchlistKey pagedWatchlistKey,
-            Callback<WatchlistPositionDTOList> callback)
-    {
-        if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
-        {
-            return getAllByUser((PerPagedWatchlistKey) pagedWatchlistKey, callback);
-        }
-        else
-        {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-            if (pagedWatchlistKey.page == null)
-            {
-                watchlistServiceAsync.getAllByUser(middleCallback);
-            }
-            else
-            {
-                watchlistServiceAsync.getAllByUser(pagedWatchlistKey.page, middleCallback);
-            }
-            return middleCallback;
-        }
-    }
-
-    public WatchlistPositionDTOList getAllByUser(PerPagedWatchlistKey perPagedWatchlistKey)
-    {
-        if (perPagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
-        {
-            return getAllByUser((SecurityPerPagedWatchlistKey) perPagedWatchlistKey);
-        }
-
-        if (perPagedWatchlistKey.page == null)
-        {
-            return watchlistService.getAllByUser();
-        }
-        if (perPagedWatchlistKey.perPage == null)
-        {
-            return watchlistService.getAllByUser(perPagedWatchlistKey.page);
-        }
-        return watchlistService.getAllByUser(
-                perPagedWatchlistKey.page,
-                perPagedWatchlistKey.perPage);
-    }
-
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(PerPagedWatchlistKey perPagedWatchlistKey,
-            Callback<WatchlistPositionDTOList> callback)
-    {
-        if (perPagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
-        {
-            return getAllByUser((SecurityPerPagedWatchlistKey) perPagedWatchlistKey, callback);
-        }
-        else
-        {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-            if (perPagedWatchlistKey.page == null)
-            {
-                watchlistServiceAsync.getAllByUser(middleCallback);
-            }
-            else if (perPagedWatchlistKey.perPage == null)
-            {
-                watchlistServiceAsync.getAllByUser(perPagedWatchlistKey.page, middleCallback);
-            }
-            else
-            {
-                watchlistServiceAsync.getAllByUser(
-                        perPagedWatchlistKey.page,
-                        perPagedWatchlistKey.perPage,
-                        middleCallback);
-            }
-            return middleCallback;
-        }
-    }
-
-    public WatchlistPositionDTOList getAllByUser(SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey)
-    {
-        if (securityPerPagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
-        {
-            return getAllByUser((SkipCacheSecurityPerPagedWatchlistKey) securityPerPagedWatchlistKey);
-        }
-
-        if (securityPerPagedWatchlistKey.page == null)
-        {
-            return watchlistService.getAllByUser();
-        }
-        if (securityPerPagedWatchlistKey.perPage == null)
-        {
-            return watchlistService.getAllByUser(securityPerPagedWatchlistKey.page);
-        }
-        if (securityPerPagedWatchlistKey.securityId == null)
-        {
+            SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey = (SkipCacheSecurityPerPagedWatchlistKey) pagedWatchlistKey;
             return watchlistService.getAllByUser(
-                    securityPerPagedWatchlistKey.page,
-                    securityPerPagedWatchlistKey.perPage);
-        }
-        return watchlistService.getAllByUser(
-                securityPerPagedWatchlistKey.page,
-                securityPerPagedWatchlistKey.perPage,
-                securityPerPagedWatchlistKey.securityId);
-    }
-
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey,
-            Callback<WatchlistPositionDTOList> callback)
-    {
-        if (securityPerPagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
-        {
-            return getAllByUser((SkipCacheSecurityPerPagedWatchlistKey) securityPerPagedWatchlistKey, callback);
-        }
-        else
-        {
-            MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-            if (securityPerPagedWatchlistKey.page == null)
-            {
-                watchlistServiceAsync.getAllByUser(middleCallback);
-            }
-            else if (securityPerPagedWatchlistKey.perPage == null)
-            {
-                watchlistServiceAsync.getAllByUser(securityPerPagedWatchlistKey.page, middleCallback);
-            }
-            else if (securityPerPagedWatchlistKey.securityId == null)
-            {
-                watchlistServiceAsync.getAllByUser(
-                        securityPerPagedWatchlistKey.page,
-                        securityPerPagedWatchlistKey.perPage,
-                        middleCallback);
-            }
-            else
-            {
-                watchlistServiceAsync.getAllByUser(
-                        securityPerPagedWatchlistKey.page,
-                        securityPerPagedWatchlistKey.perPage,
-                        securityPerPagedWatchlistKey.securityId,
-                        middleCallback);
-            }
-            return middleCallback;
-        }
-    }
-
-    public WatchlistPositionDTOList getAllByUser(SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey)
-    {
-        if (skipCacheSecurityPerPagedWatchlistKey.page == null)
-        {
-            return watchlistService.getAllByUser();
-        }
-        if (skipCacheSecurityPerPagedWatchlistKey.perPage == null)
-        {
-            return watchlistService.getAllByUser(skipCacheSecurityPerPagedWatchlistKey.page);
-        }
-        if (skipCacheSecurityPerPagedWatchlistKey.securityId == null)
-        {
-            return watchlistService.getAllByUser(
-                    skipCacheSecurityPerPagedWatchlistKey.page,
-                    skipCacheSecurityPerPagedWatchlistKey.perPage);
-        }
-        if (skipCacheSecurityPerPagedWatchlistKey.skipCache == null)
-        {
-            return watchlistService.getAllByUser(
-                    skipCacheSecurityPerPagedWatchlistKey.page,
-                    skipCacheSecurityPerPagedWatchlistKey.perPage,
-                    skipCacheSecurityPerPagedWatchlistKey.securityId);
-        }
-        return watchlistService.getAllByUser(
-                skipCacheSecurityPerPagedWatchlistKey.page,
-                skipCacheSecurityPerPagedWatchlistKey.perPage,
-                skipCacheSecurityPerPagedWatchlistKey.securityId,
-                skipCacheSecurityPerPagedWatchlistKey.skipCache);
-    }
-
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey,
-            Callback<WatchlistPositionDTOList> callback)
-    {
-        MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        if (skipCacheSecurityPerPagedWatchlistKey.page == null)
-        {
-            watchlistServiceAsync.getAllByUser(middleCallback);
-        }
-        else if (skipCacheSecurityPerPagedWatchlistKey.perPage == null)
-        {
-            watchlistServiceAsync.getAllByUser(skipCacheSecurityPerPagedWatchlistKey.page, middleCallback);
-        }
-        else if (skipCacheSecurityPerPagedWatchlistKey.securityId == null)
-        {
-            watchlistServiceAsync.getAllByUser(
-                    skipCacheSecurityPerPagedWatchlistKey.page,
-                    skipCacheSecurityPerPagedWatchlistKey.perPage,
-                    middleCallback);
-        }
-        else if (skipCacheSecurityPerPagedWatchlistKey.skipCache == null)
-        {
-            watchlistServiceAsync.getAllByUser(
                     skipCacheSecurityPerPagedWatchlistKey.page,
                     skipCacheSecurityPerPagedWatchlistKey.perPage,
                     skipCacheSecurityPerPagedWatchlistKey.securityId,
-                    middleCallback);
+                    skipCacheSecurityPerPagedWatchlistKey.skipCache);
         }
-        else
+        else if (pagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
         {
+            SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey = (SecurityPerPagedWatchlistKey) pagedWatchlistKey;
+            return watchlistService.getAllByUser(
+                    securityPerPagedWatchlistKey.page,
+                    securityPerPagedWatchlistKey.perPage,
+                    securityPerPagedWatchlistKey.securityId,
+                    null);
+        }
+        else if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
+        {
+            PerPagedWatchlistKey perPagedWatchlistKey = (PerPagedWatchlistKey) pagedWatchlistKey;
+            return watchlistService.getAllByUser(
+                    perPagedWatchlistKey.page,
+                    perPagedWatchlistKey.perPage,
+                    null,
+                    null);
+        }
+        return watchlistService.getAllByUser(pagedWatchlistKey.page, null, null, null);
+    }
+
+    @NotNull public MiddleCallback<WatchlistPositionDTOList> getAllByUser(
+            @NotNull PagedWatchlistKey pagedWatchlistKey,
+            @Nullable Callback<WatchlistPositionDTOList> callback)
+    {
+        MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        if (pagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
+        {
+            SkipCacheSecurityPerPagedWatchlistKey skipCacheSecurityPerPagedWatchlistKey = (SkipCacheSecurityPerPagedWatchlistKey) pagedWatchlistKey;
             watchlistServiceAsync.getAllByUser(
                     skipCacheSecurityPerPagedWatchlistKey.page,
                     skipCacheSecurityPerPagedWatchlistKey.perPage,
@@ -328,28 +181,53 @@ import retrofit.Callback;
                     skipCacheSecurityPerPagedWatchlistKey.skipCache,
                     middleCallback);
         }
+        else if (pagedWatchlistKey instanceof SecurityPerPagedWatchlistKey)
+        {
+            SecurityPerPagedWatchlistKey securityPerPagedWatchlistKey = (SecurityPerPagedWatchlistKey) pagedWatchlistKey;
+            watchlistServiceAsync.getAllByUser(
+                    securityPerPagedWatchlistKey.page,
+                    securityPerPagedWatchlistKey.perPage,
+                    securityPerPagedWatchlistKey.securityId,
+                    null,
+                    middleCallback);
+        }
+        else if (pagedWatchlistKey instanceof PerPagedWatchlistKey)
+        {
+            PerPagedWatchlistKey perPagedWatchlistKey = (PerPagedWatchlistKey) pagedWatchlistKey;
+            watchlistServiceAsync.getAllByUser(
+                    perPagedWatchlistKey.page,
+                    perPagedWatchlistKey.perPage,
+                    null,
+                    null,
+                    middleCallback);
+        }
+        else
+        {
+            watchlistServiceAsync.getAllByUser(pagedWatchlistKey.page, null, null, null, middleCallback);
+        }
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Delete Watchlist">
-    public WatchlistPositionDTO deleteWatchlist(WatchlistPositionDTO watchlistPositionDTO)
+    @Nullable public WatchlistPositionDTO deleteWatchlist(@NotNull WatchlistPositionDTO watchlistPositionDTO)
     {
         return deleteWatchlist(watchlistPositionDTO.getPositionCompactId());
     }
 
-    public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(WatchlistPositionDTO watchlistPositionDTO, Callback<WatchlistPositionDTO> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(@NotNull WatchlistPositionDTO watchlistPositionDTO, @Nullable Callback<WatchlistPositionDTO> callback)
     {
         return deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), callback);
     }
 
-    public WatchlistPositionDTO deleteWatchlist(PositionCompactId positionCompactId)
+    @Nullable public WatchlistPositionDTO deleteWatchlist(@NotNull PositionCompactId positionCompactId)
     {
         return createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()).process(
                 watchlistService.deleteWatchlist(positionCompactId.key));
     }
 
-    public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(PositionCompactId positionCompactId, Callback<WatchlistPositionDTO> callback)
+    @NotNull
+    public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(@NotNull PositionCompactId positionCompactId, @Nullable Callback<WatchlistPositionDTO> callback)
     {
         MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(
                 callback, createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()));

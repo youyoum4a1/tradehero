@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="stock_alerts">주식 알림기능</string>
+  <string name="stock_alert_active">활성화된 주식 알림기능</string>
+  <string name="stock_alert_inactive_title">비활성화된 주식 알림기능</string>
+  <string name="stock_alert_active_until_date">%s까지 유효<b>%s</b></string>
+  <string name="stock_alert_inactive">비활성화</string>
+  <string name="stock_alert_target_price">목표가</string>
+  <string name="stock_alert_active_until">XX까지 유효</string>
+  <string name="stock_alert_current_price">현재가</string>
+  <string name="stock_alert_price_info_as_of_date">%s 기준</string>
+  <string name="stock_alert_price_info_as_of_date_format">@string/data_format_d_mmm_yyyy_hh_mm</string>
+  <string name="stock_alert_notification_received">새로운 알림 도착</string>
+  <string name="stock_alert_edit">편집</string>
+  <string name="stock_alert_edit_menu_save">저장</string>
+  <string name="stock_alert_trigger_conditions">Trigger Conditions</string>
+  <string name="stock_alert_target_price_help_text">주가가 상승하거나 하락하면 알림메세지를 받게됩니다.</string>
+  <string name="stock_alert_price_change_help_text">주가가 설정한 비율보다 크게 변동시 알림메세지를 받게됩니다.</string>
+  <string name="stock_alert_edit_note">알림: 매 15분마다 주가가 체크되며 일부 주가정보는 약 15분가량 차이가 있을 수 있습니다.</string>
+  <string name="stock_alert_target_price_change_format"><![CDATA[Target Price <b>%s</b>]]></string>
+  <string name="stock_alert_percentage_change_format"><![CDATA[Price Change <b>%s</b>]]></string>
+  <string name="stock_alert_percentage_change_target_value_format"><![CDATA[(Alert Price <b>%s</b>)]]></string>
+  <string name="stock_alert_edit_alert">알림기능 편집</string>
+  <string name="stock_alert_add_alert">알림기능 추가</string>
+  <string name="stock_alert_percentage_movement">% 변동</string>
+  <string name="stock_alert_when_price_move"><b>%s</b>변동시 알림메세지 받기</string>
+  <string name="stock_alert_when_price_raises"><![CDATA[Alerts when price raises to <b>%s</b>]]></string>
+  <string name="stock_alert_when_price_falls"><![CDATA[Alerts when price falls to <b>%s</b>]]></string>
+  <string name="stock_alerts_no_alerts">설정한 알림기능 없음</string>
+  <string name="stock_alert_count_alert_format">%d개의 알림</string>
+  <string name="stock_alert_plan_unlimited">무제힌</string>
+  <string name="stock_alert_manage_subscriptions">구독 관리</string>
+
+  <string name="error_fetch_alert">일림기능을 불러오는 중 오류가 발생하였습니다</string>
+  <string name="error_alert_insufficient_info">알림기능을 설정하는데에 더 많은 정보가 필요합니다</string>
+
+</resources>

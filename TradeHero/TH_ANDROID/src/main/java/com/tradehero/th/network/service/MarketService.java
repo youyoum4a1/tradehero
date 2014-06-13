@@ -7,14 +7,12 @@ import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-
 public interface MarketService
 {
     //<editor-fold desc="GetExchanges">
     // returns basic exchange DTOs, un-enriched
     @GET("/exchanges")
-    List<ExchangeDTO> getExchanges()
-        throws RetrofitError;
+    List<ExchangeDTO> getExchanges();
 
     // returns basic exchange DTOs, un-enriched
     @GET("/exchanges")
@@ -26,8 +24,7 @@ public interface MarketService
     // returns enriched exchange DTOs: sector, industry and full stock lists
     @GET("/exchanges/{exchangeId}")
     ExchangeDTO getExchange(
-            @Path("exchangeId") int exchangeId)
-        throws RetrofitError;
+            @Path("exchangeId") int exchangeId);
 
     // returns enriched exchange DTOs: sector, industry and full stock lists
     @GET("/exchanges/{exchangeId}")

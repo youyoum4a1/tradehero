@@ -33,8 +33,6 @@
       android:background="#aaa"
       android:visibility="gone">
 
-
-
     <com.tradehero.common.widget.CenterImageTextButton
         android:id="@+id/send_message_broadcast"
         android:layout_width="0dp"

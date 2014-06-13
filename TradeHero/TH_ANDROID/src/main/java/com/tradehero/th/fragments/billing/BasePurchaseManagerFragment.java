@@ -29,7 +29,7 @@ import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     @Inject protected THBillingInteractor userInteractor;
@@ -44,6 +44,23 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected PremiumFollowUserAssistant premiumFollowUserAssistant;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+
+    public static void putApplicablePortfolioId(Bundle args, OwnedPortfolioId ownedPortfolioId)
+    {
+        args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+    }
+
+    public static OwnedPortfolioId getApplicablePortfolioId(Bundle args)
+    {
+        if (args != null)
+        {
+            if (args.containsKey(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE))
+            {
+                return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE));
+            }
+        }
+        return null;
+    }
 
     abstract protected void initViews(View view);
 
@@ -89,12 +106,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachPortfolioRetrievedMilestone();
         detachPremiumFollowUserAssistant();
         detachRequestCode();
-        super.onDestroyView();
+        super.onStop();
     }
 
     protected void detachRequestCode()
@@ -113,17 +130,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void prepareApplicableOwnedPortolioId()
     {
-        OwnedPortfolioId applicablePortfolioId = null;
-
         Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle portfolioIdBundle = args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
-            if (portfolioIdBundle != null)
-            {
-                applicablePortfolioId = new OwnedPortfolioId(portfolioIdBundle);
-            }
-        }
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId(args);
 
         if (applicablePortfolioId == null)
         {
@@ -231,7 +239,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         premiumFollowUser(heroId, createPremiumUserFollowedListener());
     }
-
 
     public void premiumFollowUser(UserBaseKey heroId,
             PremiumFollowUserAssistant.OnUserFollowedListener followedListener)

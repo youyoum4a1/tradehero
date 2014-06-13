@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.social.follower;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -250,6 +251,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             addTab(resourceDTO);
         }
         setTitleColor();
+        mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
         return mTabHost;
     }
 

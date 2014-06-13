@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import java.util.Set;
 import javax.inject.Inject;
 
-
 public class StringSetPreference extends AbstractPreference<Set<String>>
 {
     @Inject public StringSetPreference(SharedPreferences preference, String key, Set<String> defaultValue)

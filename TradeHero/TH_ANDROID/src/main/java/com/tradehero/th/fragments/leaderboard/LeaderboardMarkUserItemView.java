@@ -11,16 +11,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -32,6 +33,7 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
+import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -51,14 +53,15 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 public class LeaderboardMarkUserItemView extends RelativeLayout
-        implements DTOView<LeaderboardUserDTO>, View.OnClickListener
+        implements DTOView<LeaderboardUserDTO>, View.OnClickListener,
+        ExpandingLayout.OnExpandListener
 {
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
 
     protected UserProfileDTO currentUserProfileDTO;
@@ -68,6 +71,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCache> userProfileCache;
     // data
     protected LeaderboardUserDTO leaderboardItem;
 
@@ -94,13 +99,22 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.lbmu_period) TextView lbmuPeriod;
     @InjectView(R.id.leaderboard_user_item_fof) MarkdownTextView lbmuFoF;
     @InjectView(R.id.lbmu_number_trades_in_period) TextView lbmuNumberTradesInPeriod;
-    @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
-    @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
+    @InjectView(R.id.leaderboard_user_item_follow) @Optional View lbmuFollowUser;
+    @InjectView(R.id.leaderboard_user_item_following) @Optional View lbmuFollowingUser;
+
+    @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
+    @InjectView(R.id.leaderboard_user_item_country_logo) @Optional ImageView countryLogo;
+    @InjectView(R.id.user_statistic_view) @Optional UserStatisticView userStatisticView;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
     {
         super(context);
+    }
+
+    @Override protected void onVisibilityChanged(View changedView, int visibility)
+    {
+        super.onVisibilityChanged(changedView, visibility);
     }
 
     public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
@@ -143,17 +157,21 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuOpenPositionsList.setOnClickListener(this);
         }
 
-        lbmuFollowUser.setEnabled(false);
-
         if (lbmuProfilePicture != null)
         {
             lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
+
+        if (expandingLayout != null)
+        {
+            expandingLayout.setOnExpandListener(this);
         }
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        initViews();
         if (lbmuFoF != null)
         {
             lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
@@ -279,6 +297,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                     .placeholder(lbmuProfilePicture.getDrawable())
                     .into(lbmuProfilePicture);
         }
+        displayCountryLogo();
     }
 
     private void loadDefaultUserImage()
@@ -286,6 +305,45 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         picasso.get().load(R.drawable.superman_facebook)
                 .transform(peopleIconTransformation)
                 .into(lbmuProfilePicture);
+    }
+
+    public void displayCountryLogo()
+    {
+        if (countryLogo != null)
+        {
+            try
+            {
+                if (leaderboardItem != null && leaderboardItem.countryCode != null)
+                {
+                    countryLogo.setImageResource(getCountryLogoId(leaderboardItem.countryCode));
+                }
+                else
+                {
+                    countryLogo.setImageResource(R.drawable.default_image);
+                }
+            }
+            catch (OutOfMemoryError e)
+            {
+                Timber.e(e, null);
+            }
+        }
+    }
+
+    public int getCountryLogoId(String country)
+    {
+        return getCountryLogoId(R.drawable.default_image, country);
+    }
+
+    public int getCountryLogoId(int defaultResId, String country)
+    {
+        try
+        {
+            return Country.valueOf(country).logoId;
+        }
+        catch (IllegalArgumentException ex)
+        {
+            return defaultResId;
+        }
     }
 
     private void displayExpandableSection()
@@ -328,7 +386,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
         {
             lbmuSharpeRatio.setText(new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                    leaderboardItem.sharpeRatioInPeriodVsSP500, false).toString());
+                    leaderboardItem.sharpeRatioInPeriodVsSP500, THSignedNumber.WITHOUT_SIGN).toString());
         }
         else
         {
@@ -368,6 +426,151 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // followers & comments count
         lbmuFollowersCount.setText("" + leaderboardItem.getTotalFollowersCount());
         lbmuCommentsCount.setText("" + leaderboardItem.getCommentsCount());
+
+//<<<<<<< HEAD
+//        //winRateGauge.setText(digitsWinRatio + "%");
+//        //winRateGauge.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
+//
+//        if (tradeCountTv != null)
+//        {
+//            tradeCountTv.setEndValue(leaderboardItem.avgNumberOfTradesPerMonth.floatValue());
+//            tradeCountTv.setFractionDigits(2);
+//        }
+//        if (daysHoldTv != null)
+//        {
+//            daysHoldTv.setEndValue(leaderboardItem.avgHoldingPeriodMins * 1.0f / (60 * 24));
+//            daysHoldTv.setFractionDigits(2);
+//        }
+//        if (positionsCountTv != null)
+//        {
+//            positionsCountTv.setEndValue(leaderboardItem.numberOfPositionsInPeriod);
+//            positionsCountTv.setFractionDigits(0);
+//        }
+//
+//        showValueWithoutAnimation();
+//    }
+//
+//    private void showValueWithoutAnimation()
+//    {
+//        String digitsWinRatio =
+//                NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
+//        if (winRateGauge != null)
+//        {
+//            winRateGauge.setContentText(digitsWinRatio + "%");
+//            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+//            winRateGauge.setAnimiationFlag(false);
+//            winRateGauge.setCurrentValue((float) leaderboardItem.getWinRatio() * 100);
+//        }
+//
+//        if (performanceGauge != null)
+//        {
+//            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
+//            performanceGauge.setSubText(
+//                    getContext().getString(R.string.leaderboard_performance_title));
+//            performanceGauge.setAnimiationFlag(false);
+//            performanceGauge.setDrawStartValue(50f);
+//            performanceGauge.setCurrentValue((float) leaderboardItem.normalizePerformance());
+//        }
+//
+//        if (tradeConsistencyGauge != null)
+//        {
+//            tradeConsistencyGauge.setSubText(
+//                    getContext().getString(R.string.leaderboard_consistency_title));
+//            tradeConsistencyGauge.setAnimiationFlag(false);
+//            tradeConsistencyGauge.setCurrentValue((float) normalizeConsistency());
+//        }
+//        Timber.d("showValueWithoutAnimation normalizeConsistency %s", normalizeConsistency());
+//
+//        if (tradeCountTv != null)
+//        {
+//            tradeCountTv.showText();
+//        }
+//        if (daysHoldTv != null)
+//        {
+//            daysHoldTv.showText();
+//        }
+//        if (positionsCountTv != null)
+//        {
+//            positionsCountTv.showText();
+//        }
+//    }
+//
+//    private void showExpandAnimation()
+//    {
+//        String digitsWinRatio =
+//                NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
+//        if (winRateGauge != null)
+//        {
+//            winRateGauge.setContentText(digitsWinRatio + "%");
+//            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
+//            winRateGauge.setAnimiationFlag(true);
+//            winRateGauge.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
+//        }
+//
+//        if (performanceGauge != null)
+//        {
+//            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
+//            performanceGauge.setSubText(
+//                    getContext().getString(R.string.leaderboard_performance_title));
+//            performanceGauge.setAnimiationFlag(true);
+//            performanceGauge.setDrawStartValue(50f);
+//            performanceGauge.setTargetValue((float) leaderboardItem.normalizePerformance());
+//        }
+//
+//        if (tradeConsistencyGauge != null)
+//        {
+//            tradeConsistencyGauge.setSubText(
+//                    getContext().getString(R.string.leaderboard_consistency_title));
+//            tradeConsistencyGauge.setAnimiationFlag(true);
+//            tradeConsistencyGauge.setTargetValue((float) normalizeConsistency());
+//        }
+//
+//        if (tradeCountTv != null)
+//        {
+//            tradeCountTv.startAnimation();
+//        }
+//        if (daysHoldTv != null)
+//        {
+//            daysHoldTv.startAnimation();
+//        }
+//        if (positionsCountTv != null)
+//        {
+//            positionsCountTv.startAnimation();
+//        }
+//    }
+//
+//    private void clearExpandAnimation()
+//    {
+//        if (winRateGauge != null)
+//        {
+//            winRateGauge.clear();
+//        }
+//        if (performanceGauge != null)
+//        {
+//            performanceGauge.clear();
+//        }
+//        if (tradeConsistencyGauge != null)
+//        {
+//            tradeConsistencyGauge.clear();
+//        }
+//=======
+//>>>>>>> origin/develop2.0
+    }
+
+    @Override public void onExpand(boolean expand)
+    {
+        if (userStatisticView != null)
+        {
+            if (expand)
+            {
+                userStatisticView.display(leaderboardItem);
+            }
+            else
+            {
+                userStatisticView.display(null);
+                Timber.d("clearExpandAnimation");
+            }
+        }
     }
 
     protected void displayLbmuPl()
@@ -376,7 +579,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             THSignedNumber formattedNumber =
                     new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.PLinPeriodRefCcy,
-                            false, getLbmuPlCurrencyDisplay());
+                            THSignedNumber.WITHOUT_SIGN, getLbmuPlCurrencyDisplay());
             lbmuPl.setText(formattedNumber.toString());
         }
     }
@@ -398,7 +601,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             boolean showButton = isFollowing == null || !isFollowing;
             lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
             boolean enableButton = isFollowing != null && !isFollowing;
-            lbmuFollowUser.setEnabled(enableButton);
         }
     }
 
@@ -441,7 +643,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    public class LeaderBoardFollowRequestedListener implements com.tradehero.th.models.social.OnFollowRequestedListener
+    public class LeaderBoardFollowRequestedListener
+            implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
         @Override public void freeFollowRequested(UserBaseKey heroId)
         {
@@ -517,21 +720,30 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         if (leaderboardItem.lbmuId != -1)
         {
-            // leaderboard mark user id, to get marking user information
-            bundle.putBundle(LeaderboardPositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            bundle.putLong(LeaderboardMarkUserId.BUNDLE_KEY, leaderboardItem.lbmuId);
-            getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
+            pushLeaderboardPositionListFragment(bundle);
         }
         else
         {
-            bundle.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                    ownedPortfolioId.getArgs());
-            getNavigator().pushFragment(PositionListFragment.class, bundle);
+            pushPositionListFragment(bundle, ownedPortfolioId);
         }
     }
 
-    private DashboardNavigator getNavigator()
+    protected void pushLeaderboardPositionListFragment(Bundle bundle)
+    {
+        // leaderboard mark user id, to get marking user information
+        LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, leaderboardItem.getLeaderboardMarkUserId());
+        LeaderboardPositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
+        getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
+    }
+
+    protected void pushPositionListFragment(Bundle bundle, OwnedPortfolioId ownedPortfolioId)
+    {
+        PositionListFragment.putGetPositionsDTOKey(bundle, ownedPortfolioId);
+        PositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
+        getNavigator().pushFragment(PositionListFragment.class, bundle);
+    }
+
+    protected DashboardNavigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
@@ -575,4 +787,38 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
         freeFollowMiddleCallback = null;
     }
+//<<<<<<< HEAD
+//
+//    private Double getAvgConsistency()
+//    {
+//        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+//        if (userProfileDTO != null)
+//        {
+//            return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
+//        }
+//        return LeaderboardUserDTO.MIN_CONSISTENCY;
+//    }
+//
+//    private double normalizeConsistency()
+//    {
+//        try
+//        {
+//            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
+//            Double maxConsistency = getAvgConsistency();
+//            Double minConsistency = leaderboardItem.getConsistency();
+//            minConsistency = (minConsistency < minConsistency) ? minConsistency : minConsistency;
+//            minConsistency = (minConsistency > maxConsistency) ? maxConsistency : minConsistency;
+//
+//            double result =
+//                    100 * (minConsistency - minConsistency) / (maxConsistency - minConsistency);
+//            return result;
+//        }
+//        catch (Exception e)
+//        {
+//            Timber.e("normalizeConsistency", e);
+//        }
+//        return getAvgConsistency();
+//    }
+//=======
+//>>>>>>> origin/develop2.0
 }

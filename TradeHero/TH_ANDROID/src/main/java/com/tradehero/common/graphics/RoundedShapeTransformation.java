@@ -8,13 +8,15 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 public class RoundedShapeTransformation implements RecyclerTransformation
 {
     private boolean recycleOriginal = true;
-    private final CenterCropTransformation centerCropTransformation;
+    @NotNull private final CenterCropTransformation centerCropTransformation;
 
-    @Inject public RoundedShapeTransformation(CenterCropTransformation centerCropTransformation)
+    @Inject public RoundedShapeTransformation(@NotNull CenterCropTransformation centerCropTransformation)
     {
         super();
         this.centerCropTransformation = centerCropTransformation;
@@ -30,19 +32,28 @@ public class RoundedShapeTransformation implements RecyclerTransformation
         this.recycleOriginal = recycleOriginal;
     }
 
-    @Override public Bitmap transform(Bitmap scaleBitmapImage)
+    @NotNull
+    @Override public Bitmap transform(@NotNull Bitmap scaleBitmapImage)
     {
         scaleBitmapImage = centerCropTransformation.transform(scaleBitmapImage);
-        int targetWidth = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
-        int targetHeight = targetWidth;
+        int desiredEdge = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
 
-        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+        Bitmap targetBitmap = null;
+        try
+        {
+            targetBitmap = Bitmap.createBitmap(desiredEdge, desiredEdge, Bitmap.Config.ARGB_8888);
+        }
+        catch (OutOfMemoryError e)
+        {
+            Timber.e(e, null);
+            return scaleBitmapImage;
+        }
 
         Canvas canvas = new Canvas(targetBitmap);
         Path path = new Path();
-        path.addCircle(((float) targetWidth) / 2,
-                ((float) targetHeight) / 2,
-                (Math.min(((float) targetWidth), ((float) targetHeight)) / 2),
+        path.addCircle(((float) desiredEdge) / 2,
+                ((float) desiredEdge) / 2,
+                (Math.min(((float) desiredEdge), ((float) desiredEdge)) / 2),
                 Path.Direction.CW);
         Paint paint = new Paint();
         paint.setColor(Color.GRAY);
@@ -56,8 +67,8 @@ public class RoundedShapeTransformation implements RecyclerTransformation
 
         //TODO need check scaleBitmapImage before use it by alex
         canvas.drawBitmap(scaleBitmapImage, new Rect(0, 0, scaleBitmapImage.getWidth(),
-                scaleBitmapImage.getHeight()), new RectF(0, 0, targetWidth,
-                targetHeight), paint);
+                scaleBitmapImage.getHeight()), new RectF(0, 0, desiredEdge,
+                desiredEdge), paint);
 
         if (recycleOriginal && targetBitmap != scaleBitmapImage)
         {

@@ -2,11 +2,8 @@ package com.tradehero.th.fragments.competition.zone.dto;
 
 import com.tradehero.th.api.competition.CompetitionDTO;
 
-
 public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
 {
-    public static final String TAG = CompetitionZoneLeaderboardDTO.class.getSimpleName();
-
     public CompetitionDTO competitionDTO;
 
     public CompetitionZoneLeaderboardDTO(String title, String description, CompetitionDTO competitionDTO)

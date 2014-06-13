@@ -1,17 +1,16 @@
 package com.tradehero.th.persistence.market;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeStringId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-
-@Singleton public class ExchangeIdCache extends StraightDTOCache<ExchangeStringId, ExchangeIntegerId>
+@Singleton public class ExchangeIdCache extends StraightDTOCacheNew<ExchangeStringId, ExchangeIntegerId>
 {
-    public static final String TAG = ExchangeIdCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     //<editor-fold desc="Constructors">
@@ -21,7 +20,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected ExchangeIntegerId fetch(ExchangeStringId key) throws Throwable
+    @Override public ExchangeIntegerId fetch(@NotNull ExchangeStringId key) throws Throwable
     {
         throw new IllegalArgumentException("Cannot fetch here");
     }

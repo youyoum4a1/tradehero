@@ -200,7 +200,7 @@
       android:gravity="top"
       android:padding="5dp"
       android:hint="@string/buy_sell_confirm_buy_comment"
-      android:inputType="textMultiLine"
+      android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
       android:layout_marginTop="15dp"/>
 
   <LinearLayout

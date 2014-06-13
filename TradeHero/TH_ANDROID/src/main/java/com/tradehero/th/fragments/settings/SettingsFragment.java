@@ -33,6 +33,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -55,18 +57,19 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.prefs.AuthenticationType;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
@@ -79,6 +82,9 @@ import timber.log.Timber;
 
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
+    private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
+    public static final String KEY_SHOW_AS_HOME_UP = SettingsFragment.class.getName() + ".showAsHomeUp";
+
     @Inject THBillingInteractor billingInteractor;
     @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
@@ -94,26 +100,30 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject PushNotificationManager pushNotificationManager;
     @Inject LruMemFileCache lruCache;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
-    @Inject @AuthenticationType StringPreference currentAuthenticationType;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
-    @Inject Lazy<DTOCacheUtil> dtoCacheUtil;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<TwitterUtils> twitterUtils;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
+    @Inject Lazy<WeiboUtils> weiboUtils;
+    @Inject Lazy<QQUtils> qqUtils;
     @Inject LocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
 
+    private SocialNetworkEnum socialNetworkToConnectTo;
     private ProgressDialog progressDialog;
     private CheckBoxPreference facebookSharing;
     private SocialNetworkEnum currentSocialNetworkConnect;
     private CheckBoxPreference twitterSharing;
     private CheckBoxPreference linkedInSharing;
+    private CheckBoxPreference weiboSharing;
+    private CheckBoxPreference qqSharing;
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
@@ -122,6 +132,35 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private SettingsUserProfileRetrievedCompleteListener
             currentUserProfileRetrievedMilestoneListener;
     private LogInCallback socialConnectLogInCallback;
+
+    public static void putSocialNetworkToConnect(Bundle args, SocialNetworkEnum socialNetwork)
+    {
+        args.putString(KEY_SOCIAL_NETWORK_TO_CONNECT, socialNetwork.name());
+    }
+
+    public static void putSocialNetworkToConnect(Bundle args, SocialShareFormDTO shareFormDTO)
+    {
+        if (shareFormDTO instanceof TimelineItemShareFormDTO &&
+                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO != null &&
+                ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork != null)
+        {
+            putSocialNetworkToConnect(args, ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO.socialNetwork);
+        }
+    }
+
+    public static SocialNetworkEnum getSocialNetworkToConnect(Bundle args)
+    {
+        if (args == null)
+        {
+            return null;
+        }
+        String name = args.getString(KEY_SOCIAL_NETWORK_TO_CONNECT);
+        if (name == null)
+        {
+            return null;
+        }
+        return SocialNetworkEnum.valueOf(name);
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -148,6 +187,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 }
             }
         };
+
+        this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
     }
 
     private void createSocialConnectLogInCallback()
@@ -235,13 +276,22 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(
-                ActionBar.DISPLAY_SHOW_HOME
-                        | ActionBar.DISPLAY_SHOW_TITLE
-                        | ActionBar.DISPLAY_USE_LOGO);
-        actionBar.setTitle(getString(R.string.settings));
+        boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
+        int flag = ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE;
+        if (!showHomeAsUp)
+        {
+            flag |= ActionBar.DISPLAY_USE_LOGO;
+            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+        }
+        else
+        {
+            flag |= ActionBar.DISPLAY_HOME_AS_UP;
+        }
+        actionBar.setDisplayOptions(flag);
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setTitle(getString(R.string.settings));
+
     }
     //</editor-fold>
 
@@ -250,7 +300,15 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                resideMenuLazy.get().openMenu();
+                boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
+                if(showHomeAsUp)
+                {
+                    getNavigator().popFragment();
+                }
+                else
+                {
+                    resideMenuLazy.get().openMenu();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -271,6 +329,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         super.onResume();
 
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
+        if (socialNetworkToConnectTo != null)
+        {
+            changeSharing(socialNetworkToConnectTo, true);
+            socialNetworkToConnectTo = null;
+        }
     }
 
     private void detachMiddleCallbackUpdateUserProfile()
@@ -548,43 +611,32 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 getString(R.string.key_settings_sharing_facebook));
         if (facebookSharing != null)
         {
-            facebookSharing.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
-                            return changeSharing(SocialNetworkEnum.FB, (boolean) newValue);
-                        }
-                    });
+            facebookSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.FB));
         }
         twitterSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_twitter));
         if (twitterSharing != null)
         {
-            twitterSharing.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeSharing(SocialNetworkEnum.TW, (boolean) newValue);
-                }
-            });
+            twitterSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.TW));
         }
         linkedInSharing = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_sharing_linked_in));
         if (linkedInSharing != null)
         {
-            linkedInSharing.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
-                            return changeSharing(SocialNetworkEnum.LN, (boolean) newValue);
-                        }
-                    });
+            linkedInSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.LN));
         }
-
+        weiboSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_weibo));
+        if (weiboSharing != null)
+        {
+            weiboSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.WB));
+        }
+        qqSharing = (CheckBoxPreference) findPreference(
+                getString(R.string.key_settings_sharing_qq));
+        if (qqSharing != null)
+        {
+            qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
+        }
         // notification
         pushNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push));
@@ -751,6 +803,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return false;
     }
 
+    private Preference.OnPreferenceChangeListener createPreferenceChangeListenerSharing(
+            final SocialNetworkEnum socialNetwork)
+    {
+        return new Preference.OnPreferenceChangeListener()
+        {
+            @Override public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
+                return changeSharing(socialNetwork, (boolean) newValue);
+            }
+        };
+    }
+
     private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
     {
         Timber.d("Sharing is asked to change");
@@ -780,6 +844,18 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                             R.string.authentication_connecting_to_linkedin);
                     linkedInUtils.get().logIn(getActivity(), socialConnectLogInCallback);
                     break;
+                case WB:
+                    progressDialog = progressDialogUtil.show(getActivity(),
+                            R.string.sina_weibo,
+                            R.string.authentication_connecting_to_weibo);
+                    weiboUtils.get().logIn(getActivity(), socialConnectLogInCallback);
+                    break;
+                case QQ:
+                    progressDialog = progressDialogUtil.show(getActivity(),
+                            R.string.tencent_qq,
+                            R.string.authentication_connecting_to_qq);
+                    qqUtils.get().logIn(getActivity(), socialConnectLogInCallback);
+                    break;
             }
         }
         else
@@ -793,7 +869,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     new SocialNetworkFormDTO(socialNetwork),
                     createSocialDisconnectCallback());
 
-            if (socialNetwork.getAuthenticationHeader().equals(currentAuthenticationType.get()))
+            if (socialNetwork.getAuthenticationHeader().equals(THUser.getCurrentCredentials().getAuthType()))
             {
                 effectSignOut();
             }
@@ -836,6 +912,14 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             {
                 linkedInSharing.setChecked(updatedUserProfileDTO.liLinked);
             }
+            if (weiboSharing != null)
+            {
+                weiboSharing.setChecked(updatedUserProfileDTO.wbLinked);
+            }
+            if (qqSharing != null)
+            {
+                qqSharing.setChecked(updatedUserProfileDTO.qqLinked);
+            }
             Timber.d("Sharing is updated");
         }
     }
@@ -848,10 +932,24 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             startActivity(
                     new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
-        } catch (android.content.ActivityNotFoundException anfe)
+        }
+        catch (android.content.ActivityNotFoundException anfe)
         {
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
+            try
+            {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
+            }
+            catch (Exception e)
+            {
+                Timber.e(e, "Cannot send to Google Play store");
+                alertDialogUtil.get().popWithNegativeButton(
+                        getActivity(),
+                        R.string.webview_error_no_browser_for_intent_title,
+                        R.string.webview_error_no_browser_for_intent_description,
+                        R.string.cancel);
+
+            }
         }
     }
 
@@ -1072,10 +1170,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
     {
-
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
-            userProfileCache.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
         }
 
         @Override protected void failure(THException ex)

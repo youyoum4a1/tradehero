@@ -1,7 +1,6 @@
 package com.tradehero.th.api.market;
 
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTODisplayComparator;
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
 import java.util.Iterator;
 import java.util.SortedSet;
@@ -10,20 +9,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class ExchangeDTODescriptionNameComparatorTest
 {
-    public static final String TAG = ExchangeDTODescriptionNameComparatorTest.class.getSimpleName();
-
     @Before public void setUp()
     {
     }

@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import java.io.File;
+import org.jetbrains.annotations.NotNull;
 
 public class FileUtils
 {
@@ -41,7 +42,7 @@ public class FileUtils
      * @param uri The Uri to query.
      * @author paulburke
      */
-    public static String getPath(final Context context, final Uri uri)
+    public static String getPath(@NotNull final Context context, @NotNull final Uri uri)
     {
 
         final boolean isKitKat = Build.VERSION.SDK_INT >= 19 /*Build.VERSION_CODES.KITKAT*/;

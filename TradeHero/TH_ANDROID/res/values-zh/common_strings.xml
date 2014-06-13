@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">股货英雄</string>
+  <string name="app_name">全民股神</string>
   <string name="na">无</string>
   <string name="empty"/>
+  <string name="cancel">取消</string>
   <string name="action_menu_settings">设置</string>
   <string name="network_error">@string/error_network_connection</string>
   <!-- data format-->
@@ -13,11 +14,7 @@
   <string name="data_format_dd_mmm_yyyy">yyyy年 MM月 dd日</string>
   <string name="data_format_dd_mmm_hh_mm">MM月 dd日 HH:mm</string>
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy年 MM月 dd日 kk:mm z</string>
-  <string name="data_format_dd_mmm_yyyy_hh_mm_gmt">MM月 dd日 HH:mm \'GMT\'</string>
-
-  <!-- TEMP stuff -->
-  <string name="test_email">dev@tradehero.mobi</string>
-  <string name="test_password">asd123</string>
+  <string name="data_format_dd_mmm_yyyy_hh_mm">MM月 dd日 HH:mm</string>
 
   <!-- Splash screen -->
   <string name="splash_copyright_2">新加坡总公司执照号 201003309N</string>
@@ -28,6 +25,7 @@
   <string name="dashboard_community">社交中心</string>
   <string name="dashboard_home">首页</string>
   <string name="dashboard_portfolio">投资组合</string>
+  <string name="dashboard_referral">邀请好友</string>
   <string name="dashboard_store">商店</string>
   <string name="dashboard_headline">头条</string>
   <string name="message_center">消息中心</string>

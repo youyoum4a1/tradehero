@@ -1,8 +1,5 @@
 package com.tradehero.th.auth;
 
-
-
-import android.R;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -33,7 +30,7 @@ public class OAuthDialog extends Dialog
     public OAuthDialog(Context context, String requestUrl, String callbackUrl,
             String serviceUrlIdentifier, FlowResultHandler resultHandler)
     {
-        super(context, R.style.Theme_Translucent_NoTitleBar);
+        super(context, android.R.style.Theme_Translucent_NoTitleBar);
         this.requestUrl = requestUrl;
         this.callbackUrl = callbackUrl;
         this.serviceUrlIdentifier = serviceUrlIdentifier;
@@ -74,7 +71,7 @@ public class OAuthDialog extends Dialog
                 OAuthDialog.this.cancel();
             }
         });
-        Drawable closeDrawable = getContext().getResources().getDrawable(R.drawable.btn_dialog);
+        Drawable closeDrawable = getContext().getResources().getDrawable(android.R.drawable.btn_dialog);
         closeImage.setImageDrawable(closeDrawable);
 
         closeImage.setVisibility(4);

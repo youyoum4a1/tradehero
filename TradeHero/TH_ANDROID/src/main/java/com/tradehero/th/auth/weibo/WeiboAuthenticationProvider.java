@@ -15,6 +15,7 @@ import com.sina.weibo.sdk.exception.WeiboException;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.json.JSONException;
@@ -22,11 +23,12 @@ import org.json.JSONException;
 @Singleton
 public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
 {
-
     public static final String KEY_UID = "uid";
     public static final String KEY_ACCESS_TOKEN = "access_token";
     public static final String KEY_EXPIRES_IN = "expires_in";
     private static final String WEIBO_PACKAGE = "com.sina.weibo";
+
+    @Inject Context context;
 
     private WeiboAppAuthData mAuthData;
     //private THAuthenticationCallback mCallback;
@@ -71,9 +73,8 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
     }
 
     @Override
-    public String getAuthType()
-    {
-        return WEIBO_AUTH_TYPE;
+    public String getAuthType() {
+        return WeiboCredentialsDTO.WEIBO_AUTH_TYPE;
     }
 
     @Override public String getAuthHeader()
@@ -356,6 +357,7 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
             if (token.isSessionValid())
             {
                 onAnthorizeSuccess(token);
+                AccessTokenKeeper.writeAccessToken(context, token);
             }
             else
             {

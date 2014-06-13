@@ -8,7 +8,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-
 public class IABSKUListRetrievedAsyncMilestone
         extends ProductIdentifierListRetrievedAsyncMilestone<
         IABSKUListKey,
@@ -16,8 +15,6 @@ public class IABSKUListRetrievedAsyncMilestone
         IABSKUList,
         IABSKUListCache>
 {
-    public static final String TAG = IABSKUListRetrievedAsyncMilestone.class.getSimpleName();
-
     @Inject Lazy<IABSKUListCache> iabskuListCache;
 
     public IABSKUListRetrievedAsyncMilestone(IABSKUListKey key)

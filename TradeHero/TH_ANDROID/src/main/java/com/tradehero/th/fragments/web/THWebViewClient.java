@@ -7,6 +7,7 @@ import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -16,7 +17,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
-
 
 public class THWebViewClient extends WebViewClient
 {
@@ -39,7 +39,15 @@ public class THWebViewClient extends WebViewClient
         if (thIntentFactory.isHandlableScheme(Uri.parse(url).getScheme()))
         {
             // This is a tradehero:// scheme. Is it a ProviderPageIntent?
-            THIntent thIntent = thIntentFactory.create(getPassedIntent(url));
+            THIntent thIntent = null;
+            try
+            {
+                thIntent = thIntentFactory.create(getPassedIntent(url));
+            }
+            catch (IndexOutOfBoundsException e)
+            {
+                Timber.e(e, "Failed to create intent with string %s", url);
+            }
             if (thIntent instanceof ProviderPageIntent)
             {
                 // Somewhat of a HACK to make sure we reload the competition
@@ -54,6 +62,20 @@ public class THWebViewClient extends WebViewClient
                 notifyThIntentPassed(thIntent);
                 return true;
             }
+        }
+
+        if (Uri.parse(url).getScheme().equals("market"))
+        {
+            try
+            {
+                context.startActivity(
+                        new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
+            catch (android.content.ActivityNotFoundException anfe)
+            {
+                THToast.show("Unable to open url: " + url);
+            }
+            return true;
         }
 
         Timber.d("shouldOverrideUrlLoading Simple passing of URL");

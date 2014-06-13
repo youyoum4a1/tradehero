@@ -11,7 +11,7 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
@@ -34,7 +34,7 @@ public class VotePair extends LinearLayout
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
 
     private MiddleCallback<DiscussionDTO> voteCallback;
-    private AbstractDiscussionDTO discussionDTO;
+    private AbstractDiscussionCompactDTO discussionDTO;
     private boolean downVote = false;
 
     public static interface OnVoteListener
@@ -89,7 +89,6 @@ public class VotePair extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
     }
@@ -97,7 +96,7 @@ public class VotePair extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
+        ButterKnife.inject(this);
         updateDownVoteVisibility();
     }
 
@@ -139,14 +138,8 @@ public class VotePair extends LinearLayout
         {
             case R.id.timeline_action_button_vote_up:
                 boolean targetVoteUp = voteUp.isChecked();
-                Timber.d("%s onItemClicked voteDirection:%s voteUp checked:%s, content:%s",
-                        discussionDTO.hashCode(),
-                        discussionDTO.voteDirection,
-                        voteUp.isChecked(),
-                        discussionDTO.text);
                 fakeUpdateForVoteUp(targetVoteUp ? VoteDirection.UpVote : VoteDirection.UnVote);
                 updateVoting(targetVoteUp ? VoteDirection.UpVote : VoteDirection.UnVote);
-
                 break;
             case R.id.timeline_action_button_vote_down:
                 if (voteDown.isChecked())
@@ -176,7 +169,7 @@ public class VotePair extends LinearLayout
 
     protected class VoteCallback implements Callback<DiscussionDTO>
     {
-        private AbstractDiscussionDTO discussionDTO;
+        private AbstractDiscussionCompactDTO discussionDTO;
         private VoteDirection targetVoteDirection;
 
         public VoteCallback(VoteDirection voteDirection)
@@ -273,7 +266,7 @@ public class VotePair extends LinearLayout
         throw new IllegalStateException("Unknown discussion type");
     }
 
-    public void display(AbstractDiscussionDTO discussionDTO)
+    public void display(AbstractDiscussionCompactDTO discussionDTO)
     {
         this.discussionDTO = discussionDTO;
         if (voteUp != null)

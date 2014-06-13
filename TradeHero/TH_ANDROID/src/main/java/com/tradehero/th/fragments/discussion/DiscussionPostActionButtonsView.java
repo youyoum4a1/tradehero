@@ -25,7 +25,6 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-
 public class DiscussionPostActionButtonsView extends LinearLayout
 {
     @InjectView(R.id.btn_share_fb) ToggleButton mFacebookShareButton;
@@ -107,7 +106,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
             view.setChecked(false);
             alertDialogUtil.popWithOkCancelButton(
                     getContext(),
-                    getContext().getString(R.string.link) + socialNetwork.getName(),
+                    getContext().getString(R.string.link, socialNetwork.getName()),
                     String.format(getContext().getString(R.string.link_description), socialNetwork.getName()),
                     R.string.link_now,
                     R.string.later,

@@ -5,7 +5,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.competition.AdView;
-import com.tradehero.th.fragments.discussion.CommentItemView;
+import com.tradehero.th.fragments.discussion.CommentItemViewLinear;
 import com.tradehero.th.fragments.trending.EarnCreditTileView;
 import com.tradehero.th.fragments.trending.ExtraCashTileView;
 import com.tradehero.th.fragments.trending.ResetPortfolioTileView;
@@ -32,7 +32,7 @@ import javax.inject.Singleton;
                 ExtraCashTileView.class,
 
                 AdView.class,
-                CommentItemView.class,
+                CommentItemViewLinear.class,
         },
         complete = false,
         library = true // TODO remove

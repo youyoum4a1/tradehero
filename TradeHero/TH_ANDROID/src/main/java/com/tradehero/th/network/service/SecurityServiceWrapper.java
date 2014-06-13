@@ -26,11 +26,11 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
 
 @Singleton public class SecurityServiceWrapper
 {
     private final SecurityService securityService;
+    private final SecurityServiceAsync securityServiceAsync;
     private final ProviderServiceWrapper providerServiceWrapper;
     private final SecurityPositionDetailCache securityPositionDetailCache;
     private final SecurityCompactCache securityCompactCache;
@@ -39,6 +39,7 @@ import retrofit.RetrofitError;
 
     @Inject public SecurityServiceWrapper(
             SecurityService securityService,
+            SecurityServiceAsync securityServiceAsync,
             ProviderServiceWrapper providerServiceWrapper,
             SecurityPositionDetailCache securityPositionDetailCache,
             SecurityCompactCache securityCompactCache,
@@ -47,6 +48,7 @@ import retrofit.RetrofitError;
     {
         super();
         this.securityService = securityService;
+        this.securityServiceAsync = securityServiceAsync;
         this.providerServiceWrapper = providerServiceWrapper;
         this.securityPositionDetailCache = securityPositionDetailCache;
         this.securityCompactCache = securityCompactCache;
@@ -56,433 +58,195 @@ import retrofit.RetrofitError;
 
     public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(List<Integer> ids,
             Callback<Map<Integer, SecurityCompactDTO>> callback)
-            throws RetrofitError
     {
         String securityIds = StringUtils.join(",", ids);
         MiddleCallback<Map<Integer, SecurityCompactDTO>> multipleSecurityFetchMiddleCallback = new
                 BaseMiddleCallback<>(callback, createMultipleSecurityProcessor());
-        securityService.getMultipleSecurities(securityIds, multipleSecurityFetchMiddleCallback);
+        securityServiceAsync.getMultipleSecurities(securityIds, multipleSecurityFetchMiddleCallback);
 
         return multipleSecurityFetchMiddleCallback;
     }
 
-    //<editor-fold desc="Routing SecurityListType">
+    //<editor-fold desc="Get Securities">
     public List<SecurityCompactDTO> getSecurities(SecurityListType key)
-            throws RetrofitError
     {
+        List<SecurityCompactDTO> received;
         if (key instanceof TrendingSecurityListType)
         {
-            return getTrendingSecurities((TrendingSecurityListType) key);
+            TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
+            if (trendingKey instanceof TrendingBasicSecurityListType)
+            {
+                received = this.securityService.getTrendingSecurities(
+                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else if (trendingKey instanceof TrendingPriceSecurityListType)
+            {
+                received =  this.securityService.getTrendingSecuritiesByPrice(
+                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else if (trendingKey instanceof TrendingVolumeSecurityListType)
+            {
+                received =  this.securityService.getTrendingSecuritiesByVolume(
+                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else if (trendingKey instanceof TrendingAllSecurityListType)
+            {
+                received =  this.securityService.getTrendingSecuritiesAllInExchange(
+                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage);
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled type " + trendingKey.getClass().getName());
+            }
         }
         else if (key instanceof SearchSecurityListType)
         {
-            return searchSecurities((SearchSecurityListType) key);
+            SearchSecurityListType searchKey = (SearchSecurityListType) key;
+            received =  this.securityService.searchSecurities(
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage);
         }
         else if (key instanceof ProviderSecurityListType)
         {
-            return providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
-        }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
-    }
-
-    public void getSecurities(SecurityListType key, Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key instanceof TrendingSecurityListType)
-        {
-            getTrendingSecurities((TrendingSecurityListType) key, callback);
-        }
-        else if (key instanceof SearchSecurityListType)
-        {
-            searchSecurities((SearchSecurityListType) key, callback);
-        }
-        else if (key instanceof ProviderSecurityListType)
-        {
-            providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key, callback);
+            received =  providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
         }
         else
         {
             throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
+        return received;
     }
 
-    public List<SecurityCompactDTO> getTrendingSecurities(TrendingSecurityListType key)
-            throws RetrofitError
+    public MiddleCallback<List<SecurityCompactDTO>> getSecurities(SecurityListType key, Callback<List<SecurityCompactDTO>> callback)
     {
-        if (key instanceof TrendingBasicSecurityListType)
+        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        if (key instanceof TrendingSecurityListType)
         {
-            return getTrendingSecuritiesBasic((TrendingBasicSecurityListType) key);
-        }
-        else if (key instanceof TrendingPriceSecurityListType)
-        {
-            return getTrendingSecuritiesByPrice((TrendingPriceSecurityListType) key);
-        }
-        else if (key instanceof TrendingVolumeSecurityListType)
-        {
-            return getTrendingSecuritiesByVolume((TrendingVolumeSecurityListType) key);
-        }
-        else if (key instanceof TrendingAllSecurityListType)
-        {
-            return getTrendingSecuritiesAllInExchange((TrendingAllSecurityListType) key);
-        }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
-    }
-
-    public void getTrendingSecurities(TrendingSecurityListType key,
-            Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key instanceof TrendingBasicSecurityListType)
-        {
-            getTrendingSecuritiesBasic((TrendingBasicSecurityListType) key, callback);
-        }
-        else if (key instanceof TrendingPriceSecurityListType)
-        {
-            getTrendingSecuritiesByPrice((TrendingPriceSecurityListType) key, callback);
-        }
-        else if (key instanceof TrendingVolumeSecurityListType)
-        {
-            getTrendingSecuritiesByVolume((TrendingVolumeSecurityListType) key, callback);
-        }
-        else if (key instanceof TrendingAllSecurityListType)
-        {
-            getTrendingSecuritiesAllInExchange((TrendingAllSecurityListType) key, callback);
-        }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get Basic Trending">
-    public List<SecurityCompactDTO> getTrendingSecuritiesBasic(TrendingBasicSecurityListType key)
-            throws RetrofitError
-    {
-        if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            if (key.getPage() == null)
+            TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
+            if (trendingKey instanceof TrendingBasicSecurityListType)
             {
-                return this.securityService.getTrendingSecurities();
+                this.securityServiceAsync.getTrendingSecurities(
+                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage,
+                        middleCallback);
             }
-            else if (key.perPage == null)
+            else if (trendingKey instanceof TrendingPriceSecurityListType)
             {
-                return this.securityService.getTrendingSecurities("", key.getPage());
+                this.securityServiceAsync.getTrendingSecuritiesByPrice(
+                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage,
+                        middleCallback);
             }
-            return this.securityService.getTrendingSecurities("", key.getPage(), key.perPage);
-        }
-        else if (key.getPage() == null)
-        {
-            return this.securityService.getTrendingSecurities(key.exchange);
-        }
-        else if (key.perPage == null)
-        {
-            return this.securityService.getTrendingSecurities(key.exchange, key.getPage());
-        }
-        return this.securityService.getTrendingSecurities(key.exchange, key.getPage(), key.perPage);
-    }
-
-    public void getTrendingSecuritiesBasic(TrendingBasicSecurityListType key,
-            Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            if (key.getPage() == null)
+            else if (trendingKey instanceof TrendingVolumeSecurityListType)
             {
-                this.securityService.getTrendingSecurities(callback);
+                this.securityServiceAsync.getTrendingSecuritiesByVolume(
+                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage,
+                        middleCallback);
             }
-            else if (key.perPage == null)
+            else if (trendingKey instanceof TrendingAllSecurityListType)
             {
-                this.securityService.getTrendingSecurities("", key.getPage(), callback);
+                this.securityServiceAsync.getTrendingSecuritiesAllInExchange(
+                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.getPage(),
+                        trendingKey.perPage,
+                        middleCallback);
             }
-            else
-            {
-                this.securityService.getTrendingSecurities("", key.getPage(), key.perPage, callback);
-            }
+            throw new IllegalArgumentException("Unhandled type " + trendingKey.getClass().getName());
         }
-        else if (key.getPage() == null)
+        else if (key instanceof SearchSecurityListType)
         {
-            this.securityService.getTrendingSecurities(key.exchange, callback);
+            SearchSecurityListType searchKey = (SearchSecurityListType) key;
+            this.securityServiceAsync.searchSecurities(
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage,
+                    middleCallback);
         }
-        else if (key.perPage == null)
+        else if (key instanceof ProviderSecurityListType)
         {
-            this.securityService.getTrendingSecurities(key.exchange, key.getPage(), callback);
+            return providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key, callback);
         }
         else
         {
-            this.securityService.getTrendingSecurities(key.exchange, key.getPage(), key.perPage, callback);
+            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get Trending By Price">
-    public List<SecurityCompactDTO> getTrendingSecuritiesByPrice(TrendingPriceSecurityListType key)
-            throws RetrofitError
-    {
-        if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            if (key.getPage() == null)
-            {
-                return this.securityService.getTrendingSecuritiesByPrice();
-            }
-            else if (key.perPage == null)
-            {
-                return this.securityService.getTrendingSecuritiesByPrice("", key.getPage());
-            }
-            return this.securityService.getTrendingSecuritiesByPrice("", key.getPage(), key.perPage);
-        }
-        else if (key.getPage() == null)
-        {
-            return this.securityService.getTrendingSecuritiesByPrice(key.exchange);
-        }
-        else if (key.perPage == null)
-        {
-            return this.securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage());
-        }
-        return this.securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage(), key.perPage);
-    }
-
-    public void getTrendingSecuritiesByPrice(TrendingPriceSecurityListType key,
-            Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            if (key.getPage() == null)
-            {
-                this.securityService.getTrendingSecuritiesByPrice(callback);
-            }
-            else if (key.perPage == null)
-            {
-                this.securityService.getTrendingSecuritiesByPrice("", key.getPage(), callback);
-            }
-            else
-            {
-                this.securityService.getTrendingSecuritiesByPrice("", key.getPage(), key.perPage, callback);
-            }
-        }
-        else if (key.getPage() == null)
-        {
-            this.securityService.getTrendingSecuritiesByPrice(key.exchange, callback);
-        }
-        else if (key.perPage == null)
-        {
-            this.securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage(), callback);
-        }
-        else
-        {
-            this.securityService.getTrendingSecuritiesByPrice(key.exchange, key.getPage(), key.perPage, callback);
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get Trending By Volume">
-    public List<SecurityCompactDTO> getTrendingSecuritiesByVolume(TrendingVolumeSecurityListType key)
-            throws RetrofitError
-    {
-        if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            if (key.getPage() == null)
-            {
-                return this.securityService.getTrendingSecuritiesByVolume();
-            }
-            else if (key.perPage == null)
-            {
-                return this.securityService.getTrendingSecuritiesByVolume("", key.getPage());
-            }
-            return this.securityService.getTrendingSecuritiesByVolume("", key.getPage(), key.perPage);
-        }
-        else if (key.getPage() == null)
-        {
-            return this.securityService.getTrendingSecuritiesByVolume(key.exchange);
-        }
-        else if (key.perPage == null)
-        {
-            return this.securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage());
-        }
-        return this.securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage(), key.perPage);
-    }
-
-    public void getTrendingSecuritiesByVolume(TrendingVolumeSecurityListType key,
-            Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            if (key.getPage() == null)
-            {
-                this.securityService.getTrendingSecuritiesByVolume(callback);
-            }
-            else if (key.perPage == null)
-            {
-                this.securityService.getTrendingSecuritiesByVolume("", key.getPage(), callback);
-            }
-            else
-            {
-                this.securityService.getTrendingSecuritiesByVolume("", key.getPage(), key.perPage, callback);
-            }
-        }
-        else if (key.getPage() == null)
-        {
-            this.securityService.getTrendingSecuritiesByVolume(key.exchange, callback);
-        }
-        else if (key.perPage == null)
-        {
-            this.securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage(), callback);
-        }
-        else
-        {
-            this.securityService.getTrendingSecuritiesByVolume(key.exchange, key.getPage(), key.perPage, callback);
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get Trending For All">
-    public List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange(TrendingAllSecurityListType key)
-            throws RetrofitError
-    {
-        if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            if (key.getPage() == null)
-            {
-                return this.securityService.getTrendingSecuritiesAllInExchange();
-            }
-            else if (key.perPage == null)
-            {
-                return this.securityService.getTrendingSecuritiesAllInExchange("", key.getPage());
-            }
-            return this.securityService.getTrendingSecuritiesAllInExchange("", key.getPage(), key.perPage);
-        }
-        else if (key.getPage() == null)
-        {
-            return this.securityService.getTrendingSecuritiesAllInExchange(key.exchange);
-        }
-        else if (key.perPage == null)
-        {
-            return this.securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage());
-        }
-        return this.securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage(), key.perPage);
-    }
-
-    public void getTrendingSecuritiesAllInExchange(TrendingAllSecurityListType key,
-            Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES))
-        {
-            if (key.getPage() == null)
-            {
-                this.securityService.getTrendingSecuritiesAllInExchange(callback);
-            }
-            else if (key.perPage == null)
-            {
-                this.securityService.getTrendingSecuritiesAllInExchange("", key.getPage(), callback);
-            }
-            else
-            {
-                this.securityService.getTrendingSecuritiesAllInExchange("", key.getPage(), key.perPage, callback);
-            }
-        }
-        else if (key.getPage() == null)
-        {
-            this.securityService.getTrendingSecuritiesAllInExchange(key.exchange, callback);
-        }
-        else if (key.perPage == null)
-        {
-            this.securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage(), callback);
-        }
-        else
-        {
-            this.securityService.getTrendingSecuritiesAllInExchange(key.exchange, key.getPage(), key.perPage, callback);
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Search Securities">
-    public List<SecurityCompactDTO> searchSecurities(SearchSecurityListType key)
-            throws RetrofitError
-    {
-        if (key.getPage() == null)
-        {
-            return this.securityService.searchSecurities(key.searchString);
-        }
-        else if (key.perPage == null)
-        {
-            return this.securityService.searchSecurities(key.searchString, key.getPage());
-        }
-        return this.securityService.searchSecurities(key.searchString, key.getPage(), key.perPage);
-    }
-
-    public void searchSecurities(SearchSecurityListType key,
-            Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key.getPage() == null)
-        {
-            this.securityService.searchSecurities(key.searchString, callback);
-        }
-        else if (key.perPage == null)
-        {
-            this.securityService.searchSecurities(key.searchString, key.getPage(), callback);
-        }
-        else
-        {
-            this.securityService.searchSecurities(key.searchString, key.getPage(), key.perPage, callback);
-        }
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
     public SecurityPositionDetailDTO getSecurity(SecurityId securityId)
-            throws RetrofitError
     {
-        return this.securityService.getSecurity(securityId.exchange, securityId.securitySymbol);
+        return this.securityService.getSecurity(securityId.exchange, securityId.getPathSafeSymbol());
     }
 
-    public void getSecurity(SecurityId securityId, Callback<SecurityPositionDetailDTO> callback)
+    public MiddleCallback<SecurityPositionDetailDTO> getSecurity(SecurityId securityId, Callback<SecurityPositionDetailDTO> callback)
     {
-        this.securityService.getSecurity(securityId.exchange, securityId.securitySymbol, callback);
+        MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        this.securityServiceAsync.getSecurity(securityId.exchange, securityId.getPathSafeSymbol(), middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
     public SecurityPositionDetailDTO buy(SecurityId securityId, TransactionFormDTO transactionFormDTO)
-            throws RetrofitError
     {
-        return this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
+        return createSecurityPositionProcessor(securityId).process(
+                this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO));
     }
 
-    public void buy(SecurityId securityId, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback)
+    public MiddleCallback<SecurityPositionDetailDTO> buy(SecurityId securityId, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback)
     {
-        this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO, callback);
+        MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionProcessor(securityId));
+        this.securityServiceAsync.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
     public SecurityPositionDetailDTO sell(SecurityId securityId, TransactionFormDTO transactionFormDTO)
-            throws RetrofitError
     {
-        return this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO);
+        return createSecurityPositionProcessor(securityId).process(
+                this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO));
     }
 
-    public void sell(SecurityId securityId, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback)
+    public MiddleCallback<SecurityPositionDetailDTO> sell(SecurityId securityId, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback)
     {
-        this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO, callback);
+        MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionProcessor(securityId));
+        this.securityServiceAsync.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
+    //<editor-fold desc="Buy or Sell Security">
     public MiddleCallback<SecurityPositionDetailDTO> doTransaction(
             SecurityId securityId,
             TransactionFormDTO transactionFormDTO,
             boolean isBuy,
-            Callback<SecurityPositionDetailDTO> securityPositionDetailDTOCallback)
+            Callback<SecurityPositionDetailDTO> callback)
     {
-        MiddleCallback<SecurityPositionDetailDTO> securityMiddleCallback =
-                new BaseMiddleCallback<>(securityPositionDetailDTOCallback, createSecurityPositionProcessor(securityId));
-
         if (isBuy)
         {
-            this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO, securityMiddleCallback);
+            return buy(securityId, transactionFormDTO, callback);
         }
-        else
-        {
-            this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO, securityMiddleCallback);
-        }
-
-        return securityMiddleCallback;
+        return sell(securityId, transactionFormDTO, callback);
     }
+    //</editor-fold>
 
+    //<editor-fold desc="DTO Processors">
     private DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionProcessor(SecurityId securityId)
     {
         return new DTOProcessorSecurityPosition(
@@ -511,4 +275,5 @@ import retrofit.RetrofitError;
             }
         };
     }
+    //</editor-fold>
 }

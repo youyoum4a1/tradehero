@@ -4,7 +4,6 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.List;
 import java.util.Map;
 
-
 abstract public class BaseBillingInventoryFetcher<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailsType extends ProductDetail<ProductIdentifierType>,

@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.competition.zone.dto;
 
 import com.tradehero.th.api.competition.AdDTO;
 
-
 public class CompetitionZoneAdvertisementDTO extends CompetitionZoneDTO
 {
     public final int imageResId;

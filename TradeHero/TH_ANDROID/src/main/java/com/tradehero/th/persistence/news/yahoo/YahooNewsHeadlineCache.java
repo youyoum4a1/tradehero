@@ -6,7 +6,7 @@ import com.tradehero.th.api.news.NewsHeadlineList;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.service.YahooNewsService;
+import com.tradehero.th.network.service.YahooNewsServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
 import java.io.IOException;
@@ -33,12 +33,16 @@ import timber.log.Timber;
 {
     public static final int DEFAULT_MAX_SIZE = 15;
 
-    @Inject protected Lazy<SecurityCompactCache> securityCache;
-    @Inject protected YahooNewsService yahooService;
+    private Lazy<SecurityCompactCache> securityCache;
+    private YahooNewsServiceWrapper yahooServiceWrapper;
 
-    @Inject public YahooNewsHeadlineCache()
+    @Inject public YahooNewsHeadlineCache(
+            Lazy<SecurityCompactCache> securityCache,
+            YahooNewsServiceWrapper yahooNewsServiceWrapper)
     {
         super(DEFAULT_MAX_SIZE);
+        this.securityCache = securityCache;
+        this.yahooServiceWrapper = yahooNewsServiceWrapper;
     }
 
     /**
@@ -75,7 +79,7 @@ import timber.log.Timber;
 
     private NewsHeadlineList fetchYahooNews(String yahooSymbol, Response rawResponse) throws Throwable
     {
-        rawResponse = yahooService.getNews(yahooSymbol);
+        rawResponse = yahooServiceWrapper.getNews(yahooSymbol);
 
         if (rawResponse == null)
         {

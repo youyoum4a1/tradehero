@@ -1,14 +1,12 @@
 package com.tradehero.th.fragments.security;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.models.chart.ChartTimeSpan;
@@ -16,15 +14,12 @@ import timber.log.Timber;
 
 public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 {
-    private final Context context;
-    private SecurityCompactDTO securityCompactDTO;
-    private ProviderId providerId;
+    private SecurityId securityId;
 
     //<editor-fold desc="Constructors">
-    public BuySellBottomStockPagerAdapter(Context context, FragmentManager fragmentManager)
+    public BuySellBottomStockPagerAdapter(FragmentManager fragmentManager)
     {
         super(fragmentManager);
-        this.context = context;
     }
     //</editor-fold>
 
@@ -33,30 +28,16 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         return new ChartTimeSpan(ChartTimeSpan.MONTH_3);
     }
 
-    public void linkWith(ProviderId providerId)
+    public void linkWith(SecurityId securityId)
     {
-        this.providerId = providerId;
-    }
-
-    public void linkWith(SecurityCompactDTO securityCompactDTO)
-    {
-        this.securityCompactDTO = securityCompactDTO;
-    }
-
-    public SecurityCompactDTO getSecurityCompactDTO()
-    {
-        return securityCompactDTO;
+        this.securityId = securityId;
     }
 
     @Override public int getCount()
     {
-        if (securityCompactDTO == null)
+        if (securityId == null)
         {
             return 0;
-        }
-        else if (securityCompactDTO instanceof WarrantDTO)
-        {
-            return 3;//4 hide warrant info temp by alex
         }
         else
         {
@@ -64,50 +45,29 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         }
     }
 
-    /**
-     * Equity: Chart / StockInfo / News
-     * Warrant: WarrantInfo / Chart / StockInfo / News
-     *
-     * @param position
-     * @return
-     */
-
     @Override public Fragment getItem(int position)
     {
         Fragment fragment;
         Bundle args = new Bundle();
 
-        if (false && securityCompactDTO instanceof WarrantDTO && position == 0)//hide Warrant Info temp
+        switch(position)
         {
-            fragment = new WarrantInfoValueFragment();
-            populateForWarrantInfoFragment(args);
-        }
-        else
-        {
-            if (false && securityCompactDTO instanceof WarrantDTO)//hide warrant info temp
-            {
-                position--;
-            }
+            case 0:
+                fragment = new ChartFragment();
+                populateForChartFragment(args);
+                break;
+            case 1:
+                fragment = new SecurityDiscussionFragment();
+                populateForSecurityDiscussionFragment(args);
+                break;
+            case 2:
+                fragment = new NewsHeadlineFragment();
+                populateForNewsHeadlineFragment(args);
+                break;
 
-            switch(position)
-            {
-                case 0:
-                    fragment = new ChartFragment();
-                    populateForChartFragment(args);
-                    break;
-                case 1:
-                    fragment = new SecurityDiscussionFragment();
-                    populateForSecurityDiscussionFragment(args);
-                    break;
-                case 2:
-                    fragment = new NewsHeadlineFragment();
-                    populateForNewsHeadlineFragment(args);
-                    break;
-
-                default:
-                    Timber.w("Not supported index " + position);
-                    throw new UnsupportedOperationException("Not implemented");
-            }
+            default:
+                Timber.w("Not supported index " + position);
+                throw new UnsupportedOperationException("Not implemented");
         }
 
         fragment.setArguments(args);
@@ -115,30 +75,21 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         return fragment;
     }
 
-    private void populateForWarrantInfoFragment(Bundle args)
-    {
-        WarrantInfoValueFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-        if (providerId != null)
-        {
-            args.putBundle(WarrantInfoValueFragment.BUNDLE_KEY_PROVIDER_ID_KEY, providerId.getArgs());
-        }
-    }
-
     private void populateForChartFragment(Bundle args)
     {
-        ChartFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        ChartFragment.putSecurityId(args, securityId);
         args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
         args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, getDefaultChartTimeSpan().duration);
     }
 
     private void populateForSecurityDiscussionFragment(Bundle args)
     {
-        SecurityDiscussionFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        SecurityDiscussionFragment.putSecurityId(args, securityId);
     }
 
     private void populateForNewsHeadlineFragment(Bundle args)
     {
-        NewsHeadlineFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        NewsHeadlineFragment.putSecurityId(args, securityId);
     }
 
     @Override public int getItemPosition(Object object)

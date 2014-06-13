@@ -10,7 +10,7 @@ import com.tradehero.th.adapters.ExpandableItem;
 
 /**
  * Listens for item clicks and expands or collapses the selected view depending on its current
- * state. Created by julien on 24/10/13
+ * state.
  */
 public class ExpandingListView extends ListView
 {

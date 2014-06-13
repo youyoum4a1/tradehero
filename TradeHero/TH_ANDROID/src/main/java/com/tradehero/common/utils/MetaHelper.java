@@ -263,7 +263,6 @@ public class MetaHelper
         return packageInfo.packageName;
     }
 
-
 	/*
 	 * public static String getLabel(Context ctx) { return
 	 * labels.get(ctx.getClass()) ; } public static void putLabel(){ } static

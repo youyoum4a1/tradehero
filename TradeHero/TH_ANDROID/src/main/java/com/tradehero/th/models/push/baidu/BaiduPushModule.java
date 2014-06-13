@@ -13,11 +13,11 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 BaiduPushMessageReceiver.class,
+                BaiduIntentReceiver.class,
         },
         // TODO remove static injection
         staticInjections = {
                 DeviceTokenHelper.class,
-                BaiduPushMessageReceiver.class
         },
         complete = false,
         library = true

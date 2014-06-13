@@ -1,6 +1,5 @@
 package com.tradehero.th.utils;
 
-
 public class MathUtils
 {
     /**

@@ -8,7 +8,6 @@
     android:layout_height="match_parent"
     >
 
-
   <ProgressBar
       android:id="@android:id/progress"
       android:layout_width="wrap_content"
@@ -29,7 +28,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
-      android:text="Sorry,there is something wrong.Click to try again"
+      android:text="@string/error_incomplete_info_message"
       />
+
 </com.tradehero.common.widget.BetterViewAnimator>
 

@@ -1,6 +1,9 @@
 package com.tradehero.common.persistence;
 
 import java.util.Map;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends PartialDTOCacheNew<DTOKeyType, DTOType>
@@ -12,8 +15,10 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
         super();
         this.lruCache = new THLruCache<>(maxSize);
     }
-    
-    @Override public DTOType get(DTOKeyType key)
+
+    @Contract("null -> null")
+    @Nullable
+    @Override public DTOType get(@NotNull DTOKeyType key)
     {
         CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (cacheValue == null)

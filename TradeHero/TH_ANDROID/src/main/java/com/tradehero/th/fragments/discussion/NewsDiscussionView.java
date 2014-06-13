@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.util.AttributeSet;
 
-
 public class NewsDiscussionView extends DiscussionView
 {
     //<editor-fold desc="Constructors">
@@ -26,9 +25,6 @@ public class NewsDiscussionView extends DiscussionView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
-        //delete postCommentView for no use alex
-        //postCommentView.setVisibility(GONE);
     }
 
     @Override protected void setLoading()

@@ -12,11 +12,12 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -359,21 +360,21 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         //getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
 
         LeaderboardDefKey key =
-                new LeaderboardDefKey(LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
+                new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
         LeaderboardDefDTO dto = leaderboardDefCache.get().get(key);
         Bundle bundle = new Bundle(getArguments());
         if (dto != null)
         {
-            bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_ID, dto.id);
+            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
             bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
             bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
         }
         else
         {
-            bundle.putInt(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_ID, LeaderboardDefDTO.LEADERBOARD_DEF_MOST_SKILLED_ID);
+            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID));
             bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_leaderboards));
         }
-        getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+        getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
     }
 
     public void display(UserProfileDTO userProfileDTO)
@@ -473,11 +474,10 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
 
     private class HeroManagerUserProfileCacheListener
-            implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             if (key.equals(HeroesTabContentFragment.this.followerId))
             {
@@ -493,10 +493,9 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
 
     private class HeroManagerHeroListCacheListener
-            implements DTOCache.Listener<UserBaseKey, HeroIdExtWrapper>
+            implements DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper>
     {
-        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value)
         {
             //displayProgress(false);
             setListShown(true);
@@ -516,15 +515,10 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
 
     private class HeroManagerHeroListRefreshListener
-            implements DTOCache.Listener<UserBaseKey, HeroIdExtWrapper>
+            implements DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper>
     {
-        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value)
         {
-            if (fromCache)
-            {
-                return;
-            }
             onRefreshCompleted();
             //setListShown(true);
             display(value);

@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -11,10 +11,10 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-@Singleton public class UserProfileCache extends StraightDTOCache<UserBaseKey, UserProfileDTO>
+@Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -30,13 +30,13 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected UserProfileDTO fetch(UserBaseKey key) throws Throwable
+    @Override public UserProfileDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         VisitedFriendListPrefs.addVisitedId(key);
         return userServiceWrapper.get().getUser(key);
     }
 
-    public List<UserProfileDTO> getOrFetch(List<UserBaseKey> baseKeys) throws Throwable
+    public List<UserProfileDTO> getOrFetchSync(List<UserBaseKey> baseKeys) throws Throwable
     {
         if (baseKeys == null)
         {
@@ -46,7 +46,7 @@ import javax.inject.Singleton;
         List<UserProfileDTO> userProfileDTOs = new ArrayList<>();
         for (UserBaseKey baseKey: baseKeys)
         {
-            userProfileDTOs.add(getOrFetch(baseKey, false));
+            userProfileDTOs.add(getOrFetchSync(baseKey, false));
         }
         return userProfileDTOs;
     }

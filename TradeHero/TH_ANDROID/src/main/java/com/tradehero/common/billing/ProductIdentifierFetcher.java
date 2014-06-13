@@ -4,7 +4,6 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.List;
 import java.util.Map;
 
-
 public interface ProductIdentifierFetcher<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
         ProductIdentifierType extends ProductIdentifier,

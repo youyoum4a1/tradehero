@@ -8,8 +8,6 @@ import javax.inject.Singleton;
 
 @Singleton public class SecurityItemLayoutFactory
 {
-    public static final String TAG = SecurityItemLayoutFactory.class.getSimpleName();
-
     @Inject public SecurityItemLayoutFactory()
     {
     }

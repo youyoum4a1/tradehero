@@ -4,7 +4,6 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
 
-
 public class ShareFormDTO implements DTO
 {
     private static final String BUNDLE_KEY_TYPE = ShareFormDTO.class.getName() + ".shareType";

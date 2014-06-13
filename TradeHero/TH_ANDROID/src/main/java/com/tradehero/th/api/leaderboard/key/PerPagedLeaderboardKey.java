@@ -3,7 +3,8 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import java.util.Iterator;
 import java.util.Set;
-
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PerPagedLeaderboardKey extends PagedLeaderboardKey
 {
@@ -25,16 +26,16 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         this.perPage = other.perPage;
     }
 
-    public PerPagedLeaderboardKey(Bundle args)
+    public PerPagedLeaderboardKey(@NotNull Bundle args, @Nullable PerPagedLeaderboardKey defaultValues)
     {
-        super(args);
-        this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? args.getInt(BUNDLE_KEY_PER_PAGE) : null;
+        super(args, defaultValues);
+        this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? (Integer) args.getInt(BUNDLE_KEY_PER_PAGE) : ((defaultValues != null) ? defaultValues.perPage : null);
     }
 
-    public PerPagedLeaderboardKey(Set<String> catValues)
+    public PerPagedLeaderboardKey(@NotNull Set<String> catValues, @Nullable PerPagedLeaderboardKey defaultValues)
     {
-        super(catValues);
-        this.perPage = findPerPage(catValues);
+        super(catValues, defaultValues);
+        this.perPage = findPerPage(catValues, defaultValues);
     }
     //</editor-fold>
 
@@ -95,7 +96,7 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         }
     }
 
-    public static Integer findPerPage(Set<String> catValues)
+    public static Integer findPerPage(@NotNull Set<String> catValues, @Nullable PerPagedLeaderboardKey defaultValues)
     {
         Iterator<String> iterator = catValues.iterator();
         String catValue;
@@ -108,6 +109,10 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
             {
                 return Integer.valueOf(split[1]);
             }
+        }
+        if (defaultValues != null)
+        {
+            return defaultValues.perPage;
         }
         return null;
     }

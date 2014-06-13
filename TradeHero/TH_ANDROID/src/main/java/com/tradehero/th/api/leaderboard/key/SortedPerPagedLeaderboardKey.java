@@ -1,7 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
-
+import org.jetbrains.annotations.Nullable;
 
 @Deprecated
 public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
@@ -23,10 +23,10 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         this.sortType = other.sortType;
     }
 
-    public SortedPerPagedLeaderboardKey(Bundle args)
+    public SortedPerPagedLeaderboardKey(Bundle args, @Nullable SortedPerPagedLeaderboardKey defaultValues)
     {
-        super(args);
-        this.sortType = args.containsKey(BUNDLE_KEY_SORT_TYPE) ? args.getInt(BUNDLE_KEY_SORT_TYPE) : null;
+        super(args, defaultValues);
+        this.sortType = args.containsKey(BUNDLE_KEY_SORT_TYPE) ? args.getInt(BUNDLE_KEY_SORT_TYPE) : ((defaultValues != null) ? defaultValues.sortType : null);
     }
     //</editor-fold>
 

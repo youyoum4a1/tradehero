@@ -1,6 +1,5 @@
 package com.tradehero.th.api.users;
 
-
 public class UserLoginDTO
 {
     public static final String SUGGEST_UPGRADE = UserLoginDTO.class.getName() + ".suggestUpgrade";

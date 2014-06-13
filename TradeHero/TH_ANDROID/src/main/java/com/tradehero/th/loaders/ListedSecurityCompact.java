@@ -17,5 +17,4 @@ public class ListedSecurityCompact extends SecurityCompactDTO
         this.index = index;
     }
 
-
 }

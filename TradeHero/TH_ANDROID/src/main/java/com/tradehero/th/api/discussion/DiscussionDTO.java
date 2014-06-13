@@ -31,7 +31,7 @@ public class DiscussionDTO extends AbstractDiscussionDTO
     {
     }
 
-    public <ExtendedDTOType extends ExtendedDTO> DiscussionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
+    public <ExtendedDTOType extends ExtendedDTO> DiscussionDTO(ExtendedDTOType other, Class<? extends DiscussionDTO> myClass)
     {
         super(other, myClass);
     }

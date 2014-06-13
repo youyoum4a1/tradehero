@@ -10,10 +10,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-
 @Singleton public class UserTransactionHistoryListCache extends StraightDTOCache<UserTransactionHistoryListType, UserTransactionHistoryIdList>
 {
-    public static final String TAG = UserTransactionHistoryListCache.class.getSimpleName();
     public static final int DEFAULT_MAX_SIZE = 50;
 
     @Inject protected UserServiceWrapper userServiceWrapper;

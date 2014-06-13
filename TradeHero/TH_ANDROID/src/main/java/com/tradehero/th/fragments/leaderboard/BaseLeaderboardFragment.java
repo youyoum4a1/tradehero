@@ -4,10 +4,12 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -18,12 +20,13 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
         implements BaseFragment.TabBarVisibilityInformer
 {
-    public static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
+    private static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_TITLE = BaseLeaderboardFragment.class.getName() + ".leaderboardDefTitle";
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_DESC = BaseLeaderboardFragment.class.getName() + ".leaderboardDefDesc";
 
@@ -31,14 +34,25 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
 
+    protected LeaderboardDefKey leaderboardDefKey;
     protected UserProfileDTO currentUserProfileDTO;
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileCacheFetchTask;
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+
+    public static void putLeaderboardDefKey(@NotNull Bundle args, @NotNull LeaderboardDefKey leaderboardDefKey)
+    {
+        args.putInt(BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefKey.key);
+    }
+
+    public static LeaderboardDefKey getLeadboardDefKey(@NotNull Bundle args)
+    {
+        return new LeaderboardDefKey(args.getInt(BUNDLE_KEY_LEADERBOARD_ID));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.userProfileCacheListener = new BaseLeaderboardFragmentProfileCacheListener();
+        leaderboardDefKey = getLeadboardDefKey(getArguments());
+        this.userProfileCacheListener = createUserProfileListener();
     }
 
     //<editor-fold desc="ActionBar">
@@ -62,15 +76,13 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Override public void onResume()
     {
         super.onResume();
-        detachUserProfileCacheFetchTask();
-        userProfileCacheFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCacheFetchTask.execute();
+        fetchCurrentUserProfile();
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
-        detachUserProfileCacheFetchTask();
-        super.onDestroyView();
+        detachUserProfileCache();
+        super.onStop();
     }
 
     @Override public void onDestroy()
@@ -79,13 +91,19 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         super.onDestroy();
     }
 
-    protected void detachUserProfileCacheFetchTask()
+    protected void detachUserProfileCache()
     {
-        if (userProfileCacheFetchTask != null)
+        if (userProfileCacheListener != null)
         {
-            userProfileCacheFetchTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        userProfileCacheFetchTask = null;
+    }
+
+    protected void fetchCurrentUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     protected int getMenuResource()
@@ -101,28 +119,28 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
-        bundle.putInt(BUNDLE_KEY_LEADERBOARD_ID, dto.id);
         bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
         bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
 
         switch (dto.id)
         {
-            case LeaderboardDefDTO.LEADERBOARD_FRIEND_ID:
-                getNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, bundle);
+            case LeaderboardDefKeyKnowledge.FRIEND_ID:
+                FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
+                getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, bundle);
                 break;
-            case LeaderboardDefDTO.LEADERBOARD_HERO_ID :
+            case LeaderboardDefKeyKnowledge.HERO_ID:
                 pushHeroFragment();
                 break;
-            case LeaderboardDefDTO.LEADERBOARD_FOLLOWER_ID :
+            case LeaderboardDefKeyKnowledge.FOLLOWER_ID:
                 pushFollowerFragment();
                 break;
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s",bundle);
-                getNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
+                getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }
-
 
     protected void pushHeroFragment()
     {
@@ -131,7 +149,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getNavigator().pushFragment(HeroManagerFragment.class, bundle);
     }
@@ -143,7 +161,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, applicablePortfolio.getArgs());
+            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
@@ -153,14 +171,19 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return false;
     }
 
-    protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    {
+        return new BaseLeaderboardFragmentProfileCacheListener();
+    }
+
+    protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         public BaseLeaderboardFragmentProfileCacheListener()
         {
             super();
         }
 
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             setCurrentUserProfileDTO(value);
         }

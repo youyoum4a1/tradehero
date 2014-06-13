@@ -1,29 +1,20 @@
 package com.tradehero.th.models.portfolio;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import java.util.Iterator;
-import java.util.TreeSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
 public class MenuOwnedPortfolioIdTest
 {
-    public static final String TAG = MenuOwnedPortfolioIdTest.class.getSimpleName();
-
-
     @Before public void setUp()
     {
     }

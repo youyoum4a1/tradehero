@@ -7,11 +7,8 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 
-
 public class ProductDetailQuickDescriptionView extends RelativeLayout
 {
-    public static final String TAG = ProductDetailQuickDescriptionView.class.getSimpleName();
-
     private TextView quickDescription;
     private ProductIdentifierDomain productDomain;
 

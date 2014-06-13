@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="loading_loading">로딩중…</string>
+  <string name="processing">진행중…</string>
+
+  <string name="alert_dialog_market_close_title">시장 마감</string>
+  <string name="alert_dialog_market_close_message_basic">해당 증시는 이미 마감되었습니다. \ 시간외 거래가로 거래를 할 수 있으나, 장중 거래가와 많은 차이가 생길 수 있음을 인지하세요. </string>
+  <string name="alert_dialog_market_close_message">%1$s는 마감되었습니다.\시간외 거래가로 거래를 할 수 있으나, 장중 거래가와 많은 차이가 생길 수 있음을 인지하세요.</string>
+  <string name="alert_dialog_market_close_cancel">무시</string>
+  <string name="alert_dialog_please_wait">기다려주세요</string>
+
+</resources>

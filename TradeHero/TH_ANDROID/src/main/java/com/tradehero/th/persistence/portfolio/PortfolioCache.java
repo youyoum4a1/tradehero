@@ -7,37 +7,50 @@ import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class PortfolioCache extends StraightDTOCache<OwnedPortfolioId, PortfolioDTO>
 {
-    public static final String TAG = PortfolioCache.class.getName();
     public static final int DEFAULT_MAX_SIZE = 200;
 
-    @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
-    @Inject Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @Inject PortfolioCompactListCache portfolioCompactListCache;
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Lazy<GetPositionsCache> getPositionsCache;
+    @NotNull protected Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
+    @NotNull protected Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @NotNull protected PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull protected Lazy<UserProfileCache> userProfileCache;
+    @NotNull protected Lazy<GetPositionsCache> getPositionsCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public PortfolioCache()
+
+    @Inject public PortfolioCache(
+            @NotNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
+            @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull Lazy<UserProfileCache> userProfileCache,
+            @NotNull Lazy<GetPositionsCache> getPositionsCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.portfolioServiceWrapper = portfolioServiceWrapper;
+        this.portfolioCompactCache = portfolioCompactCache;
+        this.portfolioCompactListCache = portfolioCompactListCache;
+        this.userProfileCache = userProfileCache;
+        this.getPositionsCache = getPositionsCache;
     }
     //</editor-fold>
 
-    @Override protected PortfolioDTO fetch(OwnedPortfolioId key) throws Throwable
+    @NotNull
+    @Override protected PortfolioDTO fetch(@NotNull OwnedPortfolioId key) throws Throwable
     {
         return portfolioServiceWrapper.get().getPortfolio(key);
     }
 
-    @Override public PortfolioDTO put(OwnedPortfolioId key, PortfolioDTO value)
+    @Nullable
+    @Override public PortfolioDTO put(@NotNull OwnedPortfolioId key, PortfolioDTO value)
     {
         if (value != null)
         {
@@ -48,7 +61,9 @@ import javax.inject.Singleton;
         return super.put(key, value);
     }
 
-    public List<PortfolioDTO> get(List<? extends OwnedPortfolioId> keys)
+    @Contract("null -> null")
+    @Nullable
+    public List<PortfolioDTO> get(@Nullable List<? extends OwnedPortfolioId> keys)
     {
         if (keys == null)
         {
@@ -62,7 +77,9 @@ import javax.inject.Singleton;
         return values;
     }
 
-    public List<PortfolioDTO> getOrFetch(List<? extends OwnedPortfolioId> keys) throws Throwable
+    @Contract("null -> null")
+    @Nullable
+    public List<PortfolioDTO> getOrFetch(@Nullable List<? extends OwnedPortfolioId> keys) throws Throwable
     {
         if (keys == null)
         {
@@ -76,78 +93,10 @@ import javax.inject.Singleton;
         return values;
     }
 
-    @Override public void invalidate(OwnedPortfolioId key)
+    @Override public void invalidate(@NotNull OwnedPortfolioId key)
     {
         super.invalidate(key);
         getPositionsCache.get().invalidate(key);
-        portfolioCompactListCache.autoFetch(key.getUserBaseKey(), true);
-    }
-
-    public GetOrFetchTask<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> getOrFetchTask(
-            final List<? extends OwnedPortfolioId> keys,
-            Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> callback)
-    {
-        return getOrFetchTask(keys, false, callback);
-    }
-
-    public GetOrFetchTask<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> getOrFetchTask(
-            final List<? extends OwnedPortfolioId> keys,
-            final boolean force,
-            Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> callback)
-    {
-        final WeakReference<Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>>> weakCallback = new WeakReference<>(callback);
-
-        return new GetOrFetchTask<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>>(callback)
-        {
-            Throwable error = null;
-
-            @Override protected List<PortfolioDTO> doInBackground(Void... voids)
-            {
-                if (keys == null)
-                {
-                    return null;
-                }
-                List<PortfolioDTO> values = new ArrayList<>();
-                try
-                {
-                    for (OwnedPortfolioId key: keys)
-                    {
-                        values.add(getOrFetch(key, force));
-                    }
-                }
-                catch (Throwable throwable)
-                {
-                    error = throwable;
-                }
-                return values;
-            }
-
-            @Override protected void onPostExecute(List<? extends PortfolioDTO> values)
-            {
-                super.onPostExecute(values);
-                if (!isCancelled())
-                {
-                    Listener<List<? extends OwnedPortfolioId>, List<? extends PortfolioDTO>> retrievedCallback = weakCallback.get();
-                    if (retrievedCallback != null)
-                    {
-                        if (error != null)
-                        {
-                            retrievedCallback.onDTOReceived(keys, values, !force);
-                        }
-                        else
-                        {
-                            retrievedCallback.onErrorThrown(keys, error);
-                        }
-                    }
-                    if (error == null && keys != null)
-                    {
-                        for (OwnedPortfolioId key: keys)
-                        {
-                            pushToListeners(key);
-                        }
-                    }
-                }
-            }
-        };
+        portfolioCompactListCache.getOrFetchAsync(key.getUserBaseKey(), true);
     }
 }

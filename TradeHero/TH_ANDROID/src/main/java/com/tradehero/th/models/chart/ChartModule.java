@@ -21,8 +21,8 @@ public class ChartModule
         super();
     }
 
-    @Provides ChartDTOFactory provideChartDTOFactory()
+    @Provides ChartDTOFactory provideChartDTOFactory(YahooChartDTOFactory chartDTOFactory)
     {
-        return new YahooChartDTOFactory();
+        return chartDTOFactory;
     }
 }

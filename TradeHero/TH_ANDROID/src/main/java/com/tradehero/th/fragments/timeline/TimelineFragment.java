@@ -26,7 +26,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTOEnhanced;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -84,7 +84,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
@@ -204,9 +203,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(
-                    BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                    applicablePortfolio.getArgs());
+            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getNavigator().pushFragment(HeroManagerFragment.class, bundle);
     }
@@ -220,9 +217,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
         if (applicablePortfolio != null)
         {
-            bundle.putBundle(
-                    BasePurchaseManagerFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE,
-                    applicablePortfolio.getArgs());
+            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
@@ -313,7 +308,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
         UserBaseKey newUserBaseKey =
                 new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
         //create adapter and so on
@@ -476,9 +470,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 Object item = parent.getItemAtPosition(position);
 
-                if (item instanceof TimelineItemDTOEnhanced)
+                if (item instanceof TimelineItemDTO)
                 {
-                    pushDiscussion(((TimelineItemDTOEnhanced) item).getDiscussionKey());
+                    pushDiscussion(((TimelineItemDTO) item).getDiscussionKey());
                 }
             }
         };
@@ -487,8 +481,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
     {
         Bundle bundle = new Bundle();
-        bundle.putBundle(TimelineDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
-                timelineItemDTOKey.getArgs());
+        TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
         getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }
 
@@ -619,10 +612,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         {
                             refreshPortfolioList();
                         }
+                        else if (tabType == TabType.STATS)
+                        {
+                            userProfileCache.get().invalidate(shownUserBaseKey);
+                            userProfileRetrievedMilestone.launch();
+                        }
                     }
                 });
         timelineListView.setOnRefreshListener(mainTimelineAdapter);
-        timelineListView.setOnScrollListener(mainTimelineAdapter);
         timelineListView.setOnLastItemVisibleListener(lastItemVisibleListener);
         //timelineListView.setRefreshing();
         timelineListView.setAdapter(mainTimelineAdapter);
@@ -667,8 +664,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
     {
         Bundle args = new Bundle();
-        args.putBundle(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE,
-                ownedPortfolioId.getArgs());
+
+        PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+        PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
         DashboardNavigator navigator =
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         navigator.pushFragment(PositionListFragment.class, args);
@@ -703,6 +702,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 @Override public void onComplete(Milestone milestone)
                 {
+                    if (currentTab == TabType.STATS)
+                    {
+                        onLoadFinished();
+                    }
                     UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
                     if (cachedUserProfile != null)
                     {
@@ -876,7 +879,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
         }

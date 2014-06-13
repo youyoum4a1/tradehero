@@ -9,16 +9,27 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import javax.inject.Inject;
-
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {
-    protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
     @Inject LocalyticsSession localyticsSession;
+
+    @InjectView(R.id.leaderboard_filter_monthly_activity_container) protected LeaderboardFilterValueSlider minMonthlyActivityView;
+    @InjectView(R.id.leaderboard_filter_win_ratio_container) protected LeaderboardFilterValueSlider minWinRatioView;
+    @InjectView(R.id.leaderboard_filter_holding_period_container) protected LeaderboardFilterValueSlider minHoldingPeriodView;
+    @InjectView(R.id.leaderboard_filter_relative_performance_container) protected LeaderboardFilterValueSlider minRelativePerformanceView;
+    @InjectView(R.id.leaderboard_filter_consistency_container) protected MinConsistencyLeaderboardFilterValueSlider minConsistencyView;
+    @InjectView(R.id.leaderboard_filter_reset_button) protected View buttonResetFilters;
+
+    @NotNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
+    @Nullable protected LeaderboardDTO leaderboardDTO;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFilterSliderContainer(Context context)
@@ -37,11 +48,6 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     }
     //</editor-fold>
 
-    @InjectView(R.id.leaderboard_filter_monthly_activity_container) protected LeaderboardFilterValueSlider monthlyActivityView;
-    @InjectView(R.id.leaderboard_filter_win_ratio_container) protected LeaderboardFilterValueSlider winRatioView;
-    @InjectView(R.id.leaderboard_filter_holding_period_container) protected LeaderboardFilterValueSlider holdingPeriodView;
-    @InjectView(R.id.leaderboard_filter_reset_button) protected View buttonResetFilters;
-
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
@@ -52,81 +58,130 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (buttonResetFilters != null)
+        buttonResetFilters.setOnClickListener(new OnClickListener()
         {
-            buttonResetFilters.setOnClickListener(new OnClickListener()
+            @Override public void onClick(View view)
             {
-                @Override public void onClick(View view)
-                {
-                    int leaderboardKey = perPagedFilteredLeaderboardKey != null ? perPagedFilteredLeaderboardKey.key : 0;
-                    setFilteredLeaderboardKey(getStartingFilter(getResources(), leaderboardKey));
-
-                    localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterReset);
-                }
-            });
-        }
+                setParameters(getStartingFilter(getResources(), perPagedFilteredLeaderboardKey.key), leaderboardDTO);
+                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterReset);
+            }
+        });
         displayPerPagedFilteredLeaderboardKey();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        if (buttonResetFilters != null)
-        {
-            buttonResetFilters.setOnClickListener(null);
-        }
+        buttonResetFilters.setOnClickListener(null);
         super.onDetachedFromWindow();
     }
 
-    public void setFilteredLeaderboardKey(PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey)
+    public void setParameters(@NotNull PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey, @Nullable LeaderboardDTO leaderboardDTO)
     {
         this.perPagedFilteredLeaderboardKey = perPagedFilteredLeaderboardKey;
+        this.leaderboardDTO = leaderboardDTO;
         displayPerPagedFilteredLeaderboardKey();
     }
 
+    @NotNull
     public PerPagedFilteredLeaderboardKey getFilteredLeaderboardKey()
     {
         this.perPagedFilteredLeaderboardKey = new PerPagedFilteredLeaderboardKey(
                 this.perPagedFilteredLeaderboardKey.key,
                 null, // Page but we don't care
                 null, // PerPage but we don't care
-                winRatioView.getCurrentValue(),
-                monthlyActivityView.getCurrentValue(),
-                holdingPeriodView.getCurrentValue(),
-                null, // MinSharpeRatio but we don't care
-                null // MaxPosRoiVolatility but we don't care
+                minWinRatioView.getCurrentValue(),
+                minMonthlyActivityView.getCurrentValue(),
+                minHoldingPeriodView.getCurrentValue(),
+                minRelativePerformanceView.getCurrentValue(),
+                minConsistencyView.getCurrentValue()
         );
         return this.perPagedFilteredLeaderboardKey;
     }
 
-    public void displayPerPagedFilteredLeaderboardKey()
+    protected void displayPerPagedFilteredLeaderboardKey()
     {
-        if (perPagedFilteredLeaderboardKey != null)
+        displayMonthlyActivity();
+        displayWinRatio();
+        displayHoldingPeriod();
+        displayRelativePerformance();
+        displayConsistency();
+    }
+
+    protected void displayMonthlyActivity()
+    {
+        if (minMonthlyActivityView != null)
         {
-            if (perPagedFilteredLeaderboardKey.averageMonthlyTradeCount != null && monthlyActivityView != null)
+            if (perPagedFilteredLeaderboardKey.averageMonthlyTradeCount != null)
             {
-                monthlyActivityView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.averageMonthlyTradeCount));
+                minMonthlyActivityView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.averageMonthlyTradeCount));
             }
-            else if (monthlyActivityView != null)
+            else
             {
-                monthlyActivityView.setDefaultCurrentValue();
+                minMonthlyActivityView.setDefaultCurrentValue();
             }
+        }
+    }
 
-            if (perPagedFilteredLeaderboardKey.winRatio != null && winRatioView != null)
+    protected void displayWinRatio()
+    {
+        if (minWinRatioView != null)
+        {
+            if (perPagedFilteredLeaderboardKey.winRatio != null)
             {
-                winRatioView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.winRatio));
+                minWinRatioView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.winRatio));
             }
-            else if (winRatioView != null)
+            else
             {
-                winRatioView.setDefaultCurrentValue();
+                minWinRatioView.setDefaultCurrentValue();
             }
+        }
+    }
 
-            if (perPagedFilteredLeaderboardKey.averageHoldingDays != null && holdingPeriodView != null)
+    protected void displayHoldingPeriod()
+    {
+        if (minHoldingPeriodView != null)
+        {
+            if (perPagedFilteredLeaderboardKey.averageHoldingDays != null)
             {
-                holdingPeriodView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.averageHoldingDays));
+                minHoldingPeriodView.setCurrentValue(Math.round(perPagedFilteredLeaderboardKey.averageHoldingDays));
             }
-            else if (holdingPeriodView != null)
+            else
             {
-                holdingPeriodView.setDefaultCurrentValue();
+                minHoldingPeriodView.setDefaultCurrentValue();
+            }
+        }
+    }
+
+    protected void displayRelativePerformance()
+    {
+        if (minRelativePerformanceView != null)
+        {
+            if (perPagedFilteredLeaderboardKey.minSharpeRatio != null)
+            {
+                minRelativePerformanceView.setCurrentValue(Math.round(100 * perPagedFilteredLeaderboardKey.minSharpeRatio) / 100);
+            }
+            else
+            {
+                minRelativePerformanceView.setCurrentValue(0);
+            }
+        }
+    }
+
+    protected void displayConsistency()
+    {
+        if (minConsistencyView != null)
+        {
+            if (perPagedFilteredLeaderboardKey.minConsistency != null)
+            {
+                minConsistencyView.setCurrentValue(Math.round(100 * perPagedFilteredLeaderboardKey.minConsistency) / 100);
+            }
+            else
+            {
+                minConsistencyView.setDefaultCurrentValue();
+            }
+            if (leaderboardDTO != null && leaderboardDTO.avgStdDevPositionRoiInPeriod > 0)
+            {
+                minConsistencyView.setMaxValue((float) (1 / leaderboardDTO.avgStdDevPositionRoiInPeriod));
             }
         }
     }
@@ -139,9 +194,9 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
                  null, // PerPage but we don't care
                  (float) resources.getInteger(R.integer.leaderboard_filter_win_ratio_min),
                  (float) resources.getInteger(R.integer.leaderboard_filter_monthly_activity_min),
-                 (float) 0,
-                 null, // MinSharpeRatio but we don't care
-                 null // MaxPosRoiVolatility but we don't care
+                 0f,
+                 0f,
+                 (float) resources.getInteger(R.integer.leaderboard_filter_consistency_min)
          );
     }
 

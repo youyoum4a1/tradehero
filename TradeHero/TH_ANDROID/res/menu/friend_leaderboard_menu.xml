@@ -3,21 +3,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
-      android:icon="@drawable/icn_friends"
+      android:icon="@drawable/btn_friends_add"
       android:id="@+id/friend_leaderboard_menu"
-      android:showAsAction="ifRoom">
+      android:showAsAction="always">
 
-    <menu>
+    <!--<menu>-->
 
-      <item android:title="@string/leaderboard_show_friends_only"
-          android:id="@+id/friend_leaderboard_menu_show_friends_only"
-          />
+      <!--<item android:title="@string/leaderboard_show_friends_only"-->
+          <!--android:id="@+id/friend_leaderboard_menu_show_friends_only"-->
+          <!--/>-->
 
-      <item android:title="@string/leaderboard_show_friends_of_friends"
-          android:id="@+id/friend_leaderboard_menu_show_friends_of_friends"
-          />
+      <!--<item android:title="@string/leaderboard_show_friends_of_friends"-->
+          <!--android:id="@+id/friend_leaderboard_menu_show_friends_of_friends"-->
+          <!--/>-->
 
-    </menu>
+    <!--</menu>-->
 
   </item>
 </menu>

@@ -3,17 +3,20 @@ package com.tradehero.th.ui;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView;
 import com.tradehero.th.fragments.discussion.DiscussionView;
+import com.tradehero.th.fragments.discussion.MentionActionButtonsView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemView;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
+import com.tradehero.th.fragments.social.friend.SocialFriendItemView;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
-import com.tradehero.th.fragments.timeline.TimelineItemView;
+import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
+import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterResideMenuItem;
 import com.tradehero.th.fragments.updatecenter.messages.MessageItemView;
@@ -28,19 +31,17 @@ import dagger.Provides;
 import javax.inject.Singleton;
 import org.ocpsoft.prettytime.PrettyTime;
 
-
 @Module(
         includes = {
                 UIComponents.class
         },
         injects = {
-                TimelineItemView.class,
+                TimelineItemViewLinear.class,
                 LeaderboardMarkUserListFragment.class,
                 UpdateCenterFragment.class,
                 NotificationsView.class,
                 NotificationItemView.class,
 
-                UpdateCenterFragment.class,
                 MessagesCenterFragment.class,
                 NotificationsCenterFragment.class,
                 UpdateCenterResideMenuItem.class,
@@ -51,7 +52,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 SecurityDiscussionView.class,
                 SecurityDiscussionFragment.class,
-                SecurityDiscussionItemView.class,
+                SecurityDiscussionItemViewLinear.class,
                 SecurityDiscussionCommentFragment.class,
 
                 DiscussionView.class,
@@ -62,10 +63,13 @@ import org.ocpsoft.prettytime.PrettyTime;
 
                 DiscussionEditPostFragment.class,
                 DiscussionPostActionButtonsView.class,
+                MentionActionButtonsView.class,
 
                 FollowDialogView.class,
 
-                NotificationClickHandler.class
+                NotificationClickHandler.class,
+                SocialFriendItemView.class,
+                UserStatisticView.class
         },
         complete = false,
         library = true

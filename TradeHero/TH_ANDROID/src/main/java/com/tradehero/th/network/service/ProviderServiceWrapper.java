@@ -6,183 +6,136 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
+import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOFactory;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
 
 @Singleton public class ProviderServiceWrapper
 {
     private final ProviderService providerService;
-    private final SecurityCompactDTOFactory securityCompactDTOFactory;
+    private final ProviderServiceAsync providerServiceAsync;
 
-    @Inject public ProviderServiceWrapper(ProviderService providerService, SecurityCompactDTOFactory securityCompactDTOFactory)
+    @Inject public ProviderServiceWrapper(
+            ProviderService providerService,
+            ProviderServiceAsync providerServiceAsync)
     {
         super();
         this.providerService = providerService;
-        this.securityCompactDTOFactory = securityCompactDTOFactory;
+        this.providerServiceAsync = providerServiceAsync;
     }
 
     //<editor-fold desc="Get Providers">
     public List<ProviderDTO> getProviders()
-            throws RetrofitError
     {
         return this.providerService.getProviders();
     }
 
-    public void getProviders(Callback<List<ProviderDTO>> callback)
+    public MiddleCallback<List<ProviderDTO>> getProviders(Callback<List<ProviderDTO>> callback)
     {
-        this.providerService.getProviders(callback);
+        MiddleCallback<List<ProviderDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        this.providerServiceAsync.getProviders(middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
     public List<SecurityCompactDTO> getProviderSecurities(ProviderSecurityListType key)
-            throws RetrofitError
     {
-        if (key instanceof BasicProviderSecurityListType)
+        List<SecurityCompactDTO> received;
+        if (key instanceof SearchProviderSecurityListType)
         {
-            return getProviderBasicSecurities((BasicProviderSecurityListType) key);
+            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
+            received = this.providerService.searchSecurities(
+                    searchKey.providerId.key,
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage);
+        }
+        else if (key instanceof BasicProviderSecurityListType)
+        {
+            received = this.providerService.getSecurities(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage);
         }
         else if (key instanceof WarrantProviderSecurityListType)
         {
-            return getWarrantUnderlyers((WarrantProviderSecurityListType) key);
-        }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
-    }
-
-    public void getProviderSecurities(ProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key instanceof BasicProviderSecurityListType)
-        {
-            getProviderBasicSecurities((BasicProviderSecurityListType) key, callback);
-        }
-        else if (key instanceof WarrantProviderSecurityListType)
-        {
-            getWarrantUnderlyers((WarrantProviderSecurityListType) key, callback);
+            received = this.providerService.getWarrantUnderlyers(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage);
         }
         else
         {
             throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
+        return received;
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Get Provider Basic Securities">
-    public List<SecurityCompactDTO> getProviderBasicSecurities(BasicProviderSecurityListType key)
-            throws RetrofitError
+    public MiddleCallback<List<SecurityCompactDTO>> getProviderSecurities(ProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
     {
-        List<SecurityCompactDTO> returned;
-
-        if (key.getPage() == null)
+        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        if (key instanceof SearchProviderSecurityListType)
         {
-            returned = this.providerService.getSecurities(key.getProviderId().key);
+            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
+            this.providerServiceAsync.searchSecurities(
+                    searchKey.providerId.key,
+                    searchKey.searchString,
+                    searchKey.getPage(),
+                    searchKey.perPage,
+                    middleCallback);
         }
-        else if (key.perPage == null)
+        else if (key instanceof BasicProviderSecurityListType)
         {
-            returned = this.providerService.getSecurities(key.getProviderId().key, key.getPage());
+            this.providerServiceAsync.getSecurities(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage,
+                    middleCallback);
+        }
+        else if (key instanceof WarrantProviderSecurityListType)
+        {
+            this.providerServiceAsync.getWarrantUnderlyers(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage,
+                    middleCallback);
         }
         else
         {
-            returned = this.providerService.getSecurities(key.getProviderId().key, key.getPage(), key.perPage);
+            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
-
-        return securityCompactDTOFactory.clonePerType(returned);
-    }
-
-    public void getProviderBasicSecurities(BasicProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key.getPage() == null)
-        {
-            this.providerService.getSecurities(key.getProviderId().key, callback);
-        }
-        else if (key.perPage == null)
-        {
-            this.providerService.getSecurities(key.getProviderId().key, key.getPage(), callback);
-        }
-        else
-        {
-            this.providerService.getSecurities(key.getProviderId().key, key.getPage(), key.perPage, callback);
-        }
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get Provider Warrants Securities">
-    public List<SecurityCompactDTO> getWarrantUnderlyers(WarrantProviderSecurityListType key)
-            throws RetrofitError
-    {
-        List<SecurityCompactDTO> returned;
-
-        if (key.getPage() == null)
-        {
-            returned = this.providerService.getWarrantUnderlyers(key.getProviderId().key);
-        }
-        else if (key.perPage == null)
-        {
-            returned = this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage());
-        }
-        else
-        {
-            returned = this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage(), key.perPage);
-        }
-
-        return securityCompactDTOFactory.clonePerType(returned);
-    }
-
-    public void getWarrantUnderlyers(WarrantProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
-    {
-        if (key.getPage() == null)
-        {
-            this.providerService.getWarrantUnderlyers(key.getProviderId().key, callback);
-        }
-        else if (key.perPage == null)
-        {
-            this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage(), callback);
-        }
-        else
-        {
-            this.providerService.getWarrantUnderlyers(key.getProviderId().key, key.getPage(), key.perPage, callback);
-        }
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">
     public List<HelpVideoDTO> getHelpVideos(HelpVideoListKey helpVideoListKey)
-            throws RetrofitError
     {
         return this.getHelpVideos(helpVideoListKey.getProviderId());
     }
 
-    void getHelpVideos(HelpVideoListKey helpVideoListKey, Callback<List<HelpVideoDTO>> callback)
+    public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(HelpVideoListKey helpVideoListKey, Callback<List<HelpVideoDTO>> callback)
     {
-        this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
+        return this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
     }
 
     public List<HelpVideoDTO> getHelpVideos(ProviderId providerId)
-            throws RetrofitError
     {
         return this.providerService.getHelpVideos(providerId.key);
     }
 
-    void getHelpVideos(ProviderId providerId, Callback<List<HelpVideoDTO>> callback)
+    public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(ProviderId providerId, Callback<List<HelpVideoDTO>> callback)
     {
-        this.providerService.getHelpVideos(providerId.key, callback);
+        MiddleCallback<List<HelpVideoDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        this.providerServiceAsync.getHelpVideos(providerId.key, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
-
-    abstract public class CallbackCloneListSecurityCompactDTO implements Callback<List<SecurityCompactDTO>>
-    {
-        @Override public final void success(List<SecurityCompactDTO> securityCompactDTOs, Response response)
-        {
-            successCloned(securityCompactDTOFactory.clonePerType(securityCompactDTOs), response);
-        }
-
-        abstract public void successCloned(List<SecurityCompactDTO> securityCompactDTOs, Response response);
-    }
 }

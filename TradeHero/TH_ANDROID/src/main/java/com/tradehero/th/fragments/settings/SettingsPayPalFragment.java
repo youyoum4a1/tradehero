@@ -10,7 +10,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -27,8 +27,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -40,7 +40,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     private Button submitButton;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private MiddleCallback<UpdatePayPalEmailDTO> middleCallbackUpdatePayPalEmail;
 
     @Inject UserServiceWrapper userServiceWrapper;
@@ -79,7 +79,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachMiddleCallbackUpdatePayPalEmail();
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         if (paypalEmailText != null)
         {
             paypalEmailText.setOnTouchListener(null);
@@ -102,13 +102,13 @@ public class SettingsPayPalFragment extends DashboardFragment
         middleCallbackUpdatePayPalEmail = null;
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
+        if (userProfileCacheListener != null)
         {
-            userProfileFetchTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        userProfileFetchTask = null;
+        userProfileCacheListener = null;
     }
 
     private void setupSubmitButton()
@@ -163,17 +163,18 @@ public class SettingsPayPalFragment extends DashboardFragment
         paypalEmailText = (ServerValidatedEmailText) view.findViewById(R.id.settings_paypal_email_text);
         // HACK: force this email to focus instead of the TabHost stealing focus..
         paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
-        detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), createUserProfileCacheListener());
-        userProfileFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCacheListener = createUserProfileCacheListener();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
-        return new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
             @Override
-            public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+            public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
             {
                 if (!isDetached())
                 {

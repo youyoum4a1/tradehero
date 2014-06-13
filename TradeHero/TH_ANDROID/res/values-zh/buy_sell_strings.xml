@@ -21,10 +21,6 @@
   <string name="buy_sell_button_sell">卖出 @ %1$s %2$s</string>
   <string name="buy_sell_button_cannot_buy">-</string>
   <string name="buy_sell_button_cannot_sell">-</string>
-  <string name="buy_sell_buy_details_unavailable">信息准备中…</string>
-  <string name="buy_sell_buy_details">买入 %1$,d %2$s:%3$s @ %4$s %5$,.2f\n交易手续费: 虚拟 %6$s %7$,.2f\n总花费: %8$s %9$,.2f</string>
-  <string name="buy_sell_sell_details_unavailable">准备信息中…</string>
-  <string name="buy_sell_sell_details">卖出 %1$,d %2$s:%3$s @ %4$s %5$,.2f\n交易手续费: 虚拟 %6$s %7$,.2f\n净支出: %8$s %9$,.2f</string>
   <string name="buy_sell_confirm_share_public">公开</string>
   <string name="buy_sell_confirm_share_private">私人</string>
   <string name="buy_sell_confirm_buy_comment">发表评论...</string>

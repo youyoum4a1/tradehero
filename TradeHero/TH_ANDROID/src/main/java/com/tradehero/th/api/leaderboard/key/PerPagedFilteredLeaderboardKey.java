@@ -1,41 +1,52 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import java.util.Iterator;
 import java.util.Set;
-
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
 {
-    public static final String TAG = PerPagedFilteredLeaderboardKey.class.getSimpleName();
-
     public static final String BUNDLE_KEY_WIN_RATIO = PerPagedFilteredLeaderboardKey.class.getName() + ".winRatio";
     public static final String BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT = PerPagedFilteredLeaderboardKey.class.getName() + ".averageMonthlyTradeCount";
     public static final String BUNDLE_KEY_AVERAGE_HOLDING_DAYS = PerPagedFilteredLeaderboardKey.class.getName() + ".averageHoldingDays";
     public static final String BUNDLE_KEY_MIN_SHARPE_RATIO = PerPagedFilteredLeaderboardKey.class.getName() + ".minSharpeRatio";
-    public static final String BUNDLE_KEY_MAX_POS_ROI_VOLATILITY = PerPagedFilteredLeaderboardKey.class.getName() + ".maxPosRoiVolatility";
+    public static final String BUNDLE_KEY_MIN_CONSISTENCY = PerPagedFilteredLeaderboardKey.class.getName() + ".minConsistency";
     public static final String STRING_SET_LEFT_WIN_RATIO = "winRatio";
     public static final String STRING_SET_LEFT_AVERAGE_MONTHLY_TRADE_COUNT = "averageMonthlyTradeCount";
     public static final String STRING_SET_LEFT_AVERAGE_HOLDING_DAYS = "averageHoldingDays";
     public static final String STRING_SET_LEFT_MIN_SHARPE_RATIO = "minSharpeRatio";
-    public static final String STRING_SET_LEFT_MAX_POS_ROI_VOLATILITY = "maxPosRoiVolatility";
+    public static final String STRING_SET_LEFT_MIN_CONSISTENCY = "minConsistency";
 
     public final Float winRatio;
     public final Float averageMonthlyTradeCount;
     public final Float averageHoldingDays;
     public final Float minSharpeRatio;
-    public final Float maxPosRoiVolatility;
+    public final Float minConsistency;
+
+    @Contract("null -> null; !null -> !null")
+    private static Float clampConsistency(@Nullable Float consistency)
+    {
+        if (consistency == null)
+        {
+            return null;
+        }
+        return Math.max((float) (double) LeaderboardUserDTO.MIN_CONSISTENCY, consistency);
+    }
 
     //<editor-fold desc="Constructors">
     public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, Integer page, Integer perPage,
-            Float winRatio, Float averageMonthlyTradeCount, Float averageHoldingDays, Float minSharpeRatio, Float maxPosRoiVolatility)
+            Float winRatio, Float averageMonthlyTradeCount, Float averageHoldingDays, Float minSharpeRatio, Float minConsistency)
     {
         super(leaderboardKey, page, perPage);
         this.winRatio = winRatio;
         this.averageMonthlyTradeCount = averageMonthlyTradeCount;
         this.averageHoldingDays = averageHoldingDays;
         this.minSharpeRatio = minSharpeRatio;
-        this.maxPosRoiVolatility = maxPosRoiVolatility;
+        this.minConsistency = clampConsistency(minConsistency);
     }
 
     public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, Integer page, Integer perPage)
@@ -45,7 +56,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         this.averageMonthlyTradeCount = null;
         this.averageHoldingDays = null;
         this.minSharpeRatio = null;
-        this.maxPosRoiVolatility = null;
+        this.minConsistency = null;
     }
 
     public PerPagedFilteredLeaderboardKey(PerPagedFilteredLeaderboardKey other, Integer overrideKey, Integer page)
@@ -60,29 +71,30 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         this.averageMonthlyTradeCount = other.averageMonthlyTradeCount;
         this.averageHoldingDays = other.averageHoldingDays;
         this.minSharpeRatio = other.minSharpeRatio;
-        this.maxPosRoiVolatility = other.maxPosRoiVolatility;
+        this.minConsistency = clampConsistency(other.minConsistency);
     }
 
-    public PerPagedFilteredLeaderboardKey(Bundle args)
+    public PerPagedFilteredLeaderboardKey(@NotNull Bundle args, @Nullable PerPagedFilteredLeaderboardKey defaultValues)
     {
-        super(args);
-        this.winRatio = args.containsKey(BUNDLE_KEY_WIN_RATIO) ? args.getFloat(BUNDLE_KEY_WIN_RATIO) : null;
-        this.averageMonthlyTradeCount = args.containsKey(BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT) ? args.getFloat(BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT) : null;
-        this.averageHoldingDays = args.containsKey(BUNDLE_KEY_AVERAGE_HOLDING_DAYS) ? args.getFloat(BUNDLE_KEY_AVERAGE_HOLDING_DAYS) : null;
-        this.minSharpeRatio = args.containsKey(BUNDLE_KEY_MIN_SHARPE_RATIO) ? args.getFloat(BUNDLE_KEY_MIN_SHARPE_RATIO) : null;
-        this.maxPosRoiVolatility = args.containsKey(BUNDLE_KEY_MAX_POS_ROI_VOLATILITY) ? args.getFloat(BUNDLE_KEY_MAX_POS_ROI_VOLATILITY) : null;
+        super(args, defaultValues);
+        this.winRatio = args.containsKey(BUNDLE_KEY_WIN_RATIO) ? (Float) args.getFloat(BUNDLE_KEY_WIN_RATIO) : ((defaultValues != null) ? defaultValues.winRatio : null);
+        this.averageMonthlyTradeCount = args.containsKey(BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT) ? (Float) args.getFloat(BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT) : ((defaultValues != null) ? defaultValues.averageMonthlyTradeCount : null);
+        this.averageHoldingDays = args.containsKey(BUNDLE_KEY_AVERAGE_HOLDING_DAYS) ? (Float) args.getFloat(BUNDLE_KEY_AVERAGE_HOLDING_DAYS) : ((defaultValues != null) ? defaultValues.averageHoldingDays : null);
+        this.minSharpeRatio = args.containsKey(BUNDLE_KEY_MIN_SHARPE_RATIO) ? (Float) args.getFloat(BUNDLE_KEY_MIN_SHARPE_RATIO) : ((defaultValues != null) ? defaultValues.minSharpeRatio : null);
+        this.minConsistency = clampConsistency(args.containsKey(BUNDLE_KEY_MIN_CONSISTENCY) ? (Float) args.getFloat(BUNDLE_KEY_MIN_CONSISTENCY)
+                : ((defaultValues != null) ? defaultValues.minConsistency : null));
     }
 
-    public PerPagedFilteredLeaderboardKey(Set<String> catValues)
+    public PerPagedFilteredLeaderboardKey(@NotNull Set<String> catValues,  @Nullable PerPagedFilteredLeaderboardKey defaultValues)
     {
-        super(catValues);
+        super(catValues, defaultValues);
         Iterator<String> iterator = catValues.iterator();
         String catValue;
         Float tempWinRatio = null;
         Float tempAverageMonthlyTradeCount = null;
         Float tempAverageHoldingDays = null;
         Float tempMinSharpeRatio = null;
-        Float tempMaxPosRoiVolatility = null;
+        Float tempConsistency = null;
         while (iterator.hasNext())
         {
             catValue = iterator.next();
@@ -102,16 +114,39 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 case STRING_SET_LEFT_MIN_SHARPE_RATIO:
                     tempMinSharpeRatio = value;
                     break;
-                case STRING_SET_LEFT_MAX_POS_ROI_VOLATILITY:
-                    tempMaxPosRoiVolatility = value;
+                case STRING_SET_LEFT_MIN_CONSISTENCY:
+                    tempConsistency = value;
                     break;
+            }
+        }
+        if (defaultValues != null)
+        {
+            if (tempWinRatio == null)
+            {
+                tempWinRatio = defaultValues.winRatio;
+            }
+            if (tempAverageMonthlyTradeCount == null)
+            {
+                tempAverageMonthlyTradeCount = defaultValues.averageMonthlyTradeCount;
+            }
+            if (tempAverageHoldingDays == null)
+            {
+                tempAverageHoldingDays = defaultValues.averageHoldingDays;
+            }
+            if (tempMinSharpeRatio == null)
+            {
+                tempMinSharpeRatio = defaultValues.minSharpeRatio;
+            }
+            if (tempConsistency == null)
+            {
+                tempConsistency = defaultValues.minConsistency;
             }
         }
         winRatio = tempWinRatio;
         averageMonthlyTradeCount = tempAverageMonthlyTradeCount;
         averageHoldingDays = tempAverageHoldingDays;
         minSharpeRatio = tempMinSharpeRatio;
-        maxPosRoiVolatility = tempMaxPosRoiVolatility;
+        minConsistency = clampConsistency(tempConsistency);
     }
     //</editor-fold>
 
@@ -121,7 +156,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 ^ (averageMonthlyTradeCount == null ? 0 : averageMonthlyTradeCount.hashCode())
                 ^ (averageHoldingDays == null ? 0 : averageHoldingDays.hashCode())
                 ^ (minSharpeRatio == null ? 0 : minSharpeRatio.hashCode())
-                ^ (maxPosRoiVolatility == null ? 0 : maxPosRoiVolatility.hashCode());
+                ^ (minConsistency == null ? 0 : minConsistency.hashCode());
     }
 
     @Override public boolean equals(PerPagedLeaderboardKey other)
@@ -138,7 +173,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 (averageMonthlyTradeCount == null ? other.averageMonthlyTradeCount == null : averageMonthlyTradeCount.equals(other.averageMonthlyTradeCount)) &&
                 (averageHoldingDays == null ? other.averageHoldingDays == null : averageHoldingDays.equals(other.averageHoldingDays)) &&
                 (minSharpeRatio == null ? other.minSharpeRatio == null : minSharpeRatio.equals(other.minSharpeRatio)) &&
-                (maxPosRoiVolatility == null ? other.maxPosRoiVolatility == null : maxPosRoiVolatility.equals(other.maxPosRoiVolatility));
+                (minConsistency == null ? other.minConsistency == null : minConsistency.equals(other.minConsistency));
     }
 
     public boolean areInnerValuesEqual(PerPagedFilteredLeaderboardKey other)
@@ -148,7 +183,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 (averageMonthlyTradeCount == null ? other.averageMonthlyTradeCount == null : averageMonthlyTradeCount.equals(other.averageMonthlyTradeCount)) &&
                 (averageHoldingDays == null ? other.averageHoldingDays == null : averageHoldingDays.equals(other.averageHoldingDays)) &&
                 (minSharpeRatio == null ? other.minSharpeRatio == null : minSharpeRatio.equals(other.minSharpeRatio)) &&
-                (maxPosRoiVolatility == null ? other.maxPosRoiVolatility == null : maxPosRoiVolatility.equals(other.maxPosRoiVolatility));
+                (minConsistency == null ? other.minConsistency == null : minConsistency.equals(other.minConsistency));
     }
 
     public int compareTo(PerPagedFilteredLeaderboardKey other)
@@ -176,7 +211,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                         other.averageMonthlyTradeCount)) *
                 (averageHoldingDays == null ? (other.averageHoldingDays == null ? 0 : 1) : averageHoldingDays.compareTo(other.averageHoldingDays)) *
                 (minSharpeRatio == null ? (other.minSharpeRatio == null ? 0 : 1) : minSharpeRatio.compareTo(other.minSharpeRatio)) *
-                (maxPosRoiVolatility == null ? (other.maxPosRoiVolatility == null ? 0 : 1) : maxPosRoiVolatility.compareTo(other.maxPosRoiVolatility));
+                (minConsistency == null ? (other.minConsistency == null ? 0 : 1) : minConsistency.compareTo(other.minConsistency));
     }
 
     @Override public PagedLeaderboardKey cloneAtPage(int page)
@@ -223,13 +258,13 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
             args.putFloat(BUNDLE_KEY_MIN_SHARPE_RATIO, minSharpeRatio);
         }
 
-        if (maxPosRoiVolatility == null)
+        if (minConsistency == null)
         {
-            args.remove(BUNDLE_KEY_MAX_POS_ROI_VOLATILITY);
+            args.remove(BUNDLE_KEY_MIN_CONSISTENCY);
         }
         else
         {
-            args.putFloat(BUNDLE_KEY_MAX_POS_ROI_VOLATILITY, maxPosRoiVolatility);
+            args.putFloat(BUNDLE_KEY_MIN_CONSISTENCY, minConsistency);
         }
     }
 
@@ -240,7 +275,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         putAverageMonthlyTradeCount(catValues, this.averageMonthlyTradeCount);
         putAverageHoldingDays(catValues, this.averageHoldingDays);
         putMinSharpeRatio(catValues, this.minSharpeRatio);
-        putMaxPosRoiVolatility(catValues, this.maxPosRoiVolatility);
+        putMinConsistency(catValues, this.minConsistency);
     }
 
     public static void putWinRatio(Set<String> catValues, Float winRatio)
@@ -275,11 +310,11 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         }
     }
 
-    public static void putMaxPosRoiVolatility(Set<String> catValues, Float maxPosRoiVolatility)
+    public static void putMinConsistency(Set<String> catValues, Float minConsistency)
     {
-        if (maxPosRoiVolatility != null)
+        if (minConsistency != null)
         {
-            catValues.add(STRING_SET_LEFT_MAX_POS_ROI_VOLATILITY + STRING_SET_VALUE_SEPARATOR + maxPosRoiVolatility);
+            catValues.add(STRING_SET_LEFT_MIN_CONSISTENCY + STRING_SET_VALUE_SEPARATOR + minConsistency);
         }
     }
 }

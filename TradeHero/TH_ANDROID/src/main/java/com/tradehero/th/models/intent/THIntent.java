@@ -1,17 +1,17 @@
 package com.tradehero.th.models.intent;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import javax.inject.Inject;
 
 abstract public class THIntent extends Intent
 {
-    @Inject public static CurrentActivityHolder currentActivityHolder;
+    @Inject public static Context context;
 
     //<editor-fold desc="Constructors">
     public THIntent()
@@ -34,17 +34,17 @@ abstract public class THIntent extends Intent
 
     public static String getString(int resId)
     {
-        return currentActivityHolder.getCurrentContext().getResources().getString(resId);
+        return context.getString(resId);
     }
 
     public static String getString(int resId, java.lang.Object... formatArgs)
     {
-        return currentActivityHolder.getCurrentContext().getResources().getString(resId, formatArgs);
+        return context.getString(resId, formatArgs);
     }
 
     public static int getInteger(int resId)
     {
-        return currentActivityHolder.getCurrentContext().getResources().getInteger(resId);
+        return context.getResources().getInteger(resId);
     }
 
     public Uri getUri()

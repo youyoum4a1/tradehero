@@ -5,7 +5,6 @@ import com.tradehero.common.application.PApplication;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 
-
 public class ColorUtils
 {
     public static final int MAX_RED_VALUE = 255;
@@ -28,7 +27,6 @@ public class ColorUtils
                     (int) (MAX_GREEN_VALUE * MathUtils.clamp(percentage, 0, 1)),
                     0);
         }
-
 
     }
 

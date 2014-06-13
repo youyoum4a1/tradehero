@@ -3,7 +3,6 @@ package com.tradehero.common.billing.samsung.exception;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.googleplay.IABResult;
 
-
 public class SamsungPaymentCancelledException extends SamsungOneCodeException
 {
     public static final int VALID_ERROR_CODE = SamsungIapHelper.IAP_PAYMENT_IS_CANCELED;

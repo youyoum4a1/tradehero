@@ -1,6 +1,5 @@
 package com.tradehero.th.api.competition;
 
-
 public class AdDTO
 {
     public int id;

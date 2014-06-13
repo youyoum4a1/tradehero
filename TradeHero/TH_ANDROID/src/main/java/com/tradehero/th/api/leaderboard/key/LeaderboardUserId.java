@@ -1,12 +1,15 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
-
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardUserId implements Comparable, DTOKey
 {
-    public static final String TAG = LeaderboardUserId.class.getSimpleName();
     public static final String BUNDLE_KEY_USER_ID = LeaderboardUserId.class.getName() + ".userId";
     public static final String BUNDLE_KEY_LBMUID = LeaderboardUserId.class.getName() + ".lbmuid";
 
@@ -27,6 +30,18 @@ public class LeaderboardUserId implements Comparable, DTOKey
     }
     //</editor-fold>
 
+    @JsonIgnore @NotNull
+    public UserBaseKey createUserBaseKey()
+    {
+        return new UserBaseKey(userId);
+    }
+
+    @JsonIgnore @NotNull
+    public LeaderboardMarkUserId createLeaderboardMarkUserId()
+    {
+        return new LeaderboardMarkUserId((int) lbmuid);
+    }
+
     @Override public int hashCode()
     {
         return (Integer.valueOf(userId).hashCode() ^
@@ -45,7 +60,7 @@ public class LeaderboardUserId implements Comparable, DTOKey
                 (lbmuid == other.lbmuid));
     }
 
-    @Override public int compareTo(Object other)
+    @Override public int compareTo(@Nullable Object other)
     {
         if (other == null)
         {

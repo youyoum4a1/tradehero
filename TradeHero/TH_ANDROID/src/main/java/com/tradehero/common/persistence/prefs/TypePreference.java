@@ -1,6 +1,5 @@
 package com.tradehero.common.persistence.prefs;
 
-
 public interface TypePreference<T>
 {
     T get();

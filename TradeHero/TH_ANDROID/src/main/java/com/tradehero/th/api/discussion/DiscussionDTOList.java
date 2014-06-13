@@ -3,8 +3,7 @@ package com.tradehero.th.api.discussion;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
-public class DiscussionDTOList<T extends AbstractDiscussionDTO> extends ArrayList<T>
+public class DiscussionDTOList<T extends AbstractDiscussionCompactDTO> extends ArrayList<T>
 {
     //<editor-fold desc="Constructors">
     public DiscussionDTOList(int i)
@@ -26,7 +25,7 @@ public class DiscussionDTOList<T extends AbstractDiscussionDTO> extends ArrayLis
     public DiscussionKeyList getKeys()
     {
         DiscussionKeyList keyList = new DiscussionKeyList();
-        for (AbstractDiscussionDTO discussionDTO : this)
+        for (AbstractDiscussionCompactDTO discussionDTO : this)
         {
             keyList.add(discussionDTO.getDiscussionKey());
         }

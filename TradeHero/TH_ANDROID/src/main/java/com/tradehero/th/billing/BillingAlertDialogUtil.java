@@ -216,5 +216,4 @@ abstract public class BillingAlertDialogUtil<
         activityUtil.sendSupportEmail(context, emailIntent);
     }
 
-
 }

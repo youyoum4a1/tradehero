@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import timber.log.Timber;
 
-
 public class EasyDebugTree implements Timber.Tree, Timber.TaggedTree
 {
     public static final Pattern ANONYMOUS_CLASS = Pattern.compile("\\$\\d+$");

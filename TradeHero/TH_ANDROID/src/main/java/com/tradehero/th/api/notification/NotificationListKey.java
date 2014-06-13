@@ -6,7 +6,6 @@ import com.tradehero.th.api.Querylizable;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class NotificationListKey extends AbstractIntegerDTOKey
     implements Querylizable<String>
 {

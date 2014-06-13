@@ -36,6 +36,7 @@ interface MessageServiceAsync
     @GET("/messages/{commentId}")
     void getMessageHeader(
             @Path("commentId") int commentId,
+            @Query("referencedUserId") Integer referencedUserId,
             Callback<MessageHeaderDTO> callback);
 
     @GET("/messages/thread/{correspondentId}")

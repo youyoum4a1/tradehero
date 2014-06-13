@@ -1,6 +1,5 @@
 package com.tradehero.th.api.form;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import retrofit.mime.TypedOutput;
 
 public class UserFormDTO

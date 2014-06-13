@@ -9,9 +9,6 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 
-/**
- * Created by thonguyen on 5/5/14.
- */
 public class DTOProcessorSecurityPosition implements DTOProcessor<SecurityPositionDetailDTO>
 {
     private final SecurityId securityId;

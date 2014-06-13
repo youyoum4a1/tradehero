@@ -33,13 +33,19 @@ public class LeaderboardDTO implements DTO
         super();
     }
 
-    public LeaderboardDTO(int id, String name, List<LeaderboardUserDTO> users, int userIsAtPositionZeroBased, Date markUtc)
+    public LeaderboardDTO(int id, String name, List<LeaderboardUserDTO> users, int userIsAtPositionZeroBased, Date markUtc,
+            int minPositionCount, double maxSharpeRatioInPeriodVsSP500,
+            double maxStdDevPositionRoiInPeriod, double avgStdDevPositionRoiInPeriod)
     {
         this.id = id;
         this.name = name;
         this.users = users;
         this.userIsAtPositionZeroBased = userIsAtPositionZeroBased;
         this.markUtc = markUtc;
+        this.minPositionCount = minPositionCount;
+        this.maxSharpeRatioInPeriodVsSP500 = maxSharpeRatioInPeriodVsSP500;
+        this.maxStdDevPositionRoiInPeriod = maxStdDevPositionRoiInPeriod;
+        this.avgStdDevPositionRoiInPeriod = avgStdDevPositionRoiInPeriod;
     }
     //</editor-fold>
 
@@ -62,4 +68,22 @@ public class LeaderboardDTO implements DTO
             return "Failed to json";
         }
     }
+
+    @JsonIgnore
+    public Double getAvgVolatility()
+    {
+        return (double) avgStdDevPositionRoiInPeriod;
+    }
+
+    @JsonIgnore
+    public Double getAvgConsistency()
+    {
+        Double v = getAvgVolatility();
+        if (v != null && v != 0)
+        {
+            return 1/v;
+        }
+        return (double)2;
+    }
+
 }

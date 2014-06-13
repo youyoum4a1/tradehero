@@ -1,18 +1,16 @@
 package com.tradehero.th.api.position;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class PositionInPeriodDTO extends PositionDTO
 {
-    public static final String TAG = PositionInPeriodDTO.class.getSimpleName();
+    public static final String TOTAL_PL_IN_PERIOD_REF_CCY = "totalPLInPeriodRefCcy";
 
     // This leaderboard Mark User Id needs to be populated by the service
-    private Integer leaderboardMarkUserId;
+    private LeaderboardMarkUserId leaderboardMarkUserId;
 
     public Double totalPLInPeriodRefCcy;
     public Double marketValueStartPeriodRefCcy;
@@ -30,42 +28,26 @@ public class PositionInPeriodDTO extends PositionDTO
 
     public LeaderboardMarkUserPositionId getLbPositionId()
     {
-        return new LeaderboardMarkUserPositionId(leaderboardMarkUserId);
+        return new LeaderboardMarkUserPositionId(leaderboardMarkUserId.key);
     }
 
-    public OwnedLeaderboardPositionId getLbOwnedPositionId()
+    @JsonIgnore
+    @Override public PositionDTOKey getPositionDTOKey()
     {
         return new OwnedLeaderboardPositionId(leaderboardMarkUserId, id);
     }
 
     public LeaderboardMarkUserId getLeaderboardMarkUserId()
     {
-        return new LeaderboardMarkUserId(leaderboardMarkUserId);
+        return leaderboardMarkUserId;
     }
 
-    public void setLeaderboardMarkUserId(Integer leaderboardMarkUserId)
+    public void setLeaderboardMarkUserId(LeaderboardMarkUserId leaderboardMarkUserId)
     {
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    public static List<OwnedLeaderboardPositionId> getFiledLbPositionIds(List<PositionInPeriodDTO> positionInPeriodDTOs)
-    {
-        if (positionInPeriodDTOs == null)
-        {
-            return null;
-        }
-
-        List<OwnedLeaderboardPositionId> ownedPositionIds = new ArrayList<>();
-
-        for (PositionInPeriodDTO positionInPeriodDTO : positionInPeriodDTOs)
-        {
-            ownedPositionIds.add(positionInPeriodDTO.getLbOwnedPositionId());
-        }
-
-        return ownedPositionIds;
-    }
-
-    public OwnedLeaderboardPositionId getLeaderboardOwnedPositionId()
+    public OwnedLeaderboardPositionId getLbOwnedPositionId()
     {
         return new OwnedLeaderboardPositionId(userId, id);
     }

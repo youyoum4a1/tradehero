@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -23,7 +24,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -47,8 +48,11 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
-        implements PopupMenu.OnMenuItemClickListener, OnTitleNumberChangeListener, TabHost.OnTabChangeListener
+public class UpdateCenterFragment extends BaseFragment
+        implements PopupMenu.OnMenuItemClickListener,
+        OnTitleNumberChangeListener,
+        TabHost.OnTabChangeListener,
+        ResideMenu.OnMenuListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
     public static final String REQUEST_UPDATE_UNREAD_COUNTER = ".updateUnreadCounter";
@@ -62,8 +66,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Inject MessageHeaderCache messageHeaderCache;
 
     private FragmentTabHost mTabHost;
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> fetchUserProfileListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> fetchUserProfileTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ImageButton mNewMsgButton;
 
     private BroadcastReceiver broadcastReceiver;
@@ -71,9 +74,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        fetchUserProfileListener = new FetchUserProfileListener();
-        initBroadcastReceiver();
+        broadcastReceiver = createBroadcastReceiver();
         Timber.d("onCreate");
     }
 
@@ -112,23 +113,22 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         removeOnTabChangeListener();
     }
 
-
     private void fetchUserProfile()
     {
-        detachUserProfileTask();
+        detachUserProfileCache();
 
-        fetchUserProfileTask = userProfileCache.getOrFetch(currentUserId.toUserBaseKey(), false,
-                fetchUserProfileListener);
-        fetchUserProfileTask.execute();
+        userProfileCacheListener = createUserProfileCacheListener();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    private void detachUserProfileTask()
+    private void detachUserProfileCache()
     {
-        if (fetchUserProfileTask != null)
+        if (userProfileCacheListener != null)
         {
-            fetchUserProfileTask.setListener(null);
+            userProfileCache.unregister(userProfileCacheListener);
         }
-        fetchUserProfileTask = null;
+        userProfileCacheListener = null;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -145,7 +145,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
                 | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.message_center_title);
         actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
@@ -252,8 +252,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
                 DiscussionType.BROADCAST_MESSAGE.value);
         args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE,
                 MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
-                SendMessageFragment.class, args);
+        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(SendMessageFragment.class, args);
     }
 
     @Override public void onStop()
@@ -262,14 +261,13 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         Timber.d("onStop");
     }
 
-
     @Override public void onDestroyView()
     {
         // TODO Questionable, as specified by Liang, it should not be needed to clear the tabs here
         Timber.d("onDestroyView");
         //don't have to clear sub fragment to refresh data
         //clearTabs();
-        detachUserProfileTask();
+        detachUserProfileCache();
 
         super.onDestroyView();
     }
@@ -277,9 +275,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     @Override public void onDestroy()
     {
         Timber.d("onDestroy");
-        fetchUserProfileListener = null;
-        //clearTabs();
-        //removeOnTabChangeListener();
+        broadcastReceiver = null;
         super.onDestroy();
     }
 
@@ -305,6 +301,7 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
             mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
         }
+        mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
         return mTabHost;
     }
 
@@ -366,10 +363,15 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         changeTabTitleNumber(tabType, number);
     }
 
-    private class FetchUserProfileListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    {
+        return new FetchUserProfileListener();
+    }
+
+    private class FetchUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             linkWith(value, true);
         }
@@ -384,29 +386,19 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
     {
         if (andDisplay)
         {
-            Timber.d(
-                    "changeTabTitleNumber unreadMessageThreadsCount:%d,unreadNotificationsCount:%d",
-                    userProfileDTO.unreadMessageThreadsCount,
-                    userProfileDTO.unreadNotificationsCount);
             changeTabTitleNumber(UpdateCenterTabType.Messages,
                     userProfileDTO.unreadMessageThreadsCount);
             //changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
         }
     }
 
-    private void initBroadcastReceiver()
+    private BroadcastReceiver createBroadcastReceiver()
     {
-        broadcastReceiver = new BroadcastReceiver()
+        return new BroadcastReceiver()
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                // receiver is unregistered in onStop,so don't have to check null
-                UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-
-                if (userProfileDTO != null)
-                {
-                    linkWith(userProfileDTO, true);
-                }
+                fetchUserProfile();
             }
         };
     }
@@ -458,4 +450,21 @@ public class UpdateCenterFragment extends BaseFragment /*DashboardFragment*/
         }
     }
 
+    @Override public void openMenu()
+    {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
+        {
+            ((ResideMenu.OnMenuListener) currentFragment).openMenu();
+        }
+    }
+
+    @Override public void closeMenu()
+    {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment != null && currentFragment instanceof ResideMenu.OnMenuListener)
+        {
+            ((ResideMenu.OnMenuListener) currentFragment).closeMenu();
+        }
+    }
 }

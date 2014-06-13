@@ -5,7 +5,8 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PositionDTOCompact extends ExtendedDTO
 {
@@ -13,10 +14,10 @@ public class PositionDTOCompact extends ExtendedDTO
     public Integer shares;
     public int portfolioId;
 
-    // This price is always is USD
+    // This price is always in USD
     public Double averagePriceRefCcy;
-    public String currencyDisplay;
-    public String currencyISO;
+    @Nullable public String currencyDisplay;
+    @Nullable public String currencyISO;
 
     //<editor-fold desc="Constructors">
     public PositionDTOCompact()
@@ -56,13 +57,13 @@ public class PositionDTOCompact extends ExtendedDTO
         return shares != 0;
     }
 
-    @JsonIgnore
+    @JsonIgnore @NotNull
     public PositionCompactId getPositionCompactId()
     {
         return new PositionCompactId(id);
     }
 
-    @JsonIgnore
+    @JsonIgnore @NotNull
     public String getNiceCurrency()
     {
         if (currencyDisplay != null && !currencyDisplay.isEmpty())

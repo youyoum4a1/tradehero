@@ -4,12 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.tradehero.th.R;
-
+import timber.log.Timber;
 
 public class StoreItemLikeButton extends StoreItemHasFurther
 {
-    public static final String TAG = StoreItemLikeButton.class.getSimpleName();
-
     protected ImageView imageButton;
     protected int imageButtonResId;
 
@@ -52,7 +50,14 @@ public class StoreItemLikeButton extends StoreItemHasFurther
     {
         if (imageButton != null)
         {
-            imageButton.setImageResource(imageButtonResId);
+            try
+            {
+                imageButton.setImageResource(imageButtonResId);
+            }
+            catch (OutOfMemoryError e)
+            {
+                Timber.e(e, "");
+            }
         }
     }
 }

@@ -1,19 +1,16 @@
 package com.tradehero.th.persistence.portfolio;
 
-import com.tradehero.common.persistence.DTORetrievedAsyncMilestone;
+import com.tradehero.common.persistence.DTORetrievedAsyncMilestoneNew;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
-import timber.log.Timber;
 
-
-public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMilestone<UserBaseKey, OwnedPortfolioIdList, PortfolioCompactListCache>
+@Deprecated // We should always ask for the value from the cache
+public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMilestoneNew<UserBaseKey, OwnedPortfolioIdList, PortfolioCompactListCache>
 {
-    public static final String TAG = PortfolioCompactListRetrievedMilestone.class.getSimpleName();
-
     @Inject PortfolioCompactListCache portfolioCompactListCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
 

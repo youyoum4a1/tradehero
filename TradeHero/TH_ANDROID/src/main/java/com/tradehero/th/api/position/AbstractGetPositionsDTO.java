@@ -1,17 +1,17 @@
 package com.tradehero.th.api.position;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.jetbrains.annotations.Nullable;
 
 abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDTO> implements DTO
 {
-    public static final String TAG = AbstractGetPositionsDTO.class.getSimpleName();
-
-    public PositionDTOList<PositionDTOType> positions;
-    public List<SecurityCompactDTO> securities;
+    @Nullable public PositionDTOList<PositionDTOType> positions;
+    @Nullable public List<SecurityCompactDTO> securities;
     public int openPositionsCount;
     public int closedPositionsCount;
 
@@ -20,7 +20,11 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
     {
     }
 
-    public AbstractGetPositionsDTO(PositionDTOList<PositionDTOType> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
+    public AbstractGetPositionsDTO(
+            @Nullable PositionDTOList<PositionDTOType> positions,
+            @Nullable List<SecurityCompactDTO> securities,
+            int openPositionsCount,
+            int closedPositionsCount)
     {
         this.positions = positions;
         this.securities = securities;
@@ -44,6 +48,7 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
         return getOpenPositions(null);
     }
 
+    @Nullable
     public List<PositionDTOType> getOpenPositions(Boolean open)
     {
         if (positions == null)
@@ -59,6 +64,15 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
             }
         }
         return openPositions;
+    }
+
+    @JsonIgnore
+    public void setOnInPeriod(LeaderboardMarkUserId leaderboardMarkUserId)
+    {
+        if (positions != null)
+        {
+            positions.setOnInPeriod(leaderboardMarkUserId);
+        }
     }
 
     @Override public String toString()

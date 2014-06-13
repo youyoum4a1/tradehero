@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -24,6 +24,7 @@ public final class SurveyTileView extends ImageView
     @Inject @ForExtraTileBackground Transformation backgroundTransformation;
 
     private UserProfileDTO userProfileDTO;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     //<editor-fold desc="Constructors">
     public SurveyTileView(Context context)
@@ -56,8 +57,10 @@ public final class SurveyTileView extends ImageView
         // Coz this view's content will never change
         if (userProfileDTO == null )
         {
-            userProfileCache.get().getOrFetch(currentUserId.toUserBaseKey(), false, userProfileCallback)
-                    .execute();
+            detachUserProfileCache();
+            userProfileCacheListener = createUserProfileCacheListener();
+            userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+            userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
         }
         else
         {
@@ -67,8 +70,18 @@ public final class SurveyTileView extends ImageView
 
     @Override protected void onDetachedFromWindow()
     {
+        detachUserProfileCache();
         super.onDetachedFromWindow();
         // intended not to canceling user profile fetch task free resource since survey tile is static content
+    }
+
+    protected void detachUserProfileCache()
+    {
+        if (userProfileCacheListener != null)
+        {
+            userProfileCache.get().unregister(userProfileCacheListener);
+        }
+        userProfileCacheListener = null;
     }
 
     private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -86,16 +99,19 @@ public final class SurveyTileView extends ImageView
         }
     }
 
-    private DTOCache.Listener<UserBaseKey, UserProfileDTO> userProfileCallback = new DTOCache.Listener<UserBaseKey, UserProfileDTO>()
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
-            linkWith(value, true);
-        }
+            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            {
+                linkWith(value, true);
+            }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
+            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            {
 
-        }
-    };
+            }
+        };
+    }
 }

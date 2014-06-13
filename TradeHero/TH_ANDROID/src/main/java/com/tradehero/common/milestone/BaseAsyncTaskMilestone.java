@@ -3,12 +3,9 @@ package com.tradehero.common.milestone;
 import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 
-
 abstract public class BaseAsyncTaskMilestone<KeyType, ProgressType, ValueType>
         implements Milestone
 {
-    public static final String TAG = BaseAsyncTaskMilestone.class.getSimpleName();
-
     protected WeakReference<OnCompleteListener> parentCompleteListener = new WeakReference<>(null);
     protected AsyncTask<KeyType, ProgressType, ValueType> task;
 

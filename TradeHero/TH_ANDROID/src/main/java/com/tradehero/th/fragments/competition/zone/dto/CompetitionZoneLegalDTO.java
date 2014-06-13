@@ -1,10 +1,7 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
-
 public class CompetitionZoneLegalDTO extends CompetitionZoneDTO
 {
-    public static final String TAG = CompetitionZoneLegalDTO.class.getSimpleName();
-
     public LinkType requestedLink = null;
 
     public CompetitionZoneLegalDTO(String title, String description)

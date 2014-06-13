@@ -2,7 +2,6 @@ package com.tradehero.th.utils;
 
 import java.util.List;
 
-
 public class StringUtils
 {
     public static String join(String glue, List elements)

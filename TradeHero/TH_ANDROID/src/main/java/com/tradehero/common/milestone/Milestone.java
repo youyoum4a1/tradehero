@@ -1,6 +1,5 @@
 package com.tradehero.common.milestone;
 
-
 public interface Milestone
 {
     void launch();

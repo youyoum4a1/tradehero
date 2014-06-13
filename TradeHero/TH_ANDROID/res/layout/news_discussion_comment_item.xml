@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.discussion.CommentItemView
+<com.tradehero.th.fragments.discussion.CommentItemViewLinear
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -23,7 +23,7 @@
       >
 
     <ImageView
-        android:id="@+id/timeline_user_profile_picture"
+        android:id="@+id/discussion_user_picture"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_alignParentLeft="true"
@@ -37,10 +37,10 @@
         android:id="@+id/timeline_item_top_right"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_toRightOf="@id/timeline_user_profile_picture">
+        android:layout_toRightOf="@id/discussion_user_picture">
 
       <TextView
-          android:id="@+id/timeline_user_profile_name"
+          android:id="@+id/user_profile_name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
@@ -61,7 +61,7 @@
           android:textColor="@color/text_gray_normal"
           android:textSize="@dimen/timeline_item_date"
           android:layout_alignParentLeft="true"
-          android:layout_below="@id/timeline_user_profile_name"
+          android:layout_below="@id/user_profile_name"
           tools:text="A moment ago"
           />
     </RelativeLayout>
@@ -73,7 +73,7 @@
         android:layout_below="@id/timeline_item_top_right"
         android:layout_marginLeft="10dip"
         android:layout_marginTop="10dip"
-        android:layout_toRightOf="@+id/timeline_user_profile_picture"
+        android:layout_toRightOf="@id/discussion_user_picture"
         tools:text="Tho Nguyen is the world best trader!"
         android:textColorLink="@color/timeline_item_link"
         android:textColor="@color/timeline_item"
@@ -82,4 +82,4 @@
         />
   </RelativeLayout>
   <include layout="@layout/discussion_action_buttons"/>
-</com.tradehero.th.fragments.discussion.CommentItemView>
+</com.tradehero.th.fragments.discussion.CommentItemViewLinear>

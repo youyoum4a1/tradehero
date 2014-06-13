@@ -6,7 +6,6 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-
 public interface IABProductIdentifierFetcherHolder<
         IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,

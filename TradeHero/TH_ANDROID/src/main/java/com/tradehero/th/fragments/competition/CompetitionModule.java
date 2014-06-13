@@ -7,7 +7,6 @@ import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioView;
 import com.tradehero.th.persistence.competition.ProviderListRetrievedMilestone;
 import dagger.Module;
 
-
 @Module(
         staticInjections =
                 {
@@ -30,8 +29,6 @@ import dagger.Module;
 )
 public class CompetitionModule
 {
-    public static final String TAG = CompetitionModule.class.getSimpleName();
-
     public CompetitionModule()
     {
     }

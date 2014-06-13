@@ -11,7 +11,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertEventDTO;
 import com.tradehero.th.utils.THSignedNumber;
 
-
 public class AlertEventItemView extends LinearLayout
         implements DTOView<AlertEventDTO>
 {
@@ -44,7 +43,7 @@ public class AlertEventItemView extends LinearLayout
 
     @Override public void display(AlertEventDTO alertEventDTO)
     {
-        THSignedNumber thSecurityPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertEventDTO.securityPrice, false);
+        THSignedNumber thSecurityPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertEventDTO.securityPrice, THSignedNumber.WITHOUT_SIGN);
         eventName.setText(thSecurityPrice.toString());
         eventDate.setText("On " + alertEventDTO.triggeredAt);
     }

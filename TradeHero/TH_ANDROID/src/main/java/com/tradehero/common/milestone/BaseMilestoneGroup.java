@@ -3,11 +3,8 @@ package com.tradehero.common.milestone;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class BaseMilestoneGroup extends BaseMilestone implements MilestoneGroup
 {
-    public static final String TAG = BaseMilestoneGroup.class.getSimpleName();
-
     protected final List<Milestone> milestones;
     protected boolean failedReported;
     private final OnCompleteListener childCompleteListener;

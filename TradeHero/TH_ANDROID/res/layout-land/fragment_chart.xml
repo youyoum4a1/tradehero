@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -41,19 +42,20 @@
 
     </com.tradehero.th.widget.news.TimeSpanButtonSet>
 
-
     <com.tradehero.common.widget.BetterViewAnimator
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="match_parent"
         android:id="@+id/chart_image_wrapper"
         >
+
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
           android:text="@string/chart_loading_image"
           />
-      <ImageView
+
+      <com.tradehero.th.fragments.security.ChartImageView
           android:id="@+id/chart_imageView"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
@@ -61,7 +63,10 @@
           android:layout_marginLeft="20dp"
           android:scaleType="fitXY"
           android:adjustViewBounds="true"
-          android:contentDescription="@null"/>
+          android:contentDescription="@null"
+          app:includeVolume="true"
+          />
+
     </com.tradehero.common.widget.BetterViewAnimator>
 
     <LinearLayout
@@ -105,6 +110,7 @@
               android:gravity="left"
               android:text=""
               android:textSize="13sp" />
+
         </TableRow>
 
         <TableRow
@@ -131,6 +137,7 @@
               android:gravity="left"
               android:text=""
               android:textSize="13sp" />
+
         </TableRow>
 
         <TableRow
@@ -157,6 +164,7 @@
               android:gravity="left"
               android:text=""
               android:textSize="13sp" />
+
         </TableRow>
 
         <TableRow
@@ -183,6 +191,7 @@
               android:gravity="left"
               android:text=""
               android:textSize="13sp" />
+
         </TableRow>
 
       </TableLayout>
@@ -217,6 +226,7 @@
               android:gravity="right"
               android:text=""
               android:textSize="13sp" />
+
         </TableRow>
 
         <TableRow
@@ -244,6 +254,7 @@
               android:text=""
               android:textSize="13sp"
               />
+
         </TableRow>
 
         <TableRow
@@ -271,6 +282,7 @@
               android:text="@string/na"
               android:textSize="13sp"
               />
+
         </TableRow>
 
         <TableRow
@@ -298,6 +310,7 @@
               android:text="@string/na"
               android:textSize="13sp"
               />
+
         </TableRow>
 
       </TableLayout>
@@ -305,4 +318,5 @@
     </LinearLayout>
 
   </LinearLayout>
+
 </LinearLayout>

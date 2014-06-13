@@ -2,7 +2,6 @@ package com.tradehero.th.api.competition;
 
 import java.util.List;
 
-
 public class CompetitionFormDTO
 {
     public int ProviderId;

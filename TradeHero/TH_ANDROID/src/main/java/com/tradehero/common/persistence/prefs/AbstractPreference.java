@@ -2,7 +2,6 @@ package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
 
-
 public abstract class AbstractPreference<T> implements TypePreference<T>
 {
     protected final T defaultValue;

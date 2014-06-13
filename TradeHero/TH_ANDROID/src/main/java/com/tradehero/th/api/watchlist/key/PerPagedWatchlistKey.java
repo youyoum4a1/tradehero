@@ -2,10 +2,8 @@ package com.tradehero.th.api.watchlist.key;
 
 import android.os.Bundle;
 
-
 public class PerPagedWatchlistKey extends PagedWatchlistKey
 {
-    public static final String TAG = PerPagedWatchlistKey.class.getSimpleName();
     public static final String BUNDLE_KEY_PER_PAGE = PerPagedWatchlistKey.class.getName() + ".perPage";
 
     public final Integer perPage;

@@ -3,11 +3,8 @@ package com.tradehero.th.api.competition.key;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-
 public class CompetitionId extends AbstractIntegerDTOKey
 {
-    public static final String TAG = CompetitionId.class.getSimpleName();
-
     public static final String BUNDLE_KEY_KEY = CompetitionId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">

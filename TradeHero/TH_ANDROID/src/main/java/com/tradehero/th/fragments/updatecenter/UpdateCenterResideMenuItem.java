@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -28,7 +28,7 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
     @InjectView(R.id.tab_title_number) TextView unreadMessageCount;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     //<editor-fold desc="Constructors">
     public UpdateCenterResideMenuItem(Context context)
@@ -57,10 +57,10 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
     private void fetchAndDisplayUserProfile()
     {
-        detachUserProfileFetchTask();
-        userProfileFetchTask = userProfileCache.get()
-                .getOrFetch(currentUserId.toUserBaseKey(), false, createUserProfileFetchListener());
-        userProfileFetchTask.execute();
+        detachUserProfileCache();
+        userProfileCacheListener = createUserProfileFetchListener();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onAttachedToWindow()
@@ -72,17 +72,14 @@ public class UpdateCenterResideMenuItem extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        detachUserProfileFetchTask();
+        detachUserProfileCache();
         super.onDetachedFromWindow();
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileCache()
     {
-        if (userProfileFetchTask != null)
-        {
-            userProfileFetchTask.setListener(null);
-        }
-        userProfileFetchTask = null;
+        userProfileCache.get().unregister(userProfileCacheListener);
+        userProfileCacheListener = null;
     }
 
     @Override public void display(UserProfileDTO dto)
@@ -103,15 +100,15 @@ public class UpdateCenterResideMenuItem extends LinearLayout
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
     {
         return new UserProfileFetchListener();
     }
 
-    private class UserProfileFetchListener implements DTOCache.Listener<UserBaseKey, UserProfileDTO>
+    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
             display(value);
         }

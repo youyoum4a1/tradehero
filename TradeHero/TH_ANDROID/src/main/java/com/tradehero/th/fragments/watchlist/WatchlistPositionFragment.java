@@ -38,9 +38,8 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
+import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
-import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
@@ -75,6 +74,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     private WatchlistRetrievedMilestone watchlistRetrievedMilestone;
     private TwoStateView.OnStateChange gainLossModeListener;
     private BroadcastReceiver broadcastReceiver;
+    private Runnable setOffsetRunnable;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
@@ -92,9 +92,9 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        createGainLossModeListener();
-        createBroadcastReceiver();
-        createPortfolioCacheListener();
+        gainLossModeListener = createGainLossModeListener();
+        broadcastReceiver =createBroadcastReceiver();
+        setOffsetRunnable = createSetOffsetRunnable();
     }
 
     protected Milestone.OnCompleteListener createWatchlistRetrievedMilestoneListener()
@@ -113,9 +113,9 @@ public class WatchlistPositionFragment extends DashboardFragment
         };
     }
 
-    protected void createGainLossModeListener()
+    protected TwoStateView.OnStateChange createGainLossModeListener()
     {
-        gainLossModeListener = new TwoStateView.OnStateChange()
+        return new TwoStateView.OnStateChange()
         {
             @Override public void onStateChanged(View view, boolean state)
             {
@@ -128,9 +128,9 @@ public class WatchlistPositionFragment extends DashboardFragment
         };
     }
 
-    protected void createBroadcastReceiver()
+    protected BroadcastReceiver createBroadcastReceiver()
     {
-        broadcastReceiver = new BroadcastReceiver()
+        return new BroadcastReceiver()
         {
             @Override public void onReceive(Context context, Intent intent)
             {
@@ -139,7 +139,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                     SecurityId deletedSecurityId = WatchlistItemView.getDeletedSecurityId(intent);
                     if (deletedSecurityId != null)
                     {
-                        SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
+                        SwipeListView watchlistListView = (SwipeListView) watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
                         adapter.remove(deletedSecurityId);
                         localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
@@ -148,6 +148,11 @@ public class WatchlistPositionFragment extends DashboardFragment
                 }
             }
         };
+    }
+
+    protected Runnable createSetOffsetRunnable()
+    {
+        return new WatchlistPositionFragmentSetOffsetRunnable();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -167,19 +172,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             ButterKnife.inject(this, view);
 
             final SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
-            watchlistListView.post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    SwipeListView watchlistListViewCopy = watchlistListView;
-                    if (!isDetached() && watchlistListViewCopy != null)
-                    {
-                        watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
-                                getResources().getDimension(R.dimen.watchlist_item_button_width)
-                                        * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
-                    }
-                }
-            });
+            watchlistListView.post(setOffsetRunnable);
             watchlistListView.setEmptyView(
                     view.findViewById(R.id.watchlist_position_list_empty_view));
             watchlistListView.setSwipeListViewListener(createSwipeListViewListener());
@@ -240,9 +233,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 @Override public void onClick(View v)
                 {
                     Bundle bundle = new Bundle();
-                    bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.STOCKS.name());
-                    bundle.putBoolean(SearchStockPeopleFragment.BUNDLE_KEY_FROM_WATCHLIST, true);
-                    getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
+                    getNavigator().pushFragment(SecuritySearchWatchlistFragment.class, bundle);
                 }
             });
         }
@@ -302,16 +293,25 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
         watchlistPortfolioHeaderView = null;
 
-        if (watchlistPositionListView != null && watchlistPositionListView.getRefreshableView() != null)
+        if (watchlistPositionListView != null)
         {
-            watchlistPositionListView.getRefreshableView().setSwipeListViewListener(null);
+            SwipeListView swipeListView = watchlistPositionListView.getRefreshableView();
+            if (swipeListView != null)
+            {
+                swipeListView.setSwipeListViewListener(null);
+                swipeListView.removeCallbacks(setOffsetRunnable);
+            }
         }
-        //watchlistListView = null;
 
         watchListAdapter = null;
 
         if (watchlistPositionListView != null)
         {
+            View watchListView = watchlistPositionListView.getRefreshableView();
+            if (watchListView != null)
+            {
+                watchListView.removeCallbacks(null);
+            }
             watchlistPositionListView.onRefreshComplete();
             watchlistPositionListView.setOnRefreshListener(
                     (PullToRefreshBase.OnRefreshListener<SwipeListView>) null);
@@ -351,6 +351,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         broadcastReceiver = null;
         gainLossModeListener = null;
+        setOffsetRunnable = null;
 
         super.onDestroy();
     }
@@ -390,10 +391,10 @@ public class WatchlistPositionFragment extends DashboardFragment
             Bundle args = new Bundle();
             if (securityId != null)
             {
-                args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                WatchlistEditFragment.putSecurityId(args, securityId);
                 if (watchlistPositionCache.get(securityId) != null)
                 {
-                    args.putString(WatchlistEditFragment.BUNDLE_KEY_TITLE, getString(R.string.watchlist_edit_title));
+                    DashboardFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
                 }
             }
             getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
@@ -503,6 +504,23 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             super.onDismiss(reverseSortedPositions);
             fetchSecurityIdList();
+        }
+    }
+
+    protected class WatchlistPositionFragmentSetOffsetRunnable implements Runnable
+    {
+        @Override public void run()
+        {
+            if (watchlistPositionListView != null)
+            {
+                SwipeListView watchlistListViewCopy = watchlistPositionListView.getRefreshableView();
+                if (watchlistListViewCopy != null)
+                {
+                    watchlistListViewCopy.setOffsetLeft(watchlistListViewCopy.getWidth() -
+                            getResources().getDimension(R.dimen.watchlist_item_button_width)
+                                    * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
+                }
+            }
         }
     }
 }

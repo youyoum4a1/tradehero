@@ -2,7 +2,7 @@ package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
-
+import org.jetbrains.annotations.Nullable;
 
 public class UserSearchResultDTO implements DTO
 {
@@ -13,7 +13,7 @@ public class UserSearchResultDTO implements DTO
     public String userPicture;
 
     public Double userCashBalanceRefCcy;
-    public Date userMarkingAsOfUtc;
+    @Nullable public Date userMarkingAsOfUtc;
     public Double userRoiSinceInception;
     public Double userPlSinceInceptionRefCcy;
 

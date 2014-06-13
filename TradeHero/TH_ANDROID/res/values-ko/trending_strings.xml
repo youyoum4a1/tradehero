@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- What's Trending -->
+  <string name="trending_header">인기상승 종목</string>
+  <string name="trending_search_empty_result">검색할 단어를 입력하세요</string>
+  <string name="trending_search_empty_result_for_stock">종목명 혹은 종목 코드를 입력하세요</string>
+  <string name="trending_search_empty_result_for_people">사람 이름을 입력하세요</string>
+  <string name="trending_search_no_people_found">검색결과가 없습니다</string>
+  <string name="trending_search_no_stock_found">검색된 종목이 없습니다</string>
+  <string name="trending_search_mode">검색 모드</string>
+
+  <!-- What's Trending filters -->
+  <string name="trending_filter_basic_title">인기 종목</string>
+  <string name="trending_filter_basic_description">트레이드히어로 거래 인기종목</string>
+  <string name="trending_filter_volume_title">거래량 폭등 주</string>
+  <string name="trending_filter_volume_description">전날 거래량 &gt; 평균 일일 거래량</string>
+  <string name="trending_filter_price_title">Price Action</string>
+  <string name="trending_filter_price_description">전날 종가 &gt; 50일 변동 평균가</string>
+  <string name="trending_filter_all_title">모든 종목</string>
+  <string name="trending_filter_all_description"> </string>
+  <string name="trending_filter_exchange_all">모두</string>
+  <string name="trending_filter_exchange_drop_down">%2$s - %1$s</string>
+
+</resources>

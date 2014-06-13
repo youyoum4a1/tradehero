@@ -24,6 +24,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
+import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -34,10 +35,9 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 
-
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
-    public static final String BUNDLE_KEY_PROVIDER_ID = ProviderSecurityListFragment.class.getName() + ".providerId";
+    private static final String BUNDLE_KEY_PROVIDER_ID = ProviderSecurityListFragment.class.getName() + ".providerId";
     public final static int SECURITY_ID_LIST_LOADER_ID = 2531;
 
     // TODO sort warrants
@@ -58,20 +58,26 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     ActionBar actionBar;
     private MenuItem wizardButton;
 
+    public static void putProviderId(Bundle args, ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
+
+    private static ProviderId getProviderId(Bundle args)
+    {
+        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_KEY_PROVIDER_ID))
         {
-            this.providerId = new ProviderId(savedInstanceState.getBundle(BUNDLE_KEY_PROVIDER_ID));
-        }
-        else if (getArguments() != null && getArguments().containsKey(BUNDLE_KEY_PROVIDER_ID))
-        {
-            this.providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
+            this.providerId = getProviderId(savedInstanceState);
         }
         else
         {
-            throw new IllegalArgumentException("There is no defined providerId");
+            this.providerId = getProviderId(getArguments());
         }
         this.providerSpecificResourcesDTO = this.providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
@@ -116,6 +122,10 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             case R.id.btn_wizard:
                 pushWizardElement();
+                return true;
+
+            case R.id.btn_search:
+                pushSearchFragment();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -198,7 +208,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override public int getSecurityIdListLoaderId()
     {
-        return SECURITY_ID_LIST_LOADER_ID;
+        return SECURITY_ID_LIST_LOADER_ID + providerId.key;
     }
 
     @Override public ProviderSecurityListType getSecurityListType(int page)
@@ -214,6 +224,14 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.webViewFragment = (CompetitionWebViewFragment) getNavigator().pushFragment(
                 CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
+    }
+
+    private void pushSearchFragment()
+    {
+        Bundle args = new Bundle();
+        SecuritySearchProviderFragment.putProviderId(args, providerId);
+        SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+        getNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
     @Override public boolean isTabBarVisible()
@@ -260,7 +278,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
             Bundle args = new Bundle();
             args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-            args.putBundle(BuySellFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
+            BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
             getNavigator().pushFragment(BuySellFragment.class, args);

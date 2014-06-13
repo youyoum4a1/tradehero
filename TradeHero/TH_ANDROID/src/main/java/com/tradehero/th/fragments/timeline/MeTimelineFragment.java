@@ -21,7 +21,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-
 public class MeTimelineFragment extends TimelineFragment
     implements WithTutorial
 {
@@ -61,7 +60,7 @@ public class MeTimelineFragment extends TimelineFragment
                         | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setHomeButtonEnabled(true);
         displayActionBarTitle();
-        actionBar.setLogo(R.drawable.icon_menu);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         //super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -95,7 +94,6 @@ public class MeTimelineFragment extends TimelineFragment
     {
         return true;
     }
-
 
     @Override public int getTutorialLayout()
     {

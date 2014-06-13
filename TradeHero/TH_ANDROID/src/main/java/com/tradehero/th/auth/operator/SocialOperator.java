@@ -2,7 +2,6 @@ package com.tradehero.th.auth.operator;
 
 import android.app.ProgressDialog;
 
-
 public abstract class SocialOperator
 {
     private ProgressDialog progressDialog;

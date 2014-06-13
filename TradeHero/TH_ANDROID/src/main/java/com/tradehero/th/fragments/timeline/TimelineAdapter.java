@@ -10,7 +10,7 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.loaders.TimelineListLoader;
 
-public class TimelineAdapter extends LoaderDTOAdapter<TimelineItemDTOKey, TimelineItemView, TimelineListLoader>
+public class TimelineAdapter extends LoaderDTOAdapter<TimelineItemDTOKey, TimelineItemViewLinear, TimelineListLoader>
         implements
             PullToRefreshListView.OnRefreshListener<ListView>,
             AbsListView.OnScrollListener,
@@ -23,7 +23,7 @@ public class TimelineAdapter extends LoaderDTOAdapter<TimelineItemDTOKey, Timeli
         super(context, inflater, timelineLoaderId, layoutResourceId);
     }
 
-    @Override protected void fineTune(int position, TimelineItemDTOKey dto, TimelineItemView dtoView)
+    @Override protected void fineTune(int position, TimelineItemDTOKey dto, TimelineItemViewLinear dtoView)
     {
     }
 
