@@ -61,6 +61,7 @@ import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -92,7 +93,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_follow) @Optional RelativeLayout lbmuFollowUser;
     @InjectView(R.id.leaderboard_user_item_following) @Optional RelativeLayout lbmuFollowingUser;
 
-    private LeaderboardUserDTO mLeaderboardUserDTO;
+    @Nullable private LeaderboardUserDTO mLeaderboardUserDTO;
     private MiddleCallback<Response> middleCallbackInvite;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
