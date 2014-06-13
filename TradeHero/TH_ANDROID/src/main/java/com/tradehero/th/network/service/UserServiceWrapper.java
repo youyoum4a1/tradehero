@@ -70,8 +70,11 @@ import java.util.List;
 
     @NotNull protected DTOProcessor<UserProfileDTO> createFollowUserProcessor(@NotNull UserBaseKey userToFollow)
     {
-        return new DTOProcessorFollowUser(userProfileCache,
-                heroListCache.get(), getPositionsCache, userMessagingRelationshipCache,
+        return new DTOProcessorFollowUser(
+                userProfileCache,
+                heroListCache.get(),
+                getPositionsCache,
+                userMessagingRelationshipCache,
                 userToFollow);
     }
 
@@ -615,7 +618,9 @@ import java.util.List;
         return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key));
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> follow(@NotNull UserBaseKey userBaseKey, @Nullable Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> follow(
+            @NotNull UserBaseKey userBaseKey,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.follow(userBaseKey.key, middleCallback);
@@ -627,19 +632,25 @@ import java.util.List;
         return createFollowUserProcessor(userBaseKey).process(userService.freeFollow(userBaseKey.key));
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> freeFollow(@NotNull UserBaseKey userBaseKey, @Nullable Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> freeFollow(
+            @NotNull UserBaseKey userBaseKey,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.freeFollow(userBaseKey.key, callback);
         return middleCallback;
     }
 
-    public UserProfileDTO follow(@NotNull UserBaseKey userBaseKey, @NotNull GooglePlayPurchaseDTO purchaseDTO)
+    public UserProfileDTO follow(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull GooglePlayPurchaseDTO purchaseDTO)
     {
         return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseDTO));
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> follow(@NotNull UserBaseKey userBaseKey, @NotNull GooglePlayPurchaseDTO purchaseDTO, @Nullable Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> follow(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull GooglePlayPurchaseDTO purchaseDTO, @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallback);
@@ -648,12 +659,14 @@ import java.util.List;
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
-    public UserProfileDTO unfollow(UserBaseKey userBaseKey)
+    public UserProfileDTO unfollow(@NotNull UserBaseKey userBaseKey)
     {
         return createFollowUserProcessor(userBaseKey).process(userService.unfollow(userBaseKey.key));
     }
 
-    public MiddleCallback<UserProfileDTO> unfollow(UserBaseKey userBaseKey, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> unfollow(
+            @NotNull UserBaseKey userBaseKey,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.unfollow(userBaseKey.key, middleCallback);
@@ -663,12 +676,14 @@ import java.util.List;
     //</editor-fold>
 
     //<editor-fold desc="Get Heroes">
-    public HeroDTOList getHeroes(UserBaseKey heroKey)
+    public HeroDTOList getHeroes(@NotNull UserBaseKey heroKey)
     {
         return userService.getHeroes(heroKey.key);
     }
 
-    public BaseMiddleCallback<HeroDTOList> getHeroes(UserBaseKey heroKey, Callback<HeroDTOList> callback)
+    public BaseMiddleCallback<HeroDTOList> getHeroes(
+            @NotNull UserBaseKey heroKey,
+            @Nullable Callback<HeroDTOList> callback)
     {
         BaseMiddleCallback<HeroDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getHeroes(heroKey.key, middleCallback);

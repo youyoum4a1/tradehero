@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.position;
 
 import com.tradehero.common.persistence.PartialDTOCache;
 import com.tradehero.common.persistence.THLruCache;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
@@ -13,6 +14,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import com.tradehero.th.network.service.PositionServiceWrapper;
+import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
@@ -28,28 +30,30 @@ import retrofit.RetrofitError;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    @NotNull private THLruCache<GetPositionsDTOKey, GetPositionsCutDTO> lruCache;
-    @NotNull protected Lazy<PositionServiceWrapper> positionServiceWrapper;
-    @NotNull protected Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
-    @NotNull protected Lazy<SecurityCompactCache> securityCompactCache;
-    @NotNull protected Lazy<PortfolioCache> portfolioCache;
-    @NotNull protected Lazy<PositionCache> filedPositionCache;
+    @NotNull private final THLruCache<GetPositionsDTOKey, GetPositionsCutDTO> lruCache;
+    @NotNull private final Lazy<PositionServiceWrapper> positionServiceWrapper;
+    @NotNull private final Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
+    @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
+    @NotNull private final Lazy<PortfolioCache> portfolioCache;
+    @NotNull private final Lazy<PositionCache> filedPositionCache;
+    @NotNull private final Lazy<LeaderboardUserCache> leaderboardUserCache;
 
     //<editor-fold desc="Constructors">
-
     @Inject public GetPositionsCache(
-            Lazy<PositionServiceWrapper> positionServiceWrapper,
-            Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
-            Lazy<SecurityCompactCache> securityCompactCache,
-            Lazy<PortfolioCache> portfolioCache,
-            Lazy<PositionCache> filedPositionCache)
+            @NotNull Lazy<PositionServiceWrapper> positionServiceWrapper,
+            @NotNull Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
+            @NotNull Lazy<SecurityCompactCache> securityCompactCache,
+            @NotNull Lazy<PortfolioCache> portfolioCache,
+            @NotNull Lazy<PositionCache> filedPositionCache,
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
         this(DEFAULT_MAX_SIZE,
                 positionServiceWrapper,
                 leaderboardServiceWrapper,
                 securityCompactCache,
                 portfolioCache,
-                filedPositionCache);
+                filedPositionCache,
+                leaderboardUserCache);
     }
 
     public GetPositionsCache(final int maxSize,
@@ -57,7 +61,8 @@ import retrofit.RetrofitError;
             @NotNull Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
             @NotNull Lazy<SecurityCompactCache> securityCompactCache,
             @NotNull Lazy<PortfolioCache> portfolioCache,
-            @NotNull Lazy<PositionCache> filedPositionCache)
+            @NotNull Lazy<PositionCache> filedPositionCache,
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
         super();
         lruCache = new THLruCache<>(maxSize);
@@ -66,6 +71,7 @@ import retrofit.RetrofitError;
         this.securityCompactCache = securityCompactCache;
         this.portfolioCache = portfolioCache;
         this.filedPositionCache = filedPositionCache;
+        this.leaderboardUserCache = leaderboardUserCache;
     }
     //</editor-fold>
 
@@ -129,7 +135,7 @@ import retrofit.RetrofitError;
      */
     public void invalidate(@NotNull final UserBaseKey userBaseKey)
     {
-        for (GetPositionsDTOKey key : lruCache.snapshot().keySet())
+        for (@NotNull GetPositionsDTOKey key : lruCache.snapshot().keySet())
         {
             if (key instanceof OwnedPortfolioId && ((OwnedPortfolioId) key).userId.equals(userBaseKey.key))
             {
@@ -137,7 +143,17 @@ import retrofit.RetrofitError;
             }
             else if (key instanceof LeaderboardMarkUserId)
             {
-                throw new IllegalStateException("Unhandled type " + key.getClass());
+                // Nothing to do
+            }
+        }
+
+        // Below is an attempt to find out more about this user. It is not 100%
+        // fail-safe
+        for (@NotNull LeaderboardUserId leaderboardUserId : leaderboardUserCache.get().getAllKeys())
+        {
+            if (userBaseKey.key == leaderboardUserId.userId)
+            {
+                invalidate(leaderboardUserId.createLeaderboardMarkUserId());
             }
         }
     }
@@ -157,7 +173,7 @@ import retrofit.RetrofitError;
     {
         if (value != null && value.positions != null)
         {
-            for (PositionDTO positionDTO: value.positions)
+            for (@Nullable PositionDTO positionDTO: value.positions)
             {
                 if (positionDTO != null)
                 {
