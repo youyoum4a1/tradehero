@@ -32,4 +32,18 @@
   <string name="leaderboard_filter_holding_period_min_description">短</string>
   <string name="leaderboard_filter_holding_period_max_description">长</string>
 
+  <!-- For Relative Performance -->
+  <string name="leaderboard_filter_relative_performance_header">相关表现</string>
+  <string name="leaderboard_filter_relative_performance_value_unit"/>
+  <string name="leaderboard_filter_relative_performance_description">夏普指数 - S&amp;P 500 - 越高越好!</string>
+  <string name="leaderboard_filter_relative_performance_min_description">表现不佳</string>
+  <string name="leaderboard_filter_relative_performance_max_description">表现出色</string>
+
+  <!-- For Consistency -->
+  <string name="leaderboard_filter_consistency_header">一致性</string>
+  <string name="leaderboard_filter_consistency_value_unit"/>
+  <string name="leaderboard_filter_consistency_description">越高越好!</string>
+  <string name="leaderboard_filter_consistency_min_description">反复无常</string>
+  <string name="leaderboard_filter_consistency_max_description">始终如一</string>
+
 </resources>

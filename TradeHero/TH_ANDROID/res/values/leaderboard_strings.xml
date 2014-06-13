@@ -16,7 +16,7 @@
   <string name="leaderboard_number_trades_in_period_title">Number of Trades In Period</string>
   <string name="leaderboard_win_ratio_title">Win Ratio</string>
   <string name="leaderboard_performance_title">Relative Performance</string>
-  <string name="leaderboard_SP_500">S&amp;P 500</string>
+  <string name="leaderboard_SP_500" translatable="false">S&amp;P 500</string>
   <string name="leaderboard_consistency_title">Trade Consistency</string>
   <string name="leaderboard_avg_days_held">Avg. Days Held</string>
   <string name="leaderboard_followers_count"># Followers</string>

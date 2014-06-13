@@ -34,5 +34,6 @@
   <string name="tencent_qq">QQ</string>
   <string name="authentication_connecting_to_weibo">连接微博</string>
   <string name="authentication_connecting_to_qq">连接QQ</string>
-
+  <string name="wechat">微信</string>
+  <string name="authentication_error_creating_signup_form">生成注册信息有误</string>
 </resources>
