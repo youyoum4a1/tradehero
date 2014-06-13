@@ -152,7 +152,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
 
     private void handleBuyMoreClicked()
     {
-        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
     }
 
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)

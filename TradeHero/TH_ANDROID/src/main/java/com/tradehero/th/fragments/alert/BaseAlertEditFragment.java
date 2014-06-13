@@ -260,6 +260,10 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THToast.show(R.string.error_alert_insufficient_info);
         }
+        else if (alertsAreFree())
+        {
+            saveAlert();
+        }
         else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
         {
             popPurchase();
@@ -272,7 +276,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void popPurchase()
     {
-        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
     }
 
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
