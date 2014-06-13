@@ -12,7 +12,7 @@ public class LeaderboardKeyPreference extends StringSetPreference
     protected final Context context;
 
     //<editor-fold desc="Constructor">
-    @Inject public LeaderboardKeyPreference(Context context, SharedPreferences preference, String key, Set<String> defaultValue)
+    public LeaderboardKeyPreference(Context context, SharedPreferences preference, String key, Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
         this.context = context;

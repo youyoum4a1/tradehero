@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 public class PerPagedLeaderboardKeyPreference extends PagedLeaderboardKeyPreference
 {
-    @Inject public PerPagedLeaderboardKeyPreference(Context context, SharedPreferences preference, String key, Set<String> defaultValue)
+    public PerPagedLeaderboardKeyPreference(Context context, SharedPreferences preference, String key, Set<String> defaultValue)
     {
         super(context, preference, key, defaultValue);
     }
