@@ -1,11 +1,13 @@
 package com.tradehero.th.api.translation.bing;
 
+import com.tradehero.common.persistence.HasExpiration;
 import com.tradehero.th.R;
 import com.tradehero.th.api.translation.TranslationToken;
 import java.util.Calendar;
 import java.util.Date;
 
 public class BingTranslationToken extends TranslationToken
+    implements HasExpiration
 {
     public static final String TOKEN_TYPE = "MicrosoftTranslator";
     public static final String ACCESS_TOKEN_PREFIX = "Bearer %s";
@@ -96,9 +98,16 @@ public class BingTranslationToken extends TranslationToken
         this.expirationDate = calendar.getTime();
     }
 
+    @Override public long getExpiresInSeconds()
+    {
+        return Math.max(
+                0,
+                expirationDate.getTime() - Calendar.getInstance().getTime().getTime());
+    }
+
     @Override public boolean isValid()
     {
-        return Calendar.getInstance().getTime().getTime() < expirationDate.getTime();
+        return getExpiresInSeconds() > 0;
     }
 
     @Override public int logoResId()

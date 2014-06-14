@@ -242,6 +242,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         this.leaderboardFilterFragment = null;
         saveCurrentFilterKey();
+        getActivity().getSupportLoaderManager().destroyLoader(leaderboardDefKey.key);
         super.onDestroy();
     }
 

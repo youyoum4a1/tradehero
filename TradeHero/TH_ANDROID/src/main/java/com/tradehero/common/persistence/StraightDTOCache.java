@@ -26,7 +26,12 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         {
             return null;
         }
-        return this.lruCache.get(key);
+        DTOType value = this.lruCache.get(key);
+        if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
+        {
+            return null;
+        }
+        return value;
     }
 
     @Nullable

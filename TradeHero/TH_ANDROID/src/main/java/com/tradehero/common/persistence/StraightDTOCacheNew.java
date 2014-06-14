@@ -16,7 +16,7 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
         this.lruCache = new THLruCache<>(maxSize);
     }
 
-    @Contract("null -> null")
+    @Contract("null -> null; !null -> _")
     @Nullable
     @Override public DTOType get(@NotNull DTOKeyType key)
     {
@@ -25,7 +25,12 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
         {
             return null;
         }
-        return cacheValue.getValue();
+        DTOType value = cacheValue.getValue();
+        if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
+        {
+            return null;
+        }
+        return value;
     }
 
     @Override protected CacheValue<DTOKeyType, DTOType> getCacheValue(DTOKeyType key)
