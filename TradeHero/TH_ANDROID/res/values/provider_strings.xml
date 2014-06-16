@@ -34,6 +34,6 @@
   <string name="competition_phillip_macquarie_warrant_hero_portfolio_title">Phillip-Macquarie</string>
 
   <!-- eToro specific strings, providerId == 22 -->
-  <string name="competition_e_toro_portfolio_title">eToro</string>
+  <string name="competition_e_toro_portfolio_title" translatable="false">eToro</string>
 
 </resources>

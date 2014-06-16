@@ -17,6 +17,8 @@
   <string name="watchlist_current_value">当前值</string>
   <string name="watchlist_original_value">原始值</string>
   <string name="watchlist_gain_loss">获利/亏损</string>
+  <string name="watchlist_gain">利润</string>
+  <string name="watchlist_loss">亏损</string>
   <string name="watchlist_updating">更新中 …</string>
   <string name="watchlist_delete">删除</string>
   <string name="watchlist_item_deleted_successfully">%d 已从自选股删除</string>

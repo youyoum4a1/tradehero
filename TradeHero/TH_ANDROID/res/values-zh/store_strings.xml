@@ -11,6 +11,8 @@
   <string name="store_manage_heroes">管理英雄</string>
   <string name="store_manage_followers">管理粉丝</string>
   <string name="store_manage_stock_alerts">管理股市预警</string>
+  <string name="store_alert_are_free_title">庆祝!</string>
+  <string name="store_alert_are_free_description">股票提醒现在免费啦</string>
   <string name="store_billing_unavailable_window_title">无商店账号</string>
   <string name="store_billing_unavailable_window_description">请到帐号设置中，开启支付功能，才能实现应用内购</string>
   <string name="store_billing_unavailable_cancel">知道了</string>
