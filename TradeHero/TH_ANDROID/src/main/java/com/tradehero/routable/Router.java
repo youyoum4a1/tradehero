@@ -329,7 +329,7 @@ public class Router
      * Takes a url (i.e. "/users/16/hello") and breaks it into a {@link RouterParams} instance where
      * each of the parameters (like ":id") has been parsed.
      */
-    private RouterParams paramsForUrl(String url)
+    protected RouterParams paramsForUrl(String url)
     {
         if (this.cachedRoutes.get(url) != null)
         {

@@ -10,11 +10,14 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.DebugModule;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.dagger.TradeHeroModule;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +28,7 @@ import timber.log.Timber;
 public class Application extends PApplication
 {
     @Inject protected PushNotificationManager pushNotificationManager;
+    @Inject protected THRouter thRouter;
 
     @Override protected void init()
     {
@@ -57,6 +61,9 @@ public class Application extends PApplication
         EmailSignUtils.initialize();
 
         pushNotificationManager.initialise();
+
+        thRouter.mapFragment(THRouter.USER_TIMELINE, PushableTimelineFragment.class);
+        thRouter.mapFragment(THRouter.USER_ME, MeTimelineFragment.class);
 
         THLog.showDeveloperKeyHash();
     }

@@ -2,7 +2,7 @@ package com.tradehero.routable;
 
 import java.util.Map;
 
-class RouterParams
+public class RouterParams
 {
     public RouterOptions routerOptions;
     public Map<String, String> openParams;

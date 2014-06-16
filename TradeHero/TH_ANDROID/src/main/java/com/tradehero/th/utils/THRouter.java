@@ -2,11 +2,18 @@ package com.tradehero.th.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import com.tradehero.routable.ContextNotProvided;
 import com.tradehero.routable.Router;
 import com.tradehero.routable.RouterOptions;
+import com.tradehero.routable.RouterParams;
+import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class THRouter extends Router
 {
     public static final String USER_TIMELINE = "user/:userId";
@@ -50,6 +57,35 @@ public class THRouter extends Router
         }
         options.setOpenFragmentClass(klass);
         this.routes.put(format, options);
+    }
+
+    @Override public void open(String url, Bundle extras, Context context)
+    {
+        if (context == null)
+        {
+            throw new ContextNotProvided(
+                    "You need to supply a context for Router "
+                            + this.toString());
+        }
+        RouterParams params = this.paramsForUrl(url);
+        if (params.routerOptions instanceof THRouterOptions)
+        {
+            openFragment(params, extras, context);
+        }
+        else
+        {
+            super.open(url, extras, context);
+        }
+    }
+
+    private void openFragment(RouterParams params, Bundle extras, Context context)
+    {
+        if (context instanceof DashboardActivity)
+        {
+            DashboardNavigator navigator = ((DashboardActivity) context).getDashboardNavigator();
+            THRouterOptions options = (THRouterOptions) params.routerOptions;
+            navigator.pushFragment(options.getOpenFragmentClass());
+        }
     }
 
     public static class THRouterOptions extends RouterOptions

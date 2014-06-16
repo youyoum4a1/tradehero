@@ -15,6 +15,7 @@
   <string name="intent_host_portfolio" translatable="false">portfolio</string>
   <string name="intent_host_store" translatable="false">store</string>
   <string name="intent_host_reset_portfolio" translatable="false">reset-portfolio</string>
+  <string name="intent_host_user" translatable="false">user</string>
 
   <string name="intent_host_providers" translatable="false">providers</string>
   <string name="intent_host_security" translatable="false">security</string>
