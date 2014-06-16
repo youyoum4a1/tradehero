@@ -15,6 +15,7 @@ import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.http.HttpParameters;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class LinkedIn extends SocialOperator
@@ -94,7 +95,7 @@ public class LinkedIn extends SocialOperator
 
     private OAuthDialog createOAuthDialog(
             final Context context,
-            final THAuthenticationProvider.THAuthenticationCallback callback,
+            @Nullable final THAuthenticationProvider.THAuthenticationCallback callback,
             final OAuthConsumer consumer,
             String result)
     {
@@ -104,9 +105,12 @@ public class LinkedIn extends SocialOperator
             @Override public void onError(int errorCode, String description,
                     String failingUrl)
             {
-                callback.onError(new Exception(
-                        String.format("Error %s, description: %s, url: %s",
-                                errorCode, description, failingUrl)));
+                if (callback != null)
+                {
+                    callback.onError(new Exception(
+                            String.format("Error %s, description: %s, url: %s",
+                                    errorCode, description, failingUrl)));
+                }
             }
 
             @Override public void onComplete(String callbackUrl)
@@ -116,7 +120,10 @@ public class LinkedIn extends SocialOperator
                 final String verifier = uri.getQueryParameter("oauth_verifier");
                 if (verifier == null)
                 {
-                    callback.onCancel();
+                    if (callback != null)
+                    {
+                        callback.onCancel();
+                    }
                     return;
                 }
 
@@ -127,7 +134,10 @@ public class LinkedIn extends SocialOperator
 
             @Override public void onCancel()
             {
-                callback.onCancel();
+                if (callback != null)
+                {
+                    callback.onCancel();
+                }
             }
         });
     }
@@ -190,7 +200,10 @@ public class LinkedIn extends SocialOperator
             {
                 if (this.error != null)
                 {
-                    callback.onError(this.error);
+                    if (callback != null)
+                    {
+                        callback.onError(this.error);
+                    }
                     return;
                 }
                 CookieSyncManager.createInstance(context);
