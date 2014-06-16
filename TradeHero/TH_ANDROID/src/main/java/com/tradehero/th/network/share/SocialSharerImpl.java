@@ -1,5 +1,7 @@
 package com.tradehero.th.network.share;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -158,12 +160,16 @@ public class SocialSharerImpl implements SocialSharer
 
     public void share(WeChatDTO weChatDTO)
     {
-        currentActivityHolder.getCurrentActivity().startActivity(createWeChatIntent(weChatDTO));
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity != null)
+        {
+            currentActivity.startActivity(createWeChatIntent(currentActivity, weChatDTO));
+        }
     }
 
-    public Intent createWeChatIntent(WeChatDTO weChatDTO)
+    public Intent createWeChatIntent(Context activityContext, WeChatDTO weChatDTO)
     {
-        Intent intent = new Intent(currentActivityHolder.getCurrentContext(), WXEntryActivity.class);
+        Intent intent = new Intent(activityContext, WXEntryActivity.class);
         WXEntryActivity.putWeChatDTO(intent, weChatDTO);
         return intent;
     }
