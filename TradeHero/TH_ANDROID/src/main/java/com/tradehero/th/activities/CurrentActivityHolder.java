@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import java.lang.ref.WeakReference;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CurrentActivityHolder
 {
@@ -16,12 +17,12 @@ public class CurrentActivityHolder
         this.currentHandler = handler;
     }
 
-    public Activity getCurrentActivity()
+    @Nullable public Activity getCurrentActivity()
     {
         return currentActivityWeak.get();
     }
 
-    public Context getCurrentContext()
+    @Nullable public Context getCurrentContext()
     {
         return getCurrentActivity();
     }

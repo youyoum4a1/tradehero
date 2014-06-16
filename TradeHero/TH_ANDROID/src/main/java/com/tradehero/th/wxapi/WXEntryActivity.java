@@ -32,6 +32,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -54,12 +55,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Inject Lazy<Picasso> picassoLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
 
-    public static void putWeChatDTO(Intent intent, WeChatDTO weChatDTO)
+    public static void putWeChatDTO(@NotNull Intent intent, @NotNull WeChatDTO weChatDTO)
     {
         intent.putExtra(WECHAT_DTO_INTENT_KEY, weChatDTO.getArgs());
     }
 
-    public static WeChatDTO getWeChatDTO(Intent intent)
+    @NotNull public static WeChatDTO getWeChatDTO(@NotNull Intent intent)
     {
         return new WeChatDTO(intent.getBundleExtra(WECHAT_DTO_INTENT_KEY));
     }

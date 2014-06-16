@@ -20,6 +20,7 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -158,7 +159,7 @@ public class SocialSharerImpl implements SocialSharer
                 createDiscussionCallback(timelineItemShareFormDTO));
     }
 
-    public void share(WeChatDTO weChatDTO)
+    public void share(@NotNull WeChatDTO weChatDTO)
     {
         Activity currentActivity = currentActivityHolder.getCurrentActivity();
         if (currentActivity != null)
@@ -167,7 +168,7 @@ public class SocialSharerImpl implements SocialSharer
         }
     }
 
-    public Intent createWeChatIntent(Context activityContext, WeChatDTO weChatDTO)
+    public Intent createWeChatIntent(@NotNull Context activityContext, @NotNull WeChatDTO weChatDTO)
     {
         Intent intent = new Intent(activityContext, WXEntryActivity.class);
         WXEntryActivity.putWeChatDTO(intent, weChatDTO);
