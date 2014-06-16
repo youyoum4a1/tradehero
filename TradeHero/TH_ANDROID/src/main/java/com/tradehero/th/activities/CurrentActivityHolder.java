@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import java.lang.ref.WeakReference;
+import org.jetbrains.annotations.NotNull;
 
 public class CurrentActivityHolder
 {
-    protected WeakReference<Activity> currentActivityWeak = new WeakReference<>(null);
+    @NotNull protected WeakReference<Activity> currentActivityWeak = new WeakReference<>(null);
     protected final Handler currentHandler;
 
     public CurrentActivityHolder(Handler handler)
