@@ -91,11 +91,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
     protected ProgressDialog progressDialog;
 
-    protected Callback<AlertCompactDTO> createAlertUpdateCallback()
-    {
-        return new AlertCreateCallback();
-    }
-
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
     {
         return new CompoundButton.OnCheckedChangeListener()
@@ -641,6 +636,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     }
     //endregion
 
+    protected Callback<AlertCompactDTO> createAlertUpdateCallback()
+    {
+        return new AlertCreateCallback();
+    }
+
     protected class AlertCreateCallback extends THCallback<AlertCompactDTO>
     {
         @Override protected void finish()
@@ -650,7 +650,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
-            getNavigator().popFragment();
+            getDashboardNavigator().popFragment();
         }
 
         @Override protected void failure(THException ex)

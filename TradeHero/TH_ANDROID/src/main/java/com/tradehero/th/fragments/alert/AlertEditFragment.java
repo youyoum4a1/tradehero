@@ -29,11 +29,11 @@ public class AlertEditFragment extends BaseAlertEditFragment
         linkWith(new AlertId(getArguments().getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE)), true);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachAlertCacheFetchTask();
         detachMiddleCallbackUpdate();
-        super.onDestroyView();
+        super.onStop();
     }
 
     protected void detachAlertCacheFetchTask()

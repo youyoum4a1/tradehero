@@ -154,12 +154,12 @@ public class LinkedIn extends SocialOperator
     {
         private Throwable error;
         private final Context context;
-        private THAuthenticationProvider.THAuthenticationCallback callback;
+        @Nullable private THAuthenticationProvider.THAuthenticationCallback callback;
         private final OAuthConsumer consumer;
 
         public LinkedInAuthTask(
                 Context context,
-                THAuthenticationProvider.THAuthenticationCallback callback,
+                @Nullable THAuthenticationProvider.THAuthenticationCallback callback,
                 OAuthConsumer consumer)
         {
             super();
@@ -168,7 +168,7 @@ public class LinkedIn extends SocialOperator
             this.consumer = consumer;
         }
 
-        public void setCallback(THAuthenticationProvider.THAuthenticationCallback callback)
+        public void setCallback(@Nullable THAuthenticationProvider.THAuthenticationCallback callback)
         {
             this.callback = callback;
         }
