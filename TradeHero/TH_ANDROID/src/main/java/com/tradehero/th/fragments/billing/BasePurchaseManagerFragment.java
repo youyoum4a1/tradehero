@@ -25,6 +25,8 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMiles
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -51,12 +53,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected PremiumFollowUserAssistant premiumFollowUserAssistant;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
-    public static void putApplicablePortfolioId(Bundle args, OwnedPortfolioId ownedPortfolioId)
+    public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
         args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
     }
 
-    public static OwnedPortfolioId getApplicablePortfolioId(Bundle args)
+    public static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
     {
         if (args != null)
         {

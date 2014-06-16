@@ -48,6 +48,7 @@ import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class MainCompetitionFragment extends CompetitionFragment
@@ -277,7 +278,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     }
 
     //<editor-fold desc="Click Handling">
-    private void handleItemClicked(CompetitionZoneDTO competitionZoneDTO)
+    private void handleItemClicked(@NotNull CompetitionZoneDTO competitionZoneDTO)
     {
         if (competitionZoneDTO instanceof CompetitionZoneTradeNowDTO)
         {
@@ -310,7 +311,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         // TODO others?
     }
 
-    private void pushAdvertisement(CompetitionZoneAdvertisementDTO competitionZoneDTO)
+    private void pushAdvertisement(@NotNull CompetitionZoneAdvertisementDTO competitionZoneDTO)
     {
         AdDTO adDTO = competitionZoneDTO.getAdDTO();
         if (adDTO != null && adDTO.redirectUrl != null)
@@ -318,19 +319,19 @@ public class MainCompetitionFragment extends CompetitionFragment
             Bundle args = new Bundle();
             String url = adDTO.redirectUrl + String.format("&userId=%s", currentUserId.get());
             args.putString(WebViewFragment.BUNDLE_KEY_URL, url);
-            getNavigator().pushFragment(WebViewFragment.class, args);
+            getDashboardNavigator().pushFragment(WebViewFragment.class, args);
         }
     }
 
-    private void pushTradeNowElement(CompetitionZoneTradeNowDTO competitionZoneDTO)
+    private void pushTradeNowElement(@NotNull CompetitionZoneTradeNowDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
         ProviderSecurityListFragment.putProviderId(args, providerId);
         ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
+        getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
-    private void pushPortfolioElement(CompetitionZonePortfolioDTO competitionZoneDTO)
+    private void pushPortfolioElement(@NotNull CompetitionZonePortfolioDTO competitionZoneDTO)
     {
         // TODO We need to be able to launch async when the portfolio Id is finally not null
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
@@ -343,15 +344,15 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private void pushVideoElement(CompetitionZoneVideoDTO competitionZoneDTO)
+    private void pushVideoElement(@NotNull CompetitionZoneVideoDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
-        args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+        ProviderVideoListFragment.putProviderId(args, providerId);
         ProviderVideoListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
         getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
     }
 
-    private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
+    private void pushWizardElement(@NotNull CompetitionZoneWizardDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
         args.putString(
@@ -359,12 +360,12 @@ public class MainCompetitionFragment extends CompetitionFragment
                 providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         this.webViewFragment =
-                (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class,
+                (BaseWebViewFragment) getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class,
                         args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
-    private void pushLeaderboardElement(CompetitionZoneLeaderboardDTO competitionZoneDTO)
+    private void pushLeaderboardElement(@NotNull CompetitionZoneLeaderboardDTO competitionZoneDTO)
     {
         LeaderboardDefDTO leaderboardDefDTO = competitionZoneDTO.competitionDTO.leaderboard;
         Bundle args = new Bundle();
@@ -380,17 +381,17 @@ public class MainCompetitionFragment extends CompetitionFragment
         CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
-            getNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,
+            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,
                     args);
         }
         else
         {
-            getNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class,
+            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class,
                     args);
         }
     }
 
-    private void pushLegalElement(CompetitionZoneLegalDTO competitionZoneDTO)
+    private void pushLegalElement(@NotNull CompetitionZoneLegalDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
         if ((competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
@@ -403,7 +404,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL,
                     providerUtil.getTermsPage(providerId));
         }
-        getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+        getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
     }
     //</editor-fold>
 
