@@ -310,7 +310,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         }
         else if (alertDTO.activeUntilDate != null)
         {
-            activeUntil.setText(DateUtils.getDisplayableDate(getActivity(), alertDTO.activeUntilDate));
+            activeUntil.setText(DateUtils.getDisplayableDate(getResources(), alertDTO.activeUntilDate));
         }
         else
         {
