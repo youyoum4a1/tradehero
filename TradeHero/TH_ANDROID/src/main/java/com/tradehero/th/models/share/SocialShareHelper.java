@@ -2,6 +2,7 @@ package com.tradehero.th.models.share;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import com.tradehero.th.R;
@@ -22,6 +23,7 @@ import javax.inject.Provider;
 
 public class SocialShareHelper
 {
+    protected final Context applicationContext;
     protected final CurrentActivityHolder currentActivityHolder;
     protected final ShareDialogFactory shareDialogFactory;
     protected final AlertDialogUtil alertDialogUtil;
@@ -35,17 +37,21 @@ public class SocialShareHelper
 
     protected SocialShareFormDTO formWaitingToConnect;
 
+    //<editor-fold desc="Constructors">
     @Inject public SocialShareHelper(
+            Context applicationContext,
             CurrentActivityHolder currentActivityHolder,
             ShareDialogFactory shareDialogFactory,
             AlertDialogUtil alertDialogUtil,
             Provider<SocialSharer> socialSharerProvider)
     {
+        this.applicationContext = applicationContext;
         this.currentActivityHolder = currentActivityHolder;
         this.shareDialogFactory = shareDialogFactory;
         this.alertDialogUtil = alertDialogUtil;
         this.socialSharerProvider = socialSharerProvider;
     }
+    //</editor-fold>
 
     public void onDetach()
     {
