@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.home;
 
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebSettings;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -38,12 +37,12 @@ public class HomeFragment extends BaseWebViewFragment
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setSupportZoom(false);
         webView.getSettings().setUseWideViewPort(false);
+        thWebViewClient.setClearCacheAfterFinishRequest(false);
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
 
         Map<String, String> additionalHeaders = new HashMap<>();
         additionalHeaders.put(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));

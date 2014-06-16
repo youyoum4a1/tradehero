@@ -65,7 +65,6 @@ abstract public class BaseWebViewFragment extends DashboardFragment
 
     protected void initViews(View v)
     {
-
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
