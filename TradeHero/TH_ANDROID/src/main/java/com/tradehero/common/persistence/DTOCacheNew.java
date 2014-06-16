@@ -128,6 +128,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         protected DTOKeyType key;
         protected boolean forceUpdateCache;
 
+        //<editor-fold desc="Constructors">
         public GetOrFetchTask(DTOKeyType key)
         {
             this(key, false);
@@ -138,6 +139,24 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             super();
             this.key = key;
             this.forceUpdateCache = forceUpdateCache;
+        }
+        //</editor-fold>
+
+        abstract protected Class<?> getContainerCacheClass();
+
+        public final AsyncTask<Void, Void, DTOType> execute()
+        {
+            return executePool();
+        }
+
+        protected AsyncTask<Void, Void, DTOType> executePool()
+        {
+            return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        protected final AsyncTask<Void, Void, DTOType> executeSerial()
+        {
+            return executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
     }
 }
