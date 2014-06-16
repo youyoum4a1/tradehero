@@ -2,7 +2,6 @@ package com.tradehero.routable;
 
 import android.app.Activity;
 import android.content.Intent;
-import com.squareup.phrase.Phrase;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import org.junit.Before;
@@ -40,12 +39,12 @@ public class RouterTest
     {
         ShadowActivity shadowActivity = shadowOf(activity);
 
-        String route = "test/{id}";
+        String route = "test/:id";
 
         router.map(route, TestActivity.class);
         assertThat(shadowActivity.getNextStartedActivity()).isNull();
 
-        router.open(Phrase.from(route).put("id", 12).toString());
+        router.open("test/12");
         Intent startedIntent = shadowActivity.getNextStartedActivity();
         assertThat(startedIntent).isNotNull();
         assertThat(startedIntent.getComponent()).isNotNull();
