@@ -3,11 +3,12 @@ package com.tradehero.th.api.competition;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import org.jetbrains.annotations.Nullable;
 
 public class CompetitionDTO implements DTO
 {
     public int id;
-    public LeaderboardDefDTO leaderboard;
+    @Nullable public LeaderboardDefDTO leaderboard;
     public String name;
     public String competitionDurationType;
     public String iconActiveUrl;

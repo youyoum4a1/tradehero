@@ -7,18 +7,19 @@ import com.tradehero.th.models.translation.bing.BaseMiddleCallbackBingTranslatio
 import com.tradehero.th.network.retrofit.CallbackWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class TranslationServiceBingWrapper
 {
     private static final String PREFERRED_CONTENT_TYPE = "text/plain";
 
-    private final TranslationServiceBing translationServiceBing;
-    private final TranslationServiceBingAsync translationServiceBingAsync;
+    @NotNull private final TranslationServiceBing translationServiceBing;
+    @NotNull private final TranslationServiceBingAsync translationServiceBingAsync;
 
     @Inject public TranslationServiceBingWrapper(
-            TranslationServiceBing translationServiceBing,
-            TranslationServiceBingAsync translationServiceBingAsync)
+            @NotNull TranslationServiceBing translationServiceBing,
+            @NotNull TranslationServiceBingAsync translationServiceBingAsync)
     {
         this.translationServiceBing = translationServiceBing;
         this.translationServiceBingAsync = translationServiceBingAsync;

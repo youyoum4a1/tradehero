@@ -50,7 +50,7 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         lruCache.evictAll();
     }
 
-    protected Map<DTOKeyType, DTOType> snapshot()
+    @NotNull protected Map<DTOKeyType, DTOType> snapshot()
     {
         return lruCache.snapshot();
     }

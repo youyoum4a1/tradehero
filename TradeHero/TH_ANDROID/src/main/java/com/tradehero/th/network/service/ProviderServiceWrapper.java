@@ -14,16 +14,18 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class ProviderServiceWrapper
 {
-    private final ProviderService providerService;
-    private final ProviderServiceAsync providerServiceAsync;
+    @NotNull private final ProviderService providerService;
+    @NotNull private final ProviderServiceAsync providerServiceAsync;
 
     @Inject public ProviderServiceWrapper(
-            ProviderService providerService,
-            ProviderServiceAsync providerServiceAsync)
+            @NotNull ProviderService providerService,
+            @NotNull ProviderServiceAsync providerServiceAsync)
     {
         super();
         this.providerService = providerService;
@@ -36,7 +38,7 @@ import retrofit.Callback;
         return this.providerService.getProviders();
     }
 
-    public MiddleCallback<List<ProviderDTO>> getProviders(Callback<List<ProviderDTO>> callback)
+    @NotNull public MiddleCallback<List<ProviderDTO>> getProviders(@Nullable Callback<List<ProviderDTO>> callback)
     {
         MiddleCallback<List<ProviderDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         this.providerServiceAsync.getProviders(middleCallback);
@@ -45,7 +47,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
-    public List<SecurityCompactDTO> getProviderSecurities(ProviderSecurityListType key)
+    public List<SecurityCompactDTO> getProviderSecurities(@NotNull ProviderSecurityListType key)
     {
         List<SecurityCompactDTO> received;
         if (key instanceof SearchProviderSecurityListType)
@@ -78,7 +80,9 @@ import retrofit.Callback;
         return received;
     }
 
-    public MiddleCallback<List<SecurityCompactDTO>> getProviderSecurities(ProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
+    @NotNull public MiddleCallback<List<SecurityCompactDTO>> getProviderSecurities(
+            @NotNull ProviderSecurityListType key,
+            @Nullable Callback<List<SecurityCompactDTO>> callback)
     {
         MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         if (key instanceof SearchProviderSecurityListType)
@@ -116,22 +120,26 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">
-    public List<HelpVideoDTO> getHelpVideos(HelpVideoListKey helpVideoListKey)
+    public List<HelpVideoDTO> getHelpVideos(@NotNull HelpVideoListKey helpVideoListKey)
     {
         return this.getHelpVideos(helpVideoListKey.getProviderId());
     }
 
-    public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(HelpVideoListKey helpVideoListKey, Callback<List<HelpVideoDTO>> callback)
+    @NotNull public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(
+            @NotNull HelpVideoListKey helpVideoListKey,
+            @Nullable Callback<List<HelpVideoDTO>> callback)
     {
         return this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
     }
 
-    public List<HelpVideoDTO> getHelpVideos(ProviderId providerId)
+    public List<HelpVideoDTO> getHelpVideos(@NotNull ProviderId providerId)
     {
         return this.providerService.getHelpVideos(providerId.key);
     }
 
-    public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(ProviderId providerId, Callback<List<HelpVideoDTO>> callback)
+    @NotNull public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(
+            @NotNull ProviderId providerId,
+            @Nullable Callback<List<HelpVideoDTO>> callback)
     {
         MiddleCallback<List<HelpVideoDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         this.providerServiceAsync.getHelpVideos(providerId.key, middleCallback);

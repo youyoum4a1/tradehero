@@ -9,25 +9,31 @@ import com.tradehero.th.network.service.ProviderServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Singleton public class ProviderListCache extends StraightDTOCache<ProviderListKey, ProviderIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected ProviderServiceWrapper providerServiceWrapper;
-    @Inject protected ProviderCache providerCache;
+    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NotNull private final ProviderCache providerCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public ProviderListCache()
+    @Inject public ProviderListCache(
+            @NotNull ProviderServiceWrapper providerServiceWrapper,
+            @NotNull ProviderCache providerCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.providerServiceWrapper = providerServiceWrapper;
+        this.providerCache = providerCache;
     }
     //</editor-fold>
 
-    @Override protected ProviderIdList fetch(ProviderListKey key) throws Throwable
+    @Override protected ProviderIdList fetch(@NotNull ProviderListKey key) throws Throwable
     {
-        Timber.d("fetch %s", key);
         if (key.key.equals(ProviderListKey.ALL_PROVIDERS))
         {
             return putInternal(key, providerServiceWrapper.getProviders());
@@ -36,14 +42,15 @@ import timber.log.Timber;
         throw new IllegalArgumentException("Unknown ProviderListKey " + key);
     }
 
-    protected ProviderIdList putInternal(ProviderListKey key, List<ProviderDTO> fleshedValues)
+    @Contract("_, null -> null; _, !null -> !null") @Nullable
+    protected ProviderIdList putInternal(@NotNull ProviderListKey key, @Nullable List<ProviderDTO> fleshedValues)
     {
         ProviderIdList providerIds = null;
         if (fleshedValues != null)
         {
             providerIds = new ProviderIdList();
-            ProviderId providerId;
-            for (ProviderDTO providerDTO: fleshedValues)
+            @NotNull ProviderId providerId;
+            for (@NotNull ProviderDTO providerDTO: fleshedValues)
             {
                 providerId = providerDTO.getProviderId();
                 providerIds.add(providerId);

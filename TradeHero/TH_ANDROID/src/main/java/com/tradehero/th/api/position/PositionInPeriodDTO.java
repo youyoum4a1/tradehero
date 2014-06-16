@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import org.jetbrains.annotations.NotNull;
 
 public class PositionInPeriodDTO extends PositionDTO
 {
@@ -42,7 +43,7 @@ public class PositionInPeriodDTO extends PositionDTO
         return leaderboardMarkUserId;
     }
 
-    public void setLeaderboardMarkUserId(LeaderboardMarkUserId leaderboardMarkUserId)
+    public void setLeaderboardMarkUserId(@NotNull LeaderboardMarkUserId leaderboardMarkUserId)
     {
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }

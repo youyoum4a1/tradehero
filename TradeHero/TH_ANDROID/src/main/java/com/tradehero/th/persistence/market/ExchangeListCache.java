@@ -13,13 +13,17 @@ import org.jetbrains.annotations.NotNull;
 {
     public static final int DEFAULT_MAX_SIZE = 1; // Be careful to increase when necessary
 
-    @Inject Lazy<MarketService> marketService;
-    @Inject Lazy<ExchangeIdCache> exchangeIdCache;
+    @NotNull private final Lazy<MarketService> marketService;
+    @NotNull private final Lazy<ExchangeIdCache> exchangeIdCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public ExchangeListCache()
+    @Inject public ExchangeListCache(
+            @NotNull Lazy<MarketService> marketService,
+            @NotNull Lazy<ExchangeIdCache> exchangeIdCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.marketService = marketService;
+        this.exchangeIdCache = exchangeIdCache;
     }
     //</editor-fold>
 
@@ -28,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
         return new ExchangeDTOList(marketService.get().getExchanges());
     }
 
-    @Override public ExchangeDTOList put(ExchangeListType key, ExchangeDTOList value)
+    @Override public ExchangeDTOList put(@NotNull ExchangeListType key, @NotNull ExchangeDTOList value)
     {
         exchangeIdCache.get().put(value);
         return super.put(key, value);

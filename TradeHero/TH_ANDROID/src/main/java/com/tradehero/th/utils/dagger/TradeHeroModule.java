@@ -162,15 +162,12 @@ import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
-import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
-import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.ui.UIModule;
@@ -272,10 +269,8 @@ import javax.inject.Singleton;
                         SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
-                        UserManager.class,
                         TimelineManager.class,
 
-                        UserStore.class,
                         TimelineStore.class,
                         TimelineStore.Factory.class,
 
@@ -292,7 +287,6 @@ import javax.inject.Singleton;
 
                         LeaderboardDefView.class,
                         CommunityLeaderboardDefView.class,
-                        LeaderboardManager.class,
                         LeaderboardMarkUserLoader.class,
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,

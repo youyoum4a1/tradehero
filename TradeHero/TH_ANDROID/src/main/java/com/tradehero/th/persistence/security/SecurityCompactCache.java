@@ -71,7 +71,7 @@ import org.jetbrains.annotations.NotNull;
         return securityCompactDTOList;
     }
 
-    @Override public SecurityCompactDTO put(SecurityId key, SecurityCompactDTO value)
+    @Override public SecurityCompactDTO put(@NotNull SecurityId key, SecurityCompactDTO value)
     {
         // We save the correspondence between int id and exchange/symbol for future reference
         securityIdCache.put(value.getSecurityIntegerId(), key);

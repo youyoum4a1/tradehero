@@ -25,26 +25,27 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class SecurityServiceWrapper
 {
-    private final SecurityService securityService;
-    private final SecurityServiceAsync securityServiceAsync;
-    private final ProviderServiceWrapper providerServiceWrapper;
-    private final SecurityPositionDetailCache securityPositionDetailCache;
-    private final SecurityCompactCache securityCompactCache;
-    private final UserProfileCache userProfileCache;
-    private final CurrentUserId currentUserId;
+    @NotNull private final SecurityService securityService;
+    @NotNull private final SecurityServiceAsync securityServiceAsync;
+    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
+    @NotNull private final SecurityCompactCache securityCompactCache;
+    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final CurrentUserId currentUserId;
 
     @Inject public SecurityServiceWrapper(
-            SecurityService securityService,
-            SecurityServiceAsync securityServiceAsync,
-            ProviderServiceWrapper providerServiceWrapper,
-            SecurityPositionDetailCache securityPositionDetailCache,
-            SecurityCompactCache securityCompactCache,
-            UserProfileCache userProfileCache,
-            CurrentUserId currentUserId)
+            @NotNull SecurityService securityService,
+            @NotNull SecurityServiceAsync securityServiceAsync,
+            @NotNull ProviderServiceWrapper providerServiceWrapper,
+            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
+            @NotNull SecurityCompactCache securityCompactCache,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull CurrentUserId currentUserId)
     {
         super();
         this.securityService = securityService;

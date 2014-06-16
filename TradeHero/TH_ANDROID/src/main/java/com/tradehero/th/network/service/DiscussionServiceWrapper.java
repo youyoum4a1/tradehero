@@ -19,22 +19,23 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class DiscussionServiceWrapper
 {
-    private final DiscussionService discussionService;
-    private final DiscussionServiceAsync discussionServiceAsync;
-    private final DiscussionDTOFactory discussionDTOFactory;
+    @NotNull private final DiscussionService discussionService;
+    @NotNull private final DiscussionServiceAsync discussionServiceAsync;
+    @NotNull private final DiscussionDTOFactory discussionDTOFactory;
 
     // It has to be lazy to avoid infinite dependency
-    private final Lazy<DiscussionCache> discussionCache;
+    @NotNull private final Lazy<DiscussionCache> discussionCache;
 
     @Inject public DiscussionServiceWrapper(
-            DiscussionService discussionService,
-            DiscussionServiceAsync discussionServiceAsync,
-            DiscussionDTOFactory discussionDTOFactory,
-            Lazy<DiscussionCache> discussionCache)
+            @NotNull DiscussionService discussionService,
+            @NotNull DiscussionServiceAsync discussionServiceAsync,
+            @NotNull DiscussionDTOFactory discussionDTOFactory,
+            @NotNull Lazy<DiscussionCache> discussionCache)
     {
         this.discussionService = discussionService;
         this.discussionServiceAsync = discussionServiceAsync;

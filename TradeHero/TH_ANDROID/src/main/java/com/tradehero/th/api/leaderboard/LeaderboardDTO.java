@@ -66,7 +66,7 @@ public class LeaderboardDTO implements DTO, HasExpiration
     //</editor-fold>
 
     @JsonIgnore
-    public LeaderboardKey getLeaderboardKey()
+    @NotNull public LeaderboardKey getLeaderboardKey()
     {
         return new LeaderboardKey(id);
     }

@@ -51,7 +51,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    protected LeaderboardDTO fetch(LeaderboardKey key) throws Throwable
+    protected LeaderboardDTO fetch(@NotNull LeaderboardKey key) throws Throwable
     {
         return leaderboardServiceWrapper.getLeaderboard(key);
     }

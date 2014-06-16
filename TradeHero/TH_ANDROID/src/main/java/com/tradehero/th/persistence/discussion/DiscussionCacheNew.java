@@ -16,23 +16,23 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class DiscussionCacheNew extends StraightDTOCacheNew<DiscussionKey, AbstractDiscussionCompactDTO>
 {
-    private final DiscussionServiceWrapper discussionServiceWrapper;
-    private final Lazy<NewsItemCache> newsCache;
+    @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
+    @NotNull private final Lazy<NewsItemCache> newsCache;
 
     @Inject public DiscussionCacheNew(
             @SingleCacheMaxSize IntPreference maxSize,
-            Lazy<NewsItemCache> newsCache,
-            DiscussionServiceWrapper discussionServiceWrapper)
+            @NotNull Lazy<NewsItemCache> newsCache,
+            @NotNull DiscussionServiceWrapper discussionServiceWrapper)
     {
         super(maxSize.get());
 
         this.discussionServiceWrapper = discussionServiceWrapper;
-
-        // very hacky, but server hacks it first :(
         this.newsCache = newsCache;
     }
 
@@ -53,7 +53,7 @@ import org.jetbrains.annotations.NotNull;
         throw new IllegalArgumentException("Unhandled discussionKey: " + discussionKey);
     }
 
-    public DiscussionDTOList put(List<? extends AbstractDiscussionCompactDTO> discussionList)
+    @NotNull public DiscussionDTOList put(@NotNull List<? extends AbstractDiscussionCompactDTO> discussionList)
     {
         DiscussionDTOList<? super AbstractDiscussionCompactDTO> previous = new DiscussionDTOList<>();
         for (AbstractDiscussionCompactDTO discussionDTO : discussionList)
@@ -63,28 +63,30 @@ import org.jetbrains.annotations.NotNull;
         return previous;
     }
 
-    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> get(List<DiscussionKey> discussionKeys)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> get(@Nullable List<DiscussionKey> discussionKeys)
     {
         if (discussionKeys == null)
         {
             return null;
         }
         DiscussionDTOList<? super AbstractDiscussionCompactDTO> dtos = new DiscussionDTOList<>();
-        for (DiscussionKey discussionKey : discussionKeys)
+        for (@NotNull DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(get(discussionKey));
         }
         return dtos;
     }
 
-    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
+    @Contract("null -> null; !null -> !null") @Nullable
+    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> getOrFetch(@Nullable List<DiscussionKey> discussionKeys) throws Throwable
     {
         if (discussionKeys == null)
         {
             return null;
         }
         DiscussionDTOList<? super AbstractDiscussionCompactDTO> dtos = new DiscussionDTOList<>();
-        for (DiscussionKey discussionKey : discussionKeys)
+        for (@NotNull DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(getOrFetchSync(discussionKey));
         }
