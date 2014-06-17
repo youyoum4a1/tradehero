@@ -45,7 +45,6 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -60,9 +59,7 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
@@ -75,12 +72,9 @@ import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
-import com.tradehero.th.fragments.social.friend.SocialNetworkFactory;
+import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
@@ -189,8 +183,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
 
     @Inject AlertDialogUtil alertDialogUtil;
-    @Inject SocialNetworkFactory socialNetworkFactory;
-    private ProgressDialog loadingDialog;
+    @Inject SocialLinkHelperFactory socialLinkHelperFactory;
 
     private PopupMenu mPortfolioSelectorMenu;
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
@@ -467,6 +460,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
+        detachSocialLinkHelper();
         detachWatchlistFetchTask();
         detachBuySellMiddleCallback();
 
@@ -579,6 +573,15 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         securityAlertAssistant = null;
         super.onDestroy();
+    }
+
+    protected void detachSocialLinkHelper()
+    {
+        if (socialLinkHelper != null)
+        {
+            socialLinkHelper.setSocialLinkingCallback(null);
+        }
+        socialLinkHelper = null;
     }
 
     protected void detachWatchlistFetchTask()
@@ -1778,9 +1781,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
     {
-        loadingDialog = progressDialogUtil.show(BuySellFragment.this.getActivity(),
-                R.string.processing, R.string.alert_dialog_please_wait);
-        socialLinkHelper = socialNetworkFactory.buildSocialLinkerHelper(socialNetworkEnum);
+        detachSocialLinkHelper();
+        socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
         socialLinkHelper.link(new SocialLinkingCallback(socialNetworkEnum));
     }
 

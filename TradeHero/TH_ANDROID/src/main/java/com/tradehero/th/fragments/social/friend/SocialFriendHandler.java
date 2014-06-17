@@ -20,9 +20,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by tradehero on 14-5-27.
- */
 @Singleton
 public class SocialFriendHandler {
 
@@ -99,7 +96,6 @@ public class SocialFriendHandler {
         return middleCallback;
     }
 
-
     // TODO
     public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users,RequestCallback<Response> callback) {
 
@@ -124,9 +120,4 @@ public class SocialFriendHandler {
         MiddleCallback<Response> middleCallback = userService.get().inviteFriends(userKey,inviteFormDTO, callback);
        return middleCallback;
     }
-
-
-
-
-
 }

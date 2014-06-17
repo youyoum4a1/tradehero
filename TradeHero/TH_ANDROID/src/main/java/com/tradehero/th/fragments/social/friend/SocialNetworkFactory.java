@@ -1,19 +1,13 @@
 package com.tradehero.th.fragments.social.friend;
 
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.fragments.social.*;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
 public class SocialNetworkFactory
 {
-    @NotNull private final CurrentActivityHolder currentActivityHolder;
-
     //<editor-fold desc="Constructors">
-    @Inject public SocialNetworkFactory(@NotNull CurrentActivityHolder currentActivityHolder)
+    @Inject public SocialNetworkFactory()
     {
-        this.currentActivityHolder = currentActivityHolder;
     }
     //</editor-fold>
 
@@ -34,28 +28,5 @@ public class SocialNetworkFactory
                 return WeiboSocialFriendsFragment.class;
         }
         throw new IllegalArgumentException("Do not support " + socialNetworkEnum);
-    }
-
-    @NotNull public SocialLinkHelper buildSocialLinkerHelper(@NotNull SocialNetworkEnum socialNetwork)
-    {
-        SocialLinkHelper socialLinkHelper;
-        switch (socialNetwork)
-        {
-            case FB:
-                socialLinkHelper = new FacebookSocialLinkHelper(currentActivityHolder.getCurrentActivity());
-                break;
-            case TW:
-                socialLinkHelper = new TwitterSocialLinkHelper(currentActivityHolder.getCurrentActivity());
-                break;
-            case LN:
-                socialLinkHelper = new LinkedInSocialLinkHelper(currentActivityHolder.getCurrentActivity());
-                break;
-            case WB:
-                socialLinkHelper = new WeiboSocialLinkHelper(currentActivityHolder.getCurrentActivity());
-                break;
-            default:
-                throw new IllegalArgumentException("Do not support SocialNetworkEnum." + socialNetwork);
-        }
-        return socialLinkHelper;
     }
 }
