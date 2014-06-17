@@ -10,28 +10,35 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, SecurityIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @NotNull private final Lazy<SecurityServiceWrapper> securityServiceWrapper;
+    @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public SecurityCompactListCache()
+    @Inject public SecurityCompactListCache(
+            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
+            @NotNull Lazy<SecurityCompactCache> securityCompactCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.securityServiceWrapper = securityServiceWrapper;
+        this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>
 
-    @Override protected SecurityIdList fetch(SecurityListType key) throws Throwable
+    @Override protected SecurityIdList fetch(@NotNull SecurityListType key) throws Throwable
     {
-        //THLog.d(TAG, "fetch " + key);
         return putInternal(key, securityServiceWrapper.get().getSecurities(key));
     }
 
-    protected SecurityIdList putInternal(SecurityListType key, List<SecurityCompactDTO> fleshedValues)
+    @Nullable protected SecurityIdList putInternal(
+            @NotNull SecurityListType key,
+            @Nullable List<SecurityCompactDTO> fleshedValues)
     {
         SecurityIdList securityIds = null;
         if (fleshedValues != null)

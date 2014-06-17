@@ -5,6 +5,7 @@ import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.ExtendedDTO;
 import java.io.IOException;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class UserBaseDTO extends ExtendedDTO
@@ -25,7 +26,7 @@ public class UserBaseDTO extends ExtendedDTO
     {
     }
 
-    @JsonIgnore public UserBaseKey getBaseKey()
+    @JsonIgnore @NotNull public UserBaseKey getBaseKey()
     {
         return new UserBaseKey(id);
     }
