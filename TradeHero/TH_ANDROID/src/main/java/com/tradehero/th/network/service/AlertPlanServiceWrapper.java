@@ -5,13 +5,14 @@ import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class AlertPlanServiceWrapper
 {
-    private final AlertPlanService alertPlanService;
+    @NotNull private final AlertPlanService alertPlanService;
 
-    @Inject public AlertPlanServiceWrapper( AlertPlanService alertPlanService)
+    @Inject public AlertPlanServiceWrapper(@NotNull AlertPlanService alertPlanService)
     {
         super();
         this.alertPlanService = alertPlanService;

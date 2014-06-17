@@ -48,8 +48,7 @@ public class SecurityDiscussionItemViewLinear
     void handleActionButtonCommentCountClicked()
     {
         Bundle args = new Bundle();
-        args.putBundle(SecurityDiscussionCommentFragment.DISCUSSION_KEY_BUNDLE_KEY,
-                discussionKey.getArgs());
+        SecurityDiscussionCommentFragment.putDiscussionKey(args, discussionKey);
         getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
     }
 

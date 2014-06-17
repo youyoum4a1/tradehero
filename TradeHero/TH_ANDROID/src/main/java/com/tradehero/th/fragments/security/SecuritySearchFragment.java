@@ -21,6 +21,7 @@ import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
@@ -396,7 +397,11 @@ public class SecuritySearchFragment
     {
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+        }
         getNavigator().pushFragment(BuySellFragment.class, args);
     }
 

@@ -8,9 +8,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.fragments.position.view.AbstractPositionView;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
@@ -261,16 +259,6 @@ public class TradeListItemAdapter
         private boolean lastTrade;
 
         //<editor-fold desc="Constructors">
-        public ExpandableTradeItem(final PositionDTOKey positionDTOKey, final OwnedTradeId model)
-        {
-            this(positionDTOKey, model, false);
-        }
-
-        public ExpandableTradeItem(final PositionDTOKey positionDTOKey, final OwnedTradeId model, final boolean lastTrade)
-        {
-            this(new PositionTradeDTOKey(positionDTOKey, model), lastTrade);
-        }
-
         public ExpandableTradeItem(final PositionTradeDTOKey key)
         {
             this(key, false);

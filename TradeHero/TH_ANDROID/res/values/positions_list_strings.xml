@@ -9,7 +9,7 @@
   <string name="position_list_header_open_unsure">OPEN</string>
   <string name="position_list_header_closed">CLOSED (%d)</string>
   <string name="position_list_header_closed_unsure">CLOSED</string>
-  <string name="position_list_header_time_base">%1$s - %2$s</string>
+  <string name="position_list_header_time_base" translatable="false">%1$s - %2$s</string>
   <string name="position_unrealised_loss_header">Will Lose</string>
   <string name="position_unrealised_profit_header">Will Profit</string>
   <string name="position_unrealised_pl_header" deprecated="true">Unrealized P&amp;L</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="follow">Follow</string>
+  <string name="follow_all">Follow All</string>
   <string name="message">Message</string>
   <string name="upgrade_to_premium">Upgrade to Premium</string>
   <string name="following_premium">Following\n(Premium)</string>
@@ -11,7 +12,7 @@
   </string>
   <string name="action_search">Search</string>
   <string name="action_invite">Invite Friends</string>
-    <string name="update">Update</string>
+  <string name="update">Update</string>
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
@@ -72,7 +73,7 @@
   <string name="about_screen_secure_by">Secure by:</string>
   <string name="about_screen_text_processing_by">Text processing by:</string>
   <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
-  <string name="send_fake_push">Send a fake PushNotification</string>
+  <string name="send_fake_push" translatable="false">Send a fake PushNotification</string>
 
   <string name="buy_sell_loading_ask_price">Loading ask price…</string>
   <string name="buy_sell_loading_bid_price">Loading bid price…</string>
@@ -145,7 +146,32 @@
   <string name="tap_stream_type_dianping_open" translatable="false">android-tradehero-dianping-open</string>
   <string name="tap_stream_type_aiqiyi_install" translatable="false">android-tradehero-aiqiyi-install</string>
   <string name="tap_stream_type_aiqiyi_open" translatable="false">android-tradehero-aiqiyi-open</string>
-
+  <string name="tap_stream_type_dingkai_install" translatable="false">android-tradehero-dingkai-install</string>
+  <string name="tap_stream_type_dingkai_open" translatable="false">android-tradehero-dingkai-open</string>
+  <string name="tap_stream_type_adsage_install" translatable="false">android-tradehero-adsage-install</string>
+  <string name="tap_stream_type_adsage_open" translatable="false">android-tradehero-adsage-open</string>
+  <string name="tap_stream_type_wandoujiaad_install" translatable="false">android-tradehero-wandoujiaad-install</string>
+  <string name="tap_stream_type_wandoujiaad_open" translatable="false">android-tradehero-wandoujiaad-open</string>
+  <string name="tap_stream_type_channel1_install" translatable="false">android-tradehero-channel1-install</string>
+  <string name="tap_stream_type_channel1_open" translatable="false">android-tradehero-channel1-open</string>
+  <string name="tap_stream_type_channel2_install" translatable="false">android-tradehero-channel2-install</string>
+  <string name="tap_stream_type_channel2_open" translatable="false">android-tradehero-channel2-open</string>
+  <string name="tap_stream_type_channel3_install" translatable="false">android-tradehero-channel3-install</string>
+  <string name="tap_stream_type_channel3_open" translatable="false">android-tradehero-channel3-open</string>
+  <string name="tap_stream_type_channel4_install" translatable="false">android-tradehero-channel4-install</string>
+  <string name="tap_stream_type_channel4_open" translatable="false">android-tradehero-channel4-open</string>
+  <string name="tap_stream_type_channel5_install" translatable="false">android-tradehero-channel5-install</string>
+  <string name="tap_stream_type_channel5_open" translatable="false">android-tradehero-channel5-open</string>
+  <string name="tap_stream_type_channel6_install" translatable="false">android-tradehero-channel6-install</string>
+  <string name="tap_stream_type_channel6_open" translatable="false">android-tradehero-channel6-open</string>
+  <string name="tap_stream_type_channel7_install" translatable="false">android-tradehero-channel7-install</string>
+  <string name="tap_stream_type_channel7_open" translatable="false">android-tradehero-channel7-open</string>
+  <string name="tap_stream_type_channel8_install" translatable="false">android-tradehero-channel8-install</string>
+  <string name="tap_stream_type_channel8_open" translatable="false">android-tradehero-channel8-open</string>
+  <string name="tap_stream_type_channel9_install" translatable="false">android-tradehero-channel9-install</string>
+  <string name="tap_stream_type_channel9_open" translatable="false">android-tradehero-channel9-open</string>
+  <string name="tap_stream_type_channel10_install" translatable="false">android-tradehero-channel10-install</string>
+  <string name="tap_stream_type_channel10_open" translatable="false">android-tradehero-channel10-open</string>
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>

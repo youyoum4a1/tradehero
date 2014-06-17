@@ -27,7 +27,6 @@ public class AbstractPositionItemAdapter
     protected List<Object> items = new ArrayList<>();
 
     protected final Context context;
-    protected final LayoutInflater inflater;
 
     private Map<PositionItemType, Integer> positionItemTypeToLayoutId;
 
@@ -35,12 +34,10 @@ public class AbstractPositionItemAdapter
 
     public AbstractPositionItemAdapter(
             Context context,
-            LayoutInflater inflater,
             Map<PositionItemType, Integer> positionItemTypeToLayoutId)
     {
         super();
         this.context = context;
-        this.inflater = inflater;
         this.positionItemTypeToLayoutId = positionItemTypeToLayoutId;
     }
 
@@ -99,7 +96,7 @@ public class AbstractPositionItemAdapter
                         positionDTO.latestTradeUtc));
 
                 newItemTypes.add(PositionItemType.Locked);
-                newItems.add(lockedPositions.get(0));
+                newItems.add(positionDTO);
             }
             else if (openPositions.size() > 0)
             {
@@ -249,7 +246,7 @@ public class AbstractPositionItemAdapter
         {
             try
             {
-                convertView = inflater.inflate(layoutToInflate, parent, false);
+                convertView = LayoutInflater.from(context).inflate(layoutToInflate, parent, false);
             }
             catch (Throwable t)
             {

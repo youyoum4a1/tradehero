@@ -7,4 +7,6 @@
 
   <string name="discussion_translate_button_with_powered"><b>( %1$s )</b> Powered by</string>
 
+  <string name="discussion_error_setting_recipient">There was an error setting the recipient, please try again</string>
+
 </resources>

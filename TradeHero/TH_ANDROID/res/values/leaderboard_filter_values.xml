@@ -4,19 +4,33 @@
   <declare-styleable name="LeaderboardFilterValueSlider">
     <attr name="valueMin" format="float"/>
     <attr name="valueMax" format="float"/>
+    <attr name="valueDefault" format="float"/>
   </declare-styleable>
 
   <!-- Monthly Activity -->
+  <integer name="leaderboard_filter_monthly_activity_default">1</integer>
   <integer name="leaderboard_filter_monthly_activity_min">1</integer>
   <integer name="leaderboard_filter_monthly_activity_max">30</integer>
 
   <!-- Win Ratio -->
+  <integer name="leaderboard_filter_win_ratio_default">0</integer>
   <integer name="leaderboard_filter_win_ratio_min">0</integer>
   <integer name="leaderboard_filter_win_ratio_max">100</integer>
 
   <!-- Holding Period -->
+  <integer name="leaderboard_filter_holding_period_default">1</integer>
   <integer name="leaderboard_filter_holding_period_min">1</integer>
   <integer name="leaderboard_filter_holding_period_max">120</integer>
+
+  <!-- Relative Performance aka Sharpe Ratio -->
+  <integer name="leaderboard_filter_relative_performance_default">0</integer>
+  <integer name="leaderboard_filter_relative_performance_min">-5</integer>
+  <integer name="leaderboard_filter_relative_performance_max">5</integer>
+
+  <!-- Consistency aka 1 / Position ROI Volatility -->
+  <integer name="leaderboard_filter_consistency_default">0</integer>
+  <integer name="leaderboard_filter_consistency_min">0</integer>
+  <integer name="leaderboard_filter_consistency_max">10</integer>
 
   <style name="LeaderboardFilter">
     <!-- Just a base style for now -->

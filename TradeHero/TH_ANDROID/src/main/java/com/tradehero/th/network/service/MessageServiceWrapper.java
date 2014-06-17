@@ -27,32 +27,33 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.client.Response;
 
 @Singleton
 public class MessageServiceWrapper
 {
-    private MessageService messageService;
-    private MessageServiceAsync messageServiceAsync;
-    private DiscussionDTOFactory discussionDTOFactory;
+    @NotNull private MessageService messageService;
+    @NotNull private MessageServiceAsync messageServiceAsync;
+    @NotNull private DiscussionDTOFactory discussionDTOFactory;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
-    private Lazy<MessageHeaderListCache> messageHeaderListCache;
-    private Lazy<MessageHeaderCache> messageHeaderCache;
-    private Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
-    private Lazy<DiscussionCache> discussionCache;
-    private Lazy<UserProfileCache> userProfileCache;
+    @NotNull private Lazy<MessageHeaderListCache> messageHeaderListCache;
+    @NotNull private Lazy<MessageHeaderCache> messageHeaderCache;
+    @NotNull private Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
+    @NotNull private Lazy<DiscussionCache> discussionCache;
+    @NotNull private Lazy<UserProfileCache> userProfileCache;
 
     @Inject MessageServiceWrapper(
-            MessageService messageService,
-            MessageServiceAsync messageServiceAsync,
-            DiscussionDTOFactory discussionDTOFactory,
-            Lazy<MessageHeaderListCache> messageHeaderListCache,
-            Lazy<MessageHeaderCache> messageHeaderCache,
-            Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
-            Lazy<DiscussionCache> discussionCache,
-            Lazy<UserProfileCache> userProfileCache)
+            @NotNull MessageService messageService,
+            @NotNull MessageServiceAsync messageServiceAsync,
+            @NotNull DiscussionDTOFactory discussionDTOFactory,
+            @NotNull Lazy<MessageHeaderListCache> messageHeaderListCache,
+            @NotNull Lazy<MessageHeaderCache> messageHeaderCache,
+            @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
+            @NotNull Lazy<DiscussionCache> discussionCache,
+            @NotNull Lazy<UserProfileCache> userProfileCache)
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;

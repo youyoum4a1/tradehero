@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * See DTOKeyIdList to avoid duplicating data in caches.
@@ -19,8 +20,8 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
      * @param key
      * @return
      */
-    DTOType get(DTOKeyType key);
-    DTOType fetch(DTOKeyType key) throws Throwable;
+    DTOType get(@NotNull DTOKeyType key);
+    DTOType fetch(@NotNull DTOKeyType key) throws Throwable;
     DTOType getOrFetchSync(DTOKeyType key) throws Throwable;
     DTOType getOrFetchSync(DTOKeyType key, boolean force) throws Throwable;
     void register(DTOKeyType key, Listener<DTOKeyType, DTOType> callback);
@@ -127,6 +128,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         protected DTOKeyType key;
         protected boolean forceUpdateCache;
 
+        //<editor-fold desc="Constructors">
         public GetOrFetchTask(DTOKeyType key)
         {
             this(key, false);
@@ -137,6 +139,24 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             super();
             this.key = key;
             this.forceUpdateCache = forceUpdateCache;
+        }
+        //</editor-fold>
+
+        abstract protected Class<?> getContainerCacheClass();
+
+        public final AsyncTask<Void, Void, DTOType> execute()
+        {
+            return executePool();
+        }
+
+        protected AsyncTask<Void, Void, DTOType> executePool()
+        {
+            return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        protected final AsyncTask<Void, Void, DTOType> executeSerial()
+        {
+            return executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
     }
 }

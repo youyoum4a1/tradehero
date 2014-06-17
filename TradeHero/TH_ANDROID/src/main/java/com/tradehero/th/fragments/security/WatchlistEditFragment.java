@@ -35,6 +35,7 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -60,10 +61,10 @@ public class WatchlistEditFragment extends DashboardFragment
     private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
     private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
 
-    @Inject Lazy<SecurityCompactCache> securityCompactCache;
+    @Inject SecurityCompactCache securityCompactCache;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
+    @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
     @Inject LocalyticsSession localyticsSession;
@@ -72,10 +73,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
     public static void putSecurityId(Bundle args, SecurityId securityId)
     {
-        if (args != null && securityId != null)
-        {
-            args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        }
+        args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -142,7 +140,7 @@ public class WatchlistEditFragment extends DashboardFragment
                  throw new Exception(getString(R.string.watchlist_quantity_should_not_be_zero));
             }
             // add new watchlist
-            SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityKeyId);
+            SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityKeyId);
             if (securityCompactDTO != null)
             {
                 WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
@@ -151,14 +149,14 @@ public class WatchlistEditFragment extends DashboardFragment
                 detachMiddleCallbackUpdate();
                 if (existingWatchlistPosition != null)
                 {
-                    middleCallbackUpdate = watchlistServiceWrapper.get().updateWatchlistEntry(
+                    middleCallbackUpdate = watchlistServiceWrapper.updateWatchlistEntry(
                             existingWatchlistPosition.getPositionCompactId(),
                             watchPositionItemForm,
                             createWatchlistUpdateCallback());
                 }
                 else
                 {
-                    middleCallbackUpdate = watchlistServiceWrapper.get().createWatchlistEntry(
+                    middleCallbackUpdate = watchlistServiceWrapper.createWatchlistEntry(
                             watchPositionItemForm,
                             createWatchlistUpdateCallback());
                 }
@@ -213,7 +211,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             showProgressBar();
             detachMiddleCallbackDelete();
-            middleCallbackDelete = watchlistServiceWrapper.get().deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), createWatchlistDeleteCallback());
+            middleCallbackDelete = watchlistServiceWrapper.deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), createWatchlistDeleteCallback());
         }
         else
         {
@@ -309,7 +307,7 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         if (securityTitle != null)
         {
-            securityTitle.setText(String.format("%s:%s", securityKeyId.exchange, securityKeyId.securitySymbol));
+            securityTitle.setText(SecurityUtils.getDisplayableSecurityName(securityKeyId));
         }
     }
 
@@ -334,7 +332,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
 
         detachSecurityCompactFetchTask();
-        securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, createSecurityCompactCacheListener(andDisplay));
+        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, createSecurityCompactCacheListener(andDisplay));
         securityCompactCacheFetchTask.execute();
     }
 

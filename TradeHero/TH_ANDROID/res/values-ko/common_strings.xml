@@ -18,10 +18,6 @@
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy MM월 dd일 kk:mm z</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm">MM월 dd일 HH:mm</string>
 
-  <!-- TEMP stuff -->
-  <string name="test_email">dev@tradehero.mobi</string>
-  <string name="test_password">asd123</string>
-
   <!-- Splash screen -->
   <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
   <string name="splash_copyright_3">Patents Pending</string>

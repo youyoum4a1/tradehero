@@ -1,49 +1,57 @@
 package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class LeaderboardDefCache extends StraightDTOCache<LeaderboardDefKey, LeaderboardDefDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    @NotNull private final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
 
-    @Inject public LeaderboardDefCache()
+    //<editor-fold desc="Constructors">
+    @Inject public LeaderboardDefCache(@NotNull Lazy<LeaderboardDefListCache> leaderboardDefListCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.leaderboardDefListCache = leaderboardDefListCache;
     }
+    //</editor-fold>
 
     @Override protected LeaderboardDefDTO fetch(LeaderboardDefKey key) throws Throwable
     {
-        // if leaderboardDef is not in the cache, request for all lbdef again to refresh the cache
-        // TODO leaderboardDefListCache.get().fetch(key);
-        return get(key);
+        throw new IllegalStateException("Cannot fetch on this cache");
     }
 
-    public List<LeaderboardDefDTO> getOrFetch(List<LeaderboardDefKey> keys) throws Throwable
+    @Contract("null -> null; !null -> !null")
+    public LeaderboardDefDTOList get(List<LeaderboardDefKey> keys)
     {
         if (keys == null)
         {
             return null;
         }
 
-        List<LeaderboardDefDTO> ret = new ArrayList<>();
-        for (LeaderboardDefKey key: keys)
+        LeaderboardDefDTOList ret = new LeaderboardDefDTOList();
+        for (@NotNull LeaderboardDefKey key: keys)
         {
-            ret.add(getOrFetch(key, false));
+            ret.add(get(key));
         }
         return ret;
     }
 
-    @Override public LeaderboardDefDTO put(LeaderboardDefKey key, LeaderboardDefDTO value)
+    public void put(@NotNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
-        return super.put(key, value);
+        for (@NotNull LeaderboardDefDTO leaderboardDefDTO: leaderboardDefDTOs)
+        {
+            LeaderboardDefKey key = leaderboardDefDTO.getLeaderboardDefKey();
+            put(key, leaderboardDefDTO);
+        }
     }
 }

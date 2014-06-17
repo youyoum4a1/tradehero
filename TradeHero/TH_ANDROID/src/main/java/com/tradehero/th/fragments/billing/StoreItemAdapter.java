@@ -29,14 +29,12 @@ public class StoreItemAdapter extends BaseAdapter
     //</editor-fold>
 
     protected final Context context;
-    protected final LayoutInflater inflater;
     private HashMap<Integer, Integer> viewTypeToLayoutId;
 
-    public StoreItemAdapter(Context context, LayoutInflater inflater)
+    public StoreItemAdapter(Context context)
     {
         super();
         this.context = context;
-        this.inflater = inflater;
         buildViewTypeMap();
     }
 
@@ -102,7 +100,7 @@ public class StoreItemAdapter extends BaseAdapter
     @Override public View getView(int position, View view, ViewGroup viewGroup)
     {
         int layoutToInflate = getLayoutIdFromPosition(position);
-        view = inflater.inflate(layoutToInflate, viewGroup, false);
+        view = LayoutInflater.from(context).inflate(layoutToInflate, viewGroup, false);
 
         switch (getItemViewType(position))
         {

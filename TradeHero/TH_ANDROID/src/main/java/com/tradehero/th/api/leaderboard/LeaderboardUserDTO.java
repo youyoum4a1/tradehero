@@ -12,6 +12,7 @@ import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardUserDTO extends UserBaseDTO
     implements ExpandableItem
@@ -37,7 +38,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
 
     public int numberOfTradesInPeriod;
     public int numberOfPositionsInPeriod;
-    public Double avgNumberOfTradesPerMonth;
+    @Nullable public Double avgNumberOfTradesPerMonth;
 
     public int ordinalPosition; // OK
 
@@ -212,11 +213,11 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public InviteDTO getInviteDTO()
     {
         InviteDTO inviteDTO = new InviteDTO();
-        if (!liId.isEmpty())
+        if (liId != null && !liId.isEmpty())
         {
             inviteDTO.liId = liId;
         }
-        else if (!twId.isEmpty())
+        else if (twId != null && !twId.isEmpty())
         {
             inviteDTO.twId = twId;
         }

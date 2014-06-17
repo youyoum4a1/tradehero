@@ -1,7 +1,7 @@
 package com.tradehero.th.network.retrofit;
 
 import dagger.Module;
-
+import dagger.Provides;
 
 @Module(
         includes = {
@@ -14,6 +14,11 @@ import dagger.Module;
 )
 public class RetrofitStubModule
 {
+    //@Provides RequestHeaders providesSlowRequestHeader(SlowRequestHeaders requestHeaders)
+    //{
+    //    return requestHeaders;
+    //}
+
     //@Provides @Singleton MessageService provideMessageServiceStub(MessageServiceStub messageService)
     //{
     //    return messageService;

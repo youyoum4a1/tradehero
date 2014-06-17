@@ -3,6 +3,8 @@ package com.tradehero.th.network.retrofit;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MiddleCallbackWeakList<DTOType> extends ArrayList<WeakReference<MiddleCallback<DTOType>>>
 {
@@ -25,8 +27,8 @@ public class MiddleCallbackWeakList<DTOType> extends ArrayList<WeakReference<Mid
 
     public void detach()
     {
-        MiddleCallback<DTOType> callback;
-        for (WeakReference<MiddleCallback<DTOType>> ref : this)
+        @Nullable MiddleCallback<DTOType> callback;
+        for (@NotNull WeakReference<MiddleCallback<DTOType>> ref : this)
         {
             callback = ref.get();
             if (callback != null)
@@ -37,8 +39,11 @@ public class MiddleCallbackWeakList<DTOType> extends ArrayList<WeakReference<Mid
         clear();
     }
 
-    public void add(MiddleCallback<DTOType> callback)
+    public void add(@Nullable MiddleCallback<DTOType> callback)
     {
-        add(new WeakReference<>(callback));
+        if (callback != null)
+        {
+            add(new WeakReference<>(callback));
+        }
     }
 }

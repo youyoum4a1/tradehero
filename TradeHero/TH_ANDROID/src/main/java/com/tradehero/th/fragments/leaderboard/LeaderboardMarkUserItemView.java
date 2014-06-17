@@ -18,7 +18,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.market.Country;
@@ -805,12 +805,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 //        {
 //            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
 //            Double maxConsistency = getAvgConsistency();
-//            Double consistency = leaderboardItem.getConsistency();
-//            consistency = (consistency < minConsistency) ? minConsistency : consistency;
-//            consistency = (consistency > maxConsistency) ? maxConsistency : consistency;
+//            Double minConsistency = leaderboardItem.getConsistency();
+//            minConsistency = (minConsistency < minConsistency) ? minConsistency : minConsistency;
+//            minConsistency = (minConsistency > maxConsistency) ? maxConsistency : minConsistency;
 //
 //            double result =
-//                    100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
+//                    100 * (minConsistency - minConsistency) / (maxConsistency - minConsistency);
 //            return result;
 //        }
 //        catch (Exception e)

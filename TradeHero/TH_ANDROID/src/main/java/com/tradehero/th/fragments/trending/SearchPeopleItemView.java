@@ -21,6 +21,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBaseKey>
 {
@@ -111,7 +112,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         display(userSearchResultCache.get().get(this.userKey));
     }
 
-    public void display(UserSearchResultDTO userSearchResultDTO)
+    public void display(@Nullable UserSearchResultDTO userSearchResultDTO)
     {
         this.userDTO = userSearchResultDTO;
 
@@ -129,7 +130,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         {
             if (userSearchResultDTO.userMarkingAsOfUtc != null)
             {
-                date.setText(DateUtils.getFormattedUtcDate(userSearchResultDTO.userMarkingAsOfUtc));
+                date.setText(DateUtils.getFormattedUtcDate(getResources(), userSearchResultDTO.userMarkingAsOfUtc));
                 date.setTextColor(Color.BLACK);
             }
             else

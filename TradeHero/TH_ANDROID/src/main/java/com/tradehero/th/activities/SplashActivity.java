@@ -49,6 +49,7 @@ public class SplashActivity extends SherlockActivity
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<Tapstream> tapStream;
+    @Inject CurrentActivityHolder currentActivityHolder;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -67,6 +68,7 @@ public class SplashActivity extends SherlockActivity
         }
 
         DaggerUtils.inject(this);
+        currentActivityHolder.setCurrentActivity(this);
     }
 
     @Override protected void onResume()

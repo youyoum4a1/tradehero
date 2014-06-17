@@ -30,6 +30,8 @@
   <string name="user_profile_choose_image_from_camera">从相机拍照</string>
   <string name="user_profile_choose_image_from_library">从相册选择</string>
 
+  <string name="error_decode_image_memory">内存不足，无法加载图片</string>
+  <string name="error_fetch_image_library">从库中提取图片失败</string>
   <string name="error_fetch_user_profile">获取用户资料信息发生错误</string>
   <string name="error_fetch_your_user_profile">获取个人资料信息发生错误</string>
   <string name="error_fetch_people_list_info">获取人员列表信息发生错误</string>

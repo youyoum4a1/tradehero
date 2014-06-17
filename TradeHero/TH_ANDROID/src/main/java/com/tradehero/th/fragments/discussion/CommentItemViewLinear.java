@@ -53,7 +53,7 @@ public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
         if (abstractDiscussionCompactDTO != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, abstractDiscussionCompactDTO.getDiscussionKey().getArgs());
+            NewsDiscussionFragment.putDiscussionKey(args, abstractDiscussionCompactDTO.getDiscussionKey());
             getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }

@@ -363,7 +363,7 @@ public class StockInfoFragment extends DashboardFragment
     {
         Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
         Bundle bundle = new Bundle();
-        bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, newsItemDTOKey.getArgs());
+        NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
         int resId = newsHeadlineAdapter.getBackgroundRes(position);
         bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
         navigator.pushFragment(NewsDiscussionFragment.class, bundle);

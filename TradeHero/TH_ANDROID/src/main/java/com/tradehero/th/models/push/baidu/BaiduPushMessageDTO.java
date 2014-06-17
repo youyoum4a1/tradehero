@@ -6,13 +6,25 @@ import com.tradehero.th.api.discussion.DiscussionType;
 public class BaiduPushMessageDTO
 {
     @JsonProperty("title")
-    public String title;
+    private String title;
 
     @JsonProperty("description")
-    public String description;
+    private String description;
 
     @JsonProperty("custom_content")
-    public BaiduPushMessageCustomContentDTO customContentDTO;
+    private BaiduPushMessageCustomContentDTO customContentDTO;
+
+    public BaiduPushMessageDTO()
+    {
+        super();
+    }
+
+    public BaiduPushMessageDTO(String title, String description, BaiduPushMessageCustomContentDTO customContentDTO)
+    {
+        this.title = title;
+        this.description = description;
+        this.customContentDTO = customContentDTO;
+    }
 
     public int getId()
     {
@@ -24,12 +36,58 @@ public class BaiduPushMessageDTO
         return customContentDTO.discussionType;
     }
 
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public BaiduPushMessageCustomContentDTO getCustomContentDTO()
+    {
+        return customContentDTO;
+    }
+
     public static class BaiduPushMessageCustomContentDTO
     {
         @JsonProperty("i")
-        public int id;
+        private int id;
 
         @JsonProperty(value = "discussion-type",required = false)
-        public DiscussionType discussionType;
+        private DiscussionType discussionType;
+
+        public BaiduPushMessageCustomContentDTO()
+        {
+            super();
+        }
+
+        public BaiduPushMessageCustomContentDTO(int id, DiscussionType discussionType)
+        {
+            this.id = id;
+            this.discussionType = discussionType;
+        }
+
+        public int getId()
+        {
+            return id;
+        }
+
+        public DiscussionType getDiscussionType()
+        {
+            return discussionType;
+        }
+
+        @Override public boolean equals(Object o)
+        {
+            if (o instanceof BaiduPushMessageCustomContentDTO)
+            {
+                BaiduPushMessageCustomContentDTO target = (BaiduPushMessageCustomContentDTO) o;
+                return target.id == id && target.discussionType == discussionType;
+            }
+            return false;
+        }
     }
 }

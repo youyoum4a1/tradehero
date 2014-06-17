@@ -8,28 +8,35 @@ import com.tradehero.th.network.service.AlertServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class AlertCompactListCache extends StraightDTOCache<UserBaseKey, AlertIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected AlertServiceWrapper alertServiceWrapper;
-    @Inject protected AlertCompactCache alertCompactCache;
+    @NotNull private final AlertServiceWrapper alertServiceWrapper;
+    @NotNull private final AlertCompactCache alertCompactCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public AlertCompactListCache()
+    @Inject public AlertCompactListCache(
+            @NotNull AlertServiceWrapper alertServiceWrapper,
+            @NotNull AlertCompactCache alertCompactCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.alertServiceWrapper = alertServiceWrapper;
+        this.alertCompactCache = alertCompactCache;
     }
     //</editor-fold>
 
-    @Override protected AlertIdList fetch(UserBaseKey key) throws Throwable
+    @Override @Nullable protected AlertIdList fetch(@NotNull UserBaseKey key) throws Throwable
     {
-        //THLog.d(TAG, "fetch " + key);
         return putInternal(key, alertServiceWrapper.getAlerts(key));
     }
 
-    protected AlertIdList putInternal(UserBaseKey key, List<AlertCompactDTO> fleshedValues)
+    @Contract("_, null -> null; _, !null -> !null")
+    protected AlertIdList putInternal(@NotNull UserBaseKey key, @Nullable List<AlertCompactDTO> fleshedValues)
     {
         AlertIdList alertIds = null;
         if (fleshedValues != null)

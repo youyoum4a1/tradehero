@@ -233,7 +233,7 @@ public class ProfileInfoView extends LinearLayout
             alertDialogUtil.popWithNegativeButton(getContext(),
                     R.string.error_fetch_image_library,
                     R.string.error_fetch_image_library,
-                    R.string.cancel).requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    R.string.cancel);
         }
     }
 

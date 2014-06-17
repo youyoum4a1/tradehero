@@ -49,7 +49,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     private TextView leaderboardMarkUserMarkingTime;
 
-    protected int leaderboardId;
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
     protected LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
 
@@ -61,7 +60,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardId = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_ID);
         currentLeaderboardKey = getInitialLeaderboardKey();
     }
 
@@ -73,13 +71,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
     {
         savedPreference = new PerPagedFilteredLeaderboardKeyPreference(
+                getActivity(),
                 preferences,
-                PREFERENCE_KEY_PREFIX + leaderboardId,
-                LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardId).getFilterStringSet());
+                PREFERENCE_KEY_PREFIX + leaderboardDefKey,
+                LeaderboardFilterSliderContainer.getStartingFilter(getResources(), leaderboardDefKey.key).getFilterStringSet());
         PerPagedFilteredLeaderboardKey initialKey = ((PerPagedFilteredLeaderboardKeyPreference) savedPreference)
                 .getPerPagedFilteredLeaderboardKey();
         // We override here to make sure we do not pick up key, page or perPage from the preference
-        return new PerPagedFilteredLeaderboardKey(initialKey, leaderboardId, null, null);
+        return new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, null);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -190,13 +189,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
-                leaderboardId, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+                leaderboardDefKey.key, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
     }
 
     protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
-                getActivity(), getActivity().getLayoutInflater(), leaderboardId, R.layout.lbmu_item_roi_mode);
+                getActivity(), getActivity().getLayoutInflater(), leaderboardDefKey.key, R.layout.lbmu_item_roi_mode);
     }
 
     @Override public void onResume()
@@ -243,6 +242,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         this.leaderboardFilterFragment = null;
         saveCurrentFilterKey();
+        getActivity().getSupportLoaderManager().destroyLoader(leaderboardDefKey.key);
         super.onDestroy();
     }
 
@@ -287,7 +287,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected void pushFilterFragmentIn()
     {
         Bundle args = new Bundle();
-        args.putBundle(LeaderboardFilterFragment.BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, currentLeaderboardKey.getArgs());
+        LeaderboardFilterFragment.putPerPagedFilteredLeaderboardKey(args, (PerPagedFilteredLeaderboardKey) currentLeaderboardKey);
         this.leaderboardFilterFragment = (LeaderboardFilterFragment) getNavigator().pushFragment(LeaderboardFilterFragment.class, args);
     }
 

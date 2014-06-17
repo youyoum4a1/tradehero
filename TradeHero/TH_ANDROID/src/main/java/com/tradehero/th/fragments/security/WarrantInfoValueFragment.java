@@ -313,7 +313,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         if (activity instanceof DashboardNavigatorActivity)
         {
             Bundle args = new Bundle();
-            args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+            ProviderVideoListFragment.putProviderId(args, providerId);
             ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
         }
     }

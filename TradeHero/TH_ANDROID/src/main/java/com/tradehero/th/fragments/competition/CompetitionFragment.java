@@ -11,11 +11,12 @@ import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 {
-    public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
+    private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
@@ -26,23 +27,21 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     @Inject ProviderCache providerCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
+    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
+
+    public static ProviderId getProviderId(@NotNull Bundle args)
+    {
+        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_KEY_PROVIDER_ID))
-        {
-            this.providerId = new ProviderId(savedInstanceState.getBundle(BUNDLE_KEY_PROVIDER_ID));
-        }
-        else if (getArguments() != null && getArguments().containsKey(BUNDLE_KEY_PROVIDER_ID))
-        {
-            this.providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
-        }
-        else
-        {
-            throw new IllegalArgumentException("There is no defined providerId");
-        }
-
+        this.providerId = getProviderId(getArguments());
         this.providerCacheListener = new CompetitionFragmentProviderCacheListener();
     }
 
@@ -82,7 +81,6 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
         if (andDisplay)
         {
-
         }
     }
 

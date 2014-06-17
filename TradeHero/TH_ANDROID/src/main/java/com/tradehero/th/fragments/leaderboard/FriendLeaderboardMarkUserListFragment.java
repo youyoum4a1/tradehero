@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -18,7 +19,6 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -37,6 +37,7 @@ import retrofit.client.Response;
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
+    @InjectView(R.id.progress) ProgressBar mProgress;
 
     protected LeaderboardFriendsListAdapter leaderboardMarkUserListAdapter;
     private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
@@ -120,6 +121,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         detachGetFriendsMiddleCallBack();
         getFriendsMiddleCallback =
                 leaderboardServiceWrapper.getNewFriendsLeaderboard(new FriendsCallback());
+        mProgress.setVisibility(View.VISIBLE);
     }
 
     private void detachGetFriendsMiddleCallBack()
@@ -135,6 +137,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         @Override public void success(LeaderboardFriendsDTO dto, Response response)
         {
+            mProgress.setVisibility(View.INVISIBLE);
             Date markingTime = dto.leaderboard.markUtc;
             if (markingTime != null && leaderboardMarkUserMarkingTime != null)
             {
@@ -149,6 +152,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
         @Override public void failure(RetrofitError retrofitError)
         {
+            mProgress.setVisibility(View.INVISIBLE);
             THToast.show(new THException(retrofitError));
         }
     }
@@ -185,6 +189,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             leaderboardMarkUserListAdapter.setItems(null);
             leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
             leaderboardMarkUserListAdapter = null;
+        }
+        if (mProgress != null)
+        {
+            mProgress = null;
         }
         super.onDestroyView();
     }

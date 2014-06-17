@@ -8,6 +8,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class HeroCache extends StraightDTOCacheNew<FollowerHeroRelationId, HeroDTO>
 {
@@ -20,7 +21,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override public HeroDTO fetch(FollowerHeroRelationId key)
+    @Override public HeroDTO fetch(@NotNull FollowerHeroRelationId key)
     {
         throw new UnsupportedOperationException("Not implemented");
     }

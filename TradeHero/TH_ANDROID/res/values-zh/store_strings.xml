@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="store_option_menu_title">股货英雄商店</string>
+  <string name="store_option_menu_title">全民股神商店</string>
   <string name="store_header_in_app_purchases">应用内购</string>
   <string name="store_buy_virtual_dollars">虚拟现金</string>
   <string name="store_buy_follow_credits">关注点数</string>
@@ -11,12 +11,14 @@
   <string name="store_manage_heroes">管理英雄</string>
   <string name="store_manage_followers">管理粉丝</string>
   <string name="store_manage_stock_alerts">管理股市预警</string>
+  <string name="store_alert_are_free_title">庆祝!</string>
+  <string name="store_alert_are_free_description">股票提醒现在免费啦</string>
   <string name="store_billing_unavailable_window_title">无商店账号</string>
   <string name="store_billing_unavailable_window_description">请到帐号设置中，开启支付功能，才能实现应用内购</string>
   <string name="store_billing_unavailable_cancel">知道了</string>
   <string name="store_billing_unavailable_act">现在添加账号</string>
   <string name="store_billing_error_loading_window_title">啊哦!</string>
-  <string name="store_billing_error_loading_window_description">股货英雄商店无法读取</string>
+  <string name="store_billing_error_loading_window_description">全民股神商店无法读取</string>
   <string name="store_billing_error_loading_act">刷新中</string>
   <string name="store_billing_loading_window_title">读取中&#8230;</string>
   <string name="store_billing_loading_window_description">请耐心等待，正在读取中</string>
@@ -60,11 +62,11 @@
   <string name="store_billing_restoring_purchase_window_title">恢复你的购物数据</string>
   <string name="store_billing_restoring_purchase_window_message">请等待&#8230;</string>
   <string name="store_billing_report_api_error_window_title">乌龙了</string>
-  <string name="store_billing_report_api_error_window_description">服务器通讯过程中发生错误，请退出股货英雄并重新开启
+  <string name="store_billing_report_api_error_window_description">服务器通讯过程中发生错误，请退出全民股神并重新开启
   </string>
   <string name="store_billing_report_api_error_cancel">好的</string>
   <string name="store_billing_load_info_error_window_title">乌龙了</string>
-  <string name="store_billing_load_info_error_window_description">从股货英雄应用商店，收到错误的请求，可能需要你重启软件
+  <string name="store_billing_load_info_error_window_description">从全民股神应用商店，收到错误的请求，可能需要你重启软件
   </string>
   <string name="store_billing_load_info_error_cancel">没问题</string>
   <string name="store_billing_unknown_error_window_title">发生了未知错误</string>
@@ -88,12 +90,12 @@
   <string name="manage_heroes_follows">关注:</string>
   <string name="manage_heroes_empty_title">购买关注点数，关注股市达人</string>
   <string name="manage_heroes_empty_description">一旦高级关注了某位英雄，你都能第一时间获得英雄的交易及动态通知。
-    一马当先: 选择最牛股货英雄，做你的英雄!
+    一马当先: 选择最牛全民股神，做你的英雄!
   </string>
   <string name="manage_heroes_empty_description_for_other">
     没有关注的英雄
   </string>
-  <string name="manage_heroes_empty_leaderboard_link">查看最牛股货英雄</string>
+  <string name="manage_heroes_empty_leaderboard_link">查看最牛全民股神</string>
   <string name="manage_heroes_following_since">从%s开始关注</string>
   <string name="manage_heroes_not_following_since">暂不关注%s</string>
   <string name="manage_heroes_datetime_format">@string/data_format_dd_mmm_yyyy</string>
@@ -142,7 +144,7 @@
   <string name="manage_alerts_with_count">%d 预警</string>
 
   <!-- Google Play elements -->
-  <string name="google_play_send_support_email_chooser_title">发送邮件给股货英雄客服</string>
+  <string name="google_play_send_support_email_chooser_title">发送邮件给全民股神客服</string>
   <string name="google_play_send_support_email_report_fail_title">购物失败</string>
   <string name="google_play_send_support_email_report_fail_message">你愿意告知我们错误详情吗？</string>
   <string name="google_play_send_support_email_report_fail_ok">愿意</string>

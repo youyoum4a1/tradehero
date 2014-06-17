@@ -8,20 +8,21 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositionDTO>
 {
-    private final UserBaseKey concernedUser;
-    private final WatchlistPositionCache watchlistPositionCache;
-    private final PortfolioCompactListCache portfolioCompactListCache;
-    private final UserWatchlistPositionCache userWatchlistPositionCache;
+    @NotNull private final UserBaseKey concernedUser;
+    @NotNull private final WatchlistPositionCache watchlistPositionCache;
+    @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull private final UserWatchlistPositionCache userWatchlistPositionCache;
 
     public DTOProcessorWatchlistDelete(
-            WatchlistPositionCache watchlistPositionCache,
-            UserBaseKey concernedUser,
-            PortfolioCompactListCache portfolioCompactListCache,
-            UserWatchlistPositionCache userWatchlistPositionCache)
+            @NotNull WatchlistPositionCache watchlistPositionCache,
+            @NotNull UserBaseKey concernedUser,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
         super();
         this.concernedUser = concernedUser;
@@ -30,7 +31,7 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
         this.userWatchlistPositionCache = userWatchlistPositionCache;
     }
 
-    @Override public WatchlistPositionDTO process(WatchlistPositionDTO watchlistPositionDTO)
+    @Override public WatchlistPositionDTO process(@NotNull WatchlistPositionDTO watchlistPositionDTO)
     {
         portfolioCompactListCache.invalidate(concernedUser);
         SecurityId deletedSecurityId = null;

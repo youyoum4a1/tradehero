@@ -2,11 +2,10 @@ package com.tradehero.th.models.intent.competition;
 
 import android.net.Uri;
 import android.os.Bundle;
-import com.tradehero.TestConstants;
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
-import com.tradehero.th.models.intent.OpenCurrentActivityHolder;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 import org.junit.After;
@@ -14,24 +13,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = TestConstants.MANIFEST_PATH)
+@RunWith(RobolectricMavenTestRunner.class)
 public class ProviderPageIntentTest
 {
     @Before public void setUp()
     {
-        THIntent.currentActivityHolder = new OpenCurrentActivityHolder(Robolectric.getShadowApplication().getApplicationContext());
+        THIntent.context = Robolectric.getShadowApplication().getApplicationContext();
     }
 
     @After public void tearDown()
     {
-        THIntent.currentActivityHolder = null;
+        THIntent.context = null;
     }
 
     @Test public void providerActionUriPathIsWellFormed1()
@@ -198,7 +194,7 @@ public class ProviderPageIntentTest
         ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(123, bundle.getInt(CompetitionFragment.BUNDLE_KEY_PROVIDER_ID));
+        assertEquals(123, (int) CompetitionFragment.getProviderId(bundle).key);
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -211,6 +207,6 @@ public class ProviderPageIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(123, bundle.getInt(CompetitionFragment.BUNDLE_KEY_PROVIDER_ID));
+        assertEquals(123, (int) CompetitionFragment.getProviderId(bundle).key);
     }
 }

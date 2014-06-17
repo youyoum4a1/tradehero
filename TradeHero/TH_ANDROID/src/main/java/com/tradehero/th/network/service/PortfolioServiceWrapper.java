@@ -16,24 +16,25 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class PortfolioServiceWrapper
 {
-    private final PortfolioService portfolioService;
-    private final PortfolioServiceAsync portfolioServiceAsync;
-    private final UserProfileCache userProfileCache;
-    private final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    private final Lazy<PortfolioCompactCache> portfolioCompactCache;
-    private final Lazy<PortfolioCache> portfolioCache;
+    @NotNull private final PortfolioService portfolioService;
+    @NotNull private final PortfolioServiceAsync portfolioServiceAsync;
+    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @NotNull private final Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @NotNull private final Lazy<PortfolioCache> portfolioCache;
 
     @Inject public PortfolioServiceWrapper(
-            PortfolioService portfolioService,
-            PortfolioServiceAsync portfolioServiceAsync,
-            UserProfileCache userProfileCache,
-            Lazy<PortfolioCompactListCache> portfolioCompactListCache,
-            Lazy<PortfolioCompactCache> portfolioCompactCache,
-            Lazy<PortfolioCache> portfolioCache)
+            @NotNull PortfolioService portfolioService,
+            @NotNull PortfolioServiceAsync portfolioServiceAsync,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull Lazy<PortfolioCompactListCache> portfolioCompactListCache,
+            @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
+            @NotNull Lazy<PortfolioCache> portfolioCache)
     {
         super();
         this.portfolioService = portfolioService;
@@ -77,7 +78,8 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
-    public PortfolioDTO getPortfolio(OwnedPortfolioId ownedPortfolioId)
+    @NotNull
+    public PortfolioDTO getPortfolio(@NotNull OwnedPortfolioId ownedPortfolioId)
     {
         basicCheck(ownedPortfolioId);
         return this.portfolioService.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId);

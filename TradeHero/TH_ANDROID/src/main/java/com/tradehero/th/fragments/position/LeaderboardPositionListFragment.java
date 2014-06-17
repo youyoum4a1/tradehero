@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.position;
 
-import com.tradehero.th.api.leaderboard.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import timber.log.Timber;
 
@@ -19,7 +19,6 @@ public class LeaderboardPositionListFragment
         }
         positionItemAdapter = new LeaderboardPositionItemAdapter(
                 getActivity(),
-                getActivity().getLayoutInflater(),
                 getLayoutResIds(),
                 timeRestricted);
         positionItemAdapter.setCellListener(this);

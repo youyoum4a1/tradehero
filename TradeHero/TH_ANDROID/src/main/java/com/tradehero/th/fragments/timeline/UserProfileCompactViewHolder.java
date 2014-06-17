@@ -169,7 +169,7 @@ public class UserProfileCompactViewHolder
             if (userProfileDTO != null)
             {
                 heroesCount.setText(Integer.toString(
-                        userProfileDTO.heroIds == null ? 0 : userProfileDTO.heroIds.size()));
+                        userProfileDTO.heroIds == null ? userProfileDTO.allHeroCount : userProfileDTO.heroIds.size()));
             }
             else
             {

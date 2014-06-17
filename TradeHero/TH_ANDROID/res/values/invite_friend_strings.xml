@@ -3,6 +3,7 @@
 
   <string name="invite">Invite</string>
   <string name="invite_friends">Invite Friends</string>
+  <string name="invite_all">Invite All</string>
   <string name="invite_friend_refer_friend_empty_view">Your friend list is empty, link your account with Facebook, Twitter or Linkedin to refer friends</string>
   <string name="invite_friend_send_invitations">Send Invitations</string>
   <string name="invite_friend_refer_friend_announcement">Get FREE TradeHero Dollars for each friend who signs up for TradeHero!</string>

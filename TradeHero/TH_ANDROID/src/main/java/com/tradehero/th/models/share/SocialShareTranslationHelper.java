@@ -1,5 +1,6 @@
 package com.tradehero.th.models.share;
 
+import android.content.Context;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -28,7 +29,9 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     private TranslationKeyList remainingKeys;
     private AbstractDiscussionCompactDTO translated;
 
+    //<editor-fold desc="Constructors">
     @Inject public SocialShareTranslationHelper(
+            Context applicationContext,
             CurrentActivityHolder currentActivityHolder,
             NewsDialogFactory newsDialogFactory,
             AlertDialogUtil alertDialogUtil,
@@ -37,11 +40,12 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory,
             TranslationCache translationCache)
     {
-        super(currentActivityHolder, newsDialogFactory, alertDialogUtil, socialSharerProvider);
+        super(applicationContext, currentActivityHolder, newsDialogFactory, alertDialogUtil, socialSharerProvider);
         this.translationKeyFactory = translationKeyFactory;
         this.abstractDiscussionCompactDTOFactory = abstractDiscussionCompactDTOFactory;
         this.translationCache = translationCache;
     }
+    //</editor-fold>
 
     @Override public void onDetach()
     {
@@ -99,7 +103,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
     @NotNull public String getTargetLanguage()
     {
-        return currentActivityHolder.getCurrentActivity().getResources().getConfiguration().locale.getLanguage();
+        return applicationContext.getResources().getConfiguration().locale.getLanguage();
     }
 
     public boolean canTranslate(@Nullable AbstractDiscussionCompactDTO discussionToTranslate)
@@ -115,9 +119,13 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         {
             cancelFormWaiting();
             dismissShareDialog();
-            shareDialog = ((NewsDialogFactory) shareDialogFactory).createNewsDialog(
-                    currentActivityHolder.getCurrentContext(), discussionToShare,
-                    createShareMenuClickedListener());
+            Context currentActivityContext = currentActivityHolder.getCurrentContext();
+            if (currentActivityContext != null)
+            {
+                shareDialog = ((NewsDialogFactory) shareDialogFactory).createNewsDialog(
+                        currentActivityContext, discussionToShare,
+                        createShareMenuClickedListener());
+            }
         }
         else
         {

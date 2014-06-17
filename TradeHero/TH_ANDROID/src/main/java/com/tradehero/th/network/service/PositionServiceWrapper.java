@@ -9,16 +9,17 @@ import javax.inject.Singleton;
 
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class PositionServiceWrapper
 {
-    private final PositionService positionService;
-    private final PositionServiceAsync positionServiceAsync;
+    @NotNull private final PositionService positionService;
+    @NotNull private final PositionServiceAsync positionServiceAsync;
 
     @Inject public PositionServiceWrapper(
-            PositionService positionService,
-            PositionServiceAsync positionServiceAsync)
+            @NotNull PositionService positionService,
+            @NotNull PositionServiceAsync positionServiceAsync)
     {
         super();
         this.positionService = positionService;

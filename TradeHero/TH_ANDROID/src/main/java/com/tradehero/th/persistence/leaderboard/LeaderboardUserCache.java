@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class LeaderboardUserCache extends StraightDTOCache<LeaderboardUserId, LeaderboardUserDTO>
 {
@@ -23,7 +26,8 @@ import javax.inject.Singleton;
         throw new IllegalStateException("There is no fetch on LeaderboardUserCache");
     }
 
-    public void put(Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
+    @Contract("null -> null; !null -> !null")
+    public void put(@Nullable Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
     {
         if (leaderboardUserDTOs == null)
         {
@@ -36,6 +40,7 @@ import javax.inject.Singleton;
         }
     }
 
+    @Contract("null -> null; !null -> !null")
     public List<LeaderboardUserDTO> get(List<LeaderboardUserId> leaderboardUserIds)
     {
         if (leaderboardUserIds == null)
@@ -44,7 +49,7 @@ import javax.inject.Singleton;
         }
 
         List<LeaderboardUserDTO> returned = new ArrayList<>();
-        for (LeaderboardUserId leaderboardUserId: leaderboardUserIds)
+        for (@NotNull LeaderboardUserId leaderboardUserId: leaderboardUserIds)
         {
             returned.add(get(leaderboardUserId));
         }
