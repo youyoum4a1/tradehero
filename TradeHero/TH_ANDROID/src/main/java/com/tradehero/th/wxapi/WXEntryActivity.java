@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
 {
@@ -161,11 +162,18 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     private void initBitmap()
     {
-        if (mBitmap == null)
+        try
         {
-            mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.splash_logo);
-            //mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
-            mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
+            if (mBitmap == null)
+            {
+                mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.splash_logo);
+                //mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
+                mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
+            }
+        }
+        catch (OutOfMemoryError e)
+        {
+            Timber.e(e, null);
         }
     }
 
