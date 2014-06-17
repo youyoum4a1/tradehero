@@ -2,9 +2,14 @@ package com.tradehero.th.fragments.competition.zone.dto;
 
 public class CompetitionZoneWizardDTO extends CompetitionZoneDTO
 {
-    public CompetitionZoneWizardDTO(String title, String description)
+    private final String iconUrl;
+    private String webUrl;
+
+    public CompetitionZoneWizardDTO(String title, String description, String iconUrl, String webUrl)
     {
         super(title, description);
+        this.iconUrl = iconUrl;
+        this.webUrl = webUrl;
     }
 
     @Override public String toString()
@@ -13,5 +18,15 @@ public class CompetitionZoneWizardDTO extends CompetitionZoneDTO
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public String getIconUrl()
+    {
+        return iconUrl;
+    }
+
+    public String getWebUrl()
+    {
+        return webUrl;
     }
 }

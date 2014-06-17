@@ -354,13 +354,17 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushWizardElement(CompetitionZoneWizardDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
+
+        String competitionUrl = competitionZoneDTO.getWebUrl();
+        if (competitionUrl == null)
+        {
+            competitionUrl = providerUtil.getWizardPage(providerId);
+            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
+        }
+        
         args.putString(
-                CompetitionWebViewFragment.BUNDLE_KEY_URL,
-                providerUtil.getWizardPage(providerId) + "&previous=whatever");
-        args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment =
-                (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class,
-                        args);
+                CompetitionWebViewFragment.BUNDLE_KEY_URL, competitionUrl + "&previous=whatever");
+        this.webViewFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
