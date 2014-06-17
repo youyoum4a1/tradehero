@@ -121,7 +121,6 @@ import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
-import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
@@ -320,12 +319,10 @@ import javax.inject.Singleton;
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
                         THIABBillingInteractor.class,
-                        HeroManagerInfoFetcher.class,
                         HeroesTabContentFragment.class,
                         PremiumHeroFragment.class,
                         FreeHeroFragment.class,
                         AllHeroFragment.class,
-                        HeroManagerInfoFetcher.class,
                         AllRelationsFragment.class,
                         RelationsListItemView.class,
 

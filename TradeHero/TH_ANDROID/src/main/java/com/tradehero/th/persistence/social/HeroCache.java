@@ -3,12 +3,15 @@ package com.tradehero.th.persistence.social;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOList;
+import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class HeroCache extends StraightDTOCacheNew<FollowerHeroRelationId, HeroDTO>
 {
@@ -49,13 +52,40 @@ import org.jetbrains.annotations.NotNull;
         {
             return null;
         }
-        HeroDTOList heroDTOs = new HeroDTOList();
 
+        HeroDTOList heroDTOs = new HeroDTOList();
         for (FollowerHeroRelationId heroId: heroIds)
         {
             heroDTOs.add(get(heroId));
         }
+        return heroDTOs;
+    }
 
+    public boolean haveAllHeros(HeroIdList heroIds)
+    {
+        // We need this longer test in case DTO have been flushed.
+        HeroDTOList heroDTOs = getNonNullDTOs(heroIds);
+        return heroIds != null && (heroIds.size() == heroDTOs.size());
+    }
+
+    @Contract("null -> null; !null -> !null")
+    public HeroDTOList getNonNullDTOs(@Nullable List<FollowerHeroRelationId> heroIds)
+    {
+        if (heroIds == null)
+        {
+            return null;
+        }
+
+        HeroDTOList heroDTOs = new HeroDTOList();
+        HeroDTO cachedHeroDTO;
+        for (FollowerHeroRelationId heroId: heroIds)
+        {
+            cachedHeroDTO = get(heroId);
+            if (cachedHeroDTO != null)
+            {
+                heroDTOs.add(cachedHeroDTO);
+            }
+        }
         return heroDTOs;
     }
 }
