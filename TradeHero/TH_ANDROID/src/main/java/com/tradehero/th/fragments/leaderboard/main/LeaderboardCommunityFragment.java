@@ -98,6 +98,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override protected void initViews(View view)
     {
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
         leaderboardDefListView.setOnItemClickListener(createItemClickListener());
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
