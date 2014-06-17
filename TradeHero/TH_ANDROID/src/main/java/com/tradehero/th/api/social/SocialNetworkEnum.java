@@ -1,7 +1,5 @@
 package com.tradehero.th.api.social;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.tradehero.th.models.user.auth.*;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
@@ -34,7 +32,7 @@ public enum SocialNetworkEnum
         return authenticationHeader;
     }
 
-    @JsonValue
+    //@JsonValue
     public String getName()
     {
         return name;
