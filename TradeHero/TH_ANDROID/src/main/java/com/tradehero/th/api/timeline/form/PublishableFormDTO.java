@@ -8,7 +8,7 @@ public class PublishableFormDTO
     public static final String POST_KEY_PUBLISH_TO_FACEBOOK = "publishToFb";
     public static final String POST_KEY_PUBLISH_TO_TWITTER = "publishToTw";
     public static final String POST_KEY_PUBLISH_TO_LINKEDIN = "publishToLi";
-    public static final String POST_KEY_PUBLISH_TO_WeiBo = "publishToWb";
+    public static final String POST_KEY_PUBLISH_TO_WEIBO = "publishToWb";
     public static final String POST_KEY_GEO_ALT = "geo_alt";
     public static final String POST_KEY_GEO_LAT = "geo_lat";
     public static final String POST_KEY_GEO_LONG = "geo_long";
@@ -60,7 +60,7 @@ public class PublishableFormDTO
         }
         if (publishToWb != null)
         {
-            map.put(POST_KEY_PUBLISH_TO_WeiBo, publishToWb ? "1" : "0");
+            map.put(POST_KEY_PUBLISH_TO_WEIBO, publishToWb ? "1" : "0");
         }
         if (geo_alt != null)
         {
