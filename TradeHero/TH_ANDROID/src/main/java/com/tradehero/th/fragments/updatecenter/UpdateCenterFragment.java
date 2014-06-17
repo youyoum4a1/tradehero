@@ -22,7 +22,6 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -43,6 +42,7 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class UpdateCenterFragment extends BaseFragment
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Inject MessageHeaderListCache messageListCache;

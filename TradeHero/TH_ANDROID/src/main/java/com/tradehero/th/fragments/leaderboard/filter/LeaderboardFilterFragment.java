@@ -17,6 +17,7 @@ import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

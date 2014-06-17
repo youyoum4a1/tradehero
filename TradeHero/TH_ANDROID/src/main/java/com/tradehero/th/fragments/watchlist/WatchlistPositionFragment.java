@@ -22,7 +22,6 @@ import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.fortysevendeg.android.swipelistview.SwipeListViewListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -45,6 +44,7 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
 public class WatchlistPositionFragment extends DashboardFragment
@@ -60,7 +60,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioHeaderFactory headerFactory;
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionFetchTask;
     private DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> portfolioFetchTask;
