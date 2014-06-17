@@ -25,6 +25,7 @@
       android:id="@+id/icn_competition_zone"
       android:layout_width="48dp"
       android:layout_height="48dp"
+      android:padding="3dp"
       android:layout_alignParentLeft="true"
       tools:src="@drawable/icn_info_blue"
       android:contentDescription="@null"
