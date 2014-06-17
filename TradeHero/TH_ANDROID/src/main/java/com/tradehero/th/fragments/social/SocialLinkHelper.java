@@ -19,6 +19,8 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public abstract class SocialLinkHelper
 {
@@ -28,11 +30,34 @@ public abstract class SocialLinkHelper
 
     Activity context;
 
+    protected Callback<UserProfileDTO> socialLinkingCallback;
+    protected MiddleCallback<UserProfileDTO> middleCallbackSocialLinking;
+
     public ProgressDialog progressDialog;
 
     public SocialLinkHelper(Activity context)
     {
         this.context = context;
+    }
+
+    public void onDestroyView()
+    {
+        detachMiddleCallbackSocialLinking();
+        setSocialLinkingCallback(null);
+    }
+
+    public void setSocialLinkingCallback(Callback<UserProfileDTO> socialLinkingCallback)
+    {
+        this.socialLinkingCallback = socialLinkingCallback;
+    }
+
+    protected void detachMiddleCallbackSocialLinking()
+    {
+        if (middleCallbackSocialLinking != null)
+        {
+            middleCallbackSocialLinking.setPrimaryCallback(null);
+        }
+        middleCallbackSocialLinking = null;
     }
 
     protected abstract SocialNetworkEnum getSocialNetwork();
@@ -43,12 +68,13 @@ public abstract class SocialLinkHelper
 
     public void link()
     {
-        link(createSocialConnectLogInCallback());
+        link(null);
     }
 
-    public void link(LogInCallback callback)
+    public void link(Callback<UserProfileDTO> socialLinkingCallback)
     {
-        doLoginAction(context, callback);
+        this.socialLinkingCallback = socialLinkingCallback;
+        doLoginAction(context, createSocialConnectLogInCallback());
     }
 
     protected abstract void doLoginAction(Activity context, LogInCallback logInCallback);
@@ -73,13 +99,13 @@ public abstract class SocialLinkHelper
             progressDialog = progressDialogUtil.show(context,
                     getLinkDialogTitle(),
                     getLinkDialogMessage());
-
         }
 
         @Override
         public boolean onSocialAuthDone(JSONCredentials json)
         {
-            MiddleCallback middleCallbackConnect = socialServiceWrapper.connect(
+            detachMiddleCallbackSocialLinking();
+            middleCallbackSocialLinking = socialServiceWrapper.connect(
                     currentUserId.toUserBaseKey(),
                     UserFormFactory.create(json),
                     createSocialLinkingCallback());
@@ -98,6 +124,18 @@ public abstract class SocialLinkHelper
 
     protected class SocialLinkingCallback extends THCallback<UserProfileDTO>
     {
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            super.success(userProfileDTO, response);
+            notifyLinkingComplete(userProfileDTO, response);
+        }
+
+        @Override public void failure(RetrofitError error)
+        {
+            super.failure(error);
+            notifyLinkingFailure(error);
+        }
+
         @Override
         protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
@@ -115,6 +153,24 @@ public abstract class SocialLinkHelper
         {
             progressDialog.hide();
             //updateSocialConnectStatus();
+        }
+    }
+
+    protected void notifyLinkingComplete(UserProfileDTO userProfileDTO, Response response)
+    {
+        Callback<UserProfileDTO> callbackCopy = socialLinkingCallback;
+        if (callbackCopy != null)
+        {
+            callbackCopy.success(userProfileDTO, response);
+        }
+    }
+
+    protected void notifyLinkingFailure(RetrofitError retrofitError)
+    {
+        Callback<UserProfileDTO> callbackCopy = socialLinkingCallback;
+        if (callbackCopy != null)
+        {
+            callbackCopy.failure(retrofitError);
         }
     }
 }

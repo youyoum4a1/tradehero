@@ -1781,37 +1781,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         loadingDialog = progressDialogUtil.show(BuySellFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
         socialLinkHelper = socialNetworkFactory.buildSocialLinkerHelper(socialNetworkEnum);
-        socialLinkHelper.link(createSocialConnectLogInCallback(socialNetworkEnum));
+        socialLinkHelper.link(new SocialLinkingCallback(socialNetworkEnum));
     }
 
-    private LogInCallback createSocialConnectLogInCallback(final SocialNetworkEnum socialNetworkEnum)
-    {
-        LogInCallback socialConnectLogInCallback = new LogInCallback()
-        {
-            @Override
-            public void done(UserLoginDTO user, THException ex)
-            {
-            }
-
-            @Override
-            public void onStart()
-            {
-            }
-
-            @Override
-            public boolean onSocialAuthDone(JSONCredentials json)
-            {
-                MiddleCallback middleCallbackConnect = socialServiceWrapper.connect(
-                        currentUserId.toUserBaseKey(),
-                        UserFormFactory.create(json),
-                        new SocialLinkingCallback(socialNetworkEnum));
-                return false;
-            }
-        };
-        return socialConnectLogInCallback;
-    }
-
-    private class SocialLinkingCallback extends THCallback<UserProfileDTO>
+    private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
     {
         SocialNetworkEnum socialNetworkEnum;
 
@@ -1820,26 +1793,13 @@ public class BuySellFragment extends AbstractBuySellFragment
             this.socialNetworkEnum = socialNetworkEnum;
         }
 
-        @Override
-        protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
             setPublishEnable(socialNetworkEnum);
         }
 
-        @Override
-        protected void failure(THException ex)
+        @Override public void failure(RetrofitError retrofitError)
         {
-            // user unlinked current authentication
-            THToast.show(ex);
-        }
-
-        @Override
-        protected void finish()
-        {
-            if (loadingDialog != null)
-            {
-                loadingDialog.hide();
-            }
         }
     }
 

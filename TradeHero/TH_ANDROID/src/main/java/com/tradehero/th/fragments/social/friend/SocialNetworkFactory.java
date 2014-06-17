@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
+// TODO remove singleton
 @Singleton public class SocialNetworkFactory
 {
+    // TODO don't use a map.
     @NotNull private Map<SocialNetworkEnum, SocialLinkHelper> socialLinkHelperCache;
     @NotNull private final CurrentActivityHolder currentActivityHolder;
 
