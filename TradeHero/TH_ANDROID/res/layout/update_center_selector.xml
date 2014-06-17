@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:paddingTop="30dp"
+    android:paddingTop="@dimen/residemenu_item_padding"
+    android:paddingBottom="@dimen/residemenu_item_padding"
     tools:background="@color/red"
     >
   <ImageView

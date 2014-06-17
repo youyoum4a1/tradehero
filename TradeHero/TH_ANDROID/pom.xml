@@ -497,7 +497,11 @@
     <!--<systemPath>${project.basedir}/libs/libammsdk.jar</systemPath>-->
     <!--</dependency>-->
 
-
+    <dependency>
+      <groupId>com.squareup.phrase</groupId>
+      <artifactId>phrase</artifactId>
+      <version>1.0.3</version>
+    </dependency>
   </dependencies>
 
   <build>
