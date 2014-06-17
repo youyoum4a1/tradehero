@@ -1,11 +1,16 @@
 package com.tradehero.th.fragments.home;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
@@ -19,7 +24,8 @@ import javax.inject.Inject;
 
 public class HomeFragment extends BaseWebViewFragment
 {
-    private static final String URL = "http://www.tradehero.mobi/AppHome";
+    @InjectView(android.R.id.progress) View progressBar;
+    @InjectView(R.id.main_content_wrapper) BetterViewAnimator mainContentWrapper;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject @LanguageCode String languageCode;
@@ -27,17 +33,24 @@ public class HomeFragment extends BaseWebViewFragment
 
     @Override protected int getLayoutResId()
     {
-        return R.layout.fragment_webview;
+        return R.layout.fragment_home_webview;
     }
 
-    @Override protected void initViews(View v)
+    @Override protected void initViews(View view)
     {
-        super.initViews(v);
+        super.initViews(view);
+        ButterKnife.inject(this, view);
 
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setSupportZoom(false);
         webView.getSettings().setUseWideViewPort(false);
         thWebViewClient.setClearCacheAfterFinishRequest(false);
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -48,7 +61,7 @@ public class HomeFragment extends BaseWebViewFragment
         additionalHeaders.put(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
         additionalHeaders.put(Constants.TH_CLIENT_VERSION, VersionUtils.getVersionId(getActivity()));
         additionalHeaders.put(Constants.TH_LANGUAGE_CODE, languageCode);
-        loadUrl(URL, additionalHeaders);
+        loadUrl(Constants.APP_HOME, additionalHeaders);
     }
 
 
@@ -73,6 +86,21 @@ public class HomeFragment extends BaseWebViewFragment
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override protected void onProgressChanged(WebView view, int newProgress)
+    {
+        super.onProgressChanged(view, newProgress);
+        Activity activity = getActivity();
+        if (activity != null)
+        {
+            activity.setProgress(newProgress * 100);
+        }
+
+        if (mainContentWrapper != null && newProgress > 90)
+        {
+            mainContentWrapper.setDisplayedChildByLayoutId(R.id.webview);
+        }
     }
 
     public String createTypedAuthParameters(CredentialsDTO credentialsDTO)
