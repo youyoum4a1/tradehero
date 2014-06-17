@@ -2,23 +2,33 @@ package com.tradehero.th.fragments.social;
 
 import android.app.Activity;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.utils.LinkedInUtils;
-import dagger.Lazy;
+import com.tradehero.th.utils.ProgressDialogUtil;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class LinkedInSocialLinkHelper extends SocialLinkHelper
 {
-    @Inject Lazy<LinkedInUtils> linkedInUtilsLazy;
+    @NotNull private final LinkedInUtils linkedInUtils;
 
-    public LinkedInSocialLinkHelper(Activity context)
+    //<editor-fold desc="Constructors">
+    @Inject public LinkedInSocialLinkHelper(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull LinkedInUtils linkedInUtils)
     {
-        super(context);
-        DaggerUtils.inject(this);
+        super(currentUserId, progressDialogUtil, socialServiceWrapper, currentActivityHolder);
+        this.linkedInUtils = linkedInUtils;
     }
+    //</editor-fold>
 
     protected SocialNetworkEnum getSocialNetwork()
     {
@@ -37,6 +47,6 @@ public class LinkedInSocialLinkHelper extends SocialLinkHelper
 
     protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        linkedInUtilsLazy.get().logIn(context, logInCallback);
+        linkedInUtils.logIn(context, logInCallback);
     }
 }

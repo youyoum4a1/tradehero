@@ -2,23 +2,33 @@ package com.tradehero.th.fragments.social;
 
 import android.app.Activity;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.utils.FacebookUtils;
-import dagger.Lazy;
+import com.tradehero.th.utils.ProgressDialogUtil;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class FacebookSocialLinkHelper extends SocialLinkHelper
 {
-    @Inject Lazy<FacebookUtils> facebookUtils;
+    @NotNull private final FacebookUtils facebookUtils;
 
-    public FacebookSocialLinkHelper(Activity activity)
+    //<editor-fold desc="Constructors">
+    @Inject public FacebookSocialLinkHelper(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull FacebookUtils facebookUtils)
     {
-        super(activity);
-        DaggerUtils.inject(this);
+        super(currentUserId, progressDialogUtil, socialServiceWrapper, currentActivityHolder);
+        this.facebookUtils = facebookUtils;
     }
+    //</editor-fold>
 
     protected SocialNetworkEnum getSocialNetwork()
     {
@@ -37,6 +47,6 @@ public class FacebookSocialLinkHelper extends SocialLinkHelper
 
     protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        facebookUtils.get().logIn(context, logInCallback);
+        facebookUtils.logIn(context, logInCallback);
     }
 }

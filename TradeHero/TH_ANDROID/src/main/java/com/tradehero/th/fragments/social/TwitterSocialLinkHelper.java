@@ -2,23 +2,33 @@ package com.tradehero.th.fragments.social;
 
 import android.app.Activity;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
-import dagger.Lazy;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class TwitterSocialLinkHelper extends SocialLinkHelper
 {
-    @Inject Lazy<TwitterUtils> twitterUtils;
+    @NotNull private final TwitterUtils twitterUtils;
 
-    public TwitterSocialLinkHelper(Activity context)
+    //<editor-fold desc="Constructors">
+    @Inject public TwitterSocialLinkHelper(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull TwitterUtils twitterUtils)
     {
-        super(context);
-        DaggerUtils.inject(this);
+        super(currentUserId, progressDialogUtil, socialServiceWrapper, currentActivityHolder);
+        this.twitterUtils = twitterUtils;
     }
+    //</editor-fold>
 
     protected SocialNetworkEnum getSocialNetwork()
     {
@@ -37,6 +47,6 @@ public class TwitterSocialLinkHelper extends SocialLinkHelper
 
     protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        twitterUtils.get().logIn(context, logInCallback);
+        twitterUtils.logIn(context, logInCallback);
     }
 }
