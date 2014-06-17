@@ -117,7 +117,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         //two buttons in WelcomeFragment
         mapViewFragment.put(R.id.authentication_by_sign_up_button, SignUpFragment.class);
+        mapViewFragment.put(R.id.authentication_by_sign_up_back_button, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_by_sign_in_button, SignInFragment.class);
+        mapViewFragment.put(R.id.authentication_by_sign_in_back_button, SignInFragment.class);
         //button in SignInFragment
         mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
         //button in SignUpFragment
@@ -160,7 +162,16 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         Class<?> fragmentClass = mapViewFragment.get(view.getId());
         if (fragmentClass != null)
         {
-            setCurrentFragmentByClass(fragmentClass);
+            if (view.getId() == R.id.authentication_by_sign_in_back_button
+                    || view.getId() == R.id.authentication_by_sign_up_back_button
+                    || view.getId() == R.id.authentication_by_sign_in_button)
+            {
+                setCurrentFragmentByPopBack(fragmentClass);
+            }
+            else
+            {
+                setCurrentFragmentByClass(fragmentClass);
+            }
             if (currentFragment instanceof AuthenticationFragment)
             {
                 THUser.setAuthenticationMode(((AuthenticationFragment) currentFragment).getAuthenticationMode());
@@ -228,6 +239,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 .replace(R.id.fragment_content, currentFragment)
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
+    }
+
+    private void setCurrentFragmentByPopBack(Class<?> fragmentClass)
+    {
+        getSupportFragmentManager().popBackStack();
     }
 
     private void authenticateWithEmail()

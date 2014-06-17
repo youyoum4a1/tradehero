@@ -10,28 +10,25 @@
       android:id="@+id/profile_info"
       >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/user_profile_info_required"
-        android:textColor="@color/text_gray_normal"
-        android:layout_margin="5dip"
-        android:textSize="18sp"/>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/user_profile_info_required"-->
+        <!--android:textColor="@color/text_gray_normal"-->
+        <!--android:layout_margin="5dip"-->
+        <!--android:textSize="18sp"/>-->
 
     <com.tradehero.th.widget.ServerValidatedEmailText
         android:id="@+id/authentication_sign_up_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dip"
         android:layout_gravity="left|bottom"
         android:hint="@string/user_profile_email"
+        android:textColorHint="@color/red"
         android:inputType="textEmailAddress"
         android:imeOptions="actionNext"
         style="@style/TradeHero.Authentication.EditText"
 
-        android:drawableLeft="@drawable/accounts_glyph_email_default"
-        app:invalidDrawable="@drawable/accounts_glyph_email_error"
-        app:validDrawable="@drawable/accounts_glyph_email_ok"
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
@@ -40,7 +37,12 @@
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="500"
+        android:textSize="30sp"
+        android:background="@drawable/authentication_edit_text"
         >
+        <!--android:drawableLeft="@drawable/accounts_glyph_email_default"-->
+        <!--app:invalidDrawable="@drawable/accounts_glyph_email_error"-->
+        <!--app:validDrawable="@drawable/accounts_glyph_email_ok"-->
         <requestFocus/>
         </com.tradehero.th.widget.ServerValidatedEmailText>
 
@@ -48,61 +50,65 @@
         android:id="@+id/authentication_sign_up_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dip"
+        android:layout_marginTop="@dimen/common_margin_15"
         android:layout_gravity="center_vertical"
         android:hint="@string/user_profile_password"
+        android:textColorHint="@color/red"
         android:inputType="textPassword"
         style="@style/TradeHero.Authentication.EditText"
 
-        android:drawableLeft="@drawable/accounts_glyph_password_default"
-        app:invalidDrawable="@drawable/accounts_glyph_password_error"
-        app:validDrawable="@drawable/accounts_glyph_password_ok"
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
         app:minSize="6"
         app:delayValidationByMilliSec="1000"
+        android:textSize="30sp"
+        android:background="@drawable/authentication_edit_text"
         />
+        <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
+        <!--app:invalidDrawable="@drawable/accounts_glyph_password_error"-->
+        <!--app:validDrawable="@drawable/accounts_glyph_password_ok"-->
 
     <com.tradehero.th.widget.MatchingPasswordText
         android:id="@+id/authentication_sign_up_confirm_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dip"
+        android:layout_marginTop="@dimen/common_margin_15"
         android:layout_gravity="center_vertical"
         android:hint="@string/user_profile_confirm_pwd"
+        android:textColorHint="@color/red"
         android:inputType="textPassword"
         style="@style/TradeHero.Authentication.EditText"
 
-        android:drawableLeft="@drawable/accounts_glyph_password_default"
-        app:invalidDrawable="@drawable/accounts_glyph_password_error"
-        app:validDrawable="@drawable/accounts_glyph_password_ok"
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
         app:matchWith="@id/authentication_sign_up_password"
         app:delayValidationByMilliSec="1000"
+        android:textSize="30sp"
+        android:background="@drawable/authentication_edit_text"
         />
+        <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
+        <!--app:invalidDrawable="@drawable/accounts_glyph_password_error"-->
+        <!--app:validDrawable="@drawable/accounts_glyph_password_ok"-->
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_margin="2dip">
+        android:layout_marginTop="@dimen/common_margin_15">
 
       <com.tradehero.th.widget.ServerValidatedUsernameText
           android:id="@+id/authentication_sign_up_username"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:hint="@string/user_profile_display_name"
+          android:textColorHint="@color/red"
           android:inputType="text"
           style="@style/TradeHero.Authentication.EditText"
 
-          android:drawableLeft="@drawable/accounts_glyph_username_default"
-          app:invalidDrawable="@drawable/accounts_glyph_username_error"
-          app:validDrawable="@drawable/accounts_glyph_username_ok"
           android:drawableRight="@drawable/accounts_glyph_transparent_default"
           app:invalidDrawableRight="@drawable/warning_red"
           app:validDrawableRight="@drawable/tick_green"
@@ -111,7 +117,12 @@
           app:indicator="@+id/authentication_sign_up_username_validator"
           app:delayValidationByMilliSec="500"
           app:progressIndicator="@+id/authentication_sign_up_username_validator"
+          android:textSize="30sp"
+          android:background="@drawable/authentication_edit_text"
           />
+          <!--android:drawableLeft="@drawable/accounts_glyph_username_default"-->
+          <!--app:invalidDrawable="@drawable/accounts_glyph_username_error"-->
+          <!--app:validDrawable="@drawable/accounts_glyph_username_ok"-->
 
       <ProgressBar
           android:id="@+id/authentication_sign_up_username_validator"
@@ -124,39 +135,39 @@
 
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/optional_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="@string/user_profile_optional"
-        android:textColor="@color/text_gray_normal"
-        android:textSize="18sp"/>
+    <!--<TextView-->
+        <!--android:id="@+id/optional_text"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="5dp"-->
+        <!--android:text="@string/user_profile_optional"-->
+        <!--android:textColor="@color/text_gray_normal"/>-->
 
     <RelativeLayout
         android:id="@+id/layout_optional"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_15">
 
       <ImageView
           android:id="@+id/image_optional"
-          android:layout_width="80dip"
-          android:layout_height="80dip"
+          android:layout_width="@dimen/common_margin_110"
+          android:layout_height="@dimen/common_margin_110"
           android:layout_alignParentLeft="true"
           android:layout_centerVertical="true"
-          android:layout_margin="10dp"
           android:adjustViewBounds="true"
-          android:background="@drawable/image_selector"
+          android:background="@drawable/authentication_edit_text"
           android:gravity="center"
           android:src="@drawable/avatar"
           android:contentDescription="@string/empty"/>
+          <!--android:background="@drawable/image_selector"-->
 
       <LinearLayout
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:layout_toRightOf="@id/image_optional"
-          android:paddingLeft="5dip"
+          android:layout_marginLeft="@dimen/common_margin_10"
           android:orientation="vertical">
 
         <EditText
@@ -166,18 +177,22 @@
             android:hint="@string/user_profile_first_name"
             android:inputType="text"
 
-            android:drawableLeft="@drawable/accounts_glyph_name_default"
-            style="@style/TradeHero.Authentication.EditText"/>
+            style="@style/TradeHero.Authentication.EditText"
+            android:textSize="30sp"
+            android:background="@drawable/authentication_edit_text"/>
+            <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
 
         <EditText
             android:id="@+id/et_lastname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
+            android:layout_marginTop="@dimen/common_margin_10"
             android:hint="@string/user_profile_last_name"
             android:inputType="text"
-            android:drawableLeft="@drawable/accounts_glyph_name_default"
-            style="@style/TradeHero.Authentication.EditText"/>
+            style="@style/TradeHero.Authentication.EditText"
+            android:textSize="30sp"
+            android:background="@drawable/authentication_edit_text"/>
+            <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
 
       </LinearLayout>
 

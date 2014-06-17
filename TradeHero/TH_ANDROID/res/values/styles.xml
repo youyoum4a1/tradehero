@@ -113,8 +113,8 @@
     <item name="android:textColor">@color/white</item>
     <item name="android:textSize">30sp</item>
     <item name="android:textStyle">bold</item>
-    <item name="android:layout_marginTop">@dimen/common_margin_10</item>
-    <item name="android:layout_height">78dip</item>
+    <item name="android:layout_marginTop">@dimen/common_margin_15</item>
+    <item name="android:layout_height">@dimen/common_margin_60</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:gravity">left|center_vertical</item>
     <item name="android:drawablePadding">@dimen/common_margin_10</item>

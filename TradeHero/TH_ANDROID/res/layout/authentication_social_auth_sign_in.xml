@@ -21,6 +21,20 @@
       />
 
   <Button
+      android:id="@+id/btn_weibo_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:background="@drawable/btn_background_social_weibo"
+      android:drawableLeft="@drawable/settings_weibo_normal"
+      android:text="@string/weibo_login_in"/>
+
+  <Button
+      android:id="@+id/btn_qq_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:background="@drawable/btn_background_social_qq"
+      android:drawableLeft="@drawable/settings_qq_normal"
+      android:text="@string/qq_login_in"/>
+
+  <Button
       android:id="@+id/btn_linkedin_signin"
       style="@style/TradeHero.SocialAuthenticationButton"
       android:drawableLeft="@drawable/settings_linkedin_normal"
@@ -28,20 +42,6 @@
       android:text="@string/linkedin_login_in"
       />
 
-  <Button
-      android:id="@+id/btn_weibo_signin"
-      style="@style/TradeHero.SocialAuthenticationButton"
-      android:background="@drawable/btn_background_social_weibo"
-      android:drawableLeft="@drawable/settings_weibo_normal"
-      android:text="@string/weibo_login_in"
-      />
-  <Button
-      android:id="@+id/btn_qq_signin"
-      style="@style/TradeHero.SocialAuthenticationButton"
-      android:background="@drawable/btn_background_social_twitter"
-      android:drawableLeft="@drawable/settings_qq_normal"
-      android:text="@string/qq_login_in"
-      />
   <Button
       android:id="@+id/authentication_email_sign_in_link"
       android:background="@drawable/btn_background_email"

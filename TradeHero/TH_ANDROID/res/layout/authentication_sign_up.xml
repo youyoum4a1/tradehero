@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/common_margin_20"
         android:layout_marginRight="@dimen/common_margin_20"
-        android:layout_marginTop="@dimen/common_margin_50"
+        android:layout_marginTop="@dimen/common_margin_80"
         android:layout_marginBottom="@dimen/common_margin_100"
         android:src="@drawable/logo_text"/>
 
@@ -37,8 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginRight="30dip"
-        android:layout_marginLeft="30dip"
+        android:layout_marginRight="@dimen/common_margin_60"
+        android:layout_marginLeft="@dimen/common_margin_60"
         layout="@layout/authentication_social_auth_sign_up"
         />
 
@@ -75,21 +75,18 @@
         android:id="@+id/authentication_agreement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="30dip"
-        android:layout_marginLeft="30dip"
         android:layout_below="@+id/authentication_social_sign_up"
         layout="@layout/authentication_agreement"
-        android:layout_marginTop="@dimen/common_margin_20"
+        android:layout_marginTop="@dimen/common_margin_50"
         android:layout_centerHorizontal="true"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dip"
+        android:layout_height="@dimen/common_margin_50"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@color/authentication_forgot_password_link">
-        <!--android:layout_below="@+id/authentication_agreement"-->
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
