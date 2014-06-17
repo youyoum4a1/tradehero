@@ -14,6 +14,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
+import java.util.Map;
 import timber.log.Timber;
 
 abstract public class BaseWebViewFragment extends DashboardFragment
@@ -32,6 +33,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     {
         View view = inflater.inflate(getLayoutResId(), container, false);
         setHasOptionsMenu(true);
+        webView = (WebView) view.findViewById(R.id.webview);
         initViews(view);
         return view;
     }
@@ -63,8 +65,6 @@ abstract public class BaseWebViewFragment extends DashboardFragment
 
     protected void initViews(View v)
     {
-        webView = (WebView) v.findViewById(R.id.webview);
-
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
@@ -124,6 +124,11 @@ abstract public class BaseWebViewFragment extends DashboardFragment
 
     public void loadUrl(String url)
     {
+        loadUrl(url, null);
+    }
+
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders)
+    {
         if (url != null)
         {
             if (!url.startsWith("http"))
@@ -132,7 +137,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
             }
 
             Timber.d("url: %s", url);
-            webView.loadUrl(url);
+            webView.loadUrl(url, additionalHttpHeaders);
         }
     }
 

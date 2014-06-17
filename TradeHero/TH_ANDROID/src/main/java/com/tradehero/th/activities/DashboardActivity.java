@@ -55,6 +55,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
 import java.util.Date;
@@ -94,6 +95,8 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
+
+    @Inject THRouter thRouter;
 
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
@@ -371,6 +374,14 @@ public class DashboardActivity extends SherlockFragmentActivity
         Intent intent = getIntent();
         if (intent == null || intent.getAction() == null)
         {
+            return;
+        }
+
+        if (intent.getData() != null)
+        {
+            String url = intent.getData().toString();
+            url = url.replace("tradehero://", "");
+            thRouter.open(url, this);
             return;
         }
 

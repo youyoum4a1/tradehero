@@ -17,6 +17,7 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
+import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -125,7 +126,7 @@ public class NotificationClickHandler
                     NewsItemDTOKey newsItemDTOKey = new NewsItemDTOKey(notificationDTO.replyableId);
 
                     Bundle bundle = new Bundle();
-                    bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, newsItemDTOKey.getArgs());
+                    NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
                     navigator.pushFragment(NewsDiscussionFragment.class, bundle);
                 }
                 break;
@@ -135,7 +136,7 @@ public class NotificationClickHandler
                     SecurityDiscussionKey securityDiscussionKey = new SecurityDiscussionKey(notificationDTO.replyableId);
 
                     Bundle bundle = new Bundle();
-                    bundle.putBundle(SecurityDiscussionCommentFragment.DISCUSSION_KEY_BUNDLE_KEY, securityDiscussionKey.getArgs());
+                    SecurityDiscussionCommentFragment.putDiscussionKey(bundle, securityDiscussionKey);
                     navigator.pushFragment(SecurityDiscussionCommentFragment.class, bundle);
                 }
                 break;
@@ -177,7 +178,7 @@ public class NotificationClickHandler
                     TimelineItemDTOKey timelineItemDTOKey = new TimelineItemDTOKey(notificationDTO.replyableId);
 
                     Bundle bundle = new Bundle();
-                    bundle.putBundle(TimelineDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY, timelineItemDTOKey.getArgs());
+                    TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
                     navigator.pushFragment(TimelineDiscussionFragment.class, bundle);
                 }
                 break;

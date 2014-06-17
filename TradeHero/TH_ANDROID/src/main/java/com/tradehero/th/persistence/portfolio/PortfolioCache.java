@@ -50,18 +50,14 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Nullable
-    @Override public PortfolioDTO put(@NotNull OwnedPortfolioId key, PortfolioDTO value)
+    @Override public PortfolioDTO put(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
     {
-        if (value != null)
-        {
-            portfolioCompactCache.get().put(key.getPortfolioIdKey(), value);
-            getPositionsCache.get().invalidate(key);
-        }
-
+        portfolioCompactCache.get().put(key.getPortfolioIdKey(), value);
+        getPositionsCache.get().invalidate(key);
         return super.put(key, value);
     }
 
-    @Contract("null -> null")
+    @Contract("null -> null; !null -> !null")
     @Nullable
     public List<PortfolioDTO> get(@Nullable List<? extends OwnedPortfolioId> keys)
     {
@@ -70,14 +66,14 @@ import org.jetbrains.annotations.Nullable;
             return null;
         }
         List<PortfolioDTO> values = new ArrayList<>();
-        for (OwnedPortfolioId key: keys)
+        for (@NotNull OwnedPortfolioId key: keys)
         {
             values.add(get(key));
         }
         return values;
     }
 
-    @Contract("null -> null")
+    @Contract("null -> null; !null -> !null")
     @Nullable
     public List<PortfolioDTO> getOrFetch(@Nullable List<? extends OwnedPortfolioId> keys) throws Throwable
     {
@@ -86,7 +82,7 @@ import org.jetbrains.annotations.Nullable;
             return null;
         }
         List<PortfolioDTO> values = new ArrayList<>();
-        for (OwnedPortfolioId key: keys)
+        for (@NotNull OwnedPortfolioId key: keys)
         {
             values.add(getOrFetch(key));
         }
@@ -97,6 +93,6 @@ import org.jetbrains.annotations.Nullable;
     {
         super.invalidate(key);
         getPositionsCache.get().invalidate(key);
-        portfolioCompactListCache.autoFetch(key.getUserBaseKey(), true);
+        portfolioCompactListCache.getOrFetchAsync(key.getUserBaseKey(), true);
     }
 }

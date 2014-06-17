@@ -11,18 +11,19 @@ import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
 @Singleton public class TranslationServiceWrapper
 {
-    private final TranslationTokenCache translationTokenCache;
-    private final TranslationServiceBingWrapper translationServiceBingWrapper;
+    @NotNull private final TranslationTokenCache translationTokenCache;
+    @NotNull private final TranslationServiceBingWrapper translationServiceBingWrapper;
 
     @Inject public TranslationServiceWrapper(
-            TranslationTokenCache translationTokenCache,
-            TranslationServiceBingWrapper translationServiceBingWrapper)
+            @NotNull TranslationTokenCache translationTokenCache,
+            @NotNull TranslationServiceBingWrapper translationServiceBingWrapper)
     {
         this.translationTokenCache = translationTokenCache;
         this.translationServiceBingWrapper = translationServiceBingWrapper;

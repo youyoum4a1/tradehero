@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th"
     android:versionName="2.2.0"
-    android:versionCode="95"
+    android:versionCode="96"
     android:installLocation="auto">
 
   <uses-sdk
@@ -109,13 +109,13 @@
         <!--<action android:name="com.android.vending.billing.IN_APP_NOTIFY" />-->
         <!--<action android:name="com.android.vending.billing.RESPONSE_CODE" />-->
         <!--<action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />-->
-        <data android:host="tradehero" android:path="/view" android:scheme="http"/>
 
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_trending" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_community" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_profile" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_portfolio" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_user" android:pathPattern=".*"/>
       </intent-filter>
     </activity>
 

@@ -414,7 +414,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();
-            args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
+            MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
             OwnedPortfolioId associatedPortfolioId =
                     new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
             MainCompetitionFragment.putApplicablePortfolioId(args, associatedPortfolioId);

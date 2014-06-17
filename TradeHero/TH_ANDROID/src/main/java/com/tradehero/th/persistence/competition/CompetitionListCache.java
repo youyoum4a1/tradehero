@@ -9,34 +9,42 @@ import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class CompetitionListCache extends StraightDTOCache<ProviderId, CompetitionIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected CompetitionServiceWrapper competitionServiceWrapper;
-    @Inject protected CompetitionCache competitionCache;
+    @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
+    @NotNull private final CompetitionCache competitionCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public CompetitionListCache()
+    @Inject public CompetitionListCache(
+            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NotNull CompetitionCache competitionCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.competitionServiceWrapper = competitionServiceWrapper;
+        this.competitionCache = competitionCache;
     }
     //</editor-fold>
 
-    @Override protected CompetitionIdList fetch(ProviderId key) throws Throwable
+    @Override protected CompetitionIdList fetch(@NotNull ProviderId key) throws Throwable
     {
         return putInternal(key, competitionServiceWrapper.getCompetitions(key));
     }
 
-    protected CompetitionIdList putInternal(ProviderId key, List<CompetitionDTO> fleshedValues)
+    @Contract("_, null -> null; _, !null -> !null") @Nullable
+    protected CompetitionIdList putInternal(@NotNull ProviderId key, @Nullable List<CompetitionDTO> fleshedValues)
     {
         CompetitionIdList competitionIds = null;
         if (fleshedValues != null)
         {
             competitionIds = new CompetitionIdList();
             CompetitionId competitionId;
-            for (CompetitionDTO competitionDTO: fleshedValues)
+            for (@NotNull CompetitionDTO competitionDTO: fleshedValues)
             {
                 competitionId = competitionDTO.getCompetitionId();
                 competitionIds.add(competitionId);

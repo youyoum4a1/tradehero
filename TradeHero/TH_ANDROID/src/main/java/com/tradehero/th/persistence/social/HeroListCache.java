@@ -7,6 +7,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class HeroListCache extends StraightDTOCacheNew<UserBaseKey, HeroIdExtWrapper>
 {
@@ -24,7 +25,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override public HeroIdExtWrapper fetch(UserBaseKey key) throws Throwable
+    @Override public HeroIdExtWrapper fetch(@NotNull UserBaseKey key) throws Throwable
     {
         HeroDTOList allHeros = userServiceWrapper.getHeroes(key);
         return putInternal(key, allHeros);

@@ -21,18 +21,20 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class LeaderboardServiceWrapper
 {
-    private final LeaderboardService leaderboardService;
-    private final LeaderboardServiceAsync leaderboardServiceAsync;
-    private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
+    @NotNull private final LeaderboardService leaderboardService;
+    @NotNull private final LeaderboardServiceAsync leaderboardServiceAsync;
+    @NotNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     @Inject public LeaderboardServiceWrapper(
-            LeaderboardService leaderboardService,
-            LeaderboardServiceAsync leaderboardServiceAsync,
-            LeaderboardDefDTOFactory leaderboardDefDTOFactory)
+            @NotNull LeaderboardService leaderboardService,
+            @NotNull LeaderboardServiceAsync leaderboardServiceAsync,
+            @NotNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
     {
         super();
         this.leaderboardService = leaderboardService;
@@ -56,7 +58,7 @@ import retrofit.Callback;
         return createProcessorLeaderboardDefDTOList().process(leaderboardService.getLeaderboardDefinitions());
     }
 
-    public MiddleCallback<LeaderboardDefDTOList> getLeaderboardDefinitions(Callback<LeaderboardDefDTOList> callback)
+    @NotNull public MiddleCallback<LeaderboardDefDTOList> getLeaderboardDefinitions(@Nullable Callback<LeaderboardDefDTOList> callback)
     {
         MiddleCallback<LeaderboardDefDTOList> middleCallback = new BaseMiddleCallback<>(callback, createProcessorLeaderboardDefDTOList());
         leaderboardServiceAsync.getLeaderboardDefinitions(middleCallback);
@@ -65,7 +67,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Leaderboard">
-    public LeaderboardDTO getLeaderboard(LeaderboardKey leaderboardKey)
+    public LeaderboardDTO getLeaderboard(@NotNull LeaderboardKey leaderboardKey)
     {
         if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
         {
@@ -82,9 +84,12 @@ import retrofit.Callback;
             return leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-                    perPagedFilteredLeaderboardKey.averageHoldingDays,
+
+                    // HACK https://www.pivotaltracker.com/story/show/73042972
+                    Math.max(1, perPagedFilteredLeaderboardKey.averageHoldingDays),
+
                     perPagedFilteredLeaderboardKey.minSharpeRatio,
-                    perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
+                    perPagedFilteredLeaderboardKey.minConsistency == null ? null : 1 / perPagedFilteredLeaderboardKey.minConsistency,
                     perPagedFilteredLeaderboardKey.page,
                     perPagedFilteredLeaderboardKey.perPage);
         }
@@ -111,19 +116,9 @@ import retrofit.Callback;
         return leaderboardService.getLeaderboard(leaderboardKey.key, null, null);
     }
 
-    public LeaderboardFriendsDTO getNewFriendsLeaderboard()
-    {
-        return leaderboardService.getNewFriendsLeaderboard();
-    }
-
-    public MiddleCallback<LeaderboardFriendsDTO> getNewFriendsLeaderboard(Callback<LeaderboardFriendsDTO> callback)
-    {
-        MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
-        return middleCallback;
-    }
-
-    public MiddleCallback<LeaderboardDTO> getLeaderboard(LeaderboardKey leaderboardKey, Callback<LeaderboardDTO> callback)
+    @NotNull public MiddleCallback<LeaderboardDTO> getLeaderboard(
+            @NotNull LeaderboardKey leaderboardKey,
+            @Nullable Callback<LeaderboardDTO> callback)
     {
         MiddleCallback<LeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
         if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
@@ -142,9 +137,11 @@ import retrofit.Callback;
             leaderboardServiceAsync.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-                    perPagedFilteredLeaderboardKey.averageHoldingDays,
+
+                    // HACK https://www.pivotaltracker.com/story/show/73042972
+                    Math.max(1, perPagedFilteredLeaderboardKey.averageHoldingDays),
                     perPagedFilteredLeaderboardKey.minSharpeRatio,
-                    perPagedFilteredLeaderboardKey.maxPosRoiVolatility,
+                    perPagedFilteredLeaderboardKey.minConsistency == null ? null : 1 / perPagedFilteredLeaderboardKey.minConsistency,
                     perPagedFilteredLeaderboardKey.page,
                     perPagedFilteredLeaderboardKey.perPage,
                     middleCallback);
@@ -182,11 +179,23 @@ import retrofit.Callback;
         }
         return middleCallback;
     }
+
+    public LeaderboardFriendsDTO getNewFriendsLeaderboard()
+    {
+        return leaderboardService.getNewFriendsLeaderboard();
+    }
+
+    @NotNull public MiddleCallback<LeaderboardFriendsDTO> getNewFriendsLeaderboard(Callback<LeaderboardFriendsDTO> callback)
+    {
+        MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
+        return middleCallback;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
     public GetPositionsDTO getPositionsForLeaderboardMarkUser(
-            LeaderboardMarkUserId key)
+            @NotNull LeaderboardMarkUserId key)
     {
         GetPositionsDTO received;
         if (key instanceof PerPagedLeaderboardMarkUserId)
@@ -219,9 +228,9 @@ import retrofit.Callback;
         return received;
     }
 
-    public MiddleCallback<GetPositionsDTO> getPositionsForLeaderboardMarkUser(
-            LeaderboardMarkUserId key,
-            Callback<GetPositionsDTO> callback)
+    @NotNull public MiddleCallback<GetPositionsDTO> getPositionsForLeaderboardMarkUser(
+            @NotNull LeaderboardMarkUserId key,
+            @Nullable Callback<GetPositionsDTO> callback)
     {
         MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback, createProcessorReceivedGetPositions(key));
         if (key instanceof PerPagedLeaderboardMarkUserId)

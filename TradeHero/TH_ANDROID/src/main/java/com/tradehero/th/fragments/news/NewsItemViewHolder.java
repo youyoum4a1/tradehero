@@ -92,7 +92,10 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
 
     protected void fetchMultipleSecurities()
     {
-        if (mNewsDetailReference != null && discussionDTO.securityIds != null && !discussionDTO.securityIds.isEmpty())
+        if (mNewsDetailReference != null &&
+                discussionDTO != null &&
+                discussionDTO.securityIds != null &&
+                !discussionDTO.securityIds.isEmpty())
         {
             detachMultipleSecurityMiddleCallback();
             multipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(

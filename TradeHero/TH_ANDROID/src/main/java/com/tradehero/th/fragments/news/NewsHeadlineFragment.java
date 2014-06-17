@@ -236,7 +236,7 @@ public class NewsHeadlineFragment
             bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
             bundle.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL,
                     securityId.securitySymbol);
-            bundle.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,news.getArgs());
+            NewsDiscussionFragment.putDiscussionKey(bundle, news);
             getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
 
         }

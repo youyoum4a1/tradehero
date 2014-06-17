@@ -6,6 +6,7 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDTO> implements DTO
@@ -67,7 +68,7 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
     }
 
     @JsonIgnore
-    public void setOnInPeriod(LeaderboardMarkUserId leaderboardMarkUserId)
+    public void setOnInPeriod(@NotNull LeaderboardMarkUserId leaderboardMarkUserId)
     {
         if (positions != null)
         {

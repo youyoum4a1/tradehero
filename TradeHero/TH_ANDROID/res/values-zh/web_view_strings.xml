@@ -4,4 +4,6 @@
   <string name="webview_back">返回</string>
   <string name="webview_forward">向前</string>
 
+  <string name="webview_error_no_browser_for_intent_title">缺少浏览器</string>
+  <string name="webview_error_no_browser_for_intent_description">您的机器上没有浏览器</string>
 </resources>

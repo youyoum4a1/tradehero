@@ -4,6 +4,7 @@
   <string name="app_name">全民股神</string>
   <string name="na">无</string>
   <string name="empty"/>
+  <string name="cancel">取消</string>
   <string name="action_menu_settings">设置</string>
   <string name="network_error">@string/error_network_connection</string>
   <!-- data format-->

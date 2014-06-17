@@ -166,7 +166,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             inPeriodStartValueDate.setText(context.getString(
                     R.string.position_in_period_as_of,
-                    DateUtils.getDisplayableDate(context, positionDTO.latestTradeUtc)));
+                    DateUtils.getDisplayableDate(context.getResources(), positionDTO.latestTradeUtc)));
         }
     }
 }

@@ -3,7 +3,6 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
@@ -15,7 +14,6 @@ import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.security.DTOProcessorSecurityCompactListReceived;
 import com.tradehero.th.models.security.DTOProcessorSecurityPosition;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -27,28 +25,27 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class SecurityServiceWrapper
 {
-    private final SecurityService securityService;
-    private final SecurityServiceAsync securityServiceAsync;
-    private final ProviderServiceWrapper providerServiceWrapper;
-    private final SecurityPositionDetailCache securityPositionDetailCache;
-    private final SecurityCompactCache securityCompactCache;
-    private final SecurityCompactDTOFactory securityCompactDTOFactory;
-    private final UserProfileCache userProfileCache;
-    private final CurrentUserId currentUserId;
+    @NotNull private final SecurityService securityService;
+    @NotNull private final SecurityServiceAsync securityServiceAsync;
+    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
+    @NotNull private final SecurityCompactCache securityCompactCache;
+    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final CurrentUserId currentUserId;
 
     @Inject public SecurityServiceWrapper(
-            SecurityService securityService,
-            SecurityServiceAsync securityServiceAsync,
-            ProviderServiceWrapper providerServiceWrapper,
-            SecurityPositionDetailCache securityPositionDetailCache,
-            SecurityCompactCache securityCompactCache,
-            SecurityCompactDTOFactory securityCompactDTOFactory,
-            UserProfileCache userProfileCache,
-            CurrentUserId currentUserId)
+            @NotNull SecurityService securityService,
+            @NotNull SecurityServiceAsync securityServiceAsync,
+            @NotNull ProviderServiceWrapper providerServiceWrapper,
+            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
+            @NotNull SecurityCompactCache securityCompactCache,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull CurrentUserId currentUserId)
     {
         super();
         this.securityService = securityService;
@@ -56,7 +53,6 @@ import retrofit.Callback;
         this.providerServiceWrapper = providerServiceWrapper;
         this.securityPositionDetailCache = securityPositionDetailCache;
         this.securityCompactCache = securityCompactCache;
-        this.securityCompactDTOFactory = securityCompactDTOFactory;
         this.userProfileCache = userProfileCache;
         this.currentUserId = currentUserId;
     }
@@ -128,12 +124,12 @@ import retrofit.Callback;
         {
             throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
-        return createSecurityListProcessor().process(received);
+        return received;
     }
 
     public MiddleCallback<List<SecurityCompactDTO>> getSecurities(SecurityListType key, Callback<List<SecurityCompactDTO>> callback)
     {
-        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback, createSecurityListProcessor());
+        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         if (key instanceof TrendingSecurityListType)
         {
             TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
@@ -252,11 +248,6 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
-    private DTOProcessor<List<SecurityCompactDTO>> createSecurityListProcessor()
-    {
-        return new DTOProcessorSecurityCompactListReceived(securityCompactDTOFactory);
-    }
-
     private DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionProcessor(SecurityId securityId)
     {
         return new DTOProcessorSecurityPosition(

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class CompetitionCache extends PartialDTOCache<CompetitionId, CompetitionDTO>
 {
@@ -18,19 +21,26 @@ import javax.inject.Singleton;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
     private THLruCache<CompetitionId, CompetitionCache.CompetitionCutDTO> lruCache;
-    @Inject protected LeaderboardDefCache leaderboardDefCache;
-    @Inject protected LeaderboardUserDTOUtil leaderboardUserDTOUtil;
+    @NotNull private final LeaderboardDefCache leaderboardDefCache;
+    @NotNull private final LeaderboardUserDTOUtil leaderboardUserDTOUtil;
 
     //<editor-fold desc="Constructors">
-    @Inject public CompetitionCache()
+    @Inject public CompetitionCache(
+            @NotNull LeaderboardDefCache leaderboardDefCache,
+            @NotNull LeaderboardUserDTOUtil leaderboardUserDTOUtil)
     {
-        this(DEFAULT_MAX_SIZE);
+        this(DEFAULT_MAX_SIZE, leaderboardDefCache, leaderboardUserDTOUtil);
     }
 
-    public CompetitionCache(int maxSize)
+    public CompetitionCache(
+            int maxSize,
+            @NotNull LeaderboardDefCache leaderboardDefCache,
+            @NotNull LeaderboardUserDTOUtil leaderboardUserDTOUtil)
     {
         super();
         lruCache = new THLruCache<>(maxSize);
+        this.leaderboardDefCache = leaderboardDefCache;
+        this.leaderboardUserDTOUtil = leaderboardUserDTOUtil;
     }
     //</editor-fold>
 
@@ -39,7 +49,7 @@ import javax.inject.Singleton;
         throw new IllegalStateException("There is no fetch on this cache");
     }
 
-    @Override public CompetitionDTO get(CompetitionId key)
+    @Override @Nullable public CompetitionDTO get(@NotNull CompetitionId key)
     {
         CompetitionCutDTO leaderboardCutDTO = this.lruCache.get(key);
         if (leaderboardCutDTO == null)
@@ -49,7 +59,7 @@ import javax.inject.Singleton;
         return leaderboardCutDTO.create(leaderboardDefCache);
     }
 
-    @Override public CompetitionDTO put(CompetitionId key, CompetitionDTO value)
+    @Override public @Nullable CompetitionDTO put(@NotNull CompetitionId key, @NotNull CompetitionDTO value)
     {
         CompetitionDTO previous = null;
 
@@ -65,7 +75,8 @@ import javax.inject.Singleton;
         return previous;
     }
 
-    public List<CompetitionDTO> get(List<CompetitionId> competitionIds)
+    @Contract("null -> null; !null -> !null")
+    public List<CompetitionDTO> get(@Nullable List<CompetitionId> competitionIds)
     {
         if (competitionIds == null)
         {
@@ -74,7 +85,7 @@ import javax.inject.Singleton;
 
         List<CompetitionDTO> fleshedValues = new ArrayList<>();
 
-        for (CompetitionId competitionId: competitionIds)
+        for (@NotNull CompetitionId competitionId: competitionIds)
         {
             fleshedValues.add(get(competitionId));
         }
@@ -82,7 +93,8 @@ import javax.inject.Singleton;
         return fleshedValues;
     }
 
-    public List<CompetitionDTO> put(List<CompetitionDTO> values)
+    @Contract("null -> null; !null -> !null")
+    public List<CompetitionDTO> put(@Nullable List<CompetitionDTO> values)
     {
         if (values == null)
         {
@@ -91,7 +103,7 @@ import javax.inject.Singleton;
 
         List<CompetitionDTO> previousValues = new ArrayList<>();
 
-        for (CompetitionDTO competitionDTO: values)
+        for (@NotNull CompetitionDTO competitionDTO: values)
         {
             previousValues.add(put(competitionDTO.getCompetitionId(), competitionDTO));
         }
@@ -99,7 +111,7 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    @Override public void invalidate(CompetitionId key)
+    @Override public void invalidate(@NotNull CompetitionId key)
     {
         lruCache.remove(key);
     }
@@ -114,7 +126,7 @@ import javax.inject.Singleton;
     private static class CompetitionCutDTO
     {
         public int id;
-        public LeaderboardDefKey leaderboardKey;
+        @Nullable public LeaderboardDefKey leaderboardKey;
         public String name;
         public String competitionDurationType;
         public String iconActiveUrl;
@@ -122,8 +134,8 @@ import javax.inject.Singleton;
         public String prizeValueWithCcy;
 
         public CompetitionCutDTO(
-                CompetitionDTO competitionDTO,
-                LeaderboardDefCache leaderboardDefCache)
+                @NotNull CompetitionDTO competitionDTO,
+                @NotNull LeaderboardDefCache leaderboardDefCache)
         {
             this.id = competitionDTO.id;
 
@@ -145,7 +157,7 @@ import javax.inject.Singleton;
             this.prizeValueWithCcy = competitionDTO.prizeValueWithCcy;
         }
 
-        public CompetitionDTO create(LeaderboardDefCache leaderboardDefCache)
+        public CompetitionDTO create(@NotNull LeaderboardDefCache leaderboardDefCache)
         {
             return new CompetitionDTO(
                     id,

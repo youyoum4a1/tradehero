@@ -4,11 +4,12 @@ import com.actionbarsherlock.app.ActionBar;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.alert.AlertCache;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -20,7 +21,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
     protected AlertId alertId;
     @Inject protected AlertCache alertCache;
     protected DTOCache.GetOrFetchTask<AlertId, AlertDTO> alertCacheFetchTask;
-    protected MiddleCallbackUpdateAlertCompact middleCallbackUpdateAlertCompactDTO;
+    protected MiddleCallback<AlertCompactDTO> middleCallbackUpdateAlertCompactDTO;
 
     @Override public void onResume()
     {
@@ -28,11 +29,11 @@ public class AlertEditFragment extends BaseAlertEditFragment
         linkWith(new AlertId(getArguments().getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE)), true);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachAlertCacheFetchTask();
         detachMiddleCallbackUpdate();
-        super.onDestroyView();
+        super.onStop();
     }
 
     protected void detachAlertCacheFetchTask()

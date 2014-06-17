@@ -10,6 +10,6 @@ import dagger.Module;
         complete = false,
         library = true
 )
-public class DiscussionModule
+public class ApiDiscussionTestModule
 {
 }

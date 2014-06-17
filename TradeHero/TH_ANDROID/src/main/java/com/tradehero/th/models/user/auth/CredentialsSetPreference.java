@@ -5,47 +5,53 @@ import com.tradehero.common.persistence.prefs.StringSetPreference;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
 public class CredentialsSetPreference extends StringSetPreference
 {
-    private final CredentialsDTOFactory credentialsDTOFactory;
+    @NotNull private final CredentialsDTOFactory credentialsDTOFactory;
 
     public CredentialsSetPreference(
-            CredentialsDTOFactory credentialsDTOFactory,
-            SharedPreferences preference,
-            String key,
-            Set<String> defaultValue)
+            @NotNull CredentialsDTOFactory credentialsDTOFactory,
+            @NotNull SharedPreferences preference,
+            @NotNull String key,
+            @Nullable Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
         this.credentialsDTOFactory = credentialsDTOFactory;
     }
 
-    public Set<CredentialsDTO> getCredentials()
+    public @NotNull Set<CredentialsDTO> getCredentials()
     {
         Set<CredentialsDTO> credentials = new HashSet<>();
-        for (String savedToken : get())
+        Set<String> stringSet = get();
+        if (stringSet != null)
         {
-            try
+            for (@NotNull String savedToken : stringSet)
             {
-                credentials.add(credentialsDTOFactory.create(savedToken));
-            }
-            catch (JSONException|ParseException e)
-            {
-                Timber.e(e, "Parsing savedToken: %s", savedToken);
+                try
+                {
+                    credentials.add(credentialsDTOFactory.create(savedToken));
+                }
+                catch (JSONException|ParseException e)
+                {
+                    Timber.e(e, "Parsing savedToken: %s", savedToken);
+                }
             }
         }
         return credentials;
     }
 
-    public void setCredentials(Set<CredentialsDTO> credentials)
+    public void setCredentials(@Nullable Set<CredentialsDTO> credentials)
     {
         Set<String> savedTokens = null;
         if (credentials != null)
         {
             savedTokens = new HashSet<>();
-            for (CredentialsDTO credentialsDTO : credentials)
+            for (@NotNull CredentialsDTO credentialsDTO : credentials)
             {
                 try
                 {

@@ -46,6 +46,7 @@ import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class UpdateCenterFragment extends BaseFragment
@@ -346,9 +347,9 @@ public class UpdateCenterFragment extends BaseFragment
         return fragment;
     }
 
-    private void changeTabTitleNumber(UpdateCenterTabType tabType, int number)
+    private void changeTabTitleNumber(@NotNull UpdateCenterTabType tabType, int number)
     {
-        TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
+        @NotNull TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
         if (tabType == UpdateCenterTabType.Notifications)
         {
             //Notifications' unread count does not show
@@ -358,7 +359,7 @@ public class UpdateCenterFragment extends BaseFragment
         //Timber.d("changeTabTitleNumber %s,number:%s",tabType,number);
     }
 
-    @Override public void onTitleNumberChanged(UpdateCenterTabType tabType, int number)
+    @Override public void onTitleNumberChanged(@NotNull UpdateCenterTabType tabType, int number)
     {
         changeTabTitleNumber(tabType, number);
     }
@@ -371,7 +372,7 @@ public class UpdateCenterFragment extends BaseFragment
     private class FetchUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(UserBaseKey key, @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
         }
@@ -382,14 +383,10 @@ public class UpdateCenterFragment extends BaseFragment
         }
     }
 
-    private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    private void linkWith(@NotNull UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         if (andDisplay)
         {
-            Timber.d(
-                    "changeTabTitleNumber unreadMessageThreadsCount:%d,unreadNotificationsCount:%d",
-                    userProfileDTO.unreadMessageThreadsCount,
-                    userProfileDTO.unreadNotificationsCount);
             changeTabTitleNumber(UpdateCenterTabType.Messages,
                     userProfileDTO.unreadMessageThreadsCount);
             //changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);

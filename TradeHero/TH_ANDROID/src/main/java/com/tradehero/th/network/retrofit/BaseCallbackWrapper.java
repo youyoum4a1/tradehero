@@ -1,5 +1,6 @@
 package com.tradehero.th.network.retrofit;
 
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -7,16 +8,16 @@ import retrofit.client.Response;
 public class BaseCallbackWrapper<ValueType>
     implements CallbackWrapper<ValueType>
 {
-    protected Callback<ValueType> primaryCallback;
+    @Nullable protected Callback<ValueType> primaryCallback;
 
     //<editor-fold desc="Constructors">
-    public BaseCallbackWrapper(Callback<ValueType> primaryCallback)
+    public BaseCallbackWrapper(@Nullable Callback<ValueType> primaryCallback)
     {
         this.primaryCallback = primaryCallback;
     }
     //</editor-fold>
 
-    @Override public void setPrimaryCallback(Callback<ValueType> primaryCallback)
+    @Override public void setPrimaryCallback(@Nullable Callback<ValueType> primaryCallback)
     {
         this.primaryCallback = primaryCallback;
     }

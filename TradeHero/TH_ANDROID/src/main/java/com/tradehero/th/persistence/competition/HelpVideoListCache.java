@@ -9,36 +9,43 @@ import com.tradehero.th.network.service.ProviderServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Singleton public class HelpVideoListCache extends StraightDTOCache<HelpVideoListKey, HelpVideoIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected ProviderServiceWrapper providerServiceWrapper;
-    @Inject protected HelpVideoCache helpVideoCache;
+    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NotNull private final HelpVideoCache helpVideoCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public HelpVideoListCache()
+    @Inject public HelpVideoListCache(
+            @NotNull ProviderServiceWrapper providerServiceWrapper,
+            @NotNull HelpVideoCache helpVideoCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.providerServiceWrapper = providerServiceWrapper;
+        this.helpVideoCache = helpVideoCache;
     }
     //</editor-fold>
 
-    @Override protected HelpVideoIdList fetch(HelpVideoListKey key) throws Throwable
+    @Override protected HelpVideoIdList fetch(@NotNull HelpVideoListKey key) throws Throwable
     {
-        Timber.d("fetch %s", key);
         return putInternal(key, providerServiceWrapper.getHelpVideos(key));
     }
 
-    protected HelpVideoIdList putInternal(HelpVideoListKey key, List<HelpVideoDTO> fleshedValues)
+    @Contract("_, null -> null; _, !null -> !null")
+    protected HelpVideoIdList putInternal(@NotNull HelpVideoListKey key, @Nullable List<HelpVideoDTO> fleshedValues)
     {
         HelpVideoIdList helpVideoIds = null;
         if (fleshedValues != null)
         {
             helpVideoIds = new HelpVideoIdList();
-            HelpVideoId helpVideoId;
-            for (HelpVideoDTO providerDTO: fleshedValues)
+            @NotNull HelpVideoId helpVideoId;
+            for (@NotNull HelpVideoDTO providerDTO: fleshedValues)
             {
                 helpVideoId = providerDTO.getHelpVideoId();
                 helpVideoIds.add(helpVideoId);

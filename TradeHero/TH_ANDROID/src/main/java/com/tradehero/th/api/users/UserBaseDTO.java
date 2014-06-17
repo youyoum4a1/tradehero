@@ -5,11 +5,12 @@ import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.ExtendedDTO;
 import java.io.IOException;
 import java.util.Date;
+import org.jetbrains.annotations.Nullable;
 
 public class UserBaseDTO extends ExtendedDTO
 {
     public int id;
-    public String picture;
+    @Nullable public String picture;
     public String displayName;
     public String firstName;
     public String lastName;

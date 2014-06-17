@@ -4,6 +4,7 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import java.util.Collections;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public class NewsItemDTO extends NewsItemCompactDTO
 {
@@ -14,7 +15,7 @@ public class NewsItemDTO extends NewsItemCompactDTO
     private List<NewsItemMediaDTO> textEntities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> entities; // Needed to Hyperlink NewsItem's content
     private List<NewsItemMediaDTO> categories; // Header:Referenced Calais Entities
-    public List<Integer> securityIds;
+    @Nullable public List<Integer> securityIds;
 
     public String message;
 

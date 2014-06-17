@@ -459,7 +459,7 @@ public class TrendingFragment extends SecurityListFragment
             Bundle args = new Bundle();
             ProviderSecurityListFragment.putProviderId(args, providerDTO.getProviderId());
             ProviderSecurityListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
-            getNavigator().pushFragment(ProviderSecurityListFragment.class, args);
+            getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -468,7 +468,7 @@ public class TrendingFragment extends SecurityListFragment
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
-            webFragment = (BaseWebViewFragment) getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = (BaseWebViewFragment) getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }

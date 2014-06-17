@@ -1,7 +1,10 @@
 package com.tradehero.common.persistence;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -15,7 +18,7 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         this.lruCache = new THLruCache<>(maxSize);
     }
 
-    @Contract("null -> null")
+    @Contract("null -> null; !null -> _")
     @Nullable
     @Override public DTOType get(@Nullable DTOKeyType key)
     {
@@ -23,7 +26,12 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         {
             return null;
         }
-        return this.lruCache.get(key);
+        DTOType value = this.lruCache.get(key);
+        if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
+        {
+            return null;
+        }
+        return value;
     }
 
     @Nullable
@@ -42,8 +50,13 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         lruCache.evictAll();
     }
 
-    protected Map<DTOKeyType, DTOType> snapshot()
+    @NotNull protected Map<DTOKeyType, DTOType> snapshot()
     {
         return lruCache.snapshot();
+    }
+
+    @NotNull public List<DTOKeyType> getAllKeys()
+    {
+        return new ArrayList<>(snapshot().keySet());
     }
 }

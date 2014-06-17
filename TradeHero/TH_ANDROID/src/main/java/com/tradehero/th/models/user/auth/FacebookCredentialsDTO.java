@@ -18,6 +18,9 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
     public final Date expirationDate;
 
     //<editor-fold desc="Constructors">
+    // TODO replace Z by +0000 in date string that comes back?
+    // http://stackoverflow.com/questions/2580925/simpledateformat-parsing-date-with-z-literal
+    // https://www.crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/539b0912e3de5099ba5719ed
     public FacebookCredentialsDTO(JSONObject object) throws JSONException, ParseException
     {
         this(object.getString(SocialAuthenticationProvider.ID_KEY),

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.dashboard;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -19,6 +20,7 @@ public enum DashboardTabType
 {
     //NEWS(R.string.dashboard_headline, R.drawable.trending_selector, HeadlineFragment.class),
     TIMELINE(R.layout.home_selector, R.string.dashboard_home, R.color.transparent, MeTimelineFragment.class),
+    HOME(R.string.home, R.drawable.icn_menu_trending, HomeFragment.class),
     TRENDING(R.string.dashboard_trending, R.drawable.icn_menu_trending, TrendingFragment.class),
     COMMUNITY(R.string.dashboard_community, R.drawable.icn_menu_leaderboards, LeaderboardCommunityFragment.class),
     PORTFOLIO(R.string.dashboard_portfolio, R.drawable.icn_menu_portfolio, PortfolioListFragment.class, false),

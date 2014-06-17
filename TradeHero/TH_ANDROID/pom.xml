@@ -325,7 +325,7 @@
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
       <version>13.0</version>
-      <scope>provided</scope>
+      <!--<scope>provided</scope>-->
     </dependency>
 
     <!-- /end editor libraries -->
@@ -513,7 +513,11 @@
     <!--<systemPath>${project.basedir}/libs/libammsdk.jar</systemPath>-->
     <!--</dependency>-->
 
-
+    <dependency>
+      <groupId>com.squareup.phrase</groupId>
+      <artifactId>phrase</artifactId>
+      <version>1.0.3</version>
+    </dependency>
   </dependencies>
 
   <build>

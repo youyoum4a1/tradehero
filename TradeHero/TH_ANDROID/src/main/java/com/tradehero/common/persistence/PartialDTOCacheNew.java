@@ -172,6 +172,11 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         }
         //</editor-fold>
 
+        @Override protected Class<?> getContainerCacheClass()
+        {
+            return getCacheClass();
+        }
+
         @Override protected void onPreExecute()
         {
             super.onPreExecute();

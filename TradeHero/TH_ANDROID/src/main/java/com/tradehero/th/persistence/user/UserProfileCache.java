@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
 {
@@ -29,7 +30,7 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override public UserProfileDTO fetch(UserBaseKey key) throws Throwable
+    @Override public UserProfileDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         VisitedFriendListPrefs.addVisitedId(key);
         return userServiceWrapper.get().getUser(key);

@@ -134,6 +134,7 @@
 }
 -keep interface com.tradehero.th.network.service.** { *; }
 -keep public class com.tradehero.th.billing.** { *; }
+-keep public class com.tradehero.th.fragments.social.friend.** { *; }
 -keep public class com.tradehero.common.billing.** { *; }
 
 -keep public class com.tradehero.th.api.discussion.** { *; }

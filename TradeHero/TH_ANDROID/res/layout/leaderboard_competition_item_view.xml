@@ -2,10 +2,12 @@
 
 <com.tradehero.th.fragments.leaderboard.main.LeaderboardCompetitionView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:contentDescription="@null"
-    android:adjustViewBounds="true"
+    app:dominantMeasurement="width"
+    app:aspectRatioEnabled="false"
     tools:src="@drawable/lb_philip_macquarie_large_notjoined"
     />

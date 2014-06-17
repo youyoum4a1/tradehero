@@ -38,11 +38,11 @@ public class PreferenceModule
 
     @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
-        MainCredentialsPreference newPrefs = new MainCredentialsPreference(credentialsDTOFactory, sharedPreferences, PREF_MAIN_CREDENTIALS_KEY, null);
+        MainCredentialsPreference newPrefs = new MainCredentialsPreference(credentialsDTOFactory, sharedPreferences, PREF_MAIN_CREDENTIALS_KEY, "");
 
         { // TODO remove eventually. This is for transitioning the old credentials
-            StringPreference oldTypePrefs = new StringPreference(sharedPreferences, PREF_CURRENT_AUTHENTICATION_TYPE_KEY, null);
-            StringPreference oldTokenPrefs = new StringPreference(sharedPreferences, PREF_CURRENT_SESSION_TOKEN_KEY, null);
+            StringPreference oldTypePrefs = new StringPreference(sharedPreferences, PREF_CURRENT_AUTHENTICATION_TYPE_KEY, "");
+            StringPreference oldTokenPrefs = new StringPreference(sharedPreferences, PREF_CURRENT_SESSION_TOKEN_KEY, "");
             CredentialsDTO oldCredentials = new CredentialsDTOFactory().createFromOldSessionToken(oldTypePrefs.get(), oldTokenPrefs);
             if (oldCredentials != null)
             {
@@ -76,7 +76,7 @@ public class PreferenceModule
 
     @Provides @Singleton @SavedPushDeviceIdentifier StringPreference provideSavedPushIdentifier(SharedPreferences sharedPreferences)
     {
-        return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, null);
+        return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, "");
     }
 
     @Provides @Singleton @BaiduPushDeviceIdentifierSentFlag BooleanPreference providePushIdentifierSentFlag(SharedPreferences sharedPreferences)

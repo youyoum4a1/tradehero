@@ -55,6 +55,7 @@ public class SplashActivity extends SherlockActivity
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<Tapstream> tapStream;
     @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
+    @Inject CurrentActivityHolder currentActivityHolder;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,6 +74,7 @@ public class SplashActivity extends SherlockActivity
         }
 
         DaggerUtils.inject(this);
+        currentActivityHolder.setCurrentActivity(this);
     }
 
     @Override protected void onResume()

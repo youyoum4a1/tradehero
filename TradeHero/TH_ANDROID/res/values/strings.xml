@@ -12,7 +12,7 @@
   </string>
   <string name="action_search">Search</string>
   <string name="action_invite">Invite Friends</string>
-    <string name="update">Update</string>
+  <string name="update">Update</string>
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
@@ -73,7 +73,7 @@
   <string name="about_screen_secure_by">Secure by:</string>
   <string name="about_screen_text_processing_by">Text processing by:</string>
   <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
-  <string name="send_fake_push">Send a fake PushNotification</string>
+  <string name="send_fake_push" translatable="false">Send a fake PushNotification</string>
 
   <string name="buy_sell_loading_ask_price">Loading ask price…</string>
   <string name="buy_sell_loading_bid_price">Loading bid price…</string>
@@ -194,4 +194,5 @@
   <string name="notification_unread_messages">You have %d unread messages</string>
   <string name="notification_new_activities">You have %d new activities</string>
   <string name="friend_link_social_network">Please Link Social Network.</string>
+  <string name="home">Home</string>
 </resources>

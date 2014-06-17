@@ -13,20 +13,37 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
 {
-    public static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
+    private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
 
-    @Inject protected DiscussionKeyFactory discussionKeyFactory;
+    @Inject @NotNull protected DiscussionKeyFactory discussionKeyFactory;
 
     private DiscussionKey discussionKey;
 
-    public static void putDiscussionKey(Bundle args, DiscussionKey discussionKey)
+    public static void putDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKey discussionKey)
     {
         args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+    }
+
+    @Nullable private static DiscussionKey getDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKeyFactory discussionKeyFactory)
+    {
+        if (args.containsKey(DISCUSSION_KEY_BUNDLE_KEY))
+        {
+            return discussionKeyFactory.fromBundle(args.getBundle(DISCUSSION_KEY_BUNDLE_KEY));
+        }
+        return null;
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        this.discussionKey = getDiscussionKey(getArguments(), discussionKeyFactory);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -61,10 +78,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     {
         super.onResume();
 
-        if (discussionKey == null && getArguments().containsKey(DISCUSSION_KEY_BUNDLE_KEY))
-        {
-            discussionKey = discussionKeyFactory.fromBundle(getArguments().getBundle(DISCUSSION_KEY_BUNDLE_KEY));
-        }
         if (discussionKey != null)
         {
             linkWith(discussionKey, true);

@@ -936,12 +936,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             String text;
             if (quoteDTO != null && quoteDTO.asOfUtc != null)
             {
-                text = DateUtils.getFormattedDate(quoteDTO.asOfUtc);
+                text = DateUtils.getFormattedDate(getResources(), quoteDTO.asOfUtc);
             }
             else if (securityCompactDTO != null
                     && securityCompactDTO.lastPriceDateAndTimeUtc != null)
             {
-                text = DateUtils.getFormattedDate(securityCompactDTO.lastPriceDateAndTimeUtc);
+                text = DateUtils.getFormattedDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc);
             }
             else
             {
@@ -2081,7 +2081,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            Timber.e(retrofitError, "Reporting the error to Crashlytics");
+            Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
             THToast.show(new THException(retrofitError));
         }
     }
