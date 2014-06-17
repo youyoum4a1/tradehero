@@ -1780,7 +1780,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         loadingDialog = progressDialogUtil.show(BuySellFragment.this.getActivity(),
                 R.string.processing, R.string.alert_dialog_please_wait);
-        socialLinkHelper = socialNetworkFactory.buildSocialLinkerHelper(getActivity(), socialNetworkEnum);
+        socialLinkHelper = socialNetworkFactory.buildSocialLinkerHelper(socialNetworkEnum);
         socialLinkHelper.link(createSocialConnectLogInCallback(socialNetworkEnum));
     }
 

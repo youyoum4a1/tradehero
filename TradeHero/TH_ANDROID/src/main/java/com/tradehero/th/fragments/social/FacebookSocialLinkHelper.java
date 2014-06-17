@@ -14,9 +14,9 @@ public class FacebookSocialLinkHelper extends SocialLinkHelper
 {
     @Inject Lazy<FacebookUtils> facebookUtils;
 
-    public FacebookSocialLinkHelper(Activity context)
+    public FacebookSocialLinkHelper(Activity activity)
     {
-        super(context);
+        super(activity);
         DaggerUtils.inject(this);
     }
 

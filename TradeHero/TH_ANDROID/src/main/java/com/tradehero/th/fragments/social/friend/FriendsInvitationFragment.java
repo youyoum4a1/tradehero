@@ -42,9 +42,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by wanglinag on 14-5-26.
- */
 public class FriendsInvitationFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener, SocialFriendItemView.OnElementClickListener
 {
@@ -54,6 +51,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @InjectView(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
     @InjectView(R.id.social_search_friends_none) TextView friendsListEmptyView;
 
+    @Inject SocialTypeItemFactory socialTypeItemFactory;
     @Inject SocialNetworkFactory socialNetworkFactory;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
@@ -160,8 +158,8 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void bindSocialTypeData()
     {
-        List<SocalTypeItem> socalTypeItemList = socialNetworkFactory.getSocialTypeList();
-        SocalTypeListAdapter adapter = new SocalTypeListAdapter(getActivity(), 0, socalTypeItemList);
+        List<SocialTypeItem> socialTypeItemList = socialTypeItemFactory.getSocialTypeList();
+        SocalTypeListAdapter adapter = new SocalTypeListAdapter(getActivity(), 0, socialTypeItemList);
         socialListView.setAdapter(adapter);
         socialListView.setOnItemClickListener(this);
         showSocialTypeList();
@@ -207,7 +205,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        SocalTypeItem item = (SocalTypeItem) parent.getItemAtPosition(position);
+        SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
         boolean linked = checkLinkedStatus(item.socialNetwork);
         if (linked)
         {
@@ -297,20 +295,19 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         Class<? extends SocialFriendsFragment> target = socialNetworkFactory.findProperTargetFragment(socialNetwork);
         Bundle bundle = new Bundle();
-        getNavigator().pushFragment(target, bundle);
+        getDashboardNavigator().pushFragment(target, bundle);
     }
 
     private void pushSettingsFragment()
     {
         Bundle bundle = new Bundle();
         bundle.putBoolean(SettingsFragment.KEY_SHOW_AS_HOME_UP, true);
-        getNavigator().pushFragment(SettingsFragment.class, bundle);
+        getDashboardNavigator().pushFragment(SettingsFragment.class, bundle);
     }
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
     {
-        SocialLinkHelper socialLinkHelper = socialNetworkFactory.buildSocialLinkerHelper(getActivity(), socialNetworkEnum);
-        socialLinkHelper.link();
+        socialNetworkFactory.buildSocialLinkerHelper(socialNetworkEnum).link();
     }
 
     private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork)
