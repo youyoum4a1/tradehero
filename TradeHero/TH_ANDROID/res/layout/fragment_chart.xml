@@ -14,7 +14,7 @@
 
     <com.tradehero.common.widget.BetterViewAnimator
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:id="@+id/chart_image_wrapper"
         >
 
@@ -28,13 +28,13 @@
       <com.tradehero.th.fragments.security.ChartImageView
           android:id="@+id/chart_imageView"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
           android:layout_marginRight="20dp"
           android:layout_marginLeft="20dp"
-          android:scaleType="fitXY"
-          android:adjustViewBounds="true"
           android:contentDescription="@null"
           app:includeVolume="false"
+          app:dominantMeasurement="width"
+          app:aspectRatioEnabled="false"
           />
 
     </com.tradehero.common.widget.BetterViewAnimator>
@@ -42,7 +42,7 @@
     <com.tradehero.th.widget.news.TimeSpanButtonSet
         android:id="@+id/chart_time_span_button_set"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="36dp"
         android:orientation="horizontal"
         android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_marginRight="@dimen/common_margin_10"

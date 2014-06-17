@@ -3,10 +3,10 @@ package com.tradehero.th.fragments.security;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import com.squareup.widgets.AspectRatioImageView;
 import com.tradehero.th.R;
 
-public class ChartImageView extends ImageView
+public class ChartImageView extends AspectRatioImageView
 {
     public boolean includeVolume;
 
@@ -19,12 +19,6 @@ public class ChartImageView extends ImageView
     public ChartImageView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init(context, attrs);
-    }
-
-    public ChartImageView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
         init(context, attrs);
     }
     //</editor-fold>

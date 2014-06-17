@@ -14,6 +14,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -164,10 +165,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             });
         }
 
-        chartImageCallback = new Callback()
+        chartImageCallback = new AspectRatioImageViewCallback(chartImage)
         {
             @Override public void onSuccess()
             {
+                super.onSuccess();
                 if (chartImageWrapper != null)
                 {
                     chartImageWrapper.setDisplayedChildByLayoutId(chartImage.getId());
@@ -176,6 +178,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
             @Override public void onError()
             {
+                super.onError();
                 Timber.d("Load chartImage error");
             }
         };
@@ -321,7 +324,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory
-            this.picasso.load(imageURL).skipMemoryCache()
+            this.picasso
+                    .load(imageURL)
+                    .skipMemoryCache()
                     .into(image, chartImageCallback);
 
             if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
