@@ -3,9 +3,10 @@ package com.tradehero.th.fragments.leaderboard.main;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
+import com.squareup.widgets.AspectRatioImageView;
+import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
@@ -16,7 +17,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class LeaderboardCompetitionView extends ImageView
+public class LeaderboardCompetitionView extends AspectRatioImageView
         implements DTOView<CommunityPageDTO>
 {
     @Inject protected Lazy<Picasso> picasso;
@@ -35,11 +36,6 @@ public class LeaderboardCompetitionView extends ImageView
     {
         super(context, attrs);
     }
-
-    public LeaderboardCompetitionView(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-    }
     //</editor-fold>
 
     @Override protected void onFinishInflate()
@@ -48,6 +44,12 @@ public class LeaderboardCompetitionView extends ImageView
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        displayImageView();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -61,17 +63,26 @@ public class LeaderboardCompetitionView extends ImageView
         this.communityPageDTO = dto;
         if (communityPageDTO != null)
         {
-            providerDTO = providerCache.get().get(((ProviderCommunityPageDTO) communityPageDTO).providerId);
-            if (providerDTO != null)
+            ProviderDTO cachedProviderDTO = providerCache.get().get(((ProviderCommunityPageDTO) communityPageDTO).providerId);
+            if (cachedProviderDTO != null)
             {
-                linkWith(providerDTO, true);
+                linkWith(cachedProviderDTO, true);
             }
         }
     }
 
     private void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
-        if (providerDTO != null && andDisplay)
+        this.providerDTO = providerDTO;
+        if (andDisplay)
+        {
+            displayImageView();
+        }
+    }
+
+    protected void displayImageView()
+    {
+        if (providerDTO != null)
         {
             setVisibility(View.VISIBLE);
 
@@ -92,7 +103,7 @@ public class LeaderboardCompetitionView extends ImageView
             {
                 picasso.get()
                         .load(providerDTO.getStatusSingleImageUrl())
-                        .into(this);
+                        .into(this, new AspectRatioImageViewCallback(this));
             }
         }
     }
