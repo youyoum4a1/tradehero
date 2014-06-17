@@ -17,7 +17,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
-
 import javax.inject.Inject;
 
 /**
@@ -34,7 +33,7 @@ public abstract class SocialLinkHelper {
 
     Activity context;
 
-    private ProgressDialog progressDialog;
+    public ProgressDialog progressDialog;
 
     public SocialLinkHelper(Activity context) {
         this.context = context;
@@ -46,6 +45,12 @@ public abstract class SocialLinkHelper {
                 getLinkDialogMessage());
 
         doLoginAction(context, createSocialConnectLogInCallback());
+    }
+
+    public void link(LogInCallback callback){
+
+
+        doLoginAction(context, callback);
     }
 
     protected abstract void doLoginAction(Activity context, LogInCallback logInCallback);

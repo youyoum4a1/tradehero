@@ -57,6 +57,9 @@ public class SocialShareVerifier
                 case WECHAT:
                     throw new IllegalStateException("WeChat is not shared like this");
 
+                case WB:
+                    return currentUserProfile.wbLinked ? CanShareType.YES : CanShareType.NEED_AUTH;
+
                 case TH:
                     throw new IllegalStateException("There is no sharing to TH");
             }
