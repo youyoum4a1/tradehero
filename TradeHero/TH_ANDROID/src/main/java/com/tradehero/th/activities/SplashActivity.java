@@ -102,12 +102,12 @@ public class SplashActivity extends SherlockActivity
         localyticsSession.get().open();
         AppEventsLogger.activateApp(this, facebookAppId);
         tapStream.get().fireEvent(
-                new Event(getString(TapStreamType.fromType(Constants.VERSION).getOpenResId()),
+                new Event(getString(Constants.TAP_STREAM_TYPE.openResId),
                         false));
         mobileAppTrackerLazy.get().setReferralSources(this);
         mobileAppTrackerLazy.get().measureSession();
         TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY,
-                TapStreamType.fromType(Constants.VERSION).name());
+                Constants.TAP_STREAM_TYPE.name());
         //TCAgent.LOG_ON = false;
 
         if (!Constants.RELEASE)

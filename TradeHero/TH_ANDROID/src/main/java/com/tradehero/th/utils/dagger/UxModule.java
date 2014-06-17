@@ -61,7 +61,7 @@ public class UxModule
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice
         config.setInstallEventName(context.getString(
-                TapStreamType.fromType(Constants.VERSION).getInstallResId()));
+                Constants.TAP_STREAM_TYPE.installResId));
         return config;
     }
 

@@ -1,5 +1,7 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
+
 public class Constants
 {
     // build constants
@@ -39,5 +41,9 @@ public class Constants
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
-    public static final int VERSION = 0;//0 for international, 1 baidu, 2 tencent
+    // TODO remove when automated build.
+    // 0 for international, 1 baidu, 2 tencent. It is here to help with build multiple version
+    private static final int VERSION = 0;
+
+    public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
 }
