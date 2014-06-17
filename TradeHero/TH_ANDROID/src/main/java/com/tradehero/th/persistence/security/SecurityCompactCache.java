@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import dagger.Lazy;
@@ -12,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class SecurityCompactCache extends StraightDTOCache<SecurityId, SecurityCompactDTO>
 {
@@ -110,5 +112,15 @@ import org.jetbrains.annotations.NotNull;
         }
 
         return values;
+    }
+
+    @Nullable public SecurityCompactDTO get(@NotNull SecurityIntegerId id)
+    {
+        SecurityId securityId = securityIdCache.get(id);
+        if (securityId == null)
+        {
+            return null;
+        }
+        return get(securityId);
     }
 }

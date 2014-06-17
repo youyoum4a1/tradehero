@@ -11,25 +11,23 @@ import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import com.tradehero.common.utils.THToast;
+import com.tradehero.common.persistence.FetchAssistant;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         NewsItemCompactViewHolder<DiscussionType>
@@ -41,10 +39,12 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     @InjectView(R.id.news_detail_reference) @Optional GridView mNewsDetailReference;
     @InjectView(R.id.news_detail_reference_container) @Optional LinearLayout mNewsDetailReferenceContainer;
 
+    @Inject SecurityCompactCache securityCompactCache;
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
     protected SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
-    protected MiddleCallback<Map<Integer, SecurityCompactDTO>> multipleSecurityMiddleCallback;
+    protected SecurityMultiFetchAssistant multiFetchAssistant;
+    protected SecurityMultiFetchAssistant.OnInfoFetchedListener<SecurityIntegerId, SecurityCompactDTO> multiFetchListener;
 
     //<editor-fold desc="Constructors">
     public NewsItemViewHolder()
@@ -67,19 +67,19 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
 
     @Override public void onDetachedFromWindow()
     {
-        detachMultipleSecurityMiddleCallback();
+        detachMultiFetchAssistant();
+        multiFetchListener = null;
         super.onDetachedFromWindow();
     }
 
-    protected void detachMultipleSecurityMiddleCallback()
+    protected void detachMultiFetchAssistant()
     {
-        MiddleCallback<Map<Integer, SecurityCompactDTO>> middleCallback =
-                multipleSecurityMiddleCallback;
-        if (middleCallback != null)
+        SecurityMultiFetchAssistant multiFetchAssistantCopy = multiFetchAssistant;
+        if (multiFetchAssistantCopy != null)
         {
-            middleCallback.setPrimaryCallback(null);
+            multiFetchAssistantCopy.setListener(null);
         }
-        multipleSecurityMiddleCallback = null;
+        multiFetchAssistant = null;
     }
 
     @Override public void linkWith(DiscussionType discussionDTO, boolean andDisplay)
@@ -98,10 +98,14 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
                 discussionDTO.securityIds != null &&
                 !discussionDTO.securityIds.isEmpty())
         {
-            detachMultipleSecurityMiddleCallback();
-            multipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(
-                    new SecurityIntegerIdList(discussionDTO.securityIds, 0),
-                    createMultiSecurityCallback());
+            detachMultiFetchAssistant();
+            multiFetchAssistant = new SecurityMultiFetchAssistant(
+                    securityCompactCache,
+                    securityServiceWrapper,
+                    new SecurityIntegerIdList(discussionDTO.securityIds, 0));
+            multiFetchListener = createMultiSecurityCallback();
+            multiFetchAssistant.setListener(multiFetchListener);
+            multiFetchAssistant.execute();
         }
     }
 
@@ -232,15 +236,14 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         }
     }
 
-    protected Callback<Map<Integer, SecurityCompactDTO>> createMultiSecurityCallback()
+    protected FetchAssistant.OnInfoFetchedListener<SecurityIntegerId, SecurityCompactDTO> createMultiSecurityCallback()
     {
         return new NewsItemViewHolderMultiSecurityCallback();
     }
 
-    protected class NewsItemViewHolderMultiSecurityCallback implements Callback<Map<Integer, SecurityCompactDTO>>
+    protected class NewsItemViewHolderMultiSecurityCallback implements FetchAssistant.OnInfoFetchedListener<SecurityIntegerId, SecurityCompactDTO>
     {
-        @Override public void success(Map<Integer, SecurityCompactDTO> securityCompactDTOList,
-                Response response)
+        @Override public void onInfoFetched(Map<SecurityIntegerId, SecurityCompactDTO> securityCompactDTOList, boolean isDataComplete)
         {
             if (mNewsDetailReferenceContainer != null)
             {
@@ -252,11 +255,6 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
             mNewsDetailReference.setNumColumns(securityCompactDTOList.size());
             simpleSecurityItemViewAdapter.setItems(new ArrayList<>(securityCompactDTOList.values()));
             simpleSecurityItemViewAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
         }
     }
 
