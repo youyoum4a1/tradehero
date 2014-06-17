@@ -30,7 +30,7 @@ public class PublishableFormDTO
     {
     }
 
-    public PublishableFormDTO(Boolean publishToFb, Boolean publishToTw, Boolean publishToLi,Boolean publishToWb, String geo_alt, String geo_lat, String geo_long,
+    public PublishableFormDTO(Boolean publishToFb, Boolean publishToTw, Boolean publishToLi, Boolean publishToWb, String geo_alt, String geo_lat, String geo_long,
             boolean aPublic)
     {
         this.publishToFb = publishToFb;

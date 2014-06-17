@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.social;
 import android.app.Activity;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.TwitterUtils;
@@ -11,16 +10,12 @@ import dagger.Lazy;
 
 import javax.inject.Inject;
 
-/**
- * Created by tradehero on 14-6-5.
- */
-public class TwitterSocialLinkHelper extends SocialLinkHelper {
+public class TwitterSocialLinkHelper extends SocialLinkHelper
+{
+    @Inject Lazy<TwitterUtils> twitterUtils;
 
-
-    @Inject
-    Lazy<TwitterUtils> twitterUtils;
-
-    public TwitterSocialLinkHelper(Activity context) {
+    public TwitterSocialLinkHelper(Activity context)
+    {
         super(context);
         DaggerUtils.inject(this);
     }

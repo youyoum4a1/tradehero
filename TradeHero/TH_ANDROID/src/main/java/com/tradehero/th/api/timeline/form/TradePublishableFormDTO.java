@@ -11,7 +11,7 @@ public class TradePublishableFormDTO extends PublishableFormDTO
         super();
     }
 
-    public TradePublishableFormDTO(Boolean publishToFb, Boolean publishToTw,Boolean publishToWb, Boolean publishToLi, String geo_alt, String geo_lat, String geo_long,
+    public TradePublishableFormDTO(Boolean publishToFb, Boolean publishToTw, Boolean publishToWb, Boolean publishToLi, String geo_alt, String geo_lat, String geo_long,
             boolean aPublic,
             String tradeComment)
     {

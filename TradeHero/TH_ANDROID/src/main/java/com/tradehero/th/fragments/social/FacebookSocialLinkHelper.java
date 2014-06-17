@@ -10,15 +10,12 @@ import dagger.Lazy;
 
 import javax.inject.Inject;
 
-/**
- * Created by tradehero on 14-6-5.
- */
-public class FacebookSocialLinkHelper extends SocialLinkHelper {
+public class FacebookSocialLinkHelper extends SocialLinkHelper
+{
+    @Inject Lazy<FacebookUtils> facebookUtils;
 
-    @Inject
-    Lazy<FacebookUtils> facebookUtils;
-
-    public FacebookSocialLinkHelper(Activity context) {
+    public FacebookSocialLinkHelper(Activity context)
+    {
         super(context);
         DaggerUtils.inject(this);
     }
