@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
     @NotNull protected Lazy<GetPositionsCache> getPositionsCache;
 
     //<editor-fold desc="Constructors">
-
     @Inject public PortfolioCache(
             @NotNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
             @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
@@ -57,8 +56,7 @@ import org.jetbrains.annotations.Nullable;
         return super.put(key, value);
     }
 
-    @Contract("null -> null; !null -> !null")
-    @Nullable
+    @Contract("null -> null; !null -> !null") @Nullable
     public List<PortfolioDTO> get(@Nullable List<? extends OwnedPortfolioId> keys)
     {
         if (keys == null)
@@ -73,8 +71,7 @@ import org.jetbrains.annotations.Nullable;
         return values;
     }
 
-    @Contract("null -> null; !null -> !null")
-    @Nullable
+    @Contract("null -> null; !null -> !null") @Nullable
     public List<PortfolioDTO> getOrFetch(@Nullable List<? extends OwnedPortfolioId> keys) throws Throwable
     {
         if (keys == null)

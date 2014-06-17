@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactCache()
     {
-        super(200);
+        super(DEFAULT_MAX_SIZE);
     }
     //</editor-fold>
 
@@ -55,7 +55,7 @@ import org.jetbrains.annotations.Nullable;
         return null;
     }
 
-    @Contract("null -> null; !null -> !null")
+    @Contract("null -> null; !null -> !null") @Nullable
     public PortfolioCompactDTOList get(@Nullable Collection<PortfolioId> portfolioIds)
     {
         if (portfolioIds == null)
