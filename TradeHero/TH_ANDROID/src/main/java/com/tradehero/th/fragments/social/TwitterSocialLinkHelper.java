@@ -20,9 +20,9 @@ public class TwitterSocialLinkHelper extends SocialLinkHelper
         DaggerUtils.inject(this);
     }
 
-    protected void doLoginAction(Activity context, LogInCallback logInCallback)
+    protected SocialNetworkEnum getSocialNetwork()
     {
-        twitterUtils.get().logIn(context, logInCallback);
+        return SocialNetworkEnum.TW;
     }
 
     protected int getLinkDialogTitle()
@@ -35,8 +35,8 @@ public class TwitterSocialLinkHelper extends SocialLinkHelper
         return R.string.authentication_twitter_connecting;
     }
 
-    protected SocialNetworkEnum getSocialNetwork()
+    protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        return SocialNetworkEnum.TW;
+        twitterUtils.get().logIn(context, logInCallback);
     }
 }

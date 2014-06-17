@@ -20,9 +20,9 @@ public class FacebookSocialLinkHelper extends SocialLinkHelper
         DaggerUtils.inject(this);
     }
 
-    protected void doLoginAction(Activity context, LogInCallback logInCallback)
+    protected SocialNetworkEnum getSocialNetwork()
     {
-        facebookUtils.get().logIn(context, logInCallback);
+        return SocialNetworkEnum.FB;
     }
 
     protected int getLinkDialogTitle()
@@ -35,8 +35,8 @@ public class FacebookSocialLinkHelper extends SocialLinkHelper
         return R.string.authentication_connecting_to_facebook;
     }
 
-    protected SocialNetworkEnum getSocialNetwork()
+    protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        return SocialNetworkEnum.FB;
+        facebookUtils.get().logIn(context, logInCallback);
     }
 }

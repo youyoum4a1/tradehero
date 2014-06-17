@@ -20,9 +20,9 @@ public class LinkedInSocialLinkHelper extends SocialLinkHelper
         DaggerUtils.inject(this);
     }
 
-    protected void doLoginAction(Activity context, LogInCallback logInCallback)
+    protected SocialNetworkEnum getSocialNetwork()
     {
-        linkedInUtilsLazy.get().logIn(context, logInCallback);
+        return SocialNetworkEnum.LN;
     }
 
     protected int getLinkDialogTitle()
@@ -35,8 +35,8 @@ public class LinkedInSocialLinkHelper extends SocialLinkHelper
         return R.string.authentication_connecting_to_linkedin;
     }
 
-    protected SocialNetworkEnum getSocialNetwork()
+    protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        return SocialNetworkEnum.LN;
+        linkedInUtilsLazy.get().logIn(context, logInCallback);
     }
 }

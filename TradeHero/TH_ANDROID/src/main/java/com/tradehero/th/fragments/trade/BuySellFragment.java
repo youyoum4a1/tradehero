@@ -1791,20 +1791,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             @Override
             public void done(UserLoginDTO user, THException ex)
             {
-                // when user cancel the process
-                if (loadingDialog != null)
-                {
-                    loadingDialog.hide();
-                }
             }
 
             @Override
             public void onStart()
             {
-                if (loadingDialog != null)
-                {
-                    loadingDialog.show();
-                }
             }
 
             @Override
@@ -1814,8 +1805,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                         currentUserId.toUserBaseKey(),
                         UserFormFactory.create(json),
                         new SocialLinkingCallback(socialNetworkEnum));
-
-                loadingDialog.show();
                 return false;
             }
         };

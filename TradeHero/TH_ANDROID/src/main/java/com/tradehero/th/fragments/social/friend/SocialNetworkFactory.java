@@ -41,13 +41,13 @@ import org.jetbrains.annotations.NotNull;
         throw new IllegalArgumentException("Do not support " + socialNetworkEnum);
     }
 
-    @NotNull public SocialLinkHelper buildSocialLinkerHelper(SocialNetworkEnum socialNetwork)
+    @NotNull public SocialLinkHelper buildSocialLinkerHelper(@NotNull SocialNetworkEnum socialNetwork)
     {
         if (socialLinkHelperCache.get(socialNetwork) != null)
         {
             return socialLinkHelperCache.get(socialNetwork);
         }
-        SocialLinkHelper socialLinkHelper = null;
+        SocialLinkHelper socialLinkHelper;
         switch (socialNetwork)
         {
             case FB:
@@ -63,9 +63,15 @@ import org.jetbrains.annotations.NotNull;
                 socialLinkHelper = new WeiboSocialLinkHelper(currentActivityHolder.getCurrentActivity());
                 break;
             default:
-                throw new IllegalArgumentException("Do not support " + socialNetwork);
+                throw new IllegalArgumentException("Do not support SocialNetworkEnum." + socialNetwork);
         }
         socialLinkHelperCache.put(socialNetwork, socialLinkHelper);
         return socialLinkHelper;
+    }
+
+    public void forgetSocialLinkerHelper(@NotNull SocialNetworkEnum socialNetworkEnum)
+    {
+        // TODO see if the value itself needs to be cleared explicitly
+        socialLinkHelperCache.remove(socialNetworkEnum);
     }
 }

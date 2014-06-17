@@ -20,9 +20,9 @@ public class WeiboSocialLinkHelper extends SocialLinkHelper
         DaggerUtils.inject(this);
     }
 
-    protected void doLoginAction(Activity context, LogInCallback logInCallback)
+    protected SocialNetworkEnum getSocialNetwork()
     {
-        weiboUtilsLazy.get().logIn(context, logInCallback);
+        return SocialNetworkEnum.WB;
     }
 
     protected int getLinkDialogTitle()
@@ -35,8 +35,8 @@ public class WeiboSocialLinkHelper extends SocialLinkHelper
         return R.string.authentication_connecting_to_weibo;
     }
 
-    protected SocialNetworkEnum getSocialNetwork()
+    protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        return SocialNetworkEnum.WB;
+        weiboUtilsLazy.get().logIn(context, logInCallback);
     }
 }
