@@ -4,12 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    style="@style/TradeHero.Authentication">
+    android:background="@drawable/authentication_bg">
+
+  <ImageView
+      android:id="@+id/back_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/common_margin_10"
+      android:src="@drawable/settings_back_light_default"/>
+
+  <ImageView
+      android:id="@+id/authentication_logo"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/common_margin_20"
+      android:layout_marginRight="@dimen/common_margin_20"
+      android:layout_marginTop="@dimen/common_margin_130"
+      android:layout_marginBottom="@dimen/common_margin_100"
+      android:src="@drawable/logo_text"/>
 
   <com.tradehero.th.widget.SelfValidatedText
       android:id="@+id/authentication_sign_in_email"
+      android:layout_below="@+id/authentication_logo"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/common_margin_30"
+      android:layout_marginRight="@dimen/common_margin_30"
       android:text=""
       android:hint="@string/authentication_email"
       android:drawableLeft="@drawable/accounts_glyph_email_default"
@@ -25,7 +45,9 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:layout_below="@+id/authentication_sign_in_email"
-      android:layout_marginTop="10dip"
+      android:layout_marginTop="@dimen/common_margin_10"
+      android:layout_marginLeft="@dimen/common_margin_30"
+      android:layout_marginRight="@dimen/common_margin_30"
       android:text=""
       android:hint="@string/authentication_password"
       android:drawableLeft="@drawable/accounts_glyph_password_default"
@@ -38,16 +60,15 @@
       android:layout_height="wrap_content"
       android:layout_below="@+id/et_pwd_login"
       android:layout_centerHorizontal="true"
-      android:layout_marginTop="10dip"
+      android:layout_marginTop="@dimen/common_margin_20"
+      android:layout_marginLeft="@dimen/common_margin_30"
+      android:layout_marginRight="@dimen/common_margin_30"
       android:background="@drawable/authentication_button"
       android:padding="5dp"
       android:text="@string/authentication_sign_in"
-      android:textColor="@color/signinfnt_color"
+      android:textColor="@color/white"
       android:textSize="25sp"
       android:textStyle="bold"
-      android:shadowColor="@color/white"
-      android:shadowDy="-1"
-      android:shadowRadius="3"
       />
 
   <TextView
@@ -56,9 +77,10 @@
       android:layout_height="wrap_content"
       android:layout_below="@+id/btn_login"
       android:layout_centerHorizontal="true"
+      android:layout_marginTop="@dimen/common_margin_20"
       android:padding="15dip"
       android:text="@string/authentication_forgot_password"
-      android:textColor="@color/text_gray_normal"
+      android:textColor="@color/white"
       android:textSize="15sp"
       android:textStyle="bold"/>
 

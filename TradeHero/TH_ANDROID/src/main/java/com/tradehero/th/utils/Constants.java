@@ -27,6 +27,7 @@ public class Constants
     // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
     public static final String BASE_STATIC_CONTENT_URL = "https://www.tradehero.mobi/";
     public static final String PRIVACY_TERMS_OF_SERVICE = BASE_STATIC_CONTENT_URL + "privacy";
+    public static final String PRIVACY_TERMS_OF_USE = BASE_STATIC_CONTENT_URL + "terms";
 
     //Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";

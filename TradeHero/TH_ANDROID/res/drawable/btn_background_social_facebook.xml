@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
- <selector xmlns:android="http://schemas.android.com/apk/res/android"> 
-      <item android:state_pressed="true"
-          android:drawable="@drawable/btn_background_social_facebook_pressed" />
-      <item android:drawable="@drawable/btn_background_social_facebook_normal" />
-  </selector>
+ <!--<selector xmlns:android="http://schemas.android.com/apk/res/android"> -->
+      <!--<item android:state_pressed="true"-->
+          <!--android:drawable="@drawable/btn_background_social_facebook_pressed" />-->
+      <!--<item android:drawable="@drawable/btn_background_social_facebook_normal" />-->
+  <!--</selector>-->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:state_pressed="true">
+  <shape android:shape="rectangle">
+    <solid android:color="@color/btn_facebook_color_end"/>
+    <corners android:radius="4dp"/>
+  </shape>
+</item>
+
+<item>
+  <shape android:shape="rectangle">
+    <solid android:color="@color/btn_facebook_color_start"/>
+    <corners android:radius="4dp"/>
+  </shape>
+</item>
+
+</selector>

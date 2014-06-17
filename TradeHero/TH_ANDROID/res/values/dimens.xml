@@ -133,9 +133,11 @@
   <dimen name="common_margin_10">10dp</dimen>
   <dimen name="common_margin_15">15dp</dimen>
   <dimen name="common_margin_20">20dp</dimen>
+  <dimen name="common_margin_30">30dp</dimen>
   <dimen name="common_margin_50">50dp</dimen>
   <dimen name="common_margin_100">100dp</dimen>
   <dimen name="common_margin_110">110dp</dimen>
+  <dimen name="common_margin_130">130dp</dimen>
   <dimen name="common_height_40">40dp</dimen>
   <dimen name="stock_item_width">200dp</dimen>
 

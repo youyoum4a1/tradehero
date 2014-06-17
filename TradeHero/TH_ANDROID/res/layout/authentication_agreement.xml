@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
-  <TextView
-      android:id="@+id/authentication_guarantee"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:gravity="center_horizontal|left"
-      android:textColor="@color/authentication_link_text"
-      android:text="@string/authentication_guarantee"
-      android:textSize="@dimen/authentication_text_size"
-      android:textStyle="bold"/>
+  <!--<TextView-->
+      <!--android:id="@+id/authentication_guarantee"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:gravity="center_horizontal|left"-->
+      <!--android:textColor="@color/authentication_link_text"-->
+      <!--android:text="@string/authentication_guarantee"-->
+      <!--android:textSize="@dimen/authentication_text_size"-->
+      <!--android:textStyle="bold"/>-->
 
   <TextView
       android:id="@+id/txt_term_of_service_signin"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:gravity="center"
+      android:padding="5dp"
+      android:text="@string/authentication_sign_in_pp"
+      android:textColor="@color/white"
+      android:textSize="@dimen/authentication_text_size"/>
+
+  <TextView
+      android:id="@+id/txt_term_of_service_termsofuse"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:gravity="center"
       android:padding="5dp"
       android:text="@string/authentication_sign_in_tos"
-      android:textColor="@color/text_gray_normal"
+      android:textColor="@color/white"
       android:textSize="@dimen/authentication_text_size"/>
 </LinearLayout>

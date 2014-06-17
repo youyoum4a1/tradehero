@@ -2,11 +2,11 @@ package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.EditText;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.localytics.android.LocalyticsSession;
@@ -24,7 +24,6 @@ import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
-import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
@@ -86,7 +85,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
         if (currentFragment == null)
         {
-            currentFragment = Fragment.instantiate(this, WelcomeFragment.class.getName(), null);
+            currentFragment = Fragment.instantiate(this, SignInFragment.class.getName(), null);
+            //currentFragment = Fragment.instantiate(this, WelcomeFragment.class.getName(), null);
         }
 
         setupViewFragmentMapping();
@@ -141,8 +141,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.topbar_authentication);
+        //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        //getSupportActionBar().setCustomView(R.layout.topbar_authentication);
+        getSupportActionBar().hide();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -198,9 +199,21 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 authenticateWithQQ();
                 break;
             case R.id.txt_term_of_service_signin:
-                Intent pWebView = new Intent(this, WebViewActivity.class);
-                pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
-                startActivity(pWebView);
+                //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at https://www.tradehero.mobi/privacy ran insecure content from http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700,900.
+                //Intent pWebView = new Intent(this, WebViewActivity.class);
+                //pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
+                //startActivity(pWebView);
+                Uri uri = Uri.parse(Constants.PRIVACY_TERMS_OF_SERVICE);
+                Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(it);
+                break;
+            case R.id.txt_term_of_service_termsofuse:
+                //Intent pWebView2 = new Intent(this, WebViewActivity.class);
+                //pWebView2.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_USE);
+                //startActivity(pWebView2);
+                Uri uri2 = Uri.parse(Constants.PRIVACY_TERMS_OF_USE);
+                Intent it2 = new Intent(Intent.ACTION_VIEW, uri2);
+                startActivity(it2);
                 break;
         }
     }
