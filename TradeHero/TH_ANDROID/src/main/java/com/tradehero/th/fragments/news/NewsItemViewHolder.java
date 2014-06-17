@@ -17,6 +17,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.misc.exception.THException;
@@ -99,7 +100,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         {
             detachMultipleSecurityMiddleCallback();
             multipleSecurityMiddleCallback = securityServiceWrapper.getMultipleSecurities(
-                    discussionDTO.securityIds,
+                    new SecurityIntegerIdList(discussionDTO.securityIds, 0),
                     createMultiSecurityCallback());
         }
     }

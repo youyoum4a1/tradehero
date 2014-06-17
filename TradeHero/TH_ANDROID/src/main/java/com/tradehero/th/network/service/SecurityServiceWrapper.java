@@ -4,6 +4,7 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -60,20 +61,19 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Multiple Securities">
-    public Map<Integer, SecurityCompactDTO> getMultipleSecurities(@NotNull List<Integer> ids)
+    public Map<Integer, SecurityCompactDTO> getMultipleSecurities(@NotNull SecurityIntegerIdList ids)
     {
         return createMultipleSecurityProcessor().process(
-                securityService.getMultipleSecurities(StringUtils.join(",", ids)));
+                securityService.getMultipleSecurities(ids.getCommaSeparated()));
     }
 
     @NotNull public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(
-            @NotNull List<Integer> ids,
+            @NotNull SecurityIntegerIdList ids,
             @Nullable Callback<Map<Integer, SecurityCompactDTO>> callback)
     {
-        String securityIds = StringUtils.join(",", ids);
         MiddleCallback<Map<Integer, SecurityCompactDTO>> middleCallback = new
                 BaseMiddleCallback<>(callback, createMultipleSecurityProcessor());
-        securityServiceAsync.getMultipleSecurities(securityIds, middleCallback);
+        securityServiceAsync.getMultipleSecurities(ids.getCommaSeparated(), middleCallback);
 
         return middleCallback;
     }
