@@ -16,8 +16,6 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.HashSet;
-import java.util.Set;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +26,6 @@ public class DashboardNavigator extends Navigator
     private final FragmentActivity activity;
 
     private static final String BUNDLE_KEY = "key";
-    private Set<TabHost.OnTabChangeListener> mOnTabChangedListeners;
     private TabHost.OnTabChangeListener mOnTabChangedListener;
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
@@ -43,26 +40,6 @@ public class DashboardNavigator extends Navigator
         DaggerUtils.inject(this);
     }
 
-    @Deprecated
-    public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
-    {
-        if (mOnTabChangedListeners == null)
-        {
-            mOnTabChangedListeners = new HashSet<TabHost.OnTabChangeListener>();
-        }
-        mOnTabChangedListeners.add(onTabChangeListener);
-    }
-
-    @Deprecated
-    public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
-    {
-        if (mOnTabChangedListeners == null)
-        {
-            return;
-        }
-        mOnTabChangedListeners.remove(onTabChangeListener);
-    }
-
     private void initAnimation()
     {
         slideInAnimation = AnimationUtils.loadAnimation(activity, R.anim.slide_in);
@@ -74,12 +51,6 @@ public class DashboardNavigator extends Navigator
      */
     public void onDestroy()
     {
-        if (mOnTabChangedListeners != null)
-        {
-            mOnTabChangedListeners.clear();
-            mOnTabChangedListeners = null;
-        }
-
         slideInAnimation.setAnimationListener(null);
         slideOutAnimation.setAnimationListener(null);
         slideInAnimation = null;
@@ -185,7 +156,7 @@ public class DashboardNavigator extends Navigator
     {
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
-        pushFragment(tabType.fragmentClass, new Bundle(), null, null);
+        updateTabBarOnTabChanged(pushFragment(tabType.fragmentClass, new Bundle(), null, null).getClass().getName());
     }
 
     private void postPushActionFragment(final THIntent thIntent)
@@ -235,21 +206,6 @@ public class DashboardNavigator extends Navigator
             executePending(null);
         }
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
-    }
-
-    private void notifyOnTabChanged(String tabId)
-    {
-        Timber.d("tabBarChanged to %s, backstack %d", tabId, manager.getBackStackEntryCount());
-        if (mOnTabChangedListeners != null && mOnTabChangedListeners.size() > 0)
-        {
-            for(TabHost.OnTabChangeListener o:mOnTabChangedListeners)
-            {
-                if(o != null)
-                {
-                    o.onTabChanged(tabId);
-                }
-            }
-        }
     }
 
     private void updateTabBarOnTabChanged(String tabId)

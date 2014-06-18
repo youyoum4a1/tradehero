@@ -44,8 +44,8 @@ public class GraphicModule
         File cacheDir = lruFileCache.getCacheDirectory();
         Picasso mPicasso = new Picasso.Builder(context)
                 //test
-                //.downloader(new UrlConnectionDownloader(getContext()))
-                .memoryCache(lruFileCache,cacheDir.getAbsolutePath())
+                //.downloader(new UrlConnectionDownloader(context))
+                .memoryCache(lruFileCache, cacheDir.getAbsolutePath())
                 //.downloader(new MyImageDownloader(context.getApplicationContext()))
                 //.memoryCache(lruFileCache)
                 .build();

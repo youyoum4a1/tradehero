@@ -160,26 +160,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         pushNotificationManager.get().enablePush();
     }
 
-    //<editor-fold desc="Bad design, to be removed">
-    @Deprecated
-    public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
-    {
-        if (navigator != null && onTabChangeListener != null)
-        {
-            navigator.addOnTabChangeListener(onTabChangeListener);
-        }
-    }
-
-    @Deprecated
-    public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
-    {
-        if (navigator != null && onTabChangeListener != null)
-        {
-            navigator.removeOnTabChangeListener(onTabChangeListener);
-        }
-    }
-    //</editor-fold>
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev)
     {
