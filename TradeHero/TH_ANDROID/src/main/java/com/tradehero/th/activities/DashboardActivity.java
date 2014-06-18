@@ -100,6 +100,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
+    private DashboardTabType currentTab = DashboardTabType.TRENDING;
+
     private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
@@ -152,6 +154,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        navigator.goToTab(currentTab);
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
@@ -432,8 +435,6 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         }
     }
-
-    private DashboardTabType currentTab = DashboardTabType.TRENDING;
 
     /**
      * @deprecated

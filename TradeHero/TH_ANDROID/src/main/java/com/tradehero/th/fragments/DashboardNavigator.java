@@ -5,17 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TabHost;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
@@ -27,16 +23,13 @@ import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator
 {
-    private static final boolean ENABLE_TABBAR_ANIMATION = false;
     private final FragmentActivity activity;
 
     private static final String BUNDLE_KEY = "key";
-    private FragmentTabHost mTabHost;
     private Set<TabHost.OnTabChangeListener> mOnTabChangedListeners;
     private TabHost.OnTabChangeListener mOnTabChangedListener;
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
-    private View tabBarView;
 
     @Inject ResideMenu resideMenu;
 
@@ -44,10 +37,7 @@ public class DashboardNavigator extends Navigator
     {
         super(context, manager, fragmentContentId);
         this.activity = (FragmentActivity) context;
-
-        initTabs();
         initAnimation();
-
         DaggerUtils.inject(this);
     }
 
@@ -75,68 +65,6 @@ public class DashboardNavigator extends Navigator
     {
         slideInAnimation = AnimationUtils.loadAnimation(activity, R.anim.slide_in);
         slideOutAnimation = AnimationUtils.loadAnimation(activity, R.anim.slide_out);
-
-        Animation.AnimationListener animationListener = new Animation.AnimationListener()
-        {
-            @Override public void onAnimationStart(Animation animation)
-            {
-                if (mTabHost != null)
-                {
-                    mTabHost.getTabWidget().setEnabled(false);
-                }
-            }
-
-            @Override public void onAnimationEnd(Animation animation)
-            {
-                if (mTabHost != null)
-                {
-                    mTabHost.getTabWidget().setEnabled(true);
-                }
-            }
-
-            @Override public void onAnimationRepeat(Animation animation)
-            {
-
-            }
-        };
-        slideInAnimation.setAnimationListener(animationListener);
-        slideOutAnimation.setAnimationListener(animationListener);
-    }
-
-    private void initTabs()
-    {
-        mTabHost = (FragmentTabHost) activity.findViewById(android.R.id.tabhost);
-        mTabHost.setup(activity, activity.getSupportFragmentManager(), R.id.realtabcontent);
-        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener()
-        {
-            @Override public void onTabChanged(String tabId)
-            {
-                updateTabBarOnTabChanged(tabId);
-                notifyOnTabChanged(tabId);
-            }
-        });
-
-        for (DashboardTabType tabType : DashboardTabType.usableValues())
-        {
-            addNewTab(tabType);
-        }
-
-        // Hack to fix the issue with typing inside the competition webview
-        for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); ++i)
-        {
-            mTabHost.getTabWidget().getChildTabViewAt(i).setFocusable(false);
-        }
-
-        mTabHost.getTabWidget().setDividerDrawable(null);
-
-        //mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
-        mTabHost.setCurrentTabByTag(activity.getString(DashboardTabType.TRENDING.stringKeyResId));
-        tabBarView = mTabHost.findViewById(android.R.id.tabhost);
-
-        if (!ENABLE_TABBAR_ANIMATION)
-        {
-            mTabHost.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -144,51 +72,16 @@ public class DashboardNavigator extends Navigator
      */
     public void onDestroy()
     {
-        if (mTabHost != null)
-        {
-            mTabHost.setOnTabChangedListener(null);
-        }
-        mTabHost = null;
         if (mOnTabChangedListeners != null)
         {
             mOnTabChangedListeners.clear();
             mOnTabChangedListeners = null;
         }
-        mOnTabChangedListener = null;
-        tabBarView = null;
 
         slideInAnimation.setAnimationListener(null);
         slideOutAnimation.setAnimationListener(null);
         slideInAnimation = null;
         slideOutAnimation = null;
-    }
-
-    private TabHost.TabSpec makeTabSpec(DashboardTabType tabType)
-    {
-        return mTabHost.newTabSpec(activity.getString(tabType.stringKeyResId))
-                .setIndicator(null, activity.getResources().getDrawable(tabType.drawableResId));
-    }
-
-    private TabHost.TabSpec makeNewTabSpec(DashboardTabType tabType)
-    {
-        View tabView = activity.getLayoutInflater().inflate(tabType.viewResId, mTabHost.getTabWidget(), false);
-        ImageView imageView = (ImageView) tabView.findViewById(android.R.id.icon);
-        if (imageView != null)
-        {
-            imageView.setImageResource(tabType.drawableResId);
-            imageView.setVisibility(View.VISIBLE);
-        }
-
-        return mTabHost.newTabSpec(activity.getString(tabType.stringKeyResId))
-                .setIndicator(tabView);
-    }
-
-    private void addNewTab(DashboardTabType tabType)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putString(BUNDLE_KEY, activity.getString(tabType.stringKeyResId));
-
-        mTabHost.addTab(makeNewTabSpec(tabType), tabType.fragmentClass, bundle);
     }
 
     public String makeFragmentName(DashboardTabType tabType)
@@ -248,10 +141,7 @@ public class DashboardNavigator extends Navigator
 
             Timber.d("replaceTab replace targetFragment %s,findFragmentById:%s",targetFragment,manager.findFragmentById(R.id.main_fragment));
         }
-
-
     }
-
 
     public void goToPage(final THIntent thIntent)
     {
@@ -291,7 +181,8 @@ public class DashboardNavigator extends Navigator
             return;
         }
 
-        mTabHost.getCurrentTabView().post(new Runnable()
+        Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
+        currentDashboardFragment.getView().post(new Runnable()
         {
             // This is the way we found to make sure we do not superimpose 2 fragments.
             @Override public void run()
@@ -301,22 +192,24 @@ public class DashboardNavigator extends Navigator
         });
     }
 
+    public void goToTab(DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
+    {
+        Timber.d("goToTab %s with listener %s", tabType, changeListener);
+        mOnTabChangedListener = changeListener;
+        goToTab(tabType);
+    }
+
     public void goToTab(DashboardTabType tabType)
     {
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
-        goToTab(tabType, null);
-    }
-
-    public void goToTab(DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
-    {
-        Timber.d("goToTab %s with listener %s", tabType, changeListener);
-        if (mTabHost != null)
-        {
-            mOnTabChangedListener = changeListener;
-            mTabHost.setCurrentTabByTag(activity.getString(tabType.stringKeyResId));
-        }
-        showTabBar();
+        Fragment fragment = Fragment.instantiate(context, tabType.fragmentClass.getName(), new Bundle());
+        fragment.setArguments(new Bundle());
+        FragmentTransaction transaction = manager.beginTransaction();
+        FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
+        String backStackName = tabType.fragmentClass.getName();
+        ft.addToBackStack(backStackName);
+        ft.commitAllowingStateLoss();
     }
 
     //public void clearBackStack()
@@ -336,10 +229,6 @@ public class DashboardNavigator extends Navigator
     private void executePending(Fragment fragment)
     {
         manager.executePendingTransactions();
-        if (mTabHost != null)
-        {
-            updateTabBarOnNavigate(fragment);
-        }
     }
 
     @Override public void popFragment(String backStackName)
@@ -351,27 +240,6 @@ public class DashboardNavigator extends Navigator
             executePending(null);
         }
         Timber.d("BackStack count %d", manager.getBackStackEntryCount());
-    }
-
-    private void updateTabBarOnNavigate(Fragment currentFragment)
-    {
-        if (ENABLE_TABBAR_ANIMATION)
-        {
-            boolean shouldHideTabBar = manager.getBackStackEntryCount() >= 1;
-            if (currentFragment instanceof BaseFragment.TabBarVisibilityInformer)
-            {
-                shouldHideTabBar = !((BaseFragment.TabBarVisibilityInformer) currentFragment).isTabBarVisible();
-            }
-
-            if (shouldHideTabBar)
-            {
-                hideTabBar();
-            }
-            else
-            {
-                showTabBar();
-            }
-        }
     }
 
     private void notifyOnTabChanged(String tabId)
@@ -400,26 +268,5 @@ public class DashboardNavigator extends Navigator
             mOnTabChangedListener.onTabChanged(tabId);
         }
         mOnTabChangedListener = null;
-    }
-
-    private void showTabBar()
-    {
-        if (ENABLE_TABBAR_ANIMATION)
-        {
-            if (tabBarView != null && tabBarView.getVisibility() != View.VISIBLE)
-            {
-                tabBarView.setVisibility(View.VISIBLE);
-                tabBarView.startAnimation(slideInAnimation);
-            }
-        }
-    }
-
-    public void hideTabBar()//let fragment can control it
-    {
-        if (tabBarView != null && tabBarView.getVisibility() != View.GONE)
-        {
-            tabBarView.startAnimation(slideOutAnimation);
-            tabBarView.setVisibility(View.GONE);
-        }
     }
 }

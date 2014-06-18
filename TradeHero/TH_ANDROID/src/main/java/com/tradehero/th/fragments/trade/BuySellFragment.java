@@ -442,12 +442,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
-
-        DashboardNavigator dn = getDashboardNavigator();
-        if (dn != null)
-        {
-            dn.hideTabBar();
-        }
     }
 
     @Override public void onPause()

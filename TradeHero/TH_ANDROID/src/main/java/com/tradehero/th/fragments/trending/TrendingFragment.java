@@ -480,7 +480,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             Bundle bundle = new Bundle();
             bundle.putString(WebViewFragment.BUNDLE_KEY_URL, userProfileDTO.activeSurveyURL);
-            getNavigator().pushFragment(WebViewFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM);
+            getDashboardNavigator().pushFragment(WebViewFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
         }
     }
 
