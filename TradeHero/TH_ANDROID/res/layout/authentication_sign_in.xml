@@ -25,10 +25,9 @@
         android:id="@+id/authentication_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/common_margin_20"
-        android:layout_marginRight="@dimen/common_margin_20"
         android:layout_marginTop="@dimen/common_margin_80"
-        android:layout_marginBottom="@dimen/common_margin_100"
+        android:layout_marginLeft="@dimen/customer_margin_100"
+        android:layout_marginRight="@dimen/customer_margin_100"
         android:src="@drawable/logo_text"/>
 
     <include
@@ -37,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/common_margin_80"
         android:layout_marginRight="@dimen/common_margin_60"
         android:layout_marginLeft="@dimen/common_margin_60"
         layout="@layout/authentication_social_auth_sign_in"
@@ -82,7 +82,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dip"
+        android:layout_height="@dimen/common_margin_60"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:gravity="center"
@@ -91,7 +91,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/new_to_tradehero"
-          android:textSize="25sp"/>
+          android:textSize="@dimen/common_text_size_25"/>
       <TextView
           android:id="@+id/authentication_by_sign_up_button"
           android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
           android:text="@string/register_now"
           android:textColor="@color/timeline_action_button_text_color_pressed"
           android:textStyle="bold"
-          android:textSize="25sp"/>
+          android:textSize="@dimen/common_text_size_25"/>
     </LinearLayout>
   </RelativeLayout>
 

@@ -37,7 +37,7 @@
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="500"
-        android:textSize="30sp"
+        android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         >
         <!--android:drawableLeft="@drawable/accounts_glyph_email_default"-->
@@ -63,7 +63,7 @@
 
         app:minSize="6"
         app:delayValidationByMilliSec="1000"
-        android:textSize="30sp"
+        android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         />
         <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
@@ -87,7 +87,7 @@
 
         app:matchWith="@id/authentication_sign_up_password"
         app:delayValidationByMilliSec="1000"
-        android:textSize="30sp"
+        android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         />
         <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
@@ -117,7 +117,7 @@
           app:indicator="@+id/authentication_sign_up_username_validator"
           app:delayValidationByMilliSec="500"
           app:progressIndicator="@+id/authentication_sign_up_username_validator"
-          android:textSize="30sp"
+          android:textSize="@dimen/common_text_size_30"
           android:background="@drawable/authentication_edit_text"
           />
           <!--android:drawableLeft="@drawable/accounts_glyph_username_default"-->
@@ -178,7 +178,7 @@
             android:inputType="text"
 
             style="@style/TradeHero.Authentication.EditText"
-            android:textSize="30sp"
+            android:textSize="@dimen/common_text_size_30"
             android:background="@drawable/authentication_edit_text"/>
             <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
 
@@ -190,7 +190,7 @@
             android:hint="@string/user_profile_last_name"
             android:inputType="text"
             style="@style/TradeHero.Authentication.EditText"
-            android:textSize="30sp"
+            android:textSize="@dimen/common_text_size_30"
             android:background="@drawable/authentication_edit_text"/>
             <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
 

@@ -17,8 +17,8 @@
       android:id="@+id/authentication_logo"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/common_margin_20"
-      android:layout_marginRight="@dimen/common_margin_20"
+      android:layout_marginLeft="@dimen/customer_margin_100"
+      android:layout_marginRight="@dimen/customer_margin_100"
       android:layout_marginTop="@dimen/common_margin_80"
       android:src="@drawable/logo_text"/>
 
@@ -35,7 +35,7 @@
       android:textColorHint="@color/red"
       android:inputType="textEmailAddress"
       style="@style/TradeHero.Authentication.EditText"
-      android:textSize="30sp"
+      android:textSize="@dimen/common_text_size_30"
       android:background="@drawable/authentication_edit_text">
 
     <requestFocus/>
@@ -55,25 +55,23 @@
       android:textColorHint="@color/red"
       android:inputType="textPassword"
       style="@style/TradeHero.Authentication.EditText"
-      android:textSize="30sp"
+      android:textSize="@dimen/common_text_size_30"
       android:background="@drawable/authentication_edit_text"/>
 
   <Button
       android:id="@+id/btn_login"
       android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="@dimen/common_margin_60"
       android:layout_below="@+id/et_pwd_login"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="@dimen/common_margin_50"
       android:layout_marginLeft="@dimen/common_margin_60"
       android:layout_marginRight="@dimen/common_margin_60"
       android:background="@drawable/authentication_button"
-      android:padding="5dp"
       android:text="@string/authentication_login"
       android:textColor="@color/white"
-      android:textSize="25sp"
-      android:textStyle="bold"
-      />
+      android:textSize="@dimen/common_text_size_30"
+      android:textStyle="bold"/>
 
   <TextView
       android:id="@+id/authentication_sign_in_forgot_password"
@@ -85,7 +83,7 @@
       android:padding="15dip"
       android:text="@string/authentication_forgot_password"
       android:textColor="@color/white"
-      android:textSize="15sp"
+      android:textSize="@dimen/common_text_size_25"
       android:textStyle="bold"/>
 
 </RelativeLayout>
