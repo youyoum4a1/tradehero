@@ -175,6 +175,19 @@ public class DashboardNavigator extends Navigator
                 });
     }
 
+    private void goToTab(@NotNull DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
+    {
+        mOnTabChangedListener = changeListener;
+        goToTab(tabType);
+    }
+
+    public void goToTab(@NotNull DashboardTabType tabType)
+    {
+        manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        manager.executePendingTransactions();
+        pushFragment(tabType.fragmentClass, new Bundle(), null, null);
+    }
+
     private void postPushActionFragment(final THIntent thIntent)
     {
         final Class<? extends Fragment> actionFragment = thIntent.getActionFragment();
@@ -192,19 +205,6 @@ public class DashboardNavigator extends Navigator
                 pushFragment(actionFragment, thIntent.getBundle());
             }
         });
-    }
-
-    public void goToTab(@NotNull DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
-    {
-        mOnTabChangedListener = changeListener;
-        goToTab(tabType);
-    }
-
-    public void goToTab(@NotNull DashboardTabType tabType)
-    {
-        manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        manager.executePendingTransactions();
-        pushFragment(tabType.fragmentClass, new Bundle(), null, null);
     }
 
     //public void clearBackStack()
