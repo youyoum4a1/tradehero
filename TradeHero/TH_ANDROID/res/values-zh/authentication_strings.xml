@@ -5,8 +5,8 @@
   <string name="authentication_guarantee">我们尊重您的隐私： 我们永远不会在未经过您允许的情况下，发布任何信息至您的社交平台</string>
   <string name="authentication_sign_in_pp">隐私策略</string>
   <string name="authentication_sign_in_tos">服务条款</string>
-  <string name="authentication_email">电子邮件</string>
-  <string name="authentication_password">密码</string>
+  <string name="authentication_email">*电子邮件</string>
+  <string name="authentication_password">*密码</string>
   <string name="authentication_sign_up">注册</string>
   <string name="authentication_register">注册</string>
   <string name="authentication_sign_up_with">使用以下账号注册</string>
