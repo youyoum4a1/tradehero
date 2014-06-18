@@ -103,6 +103,7 @@ public class DiscussionDTOFactory
         created.publishToFb = fromForm.publishToFb;
         created.publishToLi = fromForm.publishToLi;
         created.publishToTw = fromForm.publishToTw;
+        created.publishToWb = fromForm.publishToWb;
         created.isPublic = fromForm.isPublic;
         return created;
     }
