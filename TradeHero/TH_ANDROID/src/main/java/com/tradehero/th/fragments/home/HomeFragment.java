@@ -71,7 +71,7 @@ public class HomeFragment extends BaseWebViewFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME
                 | ActionBar.DISPLAY_USE_LOGO);
-        actionBar.setTitle(R.string.home);
+        actionBar.setTitle(R.string.dashboard_home);
         actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         actionBar.setHomeButtonEnabled(true);
         super.onPrepareOptionsMenu(menu);

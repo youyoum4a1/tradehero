@@ -407,7 +407,7 @@ public class UpdateCenterFragment extends BaseFragment
     @Override public void onTabChanged(String tabId)
     {
         Timber.d("onTabChanged %s",tabId);
-        String tab = getString(DashboardTabType.UPDATE_CENTER.stringResId);
+        String tab = getString(DashboardTabType.UPDATE_CENTER.stringKeyResId);
         if (tab.equals(tabId))
         {
             //switch to current tab,do nothing

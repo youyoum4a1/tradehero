@@ -194,5 +194,5 @@
   <string name="notification_unread_messages">You have %d unread messages</string>
   <string name="notification_new_activities">You have %d new activities</string>
   <string name="friend_link_social_network">Please Link Social Network.</string>
-  <string name="home">Home</string>
+
 </resources>

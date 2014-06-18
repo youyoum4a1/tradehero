@@ -444,8 +444,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             case TRENDING:
                 break;
-            case PORTFOLIO:
-                break;
             case STORE:
                 break;
             default:

@@ -144,7 +144,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO);
-        actionBar.setTitle(getString(R.string.dashboard_community));
+        actionBar.setTitle(R.string.dashboard_community);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
 

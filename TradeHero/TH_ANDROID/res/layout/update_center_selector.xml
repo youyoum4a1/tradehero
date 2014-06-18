@@ -11,6 +11,7 @@
     android:paddingBottom="@dimen/residemenu_item_padding"
     tools:background="@color/red"
     >
+
   <ImageView
       android:layout_width="30dp"
       android:layout_height="30dp"
@@ -30,7 +31,7 @@
       android:layout_marginLeft="10dp"
       android:layout_gravity="center_vertical"
       android:id="@+id/tv_title"
-      android:text="@string/message_center"
+      android:text="@string/dashboard_message_center"
       tools:text="Community"
       />
 

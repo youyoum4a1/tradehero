@@ -130,7 +130,7 @@ public class DashboardNavigator extends Navigator
         mTabHost.getTabWidget().setDividerDrawable(null);
 
         //mTabHost.setCurrentTabByTag(activity.getString(R.string.dashboard_trending));
-        mTabHost.setCurrentTabByTag(activity.getString(DashboardTabType.TRENDING.stringResId));
+        mTabHost.setCurrentTabByTag(activity.getString(DashboardTabType.TRENDING.stringKeyResId));
         tabBarView = mTabHost.findViewById(android.R.id.tabhost);
 
         if (!ENABLE_TABBAR_ANIMATION)
@@ -165,7 +165,7 @@ public class DashboardNavigator extends Navigator
 
     private TabHost.TabSpec makeTabSpec(DashboardTabType tabType)
     {
-        return mTabHost.newTabSpec(activity.getString(tabType.stringResId))
+        return mTabHost.newTabSpec(activity.getString(tabType.stringKeyResId))
                 .setIndicator(null, activity.getResources().getDrawable(tabType.drawableResId));
     }
 
@@ -179,14 +179,14 @@ public class DashboardNavigator extends Navigator
             imageView.setVisibility(View.VISIBLE);
         }
 
-        return mTabHost.newTabSpec(activity.getString(tabType.stringResId))
+        return mTabHost.newTabSpec(activity.getString(tabType.stringKeyResId))
                 .setIndicator(tabView);
     }
 
     private void addNewTab(DashboardTabType tabType)
     {
         Bundle bundle = new Bundle();
-        bundle.putString(BUNDLE_KEY, activity.getString(tabType.stringResId));
+        bundle.putString(BUNDLE_KEY, activity.getString(tabType.stringKeyResId));
 
         mTabHost.addTab(makeNewTabSpec(tabType), tabType.fragmentClass, bundle);
     }
@@ -224,7 +224,7 @@ public class DashboardNavigator extends Navigator
             else
             {
                 Bundle bundle = new Bundle();
-                bundle.putString(BUNDLE_KEY, activity.getString(targetTabType.stringResId));
+                bundle.putString(BUNDLE_KEY, activity.getString(targetTabType.stringKeyResId));
                 targetFragment =
                         Fragment.instantiate(activity, targetTabType.fragmentClass.getName(), bundle);
                 ft.add(R.id.main_fragment, targetFragment, name);
@@ -237,7 +237,7 @@ public class DashboardNavigator extends Navigator
 
             Timber.d("replaceTab replace findFragmentById %s",manager.findFragmentById(R.id.main_fragment));
             Bundle bundle = new Bundle();
-            bundle.putString(BUNDLE_KEY, activity.getString(targetTabType.stringResId));
+            bundle.putString(BUNDLE_KEY, activity.getString(targetTabType.stringKeyResId));
             Fragment targetFragment =
                     Fragment.instantiate(activity, targetTabType.fragmentClass.getName(), bundle);
             manager
@@ -268,7 +268,7 @@ public class DashboardNavigator extends Navigator
             return;
         }
 
-        final String expectedTag = activity.getString(thIntent.getDashboardType().stringResId);
+        final String expectedTag = activity.getString(thIntent.getDashboardType().stringKeyResId);
         goToTab(
                 thIntent.getDashboardType(),
                 new TabHost.OnTabChangeListener()
@@ -314,7 +314,7 @@ public class DashboardNavigator extends Navigator
         if (mTabHost != null)
         {
             mOnTabChangedListener = changeListener;
-            mTabHost.setCurrentTabByTag(activity.getString(tabType.stringResId));
+            mTabHost.setCurrentTabByTag(activity.getString(tabType.stringKeyResId));
         }
         showTabBar();
     }
