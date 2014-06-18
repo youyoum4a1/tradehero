@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,8 +11,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.models.market.ExchangeSpinnerDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeSpinnerDTOUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
@@ -33,7 +32,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     private SpinnerIconAdapter mExchangeSelectionAdapter;
 
     private TrendingFilterTypeDTO trendingFilterTypeDTO;
-    private ExchangeSpinnerDTO[] exchangeSpinnerDTOs;
+    private ExchangeCompactSpinnerDTO[] exchangeCompactSpinnerDTOs;
     private OnFilterTypeChangedListener changedListener;
     //@Inject TrendingFilterTypeDTOUtil trendingFilterTypeDTOUtil;
     @Inject ExchangeSpinnerDTOUtil exchangeSpinnerDTOUtil;
@@ -128,23 +127,23 @@ public class TrendingFilterSelectorView extends RelativeLayout
         mExchangeSelection = null;
     }
 
-    public void setUpExchangeSpinner(List<ExchangeDTO> exchangeDTOs)
+    public void setUpExchangeSpinner(List<ExchangeCompactDTO> exchangeCompactDTOs)
     {
         Timber.d("Filter setUpExchangeSpinner");
-        this.exchangeSpinnerDTOs = exchangeSpinnerDTOUtil.getSpinnerDTOs(getContext(), exchangeDTOs);
-        int[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeDTOs);
+        this.exchangeCompactSpinnerDTOs = exchangeSpinnerDTOUtil.getSpinnerDTOs(getContext(), exchangeCompactDTOs);
+        int[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeCompactDTOs);
         Spinner exchangeSelection = mExchangeSelection;
         if (exchangeSelection != null)
         {
-            //trendingFilterTypeDTOUtil.createDropDownTextsAndIcons(getContext(), exchangeDTOs);
+            //trendingFilterTypeDTOUtil.createDropDownTextsAndIcons(getContext(), exchangeCompactDTOs);
             mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapter(
                     getContext(),
-                    this.exchangeSpinnerDTOs,
+                    this.exchangeCompactSpinnerDTOs,
                     spinnerIcons,
                     spinnerIcons);
             mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
             exchangeSelection.setAdapter(mExchangeSelectionAdapter);
-            if (this.exchangeSpinnerDTOs == null)
+            if (this.exchangeCompactSpinnerDTOs == null)
             {
                 Timber.e(new IllegalArgumentException("exchangeSpinnerDTOs null"), "exchangeSpinnerDTOs null");
             }
@@ -153,7 +152,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
                 Timber.e(new IllegalArgumentException("trendingFilterTypeDTO null"), "trendingFilterTypeDTO null");
                 trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
             }
-            exchangeSelection.setSelection(exchangeSpinnerDTOUtil.indexOf(this.exchangeSpinnerDTOs, trendingFilterTypeDTO.exchange));
+            exchangeSelection.setSelection(exchangeSpinnerDTOUtil.indexOf(this.exchangeCompactSpinnerDTOs, trendingFilterTypeDTO.exchange));
             exchangeSelection.setOnItemSelectedListener(new TrendingFilterSelectorViewSpinnerListener());
         }
     }
@@ -226,9 +225,9 @@ public class TrendingFilterSelectorView extends RelativeLayout
             {
                 trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
             }
-            if (exchangeSpinnerDTOs != null && exchangeSpinnerDTOs.length > i)
+            if (exchangeCompactSpinnerDTOs != null && exchangeCompactSpinnerDTOs.length > i)
             {
-                trendingFilterTypeDTO.exchange = exchangeSpinnerDTOs[i];
+                trendingFilterTypeDTO.exchange = exchangeCompactSpinnerDTOs[i];
             }
             notifyListenerChanged();
         }

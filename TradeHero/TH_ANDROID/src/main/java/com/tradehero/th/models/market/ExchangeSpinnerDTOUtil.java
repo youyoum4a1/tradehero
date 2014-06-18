@@ -1,9 +1,8 @@
 package com.tradehero.th.models.market;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import com.tradehero.th.api.market.Exchange;
-import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,34 +16,34 @@ import timber.log.Timber;
     {
     }
 
-    public ExchangeSpinnerDTO[] getSpinnerDTOs(Context context, List<ExchangeDTO> exchangeDTOs)
+    public ExchangeCompactSpinnerDTO[] getSpinnerDTOs(Context context, List<ExchangeCompactDTO> exchangeDTOs)
     {
         if (exchangeDTOs == null)
         {
             return null;
         }
 
-        ExchangeSpinnerDTO[] spinnerDTOs = new ExchangeSpinnerDTO[exchangeDTOs.size() + 1];
-        spinnerDTOs[0] = new ExchangeSpinnerDTO(context); // That's the "All Exchanges" thing
+        ExchangeCompactSpinnerDTO[] spinnerDTOs = new ExchangeCompactSpinnerDTO[exchangeDTOs.size() + 1];
+        spinnerDTOs[0] = new ExchangeCompactSpinnerDTO(context); // That's the "All Exchanges" thing
         int index = 1;
-        for (ExchangeDTO exchangeDTO: exchangeDTOs)
+        for (ExchangeCompactDTO exchangeDTO: exchangeDTOs)
         {
-            spinnerDTOs[index++] = new ExchangeSpinnerDTO(context, exchangeDTO);
+            spinnerDTOs[index++] = new ExchangeCompactSpinnerDTO(context, exchangeDTO);
         }
         return spinnerDTOs;
     }
 
-    public int[] getSpinnerIcons(Context context, List<ExchangeDTO> exchangeDTOs)
+    public int[] getSpinnerIcons(Context context, List<ExchangeCompactDTO> exchangeCompactDTOs)
     {
-        if (exchangeDTOs == null)
+        if (exchangeCompactDTOs == null)
         {
             return null;
         }
 
-        int[] spinnerIcons = new int[exchangeDTOs.size() + 1];
+        int[] spinnerIcons = new int[exchangeCompactDTOs.size() + 1];
         spinnerIcons[0] = 0; // That's the "All Exchanges" thing
         int index = 1;
-        for (ExchangeDTO exchangeDTO: exchangeDTOs)
+        for (ExchangeCompactDTO exchangeDTO: exchangeCompactDTOs)
         {
             try
             {
@@ -62,8 +61,8 @@ import timber.log.Timber;
         return spinnerIcons;
     }
 
-    public <T extends ExchangeDTO> int indexOf(T[] exchangeDTOs, T exchangeToFind)
+    public <T extends ExchangeCompactDTO> int indexOf(T[] exchangeCompactDTOs, T exchangeToFind)
     {
-        return new ArrayList<T>(Arrays.asList(exchangeDTOs)).indexOf(exchangeToFind);
+        return new ArrayList<T>(Arrays.asList(exchangeCompactDTOs)).indexOf(exchangeToFind);
     }
 }

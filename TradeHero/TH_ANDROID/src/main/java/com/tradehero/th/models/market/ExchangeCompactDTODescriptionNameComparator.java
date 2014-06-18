@@ -1,11 +1,11 @@
 package com.tradehero.th.models.market;
 
-import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
 import java.util.Comparator;
 
-public class ExchangeDTODescriptionNameComparator implements Comparator<ExchangeDTO>
+public class ExchangeCompactDTODescriptionNameComparator implements Comparator<ExchangeCompactDTO>
 {
-    @Override public int compare(ExchangeDTO lhs, ExchangeDTO rhs)
+    @Override public int compare(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
     {
         if (lhs == null)
         {
@@ -32,7 +32,7 @@ public class ExchangeDTODescriptionNameComparator implements Comparator<Exchange
      * @param rhs
      * @return
      */
-    protected int compareDesc(ExchangeDTO lhs, ExchangeDTO rhs)
+    protected int compareDesc(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
     {
         if (lhs.desc == null)
         {
@@ -51,7 +51,7 @@ public class ExchangeDTODescriptionNameComparator implements Comparator<Exchange
      * @param rhs
      * @return
      */
-    protected int compareName(ExchangeDTO lhs, ExchangeDTO rhs)
+    protected int compareName(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
     {
         if (lhs.name == null)
         {

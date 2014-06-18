@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.api.market.ExchangeDTOList;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -27,15 +27,15 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Exchanges">
-    public ExchangeDTOList getExchanges()
+    public ExchangeCompactDTOList getExchanges()
     {
         return marketService.getExchanges();
     }
 
-    @NotNull public MiddleCallback<ExchangeDTOList> getExchanges(
-            @Nullable Callback<ExchangeDTOList> callback)
+    @NotNull public MiddleCallback<ExchangeCompactDTOList> getExchanges(
+            @Nullable Callback<ExchangeCompactDTOList> callback)
     {
-        MiddleCallback<ExchangeDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<ExchangeCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         marketServiceAsync.getExchanges(middleCallback);
         return middleCallback;
     }

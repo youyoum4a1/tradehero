@@ -1,7 +1,7 @@
 package com.tradehero.th.persistence.market;
 
 import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.market.ExchangeDTOList;
+import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.network.service.MarketServiceWrapper;
 import dagger.Lazy;
@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class ExchangeListCache extends StraightDTOCacheNew<ExchangeListType, ExchangeDTOList>
+@Singleton public class ExchangeCompactListCache extends StraightDTOCacheNew<ExchangeListType, ExchangeCompactDTOList>
 {
     public static final int DEFAULT_MAX_SIZE = 1; // Be careful to increase when necessary
 
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
     @NotNull private final Lazy<ExchangeIdCache> exchangeIdCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public ExchangeListCache(
+    @Inject public ExchangeCompactListCache(
             @NotNull Lazy<MarketServiceWrapper> marketServiceWrapper,
             @NotNull Lazy<ExchangeIdCache> exchangeIdCache)
     {
@@ -27,12 +27,12 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public ExchangeDTOList fetch(@NotNull ExchangeListType key) throws Throwable
+    @Override public ExchangeCompactDTOList fetch(@NotNull ExchangeListType key) throws Throwable
     {
         return marketServiceWrapper.get().getExchanges();
     }
 
-    @Override public ExchangeDTOList put(@NotNull ExchangeListType key, @NotNull ExchangeDTOList value)
+    @Override public ExchangeCompactDTOList put(@NotNull ExchangeListType key, @NotNull ExchangeCompactDTOList value)
     {
         exchangeIdCache.get().put(value);
         return super.put(key, value);

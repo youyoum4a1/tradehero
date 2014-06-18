@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.api.market.ExchangeDTOList;
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -12,7 +12,7 @@ public interface MarketServiceAsync
     // returns basic exchange DTOs, un-enriched
     @GET("/exchanges")
     void getExchanges(
-            Callback<ExchangeDTOList> callback);
+            Callback<ExchangeCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="GetExchange">
