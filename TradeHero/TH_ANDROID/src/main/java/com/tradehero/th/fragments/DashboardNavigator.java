@@ -19,6 +19,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator
@@ -192,24 +194,17 @@ public class DashboardNavigator extends Navigator
         });
     }
 
-    public void goToTab(DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
+    public void goToTab(@NotNull DashboardTabType tabType, TabHost.OnTabChangeListener changeListener)
     {
-        Timber.d("goToTab %s with listener %s", tabType, changeListener);
         mOnTabChangedListener = changeListener;
         goToTab(tabType);
     }
 
-    public void goToTab(DashboardTabType tabType)
+    public void goToTab(@NotNull DashboardTabType tabType)
     {
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
-        Fragment fragment = Fragment.instantiate(context, tabType.fragmentClass.getName(), new Bundle());
-        fragment.setArguments(new Bundle());
-        FragmentTransaction transaction = manager.beginTransaction();
-        FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
-        String backStackName = tabType.fragmentClass.getName();
-        ft.addToBackStack(backStackName);
-        ft.commitAllowingStateLoss();
+        pushFragment(tabType.fragmentClass, new Bundle(), null, null);
     }
 
     //public void clearBackStack()
@@ -218,10 +213,10 @@ public class DashboardNavigator extends Navigator
     //    manager.popBackStack(rootFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     //}
 
-    @Override public <T extends Fragment> T pushFragment(Class<T> fragmentClass, Bundle args)
+    @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName)
     {
         resideMenu.closeMenu();
-        T fragment = super.pushFragment(fragmentClass, args);
+        T fragment = super.pushFragment(fragmentClass, args, anim, backStackName);
         executePending(fragment);
         return fragment;
     }
