@@ -8,12 +8,8 @@ import java.util.List;
 
 import static com.tradehero.th.fragments.social.friend.FacebookSocialFriendHandler.RequestCallback;
 
-/**
- * Created by wangliang on 14-5-26.
- */
 public class FacebookSocialFriendsFragment extends SocialFriendsFragment
 {
-
     @Override
     protected SocialNetworkEnum getSocialNetwork()
     {
@@ -56,7 +52,6 @@ public class FacebookSocialFriendsFragment extends SocialFriendsFragment
 
     class FacebookInviteFriendCallback extends FacebookSocialFriendHandler.FacebookRequestCallback
     {
-
         List<UserFriendsDTO> usersToInvite;
 
         public FacebookInviteFriendCallback(Context context, List<UserFriendsDTO> usersToInvite)

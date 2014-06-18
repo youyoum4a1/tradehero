@@ -55,6 +55,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
 import java.util.Date;
@@ -95,6 +96,8 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
 
+    @Inject THRouter thRouter;
+
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
     private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
@@ -118,7 +121,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (Constants.RELEASE)
         {
             Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.VERSION));
+                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.TAP_STREAM_TYPE.type));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
@@ -371,6 +374,14 @@ public class DashboardActivity extends SherlockFragmentActivity
         Intent intent = getIntent();
         if (intent == null || intent.getAction() == null)
         {
+            return;
+        }
+
+        if (intent.getData() != null)
+        {
+            String url = intent.getData().toString();
+            url = url.replace("tradehero://", "");
+            thRouter.open(url, this);
             return;
         }
 

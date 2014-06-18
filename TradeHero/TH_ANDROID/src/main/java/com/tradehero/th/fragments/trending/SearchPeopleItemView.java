@@ -130,7 +130,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         {
             if (userSearchResultDTO.userMarkingAsOfUtc != null)
             {
-                date.setText(DateUtils.getFormattedUtcDate(userSearchResultDTO.userMarkingAsOfUtc));
+                date.setText(DateUtils.getFormattedUtcDate(getResources(), userSearchResultDTO.userMarkingAsOfUtc));
                 date.setTextColor(Color.BLACK);
             }
             else

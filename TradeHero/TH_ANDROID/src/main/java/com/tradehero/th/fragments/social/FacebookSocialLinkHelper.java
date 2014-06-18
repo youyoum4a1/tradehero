@@ -2,30 +2,37 @@ package com.tradehero.th.fragments.social;
 
 import android.app.Activity;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.utils.FacebookUtils;
-import dagger.Lazy;
+import com.tradehero.th.utils.ProgressDialogUtil;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by tradehero on 14-6-5.
- */
-public class FacebookSocialLinkHelper extends SocialLinkHelper {
+public class FacebookSocialLinkHelper extends SocialLinkHelper
+{
+    @NotNull private final FacebookUtils facebookUtils;
 
-    @Inject
-    Lazy<FacebookUtils> facebookUtils;
-
-    public FacebookSocialLinkHelper(Activity context) {
-        super(context);
-        DaggerUtils.inject(this);
-    }
-
-    protected void doLoginAction(Activity context, LogInCallback logInCallback)
+    //<editor-fold desc="Constructors">
+    @Inject public FacebookSocialLinkHelper(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull FacebookUtils facebookUtils)
     {
-        facebookUtils.get().logIn(context, logInCallback);
+        super(currentUserId, progressDialogUtil, socialServiceWrapper, currentActivityHolder);
+        this.facebookUtils = facebookUtils;
+    }
+    //</editor-fold>
+
+    protected SocialNetworkEnum getSocialNetwork()
+    {
+        return SocialNetworkEnum.FB;
     }
 
     protected int getLinkDialogTitle()
@@ -38,8 +45,8 @@ public class FacebookSocialLinkHelper extends SocialLinkHelper {
         return R.string.authentication_connecting_to_facebook;
     }
 
-    protected SocialNetworkEnum getSocialNetwork()
+    protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        return SocialNetworkEnum.FB;
+        facebookUtils.logIn(context, logInCallback);
     }
 }

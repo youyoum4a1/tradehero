@@ -1,9 +1,10 @@
 package com.tradehero.th.api.social;
 
-import com.android.internal.util.Predicate;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HeroDTOList extends ArrayList<HeroDTO>
 {
@@ -24,10 +25,12 @@ public class HeroDTOList extends ArrayList<HeroDTO>
     }
     //</editor-fold>
 
-    public HeroIdList filter(UserBaseKey followerId, Predicate<HeroDTO> predicate)
+    @NotNull public HeroIdList filter(
+            @NotNull UserBaseKey followerId,
+            @NotNull HeroDTOActiveFreePredicate predicate)
     {
         HeroIdList filtered = new HeroIdList();
-        for (HeroDTO heroDTO : this)
+        for (@Nullable HeroDTO heroDTO : this)
         {
             if (predicate.apply(heroDTO))
             {
@@ -37,18 +40,18 @@ public class HeroDTOList extends ArrayList<HeroDTO>
         return filtered;
     }
 
-    public HeroIdList getAllActiveHeroIds(UserBaseKey followerId)
+    public HeroIdList getAllActiveHeroIds(@NotNull UserBaseKey followerId)
     {
-        return filter(followerId, new HeroDTOActiveFreePredicate(true, null));
+        return filter(followerId, new HeroDTOActiveFreePredicateImpl(true, null));
     }
 
-    public HeroIdList getFreeActiveHeroIds(UserBaseKey followerId)
+    public HeroIdList getFreeActiveHeroIds(@NotNull UserBaseKey followerId)
     {
-        return filter(followerId, new HeroDTOActiveFreePredicate(true, true));
+        return filter(followerId, new HeroDTOActiveFreePredicateImpl(true, true));
     }
 
-    public HeroIdList getPremiumActiveHeroIds(UserBaseKey followerId)
+    public HeroIdList getPremiumActiveHeroIds(@NotNull UserBaseKey followerId)
     {
-        return filter(followerId, new HeroDTOActiveFreePredicate(true, false));
+        return filter(followerId, new HeroDTOActiveFreePredicateImpl(true, false));
     }
 }

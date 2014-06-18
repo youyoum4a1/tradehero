@@ -2,18 +2,19 @@ package com.tradehero.th.api.users;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import org.jetbrains.annotations.NotNull;
 
 public class UserBaseKey extends AbstractIntegerDTOKey
 {
     public static final String BUNDLE_KEY_KEY = UserBaseKey.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
-    public UserBaseKey(Integer key)
+    public UserBaseKey(@NotNull Integer key)
     {
         super(key);
     }
 
-    public UserBaseKey(Bundle args)
+    public UserBaseKey(@NotNull Bundle args)
     {
         super(args);
     }

@@ -207,6 +207,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/common_margin_1"
         android:layout_below="@id/belt"
+        tools:background="#ffeeee"
         />
 
     <include layout="@layout/buy_sell_buttons"/>

@@ -40,6 +40,7 @@ import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
+import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
@@ -97,11 +98,7 @@ import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
-import com.tradehero.th.fragments.social.FacebookSocialLinkHelper;
-import com.tradehero.th.fragments.social.LinkedInSocialLinkHelper;
 import com.tradehero.th.fragments.social.RelationsListItemView;
-import com.tradehero.th.fragments.social.TwitterSocialLinkHelper;
-import com.tradehero.th.fragments.social.WeiboSocialLinkHelper;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
@@ -120,7 +117,6 @@ import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
-import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
@@ -162,15 +158,12 @@ import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
-import com.tradehero.th.persistence.leaderboard.LeaderboardManager;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
-import com.tradehero.th.persistence.user.UserManager;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.persistence.user.UserStore;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.ui.UIModule;
@@ -272,10 +265,8 @@ import javax.inject.Singleton;
                         SearchStockPageListLoader.class,
                         TimelineListLoader.class,
 
-                        UserManager.class,
                         TimelineManager.class,
 
-                        UserStore.class,
                         TimelineStore.class,
                         TimelineStore.Factory.class,
 
@@ -292,7 +283,6 @@ import javax.inject.Singleton;
 
                         LeaderboardDefView.class,
                         CommunityLeaderboardDefView.class,
-                        LeaderboardManager.class,
                         LeaderboardMarkUserLoader.class,
                         LeaderboardMarkUserListFragment.class,
                         BaseLeaderboardFragment.class,
@@ -325,12 +315,10 @@ import javax.inject.Singleton;
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
                         THIABBillingInteractor.class,
-                        HeroManagerInfoFetcher.class,
                         HeroesTabContentFragment.class,
                         PremiumHeroFragment.class,
                         FreeHeroFragment.class,
                         AllHeroFragment.class,
-                        HeroManagerInfoFetcher.class,
                         AllRelationsFragment.class,
                         RelationsListItemView.class,
 
@@ -389,11 +377,8 @@ import javax.inject.Singleton;
                         WeiboSocialFriendsFragment.class,
                         SocialFriendHandler.class,
                         FacebookSocialFriendHandler.class,
-                        FacebookSocialLinkHelper.class,
-                        LinkedInSocialLinkHelper.class,
-                        TwitterSocialLinkHelper.class,
-                        WeiboSocialLinkHelper.class,
 
+                        HomeFragment.class
                 },
         staticInjections =
                 {

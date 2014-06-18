@@ -80,10 +80,10 @@
 
   <string name="social_friend_empty">没有好友数据</string>
   <string name="search_social_friend_empty">没有找到好友数据</string>
-    <string name="inivte_from_weibo">邀请微博好友</string>
-    <string name="inivte_from_linkedIn">邀请LinkedIn好友</string>
-    <string name="inivte_from_facebook">邀请Facebook好友</string>
-    <string name="inivte_from_twitter">邀请Twitter好友</string>
+    <string name="invite_from_weibo">邀请微博好友</string>
+    <string name="invite_from_linkedIn">邀请LinkedIn好友</string>
+    <string name="invite_from_facebook">邀请Facebook好友</string>
+    <string name="invite_from_twitter">邀请Twitter好友</string>
     <string name="invite">邀请</string>
   <plurals name="inbox_notification_title">
     <item quantity="one">1 条新消息</item>

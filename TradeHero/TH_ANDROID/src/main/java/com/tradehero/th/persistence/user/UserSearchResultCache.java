@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserSearchResultCache extends StraightDTOCache<UserBaseKey, UserSearchResultDTO>
 {
@@ -24,7 +26,8 @@ import javax.inject.Singleton;
         throw new IllegalStateException("There is no fetch mechanism on this cache");
     }
 
-    public List<UserSearchResultDTO> put(List<UserSearchResultDTO> values)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<UserSearchResultDTO> put(@Nullable List<UserSearchResultDTO> values)
     {
         if (values == null)
         {
@@ -48,7 +51,8 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public List<UserSearchResultDTO> get(List<UserBaseKey> keys)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<UserSearchResultDTO> get(@Nullable List<UserBaseKey> keys)
     {
         if (keys == null)
         {

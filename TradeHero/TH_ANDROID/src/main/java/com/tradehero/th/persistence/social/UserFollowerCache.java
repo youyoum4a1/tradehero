@@ -9,26 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserFollowerCache extends StraightDTOCache<FollowerHeroRelationId, UserFollowerDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    @Inject protected Lazy<FollowerServiceWrapper> followerServiceWrapper;
+    @NotNull private final Lazy<FollowerServiceWrapper> followerServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    @Inject public UserFollowerCache()
+    @Inject public UserFollowerCache(@NotNull Lazy<FollowerServiceWrapper> followerServiceWrapper)
     {
         super(DEFAULT_MAX_SIZE);
+        this.followerServiceWrapper = followerServiceWrapper;
     }
     //</editor-fold>
 
-    @Override protected UserFollowerDTO fetch(FollowerHeroRelationId key) throws Throwable
+    @Override protected UserFollowerDTO fetch(@NotNull FollowerHeroRelationId key) throws Throwable
     {
         return this.followerServiceWrapper.get().getFollowerSubscriptionDetail(key);
     }
 
-    public List<UserFollowerDTO> getOrFetch(List<FollowerHeroRelationId> followerHeroRelationIds) throws Throwable
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<UserFollowerDTO> getOrFetch(@Nullable List<FollowerHeroRelationId> followerHeroRelationIds) throws Throwable
     {
         if (followerHeroRelationIds == null)
         {
@@ -36,7 +41,7 @@ import javax.inject.Singleton;
         }
 
         List<UserFollowerDTO> followerSummaryDTOs = new ArrayList<>();
-        for (FollowerHeroRelationId baseKey: followerHeroRelationIds)
+        for (@NotNull FollowerHeroRelationId baseKey: followerHeroRelationIds)
         {
             followerSummaryDTOs.add(getOrFetch(baseKey, false));
         }

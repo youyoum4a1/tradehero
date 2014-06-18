@@ -1,7 +1,9 @@
 package com.tradehero.th.api.competition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.HelpVideoId;
+import org.jetbrains.annotations.NotNull;
 
 public class HelpVideoDTO implements DTO
 {
@@ -13,12 +15,14 @@ public class HelpVideoDTO implements DTO
     public Integer providerId;
     public String embedCode;
 
-    public HelpVideoId getHelpVideoId()
+    @JsonIgnore
+    @NotNull public HelpVideoId getHelpVideoId()
     {
         return new HelpVideoId(id);
     }
 
-    public ProviderId getProviderId()
+    @JsonIgnore
+    @NotNull public ProviderId getProviderId()
     {
         return new ProviderId(providerId);
     }

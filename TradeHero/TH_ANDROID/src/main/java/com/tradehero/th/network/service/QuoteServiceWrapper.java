@@ -9,17 +9,18 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.client.Response;
 
 @Singleton public class QuoteServiceWrapper
 {
-    private final QuoteService quoteService;
-    private final QuoteServiceAsync quoteServiceAsync;
+    @NotNull private final QuoteService quoteService;
+    @NotNull private final QuoteServiceAsync quoteServiceAsync;
 
     @Inject public QuoteServiceWrapper(
-            QuoteService quoteService,
-            QuoteServiceAsync quoteServiceAsync)
+            @NotNull QuoteService quoteService,
+            @NotNull QuoteServiceAsync quoteServiceAsync)
     {
         super();
         this.quoteService = quoteService;

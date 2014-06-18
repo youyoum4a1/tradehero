@@ -33,6 +33,11 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
                     "Context must be non-null for Twitter authentication to proceed.");
         }
 
+        if (callback != null)
+        {
+            callback.onStart();
+        }
+
         twitter.authorize(context, new THAuthenticationCallback()
         {
             @Override public void onCancel()

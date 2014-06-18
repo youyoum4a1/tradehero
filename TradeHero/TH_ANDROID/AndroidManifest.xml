@@ -109,13 +109,13 @@
         <!--<action android:name="com.android.vending.billing.IN_APP_NOTIFY" />-->
         <!--<action android:name="com.android.vending.billing.RESPONSE_CODE" />-->
         <!--<action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />-->
-        <data android:host="tradehero" android:path="/view" android:scheme="http"/>
 
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_trending" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_community" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_profile" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_portfolio" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_user" android:pathPattern=".*"/>
       </intent-filter>
     </activity>
 
@@ -126,7 +126,7 @@
 
     <activity
         android:name=".activities.StockChartActivity"
-        android:screenOrientation="landscape"
+        android:screenOrientation="sensorLandscape"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     <activity
@@ -256,6 +256,12 @@
         android:exported="true"
         android:process=":bdservice_v1"/>
     <!--END Baidu inter-process communication-->
+
+    <receiver android:name="com.mobileapptracker.Tracker" android:exported="true">
+      <intent-filter>
+        <action android:name="com.android.vending.INSTALL_REFERRER" />
+      </intent-filter>
+    </receiver>
 
     <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
     <meta-data android:name="LOCALYTICS_APP_KEY" android:value="f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207"/>

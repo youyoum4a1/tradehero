@@ -8,18 +8,19 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class TranslationTokenServiceWrapper
 {
-    private TranslationTokenService translationTokenService;
-    private TranslationTokenServiceAsync translationTokenServiceAsync;
-    private TranslationTokenFactory translationTokenFactory;
+    @NotNull private TranslationTokenService translationTokenService;
+    @NotNull private TranslationTokenServiceAsync translationTokenServiceAsync;
+    @NotNull private TranslationTokenFactory translationTokenFactory;
 
     @Inject public TranslationTokenServiceWrapper(
-            TranslationTokenService translationTokenService,
-            TranslationTokenServiceAsync translationTokenServiceAsync,
-            TranslationTokenFactory translationTokenFactory)
+            @NotNull TranslationTokenService translationTokenService,
+            @NotNull TranslationTokenServiceAsync translationTokenServiceAsync,
+            @NotNull TranslationTokenFactory translationTokenFactory)
     {
         this.translationTokenService = translationTokenService;
         this.translationTokenServiceAsync = translationTokenServiceAsync;

@@ -113,10 +113,7 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         }
         currentOperationCallback = callback;
 
-        if (currentOperationCallback != null)
-        {
-            currentOperationCallback.onStart();
-        }
+        callback.onStart();
 
         createWeiboAuth();
 

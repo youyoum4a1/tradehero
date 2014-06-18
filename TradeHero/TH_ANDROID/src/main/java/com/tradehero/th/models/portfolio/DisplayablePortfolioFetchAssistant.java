@@ -18,21 +18,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class DisplayablePortfolioFetchAssistant
 {
-    private final PortfolioCompactListCache portfolioListCache;
-    private final PortfolioCache portfolioCache;
-    private final UserProfileCache userProfileCache;
+    @NotNull private final PortfolioCompactListCache portfolioListCache;
+    @NotNull private final PortfolioCache portfolioCache;
+    @NotNull private final UserProfileCache userProfileCache;
 
-    private final Map<UserBaseKey, FlaggedDisplayablePortfolioDTOList> displayPortfolios;
-    private OnFetchedListener fetchedListener;
+    @NotNull private final Map<UserBaseKey, FlaggedDisplayablePortfolioDTOList> displayPortfolios;
+    @Nullable private OnFetchedListener fetchedListener;
 
     @Inject public DisplayablePortfolioFetchAssistant(
-            PortfolioCompactListCache portfolioListCache,
-            PortfolioCache portfolioCache,
-            UserProfileCache userProfileCache)
+            @NotNull PortfolioCompactListCache portfolioListCache,
+            @NotNull PortfolioCache portfolioCache,
+            @NotNull UserProfileCache userProfileCache)
     {
         super();
         this.portfolioListCache = portfolioListCache;
@@ -45,15 +47,15 @@ public class DisplayablePortfolioFetchAssistant
     {
     }
 
-    public void setFetchedListener(OnFetchedListener fetchedListener)
+    public void setFetchedListener(@Nullable OnFetchedListener fetchedListener)
     {
         this.fetchedListener = fetchedListener;
     }
 
-    public void fetch(List<UserBaseKey> userBaseKeys)
+    public void fetch(@NotNull List<UserBaseKey> userBaseKeys)
     {
         displayPortfolios.clear();
-        for (UserBaseKey userBaseKey : userBaseKeys)
+        for (@NotNull UserBaseKey userBaseKey : userBaseKeys)
         {
             if (!displayPortfolios.containsKey(userBaseKey))
             {
@@ -75,7 +77,7 @@ public class DisplayablePortfolioFetchAssistant
             }
             else
             {
-                for (FlaggedDisplayablePortfolioDTO displayablePortfolioDTO : entry.getValue())
+                for (@NotNull FlaggedDisplayablePortfolioDTO displayablePortfolioDTO : entry.getValue())
                 {
                     if (displayablePortfolioDTO.userBaseDTO == null && !displayablePortfolioDTO.fetchingUser)
                     {

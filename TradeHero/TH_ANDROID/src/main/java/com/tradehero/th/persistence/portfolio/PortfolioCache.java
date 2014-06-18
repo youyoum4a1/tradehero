@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
     @NotNull protected Lazy<GetPositionsCache> getPositionsCache;
 
     //<editor-fold desc="Constructors">
-
     @Inject public PortfolioCache(
             @NotNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
             @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
@@ -50,19 +49,14 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Nullable
-    @Override public PortfolioDTO put(@NotNull OwnedPortfolioId key, PortfolioDTO value)
+    @Override public PortfolioDTO put(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
     {
-        if (value != null)
-        {
-            portfolioCompactCache.get().put(key.getPortfolioIdKey(), value);
-            getPositionsCache.get().invalidate(key);
-        }
-
+        portfolioCompactCache.get().put(key.getPortfolioIdKey(), value);
+        getPositionsCache.get().invalidate(key);
         return super.put(key, value);
     }
 
-    @Contract("null -> null")
-    @Nullable
+    @Contract("null -> null; !null -> !null") @Nullable
     public List<PortfolioDTO> get(@Nullable List<? extends OwnedPortfolioId> keys)
     {
         if (keys == null)
@@ -70,15 +64,14 @@ import org.jetbrains.annotations.Nullable;
             return null;
         }
         List<PortfolioDTO> values = new ArrayList<>();
-        for (OwnedPortfolioId key: keys)
+        for (@NotNull OwnedPortfolioId key: keys)
         {
             values.add(get(key));
         }
         return values;
     }
 
-    @Contract("null -> null")
-    @Nullable
+    @Contract("null -> null; !null -> !null") @Nullable
     public List<PortfolioDTO> getOrFetch(@Nullable List<? extends OwnedPortfolioId> keys) throws Throwable
     {
         if (keys == null)
@@ -86,7 +79,7 @@ import org.jetbrains.annotations.Nullable;
             return null;
         }
         List<PortfolioDTO> values = new ArrayList<>();
-        for (OwnedPortfolioId key: keys)
+        for (@NotNull OwnedPortfolioId key: keys)
         {
             values.add(getOrFetch(key));
         }

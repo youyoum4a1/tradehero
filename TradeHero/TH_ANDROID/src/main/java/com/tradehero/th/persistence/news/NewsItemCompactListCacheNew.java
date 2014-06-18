@@ -11,15 +11,16 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class NewsItemCompactListCacheNew extends StraightDTOCacheNew<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
 {
-    private final NewsServiceWrapper newsServiceWrapper;
-    private final Lazy<NewsItemCompactCacheNew> newsItemCompactCacheNew;
+    @NotNull private final NewsServiceWrapper newsServiceWrapper;
+    @NotNull private final Lazy<NewsItemCompactCacheNew> newsItemCompactCacheNew;
 
     @Inject public NewsItemCompactListCacheNew(@ListCacheMaxSize IntPreference maxSize,
-            NewsServiceWrapper newsServiceWrapper,
-            Lazy<NewsItemCompactCacheNew> newsItemCompactCacheNew)
+            @NotNull NewsServiceWrapper newsServiceWrapper,
+            @NotNull Lazy<NewsItemCompactCacheNew> newsItemCompactCacheNew)
     {
         super(maxSize.get());
         this.newsServiceWrapper = newsServiceWrapper;
@@ -31,8 +32,9 @@ import org.jetbrains.annotations.NotNull;
         return newsServiceWrapper.getNews(key);
     }
 
-    @Override public PaginatedDTO<NewsItemCompactDTO> put(NewsItemListKey key,
-            PaginatedDTO<NewsItemCompactDTO> value)
+    @Override public PaginatedDTO<NewsItemCompactDTO> put(
+            @NotNull NewsItemListKey key,
+            @Nullable PaginatedDTO<NewsItemCompactDTO> value)
     {
         if (value != null)
         {

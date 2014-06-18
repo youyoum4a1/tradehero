@@ -72,7 +72,11 @@ import timber.log.Timber;
             if (providerDTO.hasWizard())
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
-                preparedOrderedItems.add(new CompetitionZoneWizardDTO(context.getString(R.string.provider_competition_wizard_title), null));
+
+                String wizardTitle = providerDTO.wizardTitle != null && !providerDTO.wizardTitle.isEmpty() ?
+                        providerDTO.wizardTitle : context.getString(R.string.provider_competition_wizard_title);
+                preparedOrderedItems.add(new CompetitionZoneWizardDTO(
+                        wizardTitle, null, providerDTO.wizardImageUrl, providerDTO.wizardUrl));
             }
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);

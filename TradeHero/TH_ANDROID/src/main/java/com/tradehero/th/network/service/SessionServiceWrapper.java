@@ -19,25 +19,27 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class SessionServiceWrapper
 {
-    private final SessionService sessionService;
-    private final SessionServiceAsync sessionServiceAsync;
-    private final UserProfileCache userProfileCache;
-    private final DTOCacheUtil dtoCacheUtil;
-    private final Context context;
-    private final StringPreference savedPushDeviceIdentifier;
-    private final Lazy<SystemStatusCache> systemStatusCache;
+    @NotNull private final SessionService sessionService;
+    @NotNull private final SessionServiceAsync sessionServiceAsync;
+    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final DTOCacheUtil dtoCacheUtil;
+    @NotNull private final Context context;
+    @NotNull private final StringPreference savedPushDeviceIdentifier;
+    @NotNull private final Lazy<SystemStatusCache> systemStatusCache;
 
     @Inject public SessionServiceWrapper(
-            SessionService sessionService,
-            SessionServiceAsync sessionServiceAsync,
-            UserProfileCache userProfileCache,
-            DTOCacheUtil dtoCacheUtil, Context context,
-            @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
-            Lazy<SystemStatusCache> systemStatusCache)
+            @NotNull SessionService sessionService,
+            @NotNull SessionServiceAsync sessionServiceAsync,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull DTOCacheUtil dtoCacheUtil,
+            @NotNull Context context,
+            @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
+            @NotNull Lazy<SystemStatusCache> systemStatusCache)
     {
         this.sessionService = sessionService;
         this.sessionServiceAsync = sessionServiceAsync;

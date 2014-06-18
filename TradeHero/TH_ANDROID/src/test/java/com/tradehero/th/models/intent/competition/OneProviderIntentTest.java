@@ -90,7 +90,7 @@ public class OneProviderIntentTest
         OneProviderIntent intent = new SimpleOneProviderIntent(providerId);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(567, bundle.getInt(CompetitionFragment.BUNDLE_KEY_PROVIDER_ID));
+        assertEquals(567, (int) CompetitionFragment.getProviderId(bundle).key);
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -102,6 +102,6 @@ public class OneProviderIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(567, bundle.getInt(CompetitionFragment.BUNDLE_KEY_PROVIDER_ID));
+        assertEquals(567, (int) CompetitionFragment.getProviderId(bundle).key);
     }
 }

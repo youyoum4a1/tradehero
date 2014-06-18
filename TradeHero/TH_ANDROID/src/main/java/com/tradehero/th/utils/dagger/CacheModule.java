@@ -8,11 +8,11 @@ import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCompetitionView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityAdapter;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardCompetitionView;
 import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
@@ -22,7 +22,6 @@ import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
-import com.tradehero.th.persistence.portfolio.OwnedPortfolioFetchAssistant;
 import com.tradehero.th.persistence.user.UserProfileFetchAssistant;
 import dagger.Module;
 import dagger.Provides;
@@ -31,7 +30,6 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 UserProfileFetchAssistant.class,
-                OwnedPortfolioFetchAssistant.class,
                 SecurityAlertAssistant.class,
                 SettingsPayPalFragment.class,
                 SettingsAlipayFragment.class,

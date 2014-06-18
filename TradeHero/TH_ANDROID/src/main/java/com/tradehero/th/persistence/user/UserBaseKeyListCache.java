@@ -10,34 +10,42 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserBaseKeyListCache extends StraightDTOCache<UserListType, UserBaseKeyList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject protected Lazy<UserSearchResultCache> userSearchResultCache;
+    @NotNull private final Lazy<UserServiceWrapper> userServiceWrapper;
+    @NotNull private final Lazy<UserSearchResultCache> userSearchResultCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public UserBaseKeyListCache()
+    @Inject public UserBaseKeyListCache(
+            @NotNull Lazy<UserServiceWrapper> userServiceWrapper,
+            @NotNull Lazy<UserSearchResultCache> userSearchResultCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.userServiceWrapper = userServiceWrapper;
+        this.userSearchResultCache = userSearchResultCache;
     }
     //</editor-fold>
 
-    @Override protected UserBaseKeyList fetch(UserListType key) throws Throwable
+    @Override protected UserBaseKeyList fetch(@NotNull UserListType key) throws Throwable
     {
         return putInternal(key, userServiceWrapper.get().searchUsers(key));
     }
 
-    protected UserBaseKeyList putInternal(UserListType key, List<UserSearchResultDTO> fleshedValues)
+    @Contract("_, null -> null; _, !null -> !null") @Nullable
+    protected UserBaseKeyList putInternal(@NotNull UserListType key, @Nullable List<UserSearchResultDTO> fleshedValues)
     {
         UserBaseKeyList userBaseKeys = null;
         if (fleshedValues != null)
         {
             userBaseKeys = new UserBaseKeyList();
             UserBaseKey userBaseKey;
-            for (UserSearchResultDTO userSearchResultDTO: fleshedValues)
+            for (@Nullable UserSearchResultDTO userSearchResultDTO: fleshedValues)
             {
                 if (userSearchResultDTO != null)
                 {

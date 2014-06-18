@@ -10,30 +10,42 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton
 public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
 {
     public static final int DEFAULT_MAX_SIZE = 20;
 
-    @Inject UserServiceWrapper userServiceWrapper;
-    @Inject UserMessagingRelationshipCache userRelationCache;
-    @Inject UserProfileCompactCache userProfileCompactCache;
+    @NotNull private final UserServiceWrapper userServiceWrapper;
+    @NotNull private final UserMessagingRelationshipCache userRelationCache;
+    @NotNull private final UserProfileCompactCache userProfileCompactCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public AllowableRecipientPaginatedCache()
+    @Inject public AllowableRecipientPaginatedCache(
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull UserMessagingRelationshipCache userRelationCache,
+            @NotNull UserProfileCompactCache userProfileCompactCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.userServiceWrapper = userServiceWrapper;
+        this.userRelationCache = userRelationCache;
+        this.userProfileCompactCache = userProfileCompactCache;
     }
     //</editor-fold>
 
-    @Override protected PaginatedDTO<AllowableRecipientDTO> fetch(SearchAllowableRecipientListType key)
+    @Override protected PaginatedDTO<AllowableRecipientDTO> fetch(@NotNull SearchAllowableRecipientListType key)
             throws Throwable
     {
         return putInternal(key, userServiceWrapper.searchAllowableRecipients(key));
     }
 
-    private PaginatedDTO<AllowableRecipientDTO> putInternal(SearchAllowableRecipientListType key, PaginatedDTO<AllowableRecipientDTO> value)
+    @Contract("_, null -> null; _, !null -> !null") @Nullable
+    private PaginatedDTO<AllowableRecipientDTO> putInternal(
+            @NotNull SearchAllowableRecipientListType key,
+            PaginatedDTO<AllowableRecipientDTO> value)
     {
         if (value == null)
         {
@@ -56,7 +68,8 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAll
         return reprocessed;
     }
 
-    private AllowableRecipientDTO get(UserBaseKey userBaseKey)
+    @Contract("null -> null; !null -> !null") @Nullable
+    private AllowableRecipientDTO get(@Nullable UserBaseKey userBaseKey)
     {
         if (userBaseKey == null)
         {
@@ -68,7 +81,8 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAll
         return allowableRecipientDTO;
     }
 
-    private AllowableRecipientDTO put(AllowableRecipientDTO value)
+    @Contract("null -> null; !null -> !null") @Nullable
+    private AllowableRecipientDTO put(@Nullable AllowableRecipientDTO value)
     {
         if (value == null || value.user == null)
         {

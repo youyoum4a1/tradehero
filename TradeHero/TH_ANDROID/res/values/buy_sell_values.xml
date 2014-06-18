@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <color name="buy_sell_button_background">#889e9e9e</color>
+  <dimen name="buy_sell_button_container_height">60dp</dimen>
+
+</resources>

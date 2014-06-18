@@ -5,6 +5,7 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 
 public class PositionDTOList<PositionDTOType extends PositionDTO>
         extends ArrayList<PositionDTOType>
@@ -63,7 +64,7 @@ public class PositionDTOList<PositionDTOType extends PositionDTO>
         return latest;
     }
 
-    public void setOnInPeriod(LeaderboardMarkUserId leaderboardMarkUserId)
+    public void setOnInPeriod(@NotNull LeaderboardMarkUserId leaderboardMarkUserId)
     {
         for (PositionDTOType positionDTO : this)
         {

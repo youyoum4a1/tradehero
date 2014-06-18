@@ -44,6 +44,12 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
         DaggerUtils.inject(this);
     }
 
+    @Override protected void onDetachedFromWindow()
+    {
+        picasso.cancelRequest(zoneIcon);
+        super.onDetachedFromWindow();
+    }
+
     protected void initViews()
     {
         zoneIcon = (ImageView) findViewById(R.id.icn_competition_zone);
@@ -77,7 +83,18 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
         {
             if (competitionZoneDTO instanceof CompetitionZoneWizardDTO)
             {
-                zoneIcon.setImageResource(R.drawable.wizard);
+                CompetitionZoneWizardDTO competitionZoneWizardDTO = ((CompetitionZoneWizardDTO) competitionZoneDTO);
+                if (competitionZoneWizardDTO.getIconUrl() != null)
+                {
+                    picasso.cancelRequest(zoneIcon);
+                    picasso.load(competitionZoneWizardDTO.getIconUrl())
+                            .fit()
+                            .into(zoneIcon);
+                }
+                else
+                {
+                    zoneIcon.setImageResource(R.drawable.wizard);
+                }
             }
             else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
             {

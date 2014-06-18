@@ -18,7 +18,8 @@ public class DTOProcessorNotificationRead implements DTOProcessor<Response>
     @NotNull private final UserProfileCache userProfileCache;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorNotificationRead(@NotNull NotificationKey key,
+    public DTOProcessorNotificationRead(
+            @NotNull NotificationKey key,
             @NotNull NotificationCache notificationCache,
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache)

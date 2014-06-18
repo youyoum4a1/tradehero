@@ -1,29 +1,22 @@
 package com.tradehero.th.fragments.social.friend;
 
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by wangliang on 14-5-26.
- */
-public class SocalTypeItem {
-
-    public SocialNetworkEnum socialNetwork;
+public class SocialTypeItem
+{
+    @NotNull public SocialNetworkEnum socialNetwork;
     public int imageResource;
     public int titleResource;
     public int backgroundResource;
 
-    public SocalTypeItem()
-    {
-
-    }
-
-    public SocalTypeItem(int imageResource, int titleResource, int backgroundResource, SocialNetworkEnum socialNetwork)
+    //<editor-fold desc="Constructors">
+    public SocialTypeItem(int imageResource, int titleResource, int backgroundResource, @NotNull SocialNetworkEnum socialNetwork)
     {
         this.imageResource = imageResource;
         this.titleResource = titleResource;
         this.socialNetwork = socialNetwork;
         this.backgroundResource = backgroundResource;
     }
-
-
+    //</editor-fold>
 }

@@ -51,40 +51,33 @@ public enum TapStreamType
     Channel10(44, R.string.tap_stream_type_channel10_install, R.string.tap_stream_type_channel10_open),
     ;
 
-    private final int type;
-    private final int installResId;
-    private final int openResId;
+    public final int type;
+    public final int installResId;
+    public final int openResId;
 
+    //<editor-fold desc="Constructors">
     TapStreamType(int type, int installResId, int openResId)
     {
         this.type = type;
         this.installResId = installResId;
         this.openResId = openResId;
     }
-
-    public int getInstallResId()
-    {
-        return installResId;
-    }
-
-    public int getOpenResId()
-    {
-        return openResId;
-    }
-
-    public int getType()
-    {
-        return type;
-    }
+    //</editor-fold>
 
     public static TapStreamType fromType(int type)
     {
+        int previous = -1;
         for (TapStreamType tapStreamType : values())
         {
+            if (tapStreamType.type <= previous)
+            {
+                throw new IllegalArgumentException("Only increasing values allowed");
+            }
             if (tapStreamType.type == type)
             {
                 return tapStreamType;
             }
+            previous = tapStreamType.type;
         }
         return null;
     }

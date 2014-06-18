@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -23,6 +22,7 @@ import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -42,7 +42,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private EditText emailEditText;
     private ImageView backButton;
 
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

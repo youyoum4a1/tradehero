@@ -6,6 +6,7 @@ import com.tradehero.th.api.Querylizable;
 import com.tradehero.th.api.discussion.DiscussionType;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 public class DiscussionListKey
         implements DTOKey, Querylizable<String>
@@ -61,7 +62,7 @@ public class DiscussionListKey
                 inReplyToId == other.inReplyToId;
     }
 
-    public boolean equivalentFields(DiscussionKey other)
+    public boolean equivalentFields(@Nullable DiscussionKey other)
     {
         return (other != null) &&
                 (inReplyToType == null ? other.getType() == null : inReplyToType.equals(other.getType())) &&

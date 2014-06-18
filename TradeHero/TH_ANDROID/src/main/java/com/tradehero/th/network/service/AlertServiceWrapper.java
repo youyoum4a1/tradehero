@@ -100,7 +100,7 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Alert">
-    public AlertDTO getAlert(@Nullable AlertId alertId)
+    public AlertDTO getAlert(@NotNull AlertId alertId)
     {
         basicCheck(alertId);
         return this.alertService.getAlert(alertId.userId, alertId.alertId);
