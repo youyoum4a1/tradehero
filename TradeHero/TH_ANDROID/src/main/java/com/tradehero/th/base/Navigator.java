@@ -32,7 +32,7 @@ public class Navigator
             R.anim.slide_left_in, R.anim.slide_right_out
     };
 
-    private final Context context;
+    protected final Context context;
     protected final FragmentManager manager;
     private int fragmentContentId;
     private int backPressedCount;

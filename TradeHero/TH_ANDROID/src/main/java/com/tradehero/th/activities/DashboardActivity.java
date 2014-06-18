@@ -66,7 +66,6 @@ import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity,
-        AppContainerImpl.OnResideMenuItemClickListener,
         ResideMenu.OnMenuListener
 {
     private DashboardNavigator navigator;
@@ -193,13 +192,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         request.popRestorePurchaseOutcome = true;
         request.popRestorePurchaseOutcomeVerbose = false;
         request.purchaseRestorerListener = purchaseRestorerFinishedListener;
-        return request;
-    }
-
-    protected THUIBillingRequest createFetchInventoryRequest()
-    {
-        THUIBillingRequest request = emptyBillingRequestProvider.get();
-        request.fetchInventory = true;
         return request;
     }
 
@@ -413,28 +405,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
 
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    @Override public void onResideMenuItemClick(DashboardTabType tabType)
-    {
-        switch (tabType)
-        {
-            case TRENDING:
-                break;
-            case STORE:
-                break;
-            default:
-                break;
-        }
-
-        if (currentTab != tabType)
-        {
-            navigator.replaceTab(currentTab, tabType);
-            currentTab = tabType;
         }
     }
 
