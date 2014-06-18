@@ -23,6 +23,12 @@
     <item name="android:background">@color/splash_background_solid</item>
   </style>
 
+  <style name="AppBaseTheme.NoActionBar2" parent="TradeHero">
+    <item name="android:windowActionBar">false</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowBackground">@drawable/authentication_bg</item>
+  </style>
+
   <style name="TradeHero.Menu.ItemTextIcon" parent="TextAppearance.Sherlock.Light.SearchResult">
     <item name="android:textStyle">bold</item>
     <item name="android:textSize">20sp</item>
