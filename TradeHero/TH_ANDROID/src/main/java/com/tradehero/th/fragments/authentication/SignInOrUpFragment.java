@@ -28,6 +28,13 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
     {
         View view = inflater.inflate(getViewId(), container, false);
 
+        setOnClickListener(view);
+
+        return view;
+    }
+
+    public void setOnClickListener(View view)
+    {
         view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
         view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(onClickListener);
@@ -35,8 +42,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
         view.findViewById(R.id.btn_qq_signin).setOnClickListener(onClickListener);
         view.findViewById(getEmailSignUpViewId()).setOnClickListener(onClickListener);
         view.findViewById(R.id.txt_term_of_service_signin).setOnClickListener(onClickListener);
-
-        return view;
+        view.findViewById(R.id.txt_term_of_service_termsofuse).setOnClickListener(onClickListener);
     }
 
     @Override

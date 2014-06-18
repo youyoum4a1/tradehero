@@ -36,15 +36,7 @@ public class SignUpFragment extends SignInOrUpFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(getViewId(), container, false);
-
-        view.findViewById(R.id.btn_facebook_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_twitter_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_linkedin_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_weibo_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.btn_qq_signin).setOnClickListener(onClickListener);
-        view.findViewById(getEmailSignUpViewId()).setOnClickListener(onClickListener);
-        view.findViewById(R.id.txt_term_of_service_signin).setOnClickListener(onClickListener);
-        view.findViewById(R.id.txt_term_of_service_termsofuse).setOnClickListener(onClickListener);
+        setOnClickListener(view);
         view.findViewById(R.id.authentication_by_sign_in_button).setOnClickListener(onClickListener);
         return view;
     }
