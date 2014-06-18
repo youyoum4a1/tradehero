@@ -1,11 +1,10 @@
 package com.tradehero.th.api.market;
 
 import android.os.Bundle;
-import java.util.List;
 
 public class ExchangeDTO extends ExchangeCompactDTO
 {
-    public List<SectorDTO> sectors;
+    public SectorDTOList sectors;
 
     //<editor-fold desc="Constructors">
     public ExchangeDTO()
@@ -21,13 +20,13 @@ public class ExchangeDTO extends ExchangeCompactDTO
             boolean isInternal,
             boolean isIncludedInTrending,
             boolean chartDataSource,
-            List<SectorDTO> sectors)
+            SectorDTOList sectors)
     {
         super(id, name, countryCode, sumMarketCap, desc, isInternal, isIncludedInTrending, chartDataSource);
         this.sectors = sectors;
     }
 
-    public ExchangeDTO(int id, String name, double sumMarketCap, List<SectorDTO> sectors, String desc, boolean isInternal,
+    public ExchangeDTO(int id, String name, double sumMarketCap, SectorDTOList sectors, String desc, boolean isInternal,
             boolean isIncludedInTrending)
     {
         this.id = id;
