@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/common_margin_10"
-        android:layout_marginRight="@dimen/common_margin_100"
+        android:layout_marginRight="@dimen/common_margin_110"
         android:ellipsize="end"
         android:textStyle="bold"
         android:textSize="@dimen/leaderboard_title_text_size"

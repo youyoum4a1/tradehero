@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -36,6 +37,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     private TextView forgotPasswordLink;
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
+    private ImageView backButton;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
@@ -79,6 +81,9 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
         forgotPasswordLink = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
         forgotPasswordLink.setOnClickListener(this);
+
+        backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_in_back_button);
+        backButton.setOnClickListener(onClickListener);
     }
 
     @Override public void onDestroyView()
@@ -107,6 +112,11 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             this.forgotPasswordLink.setOnClickListener(null);
         }
         this.forgotPasswordLink = null;
+        if (backButton != null)
+        {
+            backButton.setOnClickListener(null);
+            backButton = null;
+        }
 
         super.onDestroyView();
     }

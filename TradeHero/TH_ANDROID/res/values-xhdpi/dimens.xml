@@ -2,4 +2,22 @@
 <resources>
   <dimen name="security_logo_midium">60dp</dimen>
   <dimen name="button_height_30">30dp</dimen>
+
+  <dimen name="common_margin_1">1dp</dimen>
+  <dimen name="common_margin_2">1dp</dimen>
+  <dimen name="common_margin_4">3dp</dimen>
+  <dimen name="common_margin_10">6dp</dimen>
+  <dimen name="common_margin_15">10dp</dimen>
+  <dimen name="common_margin_20">13dp</dimen>
+  <dimen name="common_margin_30">20dp</dimen>
+  <dimen name="common_margin_50">33dp</dimen>
+  <dimen name="common_margin_60">45dp</dimen>
+  <dimen name="common_margin_80">55dp</dimen>
+  <dimen name="customer_margin_100">80dp</dimen>
+  <dimen name="common_margin_110">75dp</dimen>
+  <dimen name="common_margin_130">87dp</dimen>
+  <dimen name="common_margin_140">93dp</dimen>
+  <dimen name="common_height_40">27dp</dimen>
+  <dimen name="common_text_size_30">19sp</dimen>
+  <dimen name="common_text_size_25">15sp</dimen>
 </resources>

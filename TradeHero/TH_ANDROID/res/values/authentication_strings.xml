@@ -3,42 +3,61 @@
 
   <string name="authentication_welcome_new_user">New User</string>
   <string name="authentication_guarantee">We respect your privacy: we will never post to your feeds without your express permission.</string>
-  <string name="authentication_sign_in_tos">terms of service</string>
-  <string name="authentication_email">Email</string>
-  <string name="authentication_password">Password</string>
+  <string name="authentication_sign_in_pp">Privacy Policy</string>
+  <string name="authentication_sign_in_tos">Terms of Service</string>
+  <string name="authentication_email">*Email</string>
+  <string name="authentication_password">*Password</string>
   <string name="authentication_sign_up">Sign Up</string>
+  <string name="authentication_register">Register</string>
   <string name="authentication_sign_up_with">sign up with</string>
   <string name="authentication_sign_up_with_email">or sign up with an\u0020</string>
-  <string name="authentication_sign_in">Sign In</string>
+  <string name="authentication_sign_in">Sign in</string>
+  <string name="authentication_login">Login</string>
   <string name="authentication_sign_in_with">sign in with</string>
   <string name="authentication_sign_in_with_email">or sign in with an\u0020</string>
   <string name="authentication_existing_user">existing user</string>
-  <string name="authentication_email_address">email address</string>
+  <!--<string name="authentication_email_address">email address</string>-->
   <string name="authentication_ask_for_email">Please enter your email address:</string>
   <string name="authentication_thank_you_message_email">Thank You ! Please follow your mail box</string>
   <string name="authentication_confirm">Confirm</string>
   <string name="authentication_cancel">@string/cancel</string>
   <string name="authentication_not_registered">You need to go back and sign up</string>
 
-  <string name="authentication_forgot_password">forgot your password ?</string>
+  <string name="authentication_forgot_password">Forgot your password ?</string>
   <string name="authentication_forgot_password_email">Email</string>
 
   <string name="authentication_connecting_tradehero">Authenticated with %s, connecting to TradeHero</string>
   <string name="authentication_connecting_tradehero_only">Processing</string>
 
   <string name="facebook">Facebook</string>
+  <string name="facebook_login_in">Log in with Facebook</string>
+  <string name="facebook_register">Register with Facebook</string>
   <string name="authentication_connecting_to_facebook">Connecting to Facebook</string>
   <string name="linkedin">LinkedIn</string>
+  <string name="linkedin_login_in">Log in with LinkedIn</string>
+  <string name="linkedin_register">Register with LinkedIn</string>
   <string name="authentication_connecting_to_linkedin">Connecting to LinkedIn</string>
   <string name="twitter">Twitter</string>
+  <string name="twitter_login_in">Log in with Twitter</string>
+  <string name="twitter_register">Register with Twitter</string>
   <string name="authentication_twitter_email">Email</string>
   <string name="authentication_twitter_connecting">Connecting to Twitter</string>
   <string name="sina_weibo">Weibo</string>
-  <string name="tencent_qq">QQ</string>
+  <string name="weibo_login_in">Log in with Weibo</string>
+  <string name="weibo_register">Register with Weibo</string>
   <string name="authentication_connecting_to_weibo">Connecting to Weibo</string>
+  <string name="tencent_qq">QQ</string>
+  <string name="qq_login_in">Log in with QQ</string>
+  <string name="qq_register">Register with QQ</string>
   <string name="authentication_connecting_to_qq">Connecting to QQ</string>
   <string name="wechat">WeChat</string>
+  <string name="email_login_in">Log in with Email</string>
+  <string name="email_register">Register with Email</string>
 
   <string name="authentication_error_creating_signup_form">There was an error creating the sign-up form</string>
+  <string name="new_to_tradehero">"New to Tradehero? "</string>
+  <string name="already_registered">"Already registered? "</string>
+  <string name="register_now">Register now</string>
+  <string name="log_in_now">Log in now!</string>
 
 </resources>

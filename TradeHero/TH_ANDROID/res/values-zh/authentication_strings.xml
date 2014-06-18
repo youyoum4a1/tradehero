@@ -3,13 +3,16 @@
 
   <string name="authentication_welcome_new_user">新用户</string>
   <string name="authentication_guarantee">我们尊重您的隐私： 我们永远不会在未经过您允许的情况下，发布任何信息至您的社交平台</string>
+  <string name="authentication_sign_in_pp">隐私策略</string>
   <string name="authentication_sign_in_tos">服务条款</string>
-  <string name="authentication_email">电子邮件</string>
-  <string name="authentication_password">密码</string>
+  <string name="authentication_email">*电子邮件</string>
+  <string name="authentication_password">*密码</string>
   <string name="authentication_sign_up">注册</string>
+  <string name="authentication_register">注册</string>
   <string name="authentication_sign_up_with">使用以下账号注册</string>
   <string name="authentication_sign_up_with_email">或以邮箱注册\u0020</string>
   <string name="authentication_sign_in">登陆</string>
+  <string name="authentication_login">登陆</string>
   <string name="authentication_sign_in_with">使用社交平台账号登陆</string>
   <string name="authentication_sign_in_with_email">或以注册邮箱登陆\u0020</string>
   <string name="authentication_existing_user">已注册用户</string>
@@ -23,17 +26,36 @@
   <string name="authentication_forgot_password_email">电子邮件</string>
   <string name="authentication_connecting_tradehero">正在验证 %s, 连线全民股神中</string>
   <string name="authentication_connecting_tradehero_only">处理中</string>
+
   <string name="facebook">Facebook</string>
+  <string name="facebook_login_in">用 Facebook 账号登陆</string>
+  <string name="facebook_register">用 Facebook 账号注册</string>
   <string name="authentication_connecting_to_facebook">连接 Facebook</string>
   <string name="linkedin">LinkedIn</string>
+  <string name="linkedin_login_in">用 LinkedIn 账号登陆</string>
+  <string name="linkedin_register">用 LinkedIn 账号注册</string>
   <string name="authentication_connecting_to_linkedin">连接 LinkedIn</string>
   <string name="twitter">Twitter</string>
+  <string name="twitter_login_in">用 Twitter 账号登陆</string>
+  <string name="twitter_register">用 Twitter 账号注册</string>
   <string name="authentication_twitter_email">电子邮件</string>
   <string name="authentication_twitter_connecting">连接 Twitter</string>
   <string name="sina_weibo">微博</string>
-  <string name="tencent_qq">QQ</string>
+  <string name="weibo_login_in">用 Weibo 账号登陆</string>
+  <string name="weibo_register">用 Weibo 账号注册</string>
   <string name="authentication_connecting_to_weibo">连接微博</string>
+  <string name="tencent_qq">QQ</string>
+  <string name="qq_login_in">用 QQ 账号登陆</string>
+  <string name="qq_register">用 QQ 账号注册</string>
   <string name="authentication_connecting_to_qq">连接QQ</string>
   <string name="wechat">微信</string>
+  <string name="email_login_in">用 Email 账号登陆</string>
+  <string name="email_register">用 Email 账号注册</string>
+
   <string name="authentication_error_creating_signup_form">生成注册信息有误</string>
+  <string name="new_to_tradehero">新来的？</string>
+  <string name="already_registered">已经有账号了？</string>
+  <string name="register_now">马上注册</string>
+  <string name="log_in_now">马上登陆！</string>
+
 </resources>

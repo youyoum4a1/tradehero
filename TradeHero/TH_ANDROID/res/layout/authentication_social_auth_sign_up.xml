@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+  <Button
+      android:id="@+id/btn_facebook_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:background="@drawable/btn_background_social_facebook"
+      android:text="@string/facebook_register"
+      android:drawableLeft="@drawable/settings_fb_normal"/>
+
+  <Button
+      android:id="@+id/btn_twitter_signin"
+      android:background="@drawable/btn_background_social_twitter"
+      android:text="@string/twitter_register"
+      android:drawableLeft="@drawable/settings_twitter_normal"
+      style="@style/TradeHero.SocialAuthenticationButton"/>
+
+  <Button
+      android:id="@+id/btn_weibo_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:background="@drawable/btn_background_social_weibo"
+      android:drawableLeft="@drawable/settings_weibo_normal"
+      android:text="@string/weibo_register"/>
+
+  <Button
+      android:id="@+id/btn_qq_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:background="@drawable/btn_background_social_qq"
+      android:drawableLeft="@drawable/settings_qq_normal"
+      android:text="@string/qq_register"/>
+
+  <Button
+      android:id="@+id/btn_linkedin_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:drawableLeft="@drawable/settings_linkedin_normal"
+      android:background="@drawable/btn_background_social_linkedin"
+      android:text="@string/linkedin_register"/>
+
+  <Button
+      android:id="@+id/authentication_email_sign_up_link"
+      android:background="@drawable/btn_background_email"
+      android:drawableLeft="@drawable/settings_email_noti"
+      android:text="@string/email_register"
+      android:textColor="@color/black"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:shadowColor="@color/white"/>
+</LinearLayout>
