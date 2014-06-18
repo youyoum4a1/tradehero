@@ -30,6 +30,6 @@ import org.jetbrains.annotations.NotNull;
 
     @Override public SystemStatusDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
-        return sessionService.get().login(THUser.getAuthHeader(), loginFormDTOProvider.get()).systemStatus;
+        return sessionService.get().login(THUser.getAuthHeader(), loginFormDTOProvider.get()).systemStatusDTO;
     }
 }
