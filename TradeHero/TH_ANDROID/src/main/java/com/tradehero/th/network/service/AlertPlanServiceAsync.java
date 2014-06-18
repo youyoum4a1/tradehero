@@ -6,45 +6,51 @@ import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-public interface AlertPlanService
+public interface AlertPlanServiceAsync
 {
     //<editor-fold desc="Get Alert Plans">
     @GET("/users/{userId}/alertPlans")
-    List<AlertPlanDTO> getAlertPlans(
-            @Path("userId") int userId);
+    void getAlertPlans(
+            @Path("userId") int userId,
+            Callback<List<AlertPlanDTO>> callback);
     //</editor-fold>
 
     //<editor-fold desc="Subscribe To Alert Plan">
     @POST("/users/{userId}/alertPlans")
-    UserProfileDTO subscribeToAlertPlan(
+    void subscribeToAlertPlan(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO);
+            @Body GooglePlayPurchaseDTO purchaseDTO,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Check Alert Plan Subscription">
     @POST("/users/{userId}/alertPlans/checkAlertPlanSubscription")
-    UserProfileDTO checkAlertPlanSubscription(
-            @Path("userId") int userId);
+    void checkAlertPlanSubscription(
+            @Path("userId") int userId,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Check Alert Plan Attribution">
     @GET("/users/{userId}/alertPlans/check")
-    AlertPlanStatusDTO checkAlertPlanAttribution(
+    void checkAlertPlanAttribution(
             @Path("userId") int userId,
             @Query("google_play_data") String googlePlayData,
-            @Query("google_play_signature") String googlePlaySignature);
+            @Query("google_play_signature") String googlePlaySignature,
+            Callback<AlertPlanStatusDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Restore Purchases">
     @POST("/users/{userId}/alertPlans/restore")
-    UserProfileDTO restorePurchases(
+    void restorePurchases(
             @Path("userId") int userId,
-            @Body RestorePurchaseForm restorePurchaseForm);
+            @Body RestorePurchaseForm restorePurchaseForm,
+            Callback<UserProfileDTO> callback);
     //</editor-fold>
 }

@@ -36,7 +36,6 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
-    @Inject Lazy<AlertPlanService> alertPlanService;
     @Inject Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject Lazy<UserService> userService;
@@ -118,8 +117,8 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
                 break;
 
             case DOMAIN_STOCK_ALERTS:
-                alertPlanService.get().subscribeToAlertPlan(
-                        portfolioId.userId,
+                alertPlanServiceWrapper.get().subscribeToAlertPlan(
+                        portfolioId.getUserBaseKey(),
                         purchase.getGooglePlayPurchaseDTO(),
                         new THIABPurchaseReporterAlertPlanPurchaseCallback());
                 break;
@@ -178,8 +177,8 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         Exception thrown = null;
         try
         {
-            return alertPlanService.get().subscribeToAlertPlan(
-                    portfolioId.userId,
+            return alertPlanServiceWrapper.get().subscribeToAlertPlan(
+                    portfolioId.getUserBaseKey(),
                     purchase.getGooglePlayPurchaseDTO());
         }
         catch (Exception e)
@@ -197,7 +196,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
             }
 
             // Since the purchase was already reported, just return the latest profile
-            return alertPlanService.get().checkAlertPlanSubscription(portfolioId.userId);
+            return alertPlanServiceWrapper.get().checkAlertPlanSubscription(portfolioId.getUserBaseKey());
         }
         catch (Exception e)
         {
@@ -238,7 +237,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         }
         else
         {
-            alertPlanService.get().checkAlertPlanSubscription(portfolioId.userId, new THIABPurchaseReporterPurchaseCallback());
+            alertPlanServiceWrapper.get().checkAlertPlanSubscription(portfolioId.getUserBaseKey(), new THIABPurchaseReporterPurchaseCallback());
         }
     }
 

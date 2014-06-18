@@ -16,6 +16,11 @@ import retrofit.RestAdapter;
 public class RetrofitProtectedModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton AlertPlanServiceAsync provideAlertPlanServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(AlertPlanServiceAsync.class);
+    }
+
     @Provides @Singleton AlertServiceAsync provideAlertService(RestAdapter adapter)
     {
         return adapter.create(AlertServiceAsync.class);
