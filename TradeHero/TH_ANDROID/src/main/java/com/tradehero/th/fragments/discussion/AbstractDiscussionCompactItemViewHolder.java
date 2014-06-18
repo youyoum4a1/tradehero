@@ -30,7 +30,8 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     {
         ORIGINAL(R.string.discussion_translate_button),
         TRANSLATING(R.string.discussion_translating_button),
-        TRANSLATED(R.string.discussion_show_original_button);
+        TRANSLATED(R.string.discussion_show_original_button),
+        FAILED(R.string.discussion_translation_failed_button);
 
         public int actionTextResId;
 
@@ -253,6 +254,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         switch (currentTranslationStatus)
         {
             case ORIGINAL:
+            case FAILED:
                 handleTranslationRequested();
                 break;
 
@@ -325,7 +327,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             @Override public void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate,
                     Throwable error)
             {
-                // Nothing to do
+                currentTranslationStatus = TranslationStatus.FAILED;
             }
 
             @Override public void onCancelClicked()

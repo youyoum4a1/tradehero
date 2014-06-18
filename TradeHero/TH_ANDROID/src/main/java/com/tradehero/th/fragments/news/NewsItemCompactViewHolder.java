@@ -93,6 +93,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         {
             case ORIGINAL:
             case TRANSLATING:
+            case FAILED:
                 if (discussionDTO != null)
                 {
                     return discussionDTO.title;
@@ -123,6 +124,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         {
             case ORIGINAL:
             case TRANSLATING:
+            case FAILED:
                 if (discussionDTO != null)
                 {
                     return discussionDTO.description;

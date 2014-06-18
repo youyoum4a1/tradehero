@@ -20,16 +20,18 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SocialShareHelper
 {
-    protected final Context applicationContext;
-    protected final CurrentActivityHolder currentActivityHolder;
-    protected final ShareDialogFactory shareDialogFactory;
-    protected final AlertDialogUtil alertDialogUtil;
-    protected final Provider<SocialSharer> socialSharerProvider;
+    @NotNull protected final Context applicationContext;
+    @NotNull protected final CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final ShareDialogFactory shareDialogFactory;
+    @NotNull protected final AlertDialogUtil alertDialogUtil;
+    @NotNull protected final Provider<SocialSharer> socialSharerProvider;
 
-    protected OnMenuClickedListener menuClickedListener;
+    @Nullable protected OnMenuClickedListener menuClickedListener;
 
     protected Dialog shareDialog;
     protected SocialSharer currentSocialSharer;
@@ -39,11 +41,11 @@ public class SocialShareHelper
 
     //<editor-fold desc="Constructors">
     @Inject public SocialShareHelper(
-            Context applicationContext,
-            CurrentActivityHolder currentActivityHolder,
-            ShareDialogFactory shareDialogFactory,
-            AlertDialogUtil alertDialogUtil,
-            Provider<SocialSharer> socialSharerProvider)
+            @NotNull Context applicationContext,
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull ShareDialogFactory shareDialogFactory,
+            @NotNull AlertDialogUtil alertDialogUtil,
+            @NotNull Provider<SocialSharer> socialSharerProvider)
     {
         this.applicationContext = applicationContext;
         this.currentActivityHolder = currentActivityHolder;
@@ -93,7 +95,7 @@ public class SocialShareHelper
     }
 
     //<editor-fold desc="Listener Handling">
-    public void setMenuClickedListener(OnMenuClickedListener menuClickedListener)
+    public void setMenuClickedListener(@Nullable OnMenuClickedListener menuClickedListener)
     {
         this.menuClickedListener = menuClickedListener;
     }
@@ -270,6 +272,7 @@ public class SocialShareHelper
 
         @Override public void onClick(DialogInterface dialog, int which)
         {
+            // TODO use new SocialLinkHelper
             detachOfferConnectDialog();
             Bundle args = new Bundle();
             SettingsFragment.putSocialNetworkToConnect(args, socialNetwork);

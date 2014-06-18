@@ -66,13 +66,14 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
         switch (currentTranslationStatus)
         {
             case ORIGINAL:
+            case TRANSLATING:
+            case FAILED:
                 if (discussionDTO != null)
                 {
                     return discussionDTO.text;
                 }
                 return null;
 
-            case TRANSLATING:
             case TRANSLATED:
                 if (translatedDiscussionDTO != null)
                 {

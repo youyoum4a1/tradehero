@@ -158,13 +158,14 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         switch (currentTranslationStatus)
         {
             case ORIGINAL:
+            case TRANSLATING:
+            case FAILED:
                 if (discussionDTO != null)
                 {
                     return discussionDTO.text;
                 }
                 return null;
 
-            case TRANSLATING:
             case TRANSLATED:
                 if (translatedDiscussionDTO != null)
                 {
