@@ -57,6 +57,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMiles
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         TIMELINE, PORTFOLIO_LIST, STATS
     }
 
+    @Inject THRouter thRouter;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;

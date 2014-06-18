@@ -41,6 +41,11 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.thoj.route</groupId>
+      <artifactId>route</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>android-support</groupId>

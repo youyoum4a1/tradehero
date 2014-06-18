@@ -5,6 +5,7 @@ import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.thoj.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -16,6 +17,9 @@ import javax.inject.Inject;
 /**
  * This fragment will not be the main, but one that is pushed from elsewhere
  */
+@Routable({
+        "users/:userId"
+})
 public class PushableTimelineFragment extends TimelineFragment
 {
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;

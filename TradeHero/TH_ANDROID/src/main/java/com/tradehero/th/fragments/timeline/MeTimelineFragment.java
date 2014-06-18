@@ -9,6 +9,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
@@ -21,6 +22,9 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable({
+        "users/me", "profiles/me"
+})
 public class MeTimelineFragment extends TimelineFragment
     implements WithTutorial
 {
