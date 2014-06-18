@@ -10,13 +10,13 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
     private Context context;
 
     //<editor-fold desc="Constructors">
-    public ExchangeCompactSpinnerDTO(Context context)
+    public ExchangeCompactSpinnerDTO(@NotNull Context context)
     {
         this.context = context;
         // This will in effect be the "All Exchanges"
     }
 
-    public ExchangeCompactSpinnerDTO(Context context, ExchangeCompactDTO exchangeDTO)
+    public ExchangeCompactSpinnerDTO(@NotNull Context context, @NotNull ExchangeCompactDTO exchangeDTO)
     {
         super(exchangeDTO);
         this.context = context;

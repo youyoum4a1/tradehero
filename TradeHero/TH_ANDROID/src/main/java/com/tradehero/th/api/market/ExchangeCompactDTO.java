@@ -2,6 +2,9 @@ package com.tradehero.th.api.market;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class ExchangeCompactDTO implements DTO
 {
@@ -11,8 +14,8 @@ public class ExchangeCompactDTO implements DTO
     public static final String BUNDLE_KEY_IS_INCLUDED_IN_TRENDING = ExchangeDTO.class.getName() + ".isIncludedInTrending";
 
     public int id;
-    public String name;
-    public String countryCode;
+    @NotNull public String name;
+    @NotNull public String countryCode;
     public double sumMarketCap;
     public String desc;
     public boolean isInternal;
@@ -25,7 +28,7 @@ public class ExchangeCompactDTO implements DTO
         super();
     }
 
-    public ExchangeCompactDTO(int id, String name, String countryCode, double sumMarketCap, String desc, boolean isInternal,
+    public ExchangeCompactDTO(int id, @NotNull String name, @NotNull String countryCode, double sumMarketCap, String desc, boolean isInternal,
             boolean isIncludedInTrending,
             boolean chartDataSource)
     {
@@ -40,7 +43,7 @@ public class ExchangeCompactDTO implements DTO
         this.chartDataSource = chartDataSource;
     }
 
-    public ExchangeCompactDTO(ExchangeCompactDTO other)
+    public ExchangeCompactDTO(@NotNull ExchangeCompactDTO other)
     {
         super();
         this.id = other.id;
@@ -53,7 +56,7 @@ public class ExchangeCompactDTO implements DTO
         this.chartDataSource = other.chartDataSource;
     }
 
-    public ExchangeCompactDTO(Bundle bundle)
+    public ExchangeCompactDTO(@NotNull Bundle bundle)
     {
         super();
         this.id = bundle.getInt(BUNDLE_KEY_ID);
@@ -71,6 +74,42 @@ public class ExchangeCompactDTO implements DTO
     public ExchangeStringId getExchangeStringId()
     {
         return new ExchangeStringId(name);
+    }
+
+    public Integer getFlagResId()
+    {
+        Integer fromName = getNameFlagResId();
+        if (fromName != null)
+        {
+            return fromName;
+        }
+        return getCountryCodeFlagResId();
+    }
+
+    @Nullable public Integer getNameFlagResId()
+    {
+        try
+        {
+            return Exchange.valueOf(name).logoId;
+        }
+        catch (IllegalArgumentException e)
+        {
+            Timber.e(e, "Exchange logo does not exist for name", name);
+        }
+        return null;
+    }
+
+    @Nullable public Integer getCountryCodeFlagResId()
+    {
+        try
+        {
+            return Country.valueOf(countryCode).logoId;
+        }
+        catch (IllegalArgumentException e)
+        {
+            Timber.e(e, "Exchange logo does not exist for countryCode %s", countryCode);
+        }
+        return null;
     }
 
     protected void putParameters(Bundle args)
@@ -94,11 +133,6 @@ public class ExchangeCompactDTO implements DTO
         {
             return false;
         }
-        if (name != null)
-        {
-            return name.equals(((ExchangeDTO) other).name);
-        }
-        //if both names are null,return true
-        return ((ExchangeDTO) other).name == null;
+        return name.equals(((ExchangeDTO) other).name);
     }
 }

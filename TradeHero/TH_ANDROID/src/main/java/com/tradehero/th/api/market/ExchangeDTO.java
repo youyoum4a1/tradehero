@@ -1,6 +1,7 @@
 package com.tradehero.th.api.market;
 
 import android.os.Bundle;
+import org.jetbrains.annotations.NotNull;
 
 public class ExchangeDTO extends ExchangeCompactDTO
 {
@@ -38,13 +39,13 @@ public class ExchangeDTO extends ExchangeCompactDTO
         this.isIncludedInTrending = isIncludedInTrending;
     }
 
-    public ExchangeDTO(ExchangeDTO other)
+    public ExchangeDTO(@NotNull ExchangeDTO other)
     {
         super(other);
         this.sectors = other.sectors;
     }
 
-    public ExchangeDTO(Bundle bundle)
+    public ExchangeDTO(@NotNull Bundle bundle)
     {
         super(bundle);
     }
