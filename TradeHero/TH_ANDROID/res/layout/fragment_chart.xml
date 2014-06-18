@@ -63,7 +63,7 @@
         android:paddingTop="4dp"
         android:background="@color/white"
         android:baselineAligned="false"
-        android:layout_marginBottom="50dp">
+        android:paddingBottom="@dimen/buy_sell_button_container_height">
 
       <TableLayout
           android:layout_width="wrap_content"
