@@ -7,7 +7,6 @@ import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.DebugModule;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.models.intent.IntentDaggerModule;
@@ -74,7 +73,7 @@ public class Application extends PApplication
         if (!Constants.RELEASE)
         {
             List<Object> listModules = new ArrayList<>(Arrays.asList(modules));
-            listModules.add(new DebugModule());
+            //listModules.add(new com.tradehero.th.DebugModule());
             return listModules.toArray();
         }
         return modules;
