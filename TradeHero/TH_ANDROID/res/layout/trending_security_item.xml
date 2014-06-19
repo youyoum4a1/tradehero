@@ -42,7 +42,7 @@
 
   <ImageView
       android:id="@+id/stock_logo"
-      android:layout_width="match_parent"
+      android:layout_width="@dimen/security_logo_width"
       android:layout_height="@dimen/security_logo_height"
       android:layout_below="@id/stock_name"
       android:layout_centerHorizontal="true"
@@ -50,9 +50,8 @@
       android:layout_marginTop="0dp"
       android:layout_marginLeft="20dp"
       android:layout_marginRight="20dp"
-      android:adjustViewBounds="true"
       android:contentDescription="@null"
-      android:scaleType="centerInside"
+      android:scaleType="fitCenter"
       tools:src="@drawable/flag_country_round_united_states"/>
 
   <TextView
