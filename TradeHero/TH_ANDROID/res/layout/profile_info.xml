@@ -149,7 +149,6 @@
           android:layout_alignParentLeft="true"
           android:layout_centerVertical="true"
           android:adjustViewBounds="true"
-          android:background="@drawable/authentication_edit_text"
           android:gravity="center"
           android:src="@drawable/avatar"
           android:contentDescription="@string/empty"/>
@@ -192,4 +191,5 @@
     </RelativeLayout>
 
   </com.tradehero.th.fragments.settings.ProfileInfoView>
+
 </merge>

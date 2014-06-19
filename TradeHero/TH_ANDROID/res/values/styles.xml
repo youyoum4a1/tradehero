@@ -89,7 +89,8 @@
     <item name="android:background">@color/price_bar_text_default</item>
   </style>
 
-  <style name="TradeHero.Authentication" parent="TradeHero">
+  <style name="TradeHero.Authentication"
+      parent="TradeHero">
     <item name="android:editTextStyle">@style/TradeHero.Authentication.EditText</item>
     <item name="android:paddingTop">@dimen/common_margin_80</item>
     <item name="android:paddingRight">@dimen/common_margin_30</item>

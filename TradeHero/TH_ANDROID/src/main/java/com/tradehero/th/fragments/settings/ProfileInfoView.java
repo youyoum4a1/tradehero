@@ -378,7 +378,7 @@ public class ProfileInfoView extends LinearLayout
 
     public void displayDefaultProfileImage()
     {
-        if (this.profileImage != null)
+        if (this.profileImage != null && picasso != null)
         {
             picasso.load(R.drawable.superman_facebook)
                     .transform(userPhotoTransformation)
