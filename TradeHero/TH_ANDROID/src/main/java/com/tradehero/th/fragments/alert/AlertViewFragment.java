@@ -32,7 +32,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
@@ -82,7 +82,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
     private THCallback<AlertCompactDTO> alertUpdateCallback;
-    private MiddleCallbackUpdateAlertCompact alertUpdateMiddleCallback;
+    private MiddleCallback<AlertCompactDTO> alertUpdateMiddleCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -188,7 +188,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                     Bundle bundle = new Bundle();
                     AlertEditFragment.putApplicablePortfolioId(bundle, getApplicablePortfolioId());
                     bundle.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
-                    getNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM);
+                    getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
                 }
                 return true;
         }
@@ -310,7 +310,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         }
         else if (alertDTO.activeUntilDate != null)
         {
-            activeUntil.setText(DateUtils.getDisplayableDate(getActivity(), alertDTO.activeUntilDate));
+            activeUntil.setText(DateUtils.getDisplayableDate(getResources(), alertDTO.activeUntilDate));
         }
         else
         {

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class YahooChartDTO implements ChartDTO
 {
-    public static final ChartSize DEFAULT_CHART_SIZE = new ChartSize(YahooChartSize.medium.yahooPixelWidth, YahooChartSize.medium.yahooPixelHeight);
+    public static final ChartSize DEFAULT_CHART_SIZE = new ChartSize(YahooChartSize.small.yahooPixelWidth, YahooChartSize.small.yahooPixelHeight);
     public static final ChartTimeSpan DEFAULT_TIME_SPAN = new ChartTimeSpan(YahooTimeSpan.month3.chartTimeSpanDuration);
 
     public String yahooSymbol;
@@ -26,20 +26,23 @@ public class YahooChartDTO implements ChartDTO
 
     public YahooChartDTO(SecurityCompactDTO securityCompactDTO)
     {
-        this(securityCompactDTO,
+        this(
+                securityCompactDTO,
                 DEFAULT_CHART_SIZE);
     }
 
     public YahooChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize)
     {
-        this(securityCompactDTO,
+        this(
+                securityCompactDTO,
                 chartSize,
                 DEFAULT_TIME_SPAN);
     }
 
     public YahooChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize, ChartTimeSpan chartTimeSpan)
     {
-        this(securityCompactDTO,
+        this(
+                securityCompactDTO,
                 chartSize,
                 chartTimeSpan,
                 defaultMovingAverageIntervals());
@@ -117,11 +120,11 @@ public class YahooChartDTO implements ChartDTO
     public String getChartUrl()
     {
         return String.format(
-                "http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&z=%s&p=%s&a=%s",
+                "http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&z=%s&p=%s%s",
                 yahooSymbol,
                 timeSpan.code,
                 size.code,
                 YahooMovingAverageInterval.concat(movingAverageIntervals),
-                includeVolume ? "v" : "");
+                includeVolume ? "&a=v" : "");
     }
 }

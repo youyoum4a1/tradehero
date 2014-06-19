@@ -55,6 +55,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
 import java.util.Date;
@@ -95,7 +96,11 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
 
+    @Inject THRouter thRouter;
+
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
+
+    private DashboardTabType currentTab = DashboardTabType.TRENDING;
 
     private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
@@ -118,7 +123,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (Constants.RELEASE)
         {
             Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.VERSION));
+                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.TAP_STREAM_TYPE.type));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
@@ -149,30 +154,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        navigator.goToTab(currentTab);
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
     }
-
-    //<editor-fold desc="Bad design, to be removed">
-    @Deprecated
-    public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
-    {
-        if (navigator != null && onTabChangeListener != null)
-        {
-            navigator.addOnTabChangeListener(onTabChangeListener);
-        }
-    }
-
-    @Deprecated
-    public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
-    {
-        if (navigator != null && onTabChangeListener != null)
-        {
-            navigator.removeOnTabChangeListener(onTabChangeListener);
-        }
-    }
-    //</editor-fold>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev)
@@ -374,6 +360,14 @@ public class DashboardActivity extends SherlockFragmentActivity
             return;
         }
 
+        if (intent.getData() != null)
+        {
+            String url = intent.getData().toString();
+            url = url.replace("tradehero://", "");
+            thRouter.open(url, this);
+            return;
+        }
+
         switch (intent.getAction())
         {
             case Intent.ACTION_VIEW:
@@ -422,8 +416,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
-    private DashboardTabType currentTab = DashboardTabType.TRENDING;
-
     /**
      * @deprecated
      */
@@ -432,8 +424,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         switch (tabType)
         {
             case TRENDING:
-                break;
-            case PORTFOLIO:
                 break;
             case STORE:
                 break;

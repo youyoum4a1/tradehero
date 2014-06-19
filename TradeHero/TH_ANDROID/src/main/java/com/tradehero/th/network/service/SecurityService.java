@@ -13,7 +13,7 @@ public interface SecurityService
     //<editor-fold desc="Get Multiple Securities">
     @GET("/securities/multi/")
     Map<Integer, SecurityCompactDTO> getMultipleSecurities(
-            @Query("securityIds") String ids);
+            @Query("securityIds") String commaSeparatedIntegerIds);
     //</editor-fold>
 
     //<editor-fold desc="Get Basic Trending">

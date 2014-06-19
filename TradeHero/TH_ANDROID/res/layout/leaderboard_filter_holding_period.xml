@@ -9,6 +9,7 @@
     android:layout_height="match_parent"
     app:valueMin="@integer/leaderboard_filter_holding_period_min"
     app:valueMax="@integer/leaderboard_filter_holding_period_max"
+    app:valueDefault="@integer/leaderboard_filter_holding_period_default"
     >
 
   <LinearLayout
@@ -38,7 +39,7 @@
         android:id="@+id/leaderboard_filter_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="1"
+        android:text="@integer/leaderboard_filter_holding_period_default"
         style="@style/LeaderboardFilter.Value"
         />
 
@@ -71,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        tools:text="@integer/leaderboard_filter_holding_period_min"
+        android:text="@integer/leaderboard_filter_holding_period_min"
         />
 
     <TextView

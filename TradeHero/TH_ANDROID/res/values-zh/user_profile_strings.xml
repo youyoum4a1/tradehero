@@ -11,10 +11,10 @@
   <string name="user_profile_button_portfolios">投资组合</string>
   <string name="user_profile_button_stats">统计</string>
   <string name="user_profile_info_required">必要</string>
-  <string name="user_profile_email">电子邮件</string>
-  <string name="user_profile_password">密码</string>
-  <string name="user_profile_confirm_pwd">确认密码</string>
-  <string name="user_profile_display_name">显示名</string>
+  <string name="user_profile_email">*电子邮件</string>
+  <string name="user_profile_password">*密码</string>
+  <string name="user_profile_confirm_pwd">*确认密码</string>
+  <string name="user_profile_display_name">*用户名</string>
   <string name="user_profile_optional">可选项</string>
   <string name="user_profile_first_name">名</string>
   <string name="user_profile_last_name">姓</string>
@@ -30,6 +30,8 @@
   <string name="user_profile_choose_image_from_camera">从相机拍照</string>
   <string name="user_profile_choose_image_from_library">从相册选择</string>
 
+  <string name="error_decode_image_memory">内存不足，无法加载图片</string>
+  <string name="error_fetch_image_library">从库中提取图片失败</string>
   <string name="error_fetch_user_profile">获取用户资料信息发生错误</string>
   <string name="error_fetch_your_user_profile">获取个人资料信息发生错误</string>
   <string name="error_fetch_people_list_info">获取人员列表信息发生错误</string>

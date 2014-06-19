@@ -525,6 +525,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     @Override public void onPause()
     {
         super.onPause();
+        // TODO test for nullity instead of try-catch
         try
         {
             InputMethodManager inputMethodManager;

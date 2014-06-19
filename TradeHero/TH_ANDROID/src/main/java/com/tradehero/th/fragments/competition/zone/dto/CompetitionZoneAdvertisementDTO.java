@@ -1,11 +1,12 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import com.tradehero.th.api.competition.AdDTO;
+import org.jetbrains.annotations.Nullable;
 
 public class CompetitionZoneAdvertisementDTO extends CompetitionZoneDTO
 {
     public final int imageResId;
-    private final AdDTO adDTO;
+    @Nullable private final AdDTO adDTO;
 
     public CompetitionZoneAdvertisementDTO(String title, String description, int imageResId, AdDTO adDTO)
     {
@@ -21,7 +22,7 @@ public class CompetitionZoneAdvertisementDTO extends CompetitionZoneDTO
                 (adDTO.bannerImageUrl == null ? Integer.valueOf(0) : adDTO.bannerImageUrl).hashCode();
     }
 
-    public AdDTO getAdDTO()
+    @Nullable public AdDTO getAdDTO()
     {
         return adDTO;
     }

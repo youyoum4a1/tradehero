@@ -92,11 +92,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
     protected ProgressDialog progressDialog;
 
-    protected Callback<AlertCompactDTO> createAlertUpdateCallback()
-    {
-        return new AlertCreateCallback();
-    }
-
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
     {
         return new CompoundButton.OnCheckedChangeListener()
@@ -274,8 +269,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THToast.show(R.string.error_alert_insufficient_info);
         }
-        else if (securityAlertCountingHelper.getAlertSlots(
-                currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
+        else if (alertsAreFree())
+        {
+            saveAlert();
+        }
+        else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
         {
             popPurchase();
         }
@@ -287,7 +285,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void popPurchase()
     {
-        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
     }
 
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
@@ -663,6 +661,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     }
     //endregion
 
+    protected Callback<AlertCompactDTO> createAlertUpdateCallback()
+    {
+        return new AlertCreateCallback();
+    }
+
     protected class AlertCreateCallback extends THCallback<AlertCompactDTO>
     {
         @Override protected void finish()
@@ -672,7 +675,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
-            getNavigator().popFragment();
+            getDashboardNavigator().popFragment();
         }
 
         @Override protected void failure(THException ex)

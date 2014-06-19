@@ -32,6 +32,7 @@
   <string name="leaderboard_profile">个人资料</string>
   <string name="leaderboard_positions">持仓</string>
   <string name="leaderboard_monthly_trade_count">月交易量</string>
+  <string name="leaderboard_monthly_avg_days_held">平均持有天数</string>
   <string name="leaderboard_win_ratio">(胜率: <b>%s</b>%%)</string>
   <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
   <string name="leaderboard_volatility"><![CDATA[(波幅: <b>%.4f</b>)]]></string>

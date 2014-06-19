@@ -2,16 +2,17 @@ package com.tradehero.th.fragments.alert;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
     public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
-    private MiddleCallbackCreateAlertCompact middleCallbackCreateAlertCompactDTO;
+    private MiddleCallback<AlertCompactDTO> middleCallbackCreateAlertCompactDTO;
 
     @Override public void onResume()
     {
@@ -20,9 +21,14 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         linkWith(getDummyInitialAlertDTO(), true);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachMiddleCallbackCreate();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         super.onDestroyView();
     }
 

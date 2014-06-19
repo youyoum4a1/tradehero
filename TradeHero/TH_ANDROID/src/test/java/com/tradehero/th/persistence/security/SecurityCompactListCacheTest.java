@@ -4,6 +4,8 @@ import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
+import dagger.Lazy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +23,19 @@ public class SecurityCompactListCacheTest
 
     @Before public void setUp()
     {
-        this.securityCompactListCache = new SecurityCompactListCache();
+        this.securityCompactListCache = new SecurityCompactListCache(new Lazy<SecurityServiceWrapper>()
+        {
+            @Override public SecurityServiceWrapper get()
+            {
+                return null;
+            }
+        }, new Lazy<SecurityCompactCache>()
+        {
+            @Override public SecurityCompactCache get()
+            {
+                return null;
+            }
+        });
     }
 
     @After public void tearDown()

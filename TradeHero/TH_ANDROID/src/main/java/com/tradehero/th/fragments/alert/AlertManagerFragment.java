@@ -152,7 +152,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
             }
         });
 

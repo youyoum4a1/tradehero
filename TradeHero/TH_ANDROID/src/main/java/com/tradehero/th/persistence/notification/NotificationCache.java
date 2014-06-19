@@ -9,22 +9,23 @@ import com.tradehero.th.persistence.SingleCacheMaxSize;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public class NotificationCache extends StraightDTOCache<NotificationKey, NotificationDTO>
 {
-    private final Lazy<NotificationServiceWrapper> notificationServiceWrapper;
+    @NotNull private final Lazy<NotificationServiceWrapper> notificationServiceWrapper;
 
     @Inject public NotificationCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            Lazy<NotificationServiceWrapper> notificationServiceWrapper)
+            @NotNull Lazy<NotificationServiceWrapper> notificationServiceWrapper)
     {
         super(maxSize.get());
 
         this.notificationServiceWrapper = notificationServiceWrapper;
     }
 
-    @Override protected NotificationDTO fetch(NotificationKey key) throws Throwable
+    @Override protected NotificationDTO fetch(@NotNull NotificationKey key) throws Throwable
     {
         return notificationServiceWrapper.get().getNotificationDetail(key);
     }

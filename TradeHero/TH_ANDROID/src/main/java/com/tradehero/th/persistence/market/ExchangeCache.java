@@ -7,27 +7,32 @@ import com.tradehero.th.network.service.MarketService;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class ExchangeCache extends StraightDTOCacheNew<ExchangeIntegerId, ExchangeDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject Lazy<MarketService> marketService;
-    @Inject Lazy<ExchangeIdCache> exchangeIdCache;
+    @NotNull private final Lazy<MarketService> marketService;
+    @NotNull private final Lazy<ExchangeIdCache> exchangeIdCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public ExchangeCache()
+    @Inject public ExchangeCache(
+            @NotNull Lazy<MarketService> marketService,
+            @NotNull Lazy<ExchangeIdCache> exchangeIdCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.marketService = marketService;
+        this.exchangeIdCache = exchangeIdCache;
     }
     //</editor-fold>
 
-    @Override public ExchangeDTO fetch(ExchangeIntegerId key) throws Throwable
+    @Override public ExchangeDTO fetch(@NotNull ExchangeIntegerId key) throws Throwable
     {
         return marketService.get().getExchange(key.key);
     }
 
-    @Override public ExchangeDTO put(ExchangeIntegerId key, ExchangeDTO value)
+    @Override public ExchangeDTO put(@NotNull ExchangeIntegerId key, @NotNull ExchangeDTO value)
     {
         exchangeIdCache.get().put(value.getExchangeStringId(), key);
         return super.put(key, value);

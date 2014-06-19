@@ -481,8 +481,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
     {
         Bundle bundle = new Bundle();
-        bundle.putBundle(TimelineDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
-                timelineItemDTOKey.getArgs());
+        TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
         getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }
 

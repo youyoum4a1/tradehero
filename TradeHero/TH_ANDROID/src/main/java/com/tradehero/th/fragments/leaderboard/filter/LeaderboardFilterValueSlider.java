@@ -43,6 +43,7 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LeaderboardFilterValueSlider);
         minValue = a.getFloat(R.styleable.LeaderboardFilterValueSlider_valueMin, minValue);
         maxValue = a.getFloat(R.styleable.LeaderboardFilterValueSlider_valueMax, maxValue);
+        currentValue = a.getFloat(R.styleable.LeaderboardFilterValueSlider_valueDefault, currentValue);
         a.recycle();
     }
 
@@ -93,7 +94,7 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
 
     protected void setValueFromSeekBar(int fromSeekBar)
     {
-        this.currentValue = ((fromSeekBar * (maxValue - minValue)) / 100 + minValue);
+        this.currentValue = ((((float) fromSeekBar) * (maxValue - minValue)) / 100f + minValue);
         displayValue();
     }
 
@@ -101,12 +102,17 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
     {
         if (valueText != null)
         {
-            valueText.setText(String.format("%d", Math.round(currentValue)));
+            valueText.setText(getCurrentValueText());
         }
         if (valueSlider != null)
         {
-            valueSlider.setProgress((int) (100 * (currentValue - minValue) / (maxValue - minValue)));
+            valueSlider.setProgress((int) (100f * (currentValue - minValue) / (maxValue - minValue)));
         }
+    }
+
+    protected String getCurrentValueText()
+    {
+        return String.format("%d", Math.round(currentValue));
     }
 
     protected class LeaderboardFilterValueSliderSeekBarListener implements SeekBar.OnSeekBarChangeListener

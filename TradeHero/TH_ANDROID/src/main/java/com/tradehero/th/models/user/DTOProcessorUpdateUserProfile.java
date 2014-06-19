@@ -3,12 +3,13 @@ package com.tradehero.th.models.user;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorUpdateUserProfile implements DTOProcessor<UserProfileDTO>
 {
-    protected final UserProfileCache userProfileCache;
+    @NotNull protected final UserProfileCache userProfileCache;
 
-    public DTOProcessorUpdateUserProfile(UserProfileCache userProfileCache)
+    public DTOProcessorUpdateUserProfile(@NotNull UserProfileCache userProfileCache)
     {
         this.userProfileCache = userProfileCache;
     }

@@ -91,4 +91,5 @@ public class LocalyticsConstants
 
     public static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
     public static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
+    public static final String CHANNEL_MAP_KEY = "channel";
 }

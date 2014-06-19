@@ -22,7 +22,7 @@
     <item>http://jackfortune.chinacloudapp.cn/TH_API/api/</item>
   </string-array>
 
-  <string-array name="staffs">
+  <string-array name="staffs" translatable="false">
     <item>Dinesh Bhatia|High Frequency TradeHero</item>
     <item>Dominic Morris|GW2310FB-1</item>
     <item>Jeff Tang|Captain China</item>

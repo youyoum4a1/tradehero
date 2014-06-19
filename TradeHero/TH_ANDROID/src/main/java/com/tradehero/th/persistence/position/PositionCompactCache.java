@@ -7,6 +7,9 @@ import com.tradehero.th.api.position.PositionDTOCompactList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class PositionCompactCache extends StraightDTOCache<PositionCompactId, PositionDTOCompact>
 {
@@ -24,7 +27,8 @@ import javax.inject.Singleton;
         throw new IllegalStateException("You should not fetch PositionDTOCompact");
     }
 
-    public PositionDTOCompactList put(PositionDTOCompactList values)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public PositionDTOCompactList put(@Nullable PositionDTOCompactList values)
     {
         if (values == null)
         {
@@ -33,7 +37,7 @@ import javax.inject.Singleton;
 
         PositionDTOCompactList previousValues = new PositionDTOCompactList();
 
-        for (PositionDTOCompact value: values)
+        for (@NotNull PositionDTOCompact value: values)
         {
             previousValues.add(put(value.getPositionCompactId(), value));
         }
@@ -41,7 +45,8 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public PositionDTOCompactList get(List<PositionCompactId> positionCompactIds)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public PositionDTOCompactList get(@Nullable List<PositionCompactId> positionCompactIds)
     {
         if (positionCompactIds == null)
         {
@@ -49,7 +54,7 @@ import javax.inject.Singleton;
         }
         PositionDTOCompactList positionDTOCompacts = new PositionDTOCompactList();
 
-        for (PositionCompactId positionCompactId: positionCompactIds)
+        for (@NotNull PositionCompactId positionCompactId: positionCompactIds)
         {
             positionDTOCompacts.add(get(positionCompactId));
         }

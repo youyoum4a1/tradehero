@@ -4,25 +4,28 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DTOProcessorWatchlistChange extends DTOProcessorWatchlistUpdate
 {
-    private final UserBaseKey concernedUser;
-    private final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull private final UserBaseKey concernedUser;
+    @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
 
     public DTOProcessorWatchlistChange(
-            WatchlistPositionCache watchlistPositionCache,
-            UserBaseKey concernedUser,
-            PortfolioCompactListCache portfolioCompactListCache)
+            @NotNull WatchlistPositionCache watchlistPositionCache,
+            @NotNull UserBaseKey concernedUser,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache)
     {
         super(watchlistPositionCache);
         this.concernedUser = concernedUser;
         this.portfolioCompactListCache = portfolioCompactListCache;
     }
 
-    @Override public WatchlistPositionDTO process(WatchlistPositionDTO watchlistPositionDTO)
+    @Nullable
+    @Override public WatchlistPositionDTO process(@Nullable WatchlistPositionDTO watchlistPositionDTO)
     {
-        WatchlistPositionDTO processed = super.process(watchlistPositionDTO);
+        @Nullable WatchlistPositionDTO processed = super.process(watchlistPositionDTO);
         portfolioCompactListCache.invalidate(concernedUser);
         return processed;
     }

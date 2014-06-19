@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.updatecenter;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -35,7 +33,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -43,15 +40,16 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class UpdateCenterFragment extends BaseFragment
         implements PopupMenu.OnMenuItemClickListener,
         OnTitleNumberChangeListener,
-        TabHost.OnTabChangeListener,
         ResideMenu.OnMenuListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
@@ -59,7 +57,7 @@ public class UpdateCenterFragment extends BaseFragment
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Inject MessageHeaderListCache messageListCache;
@@ -68,7 +66,6 @@ public class UpdateCenterFragment extends BaseFragment
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ImageButton mNewMsgButton;
-
     private BroadcastReceiver broadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -100,7 +97,6 @@ public class UpdateCenterFragment extends BaseFragment
         LocalBroadcastManager.getInstance(getActivity())
                 .registerReceiver(broadcastReceiver,
                         new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
-        addOnTabChangeListener();
     }
 
     @Override public void onPause()
@@ -110,7 +106,6 @@ public class UpdateCenterFragment extends BaseFragment
         Timber.d("onPause");
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(broadcastReceiver);
-        removeOnTabChangeListener();
     }
 
     private void fetchUserProfile()
@@ -346,9 +341,9 @@ public class UpdateCenterFragment extends BaseFragment
         return fragment;
     }
 
-    private void changeTabTitleNumber(UpdateCenterTabType tabType, int number)
+    private void changeTabTitleNumber(@NotNull UpdateCenterTabType tabType, int number)
     {
-        TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
+        @NotNull TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
         if (tabType == UpdateCenterTabType.Notifications)
         {
             //Notifications' unread count does not show
@@ -358,7 +353,7 @@ public class UpdateCenterFragment extends BaseFragment
         //Timber.d("changeTabTitleNumber %s,number:%s",tabType,number);
     }
 
-    @Override public void onTitleNumberChanged(UpdateCenterTabType tabType, int number)
+    @Override public void onTitleNumberChanged(@NotNull UpdateCenterTabType tabType, int number)
     {
         changeTabTitleNumber(tabType, number);
     }
@@ -371,7 +366,7 @@ public class UpdateCenterFragment extends BaseFragment
     private class FetchUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(UserBaseKey key, @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
         }
@@ -382,14 +377,10 @@ public class UpdateCenterFragment extends BaseFragment
         }
     }
 
-    private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    private void linkWith(@NotNull UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         if (andDisplay)
         {
-            Timber.d(
-                    "changeTabTitleNumber unreadMessageThreadsCount:%d,unreadNotificationsCount:%d",
-                    userProfileDTO.unreadMessageThreadsCount,
-                    userProfileDTO.unreadNotificationsCount);
             changeTabTitleNumber(UpdateCenterTabType.Messages,
                     userProfileDTO.unreadMessageThreadsCount);
             //changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
@@ -405,53 +396,6 @@ public class UpdateCenterFragment extends BaseFragment
                 fetchUserProfile();
             }
         };
-    }
-
-    @Override public void onTabChanged(String tabId)
-    {
-        Timber.d("onTabChanged %s",tabId);
-        String tab = getString(DashboardTabType.UPDATE_CENTER.stringResId);
-        if (tab.equals(tabId))
-        {
-            //switch to current tab,do nothing
-            return;
-        }
-        clearTabs();
-        invalidateMessageCache();
-    }
-
-    private void invalidateMessageCache()
-    {
-        if (messageListCache != null)
-        {
-            messageListCache.invalidateAll();
-        }
-        if (messageHeaderCache != null)
-        {
-            messageHeaderCache.invalidateAll();
-        }
-        //TODO some cache like notification should also be invalide?
-        Timber.d("onTabChanged invalidateMessageCache %s",messageListCache);
-    }
-
-    private void addOnTabChangeListener()
-    {
-        Activity activity = getActivity();
-        if (activity != null && activity instanceof DashboardActivity)
-        {
-            DashboardActivity a = (DashboardActivity)activity;
-            a.addOnTabChangeListener(this);
-        }
-    }
-
-    private void removeOnTabChangeListener()
-    {
-        Activity activity = getActivity();
-        if (activity != null && activity instanceof DashboardActivity)
-        {
-            DashboardActivity a = (DashboardActivity)activity;
-            a.removeOnTabChangeListener(this);
-        }
     }
 
     @Override public void openMenu()

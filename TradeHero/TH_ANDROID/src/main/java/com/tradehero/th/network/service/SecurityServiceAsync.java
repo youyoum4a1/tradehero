@@ -14,7 +14,7 @@ interface SecurityServiceAsync
     //<editor-fold desc="Get Multiple Securities">
     @GET("/securities/multi/")
     void getMultipleSecurities(
-            @Query("securityIds") String ids,
+            @Query("securityIds") String commaSeparatedIntegerIds,
             Callback<Map<Integer, SecurityCompactDTO>> callback);
     //</editor-fold>
 

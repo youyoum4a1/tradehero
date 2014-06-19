@@ -16,16 +16,17 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class NewsServiceWrapper
 {
-    private final NewsServiceSync newsServiceSync;
-    private final NewsServiceAsync newsServiceAsync;
+    @NotNull private final NewsServiceSync newsServiceSync;
+    @NotNull private final NewsServiceAsync newsServiceAsync;
 
     @Inject public NewsServiceWrapper(
-            NewsServiceSync newsServiceSync,
-            NewsServiceAsync newsServiceAsync)
+            @NotNull NewsServiceSync newsServiceSync,
+            @NotNull NewsServiceAsync newsServiceAsync)
     {
         this.newsServiceSync = newsServiceSync;
         this.newsServiceAsync = newsServiceAsync;

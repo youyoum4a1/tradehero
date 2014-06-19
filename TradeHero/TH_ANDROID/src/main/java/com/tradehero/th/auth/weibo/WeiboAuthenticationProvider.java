@@ -23,11 +23,12 @@ import org.json.JSONException;
 @Singleton
 public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
 {
-
     public static final String KEY_UID = "uid";
     public static final String KEY_ACCESS_TOKEN = "access_token";
     public static final String KEY_EXPIRES_IN = "expires_in";
     private static final String WEIBO_PACKAGE = "com.sina.weibo";
+
+    @Inject Context context;
 
     private WeiboAppAuthData mAuthData;
     //private THAuthenticationCallback mCallback;
@@ -112,10 +113,7 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         }
         currentOperationCallback = callback;
 
-        if (currentOperationCallback != null)
-        {
-            currentOperationCallback.onStart();
-        }
+        callback.onStart();
 
         createWeiboAuth();
 
@@ -356,6 +354,7 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
             if (token.isSessionValid())
             {
                 onAnthorizeSuccess(token);
+                AccessTokenKeeper.writeAccessToken(context, token);
             }
             else
             {

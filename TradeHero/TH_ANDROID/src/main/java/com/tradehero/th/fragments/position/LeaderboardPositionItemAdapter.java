@@ -10,11 +10,11 @@ public class LeaderboardPositionItemAdapter extends AbstractPositionItemAdapter
 {
     private final boolean isTimeRestricted;
 
-    public LeaderboardPositionItemAdapter(Context context, LayoutInflater inflater,
+    public LeaderboardPositionItemAdapter(Context context,
             Map<PositionItemType, Integer> positionItemTypeToLayoutId,
             boolean isTimeRestricted)
     {
-        super(context, inflater, positionItemTypeToLayoutId);
+        super(context, positionItemTypeToLayoutId);
         this.isTimeRestricted = isTimeRestricted;
     }
 

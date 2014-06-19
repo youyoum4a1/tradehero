@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:layout_weight="1"
     >
+
   <ImageView
       android:id="@android:id/icon"
       android:layout_width="wrap_content"
@@ -17,4 +18,5 @@
       tools:visibility="visible"
       android:contentDescription="@null"
       />
+
 </FrameLayout>

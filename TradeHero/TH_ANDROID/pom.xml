@@ -325,7 +325,7 @@
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
       <version>13.0</version>
-      <scope>provided</scope>
+      <!--<scope>provided</scope>-->
     </dependency>
 
     <!-- /end editor libraries -->
@@ -422,6 +422,22 @@
       <version>2.6.1</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/libs/Tapstream.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>com.tendcloud.tenddata</groupId>
+      <artifactId>TalkingDataAnalytics</artifactId>
+      <version>1.1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/TalkingDataAnalytics.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>com.mobileapptracker</groupId>
+      <artifactId>MobileAppTracker</artifactId>
+      <version>3.2.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/libs/MobileAppTracker-3.2.3.jar</systemPath>
     </dependency>
 
     <dependency>
@@ -537,6 +553,11 @@
       <systemPath>${project.basedir}/libs/trobotexternalinterface.jar</systemPath>
     </dependency>
 
+    <dependency>
+      <groupId>com.squareup.phrase</groupId>
+      <artifactId>phrase</artifactId>
+      <version>1.0.3</version>
+    </dependency>
   </dependencies>
 
   <build>

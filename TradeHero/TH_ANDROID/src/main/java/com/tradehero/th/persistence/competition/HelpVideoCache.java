@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class HelpVideoCache extends StraightDTOCache<HelpVideoId, HelpVideoDTO>
 {
@@ -24,7 +27,8 @@ import javax.inject.Singleton;
         throw new RuntimeException();
     }
 
-    public List<HelpVideoDTO> getOrFetch(List<HelpVideoId> helpVideoIds) throws Throwable
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<HelpVideoDTO> getOrFetch(@Nullable List<HelpVideoId> helpVideoIds) throws Throwable
     {
         if (helpVideoIds == null)
         {
@@ -32,14 +36,15 @@ import javax.inject.Singleton;
         }
 
         List<HelpVideoDTO> helpDTOList = new ArrayList<>();
-        for (HelpVideoId helpVideoId : helpVideoIds)
+        for (@NotNull HelpVideoId helpVideoId : helpVideoIds)
         {
             helpDTOList.add(getOrFetch(helpVideoId, false));
         }
         return helpDTOList;
     }
 
-    public List<HelpVideoDTO> get(List<HelpVideoId> helpVideoIds)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<HelpVideoDTO> get(@Nullable List<HelpVideoId> helpVideoIds)
     {
         if (helpVideoIds == null)
         {
@@ -48,7 +53,7 @@ import javax.inject.Singleton;
 
         List<HelpVideoDTO> fleshedValues = new ArrayList<>();
 
-        for (HelpVideoId helpVideoId: helpVideoIds)
+        for (@NotNull HelpVideoId helpVideoId: helpVideoIds)
         {
             fleshedValues.add(get(helpVideoId));
         }
@@ -56,7 +61,8 @@ import javax.inject.Singleton;
         return fleshedValues;
     }
 
-    public List<HelpVideoDTO> put(List<HelpVideoDTO> values)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<HelpVideoDTO> put(@Nullable List<HelpVideoDTO> values)
     {
         if (values == null)
         {
@@ -65,7 +71,7 @@ import javax.inject.Singleton;
 
         List<HelpVideoDTO> previousValues = new ArrayList<>();
 
-        for (HelpVideoDTO helpVideoDTO: values)
+        for (@NotNull HelpVideoDTO helpVideoDTO: values)
         {
             previousValues.add(put(helpVideoDTO.getHelpVideoId(), helpVideoDTO));
         }

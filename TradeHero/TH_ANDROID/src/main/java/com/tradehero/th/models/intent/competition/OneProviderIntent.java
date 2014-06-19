@@ -65,6 +65,6 @@ abstract public class OneProviderIntent extends ProviderIntent
     @Override public void populate(Bundle bundle)
     {
         super.populate(bundle);
-        bundle.putInt(CompetitionFragment.BUNDLE_KEY_PROVIDER_ID, getProviderId().key);
+        CompetitionFragment.putProviderId(bundle, getProviderId());
     }
 }

@@ -8,22 +8,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.th.R;
-
 import java.util.List;
 
-/**
- * Created by tradehero on 14-5-26.
- */
-public class SocalTypeListAdapter extends ArrayAdapter<SocalTypeItem>{
+public class SocalTypeListAdapter extends ArrayAdapter<SocialTypeItem>{
 
     private LayoutInflater mInflater;
     private Context mContext;
 
-    public SocalTypeListAdapter(Context context, int resource, List<SocalTypeItem> objects) {
+    public SocalTypeListAdapter(Context context, int resource, List<SocialTypeItem> objects) {
         super(context, resource, objects);
         mContext= context;
         mInflater = LayoutInflater.from(context);
-
     }
 
     @Override
@@ -43,9 +38,7 @@ public class SocalTypeListAdapter extends ArrayAdapter<SocalTypeItem>{
 
     private void displayItem(int position,ViewGroup viewGroup)
     {
-        SocalTypeItem item = getItem(position);
-
-
+        SocialTypeItem item = getItem(position);
 
         ImageView logoView = (ImageView)viewGroup.findViewById(R.id.social_item_logo);
         TextView titleView = (TextView)viewGroup.findViewById(R.id.social_item_title);
@@ -60,10 +53,5 @@ public class SocalTypeListAdapter extends ArrayAdapter<SocalTypeItem>{
 
         viewGroup.setBackgroundResource(item.backgroundResource);
         viewGroup.setPadding(pL, pT, pR, pB);
-
-
-
     }
-
-
 }

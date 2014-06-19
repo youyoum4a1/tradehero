@@ -9,16 +9,17 @@ import javax.inject.Singleton;
 
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class FollowerServiceWrapper
 {
-    private final FollowerService followerService;
-    private final FollowerServiceAsync followerServiceAsync;
+    @NotNull private final FollowerService followerService;
+    @NotNull private final FollowerServiceAsync followerServiceAsync;
 
     @Inject public FollowerServiceWrapper(
-            FollowerService followerService,
-            FollowerServiceAsync followerServiceAsync)
+            @NotNull FollowerService followerService,
+            @NotNull FollowerServiceAsync followerServiceAsync)
     {
         super();
         this.followerService = followerService;

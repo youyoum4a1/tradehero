@@ -3,8 +3,8 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -15,7 +15,7 @@ import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.security.DTOProcessorSecurityCompactListReceived;
+import com.tradehero.th.models.security.DTOProcessorMultiSecurities;
 import com.tradehero.th.models.security.DTOProcessorSecurityPosition;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -27,28 +27,28 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class SecurityServiceWrapper
 {
-    private final SecurityService securityService;
-    private final SecurityServiceAsync securityServiceAsync;
-    private final ProviderServiceWrapper providerServiceWrapper;
-    private final SecurityPositionDetailCache securityPositionDetailCache;
-    private final SecurityCompactCache securityCompactCache;
-    private final SecurityCompactDTOFactory securityCompactDTOFactory;
-    private final UserProfileCache userProfileCache;
-    private final CurrentUserId currentUserId;
+    @NotNull private final SecurityService securityService;
+    @NotNull private final SecurityServiceAsync securityServiceAsync;
+    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
+    @NotNull private final SecurityCompactCache securityCompactCache;
+    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final CurrentUserId currentUserId;
 
     @Inject public SecurityServiceWrapper(
-            SecurityService securityService,
-            SecurityServiceAsync securityServiceAsync,
-            ProviderServiceWrapper providerServiceWrapper,
-            SecurityPositionDetailCache securityPositionDetailCache,
-            SecurityCompactCache securityCompactCache,
-            SecurityCompactDTOFactory securityCompactDTOFactory,
-            UserProfileCache userProfileCache,
-            CurrentUserId currentUserId)
+            @NotNull SecurityService securityService,
+            @NotNull SecurityServiceAsync securityServiceAsync,
+            @NotNull ProviderServiceWrapper providerServiceWrapper,
+            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
+            @NotNull SecurityCompactCache securityCompactCache,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull CurrentUserId currentUserId)
     {
         super();
         this.securityService = securityService;
@@ -56,24 +56,31 @@ import retrofit.Callback;
         this.providerServiceWrapper = providerServiceWrapper;
         this.securityPositionDetailCache = securityPositionDetailCache;
         this.securityCompactCache = securityCompactCache;
-        this.securityCompactDTOFactory = securityCompactDTOFactory;
         this.userProfileCache = userProfileCache;
         this.currentUserId = currentUserId;
     }
 
-    public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(List<Integer> ids,
-            Callback<Map<Integer, SecurityCompactDTO>> callback)
+    //<editor-fold desc="Get Multiple Securities">
+    public Map<Integer, SecurityCompactDTO> getMultipleSecurities(@NotNull SecurityIntegerIdList ids)
     {
-        String securityIds = StringUtils.join(",", ids);
-        MiddleCallback<Map<Integer, SecurityCompactDTO>> multipleSecurityFetchMiddleCallback = new
-                BaseMiddleCallback<>(callback, createMultipleSecurityProcessor());
-        securityServiceAsync.getMultipleSecurities(securityIds, multipleSecurityFetchMiddleCallback);
-
-        return multipleSecurityFetchMiddleCallback;
+        return createMultipleSecurityProcessor().process(
+                securityService.getMultipleSecurities(ids.getCommaSeparated()));
     }
 
+    @NotNull public MiddleCallback<Map<Integer, SecurityCompactDTO>> getMultipleSecurities(
+            @NotNull SecurityIntegerIdList ids,
+            @Nullable Callback<Map<Integer, SecurityCompactDTO>> callback)
+    {
+        MiddleCallback<Map<Integer, SecurityCompactDTO>> middleCallback = new
+                BaseMiddleCallback<>(callback, createMultipleSecurityProcessor());
+        securityServiceAsync.getMultipleSecurities(ids.getCommaSeparated(), middleCallback);
+
+        return middleCallback;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Get Securities">
-    public List<SecurityCompactDTO> getSecurities(SecurityListType key)
+    public List<SecurityCompactDTO> getSecurities(@NotNull SecurityListType key)
     {
         List<SecurityCompactDTO> received;
         if (key instanceof TrendingSecurityListType)
@@ -128,12 +135,14 @@ import retrofit.Callback;
         {
             throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
-        return createSecurityListProcessor().process(received);
+        return received;
     }
 
-    public MiddleCallback<List<SecurityCompactDTO>> getSecurities(SecurityListType key, Callback<List<SecurityCompactDTO>> callback)
+    @NotNull public MiddleCallback<List<SecurityCompactDTO>> getSecurities(
+            @NotNull SecurityListType key,
+            @Nullable Callback<List<SecurityCompactDTO>> callback)
     {
-        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback, createSecurityListProcessor());
+        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         if (key instanceof TrendingSecurityListType)
         {
             TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
@@ -193,12 +202,14 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    public SecurityPositionDetailDTO getSecurity(SecurityId securityId)
+    public SecurityPositionDetailDTO getSecurity(@NotNull SecurityId securityId)
     {
         return this.securityService.getSecurity(securityId.exchange, securityId.getPathSafeSymbol());
     }
 
-    public MiddleCallback<SecurityPositionDetailDTO> getSecurity(SecurityId securityId, Callback<SecurityPositionDetailDTO> callback)
+    @NotNull public MiddleCallback<SecurityPositionDetailDTO> getSecurity(
+            @NotNull SecurityId securityId,
+            @Nullable Callback<SecurityPositionDetailDTO> callback)
     {
         MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback);
         this.securityServiceAsync.getSecurity(securityId.exchange, securityId.getPathSafeSymbol(), middleCallback);
@@ -207,13 +218,18 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
-    public SecurityPositionDetailDTO buy(SecurityId securityId, TransactionFormDTO transactionFormDTO)
+    public SecurityPositionDetailDTO buy(
+            @NotNull SecurityId securityId,
+            @NotNull TransactionFormDTO transactionFormDTO)
     {
         return createSecurityPositionProcessor(securityId).process(
                 this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO));
     }
 
-    public MiddleCallback<SecurityPositionDetailDTO> buy(SecurityId securityId, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback)
+    @NotNull public MiddleCallback<SecurityPositionDetailDTO> buy(
+            @NotNull SecurityId securityId,
+            @NotNull TransactionFormDTO transactionFormDTO,
+            @Nullable Callback<SecurityPositionDetailDTO> callback)
     {
         MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionProcessor(securityId));
         this.securityServiceAsync.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO, middleCallback);
@@ -222,13 +238,18 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
-    public SecurityPositionDetailDTO sell(SecurityId securityId, TransactionFormDTO transactionFormDTO)
+    public SecurityPositionDetailDTO sell(
+            @NotNull SecurityId securityId,
+            @NotNull TransactionFormDTO transactionFormDTO)
     {
         return createSecurityPositionProcessor(securityId).process(
                 this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO));
     }
 
-    public MiddleCallback<SecurityPositionDetailDTO> sell(SecurityId securityId, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback)
+    @NotNull public MiddleCallback<SecurityPositionDetailDTO> sell(
+            @NotNull SecurityId securityId,
+            @NotNull TransactionFormDTO transactionFormDTO,
+            @Nullable Callback<SecurityPositionDetailDTO> callback)
     {
         MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionProcessor(securityId));
         this.securityServiceAsync.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO, middleCallback);
@@ -237,11 +258,23 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Buy or Sell Security">
-    public MiddleCallback<SecurityPositionDetailDTO> doTransaction(
-            SecurityId securityId,
-            TransactionFormDTO transactionFormDTO,
+    public SecurityPositionDetailDTO doTransaction(
+            @NotNull SecurityId securityId,
+            @NotNull TransactionFormDTO transactionFormDTO,
+            boolean isBuy)
+    {
+        if (isBuy)
+        {
+            return buy(securityId, transactionFormDTO);
+        }
+        return sell(securityId, transactionFormDTO);
+    }
+
+    @NotNull public MiddleCallback<SecurityPositionDetailDTO> doTransaction(
+            @NotNull SecurityId securityId,
+            @NotNull TransactionFormDTO transactionFormDTO,
             boolean isBuy,
-            Callback<SecurityPositionDetailDTO> callback)
+            @Nullable Callback<SecurityPositionDetailDTO> callback)
     {
         if (isBuy)
         {
@@ -252,12 +285,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
-    private DTOProcessor<List<SecurityCompactDTO>> createSecurityListProcessor()
-    {
-        return new DTOProcessorSecurityCompactListReceived(securityCompactDTOFactory);
-    }
-
-    private DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionProcessor(SecurityId securityId)
+    @NotNull private DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionProcessor(@NotNull SecurityId securityId)
     {
         return new DTOProcessorSecurityPosition(
                 securityPositionDetailCache,
@@ -266,24 +294,9 @@ import retrofit.Callback;
                 securityId);
     }
 
-    private DTOProcessor<Map<Integer, SecurityCompactDTO>> createMultipleSecurityProcessor()
+    @NotNull private DTOProcessor<Map<Integer, SecurityCompactDTO>> createMultipleSecurityProcessor()
     {
-        return new DTOProcessor<Map<Integer, SecurityCompactDTO>>()
-        {
-            @Override public Map<Integer, SecurityCompactDTO> process(Map<Integer, SecurityCompactDTO> value)
-            {
-                for (Map.Entry<Integer, SecurityCompactDTO> securityEntry: value.entrySet())
-                {
-                    if (securityEntry.getKey() != null && securityEntry.getKey() != 0)
-                    {
-                        SecurityCompactDTO securityCompactDTO = securityEntry.getValue();
-                        SecurityId securityId = new SecurityId(securityCompactDTO.exchange, securityCompactDTO.symbol);
-                        securityCompactCache.put(securityId, securityCompactDTO);
-                    }
-                }
-                return value;
-            }
-        };
+        return new DTOProcessorMultiSecurities(securityCompactCache);
     }
     //</editor-fold>
 }

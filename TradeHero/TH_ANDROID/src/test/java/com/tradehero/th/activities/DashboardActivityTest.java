@@ -21,8 +21,9 @@ public class DashboardActivityTest
     @Test public void pressBackButtonTwiceWillExitTheApp() throws Exception
     {
         activity.onBackPressed();
-        activity.onBackPressed();
+        assertThat(activity.isFinishing()).isFalse();
 
+        activity.onBackPressed();
         assertThat(activity.isFinishing()).isTrue();
     }
 }

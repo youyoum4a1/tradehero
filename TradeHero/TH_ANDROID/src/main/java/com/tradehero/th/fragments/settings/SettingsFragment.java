@@ -21,7 +21,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.cache.LruMemFileCache;
@@ -71,6 +70,7 @@ import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -108,7 +108,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
@@ -736,7 +736,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void handleTopBannerClicked()
     {
         getNavigator().pushFragment(InviteFriendFragment.class, null,
-                Navigator.PUSH_UP_FROM_BOTTOM);
+                Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     private void updateNotificationStatus()

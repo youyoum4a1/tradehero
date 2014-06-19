@@ -5,57 +5,90 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.alert.MiddleCallbackCreateAlertCompact;
-import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.alert.DTOProcessorCreateAlert;
+import com.tradehero.th.models.alert.DTOProcessorUpdateAlert;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.alert.AlertCache;
+import com.tradehero.th.persistence.alert.AlertCompactCache;
+import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class AlertServiceWrapper
 {
-    private final AlertService alertService;
-    private final AlertServiceAsync alertServiceAsync;
+    @NotNull private final AlertService alertService;
+    @NotNull private final AlertServiceAsync alertServiceAsync;
+    @NotNull private final Lazy<AlertCompactListCache> alertCompactListCache;
+    @NotNull private final Lazy<AlertCompactCache> alertCompactCache;
+    @NotNull private final Lazy<AlertCache> alertCache;
 
-    @Inject public AlertServiceWrapper(AlertService alertService, AlertServiceAsync alertServiceAsync)
+    @Inject public AlertServiceWrapper(
+            @NotNull AlertService alertService,
+            @NotNull AlertServiceAsync alertServiceAsync,
+            @NotNull Lazy<AlertCompactListCache> alertCompactListCache,
+            @NotNull Lazy<AlertCompactCache> alertCompactCache,
+            @NotNull Lazy<AlertCache> alertCache)
     {
         super();
         this.alertService = alertService;
         this.alertServiceAsync = alertServiceAsync;
+        this.alertCompactListCache = alertCompactListCache;
+        this.alertCompactCache = alertCompactCache;
+        this.alertCache = alertCache;
     }
 
-    private void basicCheck(UserBaseKey userBaseKey)
+    private void basicCheck(@NotNull UserBaseKey userBaseKey)
     {
-        if (userBaseKey == null)
-        {
-            throw new NullPointerException("userBaseKey cannot be null");
-        }
         if (userBaseKey.key == null)
         {
             throw new NullPointerException("userBaseKey.key cannot be null");
         }
     }
 
+    @NotNull
+    private DTOProcessor<AlertCompactDTO> createDTOProcessorCreateAlert(@NotNull UserBaseKey userBaseKey)
+    {
+        return new DTOProcessorCreateAlert(
+                userBaseKey,
+                alertCompactListCache.get(),
+                alertCompactCache.get(),
+                alertCache.get());
+    }
+
+    @NotNull
+    private DTOProcessor<AlertCompactDTO> createDTOProcessorUpdateAlert(@NotNull AlertId alertId)
+    {
+        return new DTOProcessorUpdateAlert(
+                alertId,
+                alertCompactCache.get(),
+                alertCache.get());
+    }
+
     //<editor-fold desc="Get Alerts">
-    public List<AlertCompactDTO> getAlerts(UserBaseKey userBaseKey)
+    public List<AlertCompactDTO> getAlerts(@NotNull UserBaseKey userBaseKey)
     {
         basicCheck(userBaseKey);
         return alertService.getAlerts(userBaseKey.key);
     }
 
-    public void getAlerts(UserBaseKey userBaseKey, Callback<List<AlertCompactDTO>> callback)
+    public MiddleCallback<List<AlertCompactDTO>> getAlerts(@NotNull UserBaseKey userBaseKey, @Nullable Callback<List<AlertCompactDTO>> callback)
     {
         basicCheck(userBaseKey);
-        alertServiceAsync.getAlerts(userBaseKey.key, callback);
+        MiddleCallback<List<AlertCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        alertServiceAsync.getAlerts(userBaseKey.key, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
-    private void basicCheck(AlertId alertId)
+    private void basicCheck(@NotNull AlertId alertId)
     {
-        if (alertId == null)
-        {
-            throw new NullPointerException("alertId cannot be null");
-        }
         if (alertId.userId == null)
         {
             throw new NullPointerException("alertId.userId cannot be null");
@@ -67,40 +100,47 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Alert">
-    public AlertDTO getAlert(AlertId alertId)
+    public AlertDTO getAlert(@NotNull AlertId alertId)
     {
         basicCheck(alertId);
         return this.alertService.getAlert(alertId.userId, alertId.alertId);
     }
+
+    public MiddleCallback<AlertDTO> getAlert(AlertId alertId, Callback<AlertDTO> callback)
+    {
+        MiddleCallback<AlertDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        this.alertServiceAsync.getAlert(alertId.userId, alertId.alertId, middleCallback);
+        return middleCallback;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Create Alert">
-    public AlertCompactDTO createAlert(UserBaseKey userBaseKey, AlertFormDTO alertFormDTO)
+    public AlertCompactDTO createAlert(@NotNull UserBaseKey userBaseKey, @NotNull AlertFormDTO alertFormDTO)
     {
         basicCheck(userBaseKey);
-        return this.alertService.createAlert(userBaseKey.key, alertFormDTO);
+        return createDTOProcessorCreateAlert(userBaseKey).process(this.alertService.createAlert(userBaseKey.key, alertFormDTO));
     }
 
-    public MiddleCallbackCreateAlertCompact createAlert(UserBaseKey userBaseKey, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
+    public MiddleCallback<AlertCompactDTO> createAlert(@NotNull UserBaseKey userBaseKey, @NotNull AlertFormDTO alertFormDTO, @Nullable Callback<AlertCompactDTO> callback)
     {
         basicCheck(userBaseKey);
-        MiddleCallbackCreateAlertCompact middleCallback = new MiddleCallbackCreateAlertCompact(userBaseKey, callback);
-        this.alertServiceAsync.createAlert(userBaseKey.key, alertFormDTO, callback);
+        MiddleCallback<AlertCompactDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorCreateAlert(userBaseKey));
+        this.alertServiceAsync.createAlert(userBaseKey.key, alertFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Alert">
-    public AlertCompactDTO updateAlert(AlertId alertId, AlertFormDTO alertFormDTO)
+    public AlertCompactDTO updateAlert(@NotNull AlertId alertId, @NotNull AlertFormDTO alertFormDTO)
     {
         basicCheck(alertId);
-        return this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);
+        return createDTOProcessorUpdateAlert(alertId).process(this.alertService.updateAlert(alertId.userId, alertId.alertId, alertFormDTO));
     }
 
-    public MiddleCallbackUpdateAlertCompact updateAlert(AlertId alertId, AlertFormDTO alertFormDTO, Callback<AlertCompactDTO> callback)
+    public MiddleCallback<AlertCompactDTO> updateAlert(@NotNull AlertId alertId, @NotNull AlertFormDTO alertFormDTO, @Nullable Callback<AlertCompactDTO> callback)
     {
         basicCheck(alertId);
-        MiddleCallbackUpdateAlertCompact middleCallback = new MiddleCallbackUpdateAlertCompact(alertId, callback);
+        MiddleCallback<AlertCompactDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUpdateAlert(alertId));
         this.alertServiceAsync.updateAlert(alertId.userId, alertId.alertId, alertFormDTO, middleCallback);
         return middleCallback;
     }

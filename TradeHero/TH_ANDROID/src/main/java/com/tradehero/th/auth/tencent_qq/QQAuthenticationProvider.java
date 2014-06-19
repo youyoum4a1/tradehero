@@ -55,10 +55,7 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         }
         currentOperationCallback = callback;
 
-        if (currentOperationCallback != null)
-        {
-            currentOperationCallback.onStart();
-        }
+        callback.onStart();
 
         createQQAuth();
     }

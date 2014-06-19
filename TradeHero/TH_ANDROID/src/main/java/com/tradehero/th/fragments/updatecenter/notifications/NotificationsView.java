@@ -23,8 +23,6 @@ import com.tradehero.th.api.notification.NotificationKeyList;
 import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -38,6 +36,7 @@ import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -59,8 +58,8 @@ public class NotificationsView extends BetterViewAnimator
     private boolean loading;
     private int nextPageDelta;
 
-    private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
-    private Map<Integer, Callback<Response>> callbackMap;
+    @NotNull private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
+    @NotNull private Map<Integer, Callback<Response>> callbackMap;
 
     private DTOCache.Listener<NotificationListKey, NotificationKeyList> notificationFetchListener;
     private DTOCache.GetOrFetchTask<NotificationListKey, NotificationKeyList> notificationFetchTask;
@@ -72,11 +71,19 @@ public class NotificationsView extends BetterViewAnimator
     public NotificationsView(Context context)
     {
         super(context);
+        init();
     }
 
     public NotificationsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init();
+    }
+
+    protected void init()
+    {
+        callbackMap = new HashMap<>();
+        middleCallbackMap = new HashMap<>();
     }
     //</editor-fold>
 
@@ -110,8 +117,6 @@ public class NotificationsView extends BetterViewAnimator
 
         createNotificationFetchListener();
 
-        initCallbackMap();
-
         // for now, we have only one type of notification list
         notificationListKey = new NotificationListKey();
 
@@ -131,12 +136,6 @@ public class NotificationsView extends BetterViewAnimator
     private void createOnRefreshListener()
     {
         notificationPullToRefreshListener = new NotificationRefreshRequestListener();
-    }
-
-    private void initCallbackMap()
-    {
-        callbackMap = new HashMap<>();
-        middleCallbackMap = new HashMap<>();
     }
 
     private void unsetMiddleCallback()
@@ -287,7 +286,7 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    private void reportNotificationRead(int pushId)
+    protected void reportNotificationRead(int pushId)
     {
         MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
         if (middleCallback == null)
@@ -394,7 +393,6 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    // TODO rework this inner class to identify the null elements.
     private class NotificationMarkAsReadCallback implements Callback<Response>
     {
         private final int pushId;
@@ -406,43 +404,18 @@ public class NotificationsView extends BetterViewAnimator
 
         @Override public void success(Response response, Response response2)
         {
-            if (response.getStatus() == 200)
-            {
-                Timber.d("Notification %d is reported as read", pushId);
-                // TODO update title
+            Timber.d("Notification %d is reported as read", pushId);
+            // TODO update title
 
-                // mark it as read in the cache
-                NotificationKey notificationKey = new NotificationKey(pushId);
-                NotificationDTO notificationDTO = notificationCache.get().get(notificationKey);
-                if (notificationDTO != null && notificationDTO.unread)
-                {
-                    notificationDTO.unread = false;
-                    notificationCache.get().put(notificationKey, notificationDTO);
-                    updateUnreadStatusInUserProfileCache();
-                }
-                middleCallbackMap.remove(pushId);
-                callbackMap.remove(pushId);
-            }
+            middleCallbackMap.remove(pushId);
+            callbackMap.remove(pushId);
+            requestUpdateTabCounter();
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             Timber.d("Report failure for notification: %d", pushId);
         }
-    }
-
-    private void updateUnreadStatusInUserProfileCache()
-    {
-        // TODO synchronization problem
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO.unreadNotificationsCount > 0)
-        {
-            --userProfileDTO.unreadNotificationsCount;
-        }
-        userProfileCache.put(userBaseKey, userProfileDTO);
-
-        requestUpdateTabCounter();
     }
 
     private void requestUpdateTabCounter()

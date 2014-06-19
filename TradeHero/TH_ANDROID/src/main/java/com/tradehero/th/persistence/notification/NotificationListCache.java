@@ -8,43 +8,44 @@ import com.tradehero.th.api.notification.NotificationKeyList;
 import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.network.service.NotificationService;
+import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public class NotificationListCache extends StraightDTOCache<NotificationListKey, NotificationKeyList>
 {
-    private final Lazy<NotificationService> notificationService;
-    private final Lazy<NotificationCache> notificationCache;
+    @NotNull private final Lazy<NotificationServiceWrapper> notificationService;
+    @NotNull private final Lazy<NotificationCache> notificationCache;
 
     @Inject public NotificationListCache(
             @ListCacheMaxSize IntPreference maxSize,
-            Lazy<NotificationService> notificationService,
-            Lazy<NotificationCache> notificationCache
+            @NotNull Lazy<NotificationServiceWrapper> notificationService,
+            @NotNull Lazy<NotificationCache> notificationCache
             )
     {
         super(maxSize.get());
-
         this.notificationService = notificationService;
         this.notificationCache = notificationCache;
     }
 
-    @Override protected NotificationKeyList fetch(NotificationListKey key) throws Throwable
+    @Override @NotNull protected NotificationKeyList fetch(@NotNull NotificationListKey key) throws Throwable
     {
-        return putInternal(notificationService.get().getNotifications(key.toMap()));
+        return putInternal(notificationService.get().getNotifications(key));
     }
 
-    private NotificationKeyList putInternal(PaginatedDTO<NotificationDTO> paginatedNotifications)
+    @NotNull private NotificationKeyList putInternal(@NotNull PaginatedDTO<NotificationDTO> paginatedNotifications)
     {
         List<NotificationDTO> notificationsList = paginatedNotifications.getData();
         NotificationKeyList notificationKeyList = new NotificationKeyList();
 
         if (notificationsList != null)
         {
-            for (NotificationDTO notificationDTO: notificationsList)
+            for (@NotNull NotificationDTO notificationDTO: notificationsList)
             {
                 NotificationKey notificationDTOKey = notificationDTO.getDTOKey();
                 notificationKeyList.add(notificationDTOKey);

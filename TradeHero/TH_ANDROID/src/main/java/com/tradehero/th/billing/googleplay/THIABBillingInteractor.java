@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -32,6 +31,7 @@ import com.tradehero.th.fragments.billing.googleplay.THSKUDetailAdapter;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -62,7 +62,7 @@ public class THIABBillingInteractor
     @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     @Inject protected HeroListCache heroListCache;
     @Inject protected UserService userService;

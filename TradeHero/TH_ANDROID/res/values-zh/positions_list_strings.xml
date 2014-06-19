@@ -9,9 +9,12 @@
   <string name="position_list_header_open_unsure">持仓</string>
   <string name="position_list_header_closed">平仓 (%d)</string>
   <string name="position_list_header_closed_unsure">平仓</string>
-  <string name="position_list_header_time_base">%1$s - %2$s</string>
+  <string name="position_unrealised_loss_header">将要亏损</string>
+  <string name="position_unrealised_profit_header">将要盈利</string>
   <string name="position_unrealised_pl_header" deprecated="true">未实现 P&amp;L</string>
   <string name="position_realised_pl_header" deprecated="true">已实现 P&amp;L</string>
+  <string name="position_realised_loss_header">亏损</string>
+  <string name="position_realised_profit_header">盈利</string>
   <string name="position_total_invested_header">总投资</string>
   <string name="position_market_value_header">市场价值</string>
   <string name="position_quantity_header">数量</string>
@@ -29,6 +32,8 @@
   <string name="positions_in_period">周期内</string>
   <string name="positions_overall">总体</string>
   <string name="position_in_period_pl" deprecated="true">周期 P&amp;L</string>
+  <string name="position_in_period_loss">周期内亏损</string>
+  <string name="position_in_period_profit">周期内盈利</string>
   <string name="position_in_period_additional_invested">额外的投资</string>
   <string name="position_in_period_start_value">起始值</string>
   <string name="position_in_period_as_of">至 %1$s</string>

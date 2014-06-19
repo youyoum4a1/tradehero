@@ -131,15 +131,22 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
     protected void fineTune(final int position, NewsItemDTOKey dto, final NewsHeadlineViewLinear dtoView)
     {
         View wrapperView = dtoView.findViewById(R.id.news_item_placeholder);
-        if (backgroundsArr[position] != null)
+        try
         {
-            wrapperView.setBackgroundResource(backgroundsArr[position]);
+            if (backgroundsArr[position] != null)
+            {
+                wrapperView.setBackgroundResource(backgroundsArr[position]);
+            }
+            else
+            {
+                int index = dto.id % backgrounds.length;
+                backgroundsArr[position] = backgrounds[index];
+                wrapperView.setBackgroundResource(backgrounds[index]);
+            }
         }
-        else
+        catch (OutOfMemoryError e)
         {
-            int index = dto.id % backgrounds.length;
-            wrapperView.setBackgroundResource(backgrounds[index]);
-            backgroundsArr[position] = backgrounds[index];
+            Timber.e(e, null);
         }
     }
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -69,6 +71,8 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.fragments.social.SocialLinkHelper;
+import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
@@ -80,11 +84,13 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -137,6 +143,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private ToggleButton mBtnShareTwitter;
     private ToggleButton mBtnShareLinkedIn;
     private ToggleButton mBtnShareWeChat;
+    private ToggleButton mBtnShareWb;
     private ToggleButton mBtnLocation;
     private ToggleButton mBtnSharePublic;
     private Button mConfirmButton;
@@ -147,6 +154,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private boolean publishToTw = false;
     private boolean publishToLi = false;
     private boolean publishToWe = false;
+    private boolean publishToWb = false;
     private boolean shareLocation = false;
     private boolean sharePublic = false;
 
@@ -174,6 +182,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
     @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
 
+    @Inject AlertDialogUtil alertDialogUtil;
+    @Inject SocialLinkHelperFactory socialLinkHelperFactory;
+
     private PopupMenu mPortfolioSelectorMenu;
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
@@ -191,6 +202,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject SecurityServiceWrapper securityServiceWrapper;
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
     private ProgressDialog transactionDialog;
+    SocialLinkHelper socialLinkHelper;
+    @Inject SocialServiceWrapper socialServiceWrapper;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -429,12 +442,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
-
-        DashboardNavigator dn = getDashboardNavigator();
-        if (dn != null)
-        {
-            dn.hideTabBar();
-        }
     }
 
     @Override public void onPause()
@@ -447,6 +454,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyView()
     {
+        detachSocialLinkHelper();
         detachWatchlistFetchTask();
         detachBuySellMiddleCallback();
 
@@ -524,6 +532,16 @@ public class BuySellFragment extends AbstractBuySellFragment
             mBtnShareLinkedIn.setOnClickListener(null);
         }
         mBtnShareLinkedIn = null;
+        if (mBtnShareWeChat != null)
+        {
+            mBtnShareWeChat.setOnClickListener(null);
+        }
+        mBtnShareWeChat = null;
+        if (mBtnShareWb != null)
+        {
+            mBtnShareWb.setOnClickListener(null);
+        }
+        mBtnShareWb = null;
         if (mBtnLocation != null)
         {
             mBtnLocation.setOnClickListener(null);
@@ -549,6 +567,15 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         securityAlertAssistant = null;
         super.onDestroy();
+    }
+
+    protected void detachSocialLinkHelper()
+    {
+        if (socialLinkHelper != null)
+        {
+            socialLinkHelper.setSocialLinkingCallback(null);
+        }
+        socialLinkHelper = null;
     }
 
     protected void detachWatchlistFetchTask()
@@ -937,12 +964,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             String text;
             if (quoteDTO != null && quoteDTO.asOfUtc != null)
             {
-                text = DateUtils.getFormattedDate(quoteDTO.asOfUtc);
+                text = DateUtils.getFormattedDate(getResources(), quoteDTO.asOfUtc);
             }
             else if (securityCompactDTO != null
                     && securityCompactDTO.lastPriceDateAndTimeUtc != null)
             {
-                text = DateUtils.getFormattedDate(securityCompactDTO.lastPriceDateAndTimeUtc);
+                text = DateUtils.getFormattedDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc);
             }
             else
             {
@@ -1101,13 +1128,11 @@ public class BuySellFragment extends AbstractBuySellFragment
                     Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
                     mStockLogo.setImageResource(exchange.logoId);
                     loadStockBgLogoDelayed();
-                }
-                catch (IllegalArgumentException e)
+                } catch (IllegalArgumentException e)
                 {
                     Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
                     loadStockLogoDefault();
-                }
-                catch (OutOfMemoryError e)
+                } catch (OutOfMemoryError e)
                 {
                     Timber.e(e, securityCompactDTO.exchange);
                     loadStockLogoDefault();
@@ -1403,12 +1428,67 @@ public class BuySellFragment extends AbstractBuySellFragment
         };
     }
 
+    public void setPublishToShareBySetting()
+    {
+        UserProfileDTO updatedUserProfileDTO =
+                userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (updatedUserProfileDTO != null)
+        {
+            publishToFb = updatedUserProfileDTO.fbLinked;
+            publishToLi = updatedUserProfileDTO.liLinked;
+            publishToTw = updatedUserProfileDTO.twLinked;
+            publishToWe = false;//set weixin is false default
+            publishToWb = updatedUserProfileDTO.wbLinked;
+        }
+    }
+
+    public void setPublishEnable(SocialNetworkEnum socialNetwork)
+    {
+        switch (socialNetwork)
+        {
+            case FB:
+                publishToFb = true;
+                mBtnShareFacebook.setChecked(true);
+                break;
+            case TW:
+                publishToTw = true;
+                mBtnShareTwitter.setChecked(true);
+                break;
+            case LN:
+                publishToLi = true;
+                mBtnShareLinkedIn.setChecked(true);
+                break;
+            case WB:
+                publishToWb = true;
+                mBtnShareWb.setChecked(true);
+                break;
+        }
+    }
+
+    public boolean isPublishEnabled(SocialNetworkEnum socialNetwork)
+    {
+        UserProfileDTO updatedUserProfileDTO =
+                userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (updatedUserProfileDTO != null)
+        {
+            switch (socialNetwork)
+            {
+                case FB:
+                    return updatedUserProfileDTO.fbLinked;
+                case TW:
+                    return updatedUserProfileDTO.twLinked;
+                case LN:
+                    return updatedUserProfileDTO.liLinked;
+                case WB:
+                    return updatedUserProfileDTO.wbLinked;
+            }
+        }
+        return false;
+    }
+
     public void showBuySellDialog()
     {
-        publishToFb = true;
-        publishToLi = true;
-        publishToTw = true;
-        publishToWe = true;
+        setPublishToShareBySetting();
         shareLocation = true;
         sharePublic = false;
         pushPortfolioFragmentRunnable = null;
@@ -1523,7 +1603,15 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onClick(View view)
                 {
-                    publishToFb = !publishToFb;
+                    if (isPublishEnabled(SocialNetworkEnum.FB))
+                    {
+                        publishToFb = !publishToFb;
+                    }
+                    else if (!publishToFb)
+                    {
+                        shareToSocial(SocialNetworkEnum.FB);
+                    }
+                    mBtnShareFacebook.setChecked(publishToFb);
                 }
             });
         }
@@ -1536,7 +1624,15 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onClick(View view)
                 {
-                    publishToTw = !publishToTw;
+                    if (isPublishEnabled(SocialNetworkEnum.TW))
+                    {
+                        publishToTw = !publishToTw;
+                    }
+                    else if (!publishToTw)
+                    {
+                        shareToSocial(SocialNetworkEnum.TW);
+                    }
+                    mBtnShareTwitter.setChecked(publishToTw);
                 }
             });
         }
@@ -1547,7 +1643,15 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             @Override public void onClick(View view)
             {
-                publishToLi = !publishToLi;
+                if (isPublishEnabled(SocialNetworkEnum.LN))
+                {
+                    publishToLi = !publishToLi;
+                }
+                else if (!publishToLi)
+                {
+                    shareToSocial(SocialNetworkEnum.LN);
+                }
+                mBtnShareLinkedIn.setChecked(publishToLi);
             }
         });
         mBtnShareWeChat = null;
@@ -1560,6 +1664,25 @@ public class BuySellFragment extends AbstractBuySellFragment
                 publishToWe = !publishToWe;
             }
         });
+        mBtnShareWb = null;
+        mBtnShareWb = (ToggleButton) view.findViewById(R.id.btn_share_wb);
+        mBtnShareWb.setChecked(publishToWb);
+        mBtnShareWb.setOnClickListener(new OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                if (isPublishEnabled(SocialNetworkEnum.WB))
+                {
+                    publishToWb = !publishToWb;
+                }
+                else if (!publishToWb)
+                {
+                    shareToSocial(SocialNetworkEnum.WB);
+                }
+
+                mBtnShareWb.setChecked(publishToWb);
+            }
+        });
         mBtnLocation = null;
         mBtnLocation = (ToggleButton) view.findViewById(R.id.btn_location);
         mBtnLocation.setChecked(shareLocation);
@@ -1570,6 +1693,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 shareLocation = !shareLocation;
             }
         });
+        mBtnLocation.setVisibility(View.GONE);
         mBtnSharePublic = null;
         mBtnSharePublic = (ToggleButton) view.findViewById(R.id.switch_share_public);
         mBtnSharePublic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
@@ -1579,6 +1703,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 sharePublic = b;
             }
         });
+        mBtnSharePublic.setVisibility(View.GONE);
         //cancel button
         Button cancelButton = (Button) view.findViewById(R.id.dialog_btn_cancel);
         if (cancelButton != null)
@@ -1621,6 +1746,58 @@ public class BuySellFragment extends AbstractBuySellFragment
         updateBuySellDialog();
         mBuySellDialog = builder.create();
         mBuySellDialog.show();
+    }
+
+    public void shareToSocial(final SocialNetworkEnum socialNetwork)
+    {
+        //socialShareHelper.share(socialShareFormDTOFactory.createForm(new WeiboShareDestination(), new DiscussionDTO()));
+        alertDialogUtil.popWithOkCancelButton(
+                getActivity(),
+                getActivity().getApplicationContext().getString(R.string.link, socialNetwork.getName()),
+                getActivity().getApplicationContext().getString(R.string.link_description, socialNetwork.getName()),
+                R.string.link_now,
+                R.string.later,
+                new DialogInterface.OnClickListener()//Ok
+                {
+                    @Override public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        linkSocialNetwork(socialNetwork);
+                    }
+                },
+                new DialogInterface.OnClickListener()//Cancel
+                {
+                    @Override public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        alertDialogUtil.dismissProgressDialog();
+                    }
+                }
+        );
+    }
+
+    private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
+    {
+        detachSocialLinkHelper();
+        socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
+        socialLinkHelper.link(new SocialLinkingCallback(socialNetworkEnum));
+    }
+
+    private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
+    {
+        SocialNetworkEnum socialNetworkEnum;
+
+        SocialLinkingCallback(final SocialNetworkEnum socialNetworkEnum)
+        {
+            this.socialNetworkEnum = socialNetworkEnum;
+        }
+
+        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        {
+            setPublishEnable(socialNetworkEnum);
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+        }
     }
 
     public void shareToWeChat()
@@ -1791,6 +1968,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 publishToFb,
                 publishToTw,
                 publishToLi,
+                publishToWb,
                 shareLocation ? null : null, // TODO implement location
                 shareLocation ? null : null,
                 shareLocation ? null : null,
@@ -2082,7 +2260,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            Timber.e(retrofitError, "Reporting the error to Crashlytics");
+            Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
             THToast.show(new THException(retrofitError));
         }
     }

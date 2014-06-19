@@ -12,6 +12,9 @@
   <string name="store_manage_followers">Manage Followers</string>
   <string name="store_manage_stock_alerts">Manage Stock Alerts</string>
 
+  <string name="store_alert_are_free_title">Rejoice!</string>
+  <string name="store_alert_are_free_description">Alert Are Currently Free</string>
+
   <string name="store_billing_unavailable_window_title">No store account</string>
   <string name="store_billing_unavailable_window_description">The %s will function properly when you
     have an account set up and you enable the billing function.

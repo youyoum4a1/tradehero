@@ -7,6 +7,7 @@ import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class UserAvailabilityCache extends StraightDTOCacheNew<DisplayNameDTO, UserAvailabilityDTO>
 {
@@ -20,7 +21,7 @@ import javax.inject.Singleton;
         this.userServiceWrapper = userServiceWrapper;
     }
 
-    @Override public UserAvailabilityDTO fetch(DisplayNameDTO key) throws Throwable
+    @Override public UserAvailabilityDTO fetch(@NotNull DisplayNameDTO key) throws Throwable
     {
         return userServiceWrapper.checkDisplayNameAvailable(key.displayName);
     }

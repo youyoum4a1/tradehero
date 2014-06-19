@@ -16,8 +16,8 @@ public class DeviceTokenHelper
 
     public static boolean isChineseVersion()
     {
-        //TODO need to improve
-        boolean flag = Constants.VERSION > 0;
+        // HACK TODO need to improve
+        boolean flag = Constants.TAP_STREAM_TYPE.type > 0;
         //MetaHelper.isChineseLocale(context.getApplicationContext());
         return flag;
     }

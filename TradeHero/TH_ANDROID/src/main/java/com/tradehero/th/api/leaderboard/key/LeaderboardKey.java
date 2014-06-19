@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class LeaderboardKey extends AbstractIntegerDTOKey
@@ -22,14 +24,14 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
         super(key);
     }
 
-    public LeaderboardKey(Bundle args)
+    public LeaderboardKey(@NotNull Bundle args, @Nullable LeaderboardKey defaultValues)
     {
         super(args);
     }
 
-    public LeaderboardKey(Set<String> catValues)
+    public LeaderboardKey(@NotNull Set<String> catValues, @Nullable LeaderboardKey defaultValues)
     {
-        super(findKey(catValues));
+        super(findKey(catValues, defaultValues));
     }
     //</editor-fold>
 
@@ -39,7 +41,8 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
         return BUNDLE_KEY_KEY;
     }
 
-    public static Integer findKey(Set<String> catValues)
+    @Nullable
+    public static Integer findKey(@NotNull Set<String> catValues, @Nullable LeaderboardKey defaultValues)
     {
         Iterator<String> iterator = catValues.iterator();
         String catValue;
@@ -52,6 +55,10 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
             {
                     return Integer.valueOf(split[1]);
             }
+        }
+        if (defaultValues != null)
+        {
+            return defaultValues.key;
         }
         return null;
     }

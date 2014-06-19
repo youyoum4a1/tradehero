@@ -10,7 +10,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -23,6 +22,7 @@ import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +42,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
     private TextView leaderboardMarkUserMarkingTime;
     @Inject LeaderboardServiceWrapper leaderboardServiceWrapper;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
 

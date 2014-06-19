@@ -67,8 +67,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
         if (discussionKey != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
-                    discussionKey.getArgs());
+            NewsDiscussionFragment.putDiscussionKey(args, discussionKey);
             getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }

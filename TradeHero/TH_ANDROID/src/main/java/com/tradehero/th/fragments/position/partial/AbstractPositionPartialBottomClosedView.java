@@ -110,7 +110,7 @@ abstract public class AbstractPositionPartialBottomClosedView<
     {
         if (openedDate != null && positionDTO.earliestTradeUtc != null)
         {
-            openedDate.setText(DateUtils.getDisplayableDate(getContext(), positionDTO.earliestTradeUtc));
+            openedDate.setText(DateUtils.getDisplayableDate(getResources(), positionDTO.earliestTradeUtc));
         }
     }
 
@@ -118,7 +118,7 @@ abstract public class AbstractPositionPartialBottomClosedView<
     {
         if (closedDate != null)
         {
-            closedDate.setText(DateUtils.getDisplayableDate(getContext(), positionDTO.latestTradeUtc));
+            closedDate.setText(DateUtils.getDisplayableDate(getResources(), positionDTO.latestTradeUtc));
         }
     }
 
