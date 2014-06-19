@@ -6,9 +6,11 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements Comparable, DTOKey
 {
-    @Nullable public final T key;
+    @Nullable public T key;
 
     //<editor-fold desc="Constructors">
+    public AbstractPrimitiveDTOKey() {}
+
     public AbstractPrimitiveDTOKey(@Nullable T key)
     {
         super();
