@@ -8,17 +8,22 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class WarrantSpecificKnowledgeFactory
 {
-    private Map<ProviderId, OwnedPortfolioId> warrantUsingProviders;
-    @Inject protected ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
+    @NotNull private final Map<ProviderId, OwnedPortfolioId> warrantUsingProviders;
+    @NotNull protected final ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
 
-    @Inject public WarrantSpecificKnowledgeFactory()
+    //<editor-fold desc="Constructors">
+    @Inject public WarrantSpecificKnowledgeFactory(
+            @NotNull ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory)
     {
         super();
+        this.providerSpecificKnowledgeFactory = providerSpecificKnowledgeFactory;
         warrantUsingProviders = new HashMap<>();
     }
+    //</editor-fold>
 
     public void add(ProviderId providerId, OwnedPortfolioId applicableOwnedPortfolioId)
     {
@@ -32,10 +37,5 @@ import javax.inject.Singleton;
     public void clear()
     {
         warrantUsingProviders.clear();
-    }
-
-    public Map<ProviderId, OwnedPortfolioId> getWarrantApplicablePortfolios()
-    {
-        return new HashMap<>(warrantUsingProviders);
     }
 }

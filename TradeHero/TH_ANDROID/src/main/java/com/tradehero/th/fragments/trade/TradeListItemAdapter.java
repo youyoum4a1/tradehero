@@ -256,7 +256,7 @@ public class TradeListItemAdapter
 
     public static class ExpandableTradeItem extends ExpandableListItem<PositionTradeDTOKey>
     {
-        private boolean lastTrade;
+        private final boolean lastTrade;
 
         //<editor-fold desc="Constructors">
         public ExpandableTradeItem(final PositionTradeDTOKey key)

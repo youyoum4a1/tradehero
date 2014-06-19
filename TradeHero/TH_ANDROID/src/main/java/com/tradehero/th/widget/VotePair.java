@@ -169,14 +169,16 @@ public class VotePair extends LinearLayout
 
     protected class VoteCallback implements Callback<DiscussionDTO>
     {
-        private AbstractDiscussionCompactDTO discussionDTO;
-        private VoteDirection targetVoteDirection;
+        private final AbstractDiscussionCompactDTO discussionDTO;
+        private final VoteDirection targetVoteDirection;
 
+        //<editor-fold desc="Constructors">
         public VoteCallback(VoteDirection voteDirection)
         {
             this.discussionDTO = VotePair.this.discussionDTO;
             this.targetVoteDirection = voteDirection;
         }
+        //</editor-fold>
 
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {

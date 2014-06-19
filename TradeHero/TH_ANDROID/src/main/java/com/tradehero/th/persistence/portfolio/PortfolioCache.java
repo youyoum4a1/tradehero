@@ -19,11 +19,11 @@ import org.jetbrains.annotations.Nullable;
 {
     public static final int DEFAULT_MAX_SIZE = 200;
 
-    @NotNull protected Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
-    @NotNull protected Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @NotNull protected PortfolioCompactListCache portfolioCompactListCache;
-    @NotNull protected Lazy<UserProfileCache> userProfileCache;
-    @NotNull protected Lazy<GetPositionsCache> getPositionsCache;
+    @NotNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
+    @NotNull protected final Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @NotNull protected final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull protected final Lazy<UserProfileCache> userProfileCache;
+    @NotNull protected final Lazy<GetPositionsCache> getPositionsCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCache(

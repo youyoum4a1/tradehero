@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.os.Bundle;
-import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 
 abstract public class TrendingFilterTypeDTO
@@ -16,7 +16,7 @@ abstract public class TrendingFilterTypeDTO
     public final int titleIconResId;
     public final int descriptionResId;
 
-    public ExchangeDTO exchange;
+    public ExchangeCompactDTO exchange;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterTypeDTO(int titleResId, int titleIconResId, int descriptionResId)
@@ -24,16 +24,16 @@ abstract public class TrendingFilterTypeDTO
         this.titleResId = titleResId;
         this.titleIconResId = titleIconResId;
         this.descriptionResId = descriptionResId;
-        this.exchange = new ExchangeDTO();
+        this.exchange = new ExchangeCompactDTO();
     }
 
     public TrendingFilterTypeDTO(int titleResId, int titleIconResId, int descriptionResId,
-            ExchangeDTO exchangeDTO)
+            ExchangeCompactDTO exchangeCompactDTO)
     {
         this.titleResId = titleResId;
         this.titleIconResId = titleIconResId;
         this.descriptionResId = descriptionResId;
-        this.exchange = exchangeDTO;
+        this.exchange = exchangeCompactDTO;
     }
 
     public TrendingFilterTypeDTO(Bundle bundle)
@@ -41,7 +41,7 @@ abstract public class TrendingFilterTypeDTO
         this.titleResId = bundle.getInt(BUNDLE_KEY_TITLE_RES_ID);
         this.titleIconResId = bundle.getInt(BUNDLE_KEY_TITLE_ICON_RES_ID);
         this.descriptionResId = bundle.getInt(BUNDLE_KEY_DESCRIPTION_RES_ID);
-        this.exchange = new ExchangeDTO(bundle.getBundle(BUNDLE_KEY_EXCHANGE));
+        this.exchange = new ExchangeCompactDTO(bundle.getBundle(BUNDLE_KEY_EXCHANGE));
     }
     //</editor-fold>
 

@@ -70,12 +70,12 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         followerPicture = (ImageView) view.findViewById(R.id.follower_profile_picture);
         if (followerPicture != null)
         {
-            followerPicture.setOnClickListener(userClickHandler);
+            followerPicture.setOnClickListener(createUserClickHandler());
         }
         followerName = (TextView) view.findViewById(R.id.follower_title);
         if (followerName != null)
         {
-            followerName.setOnClickListener(userClickHandler);
+            followerName.setOnClickListener(createUserClickHandler());
         }
 
         totalRevenue = (TextView) view.findViewById(R.id.follower_revenue);
@@ -281,16 +281,19 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private View.OnClickListener userClickHandler = new View.OnClickListener()
+    private View.OnClickListener createUserClickHandler()
     {
-        @Override public void onClick(View v)
+        return new View.OnClickListener()
         {
-            if (userFollowerDTO != null)
+            @Override public void onClick(View v)
             {
-                Bundle bundle = new Bundle();
-                bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userFollowerDTO.id);
-                getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                if (userFollowerDTO != null)
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userFollowerDTO.id);
+                    getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                }
             }
-        }
-    };
+        };
+    }
 }

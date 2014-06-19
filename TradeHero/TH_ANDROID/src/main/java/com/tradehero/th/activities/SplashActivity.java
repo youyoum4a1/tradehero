@@ -23,7 +23,7 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.market.ExchangeListCache;
+import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -44,7 +44,7 @@ public class SplashActivity extends SherlockActivity
     private AsyncTask<Void, Void, Void> initialAsyncTask;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject ExchangeListCache exchangeListCache;
+    @Inject ExchangeCompactListCache exchangeCompactListCache;
     @Inject ProviderListCache providerListCache;
     @Inject @FacebookAppId String facebookAppId;
 
@@ -166,7 +166,7 @@ public class SplashActivity extends SherlockActivity
             canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
-                exchangeListCache.getOrFetchAsync(new ExchangeListType());
+                exchangeCompactListCache.getOrFetchAsync(new ExchangeListType());
             }
             catch (Throwable throwable)
             {

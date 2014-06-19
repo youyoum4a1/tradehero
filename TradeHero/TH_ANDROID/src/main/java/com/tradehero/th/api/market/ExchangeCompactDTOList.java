@@ -4,20 +4,20 @@ import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ExchangeDTOList extends ArrayList<ExchangeDTO> implements DTO
+public class ExchangeCompactDTOList extends ArrayList<ExchangeCompactDTO> implements DTO
 {
     //<editor-fold desc="Constructors">
-    public ExchangeDTOList()
+    public ExchangeCompactDTOList()
     {
         super();
     }
 
-    public ExchangeDTOList(int capacity)
+    public ExchangeCompactDTOList(int capacity)
     {
         super(capacity);
     }
 
-    public ExchangeDTOList(Collection<? extends ExchangeDTO> collection)
+    public ExchangeCompactDTOList(Collection<? extends ExchangeCompactDTO> collection)
     {
         super(collection);
     }

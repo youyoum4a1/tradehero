@@ -2,15 +2,14 @@ package com.tradehero.th.fragments.social.friend;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
-
 import java.util.ArrayList;
+import java.util.Collection;
 
-/**
- * Created by wangliang on 14-5-27.
- */
+// TODO move to API package
 public class FriendDTOList extends ArrayList<UserFriendsDTO>
-        implements DTO {
-
+        implements DTO
+{
+    //<editor-fold desc="Constructors">
     public FriendDTOList()
     {
         super();
@@ -20,4 +19,10 @@ public class FriendDTOList extends ArrayList<UserFriendsDTO>
     {
         super(capacity);
     }
+
+    public FriendDTOList(Collection<? extends UserFriendsDTO> c)
+    {
+        super(c);
+    }
+    //</editor-fold>
 }

@@ -47,7 +47,7 @@ public class THUser
 {
     private static AuthenticationMode authenticationMode;
     private static THAuthenticationProvider authenticator;
-    private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
+    private static final Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
 
     private static CredentialsDTO currentCredentials;
     private static HashMap<String, CredentialsDTO> typedCredentials;

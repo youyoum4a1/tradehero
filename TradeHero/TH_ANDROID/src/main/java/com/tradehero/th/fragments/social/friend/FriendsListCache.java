@@ -2,57 +2,30 @@ package com.tradehero.th.fragments.social.friend;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.MessageHeaderIdList;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.api.discussion.key.MessageListKey;
-import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
-import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
+// TODO move to persistence
 @Singleton
 public class FriendsListCache extends StraightDTOCache<FriendsListKey, FriendDTOList>
 {
-    private UserServiceWrapper userServiceWrapper;
+    @NotNull private final UserServiceWrapper userServiceWrapper;
 
-    @Inject
-    public FriendsListCache(@ListCacheMaxSize IntPreference maxSize,
-                                  UserServiceWrapper userServiceWrapper)
+    //<editor-fold desc="Constructors">
+    @Inject public FriendsListCache(
+            @NotNull @ListCacheMaxSize IntPreference maxSize,
+            @NotNull UserServiceWrapper userServiceWrapper)
     {
         super(maxSize.get());
         this.userServiceWrapper = userServiceWrapper;
     }
+    //</editor-fold>
 
-    @Override protected FriendDTOList fetch(FriendsListKey key) throws Throwable
+    @Override protected FriendDTOList fetch(@NotNull FriendsListKey key) throws Throwable
     {
-        List<UserFriendsDTO> data =  userServiceWrapper.getSocialFriends(key.userBaseKey, key.socialNetworkEnum);
-        return putInternal(data);
+        return userServiceWrapper.getSocialFriends(key.userBaseKey, key.socialNetworkEnum);
     }
-
-    private FriendDTOList putInternal(List<UserFriendsDTO> data)
-    {
-
-        if (data != null)
-        {
-            FriendDTOList list = new FriendDTOList(data.size());
-            list.addAll(data);
-            return list;
-        }
-        return null;
-    }
-
-
 }

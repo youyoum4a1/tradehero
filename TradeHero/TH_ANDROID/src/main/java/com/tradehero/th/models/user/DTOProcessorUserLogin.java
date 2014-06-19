@@ -28,11 +28,11 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
             if (profile != null)
             {
                 UserBaseKey userKey = profile.getBaseKey();
-                if (value.systemStatus == null)
+                if (value.systemStatusDTO == null)
                 {
-                    value.systemStatus = new SystemStatusDTO();
+                    value.systemStatusDTO = new SystemStatusDTO();
                 }
-                systemStatusCache.put(userKey, value.systemStatus);
+                systemStatusCache.put(userKey, value.systemStatusDTO);
             }
         }
         return value;

@@ -35,9 +35,10 @@ import timber.log.Timber;
 {
     public static final int DEFAULT_MAX_SIZE = 15;
 
-    @NotNull private Lazy<SecurityCompactCache> securityCache;
-    @NotNull private YahooNewsServiceWrapper yahooServiceWrapper;
+    @NotNull private final Lazy<SecurityCompactCache> securityCache;
+    @NotNull private final YahooNewsServiceWrapper yahooServiceWrapper;
 
+    //<editor-fold desc="Constructors">
     @Inject public YahooNewsHeadlineCache(
             @NotNull Lazy<SecurityCompactCache> securityCache,
             @NotNull YahooNewsServiceWrapper yahooNewsServiceWrapper)
@@ -46,6 +47,7 @@ import timber.log.Timber;
         this.securityCache = securityCache;
         this.yahooServiceWrapper = yahooNewsServiceWrapper;
     }
+    //</editor-fold>
 
     /**
      *  the fetch operation works as follow:

@@ -10,7 +10,6 @@ import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
-import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Module;
@@ -39,11 +38,6 @@ public class UxModule
     @Provides @Singleton LocalyticsSession provideLocalyticsSession(THLocalyticsSession localyticsSession)
     {
         return localyticsSession;
-    }
-
-    @Provides @Singleton THLocalyticsSession provideThLocalyticsSession(Context context, ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
-    {
-        return new THLocalyticsSession(context, chartTimeSpanMetricsCodeFactory);
     }
 
     // TapStream

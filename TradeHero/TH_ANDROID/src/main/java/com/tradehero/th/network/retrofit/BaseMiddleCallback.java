@@ -12,7 +12,7 @@ public class BaseMiddleCallback<ValueType>
     extends BaseCallbackWrapper<ValueType>
         implements MiddleCallback<ValueType>
 {
-    @NotNull protected DTOProcessor<ValueType> dtoProcessor;
+    @NotNull protected final DTOProcessor<ValueType> dtoProcessor;
 
     //<editor-fold desc="Constructors">
     public BaseMiddleCallback(@Nullable Callback<ValueType> primaryCallback)

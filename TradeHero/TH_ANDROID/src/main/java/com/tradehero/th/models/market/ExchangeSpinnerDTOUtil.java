@@ -1,69 +1,67 @@
 package com.tradehero.th.models.market;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import com.tradehero.th.api.market.Exchange;
-import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import timber.log.Timber;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class ExchangeSpinnerDTOUtil
+public class ExchangeSpinnerDTOUtil
 {
+    //<editor-fold desc="Constructors">
     @Inject public ExchangeSpinnerDTOUtil()
     {
     }
+    //</editor-fold>
 
-    public ExchangeSpinnerDTO[] getSpinnerDTOs(Context context, List<ExchangeDTO> exchangeDTOs)
+    @Contract("_, null -> null; _, !null -> !null") @Nullable
+    public ExchangeCompactSpinnerDTO[] getSpinnerDTOs(@NotNull Context context, @Nullable List<ExchangeCompactDTO> exchangeDTOs)
     {
         if (exchangeDTOs == null)
         {
             return null;
         }
 
-        ExchangeSpinnerDTO[] spinnerDTOs = new ExchangeSpinnerDTO[exchangeDTOs.size() + 1];
-        spinnerDTOs[0] = new ExchangeSpinnerDTO(context); // That's the "All Exchanges" thing
+        ExchangeCompactSpinnerDTO[] spinnerDTOs = new ExchangeCompactSpinnerDTO[exchangeDTOs.size() + 1];
+        spinnerDTOs[0] = new ExchangeCompactSpinnerDTO(context); // That's the "All Exchanges" thing
         int index = 1;
-        for (ExchangeDTO exchangeDTO: exchangeDTOs)
+        for (@NotNull ExchangeCompactDTO exchangeDTO: exchangeDTOs)
         {
-            spinnerDTOs[index++] = new ExchangeSpinnerDTO(context, exchangeDTO);
+            spinnerDTOs[index++] = new ExchangeCompactSpinnerDTO(context, exchangeDTO);
         }
         return spinnerDTOs;
     }
 
-    public int[] getSpinnerIcons(Context context, List<ExchangeDTO> exchangeDTOs)
+    @Contract("_, null -> null; _, !null -> !null") @Nullable
+    public int[] getSpinnerIcons(@NotNull Context context, @Nullable List<ExchangeCompactDTO> exchangeCompactDTOs)
     {
-        if (exchangeDTOs == null)
+        if (exchangeCompactDTOs == null)
         {
             return null;
         }
 
-        int[] spinnerIcons = new int[exchangeDTOs.size() + 1];
+        int[] spinnerIcons = new int[exchangeCompactDTOs.size() + 1];
         spinnerIcons[0] = 0; // That's the "All Exchanges" thing
         int index = 1;
-        for (ExchangeDTO exchangeDTO: exchangeDTOs)
+        Integer flagResId;
+        for (@NotNull ExchangeCompactDTO exchangeDTO: exchangeCompactDTOs)
         {
-            try
+            flagResId = exchangeDTO.getFlagResId();
+            if (flagResId != null)
             {
-                spinnerIcons[index] = Exchange.valueOf(exchangeDTO.name).logoId;
+                spinnerIcons[index] = flagResId;
             }
-            catch (IllegalArgumentException ex)
-            {
-                Timber.d("Exchange logo does not exist: %s", ex.getMessage());
-            }
-            finally
-            {
-                index++;
-            }
+            index++;
         }
         return spinnerIcons;
     }
 
-    public <T extends ExchangeDTO> int indexOf(T[] exchangeDTOs, T exchangeToFind)
+    public <T extends ExchangeCompactDTO> int indexOf(T[] exchangeCompactDTOs, T exchangeToFind)
     {
-        return new ArrayList<T>(Arrays.asList(exchangeDTOs)).indexOf(exchangeToFind);
+        return new ArrayList<T>(Arrays.asList(exchangeCompactDTOs)).indexOf(exchangeToFind);
     }
 }

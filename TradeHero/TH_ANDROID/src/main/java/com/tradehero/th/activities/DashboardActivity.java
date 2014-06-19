@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -48,7 +47,6 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
-import com.tradehero.th.ui.AppContainerImpl;
 import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
@@ -66,9 +64,10 @@ import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity,
-        AppContainerImpl.OnResideMenuItemClickListener,
         ResideMenu.OnMenuListener
 {
+    private final DashboardTabType INITIAL_TAB = DashboardTabType.TRENDING;
+
     private DashboardNavigator navigator;
 
     // It is important to have Lazy here because we set the current Activity after the injection
@@ -99,8 +98,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject THRouter thRouter;
 
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
-
-    private DashboardTabType currentTab = DashboardTabType.TRENDING;
 
     private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
@@ -154,7 +151,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        navigator.goToTab(currentTab);
+        navigator.goToTab(INITIAL_TAB);
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
@@ -193,13 +190,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         request.popRestorePurchaseOutcome = true;
         request.popRestorePurchaseOutcomeVerbose = false;
         request.purchaseRestorerListener = purchaseRestorerFinishedListener;
-        return request;
-    }
-
-    protected THUIBillingRequest createFetchInventoryRequest()
-    {
-        THUIBillingRequest request = emptyBillingRequestProvider.get();
-        request.fetchInventory = true;
         return request;
     }
 
@@ -413,28 +403,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
 
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    @Override public void onResideMenuItemClick(DashboardTabType tabType)
-    {
-        switch (tabType)
-        {
-            case TRENDING:
-                break;
-            case STORE:
-                break;
-            default:
-                break;
-        }
-
-        if (currentTab != tabType)
-        {
-            navigator.replaceTab(currentTab, tabType);
-            currentTab = tabType;
         }
     }
 

@@ -18,6 +18,7 @@ import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 
 @Singleton
@@ -28,20 +29,23 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
     public static final String KEY_EXPIRES_IN = "expires_in";
     private static final String WEIBO_PACKAGE = "com.sina.weibo";
 
-    @Inject Context context;
-
-    private WeiboAppAuthData mAuthData;
+    @NotNull final Context context;
+    @NotNull private final WeiboAppAuthData mAuthData;
     //private THAuthenticationCallback mCallback;
 
     private Oauth2AccessToken mAccessToken;
     private WeiboAuth mWeiboAuth;
     private SsoHandler mSsoHandler;
 
-    @Inject
-    public WeiboAuthenticationProvider(@ForWeiboAppAuthData WeiboAppAuthData authData)
+    //<editor-fold desc="Constructors">
+    @Inject public WeiboAuthenticationProvider(
+            @NotNull Context context,
+            @NotNull @ForWeiboAppAuthData WeiboAppAuthData authData)
     {
+        this.context = context;
         this.mAuthData = authData;
     }
+    //</editor-fold>
 
     @Override
     public void authenticate(THAuthenticationCallback callback)

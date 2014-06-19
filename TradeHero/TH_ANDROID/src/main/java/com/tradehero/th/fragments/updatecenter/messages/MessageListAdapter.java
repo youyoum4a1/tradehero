@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderId, MessageItemViewWrapper>
 {
-    private int layoutResourceId;
+    private final int layoutResourceId;
     private MessageItemViewWrapper.OnElementClickedListener elementClickedListener;
 
     //<editor-fold desc="Constructors">

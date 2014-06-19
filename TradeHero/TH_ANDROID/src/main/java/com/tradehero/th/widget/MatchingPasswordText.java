@@ -12,6 +12,7 @@ public class MatchingPasswordText extends ValidatedPasswordText
 {
     private int targetId;
     ValidatedPasswordText target;
+    // TODO handle memory leak
     private TextWatcher targetWatcher = new TextWatcher()
     {
         @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)

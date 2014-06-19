@@ -24,7 +24,7 @@ abstract public class StraightCutDTOCacheNew<
      */
     protected class PartialCutCacheValue extends PartialCacheValue
     {
-        private DTOKeyType key;
+        private final DTOKeyType key;
         private DTOCutType shrunkValue;
 
         public PartialCutCacheValue(DTOKeyType key)

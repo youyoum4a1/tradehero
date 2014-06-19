@@ -21,6 +21,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -33,11 +34,11 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -61,8 +62,10 @@ public class FriendsInvitationFragment extends DashboardFragment
     FacebookSocialFriendHandler facebookSocialFriendHandler;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
+    @Inject Provider<FacebookSocialFriendHandler> facebookSocialFriendHandlerProvider;
 
-    private List<UserFriendsDTO> userFriendsDTOs;
+    private FriendDTOList userFriendsDTOs;
     private Runnable searchTask;
     private MiddleCallback searchCallback;
     private SocialLinkHelper socialLinkHelper;
@@ -78,8 +81,8 @@ public class FriendsInvitationFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        socialFriendHandler = new SocialFriendHandler();
-        facebookSocialFriendHandler = new FacebookSocialFriendHandler(getActivity());
+        socialFriendHandler = socialFriendHandlerProvider.get();
+        facebookSocialFriendHandler = facebookSocialFriendHandlerProvider.get();
     }
 
     @Override
@@ -163,7 +166,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     private void bindSocialTypeData()
     {
         List<SocialTypeItem> socialTypeItemList = socialTypeItemFactory.getSocialTypeList();
-        SocalTypeListAdapter adapter = new SocalTypeListAdapter(getActivity(), 0, socialTypeItemList);
+        SocialTypeListAdapter adapter = new SocialTypeListAdapter(getActivity(), 0, socialTypeItemList);
         socialListView.setAdapter(adapter);
         socialListView.setOnItemClickListener(this);
         showSocialTypeList();
@@ -418,14 +421,15 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
     {
+        final List<UserFriendsDTO> usersToFollow;
 
-        List<UserFriendsDTO> usersToFollow;
-
+        //<editor-fold desc="Constructors">
         private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
         {
             super(getActivity());
             this.usersToFollow = usersToFollow;
         }
+        //</editor-fold>
 
         @Override
         public void success(UserProfileDTO userProfileDTO, Response response)
@@ -451,14 +455,15 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
     {
+        final List<UserFriendsDTO> usersToInvite;
 
-        List<UserFriendsDTO> usersToInvite;
-
+        //<editor-fold desc="Constructors">
         private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
         {
             super(getActivity());
             this.usersToInvite = usersToInvite;
         }
+        //</editor-fold>
 
         @Override
         public void success(Response data, Response response)
@@ -483,22 +488,19 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    private List<UserFriendsDTO> filterTheDublicated(List<UserFriendsDTO> friendDTOList)
+    private FriendDTOList filterTheDuplicated(List<UserFriendsDTO> friendDTOList)
     {
         TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
         hashSet.addAll(friendDTOList);
-        ArrayList list = new ArrayList();
-        list.addAll(hashSet);
-        return list;
+        return new FriendDTOList(hashSet);
     }
 
-    class SearchFriendsCallback implements Callback<List<UserFriendsDTO>>
+    class SearchFriendsCallback implements Callback<FriendDTOList>
     {
-
         @Override
-        public void success(List<UserFriendsDTO> userFriendsDTOs, Response response)
+        public void success(FriendDTOList userFriendsDTOs, Response response)
         {
-            FriendsInvitationFragment.this.userFriendsDTOs = filterTheDublicated(userFriendsDTOs);
+            FriendsInvitationFragment.this.userFriendsDTOs = filterTheDuplicated(userFriendsDTOs);
             bindSearchData();
         }
 
@@ -513,17 +515,14 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     class SearchTextWatcher implements TextWatcher
     {
-
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after)
         {
-
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count)
         {
-
         }
 
         @Override

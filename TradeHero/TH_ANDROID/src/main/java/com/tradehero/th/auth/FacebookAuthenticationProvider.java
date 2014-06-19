@@ -40,7 +40,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
     private Facebook facebook;
     private Session session;
     private SessionDefaultAudience defaultAudience;
-    private String applicationId;
+    private final String applicationId;
     private int activityCode;
     private WeakReference<Activity> baseActivity;
     private Context applicationContext;

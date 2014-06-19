@@ -5,8 +5,9 @@ import com.tradehero.th.api.discussion.DiscussionType;
 
 public class SecurityDiscussionKey extends DiscussionKey
 {
-    private static DiscussionType TYPE = DiscussionType.SECURITY;
+    private static final DiscussionType TYPE = DiscussionType.SECURITY;
 
+    //<editor-fold desc="Constructors">
     public SecurityDiscussionKey(Integer id)
     {
         super(id);
@@ -16,6 +17,7 @@ public class SecurityDiscussionKey extends DiscussionKey
     {
         super(args);
     }
+    //</editor-fold>
 
     @Override public DiscussionType getType()
     {

@@ -204,11 +204,13 @@ public class BuySellFragment extends AbstractBuySellFragment
     private ProgressDialog transactionDialog;
     SocialLinkHelper socialLinkHelper;
     @Inject SocialServiceWrapper socialServiceWrapper;
+    private BroadcastReceiver chartImageButtonClickReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
+        chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
     }
 
     @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
@@ -565,6 +567,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroy()
     {
+        chartImageButtonClickReceiver = null;
         securityAlertAssistant = null;
         super.onDestroy();
     }
@@ -1783,7 +1786,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
     {
-        SocialNetworkEnum socialNetworkEnum;
+        final SocialNetworkEnum socialNetworkEnum;
 
         SocialLinkingCallback(final SocialNetworkEnum socialNetworkEnum)
         {
@@ -2071,13 +2074,16 @@ public class BuySellFragment extends AbstractBuySellFragment
         getNavigator().pushFragment(StockInfoFragment.class, args);
     }
 
-    private BroadcastReceiver chartImageButtonClickReceiver = new BroadcastReceiver()
+    private BroadcastReceiver createImageButtonClickBroadcastReceiver()
     {
-        @Override public void onReceive(Context context, Intent intent)
+        return new BroadcastReceiver()
         {
-            pushStockInfoFragmentIn();
-        }
-    };
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                pushStockInfoFragmentIn();
+            }
+        };
+    }
     //</editor-fold>
 
     //<editor-fold desc="SecurityAlertAssistant.OnPopulatedListener">

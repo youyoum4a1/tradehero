@@ -2,27 +2,28 @@ package com.tradehero.th.models.market;
 
 import android.content.Context;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
+import org.jetbrains.annotations.NotNull;
 
-public class ExchangeSpinnerDTO extends ExchangeDTO implements CharSequence
+public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements CharSequence
 {
-    private Context context;
+    private final Context context;
 
     //<editor-fold desc="Constructors">
-    public ExchangeSpinnerDTO(Context context)
+    public ExchangeCompactSpinnerDTO(@NotNull Context context)
     {
         this.context = context;
         // This will in effect be the "All Exchanges"
     }
 
-    public ExchangeSpinnerDTO(Context context, ExchangeDTO exchangeDTO)
+    public ExchangeCompactSpinnerDTO(@NotNull Context context, @NotNull ExchangeCompactDTO exchangeDTO)
     {
         super(exchangeDTO);
         this.context = context;
     }
     //</editor-fold>
 
-    @Override public String toString()
+    @Override @NotNull public String toString()
     {
         if (name == null && desc == null)
         {

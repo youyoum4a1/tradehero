@@ -46,6 +46,7 @@ import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
@@ -107,11 +108,9 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
-import com.tradehero.th.fragments.social.friend.FacebookSocialFriendHandler;
 import com.tradehero.th.fragments.social.friend.FacebookSocialFriendsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.friend.LinkedInSocialFriendsFragment;
-import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.social.friend.TwitterSocialFriendsFragment;
 import com.tradehero.th.fragments.social.friend.WeiboSocialFriendsFragment;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
@@ -295,6 +294,7 @@ import javax.inject.Singleton;
                         CompetitionLeaderboardMarkUserListClosedFragment.class,
                         CompetitionLeaderboardMarkUserListOnGoingFragment.class,
                         LeaderboardFilterFragment.class,
+                        CompetitionLeaderboardTimedHeader.class,
 
                         WebViewFragment.class,
 
@@ -378,8 +378,6 @@ import javax.inject.Singleton;
                         TwitterSocialFriendsFragment.class,
                         LinkedInSocialFriendsFragment.class,
                         WeiboSocialFriendsFragment.class,
-                        SocialFriendHandler.class,
-                        FacebookSocialFriendHandler.class,
 
                         HomeFragment.class
                 },

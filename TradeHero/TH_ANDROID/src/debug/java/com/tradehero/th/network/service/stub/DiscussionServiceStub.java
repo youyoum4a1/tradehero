@@ -20,13 +20,15 @@ public class DiscussionServiceStub implements DiscussionService
 {
     public static final int DEFAULT_MAX_COUNT = 5;
 
-    private CurrentUserId currentUserId;
+    private final CurrentUserId currentUserId;
 
+    //<editor-fold desc="Constructors">
     @Inject public DiscussionServiceStub(CurrentUserId currentUserId)
     {
         super();
         this.currentUserId = currentUserId;
     }
+    //</editor-fold>
 
     @Override public DiscussionDTO getComment(int commentId)
     {

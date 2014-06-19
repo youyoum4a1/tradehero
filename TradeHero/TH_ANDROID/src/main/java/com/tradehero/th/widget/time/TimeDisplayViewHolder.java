@@ -11,6 +11,8 @@ import com.tradehero.common.time.TimeUnitMinuteInHour;
 import com.tradehero.common.time.TimeUnitSecondInMinute;
 import com.tradehero.th.R;
 import java.util.Date;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
@@ -19,19 +21,21 @@ public class TimeDisplayViewHolder
 {
     public static final long MAX_DAY_COUNT = 99;
 
-    protected Context context;
+    @NotNull protected final Context context;
     protected TextView dayCountView;
     protected TextView hourCountView;
     protected TextView minuteCountView;
     protected TextView secondCountView;
-    protected PrettyTime prettyTime;
+    @NotNull protected final PrettyTime prettyTime;
 
-    public TimeDisplayViewHolder(Context context)
+    //<editor-fold desc="Constructors">
+    @Inject public TimeDisplayViewHolder(@NotNull Context context, @NotNull PrettyTime prettyTime)
     {
         this.context = context;
-        prettyTime = new PrettyTime();
+        this.prettyTime = prettyTime;
         registerTimeUnits();
     }
+    //</editor-fold>
 
     protected void registerTimeUnits()
     {

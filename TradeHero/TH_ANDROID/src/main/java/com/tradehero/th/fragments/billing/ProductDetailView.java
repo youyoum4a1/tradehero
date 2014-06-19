@@ -17,8 +17,8 @@ abstract public class ProductDetailView<
         extends RelativeLayout
         implements DTOView<ProductDetailType>
 {
-    public static int BG_COLOR_DISABLED_RES_ID = R.color.gray_2;
-    public static int BG_COLOR_ENABLED_RES_ID = R.color.gray_3;
+    public static final int BG_COLOR_DISABLED_RES_ID = R.color.gray_2;
+    public static final int BG_COLOR_ENABLED_RES_ID = R.color.gray_3;
 
     protected RadioButton hintSelected;
     protected View priceAndText;

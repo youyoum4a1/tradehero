@@ -31,22 +31,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-5-26.
- */
 public abstract class SocialFriendsFragment extends DashboardFragment implements SocialFriendItemView.OnElementClickListener, View.OnClickListener
 {
-
     @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
     @InjectView(R.id.search_social_friends) EditText searchEdit;
     @Inject FriendsListCache friendsListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject UserProfileCache userProfileCache;
+    @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
 
     protected SocialFriendHandler socialFriendHandler;
 
@@ -124,7 +121,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     {
         if (socialFriendHandler == null)
         {
-            socialFriendHandler = new SocialFriendHandler();
+            socialFriendHandler = socialFriendHandlerProvider.get();
         }
     }
 
@@ -424,8 +421,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
     {
-
-        List<UserFriendsDTO> usersToFollow;
+        final List<UserFriendsDTO> usersToFollow;
 
         private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
         {
@@ -441,7 +437,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
             {
                 // TODO
                 handleFollowSuccess(usersToFollow);
-                userProfileCache.put(userProfileDTO.getBaseKey(),userProfileDTO);
+                userProfileCache.put(userProfileDTO.getBaseKey(), userProfileDTO);
                 return;
             }
             handleFollowError();
@@ -454,8 +450,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
             handleFollowError();
         }
     }
-
-    ;
 
     class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
     {
@@ -487,8 +481,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
             handleInviteError();
         }
     }
-
-    ;
 
     class FriendFetchListener implements DTOCache.Listener<FriendsListKey, FriendDTOList>
     {

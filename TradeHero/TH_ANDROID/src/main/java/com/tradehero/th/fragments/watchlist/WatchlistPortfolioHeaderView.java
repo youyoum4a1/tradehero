@@ -39,6 +39,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     private UserBaseKey userBaseKey;
     private PortfolioCompactDTO portfolioCompactDTO;
     private SimpleDateFormat markingDateFormat;
+    private BroadcastReceiver watchlistItemDeletedReceiver;
 
     //<editor-fold desc="Constructors">
     public WatchlistPortfolioHeaderView(Context context)
@@ -113,17 +114,17 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
+        watchlistItemDeletedReceiver = createWatchlistItemDeletedReceiver();
         LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(watchlistItemDeletedReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        super.onDetachedFromWindow();
-
         LocalBroadcastManager.getInstance(getContext())
                 .unregisterReceiver(watchlistItemDeletedReceiver);
+        watchlistItemDeletedReceiver = null;
+        super.onDetachedFromWindow();
     }
 
     private void linkWith(UserBaseKey userBaseKey, boolean andDisplay)
@@ -246,11 +247,14 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         return getResources().getString(R.string.na);
     }
 
-    private BroadcastReceiver watchlistItemDeletedReceiver = new BroadcastReceiver()
+    private BroadcastReceiver createWatchlistItemDeletedReceiver()
     {
-        @Override public void onReceive(Context context, Intent intent)
+        return new BroadcastReceiver()
         {
-            display(userBaseKey);
-        }
-    };
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                display(userBaseKey);
+            }
+        };
+    }
 }

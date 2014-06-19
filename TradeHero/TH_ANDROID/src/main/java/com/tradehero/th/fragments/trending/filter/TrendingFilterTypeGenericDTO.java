@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.trending.filter;
 
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 
@@ -22,13 +22,13 @@ public class TrendingFilterTypeGenericDTO extends TrendingFilterTypeDTO
                 DEFAULT_DESCRIPTION_RES_ID);
     }
 
-    public TrendingFilterTypeGenericDTO(ExchangeDTO exchangeDTO)
+    public TrendingFilterTypeGenericDTO(ExchangeCompactDTO exchangeCompactDTO)
     {
         super(
                 DEFAULT_TITLE_RES_ID,
                 DEFAULT_ICON_RES_ID,
                 DEFAULT_DESCRIPTION_RES_ID,
-                exchangeDTO);
+                exchangeCompactDTO);
     }
 
     public TrendingFilterTypeGenericDTO(Bundle bundle)

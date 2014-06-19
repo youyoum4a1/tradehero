@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @NotNull protected Lazy<PortfolioService> portfolioService;
-    @NotNull protected Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @NotNull protected Lazy<PortfolioCache> portfolioCache;
-    @NotNull protected CurrentUserId currentUserId;
+    @NotNull protected final Lazy<PortfolioService> portfolioService;
+    @NotNull protected final Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @NotNull protected final Lazy<PortfolioCache> portfolioCache;
+    @NotNull protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactListCache(

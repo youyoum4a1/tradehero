@@ -24,6 +24,7 @@ import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
@@ -31,35 +32,44 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by wangliang on 14-5-29.
- */
 public class FacebookSocialFriendHandler extends SocialFriendHandler
 {
-
     private static final int MAX_FACEBOOK_MESSAGE_LENGTH = 60;
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
 
-    @Inject ProgressDialogUtil dialogUtil;
-    @Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject SocialServiceWrapper socialServiceWrapper;
-    @Inject UserProfileCache userProfileCache;
+    @NotNull final ProgressDialogUtil dialogUtil;
+    @NotNull final Lazy<FacebookUtils> facebookUtils;
+    @NotNull final SocialServiceWrapper socialServiceWrapper;
+    @NotNull final UserProfileCache userProfileCache;
+    @NotNull private final Activity activity;
 
     private ProgressDialog progressDialog;
-    private Activity activity;
     private UserBaseKey userBaseKey;
     private List<UserFriendsDTO> users;
     RequestCallback<Response> callback;
 
-    public FacebookSocialFriendHandler(Activity activity)
+    //<editor-fold desc="Constructors">
+    @Inject public FacebookSocialFriendHandler(
+            @NotNull Lazy<UserServiceWrapper> userService,
+            @NotNull ProgressDialogUtil dialogUtil,
+            @NotNull Lazy<FacebookUtils> facebookUtils,
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull Activity activity)
     {
-        DaggerUtils.inject(this);
+        super(userService);
+        this.dialogUtil = dialogUtil;
+        this.facebookUtils = facebookUtils;
+        this.socialServiceWrapper = socialServiceWrapper;
+        this.userProfileCache = userProfileCache;
         this.activity = activity;
     }
+    //</editor-fold>
 
     public static class FacebookRequestCallback extends RequestCallback
     {

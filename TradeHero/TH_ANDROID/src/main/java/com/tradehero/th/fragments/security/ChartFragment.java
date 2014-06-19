@@ -132,7 +132,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             chartImage.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             {
-                chartImage.setOnClickListener(chartImageClickListener);
+                chartImage.setOnClickListener(createChartImageClickListener());
             }
         }
 
@@ -376,19 +376,22 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
     }
 
-    private View.OnClickListener chartImageClickListener = new View.OnClickListener()
+    private View.OnClickListener createChartImageClickListener()
     {
-        @Override public void onClick(View v)
+        return new View.OnClickListener()
         {
-            //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
-            //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-            Intent intent = new Intent(getActivity().getApplicationContext(), StockChartActivity.class);
-            Bundle args = new Bundle();
-            args.putBundle(BUNDLE_KEY_ARGUMENTS, getArguments());
-            intent.putExtras(args);
-            getActivity().startActivity(intent);
-        }
-    };
+            @Override public void onClick(View v)
+            {
+                //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
+                //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                Intent intent = new Intent(getActivity().getApplicationContext(), StockChartActivity.class);
+                Bundle args = new Bundle();
+                args.putBundle(BUNDLE_KEY_ARGUMENTS, getArguments());
+                intent.putExtras(args);
+                getActivity().startActivity(intent);
+            }
+        };
+    }
 
     public void displayWarrantRows()
     {

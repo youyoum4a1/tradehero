@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    private THLruCache<AlertId, AlertCompactCutDTO> lruCache;
+    private final THLruCache<AlertId, AlertCompactCutDTO> lruCache;
     @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
@@ -102,14 +102,13 @@ import org.jetbrains.annotations.Nullable;
 
     private static class AlertCompactCutDTO
     {
-        public int id;
-        public double targetPrice;
-        public Boolean upOrDown;
-        public Double priceMovement;
-        public boolean active;
-        public Date activeUntilDate;
-
-        @Nullable public SecurityId securityId;
+        public final int id;
+        public final double targetPrice;
+        public final Boolean upOrDown;
+        public final Double priceMovement;
+        public final boolean active;
+        public final Date activeUntilDate;
+        @Nullable public final SecurityId securityId;
 
         public AlertCompactCutDTO(
                 @NotNull AlertCompactDTO alertCompactDTO,
@@ -119,6 +118,10 @@ import org.jetbrains.annotations.Nullable;
             {
                 securityCompactCache.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO.security);
                 this.securityId = alertCompactDTO.security.getSecurityId();
+            }
+            else
+            {
+                this.securityId = null;
             }
             this.id = alertCompactDTO.id;
             this.targetPrice = alertCompactDTO.targetPrice;
@@ -140,6 +143,10 @@ import org.jetbrains.annotations.Nullable;
             if (securityId != null)
             {
                 compactDTO.security = securityCompactCache.get(securityId);
+            }
+            else
+            {
+                compactDTO.security = null;
             }
             
             return compactDTO;

@@ -22,7 +22,7 @@ public enum DashboardTabType
             R.color.transparent, MeTimelineFragment.class),
     HOME(R.layout.tab_indicator_holo,
             R.string.dashboard_home, R.string.dashboard_home_key,
-            R.drawable.icn_menu_trending, HomeFragment.class),
+            R.drawable.icn_menu_trending, HomeFragment.class, false),
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
             R.drawable.icn_menu_trending, TrendingFragment.class),
