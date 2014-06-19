@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    @NotNull protected UserServiceWrapper userServiceWrapper;
-    @NotNull protected HeroCache heroCache;
+    @NotNull protected final UserServiceWrapper userServiceWrapper;
+    @NotNull protected final HeroCache heroCache;
 
     //<editor-fold desc="Constructors">
     @Inject public HeroListCache(

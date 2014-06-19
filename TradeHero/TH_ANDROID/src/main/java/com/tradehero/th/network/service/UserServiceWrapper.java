@@ -6,8 +6,15 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.*;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.SearchAllowableRecipientListType;
+import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -15,6 +22,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
+import com.tradehero.th.fragments.social.friend.FriendDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
@@ -28,14 +36,13 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.List;
 
 @Singleton public class UserServiceWrapper
 {
@@ -529,44 +536,55 @@ import java.util.List;
     //</editor-fold>
 
     //<editor-fold desc="Get Friends">
-    public List<UserFriendsDTO> getFriends(UserBaseKey userKey)
+    public FriendDTOList getFriends(@NotNull UserBaseKey userKey)
     {
         return userService.getFriends(userKey.key);
     }
 
-    public MiddleCallback<List<UserFriendsDTO>> getFriends(UserBaseKey userKey, Callback<List<UserFriendsDTO>> callback)
+    public MiddleCallback<FriendDTOList> getFriends(
+            @NotNull UserBaseKey userKey,
+            @Nullable Callback<FriendDTOList> callback)
     {
-        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<FriendDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getFriends(userKey.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Social Friends">
-    public List<UserFriendsDTO> getSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum)
+    public FriendDTOList getSocialFriends(
+            @NotNull UserBaseKey userKey,
+            @NotNull SocialNetworkEnum socialNetworkEnum)
     {
-        return userService.getSocialFriends(userKey.key,socialNetworkEnum);
+        return userService.getSocialFriends(userKey.key, socialNetworkEnum);
     }
 
-    public MiddleCallback<List<UserFriendsDTO>> getSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,Callback<List<UserFriendsDTO>> callback)
+    public MiddleCallback<FriendDTOList> getSocialFriends(
+            @NotNull UserBaseKey userKey,
+            @NotNull SocialNetworkEnum socialNetworkEnum,
+            @Nullable Callback<FriendDTOList> callback)
     {
-        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<FriendDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getSocialFriends(userKey.key,socialNetworkEnum,middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Search Social Friends">
-    public MiddleCallback<List<UserFriendsDTO>> searchSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,String query, Callback<List<UserFriendsDTO>> callback)
+    public MiddleCallback<FriendDTOList> searchSocialFriends(
+            @NotNull UserBaseKey userKey,
+            @Nullable SocialNetworkEnum socialNetworkEnum,
+            @NotNull String query,
+            @Nullable Callback<FriendDTOList> callback)
     {
-        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<FriendDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.searchSocialFriends(userKey.key, socialNetworkEnum, query, middleCallback);
         return middleCallback;
     }
 
-    public List<UserFriendsDTO> searchSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,String query)
+    public FriendDTOList searchSocialFriends(@NotNull UserBaseKey userKey, @NotNull SocialNetworkEnum socialNetworkEnum, @NotNull String query)
     {
-        return userService.searchSocialFriends(userKey.key,socialNetworkEnum,query);
+        return userService.searchSocialFriends(userKey.key, socialNetworkEnum, query);
     }
     //</editor-fold>
 

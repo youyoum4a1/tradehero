@@ -6,7 +6,7 @@ class BaiduDeviceMode
     public final String userId;
     public final String appId;
 
-    public String token;
+    public final String token;
 
     public BaiduDeviceMode(String channelId, String userId, String appId)
     {

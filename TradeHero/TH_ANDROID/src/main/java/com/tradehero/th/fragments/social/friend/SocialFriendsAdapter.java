@@ -10,9 +10,6 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 
 import java.util.List;
 
-/**
- * Created by wangliang on 14-5-26.
- */
 public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
 
     private Context mContext;

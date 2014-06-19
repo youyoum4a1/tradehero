@@ -9,7 +9,7 @@ public class Query
     private static final String upperKey = Query.class.getName() + ".upper";
     private static final String lowerKey = Query.class.getName() + ".lower";
 
-    private Map<String, Object> properties = new HashMap<>();
+    private final Map<String, Object> properties = new HashMap<>();
 
     public Comparable getId()
     {

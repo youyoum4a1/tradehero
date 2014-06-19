@@ -13,10 +13,11 @@ import retrofit.Callback;
 
 @Singleton public class TranslationTokenServiceWrapper
 {
-    @NotNull private TranslationTokenService translationTokenService;
-    @NotNull private TranslationTokenServiceAsync translationTokenServiceAsync;
-    @NotNull private TranslationTokenFactory translationTokenFactory;
+    @NotNull private final TranslationTokenService translationTokenService;
+    @NotNull private final TranslationTokenServiceAsync translationTokenServiceAsync;
+    @NotNull private final TranslationTokenFactory translationTokenFactory;
 
+    //<editor-fold desc="Constructors">
     @Inject public TranslationTokenServiceWrapper(
             @NotNull TranslationTokenService translationTokenService,
             @NotNull TranslationTokenServiceAsync translationTokenServiceAsync,
@@ -26,12 +27,16 @@ import retrofit.Callback;
         this.translationTokenServiceAsync = translationTokenServiceAsync;
         this.translationTokenFactory = translationTokenFactory;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="DTO Processors">
     protected DTOProcessor<TranslationToken> createDTOProcessorGetTranslationToken()
     {
         return new DTOProcessorGetTranslationToken(translationTokenFactory);
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Get Token">
     public TranslationToken getToken()
     {
         return createDTOProcessorGetTranslationToken().process(translationTokenService.requestToken());
@@ -45,4 +50,5 @@ import retrofit.Callback;
         translationTokenServiceAsync.requestToken(middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 }

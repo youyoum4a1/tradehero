@@ -19,7 +19,7 @@ public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<War
     @Inject SecurityCompactCache securityCompactCache;
     @Inject WarrantDTOUnderlyerTypeComparator warrantDTOComparator;
     @Inject WarrantDTOUtil warrantDTOUtil;
-    protected Filter filterToUse;
+    protected final Filter filterToUse;
     @Inject ListCharSequencePredicateFilter<WarrantDTO> warrantPredicateFilter;
 
     //<editor-fold desc="Constructors">

@@ -13,7 +13,7 @@ public class BaseMiddleCallbackBingTranslationResult
     extends BaseCallbackWrapper<TranslationResult>
     implements Callback<BingTranslationResult>
 {
-    protected DTOProcessor<BingTranslationResult> dtoProcessor;
+    protected final DTOProcessor<BingTranslationResult> dtoProcessor;
 
     //<editor-fold desc="Constructors">
     public BaseMiddleCallbackBingTranslationResult(Callback<TranslationResult> primaryCallback)

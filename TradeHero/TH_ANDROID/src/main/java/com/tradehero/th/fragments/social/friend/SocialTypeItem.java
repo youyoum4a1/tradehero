@@ -5,10 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class SocialTypeItem
 {
-    @NotNull public SocialNetworkEnum socialNetwork;
-    public int imageResource;
-    public int titleResource;
-    public int backgroundResource;
+    @NotNull public final SocialNetworkEnum socialNetwork;
+    public final int imageResource;
+    public final int titleResource;
+    public final int backgroundResource;
 
     //<editor-fold desc="Constructors">
     public SocialTypeItem(int imageResource, int titleResource, int backgroundResource, @NotNull SocialNetworkEnum socialNetwork)

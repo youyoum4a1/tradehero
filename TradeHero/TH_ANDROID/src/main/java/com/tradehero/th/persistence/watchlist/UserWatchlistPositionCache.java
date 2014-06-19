@@ -20,8 +20,8 @@ import org.jetbrains.annotations.Nullable;
     private static final int DEFAULT_MAX_SIZE = 200;
     private static final int DEFAULT_WATCHLIST_FETCH_SIZE = 100;
 
-    @NotNull protected Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
-    @NotNull protected Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @NotNull protected final Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
+    @NotNull protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserWatchlistPositionCache(

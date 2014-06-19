@@ -5,8 +5,9 @@ import com.tradehero.th.api.discussion.DiscussionType;
 
 public class CommentKey extends DiscussionKey
 {
-    private static DiscussionType TYPE = DiscussionType.COMMENT;
+    private static final DiscussionType TYPE = DiscussionType.COMMENT;
 
+    //<editor-fold desc="Constructors">
     public CommentKey(Integer id)
     {
         super(id);
@@ -16,6 +17,7 @@ public class CommentKey extends DiscussionKey
     {
         super(args);
     }
+    //</editor-fold>
 
     @Override public DiscussionType getType()
     {

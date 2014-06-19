@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private THLruCache<LeaderboardKey, LeaderboardCutDTO> lruCache;
+    @NotNull private final THLruCache<LeaderboardKey, LeaderboardCutDTO> lruCache;
     @NotNull private final Lazy<LeaderboardUserCache> leaderboardUserCache;
     @NotNull private final LeaderboardUserDTOUtil leaderboardUserDTOUtil;
     @NotNull private final LeaderboardServiceWrapper leaderboardServiceWrapper;
@@ -104,16 +104,16 @@ import org.jetbrains.annotations.NotNull;
     // It is static so as not to keep a link back to the cache instance.
     private static class LeaderboardCutDTO
     {
-        public int id;
-        public String name;
-        public List<LeaderboardUserId> userIds;
-        public int userIsAtPositionZeroBased;
-        public Date markUtc;
-        public int minPositionCount;
-        public double maxSharpeRatioInPeriodVsSP500;
-        public double maxStdDevPositionRoiInPeriod;
-        public double avgStdDevPositionRoiInPeriod;
-        @NotNull public Date expirationDate;
+        public final int id;
+        public final String name;
+        public final List<LeaderboardUserId> userIds;
+        public final int userIsAtPositionZeroBased;
+        public final Date markUtc;
+        public final int minPositionCount;
+        public final double maxSharpeRatioInPeriodVsSP500;
+        public final double maxStdDevPositionRoiInPeriod;
+        public final double avgStdDevPositionRoiInPeriod;
+        @NotNull public final Date expirationDate;
 
         public LeaderboardCutDTO(
                 LeaderboardDTO leaderboardDTO,

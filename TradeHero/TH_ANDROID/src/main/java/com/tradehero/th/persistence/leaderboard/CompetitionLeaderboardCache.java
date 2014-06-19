@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private THLruCache<CompetitionLeaderboardId, CompetitionLeaderboardCutDTO> lruCache;
+    @NotNull private final THLruCache<CompetitionLeaderboardId, CompetitionLeaderboardCutDTO> lruCache;
     @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
     @NotNull private final LeaderboardCache leaderboardCache;
 
@@ -128,11 +128,11 @@ import org.jetbrains.annotations.Nullable;
     // It is static so as not to keep a link back to the cache instance.
     private static class CompetitionLeaderboardCutDTO
     {
-        @Nullable public LeaderboardKey leaderboardKey;
-        public List<AdDTO> ads;
-        public int adFrequencyRows;
-        public int adStartRow;
-        public List<PrizeDTO> prizes;
+        @Nullable public final LeaderboardKey leaderboardKey;
+        public final List<AdDTO> ads;
+        public final int adFrequencyRows;
+        public final int adStartRow;
+        public final List<PrizeDTO> prizes;
 
         public CompetitionLeaderboardCutDTO(
                 @NotNull CompetitionLeaderboardDTO competitionLeaderboardDTO,

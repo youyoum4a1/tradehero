@@ -269,7 +269,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
         return new SocialAuthenticationCallback("Email")
         {
-            private boolean signingUp = isSigningUp;
+            private final boolean signingUp = isSigningUp;
 
             @Override public boolean isSigningUp()
             {

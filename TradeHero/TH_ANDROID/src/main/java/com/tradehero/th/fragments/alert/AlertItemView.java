@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
@@ -72,16 +73,12 @@ public class AlertItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        buyStock.setOnClickListener(buyAndSellStockClickListener);
-        sellStock.setOnClickListener(buyAndSellStockClickListener);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        buyStock.setOnClickListener(null);
-        sellStock.setOnClickListener(null);
-
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -99,15 +96,10 @@ public class AlertItemView extends RelativeLayout
         if (alertCompactDTO != null)
         {
             displayStockSymbol();
-
             displayStockLogo();
-
             displayAlertDescription();
-
             displayAlertStatus();
-            
             displayTrigger();
-
             updateActionButtonsVisibility();
         }
     }
@@ -157,7 +149,6 @@ public class AlertItemView extends RelativeLayout
 
     private void updateActionButtonsVisibility()
     {
-
     }
 
     private void displayTrigger()
@@ -225,19 +216,17 @@ public class AlertItemView extends RelativeLayout
         }
     }
 
-    private OnClickListener buyAndSellStockClickListener = new OnClickListener()
+    @OnClick({R.id.buy_stock, R.id.sell_stock})
+    public void onBuySellClick(View v)
     {
-        @Override public void onClick(View v)
+        switch (v.getId())
         {
-            switch (v.getId())
-            {
-                case R.id.buy_stock:
-                case R.id.sell_stock:
-                    handleBuyAndSellButtonClick();
-                    break;
-            }
+            case R.id.buy_stock:
+            case R.id.sell_stock:
+                handleBuyAndSellButtonClick();
+                break;
         }
-    };
+    }
 
     private void handleBuyAndSellButtonClick()
     {

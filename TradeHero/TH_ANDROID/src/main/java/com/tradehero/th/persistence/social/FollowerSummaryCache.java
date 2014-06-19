@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    protected FollowerServiceWrapper followerServiceWrapper;
+    @NotNull protected final FollowerServiceWrapper followerServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public FollowerSummaryCache(FollowerServiceWrapper followerServiceWrapper)
@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
         }
 
         List<FollowerSummaryDTO> followerSummaryDTOs = new ArrayList<>();
-        for (UserBaseKey baseKey : baseKeys)
+        for (@NotNull UserBaseKey baseKey : baseKeys)
         {
             followerSummaryDTOs.add(getOrFetch(baseKey, false));
         }

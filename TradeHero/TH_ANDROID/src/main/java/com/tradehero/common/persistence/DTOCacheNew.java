@@ -47,7 +47,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     abstract public static class CacheValue<DTOKeyType extends DTOKey, DTOType extends DTO>
     {
         private DTOType value;
-        private Set<Listener<DTOKeyType, DTOType>> listeners;
+        private final Set<Listener<DTOKeyType, DTOType>> listeners;
         protected WeakReference<GetOrFetchTask<DTOKeyType, DTOType>> fetchTask = new WeakReference<>(null);
 
         public CacheValue()
@@ -125,8 +125,8 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     abstract public static class GetOrFetchTask<DTOKeyType extends DTOKey, DTOType extends DTO>
             extends AsyncTask<Void, Void, DTOType>
     {
-        protected DTOKeyType key;
-        protected boolean forceUpdateCache;
+        protected final DTOKeyType key;
+        protected final boolean forceUpdateCache;
 
         //<editor-fold desc="Constructors">
         public GetOrFetchTask(DTOKeyType key)

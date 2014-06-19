@@ -4,7 +4,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 
 public class PrivateDiscussionFormDTO extends DiscussionFormDTO
 {
-    public static DiscussionType TYPE = DiscussionType.PRIVATE_MESSAGE;
+    public static final DiscussionType TYPE = DiscussionType.PRIVATE_MESSAGE;
 
     public PrivateDiscussionFormDTO()
     {

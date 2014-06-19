@@ -107,11 +107,11 @@ public class ExpandingListView extends ListView
 
     public static class ExpandableItemClickHandler implements OnItemClickListener
     {
-
-        private ListView listView;
+        private final ListView listView;
         private OnItemClickListener originalOnItemClickListener;
         private ExpandingListItemListener expandingListItemListener;
 
+        //<editor-fold desc="Constructors">
         public ExpandableItemClickHandler(ListView listView)
         {
             this.listView = listView;
@@ -121,6 +121,7 @@ public class ExpandingListView extends ListView
                 listView.setOnItemClickListener(this);
             }
         }
+        //</editor-fold>
 
         public void setExpandingListItemListener(
                 ExpandingListItemListener expandingListItemListener)

@@ -5,10 +5,12 @@ import javax.inject.Inject;
 
 public class ChartTimeSpanMetricsCodeFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public ChartTimeSpanMetricsCodeFactory()
     {
         super();
     }
+    //</editor-fold>
 
     @NotNull
     public String createCode(@NotNull ChartTimeSpan timeSpan)

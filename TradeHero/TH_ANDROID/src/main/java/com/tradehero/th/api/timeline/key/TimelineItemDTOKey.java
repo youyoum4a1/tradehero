@@ -6,8 +6,9 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 
 public class TimelineItemDTOKey extends DiscussionKey
 {
-    private static DiscussionType TYPE = DiscussionType.TIMELINE_ITEM;
+    private static final DiscussionType TYPE = DiscussionType.TIMELINE_ITEM;
 
+    //<editor-fold desc="Constructors">
     public TimelineItemDTOKey(Integer id)
     {
         super(id);
@@ -17,6 +18,7 @@ public class TimelineItemDTOKey extends DiscussionKey
     {
         super(args);
     }
+    //</editor-fold>
 
     @Override public DiscussionType getType()
     {

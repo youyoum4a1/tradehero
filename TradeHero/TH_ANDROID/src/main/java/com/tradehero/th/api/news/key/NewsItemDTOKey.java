@@ -6,8 +6,9 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 
 public class NewsItemDTOKey extends DiscussionKey
 {
-    private static DiscussionType TYPE = DiscussionType.NEWS;
+    private static final DiscussionType TYPE = DiscussionType.NEWS;
 
+    //<editor-fold desc="Constructors">
     public NewsItemDTOKey(Integer id)
     {
         super(id);
@@ -17,6 +18,7 @@ public class NewsItemDTOKey extends DiscussionKey
     {
         super(args);
     }
+    //</editor-fold>
 
     @Override public DiscussionType getType()
     {

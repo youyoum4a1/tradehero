@@ -8,13 +8,15 @@ import org.jetbrains.annotations.Nullable;
 abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends PartialDTOCacheNew<DTOKeyType, DTOType>
 {
-    private THLruCache<DTOKeyType, CacheValue<DTOKeyType, DTOType>> lruCache;
+    final private THLruCache<DTOKeyType, CacheValue<DTOKeyType, DTOType>> lruCache;
 
+    //<editor-fold desc="Constructors">
     public StraightDTOCacheNew(int maxSize)
     {
         super();
         this.lruCache = new THLruCache<>(maxSize);
     }
+    //</editor-fold>
 
     @Contract("null -> null; !null -> _")
     @Nullable

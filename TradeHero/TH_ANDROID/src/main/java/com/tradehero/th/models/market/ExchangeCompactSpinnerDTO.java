@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements CharSequence
 {
-    private Context context;
+    private final Context context;
 
     //<editor-fold desc="Constructors">
     public ExchangeCompactSpinnerDTO(@NotNull Context context)

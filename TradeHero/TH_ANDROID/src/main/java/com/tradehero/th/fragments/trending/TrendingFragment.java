@@ -95,7 +95,7 @@ public class TrendingFragment extends SecurityListFragment
     private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
     private BaseWebViewFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
-    private Set<Integer> enrollmentScreenOpened = new HashSet<>();
+    private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private Runnable handleCompetitionRunnable;
 
     @Override public void onCreate(Bundle savedInstanceState)

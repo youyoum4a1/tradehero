@@ -17,7 +17,7 @@ public class ExtendedDTO implements DTO
 {
     public static final boolean VERBOSE = false;
 
-    @JsonIgnore private transient Map<String, Object> extra;
+    @JsonIgnore private final transient Map<String, Object> extra;
     @JsonIgnore protected transient DateFormat dateFormat;
 
     //<editor-fold desc="Constructors">

@@ -4,18 +4,21 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import java.util.LinkedList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ListLoader<D> extends AsyncTaskLoader<List<D>>
 {
-    protected List<D> items;
+    @NotNull protected final List<D> items;
 
+    //<editor-fold desc="Constructors">
     public ListLoader(Context context)
     {
         super(context);
         items = new LinkedList<>();
     }
+    //</editor-fold>
 
-    public List<D> getItems()
+    @NotNull public List<D> getItems()
     {
         return items;
     }
@@ -27,12 +30,12 @@ public abstract class ListLoader<D> extends AsyncTaskLoader<List<D>>
 
     protected boolean shouldReload()
     {
-        return items == null || items.isEmpty();
+        return items.isEmpty();
     }
 
     private boolean isEmpty()
     {
-        return items == null || items.isEmpty();
+        return items.isEmpty();
     }
 
     @Override protected void onStartLoading()
