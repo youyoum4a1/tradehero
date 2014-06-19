@@ -63,7 +63,7 @@ public class TransformationModule
             }
         };
         transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new FastBlurTransformation(30));
+		transformation.add(new StackBlurTransformation(30));
         transformation.add(new GradientTransformation(
                 context.getResources().getColor(R.color.profile_view_gradient_top),
                 context.getResources().getColor(R.color.black)));
@@ -81,7 +81,8 @@ public class TransformationModule
             }
         };
         transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new FastBlurTransformation(10));
+		transformation.add(new StackBlurTransformation(10));
+//        transformation.add(new FastBlurTransformation(10));
         transformation.add(new RoundedCornerTransformation(
                 context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
                 context.getResources().getColor(R.color.black)));
@@ -99,7 +100,8 @@ public class TransformationModule
             }
         };
         transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new FastBlurTransformation(10));
+		transformation.add(new StackBlurTransformation(10));
+//        transformation.add(new FastBlurTransformation(10));
         transformation.add(new RoundedCornerTransformation(
                 context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
                 context.getResources().getColor(R.color.black)));
