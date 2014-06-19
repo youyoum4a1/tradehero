@@ -9,9 +9,11 @@ import javax.inject.Inject;
 
 public class AbstractDiscussionCompactDTOFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public AbstractDiscussionCompactDTOFactory()
     {
     }
+    //</editor-fold>
 
     //<editor-fold desc="Clone">
     public AbstractDiscussionCompactDTO clone(AbstractDiscussionCompactDTO original)

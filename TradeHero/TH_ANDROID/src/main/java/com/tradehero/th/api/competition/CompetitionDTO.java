@@ -21,7 +21,7 @@ public class CompetitionDTO implements DTO
         super();
     }
 
-    public CompetitionDTO(int id, LeaderboardDefDTO leaderboard, String name, String competitionDurationType, String iconActiveUrl,
+    public CompetitionDTO(int id, @Nullable LeaderboardDefDTO leaderboard, String name, String competitionDurationType, String iconActiveUrl,
             String iconInactiveUrl, String prizeValueWithCcy)
     {
         this.id = id;

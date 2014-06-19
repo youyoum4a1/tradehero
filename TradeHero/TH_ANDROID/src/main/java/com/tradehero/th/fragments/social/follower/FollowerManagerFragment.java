@@ -125,7 +125,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment) getCurrentFragment()).onOptionsMenuClosed(menu);
+            getCurrentFragment().onOptionsMenuClosed(menu);
         }
 
         super.onOptionsMenuClosed(menu);
@@ -355,7 +355,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Bundle args = new Bundle();
 
         args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE, discussionType.value);
-        MessageType messageType = null;
+        MessageType messageType;
         switch (followerType)
         {
             case ALL:

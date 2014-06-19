@@ -424,7 +424,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 {
                     currentUserWatchlistSecurities.remove(securityKeyId);
                 }
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
             }
             else
             {
@@ -454,7 +454,7 @@ public class WatchlistEditFragment extends DashboardFragment
                     currentUserWatchlistSecurities.add(securityKeyId);
                 }
 
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
             }
             else
             {

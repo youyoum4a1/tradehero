@@ -713,12 +713,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
         PackageInfo packageInfo = null;
-        String timeStr = "";
+        String timeStr;
         try
         {
             packageInfo = getActivity().getPackageManager().getPackageInfo(
                     getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e)
+        }
+        catch (PackageManager.NameNotFoundException e)
         {
             e.printStackTrace();
         }

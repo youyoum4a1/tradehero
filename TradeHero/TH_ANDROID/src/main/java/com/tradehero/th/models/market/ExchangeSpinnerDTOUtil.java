@@ -62,6 +62,6 @@ public class ExchangeSpinnerDTOUtil
 
     public <T extends ExchangeCompactDTO> int indexOf(T[] exchangeCompactDTOs, T exchangeToFind)
     {
-        return new ArrayList<T>(Arrays.asList(exchangeCompactDTOs)).indexOf(exchangeToFind);
+        return new ArrayList<>(Arrays.asList(exchangeCompactDTOs)).indexOf(exchangeToFind);
     }
 }

@@ -165,7 +165,7 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     private Drawable getErrorDrawable()
     {
-        Bitmap defaultUserPhotoBitmap = null;
+        Bitmap defaultUserPhotoBitmap;
         try
         {
             defaultUserPhotoBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.superman_facebook);

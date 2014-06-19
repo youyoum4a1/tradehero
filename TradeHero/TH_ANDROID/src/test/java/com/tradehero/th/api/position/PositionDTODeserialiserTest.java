@@ -65,7 +65,7 @@ public class PositionDTODeserialiserTest extends BaseApiTest
         PositionDTO converted = moduleMapper.readValue(positionInPeriodDTOBody1Stream, PositionInPeriodDTO.class);
         assertEquals(PositionInPeriodDTO.class, converted.getClass());
         assertEquals(367963, converted.userId);
-        assertEquals(791140.44, (double) ((PositionInPeriodDTO) converted).marketValueEndPeriodRefCcy, 0);
+        assertEquals(791140.44, ((PositionInPeriodDTO) converted).marketValueEndPeriodRefCcy, 0);
     }
 
     @Test
@@ -74,6 +74,6 @@ public class PositionDTODeserialiserTest extends BaseApiTest
         PositionDTO converted = moduleMapper.readValue(positionInPeriodDTOBody1Stream, PositionDTO.class);
         assertEquals(PositionInPeriodDTO.class, converted.getClass());
         assertEquals(367963, converted.userId);
-        assertEquals(791140.44, (double) ((PositionInPeriodDTO) converted).marketValueEndPeriodRefCcy, 0);
+        assertEquals(791140.44, ((PositionInPeriodDTO) converted).marketValueEndPeriodRefCcy, 0);
     }
 }

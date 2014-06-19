@@ -49,7 +49,6 @@ import org.jetbrains.annotations.Nullable;
         {
             tradeIds = new OwnedTradeIdList();
             OwnedTradeId ownedTradeId;
-            int i = 0;
             for (@NotNull TradeDTO trade: fleshedValues)
             {
                 ownedTradeId = new OwnedTradeId(key, trade.id);

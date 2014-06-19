@@ -402,7 +402,7 @@ public class SecuritySearchFragment
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        getNavigator().pushFragment(BuySellFragment.class, args);
+        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

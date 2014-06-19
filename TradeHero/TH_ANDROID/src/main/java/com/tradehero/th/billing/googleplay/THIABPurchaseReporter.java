@@ -66,7 +66,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
     {
         this.requestCode = requestCode;
         this.purchase = purchase;
-        OwnedPortfolioId portfolioId = null;
+        OwnedPortfolioId portfolioId;
         try
         {
             portfolioId = getApplicableOwnedPortfolioId(purchase);

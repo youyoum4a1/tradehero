@@ -80,7 +80,7 @@ public class ExchangeCompactDTODescriptionNameComparatorTest
 
     @Test public void getExpectedOrder()
     {
-        SortedSet<ExchangeDTO> set = new TreeSet<ExchangeDTO>(new ExchangeCompactDTODescriptionNameComparator());
+        SortedSet<ExchangeDTO> set = new TreeSet<>(new ExchangeCompactDTODescriptionNameComparator());
 
         set.add(getNullAb());
         set.add(getNullNull());

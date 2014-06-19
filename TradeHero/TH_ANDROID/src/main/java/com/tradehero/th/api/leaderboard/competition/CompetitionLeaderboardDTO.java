@@ -19,7 +19,7 @@ public class CompetitionLeaderboardDTO implements DTO
     {
     }
 
-    public CompetitionLeaderboardDTO(LeaderboardDTO leaderboard, List<AdDTO> ads, int adFrequencyRows, int adStartRow,
+    public CompetitionLeaderboardDTO(@Nullable LeaderboardDTO leaderboard, List<AdDTO> ads, int adFrequencyRows, int adStartRow,
             List<PrizeDTO> prizes)
     {
         this.leaderboard = leaderboard;

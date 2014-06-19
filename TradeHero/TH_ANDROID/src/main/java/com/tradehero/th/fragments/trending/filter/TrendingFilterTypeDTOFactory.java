@@ -17,7 +17,7 @@ import timber.log.Timber;
     public TrendingFilterTypeDTO create(Bundle bundle)
     {
         String classType = bundle.getString(TrendingFilterTypeDTO.BUNDLE_KEY_CLASS_TYPE);
-        TrendingFilterTypeDTO trendingFilterTypeDTO = null;
+        TrendingFilterTypeDTO trendingFilterTypeDTO;
         try
         {
             Class endClass = Class.forName(classType);

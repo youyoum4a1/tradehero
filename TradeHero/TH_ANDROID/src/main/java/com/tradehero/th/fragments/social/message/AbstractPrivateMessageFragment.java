@@ -306,7 +306,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
-        super.handleCommentPosted(discussionDTO);
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 

@@ -88,7 +88,7 @@ public class LeaderboardDTO implements DTO, HasExpiration
     @JsonIgnore
     public Double getAvgVolatility()
     {
-        return (double) avgStdDevPositionRoiInPeriod;
+        return avgStdDevPositionRoiInPeriod;
     }
 
     @JsonIgnore
