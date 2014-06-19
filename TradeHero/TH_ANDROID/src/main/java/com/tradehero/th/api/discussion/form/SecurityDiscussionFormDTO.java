@@ -4,7 +4,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 
 public class SecurityDiscussionFormDTO extends DiscussionFormDTO
 {
-    public static DiscussionType TYPE = DiscussionType.SECURITY;
+    public static final DiscussionType TYPE = DiscussionType.SECURITY;
 
     public SecurityDiscussionFormDTO()
     {

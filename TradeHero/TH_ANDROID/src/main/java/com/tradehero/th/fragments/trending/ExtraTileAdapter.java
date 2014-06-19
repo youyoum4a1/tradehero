@@ -42,7 +42,7 @@ public class ExtraTileAdapter extends BaseAdapter
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<ProviderListCache> providerListCache;
 
-    private SharedPreferences mPref;
+    private final SharedPreferences mPref;
 
     private Pair<TileType, Integer>[] extraTilesMarker;
     // selected marker which contain the most number of tiles and positions
@@ -51,6 +51,7 @@ public class ExtraTileAdapter extends BaseAdapter
     private boolean providerDataAvailable;
     private int headingTilesCount;
 
+    //<editor-fold desc="Constructors">
     public ExtraTileAdapter(Context context, ListAdapter wrappedAdapter)
     {
         this.inflater = LayoutInflater.from(context);
@@ -60,6 +61,7 @@ public class ExtraTileAdapter extends BaseAdapter
 
         mPref = context.getSharedPreferences("trade_hero", Context.MODE_PRIVATE);
     }
+    //</editor-fold>
 
     @Override public void registerDataSetObserver(DataSetObserver observer)
     {

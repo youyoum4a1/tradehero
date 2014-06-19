@@ -6,22 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class ShareDestinationFactoryByResources implements ShareDestinationFactory
 {
-    private final Resources resources;
-    private List<Integer> destinationIds;
+    @NotNull private final Resources resources;
+    @NotNull private final List<Integer> destinationIds;
 
+    //<editor-fold desc="Constructors">
     @Inject public ShareDestinationFactoryByResources(
-            Context context,
-            @ShareDestinationId Set<Integer> destinationIds)
+            @NotNull Context context,
+            @NotNull @ShareDestinationId Set<Integer> destinationIds)
     {
         super();
         this.resources = context.getResources();
         this.destinationIds = new ArrayList<>(destinationIds);
     }
+    //</editor-fold>
 
-    @Override public ArrayList<ShareDestination> getAllShareDestinations()
+    @Override @NotNull public ArrayList<ShareDestination> getAllShareDestinations()
     {
         ArrayList<ShareDestination> allDestinations = new ArrayList<>();
         addIfListed(allDestinations, new FacebookShareDestination(), destinationIds);
@@ -32,9 +35,9 @@ public class ShareDestinationFactoryByResources implements ShareDestinationFacto
         return allDestinations;
     }
 
-    protected void addIfListed(List<ShareDestination> destinations,
-            ShareDestination shareDestination,
-            List<Integer> destinationIds)
+    protected void addIfListed(@NotNull List<ShareDestination> destinations,
+            @NotNull ShareDestination shareDestination,
+            @NotNull List<Integer> destinationIds)
     {
         if (destinationIds.indexOf(resources.getInteger(shareDestination.getIdResId())) != -1)
         {

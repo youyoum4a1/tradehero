@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private THLruCache<SecurityId, SecurityPositionDetailCutDTO> lruCache;
+    @NotNull private final THLruCache<SecurityId, SecurityPositionDetailCutDTO> lruCache;
     @NotNull protected final CurrentUserId currentUserId;
     @NotNull protected final Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @NotNull protected final Lazy<SecurityCompactCache> securityCompactCache;
@@ -113,11 +113,11 @@ import org.jetbrains.annotations.Nullable;
     // It is static so as not to keep a link back to the cache instance.
     private static class SecurityPositionDetailCutDTO
     {
-        @Nullable public SecurityId securityId;
-        public List<PositionCompactId> positionIds;
-        @Nullable public PortfolioId portfolioId;
-        public List<ProviderId> providerIds;
-        public int firstTradeAllTime;
+        @Nullable public final SecurityId securityId;
+        public final List<PositionCompactId> positionIds;
+        @Nullable public final PortfolioId portfolioId;
+        public final List<ProviderId> providerIds;
+        public final int firstTradeAllTime;
 
         public SecurityPositionDetailCutDTO(
                 SecurityPositionDetailDTO securityPositionDetailDTO,

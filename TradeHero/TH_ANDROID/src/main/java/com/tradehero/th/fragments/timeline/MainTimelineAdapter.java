@@ -41,9 +41,9 @@ public class MainTimelineAdapter extends ArrayAdapter
     private OnLoadFinishedListener onLoadFinishedListener;
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
 
-    private SubTimelineAdapter subTimelineAdapter;
+    private final SubTimelineAdapter subTimelineAdapter;
 
-    private SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
+    private final SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
     private final int statResId;
     private UserProfileDTO userProfileDTO;
 

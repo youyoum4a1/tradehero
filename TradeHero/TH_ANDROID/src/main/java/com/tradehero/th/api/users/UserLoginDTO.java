@@ -19,5 +19,5 @@ public class UserLoginDTO
     public boolean suggestTwReauth = false;
     public boolean suggestFbReauth = false;
 
-    public SystemStatusDTO systemStatus;
+    public SystemStatusDTO systemStatusDTO;
 }

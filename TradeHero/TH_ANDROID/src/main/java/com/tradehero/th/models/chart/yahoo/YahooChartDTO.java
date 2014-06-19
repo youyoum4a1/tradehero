@@ -16,7 +16,7 @@ public class YahooChartDTO implements ChartDTO
     public YahooChartSize size;
     public YahooTimeSpan timeSpan;
     public boolean includeVolume;
-    public List<YahooMovingAverageInterval> movingAverageIntervals;
+    public final List<YahooMovingAverageInterval> movingAverageIntervals;
 
     //<editor-fold desc="Constructors">
     public YahooChartDTO()

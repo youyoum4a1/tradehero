@@ -95,7 +95,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
     {
         @Inject Provider<TimelineStore> timelineStoreProviders;
 
-        private Map<Integer, TimelineStore> stores;
+        private final Map<Integer, TimelineStore> stores;
 
         public Factory()
         {

@@ -59,18 +59,19 @@ public class AccessTokenKeeper {
      * 
      * @return  Token
      */
-    public static Oauth2AccessToken readAccessToken(Context context) {
-        if (null == context) {
-            return null;
-        }
-        
-        Oauth2AccessToken token = new Oauth2AccessToken();
-        SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
-        token.setUid(pref.getString(KEY_UID, ""));
-        token.setToken(pref.getString(KEY_ACCESS_TOKEN, ""));
-        token.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, 0));
-        return token;
-    }
+    // HACK Commented out to be able to compile (65000 methods)
+    //public static Oauth2AccessToken readAccessToken(Context context) {
+    //    if (null == context) {
+    //        return null;
+    //    }
+    //
+    //    Oauth2AccessToken token = new Oauth2AccessToken();
+    //    SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
+    //    token.setUid(pref.getString(KEY_UID, ""));
+    //    token.setToken(pref.getString(KEY_ACCESS_TOKEN, ""));
+    //    token.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, 0));
+    //    return token;
+    //}
 
     /**
      * Clear token in SharedPreferences

@@ -14,6 +14,5 @@ public class PushConstants
     public static enum THAction
     {
         Opened, Received, RegistrationFinished, GcmDeleted
-
     }
 }

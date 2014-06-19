@@ -10,7 +10,7 @@ import timber.log.Timber;
 
 public class RegistrationFinishedHandler implements PushNotificationHandler
 {
-    public static String APID_UPDATED_ACTION_SUFFIX = ".apid.updated";
+    public static final String APID_UPDATED_ACTION_SUFFIX = ".apid.updated";
     private final Context context;
 
     @Inject public RegistrationFinishedHandler(Context context)

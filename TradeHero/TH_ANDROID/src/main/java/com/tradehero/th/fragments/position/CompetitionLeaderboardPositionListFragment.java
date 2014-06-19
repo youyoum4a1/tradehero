@@ -6,7 +6,7 @@ import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 
 public class CompetitionLeaderboardPositionListFragment extends LeaderboardPositionListFragment
 {
-    private static String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
+    private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
 
     protected ProviderId providerId;
 

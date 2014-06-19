@@ -2,14 +2,19 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import static com.tradehero.th.fragments.social.friend.FacebookSocialFriendHandler.RequestCallback;
 
 public class FacebookSocialFriendsFragment extends SocialFriendsFragment
 {
+    @Inject Provider<FacebookSocialFriendHandler> facebookSocialFriendHandlerProvider;
+
     @Override
     protected SocialNetworkEnum getSocialNetwork()
     {
@@ -33,7 +38,7 @@ public class FacebookSocialFriendsFragment extends SocialFriendsFragment
     {
         if (socialFriendHandler == null)
         {
-            socialFriendHandler = new FacebookSocialFriendHandler(getActivity());
+            socialFriendHandler = facebookSocialFriendHandlerProvider.get();
         }
     }
 
@@ -52,8 +57,9 @@ public class FacebookSocialFriendsFragment extends SocialFriendsFragment
 
     class FacebookInviteFriendCallback extends FacebookSocialFriendHandler.FacebookRequestCallback
     {
-        List<UserFriendsDTO> usersToInvite;
+        final List<UserFriendsDTO> usersToInvite;
 
+        //<editor-fold desc="Constructors">
         public FacebookInviteFriendCallback(Context context, List<UserFriendsDTO> usersToInvite)
         {
             super(context);
@@ -65,6 +71,7 @@ public class FacebookSocialFriendsFragment extends SocialFriendsFragment
             super(getActivity());
             this.usersToInvite = usersToInvite;
         }
+        //</editor-fold>
 
         @Override
         public void success()

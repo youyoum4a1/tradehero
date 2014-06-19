@@ -638,13 +638,15 @@ public class MessagesCenterFragment extends DashboardFragment
 
     class OnScrollListener extends FlagNearEdgeScrollListener
     {
-        AbsListView.OnScrollListener onScrollListener;
+        final AbsListView.OnScrollListener onScrollListener;
 
+        //<editor-fold desc="Constructors">
         public OnScrollListener(AbsListView.OnScrollListener onScrollListener)
         {
             activateEnd();
             this.onScrollListener = onScrollListener;
         }
+        //</editor-fold>
 
         @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
                 int totalItemCount)
@@ -808,12 +810,14 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private class MessageDeletionCallback implements Callback<Response>
     {
-        private MessageHeaderId messageId;
+        private final MessageHeaderId messageId;
 
+        //<editor-fold desc="Constructors">
         MessageDeletionCallback(MessageHeaderId messageId)
         {
             this.messageId = messageId;
         }
+        //</editor-fold>
 
         @Override public void success(Response response, Response response2)
         {

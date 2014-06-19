@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -39,6 +40,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     private ProfileInfoView profileView;
     private EditText emailEditText;
+    private ImageView backButton;
 
     @Inject THLocalyticsSession localyticsSession;
 
@@ -67,6 +69,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         this.signButton.setOnClickListener(this);
+
+        backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_up_back_button);
+        backButton.setOnClickListener(onClickListener);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -152,6 +157,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             this.signButton.setOnClickListener(null);
         }
         this.signButton = null;
+        if (backButton != null)
+        {
+            backButton.setOnClickListener(null);
+            backButton = null;
+        }
 
         super.onDestroyView();
     }

@@ -105,7 +105,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
+    private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener;
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
+    private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     protected DTOCache.GetOrFetchTask<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchTask;
     protected MessageHeaderDTO messageThreadHeaderDTO;
@@ -117,6 +119,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     private boolean mIsHero = false;//whether the showUser follow the user
     public TabType currentTab = TabType.TIMELINE;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        userProfileRetrievedMilestoneListener = createUserProfileRetrievedMilestoneListener();
+        portfolioCompactListRetrievedMilestoneListener = createPortfolioCompactListRetrievedMilestoneListener();
+    }
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
@@ -379,6 +388,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         this.loadingView = null;
 
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        portfolioCompactListRetrievedMilestoneListener = null;
+        userProfileRetrievedMilestoneListener = null;
+        super.onDestroy();
     }
 
     protected void detachTimelineAdapter()
@@ -699,48 +715,52 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Milestone retrieved listeners">
-    private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener =
-            new Milestone.OnCompleteListener()
+    private Milestone.OnCompleteListener createUserProfileRetrievedMilestoneListener()
+    {
+        return new Milestone.OnCompleteListener()
+        {
+            @Override public void onComplete(Milestone milestone)
             {
-                @Override public void onComplete(Milestone milestone)
+                if (currentTab == TabType.STATS)
                 {
-                    if (currentTab == TabType.STATS)
-                    {
-                        onLoadFinished();
-                    }
-                    UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
-                    if (cachedUserProfile != null)
-                    {
-                        linkWith(cachedUserProfile, true);
-                    }
+                    onLoadFinished();
                 }
-
-                @Override public void onFailed(Milestone milestone, Throwable throwable)
+                UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
+                if (cachedUserProfile != null)
                 {
-                    THToast.show(getString(R.string.error_fetch_user_profile));
+                    linkWith(cachedUserProfile, true);
                 }
-            };
+            }
 
-    private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener =
-            new Milestone.OnCompleteListener()
+            @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
-                @Override public void onComplete(Milestone milestone)
-                {
-                    OwnedPortfolioIdList cachedOwnedPortfolioIdList =
-                            portfolioCompactListCache.get().get(shownUserBaseKey);
-                    if (cachedOwnedPortfolioIdList != null)
-                    {
-                        linkWith(cachedOwnedPortfolioIdList, true);
-                    }
-                }
+                THToast.show(getString(R.string.error_fetch_user_profile));
+            }
+        };
+    }
 
-                @Override public void onFailed(Milestone milestone, Throwable throwable)
+    private Milestone.OnCompleteListener createPortfolioCompactListRetrievedMilestoneListener()
+    {
+        return new Milestone.OnCompleteListener()
+        {
+            @Override public void onComplete(Milestone milestone)
+            {
+                OwnedPortfolioIdList cachedOwnedPortfolioIdList =
+                        portfolioCompactListCache.get().get(shownUserBaseKey);
+                if (cachedOwnedPortfolioIdList != null)
                 {
-                    // We do not need to inform the player here
-                    Timber.e("Error fetching the list of portfolio for user: %d",
-                            shownUserBaseKey.key, throwable);
+                    linkWith(cachedOwnedPortfolioIdList, true);
                 }
-            };
+            }
+
+            @Override public void onFailed(Milestone milestone, Throwable throwable)
+            {
+                // We do not need to inform the player here
+                Timber.e("Error fetching the list of portfolio for user: %d",
+                        shownUserBaseKey.key, throwable);
+            }
+        };
+    }
     //</editor-fold>
 
     protected List<UserBaseKey> getUserBaseKeys()

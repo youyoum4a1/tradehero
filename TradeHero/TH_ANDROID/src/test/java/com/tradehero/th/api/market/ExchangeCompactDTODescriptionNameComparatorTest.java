@@ -1,7 +1,7 @@
 package com.tradehero.th.api.market;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.models.market.ExchangeDTODescriptionNameComparator;
+import com.tradehero.th.models.market.ExchangeCompactDTODescriptionNameComparator;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricMavenTestRunner.class)
 @Config(manifest = Config.NONE)
-public class ExchangeDTODescriptionNameComparatorTest
+public class ExchangeCompactDTODescriptionNameComparatorTest
 {
     @Before public void setUp()
     {
@@ -80,7 +80,7 @@ public class ExchangeDTODescriptionNameComparatorTest
 
     @Test public void getExpectedOrder()
     {
-        SortedSet<ExchangeDTO> set = new TreeSet<ExchangeDTO>(new ExchangeDTODescriptionNameComparator());
+        SortedSet<ExchangeDTO> set = new TreeSet<ExchangeDTO>(new ExchangeCompactDTODescriptionNameComparator());
 
         set.add(getNullAb());
         set.add(getNullNull());

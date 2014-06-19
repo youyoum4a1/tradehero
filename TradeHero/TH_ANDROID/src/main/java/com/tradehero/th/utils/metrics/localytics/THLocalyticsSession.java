@@ -7,31 +7,44 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
-import com.tradehero.th.utils.Constants;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-public class THLocalyticsSession extends LocalyticsSession
+@Singleton public class THLocalyticsSession extends LocalyticsSession
 {
     public static final String SECURITY_ID_FORMAT = "%s:%s";
-    @Inject Context context;
-
-    protected ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory;
+    @NotNull final Context context;
+    @NotNull protected final ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory;
 
     //<editor-fold desc="Constructors">
-    public THLocalyticsSession(Context context, ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
+    @Inject public THLocalyticsSession(
+            @NotNull Context context,
+            @NotNull ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
     {
         super(context);
+        this.context = context;
         this.chartTimeSpanMetricsCodeFactory = chartTimeSpanMetricsCodeFactory;
     }
 
-    public THLocalyticsSession(Context context, String key, ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
+    public THLocalyticsSession(
+            @NotNull Context context,
+            String key,
+            @NotNull ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
     {
         super(context, key);
+        this.context = context;
         this.chartTimeSpanMetricsCodeFactory = chartTimeSpanMetricsCodeFactory;
     }
     //</editor-fold>
+
+    public void tagEvent(String event)
+    {
+        TCAgent.onEvent(context, event);
+        super.tagEvent(event);
+    }
 
     public void tagEvent(String event, SecurityId securityId)
     {
@@ -69,13 +82,4 @@ public class THLocalyticsSession extends LocalyticsSession
             dic.put(LocalyticsConstants.TRENDING_FILTER_CATEGORY_MAP_KEY, trendingFilterTypeDTO.getTrackEventCategory());
         }
     }
-
-    public void tagEvent(String event)
-    {
-        TCAgent.onEvent(context, event);
-        Map<String, String> dic = new HashMap<>();
-        dic.put(LocalyticsConstants.CHANNEL_MAP_KEY, Constants.TAP_STREAM_TYPE.name());
-        super.tagEvent(event, dic);
-    }
-
 }

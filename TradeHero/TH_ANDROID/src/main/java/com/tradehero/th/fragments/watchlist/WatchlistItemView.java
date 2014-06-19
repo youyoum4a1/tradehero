@@ -541,7 +541,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             WatchlistEditFragment.putSecurityId(args, securityId);
             DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     private Navigator getNavigator()

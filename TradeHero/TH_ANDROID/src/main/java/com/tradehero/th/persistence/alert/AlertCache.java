@@ -42,20 +42,21 @@ import org.jetbrains.annotations.Nullable;
         return super.put(key, value);
     }
 
-    @Contract("null -> null; !null -> !null")
-    @Nullable
-    public List<AlertDTO> getOrFetch(@Nullable List<AlertId> followerIds) throws Throwable
-    {
-        if (followerIds == null)
-        {
-            return null;
-        }
-
-        List<AlertDTO> alertDTOs = new ArrayList<>();
-        for (@NotNull AlertId baseKey: followerIds)
-        {
-            alertDTOs.add(getOrFetch(baseKey, false));
-        }
-        return alertDTOs;
-    }
+    // HACK Commented out to be able to compile (65000 methods)
+    //@Contract("null -> null; !null -> !null")
+    //@Nullable
+    //public List<AlertDTO> getOrFetch(@Nullable List<AlertId> followerIds) throws Throwable
+    //{
+    //    if (followerIds == null)
+    //    {
+    //        return null;
+    //    }
+    //
+    //    List<AlertDTO> alertDTOs = new ArrayList<>();
+    //    for (@NotNull AlertId baseKey: followerIds)
+    //    {
+    //        alertDTOs.add(getOrFetch(baseKey, false));
+    //    }
+    //    return alertDTOs;
+    //}
 }

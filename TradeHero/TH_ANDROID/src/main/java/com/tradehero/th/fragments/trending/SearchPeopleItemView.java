@@ -37,7 +37,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
     //private CircularImageView userImage;
     private ImageView userPhoto;
     private ImageView peopleBgImage;
-    private int defaultDrawable = R.drawable.superman_facebook;
+    private final int defaultDrawable = R.drawable.superman_facebook;
 
     private UserBaseKey userKey;
     private UserSearchResultDTO userDTO;

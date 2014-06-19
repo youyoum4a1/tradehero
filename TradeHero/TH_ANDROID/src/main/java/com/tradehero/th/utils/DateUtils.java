@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DateUtils
 {
-    private static int MILLISECOND_PER_DAY = 1000 * 60 * 60 * 24;
+    private static final int MILLISECOND_PER_DAY = 1000 * 60 * 60 * 24;
 
     private static SimpleDateFormat sdf;
 

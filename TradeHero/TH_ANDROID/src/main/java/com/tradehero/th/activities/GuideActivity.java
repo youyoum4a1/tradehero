@@ -45,11 +45,18 @@ public class GuideActivity extends Activity
         viewpager.setAdapter(new ListViewPagerAdapter(list));
         viewpager.setOnPageChangeListener(this);
 
-        if (isInstallShortcut())
+        try
         {
-            removeShortcut();
+            if (isInstallShortcut())
+            {
+                removeShortcut();
+            }
+            createShortcut();
         }
-        createShortcut();
+        catch (SecurityException e)
+        {
+            Timber.e(e, null);
+        }
     }
 
     private void createShortcut()

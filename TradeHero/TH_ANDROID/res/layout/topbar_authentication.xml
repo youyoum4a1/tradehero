@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@drawable/topbarrectangle_default"
     android:orientation="horizontal">
+    <!--android:background="@drawable/topbarrectangle_default"-->
 
   <!--<ImageView-->
       <!--android:id="@+id/logo_img"-->
@@ -14,12 +14,12 @@
       <!--android:contentDescription="@null"-->
       <!--android:paddingLeft="15dp"-->
       <!--android:src="@drawable/th_app_logo"/>-->
-  <ImageView
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="6dp"
-      android:src="@drawable/logo_text_actionbar"
-      android:contentDescription="@string/empty"
-      />
+  <!--<ImageView-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_centerHorizontal="true"-->
+      <!--android:layout_marginTop="6dp"-->
+      <!--android:src="@drawable/logo_text_actionbar"-->
+      <!--android:contentDescription="@string/empty"-->
+      <!--/>-->
 </RelativeLayout>

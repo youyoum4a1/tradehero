@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 // TODO this file needs some serious cleanup
 public interface Filter
@@ -85,11 +86,11 @@ class PageData
 
 class BaseFilter implements Filter
 {
-
     private int currentPage = 0;
 
-    protected Map<Integer, PageData> dataMap = new HashMap<Integer, PageData>();
+    @NotNull protected final Map<Integer, PageData> dataMap = new HashMap<>();
 
+    //<editor-fold desc="Constructors">
     public BaseFilter()
     {
     }
@@ -98,6 +99,7 @@ class BaseFilter implements Filter
     {
         dataMap.putAll(dataMap);
     }
+    //</editor-fold>
 
     public void setPageData(int page, PageData data)
     {

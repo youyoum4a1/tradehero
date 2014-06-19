@@ -8,13 +8,15 @@ import timber.log.Timber;
 
 abstract public class SecurityIdFilter extends Filter
 {
-    protected ListCharSequencePredicateFilter<SecurityId> securityIdPatternFilter;
+    protected final ListCharSequencePredicateFilter<SecurityId> securityIdPatternFilter;
 
+    //<editor-fold desc="Constructors">
     public SecurityIdFilter(ListCharSequencePredicateFilter<SecurityId> predicateFilter)
     {
         super();
         this.securityIdPatternFilter = predicateFilter;
     }
+    //</editor-fold>
 
     protected FilterResults performFiltering(CharSequence charSequence, List<SecurityId> items)
     {

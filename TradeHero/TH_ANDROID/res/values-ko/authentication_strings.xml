@@ -3,7 +3,7 @@
 
   <string name="authentication_welcome_new_user">새로운 사용자</string>
   <string name="authentication_guarantee">트레이드히어로는 사용자의 개인정보를 소중히 여깁니다: 허락없이는 아무것도 피드에 게시되지 않습니다.</string>
-  <string name="authentication_sign_in_tos">사용 약관</string>
+  <string name="authentication_sign_in_pp">사용 약관</string>
   <string name="authentication_email">이메일</string>
   <string name="authentication_password">비밀번호</string>
   <string name="authentication_sign_up">회원가입</string>

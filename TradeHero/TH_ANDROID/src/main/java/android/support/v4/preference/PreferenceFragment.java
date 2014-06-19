@@ -50,20 +50,8 @@ public abstract class PreferenceFragment extends SherlockFragment implements
     private static final int FIRST_REQUEST_CODE = 100;
 
     private static final int MSG_BIND_PREFERENCES = 1;
-    private Handler mHandler = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg)
-        {
-            switch (msg.what)
-            {
-
-                case MSG_BIND_PREFERENCES:
-                    bindPreferences();
-                    break;
-            }
-        }
-    };
+    private Handler mHandler;
+    private OnKeyListener mListOnKeyListener;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -97,7 +85,8 @@ public abstract class PreferenceFragment extends SherlockFragment implements
         super.onCreate(paramBundle);
         mPreferenceManager = PreferenceManagerCompat.newInstance(getActivity(), FIRST_REQUEST_CODE);
         PreferenceManagerCompat.setFragment(mPreferenceManager, this);
-    }
+        mHandler = createNewHandler();
+        mListOnKeyListener = createOnKeyListener();    }
 
     @Override
     public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
@@ -158,8 +147,10 @@ public abstract class PreferenceFragment extends SherlockFragment implements
     @Override
     public void onDestroy()
     {
-        super.onDestroy();
+        mHandler = null;
+        mListOnKeyListener = null;
         PreferenceManagerCompat.dispatchActivityDestroy(mPreferenceManager);
+        super.onDestroy();
     }
 
     @Override
@@ -182,6 +173,23 @@ public abstract class PreferenceFragment extends SherlockFragment implements
         super.onActivityResult(requestCode, resultCode, data);
 
         PreferenceManagerCompat.dispatchActivityResult(mPreferenceManager, requestCode, resultCode, data);
+    }
+
+    private Handler createNewHandler()
+    {
+        return new Handler()
+        {
+            @Override
+            public void handleMessage(Message msg)
+            {
+                switch (msg.what)
+                {
+                    case MSG_BIND_PREFERENCES:
+                        bindPreferences();
+                        break;
+                }
+            }
+        };
     }
 
     /**
@@ -334,22 +342,25 @@ public abstract class PreferenceFragment extends SherlockFragment implements
         mHandler.post(mRequestFocus);
     }
 
-    private OnKeyListener mListOnKeyListener = new OnKeyListener()
+    private OnKeyListener createOnKeyListener()
     {
-
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event)
+        return new OnKeyListener()
         {
-            Object selectedItem = mList.getSelectedItem();
-            if (selectedItem instanceof Preference)
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event)
             {
-                @SuppressWarnings("unused")
-                View selectedView = mList.getSelectedView();
-                //return ((Preference)selectedItem).onKey(
-                //        selectedView, keyCode, event);
+                Object selectedItem = mList.getSelectedItem();
+                if (selectedItem instanceof Preference)
+                {
+                    @SuppressWarnings("unused")
+                    View selectedView = mList.getSelectedView();
+                    //return ((Preference)selectedItem).onKey(
+                    //        selectedView, keyCode, event);
+                    return false;
+                }
                 return false;
             }
-            return false;
-        }
-    };
+        };
+    }
 }

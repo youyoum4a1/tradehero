@@ -24,7 +24,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
 {
-    public static boolean IS_AUTO_TRANSLATE = false;
+    public static final boolean IS_AUTO_TRANSLATE = false;
 
     public static enum TranslationStatus
     {
@@ -33,7 +33,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         TRANSLATED(R.string.discussion_show_original_button),
         FAILED(R.string.discussion_translation_failed_button);
 
-        public int actionTextResId;
+        public final int actionTextResId;
 
         TranslationStatus(int actionTextResId)
         {

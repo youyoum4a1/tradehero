@@ -34,16 +34,16 @@ import retrofit.client.Response;
 @Singleton
 public class MessageServiceWrapper
 {
-    @NotNull private MessageService messageService;
-    @NotNull private MessageServiceAsync messageServiceAsync;
-    @NotNull private DiscussionDTOFactory discussionDTOFactory;
+    @NotNull private final MessageService messageService;
+    @NotNull private final MessageServiceAsync messageServiceAsync;
+    @NotNull private final DiscussionDTOFactory discussionDTOFactory;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
-    @NotNull private Lazy<MessageHeaderListCache> messageHeaderListCache;
-    @NotNull private Lazy<MessageHeaderCache> messageHeaderCache;
-    @NotNull private Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
-    @NotNull private Lazy<DiscussionCache> discussionCache;
-    @NotNull private Lazy<UserProfileCache> userProfileCache;
+    @NotNull private final Lazy<MessageHeaderListCache> messageHeaderListCache;
+    @NotNull private final Lazy<MessageHeaderCache> messageHeaderCache;
+    @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
+    @NotNull private final Lazy<DiscussionCache> discussionCache;
+    @NotNull private final Lazy<UserProfileCache> userProfileCache;
 
     @Inject MessageServiceWrapper(
             @NotNull MessageService messageService,

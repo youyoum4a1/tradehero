@@ -736,7 +736,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void handleTopBannerClicked()
     {
         getNavigator().pushFragment(InviteFriendFragment.class, null,
-                Navigator.PUSH_UP_FROM_BOTTOM);
+                Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     private void updateNotificationStatus()

@@ -29,6 +29,9 @@
   <color name="btn_linkedin_color_dark">#0274b4</color>
   <color name="btn_weibo_color_start">#da2320</color>
   <color name="btn_weibo_color_end">#df0f3f</color>
+  <color name="btn_qq_color_start">#ff1b9bc4</color>
+  <color name="btn_qq_color_end">#ff1b93bc</color>
+  <color name="btn_authentication_login_color_light">#357CDD</color>
 
   <color name="gray_2">#A0AFAFAF</color>
   <color name="text_gray_normal">#aaaaaa</color>

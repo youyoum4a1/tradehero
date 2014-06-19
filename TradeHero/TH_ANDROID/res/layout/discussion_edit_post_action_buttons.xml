@@ -38,8 +38,15 @@
       />
 
   <ToggleButton
+      android:id="@+id/btn_share_wb"
+      style="@style/TH.ShareButtons"
+      android:background="@drawable/ic_share_wb"
+      />
+
+  <ToggleButton
       android:id="@+id/btn_location"
       style="@style/TH.ShareButtons"
+      android:visibility="invisible"
       android:background="@drawable/ic_location"
       />
 
@@ -47,6 +54,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:gravity="right"
+      android:visibility="invisible"
       >
     <ToggleButton
         android:id="@+id/switch_share_public"
@@ -58,6 +66,6 @@
         android:textOn="@string/buy_sell_confirm_share_public"
         android:textOff="@string/buy_sell_confirm_share_private"
         android:textColor="@color/authentication_button_light"
-        />
+        android:checked="false"/>
   </LinearLayout>
 </com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView>

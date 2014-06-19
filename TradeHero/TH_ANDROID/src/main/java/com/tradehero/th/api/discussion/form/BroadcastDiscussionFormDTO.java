@@ -4,7 +4,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 
 public class BroadcastDiscussionFormDTO extends DiscussionFormDTO
 {
-    public static DiscussionType TYPE = DiscussionType.BROADCAST_MESSAGE;
+    public static final DiscussionType TYPE = DiscussionType.BROADCAST_MESSAGE;
 
     public BroadcastDiscussionFormDTO()
     {

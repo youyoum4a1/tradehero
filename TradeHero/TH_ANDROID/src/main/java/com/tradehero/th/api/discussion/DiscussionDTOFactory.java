@@ -4,18 +4,24 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import java.util.Date;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DiscussionDTOFactory
 {
-    private final CurrentUserId currentUserId;
+    @NotNull private final CurrentUserId currentUserId;
 
-    @Inject public DiscussionDTOFactory(CurrentUserId currentUserId)
+    //<editor-fold desc="Constructors">
+    @Inject public DiscussionDTOFactory(@NotNull CurrentUserId currentUserId)
     {
         super();
         this.currentUserId = currentUserId;
     }
+    //</editor-fold>
 
-    public DiscussionDTO createChildClass(DiscussionDTO unidentified)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public DiscussionDTO createChildClass(@Nullable DiscussionDTO unidentified)
     {
         if (unidentified == null)
         {
@@ -33,7 +39,8 @@ public class DiscussionDTOFactory
         return createChildClass(unidentified.type, unidentified);
     }
 
-    public DiscussionDTO createChildClass(DiscussionType discussionType, DiscussionDTO discussionDTO)
+    @Nullable
+    public DiscussionDTO createChildClass(@Nullable DiscussionType discussionType, @Nullable DiscussionDTO discussionDTO)
     {
         DiscussionDTO created = discussionDTO;
         if (discussionType != null)
@@ -103,6 +110,7 @@ public class DiscussionDTOFactory
         created.publishToFb = fromForm.publishToFb;
         created.publishToLi = fromForm.publishToLi;
         created.publishToTw = fromForm.publishToTw;
+        created.publishToWb = fromForm.publishToWb;
         created.isPublic = fromForm.isPublic;
         return created;
     }

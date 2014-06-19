@@ -42,7 +42,7 @@ public class LruFileCache extends LruCache
     private File cacheDir;
     private int maxFileSize;
     private int size = 0;
-    private Object dirLock = new Object();
+    private final Object dirLock = new Object();
     /**
      * Key is the path, value is the cache key
      */

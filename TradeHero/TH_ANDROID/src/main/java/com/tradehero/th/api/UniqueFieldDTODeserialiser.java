@@ -13,9 +13,9 @@ import java.util.Map;
 
 abstract public class UniqueFieldDTODeserialiser<DTOType> extends StdDeserializer<DTOType>
 {
-    private Map<String, Class<? extends DTOType>> uniqueAttributes;
+    private final Map<String, Class<? extends DTOType>> uniqueAttributes;
     // We need an inner mapper to avoid infinite looping
-    private ObjectMapper innerMapper;
+    private final ObjectMapper innerMapper;
 
     //<editor-fold desc="Constructors">
     protected UniqueFieldDTODeserialiser(Map<String, Class<? extends DTOType>> uniqueAttributes, Class<? extends DTOType> baseClass)
@@ -24,7 +24,6 @@ abstract public class UniqueFieldDTODeserialiser<DTOType> extends StdDeserialize
         this.uniqueAttributes = uniqueAttributes;
         innerMapper = new ObjectMapper();
         innerMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
     }
     //</editor-fold>
 

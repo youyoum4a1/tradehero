@@ -10,38 +10,35 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import java.util.List;
 
-public class SocalTypeListAdapter extends ArrayAdapter<SocialTypeItem>{
-
-    private LayoutInflater mInflater;
-    private Context mContext;
-
-    public SocalTypeListAdapter(Context context, int resource, List<SocialTypeItem> objects) {
+public class SocialTypeListAdapter extends ArrayAdapter<SocialTypeItem>
+{
+    public SocialTypeListAdapter(Context context, int resource, List<SocialTypeItem> objects)
+    {
         super(context, resource, objects);
-        mContext= context;
-        mInflater = LayoutInflater.from(context);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
         ViewGroup viewGroup;
         if (convertView == null)
         {
-             viewGroup = (ViewGroup)mInflater.inflate(R.layout.invite_friends_item, (ViewGroup) convertView, false);
+            viewGroup = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.invite_friends_item, (ViewGroup) convertView, false);
         }
         else
         {
-            viewGroup = (ViewGroup)convertView;
+            viewGroup = (ViewGroup) convertView;
         }
-        displayItem(position,viewGroup);
+        displayItem(position, viewGroup);
         return viewGroup;
     }
 
-    private void displayItem(int position,ViewGroup viewGroup)
+    private void displayItem(int position, ViewGroup viewGroup)
     {
         SocialTypeItem item = getItem(position);
 
-        ImageView logoView = (ImageView)viewGroup.findViewById(R.id.social_item_logo);
-        TextView titleView = (TextView)viewGroup.findViewById(R.id.social_item_title);
+        ImageView logoView = (ImageView) viewGroup.findViewById(R.id.social_item_logo);
+        TextView titleView = (TextView) viewGroup.findViewById(R.id.social_item_title);
 
         logoView.setImageResource(item.imageResource);
         titleView.setText(getContext().getString(item.titleResource));

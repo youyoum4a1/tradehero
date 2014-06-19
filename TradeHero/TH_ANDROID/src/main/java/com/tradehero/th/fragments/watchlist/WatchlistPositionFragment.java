@@ -397,7 +397,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                     DashboardFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
                 }
             }
-            getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
         }
     }
 

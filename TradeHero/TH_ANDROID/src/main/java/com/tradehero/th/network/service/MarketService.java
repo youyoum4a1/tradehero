@@ -1,9 +1,7 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeDTO;
-import java.util.List;
-import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
@@ -11,13 +9,7 @@ public interface MarketService
 {
     //<editor-fold desc="GetExchanges">
     // returns basic exchange DTOs, un-enriched
-    @GET("/exchanges")
-    List<ExchangeDTO> getExchanges();
-
-    // returns basic exchange DTOs, un-enriched
-    @GET("/exchanges")
-    void getExchanges(
-            Callback<List<ExchangeDTO>> callback);
+    @GET("/exchanges") ExchangeCompactDTOList getExchanges();
     //</editor-fold>
 
     //<editor-fold desc="GetExchange">
@@ -25,11 +17,5 @@ public interface MarketService
     @GET("/exchanges/{exchangeId}")
     ExchangeDTO getExchange(
             @Path("exchangeId") int exchangeId);
-
-    // returns enriched exchange DTOs: sector, industry and full stock lists
-    @GET("/exchanges/{exchangeId}")
-    void getExchange(
-            @Path("exchangeId") int exchangeId,
-            Callback<ExchangeDTO> callback);
     //</editor-fold>
 }

@@ -8,12 +8,14 @@ import timber.log.Timber;
 
 public class THIntentFactoryImpl extends THIntentFactory<THIntent>
 {
-    private Map<String, THIntentFactory<? extends THIntent>> factoryMap;
+    private final Map<String, THIntentFactory<? extends THIntent>> factoryMap;
 
+    //<editor-fold desc="Constructors">
     @Inject public THIntentFactoryImpl()
     {
         factoryMap = new HashMap<>();
     }
+    //</editor-fold>
 
     @Override public String getHost()
     {

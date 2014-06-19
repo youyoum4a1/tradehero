@@ -11,7 +11,7 @@ import timber.log.Timber;
 
 public class QuickPriceButtonSet extends LinearLayout
 {
-    private List<QuickPriceButton> buttons;
+    private final List<QuickPriceButton> buttons;
     private OnQuickPriceButtonSelectedListener listener;
     private boolean enabled = false;
     private double maxPrice = Double.MAX_VALUE;

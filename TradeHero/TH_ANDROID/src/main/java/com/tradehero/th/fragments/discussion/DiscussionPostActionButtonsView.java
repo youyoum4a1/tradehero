@@ -30,6 +30,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @InjectView(R.id.btn_share_fb) ToggleButton mFacebookShareButton;
     @InjectView(R.id.btn_share_tw) ToggleButton mTwitterShareButton;
     @InjectView(R.id.btn_share_li) ToggleButton mLinkedInShareButton;
+    @InjectView(R.id.btn_share_wb) ToggleButton mWbShareButton;
     @InjectView(R.id.btn_location) ToggleButton mLocationShareButton;
     @InjectView(R.id.switch_share_public) ToggleButton mIsPublic;
 
@@ -62,6 +63,16 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
+        initSocialBtnStatus();
+    }
+
+    private void initSocialBtnStatus()
+    {
+        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        mFacebookShareButton.setChecked(userProfileDTO.fbLinked);
+        mTwitterShareButton.setChecked(userProfileDTO.twLinked);
+        mLinkedInShareButton.setChecked(userProfileDTO.liLinked);
+        mWbShareButton.setChecked(userProfileDTO.wbLinked);
     }
 
     @Override protected void onAttachedToWindow()
@@ -79,7 +90,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @OnClick({
             R.id.btn_share_fb,
             R.id.btn_share_tw,
-            R.id.btn_share_li
+            R.id.btn_share_li,
+            R.id.btn_share_wb
     })
     void onSocialNetworkActionButtonClicked(CompoundButton view)
     {
@@ -99,6 +111,10 @@ public class DiscussionPostActionButtonsView extends LinearLayout
             case R.id.btn_share_li:
                 socialNetwork = SocialNetworkEnum.LN;
                 ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
+                break;
+            case R.id.btn_share_wb:
+                socialNetwork = SocialNetworkEnum.WB;
+                ableToShare = userProfileDTO != null && userProfileDTO.wbLinked;
                 break;
         }
 
@@ -138,6 +154,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         publishableFormDTO.publishToFb = mFacebookShareButton.isChecked();
         publishableFormDTO.publishToTw = mTwitterShareButton.isChecked();
         publishableFormDTO.publishToLi = mLinkedInShareButton.isChecked();
+        publishableFormDTO.publishToWb = mWbShareButton.isChecked();
 
         publishableFormDTO.isPublic = mIsPublic.isChecked();
 

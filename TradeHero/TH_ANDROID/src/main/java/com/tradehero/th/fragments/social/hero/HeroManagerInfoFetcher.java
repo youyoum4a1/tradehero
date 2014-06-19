@@ -15,18 +15,18 @@ import org.jetbrains.annotations.Nullable;
 
 public class HeroManagerInfoFetcher
 {
-    protected Lazy<UserProfileCache> userProfileCache;
-    protected Lazy<HeroListCache> heroListCache;
-    protected Lazy<HeroCache> heroCache;
+    @NotNull protected final Lazy<UserProfileCache> userProfileCache;
+    @NotNull protected final Lazy<HeroListCache> heroListCache;
+    @NotNull protected final Lazy<HeroCache> heroCache;
 
     @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
     @Nullable private DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener;
 
     //<editor-fold desc="Constructors">
     @Inject public HeroManagerInfoFetcher(
-            Lazy<UserProfileCache> userProfileCache,
-            Lazy<HeroListCache> heroListCache,
-            Lazy<HeroCache> heroCache)
+            @NotNull Lazy<UserProfileCache> userProfileCache,
+            @NotNull Lazy<HeroListCache> heroListCache,
+            @NotNull Lazy<HeroCache> heroCache)
     {
         super();
         this.userProfileCache = userProfileCache;

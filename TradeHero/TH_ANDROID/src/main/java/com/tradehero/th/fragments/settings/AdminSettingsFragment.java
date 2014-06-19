@@ -13,6 +13,8 @@ import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -26,6 +28,7 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -40,7 +43,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-
+    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject AlertDialogUtil alertDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -71,9 +74,24 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.admin_setting));
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
+                | ActionBar.DISPLAY_SHOW_TITLE
+                | ActionBar.DISPLAY_USE_LOGO);
+        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setTitle(getString(R.string.admin_setting));
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                resideMenuLazy.get().openMenu();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initPreferenceClickHandlers()

@@ -225,7 +225,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     @Override

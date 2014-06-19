@@ -4,7 +4,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 
 public class CommentFormDTO extends DiscussionFormDTO
 {
-    public static DiscussionType TYPE = DiscussionType.COMMENT;
+    public static final DiscussionType TYPE = DiscussionType.COMMENT;
 
     public CommentFormDTO()
     {

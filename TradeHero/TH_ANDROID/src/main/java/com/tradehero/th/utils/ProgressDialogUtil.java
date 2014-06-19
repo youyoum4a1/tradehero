@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 public class ProgressDialogUtil
 {
-    private static Map<Context, ProgressDialog> dialogs = new HashMap<>();
+    private static final Map<Context, ProgressDialog> dialogs = new HashMap<>();
 
     @Inject public ProgressDialogUtil()
     {

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.updatecenter;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +33,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -52,7 +50,6 @@ import timber.log.Timber;
 public class UpdateCenterFragment extends BaseFragment
         implements PopupMenu.OnMenuItemClickListener,
         OnTitleNumberChangeListener,
-        TabHost.OnTabChangeListener,
         ResideMenu.OnMenuListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
@@ -69,7 +66,6 @@ public class UpdateCenterFragment extends BaseFragment
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ImageButton mNewMsgButton;
-
     private BroadcastReceiver broadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -101,7 +97,6 @@ public class UpdateCenterFragment extends BaseFragment
         LocalBroadcastManager.getInstance(getActivity())
                 .registerReceiver(broadcastReceiver,
                         new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
-        addOnTabChangeListener();
     }
 
     @Override public void onPause()
@@ -111,7 +106,6 @@ public class UpdateCenterFragment extends BaseFragment
         Timber.d("onPause");
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(broadcastReceiver);
-        removeOnTabChangeListener();
     }
 
     private void fetchUserProfile()
@@ -402,53 +396,6 @@ public class UpdateCenterFragment extends BaseFragment
                 fetchUserProfile();
             }
         };
-    }
-
-    @Override public void onTabChanged(String tabId)
-    {
-        Timber.d("onTabChanged %s",tabId);
-        String tab = getString(DashboardTabType.UPDATE_CENTER.stringKeyResId);
-        if (tab.equals(tabId))
-        {
-            //switch to current tab,do nothing
-            return;
-        }
-        clearTabs();
-        invalidateMessageCache();
-    }
-
-    private void invalidateMessageCache()
-    {
-        if (messageListCache != null)
-        {
-            messageListCache.invalidateAll();
-        }
-        if (messageHeaderCache != null)
-        {
-            messageHeaderCache.invalidateAll();
-        }
-        //TODO some cache like notification should also be invalide?
-        Timber.d("onTabChanged invalidateMessageCache %s",messageListCache);
-    }
-
-    private void addOnTabChangeListener()
-    {
-        Activity activity = getActivity();
-        if (activity != null && activity instanceof DashboardActivity)
-        {
-            DashboardActivity a = (DashboardActivity)activity;
-            a.addOnTabChangeListener(this);
-        }
-    }
-
-    private void removeOnTabChangeListener()
-    {
-        Activity activity = getActivity();
-        if (activity != null && activity instanceof DashboardActivity)
-        {
-            DashboardActivity a = (DashboardActivity)activity;
-            a.removeOnTabChangeListener(this);
-        }
     }
 
     @Override public void openMenu()
