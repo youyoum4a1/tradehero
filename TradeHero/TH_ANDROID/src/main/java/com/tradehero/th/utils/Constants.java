@@ -50,7 +50,7 @@ public class Constants
 
     // TODO remove when automated build.
     // 0 for international, 1 baidu, 2 tencent. It is here to help with build multiple version
-    private static final int VERSION = 0;
+    private static final int VERSION = 1;
 
     public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
 }

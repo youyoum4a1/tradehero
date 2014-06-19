@@ -13,12 +13,9 @@ import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderCont
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
-
-//import com.mobileapptracker.MobileAppTracker;
 
 @Module(
         injects = {

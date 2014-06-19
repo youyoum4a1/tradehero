@@ -29,14 +29,11 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import dagger.Lazy;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
-
-//import com.mobileapptracker.MobileAppTracker;
 
 public class SplashActivity extends SherlockActivity
 {
