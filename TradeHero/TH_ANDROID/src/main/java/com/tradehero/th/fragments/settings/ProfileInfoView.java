@@ -90,7 +90,6 @@ public class ProfileInfoView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
     }
@@ -115,15 +114,15 @@ public class ProfileInfoView extends LinearLayout
 
     public void forceValidateFields()
     {
-        if (email != null)
+        if (email != null && email.getVisibility() == VISIBLE)
         {
             email.forceValidate();
         }
-        if (password != null)
+        if (password != null && password.getVisibility() == VISIBLE)
         {
             password.forceValidate();
         }
-        if (confirmPassword != null)
+        if (confirmPassword != null && confirmPassword.getVisibility() == VISIBLE)
         {
             confirmPassword.forceValidate();
         }
@@ -135,9 +134,9 @@ public class ProfileInfoView extends LinearLayout
 
     public boolean areFieldsValid()
     {
-        return (email == null || email.isValid()) &&
-                (password == null || password.isValid()) &&
-                (confirmPassword == null || confirmPassword.isValid()) &&
+        return (email == null || email.getVisibility() == GONE || email.isValid()) &&
+                (password == null || password.getVisibility() == GONE || password.isValid()) &&
+                (confirmPassword == null || confirmPassword.getVisibility() == GONE || confirmPassword.isValid()) &&
                 (displayName == null || displayName.isValid());
     }
 
@@ -417,6 +416,16 @@ public class ProfileInfoView extends LinearLayout
             this.email.setText(emailValue);
             this.password.setText(passwordValue);
             this.confirmPassword.setText(passwordValue);
+
+            if (emailValue == null)
+            {
+                this.email.setVisibility(GONE);
+            }
+            if (passwordValue == null)
+            {
+                this.password.setVisibility(GONE);
+                this.confirmPassword.setVisibility(GONE);
+            }
         }
     }
 
