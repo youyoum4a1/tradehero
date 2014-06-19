@@ -30,6 +30,8 @@ import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
@@ -97,7 +99,9 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-        localyticsSession.get().open();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().open(custom_dimensions);
         AppEventsLogger.activateApp(this, facebookAppId);
         tapStream.get().fireEvent(
                 new Event(getString(Constants.TAP_STREAM_TYPE.openResId),
@@ -116,7 +120,9 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().close(custom_dimensions);
         localyticsSession.get().upload();
 
         super.onPause();
