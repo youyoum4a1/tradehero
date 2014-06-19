@@ -7,7 +7,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
-import com.tradehero.th.utils.Constants;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -40,6 +39,12 @@ import org.jetbrains.annotations.NotNull;
         this.chartTimeSpanMetricsCodeFactory = chartTimeSpanMetricsCodeFactory;
     }
     //</editor-fold>
+
+    public void tagEvent(String event)
+    {
+        TCAgent.onEvent(context, event);
+        super.tagEvent(event);
+    }
 
     public void tagEvent(String event, SecurityId securityId)
     {
@@ -76,13 +81,5 @@ import org.jetbrains.annotations.NotNull;
         {
             dic.put(LocalyticsConstants.TRENDING_FILTER_CATEGORY_MAP_KEY, trendingFilterTypeDTO.getTrackEventCategory());
         }
-    }
-
-    public void tagEvent(String event)
-    {
-        TCAgent.onEvent(context, event);
-        Map<String, String> dic = new HashMap<>();
-        dic.put(LocalyticsConstants.CHANNEL_MAP_KEY, Constants.TAP_STREAM_TYPE.name());
-        super.tagEvent(event, dic);
     }
 }

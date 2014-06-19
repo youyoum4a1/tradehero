@@ -40,7 +40,9 @@ import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
@@ -100,13 +102,16 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Override protected void onResume()
     {
         super.onResume();
-
-        localyticsSession.get().open();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().open(custom_dimensions);
     }
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().close(custom_dimensions);
         localyticsSession.get().upload();
 
         super.onPause();
