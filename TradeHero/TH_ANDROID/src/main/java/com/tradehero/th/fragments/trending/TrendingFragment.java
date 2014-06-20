@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -66,6 +67,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable("trending-securities")
 public class TrendingFragment extends SecurityListFragment
     implements WithTutorial
 {

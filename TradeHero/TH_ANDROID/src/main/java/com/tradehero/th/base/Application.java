@@ -9,8 +9,11 @@ import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
@@ -65,7 +68,10 @@ public class Application extends PApplication
         thRouter.registerRoutes(
                 PushableTimelineFragment.class,
                 MeTimelineFragment.class,
-                NotificationsCenterFragment.class
+                NotificationsCenterFragment.class,
+                MessagesCenterFragment.class,
+                TrendingFragment.class,
+                FriendsInvitationFragment.class
         );
 
         THLog.showDeveloperKeyHash();
