@@ -17,6 +17,7 @@ import timber.log.Timber;
         include = JsonTypeInfo.As.PROPERTY,
         property = "securityType")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.SERVER_HACK_LOCKED_POSITION_SECURITY),
         @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.EQUITY_DTO_DESERIALISING_TYPE),
         @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.FUND_DTO_DESERIALISING_TYPE),
         @JsonSubTypes.Type(value = WarrantDTO.class, name = WarrantDTO.WARRANT_DTO_DESERIALISING_TYPE),
@@ -33,6 +34,7 @@ public class SecurityCompactDTO extends ExtendedDTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
+    public static final String SERVER_HACK_LOCKED_POSITION_SECURITY = "0";
     public static final String EQUITY_DTO_DESERIALISING_TYPE = "1";
     public static final String FUND_DTO_DESERIALISING_TYPE = "2";
     public static final String WARRANT_DTO_DESERIALISING_TYPE = "3";
