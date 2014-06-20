@@ -18,7 +18,7 @@ import javax.inject.Inject;
  * This fragment will not be the main, but one that is pushed from elsewhere
  */
 @Routable({
-        "users/:userId"
+        "user/:userId"
 })
 public class PushableTimelineFragment extends TimelineFragment
 {

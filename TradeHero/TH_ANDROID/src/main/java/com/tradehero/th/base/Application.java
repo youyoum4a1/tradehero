@@ -11,6 +11,7 @@ import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
@@ -61,8 +62,11 @@ public class Application extends PApplication
 
         pushNotificationManager.initialise();
 
-        thRouter.mapFragment(THRouter.USER_TIMELINE, PushableTimelineFragment.class);
-        thRouter.mapFragment(THRouter.USER_ME, MeTimelineFragment.class);
+        thRouter.registerRoutes(
+                PushableTimelineFragment.class,
+                MeTimelineFragment.class,
+                NotificationsCenterFragment.class
+        );
 
         THLog.showDeveloperKeyHash();
     }

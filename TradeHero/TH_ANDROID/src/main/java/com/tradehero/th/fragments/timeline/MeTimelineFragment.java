@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 @Routable({
-        "users/me", "profiles/me"
+        "user/me", "profiles/me"
 })
 public class MeTimelineFragment extends TimelineFragment
     implements WithTutorial

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import com.thoj.route.Routable;
 import com.thoj.route.Router;
 import com.thoj.route.internal.ContextNotProvided;
 import com.thoj.route.internal.RouterOptions;
@@ -78,13 +79,33 @@ public class THRouter extends Router
         }
     }
 
+    @Override public Router registerRoutes(Class<?>... targets)
+    {
+        super.registerRoutes(targets);
+        for (Class<?> target: targets) {
+            if (Fragment.class.isAssignableFrom(target) && target.isAnnotationPresent(Routable.class)) {
+                Routable routable = target.getAnnotation(Routable.class);
+
+                String[] routes = routable.value();
+                if (routes != null) {
+                    for (String route: routes) {
+                        @SuppressWarnings("unchecked")
+                        Class<? extends Fragment> fragmentTarget = (Class<? extends Fragment>) target;
+                        mapFragment(route, fragmentTarget);
+                    }
+                }
+            }
+        }
+        return this;
+    }
+
     private void openFragment(RouterParams params, Bundle extras, Context context)
     {
         if (context instanceof DashboardActivity)
         {
             DashboardNavigator navigator = ((DashboardActivity) context).getDashboardNavigator();
             THRouterOptions options = (THRouterOptions) params.routerOptions;
-            navigator.pushFragment(options.getOpenFragmentClass());
+            navigator.pushFragment(options.getOpenFragmentClass(), extras != null ? extras : new Bundle());
         }
     }
 
