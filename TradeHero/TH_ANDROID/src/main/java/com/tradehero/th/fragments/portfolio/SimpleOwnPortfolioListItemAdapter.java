@@ -99,7 +99,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        View view = null;
+        View view;
         if (position == 0) // HACK because first item is not clickable
         {
             view = new View(getContext());

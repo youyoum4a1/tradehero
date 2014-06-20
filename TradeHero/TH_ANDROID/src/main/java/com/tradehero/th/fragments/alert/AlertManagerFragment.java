@@ -300,7 +300,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         bundle.putBundle(AlertViewFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
-        getNavigator().pushFragment(AlertViewFragment.class, bundle);
+        getDashboardNavigator().pushFragment(AlertViewFragment.class, bundle);
     }
 
     private void handleManageSubscriptionClicked()

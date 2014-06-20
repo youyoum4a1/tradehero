@@ -196,7 +196,7 @@ public class UpdateCenterFragment extends BaseFragment
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment) getCurrentFragment()).onOptionsMenuClosed(menu);
+            getCurrentFragment().onOptionsMenuClosed(menu);
         }
         super.onOptionsMenuClosed(menu);
     }

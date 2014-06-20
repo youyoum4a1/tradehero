@@ -221,7 +221,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (CompetitionWebViewFragment) getNavigator().pushFragment(
+        this.webViewFragment = getDashboardNavigator().pushFragment(
                 CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -231,7 +231,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
         SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        getNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
+        getDashboardNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
     @Override public boolean isTabBarVisible()
@@ -281,7 +281,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
-            getNavigator().pushFragment(BuySellFragment.class, args);
+            getDashboardNavigator().pushFragment(BuySellFragment.class, args);
         }
     }
 
@@ -309,7 +309,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
         @Override protected Navigator getNavigator()
         {
-            return ProviderSecurityListFragment.this.getNavigator();
+            return ProviderSecurityListFragment.this.getDashboardNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

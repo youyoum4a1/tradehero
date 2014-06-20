@@ -94,7 +94,7 @@ public class PreferenceManagerCompat
                             {
                                 if (method.getName().equals("onPreferenceTreeClick"))
                                 {
-                                    return Boolean.valueOf(listener.onPreferenceTreeClick((PreferenceScreen) args[0], (Preference) args[1]));
+                                    return listener.onPreferenceTreeClick((PreferenceScreen) args[0], (Preference) args[1]);
                                 }
                                 else
                                 {

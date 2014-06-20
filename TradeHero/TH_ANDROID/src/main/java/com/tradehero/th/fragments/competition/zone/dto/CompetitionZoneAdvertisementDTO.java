@@ -8,12 +8,14 @@ public class CompetitionZoneAdvertisementDTO extends CompetitionZoneDTO
     public final int imageResId;
     @Nullable private final AdDTO adDTO;
 
-    public CompetitionZoneAdvertisementDTO(String title, String description, int imageResId, AdDTO adDTO)
+    //<editor-fold desc="Constructors">
+    public CompetitionZoneAdvertisementDTO(String title, String description, int imageResId, @Nullable AdDTO adDTO)
     {
         super(title, description);
         this.imageResId = imageResId;
         this.adDTO = adDTO;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {

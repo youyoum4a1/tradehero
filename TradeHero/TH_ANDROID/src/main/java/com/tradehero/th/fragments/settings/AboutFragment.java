@@ -95,7 +95,7 @@ public class AboutFragment extends DashboardFragment
 
             @Override public void onAnimationEnd(Animation animation)
             {
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
             }
 
             @Override public void onAnimationRepeat(Animation animation)

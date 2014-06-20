@@ -88,7 +88,7 @@ import retrofit.Callback;
     public BaseMiddleCallback<PortfolioDTO> getPortfolio(OwnedPortfolioId ownedPortfolioId, Callback<PortfolioDTO> callback)
     {
         basicCheck(ownedPortfolioId);
-        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<PortfolioDTO>(callback);
+        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(callback);
         this.portfolioServiceAsync.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
         return middleCallback;
     }
@@ -135,7 +135,7 @@ import retrofit.Callback;
 
     public BaseMiddleCallback<PortfolioDTO> markPortfolio(OwnedPortfolioId ownedPortfolioId, Callback<PortfolioDTO> callback)
     {
-        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<PortfolioDTO>(callback);
+        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(callback);
         basicCheck(ownedPortfolioId);
         this.portfolioServiceAsync.markPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
         return middleCallback;

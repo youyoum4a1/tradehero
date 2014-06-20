@@ -103,13 +103,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         return false;
     }
 
-    protected void handleCommentPosted(DiscussionDTO discussionDTO)
-    {
-    }
-
-    protected void handleCommentPostFailed(Exception exception)
-    {
-    }
+    abstract protected void handleCommentPosted(DiscussionDTO discussionDTO);
 
     protected PostCommentView.CommentPostedListener createCommentPostedListener()
     {
@@ -125,7 +119,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
         @Override public void failure(Exception exception)
         {
-            handleCommentPostFailed(exception);
+            // Nothing to do
         }
     }
 }

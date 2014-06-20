@@ -28,7 +28,7 @@ public class SettingsTransactionHistoryAdapter extends BaseAdapter
     public SettingsTransactionHistoryAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super();
-        this.items = new ArrayList<UserTransactionHistoryDTO>();
+        this.items = new ArrayList<>();
         this.context = context;
         this.inflater = inflater;
         this.layoutResourceId = layoutResourceId;

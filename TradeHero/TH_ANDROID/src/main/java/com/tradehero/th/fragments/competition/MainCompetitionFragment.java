@@ -477,7 +477,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
         @Override protected Navigator getNavigator()
         {
-            return MainCompetitionFragment.this.getNavigator();
+            return MainCompetitionFragment.this.getDashboardNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

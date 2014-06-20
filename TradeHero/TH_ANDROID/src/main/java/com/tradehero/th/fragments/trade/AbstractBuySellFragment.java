@@ -51,6 +51,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject SecurityPositionDetailDTOUtil securityPositionDetailDTOUtil;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @Inject protected Lazy<UserProfileCache> userProfileCache;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -61,8 +62,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected DTOCache.GetOrFetchTask<SecurityId, SecurityPositionDetailDTO> fetchPositionDetailTask;
 
     protected ProviderId providerId;
-
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
     protected UserProfileDTO userProfileDTO;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 

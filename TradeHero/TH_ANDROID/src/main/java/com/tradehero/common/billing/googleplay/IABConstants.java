@@ -110,7 +110,7 @@ public class IABConstants
         }
         else if (o instanceof Integer)
         {
-            return ((Integer) o).intValue();
+            return (Integer) o;
         }
         else if (o instanceof Long)
         {

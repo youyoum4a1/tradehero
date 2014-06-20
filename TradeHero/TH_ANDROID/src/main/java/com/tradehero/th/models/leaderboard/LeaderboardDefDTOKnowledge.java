@@ -31,7 +31,6 @@ public class LeaderboardDefDTOKnowledge
         }
         else if (leaderboardDefDTO.countryCodes != null)
         {
-            Country fromCode;
             for (String countryCode : leaderboardDefDTO.countryCodes)
             {
                 try

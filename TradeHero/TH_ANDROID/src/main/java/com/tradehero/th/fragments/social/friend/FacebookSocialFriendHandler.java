@@ -10,6 +10,7 @@ import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -26,7 +27,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -46,7 +46,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
     @NotNull final Lazy<FacebookUtils> facebookUtils;
     @NotNull final SocialServiceWrapper socialServiceWrapper;
     @NotNull final UserProfileCache userProfileCache;
-    @NotNull private final Activity activity;
+    @NotNull private final CurrentActivityHolder currentActivityHolder;
 
     private ProgressDialog progressDialog;
     private UserBaseKey userBaseKey;
@@ -60,14 +60,14 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
             @NotNull Lazy<FacebookUtils> facebookUtils,
             @NotNull SocialServiceWrapper socialServiceWrapper,
             @NotNull UserProfileCache userProfileCache,
-            @NotNull Activity activity)
+            @NotNull CurrentActivityHolder currentActivityHolder)
     {
         super(userService);
         this.dialogUtil = dialogUtil;
         this.facebookUtils = facebookUtils;
         this.socialServiceWrapper = socialServiceWrapper;
         this.userProfileCache = userProfileCache;
-        this.activity = activity;
+        this.currentActivityHolder = currentActivityHolder;
     }
     //</editor-fold>
 
@@ -115,7 +115,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
         }
         else
         {
-            sendRequestDialog(activity, users);
+            sendRequestDialog(currentActivityHolder.getCurrentActivity(), users);
         }
         return null;
     }
@@ -127,7 +127,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
             @Override public void done(UserLoginDTO user, THException ex)
             {
                 Timber.d("login done");
-                dialogUtil.dismiss(activity);
+                dialogUtil.dismiss(currentActivityHolder.getCurrentContext());
             }
 
             @Override public boolean onSocialAuthDone(JSONCredentials json)
@@ -139,7 +139,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
                         UserFormFactory.create(json),
                         new SocialLinkingCallback());
 
-                progressDialog.setMessage(activity.getString(
+                progressDialog.setMessage(currentActivityHolder.getCurrentActivity().getString(
                         R.string.authentication_connecting_tradehero,
                         SocialNetworkEnum.FB.getName()));
                 return false;
@@ -148,10 +148,10 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
             @Override public void onStart()
             {
                 Timber.d("login onStart");
-                progressDialog = dialogUtil.show(activity, null, null);
+                progressDialog = dialogUtil.show(currentActivityHolder.getCurrentContext(), null, null);
             }
         };
-        facebookUtils.get().logIn(activity, socialNetworkCallback);
+        facebookUtils.get().logIn(currentActivityHolder.getCurrentActivity(), socialNetworkCallback);
     }
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
@@ -159,7 +159,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
             userProfileCache.put(userBaseKey, userProfileDTO);
-            sendRequestDialog(activity, users);
+            sendRequestDialog(currentActivityHolder.getCurrentActivity(), users);
         }
 
         @Override protected void failure(THException ex)

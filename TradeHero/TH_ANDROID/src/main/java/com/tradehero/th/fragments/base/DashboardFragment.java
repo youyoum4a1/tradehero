@@ -73,7 +73,7 @@ abstract public class DashboardFragment extends BaseFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
                 return true;
 
             case R.id.menu_info:

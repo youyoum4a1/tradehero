@@ -121,7 +121,7 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
      */
     public void invalidateSameListing(@NotNull MessageListKey key)
     {
-        for (MessageListKey entry : new ArrayList<MessageListKey>(snapshot().keySet()))
+        for (MessageListKey entry : new ArrayList<>(snapshot().keySet()))
         {
             if (key.equalListing(entry))
             {

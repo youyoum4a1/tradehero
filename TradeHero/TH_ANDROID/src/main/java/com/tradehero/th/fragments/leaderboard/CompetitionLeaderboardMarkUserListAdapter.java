@@ -51,7 +51,7 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
 
         if (extraTileCount > 0)
         {
-            int[] tempMarker = null;
+            int[] tempMarker;
             if (masterTilesMarker != null && extraTileCount < masterTilesMarker.length)
             {
                 tempMarker = Arrays.copyOf(masterTilesMarker, extraTileCount);

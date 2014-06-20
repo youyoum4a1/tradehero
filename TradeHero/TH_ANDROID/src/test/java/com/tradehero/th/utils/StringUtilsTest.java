@@ -26,14 +26,14 @@ import static org.junit.Assert.assertThat;
 
     @Test public void joinListOne_shouldReturnSame()
     {
-        List<String> toJoin = new ArrayList<String>();
+        List<String> toJoin = new ArrayList<>();
         toJoin.add("a");
         assertThat(StringUtils.join(",", toJoin), equalTo("a"));
     }
 
     @Test public void joinListTwo_shouldReturnOk()
     {
-        List<String> toJoin = new ArrayList<String>();
+        List<String> toJoin = new ArrayList<>();
         toJoin.add("a");
         toJoin.add("b");
         assertThat(StringUtils.join(",", toJoin), equalTo("a,b"));

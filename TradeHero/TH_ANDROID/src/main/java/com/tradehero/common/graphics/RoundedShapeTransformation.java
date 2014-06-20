@@ -38,7 +38,7 @@ public class RoundedShapeTransformation implements RecyclerTransformation
         scaleBitmapImage = centerCropTransformation.transform(scaleBitmapImage);
         int desiredEdge = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
 
-        Bitmap targetBitmap = null;
+        Bitmap targetBitmap;
         try
         {
             targetBitmap = Bitmap.createBitmap(desiredEdge, desiredEdge, Bitmap.Config.ARGB_8888);

@@ -71,10 +71,6 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         {
             if (getDiscussionKey() == null)
             {
-                if (discussionKeyFactory == null)
-                {
-                    Timber.e(new NullPointerException("DiscussionKeyFactory null"), null);
-                }
                 linkWith(discussionKeyFactory.create(value), true);
             }
         }

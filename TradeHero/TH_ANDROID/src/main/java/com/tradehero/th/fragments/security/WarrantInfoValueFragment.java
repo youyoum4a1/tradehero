@@ -56,8 +56,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_warrantinfo_value, container, false);
+        View view = inflater.inflate(R.layout.fragment_warrantinfo_value, container, false);
         initViews(view);
         return view;
     }
