@@ -44,13 +44,11 @@ public class GraphicModule
     {
         File cacheDir = lruFileCache.getCacheDirectory();
         Picasso mPicasso = new Picasso.Builder(context)
-                //test
-                //.downloader(new UrlConnectionDownloader(getContext()))
                 .memoryCache(lruFileCache)
 				.downloader(new OkHttpDownloader(cacheDir))
-                //.downloader(new MyImageDownloader(context.getApplicationContext()))
                 .build();
-        mPicasso.setDebugging(Constants.PICASSO_DEBUG);
+		mPicasso.setIndicatorsEnabled(Constants.PICASSO_DEBUG);
+		mPicasso.setLoggingEnabled(Constants.PICASSO_DEBUG);
         return mPicasso;
     }
 
