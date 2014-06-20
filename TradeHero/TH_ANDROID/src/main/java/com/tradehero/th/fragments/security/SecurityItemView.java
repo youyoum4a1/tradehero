@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,24 +12,22 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground2;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-
-import javax.inject.Inject;
-
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+import javax.inject.Inject;
 
 public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 		extends RelativeLayout
@@ -41,7 +38,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 	public static final float DIVISOR_PC_50_COLOR = 5f;
 
 	@Inject @ForSecurityItemForeground  Transformation foregroundTransformation;
-	@Inject @ForSecurityItemBackground  Transformation backgroundTransformation1;
 	@Inject @ForSecurityItemBackground2 Transformation backgroundTransformation;
 
 	@Inject protected Picasso mPicasso;
@@ -59,8 +55,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 	@InjectView(R.id.sec_type) @Optional         TextView  securityType;
 
 	protected SecurityCompactDTOType securityCompactDTO;
-	private Target myImageTarget;
-	private Target myBgImageTarget;
+	private   Target                 myLogoImageTarget;
+	private   Target                 myBgImageTarget;
 
 	//<editor-fold desc="Constructors">
 	public SecurityItemView(Context context)
@@ -84,7 +80,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 	{
 		super.onFinishInflate();
 		init();
-		myImageTarget = createLogoImageTarget();
+		myLogoImageTarget = createLogoImageTarget();
 		myBgImageTarget = createBGImageTarget();
 	}
 
@@ -98,32 +94,33 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 	@Override protected void onAttachedToWindow()
 	{
 		super.onAttachedToWindow();
-		if (myImageTarget == null)
+
+		if (getMyLogoImageTarget() == null)
 		{
-			myImageTarget = createLogoImageTarget();
+			myLogoImageTarget = createLogoImageTarget();
 		}
-		if (myBgImageTarget == null)
+		if (getMyBgImageTarget() == null)
 		{
 			myBgImageTarget = createBGImageTarget();
 		}
+
 		if (stockBgLogo != null)
 		{
-			//			stockBgLogo.setVisibility(View.INVISIBLE);
+			stockBgLogo.setVisibility(View.GONE);
 		}
 
 		if (mPicasso != null)
 		{
-			Timber.d("onAttach");
 			loadImage();
 		}
 	}
 
 	@Override protected void onDetachedFromWindow()
 	{
-		mPicasso.cancelRequest(myImageTarget);
+		mPicasso.cancelRequest(myLogoImageTarget);
 		mPicasso.cancelRequest(myBgImageTarget);
 
-		myImageTarget = null;
+		myLogoImageTarget = null;
 		myBgImageTarget = null;
 
 		if (mPicasso != null)
@@ -172,12 +169,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
 	public void linkWith(SecurityCompactDTOType securityCompactDTO, boolean andDisplay)
 	{
-		//if (this.securityCompactDTO != null && securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
-		//{
-		//    return;
-		//    // Note that this prevents updating values inside the securityCompactDTO
-		//}
-
 		this.securityCompactDTO = securityCompactDTO;
 
 		if (andDisplay)
@@ -394,7 +385,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 	}
 	//</editor-fold>
 
-	public void loadImage()
+	private void resetImage()
 	{
 		if (stockLogo != null)
 		{
@@ -405,21 +396,28 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 		{
 			stockBgLogo.setImageBitmap(null);
 		}
+	}
+
+	public Target getMyBgImageTarget()
+	{
+		return this.myBgImageTarget;
+	}
+
+	public Target getMyLogoImageTarget()
+	{
+		return this.myLogoImageTarget;
+	}
+
+	public void loadImage()
+	{
+
+		resetImage();
 
 		if (isMyUrlOk())
 		{
-			mPicasso.load(securityCompactDTO.imageBlobUrl)
-					.transform(foregroundTransformation)
-					.resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
-					.centerInside()
-					.into(this.myImageTarget);
+			picassoSetupLogoParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyLogoImageTarget());
+			picassoSetupBGParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyBgImageTarget());
 
-
-			mPicasso.load(securityCompactDTO.imageBlobUrl)
-					.transform(backgroundTransformation)
-					.resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
-					.centerCrop()
-					.into(this.myBgImageTarget);
 		} else
 		{
 			loadExchangeImage();
@@ -433,17 +431,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 			try
 			{
 				Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-				mPicasso.load(exchange.logoId)
-						.transform(foregroundTransformation)
-						.resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
-						.centerInside()
-						.into(this.myImageTarget);
 
-				mPicasso.load(exchange.logoId)
-						.transform(backgroundTransformation)
-						.resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
-						.centerCrop()
-						.into(this.myBgImageTarget);
+				mPicasso.load(exchange.logoId).into(getMyLogoImageTarget());
+				picassoSetupBGParam(mPicasso.load(exchange.logoId)).into(getMyBgImageTarget());
+
 			} catch (IllegalArgumentException e)
 			{
 				Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
@@ -465,8 +456,28 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 		}
 		if (stockBgLogo != null)
 		{
-			stockBgLogo.setVisibility(View.INVISIBLE);
+			stockBgLogo.setVisibility(View.GONE);
 		}
+	}
+
+	private RequestCreator picassoSetupLogoParam(@NotNull RequestCreator creator)
+	{
+		return creator.transform(foregroundTransformation)
+					  .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
+					  .centerInside();
+	}
+
+	private RequestCreator picassoSetupBGParam(@NotNull RequestCreator creator)
+	{
+		return creator.transform(backgroundTransformation)
+					  .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
+					  .centerCrop();
+	}
+
+	protected Target createBGImageTarget()
+
+	{
+		return new SecurityItemViewBgImageTarget();
 	}
 
 	protected Target createLogoImageTarget()
@@ -490,16 +501,10 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 		{
 			loadDefaultImage();
 		}
-
 		@Override public void onPrepareLoad(Drawable placeHolderDrawable)
 		{
 
 		}
-	}
-
-	protected Target createBGImageTarget()
-	{
-		return new SecurityItemViewBgImageTarget();
 	}
 
 	protected class SecurityItemViewBgImageTarget
@@ -511,13 +516,14 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 			if (stockBgLogo != null)
 			{
 				stockBgLogo.setImageBitmap(bitmap);
+				stockBgLogo.setVisibility(View.VISIBLE);
+			}else
+			{
 			}
 		}
 
 		@Override public void onBitmapFailed(Drawable errorDrawable)
 		{
-			Timber.d("Bitmap failed %s", errorDrawable);
-//			loadDefaultImage();
 		}
 
 		@Override public void onPrepareLoad(Drawable placeHolderDrawable)
