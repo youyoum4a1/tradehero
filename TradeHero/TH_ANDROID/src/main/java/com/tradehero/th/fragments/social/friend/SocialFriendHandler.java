@@ -4,13 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.Window;
 import com.tradehero.th.api.social.InviteDTO;
-import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +79,6 @@ import retrofit.client.Response;
 
     public MiddleCallback<UserProfileDTO> followFriends(List<UserFriendsDTO> users, RequestCallback<UserProfileDTO> callback)
     {
-
         if (callback != null)
         {
             callback.onRequestStart();
@@ -89,7 +87,7 @@ import retrofit.client.Response;
         if (users.size() > 1)
         {
             FollowFriendsForm followFriendsForm = new FollowFriendsForm();
-            followFriendsForm.userIds = new ArrayList<Integer>();
+            followFriendsForm.userIds = new ArrayList<>();
             for (int i = 0, j = users.size(); i < j; i++)
             {
                 followFriendsForm.userIds.add(users.get(i).thUserId);
@@ -112,21 +110,13 @@ import retrofit.client.Response;
         List<InviteDTO> usersToFollow = new ArrayList<>(users.size());
         for (int i = 0; i < users.size(); i++)
         {
-            InviteDTO inviteDTO = new InviteDTO();
-            UserFriendsDTO userFriendsDTO = users.get(i);
-            inviteDTO.email = userFriendsDTO.getEmail();
-            inviteDTO.fbId = userFriendsDTO.fbId;
-            inviteDTO.liId = userFriendsDTO.liId;
-            inviteDTO.twId = userFriendsDTO.twId;
-
-            usersToFollow.add(inviteDTO);
+            usersToFollow.add(users.get(i).createInvite());
         }
         inviteFormDTO.users = usersToFollow;
         if (callback != null)
         {
             callback.onRequestStart();
         }
-        MiddleCallback<Response> middleCallback = userService.get().inviteFriends(userKey, inviteFormDTO, callback);
-        return middleCallback;
+        return userService.get().inviteFriends(userKey, inviteFormDTO, callback);
     }
 }

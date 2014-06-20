@@ -6,6 +6,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
@@ -22,7 +23,6 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
-import com.tradehero.th.fragments.social.friend.FriendDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
@@ -536,53 +536,53 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Get Friends">
-    public FriendDTOList getFriends(@NotNull UserBaseKey userKey)
+    public UserFriendsDTOList getFriends(@NotNull UserBaseKey userKey)
     {
         return userService.getFriends(userKey.key);
     }
 
-    public MiddleCallback<FriendDTOList> getFriends(
+    public MiddleCallback<UserFriendsDTOList> getFriends(
             @NotNull UserBaseKey userKey,
-            @Nullable Callback<FriendDTOList> callback)
+            @Nullable Callback<UserFriendsDTOList> callback)
     {
-        MiddleCallback<FriendDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getFriends(userKey.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Social Friends">
-    public FriendDTOList getSocialFriends(
+    public UserFriendsDTOList getSocialFriends(
             @NotNull UserBaseKey userKey,
             @NotNull SocialNetworkEnum socialNetworkEnum)
     {
         return userService.getSocialFriends(userKey.key, socialNetworkEnum);
     }
 
-    public MiddleCallback<FriendDTOList> getSocialFriends(
+    public MiddleCallback<UserFriendsDTOList> getSocialFriends(
             @NotNull UserBaseKey userKey,
             @NotNull SocialNetworkEnum socialNetworkEnum,
-            @Nullable Callback<FriendDTOList> callback)
+            @Nullable Callback<UserFriendsDTOList> callback)
     {
-        MiddleCallback<FriendDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getSocialFriends(userKey.key,socialNetworkEnum,middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Search Social Friends">
-    public MiddleCallback<FriendDTOList> searchSocialFriends(
+    public MiddleCallback<UserFriendsDTOList> searchSocialFriends(
             @NotNull UserBaseKey userKey,
             @Nullable SocialNetworkEnum socialNetworkEnum,
             @NotNull String query,
-            @Nullable Callback<FriendDTOList> callback)
+            @Nullable Callback<UserFriendsDTOList> callback)
     {
-        MiddleCallback<FriendDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.searchSocialFriends(userKey.key, socialNetworkEnum, query, middleCallback);
         return middleCallback;
     }
 
-    public FriendDTOList searchSocialFriends(@NotNull UserBaseKey userKey, @NotNull SocialNetworkEnum socialNetworkEnum, @NotNull String query)
+    public UserFriendsDTOList searchSocialFriends(@NotNull UserBaseKey userKey, @NotNull SocialNetworkEnum socialNetworkEnum, @NotNull String query)
     {
         return userService.searchSocialFriends(userKey.key, socialNetworkEnum, query);
     }

@@ -7,6 +7,7 @@ import android.provider.ContactsContract.Contacts;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -164,7 +165,7 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
                         contactEntry.setName(currentEmail);
                     }
                 }
-                contactEntries.add(UserFriendsDTO.parse(contactEntry));
+                contactEntries.add(new UserFriendsContactEntryDTO(contactEntry));
             }
 
             if (contactQueryCursor != null && !contactQueryCursor.isClosed())

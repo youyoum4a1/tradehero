@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +20,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.social.UserFriendsFacebookDTO;
+import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
+import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -64,7 +67,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<FacebookSocialFriendHandler> facebookSocialFriendHandlerProvider;
 
-    private FriendDTOList userFriendsDTOs;
+    private UserFriendsDTOList userFriendsDTOs;
     private Runnable searchTask;
     private MiddleCallback searchCallback;
     private SocialLinkHelper socialLinkHelper;
@@ -374,11 +377,11 @@ public class FriendsInvitationFragment extends DashboardFragment
     protected void handleInviteUsers(UserFriendsDTO userToInvite)
     {
         List<UserFriendsDTO> usersToInvite = Arrays.asList(userToInvite);
-        if (!TextUtils.isEmpty(userToInvite.liId) || !TextUtils.isEmpty(userToInvite.twId))
+        if (userToInvite instanceof UserFriendsLinkedinDTO || userToInvite instanceof UserFriendsTwitterDTO)
         {
             socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
         }
-        else if (!TextUtils.isEmpty(userToInvite.fbId))
+        else if (userToInvite instanceof UserFriendsFacebookDTO)
         {
             //TODO do invite on the client side.
             facebookSocialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
@@ -490,17 +493,17 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    private FriendDTOList filterTheDuplicated(List<UserFriendsDTO> friendDTOList)
+    private UserFriendsDTOList filterTheDuplicated(List<UserFriendsDTO> friendDTOList)
     {
         TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
         hashSet.addAll(friendDTOList);
-        return new FriendDTOList(hashSet);
+        return new UserFriendsDTOList(hashSet);
     }
 
-    class SearchFriendsCallback implements Callback<FriendDTOList>
+    class SearchFriendsCallback implements Callback<UserFriendsDTOList>
     {
         @Override
-        public void success(FriendDTOList userFriendsDTOs, Response response)
+        public void success(UserFriendsDTOList userFriendsDTOs, Response response)
         {
             FriendsInvitationFragment.this.userFriendsDTOs = filterTheDuplicated(userFriendsDTOs);
             bindSearchData();
