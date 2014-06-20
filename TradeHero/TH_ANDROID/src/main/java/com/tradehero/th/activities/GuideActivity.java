@@ -39,8 +39,8 @@ public class GuideActivity extends Activity
         list.add(R.drawable.guide1);
         list.add(R.drawable.guide2);
         list.add(R.drawable.guide3);
-        list.add(R.drawable.guide4);
-        list.add(R.drawable.guide5);
+        //list.add(R.drawable.guide4);
+        //list.add(R.drawable.guide5);
 
         viewpager.setAdapter(new ListViewPagerAdapter(list));
         viewpager.setOnPageChangeListener(this);
