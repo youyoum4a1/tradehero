@@ -48,10 +48,7 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        if (currentUserId != null)
-        {
-            getArguments().putInt(BUNDLE_KEY_SHOW_USER_ID, currentUserId.get());
-        }
+        thRouter.save(getArguments(), currentUserId.toUserBaseKey());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

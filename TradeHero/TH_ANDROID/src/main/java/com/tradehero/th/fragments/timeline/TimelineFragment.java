@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.thoj.route.InjectRoute;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -71,7 +72,6 @@ import timber.log.Timber;
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
-    public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
     private View loadingView;
     private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
 
@@ -80,7 +80,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         TIMELINE, PORTFOLIO_LIST, STATS
     }
 
-    @Inject THRouter thRouter;
+    @Inject protected THRouter thRouter;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -101,7 +101,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private MainTimelineAdapter mainTimelineAdapter;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     protected ActionBar actionBar;
-    protected UserBaseKey shownUserBaseKey;
+    @InjectRoute UserBaseKey shownUserBaseKey;
     protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
@@ -319,10 +319,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        UserBaseKey newUserBaseKey =
-                new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
+        thRouter.inject(this, getArguments());
         //create adapter and so on
-        linkWith(newUserBaseKey, true);
+        linkWith(shownUserBaseKey, true);
 
         getActivity().getSupportLoaderManager().initLoader(
                 mainTimelineAdapter.getTimelineLoaderId(), null,

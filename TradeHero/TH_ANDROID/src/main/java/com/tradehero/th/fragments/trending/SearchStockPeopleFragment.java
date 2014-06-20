@@ -43,6 +43,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
@@ -74,6 +75,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
     @Inject THLocalyticsSession localyticsSession;
+    @Inject THRouter thRouter;
 
     @InjectView(R.id.search_empty_container) RelativeLayout searchEmptyContainer;
     @InjectView(R.id.search_empty_textview) TextView searchEmptyTextView;
@@ -574,9 +576,9 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         // TODO put back in
 
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
+        thRouter.save(args, userBaseKey);
 
-       getNavigator().pushFragment(PushableTimelineFragment.class, args);
+        getNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 
     //<editor-fold desc="Accessors">

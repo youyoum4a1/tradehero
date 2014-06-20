@@ -49,6 +49,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -98,6 +99,7 @@ public class PositionListFragment
 
     protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOTask;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(Bundle args, GetPositionsDTOKey getPositionsDTOKey)
@@ -686,9 +688,9 @@ public class PositionListFragment
     @Override public void onTimelineRequested(UserBaseKey userBaseKey)
     {
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
-                PushableTimelineFragment.class, args);
+        thRouter.save(args, userBaseKey);
+        ((DashboardActivity) getActivity())
+                .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
     //</editor-fold>
 

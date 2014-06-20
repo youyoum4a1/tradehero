@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class UserBaseKey extends AbstractIntegerDTOKey
 {
-    public static final String BUNDLE_KEY_KEY = UserBaseKey.class.getName() + ".key";
+    private static final String BUNDLE_KEY_KEY = UserBaseKey.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
     public UserBaseKey()
@@ -25,6 +25,12 @@ public class UserBaseKey extends AbstractIntegerDTOKey
         super(args);
     }
     //</editor-fold>
+
+    @RouteProperty
+    public Integer getUserId()
+    {
+        return key;
+    }
 
     @RouteProperty
     public void setUserId(int userId)

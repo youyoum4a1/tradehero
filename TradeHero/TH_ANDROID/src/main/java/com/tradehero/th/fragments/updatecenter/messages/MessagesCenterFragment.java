@@ -44,6 +44,7 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +68,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject THRouter thRouter;
 
     private DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchMessageTask;
     private MessageListKey nextOlderMessageListKey;
@@ -292,7 +294,7 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 targetUser = messageHeaderDTO.senderUserId;
             }
-            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, targetUser);
+            thRouter.save(bundle, new UserBaseKey(targetUser));
             Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s",messageHeaderDTO.recipientUserId,messageHeaderDTO.senderUserId,currentUserId.get());
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }

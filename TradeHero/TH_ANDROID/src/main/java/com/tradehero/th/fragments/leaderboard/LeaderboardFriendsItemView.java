@@ -41,7 +41,6 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -56,6 +55,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -110,6 +110,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject THRouter thRouter;
 
     public LeaderboardFriendsItemView(Context context)
     {
@@ -635,7 +636,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         if (mLeaderboardUserDTO != null && currentUserId != null)
         {
             Bundle bundle = new Bundle();
-            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, mLeaderboardUserDTO.id);
+            thRouter.save(bundle, new UserBaseKey(mLeaderboardUserDTO.id));
             DashboardNavigator dashboardNavigator =
                     ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
             if (dashboardNavigator != null)
