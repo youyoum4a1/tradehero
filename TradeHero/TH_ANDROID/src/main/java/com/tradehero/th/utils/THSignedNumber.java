@@ -128,7 +128,7 @@ public class THSignedNumber
             precision = precisionFromNumber();
         }
 
-        color = ColorUtils.getColorResourceForNumber(number);
+        color = ColorUtils.getColorResourceIdForNumber(number);
         String numberFormat = "%s%." + precision + "f";
 
         String trailingZeroRemovedNumber = String.format(numberFormat, sign, Math.abs(number));
@@ -177,7 +177,7 @@ public class THSignedNumber
         }
         DecimalFormat df = new DecimalFormat(sb.toString());
 
-        color = ColorUtils.getColorResourceForNumber(number);
+        color = ColorUtils.getColorResourceIdForNumber(number);
         String numberFormat = "%s%s %s";
 
         String trailingZeroRemovedNumber = df.format(Math.abs(number));

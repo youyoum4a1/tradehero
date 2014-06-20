@@ -321,7 +321,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                                     new DecimalFormat("##.##").format(gainLoss));
                         }
 
-                        gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(pl)));
+                        gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceIdForNumber(pl)));
                     }
                     else
                     {
