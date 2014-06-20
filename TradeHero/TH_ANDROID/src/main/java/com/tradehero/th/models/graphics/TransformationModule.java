@@ -82,10 +82,6 @@ public class TransformationModule
         };
         transformation.add(new GrayscaleTransformation(picasso));
 		transformation.add(new StackBlurTransformation(10));
-//        transformation.add(new FastBlurTransformation(10));
-        transformation.add(new RoundedCornerTransformation(
-                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                context.getResources().getColor(R.color.black)));
         return transformation;
     }
 
@@ -101,10 +97,6 @@ public class TransformationModule
         };
         transformation.add(new GrayscaleTransformation(picasso));
 		transformation.add(new StackBlurTransformation(10));
-//        transformation.add(new FastBlurTransformation(10));
-        transformation.add(new RoundedCornerTransformation(
-                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                context.getResources().getColor(R.color.black)));
         transformation.add(new AlphaTransformation(0.2f));
         return transformation;
     }
@@ -118,6 +110,9 @@ public class TransformationModule
     @Provides @ForSearchPeopleItemBackground
     public Transformation provideSearchPeopleItemBackgroundTransformation(Context context, Picasso picasso)
     {
+
+		int rad = context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius);
+
         AbstractSequentialTransformation backgroundTransformation = new AbstractSequentialTransformation()
         {
             @Override public String key()
@@ -127,9 +122,7 @@ public class TransformationModule
         };
         backgroundTransformation.add(new GrayscaleTransformation(picasso));
         backgroundTransformation.add(new GaussianTransformation());
-        backgroundTransformation.add(new RoundedCornerTransformation(
-                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                context.getResources().getColor(R.color.black)));
+        backgroundTransformation.add(new RoundedCornerShaderTransformation(rad));
         return backgroundTransformation;
     }
 
