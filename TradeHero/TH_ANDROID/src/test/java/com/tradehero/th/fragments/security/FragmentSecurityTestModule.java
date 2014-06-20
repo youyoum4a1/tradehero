@@ -9,6 +9,6 @@ import dagger.Module;
         complete = false,
         library = true
 )
-public class SecurityTestModule
+public class FragmentSecurityTestModule
 {
 }

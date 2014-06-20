@@ -52,6 +52,8 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeCompactDTODescriptionNameComparator;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
@@ -64,6 +66,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class TrendingFragment extends SecurityListFragment
@@ -113,7 +117,7 @@ public class TrendingFragment extends SecurityListFragment
         }
         else
         {
-            this.trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
+            this.trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getActivity().getResources());
         }
 
         createExchangeListTypeCacheListener();
@@ -193,7 +197,7 @@ public class TrendingFragment extends SecurityListFragment
                     if (listView != null && height > 0)
                     {
                         getSecurityListView().setPadding((int) getResources().getDimension(
-                                R.dimen.trending_list_padding_left_and_right),
+                                        R.dimen.trending_list_padding_left_and_right),
                                 height > 103 ? height + 10 : (int) getResources().getDimension(
                                         R.dimen.trending_list_padding_top),
                                 (int) getResources().getDimension(
@@ -312,16 +316,6 @@ public class TrendingFragment extends SecurityListFragment
         return SECURITY_ID_LIST_LOADER_ID;
     }
 
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        Timber.d("onSaveInstanceState");
-        super.onSaveInstanceState(outState);
-        if (this.trendingFilterTypeDTO != null)
-        {
-            outState.putBundle(BUNDLE_KEY_TRENDING_FILTER_TYPE_DTO, this.trendingFilterTypeDTO.getArgs());
-        }
-    }
-
     private void fetchExchangeList()
     {
         detachExchangeListCache();
@@ -344,21 +338,26 @@ public class TrendingFragment extends SecurityListFragment
                     exchangeCompactDTOList.add(exchangeDTO);
                 }
             }
-            Collections.sort(exchangeCompactDTOList, new ExchangeCompactDTODescriptionNameComparator());
+            Collections.sort(exchangeCompactDTOList, new ExchangeCompactDTODescriptionNameComparator<>());
 
-            setDefaultExchange(exchangeDTOs);
-            filterSelectorView.setUpExchangeSpinner(exchangeCompactDTOList);
-            filterSelectorView.apply(trendingFilterTypeDTO);
+            linkWith(new ExchangeCompactSpinnerDTOList(getActivity().getResources(), exchangeCompactDTOList), andDisplay);
         }
     }
 
-    private void setDefaultExchange(ExchangeCompactDTOList exchangeCompactDTOs)
+    private void linkWith(ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs, boolean andDisplay)
+    {
+        setDefaultExchange(exchangeCompactSpinnerDTOs);
+        filterSelectorView.setUpExchangeSpinner(exchangeCompactSpinnerDTOs);
+        filterSelectorView.apply(trendingFilterTypeDTO);
+    }
+
+    private void setDefaultExchange(ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs)
     {
         if (DeviceTokenHelper.isChineseVersion())
         {
-            if (trendingFilterTypeDTO != null && exchangeCompactDTOs != null)
+            if (trendingFilterTypeDTO != null && exchangeCompactSpinnerDTOs != null)
             {
-                for (ExchangeCompactDTO e : exchangeCompactDTOs)
+                for (ExchangeCompactSpinnerDTO e : exchangeCompactSpinnerDTOs)
                 {
                     if (Exchange.SHA.name().equalsIgnoreCase(e.name))
                     {
@@ -369,24 +368,24 @@ public class TrendingFragment extends SecurityListFragment
         }
     }
 
-    @Override public TrendingSecurityListType getSecurityListType(int page)
+    @Override @NotNull public TrendingSecurityListType getSecurityListType(int page)
     {
-        return trendingFilterTypeDTO.getSecurityListType(getUsableExchangeName(), page, perPage);
+        return trendingFilterTypeDTO.getSecurityListType(getApiName(), page, perPage);
     }
 
-    protected String getUsableExchangeName()
+    @Nullable protected String getApiName()
     {
-        if (trendingFilterTypeDTO != null && trendingFilterTypeDTO.exchange != null && trendingFilterTypeDTO.exchange.name != null)
+        if (trendingFilterTypeDTO != null)
         {
-            return trendingFilterTypeDTO.exchange.name;
+            return trendingFilterTypeDTO.exchange.getApiName();
         }
-        return TrendingSecurityListType.ALL_EXCHANGES;
+        return null;
     }
 
     public void pushSearchIn()
     {
         Bundle args = new Bundle();
-        getNavigator().pushFragment(SecuritySearchFragment.class, args);
+        getDashboardNavigator().pushFragment(SecuritySearchFragment.class, args);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

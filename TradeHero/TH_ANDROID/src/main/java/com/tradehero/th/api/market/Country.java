@@ -4,6 +4,7 @@ import com.tradehero.th.R;
 
 public enum Country
 {
+    NONE(R.drawable.default_image),
     AD(R.drawable.square_ad),
     AE(R.drawable.square_ae),
     AF(R.drawable.square_af),

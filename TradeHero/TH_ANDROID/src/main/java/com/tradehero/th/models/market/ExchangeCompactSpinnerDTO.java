@@ -1,35 +1,74 @@
 package com.tradehero.th.models.market;
 
-import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.R;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements CharSequence
 {
-    private final Context context;
+    public static final String ALL_EXCHANGES = "allExchanges";
 
-    //<editor-fold desc="Constructors">
-    public ExchangeCompactSpinnerDTO(@NotNull Context context)
+    @NotNull private final Resources resources;
+    @Nullable private Drawable flagDrawable;
+
+    public static String getName(@NotNull Resources resources, @NotNull Bundle args)
     {
-        this.context = context;
-        // This will in effect be the "All Exchanges"
+        return args.getString(BUNDLE_KEY_NAME, resources.getString(R.string.trending_filter_exchange_all));
     }
 
-    public ExchangeCompactSpinnerDTO(@NotNull Context context, @NotNull ExchangeCompactDTO exchangeDTO)
+    //<editor-fold desc="Constructors">
+    public ExchangeCompactSpinnerDTO(@NotNull Resources resources)
+    {
+        super(-1,
+                ALL_EXCHANGES,
+                Country.NONE.name(),
+                0,
+                null,
+                false,
+                true,
+                false);
+        this.resources = resources;
+    }
+
+    public ExchangeCompactSpinnerDTO(@NotNull Resources resources, @NotNull ExchangeCompactDTO exchangeDTO)
     {
         super(exchangeDTO);
-        this.context = context;
+        this.resources = resources;
+    }
+
+    public ExchangeCompactSpinnerDTO(@NotNull Resources resources, @NotNull Bundle bundle)
+    {
+        super(bundle);
+        this.resources = resources;
+        this.name = getName(resources, bundle);
     }
     //</editor-fold>
 
+    @Nullable @JsonIgnore public String getApiName()
+    {
+        return name.equals(ALL_EXCHANGES) ? null : name;
+    }
+
+    @NotNull @JsonIgnore public String getUsableDisplayName()
+    {
+        return name.equals(ALL_EXCHANGES) ? resources.getString(R.string.trending_filter_exchange_all) : name;
+    }
+
     @Override @NotNull public String toString()
     {
-        if (name == null && desc == null)
+        String usableName = getUsableDisplayName();
+        if (desc == null)
         {
-            return context.getString(R.string.trending_filter_exchange_all);
+            return usableName;
         }
-        return context.getString(R.string.trending_filter_exchange_drop_down, name, desc);
+        return resources.getString(R.string.trending_filter_exchange_drop_down, usableName, desc);
     }
 
     //<editor-fold desc="CharSequence">
@@ -48,4 +87,40 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
         return toString().length();
     }
     //</editor-fold>
+
+    @Nullable public Drawable getFlagDrawable()
+    {
+        if (flagDrawable == null)
+        {
+            Integer flagResId = getFlagResId();
+            if (flagResId != null)
+            {
+                try
+                {
+                    flagDrawable = resources.getDrawable(flagResId);
+                }
+                catch (OutOfMemoryError e)
+                {
+                    Timber.e(e, "Inflating flag for %s", name);
+                }
+            }
+        }
+        return flagDrawable;
+    }
+
+    @Override public int hashCode()
+    {
+        return name.hashCode();
+    }
+
+    @Override public boolean equals(Object other)
+    {
+        return other instanceof ExchangeCompactSpinnerDTO &&
+                equals((ExchangeCompactSpinnerDTO) other);
+    }
+
+    protected boolean equals(@NotNull ExchangeCompactSpinnerDTO other)
+    {
+        return name.equals(other.name);
+    }
 }

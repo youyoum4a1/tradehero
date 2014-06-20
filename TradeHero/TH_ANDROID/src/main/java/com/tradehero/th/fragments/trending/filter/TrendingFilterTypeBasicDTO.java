@@ -1,10 +1,13 @@
 package com.tradehero.th.fragments.trending.filter;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TrendingFilterTypeBasicDTO extends TrendingFilterTypeDTO
 {
@@ -14,50 +17,53 @@ public class TrendingFilterTypeBasicDTO extends TrendingFilterTypeDTO
     public static final String TRACK_EVENT_SYMBOL = "Trending Securities";
 
     //<editor-fold desc="Constructors">
-    public TrendingFilterTypeBasicDTO()
+    public TrendingFilterTypeBasicDTO(@NotNull Resources resources)
     {
-        super(
+        super(resources,
                 DEFAULT_TITLE_RES_ID,
                 DEFAULT_ICON_RES_ID,
                 DEFAULT_DESCRIPTION_RES_ID);
     }
 
-    public TrendingFilterTypeBasicDTO(ExchangeCompactDTO exchangeCompactDTO)
+    public TrendingFilterTypeBasicDTO(@NotNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
     {
         super(
                 DEFAULT_TITLE_RES_ID,
                 DEFAULT_ICON_RES_ID,
                 DEFAULT_DESCRIPTION_RES_ID,
-                exchangeCompactDTO);
+                exchangeCompactSpinnerDTO);
     }
 
-    public TrendingFilterTypeBasicDTO(Bundle bundle)
+    public TrendingFilterTypeBasicDTO(@NotNull Resources resources, @NotNull Bundle bundle)
     {
-        super(bundle);
+        super(resources, bundle);
     }
     //</editor-fold>
 
-    @Override public TrendingFilterTypeDTO getPrevious()
+    @Override @NotNull public TrendingFilterTypeDTO getPrevious()
     {
         return new TrendingFilterTypeGenericDTO(exchange);
     }
 
-    @Override public TrendingFilterTypeDTO getNext()
+    @Override @NotNull public TrendingFilterTypeDTO getNext()
     {
         return new TrendingFilterTypeVolumeDTO(exchange);
     }
 
-    @Override public TrendingSecurityListType getSecurityListType(String usableExchangeName, Integer page, Integer perPage)
+    @Override @NotNull public TrendingSecurityListType getSecurityListType(
+            @Nullable String usableExchangeName,
+            @Nullable Integer page,
+            @Nullable Integer perPage)
     {
         return new TrendingBasicSecurityListType(usableExchangeName, page, perPage);
     }
 
-    @Override public String getTrackEventCategory()
+    @Override @NotNull public String getTrackEventCategory()
     {
         return TRACK_EVENT_SYMBOL;
     }
 
-    @Override protected void putParameters(Bundle args)
+    @Override protected void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
         args.putString(BUNDLE_KEY_CLASS_TYPE, TrendingFilterTypeBasicDTO.class.getName());

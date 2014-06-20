@@ -1,6 +1,7 @@
 package com.tradehero.th.api.market;
 
 import android.os.Bundle;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -8,27 +9,32 @@ import timber.log.Timber;
 
 public class ExchangeCompactDTO implements DTO
 {
-    public static final String BUNDLE_KEY_ID = ExchangeDTO.class.getName() + ".id";
+    private static final String BUNDLE_KEY_ID = ExchangeDTO.class.getName() + ".id";
     public static final String BUNDLE_KEY_NAME = ExchangeDTO.class.getName() + ".name";
-    public static final String BUNDLE_KEY_DESC = ExchangeDTO.class.getName() + ".desc";
-    public static final String BUNDLE_KEY_IS_INCLUDED_IN_TRENDING = ExchangeDTO.class.getName() + ".isIncludedInTrending";
+    private static final String BUNDLE_KEY_DESC = ExchangeDTO.class.getName() + ".desc";
+    private static final String BUNDLE_KEY_IS_INCLUDED_IN_TRENDING = ExchangeDTO.class.getName() + ".isIncludedInTrending";
 
     public int id;
     @NotNull public String name;
     @NotNull public String countryCode;
     public double sumMarketCap;
-    public String desc;
+    @Nullable public String desc;
     public boolean isInternal;
     public boolean isIncludedInTrending;
     public boolean chartDataSource;
 
     //<editor-fold desc="Constructors">
-    public ExchangeCompactDTO()
+    protected ExchangeCompactDTO()
     {
-        super();
     }
 
-    public ExchangeCompactDTO(int id, @NotNull String name, @NotNull String countryCode, double sumMarketCap, String desc, boolean isInternal,
+    public ExchangeCompactDTO(
+            int id,
+            @NotNull String name,
+            @NotNull String countryCode,
+            double sumMarketCap,
+            String desc,
+            boolean isInternal,
             boolean isIncludedInTrending,
             boolean chartDataSource)
     {
@@ -66,17 +72,17 @@ public class ExchangeCompactDTO implements DTO
     }
     //</editor-fold>
 
-    public ExchangeIntegerId getExchangeIntegerId()
+    @JsonIgnore public ExchangeIntegerId getExchangeIntegerId()
     {
         return new ExchangeIntegerId(id);
     }
 
-    public ExchangeStringId getExchangeStringId()
+    @JsonIgnore public ExchangeStringId getExchangeStringId()
     {
         return new ExchangeStringId(name);
     }
 
-    public Integer getFlagResId()
+    @Nullable @JsonIgnore public Integer getFlagResId()
     {
         Integer fromName = getNameFlagResId();
         if (fromName != null)
@@ -86,7 +92,7 @@ public class ExchangeCompactDTO implements DTO
         return getCountryCodeFlagResId();
     }
 
-    @Nullable public Integer getNameFlagResId()
+    @Nullable @JsonIgnore public Integer getNameFlagResId()
     {
         try
         {
@@ -94,12 +100,12 @@ public class ExchangeCompactDTO implements DTO
         }
         catch (IllegalArgumentException e)
         {
-            Timber.e(e, "Exchange logo does not exist for name", name);
+            Timber.e(e, "Exchange logo does not exist for name %s", name);
         }
         return null;
     }
 
-    @Nullable public Integer getCountryCodeFlagResId()
+    @Nullable @JsonIgnore public Integer getCountryCodeFlagResId()
     {
         try
         {
@@ -112,7 +118,20 @@ public class ExchangeCompactDTO implements DTO
         return null;
     }
 
-    protected void putParameters(Bundle args)
+    @Nullable @JsonIgnore public Country getCountry()
+    {
+        try
+        {
+            return Country.valueOf(countryCode);
+        }
+        catch (IllegalArgumentException e)
+        {
+            Timber.e(e, "No Country for countryCode %s", countryCode);
+        }
+        return null;
+    }
+
+    protected void putParameters(@NotNull Bundle args)
     {
         args.putInt(BUNDLE_KEY_ID, this.id);
         args.putString(BUNDLE_KEY_NAME, this.name);
@@ -120,7 +139,7 @@ public class ExchangeCompactDTO implements DTO
         args.putBoolean(BUNDLE_KEY_IS_INCLUDED_IN_TRENDING, this.isIncludedInTrending);
     }
 
-    public Bundle getArgs()
+    @NotNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);

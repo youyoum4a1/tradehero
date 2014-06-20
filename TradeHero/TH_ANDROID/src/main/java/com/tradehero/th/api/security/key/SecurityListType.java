@@ -1,11 +1,12 @@
 package com.tradehero.th.api.security.key;
 
 import com.tradehero.common.api.PagedDTOKey;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class SecurityListType implements Comparable<SecurityListType>, PagedDTOKey
 {
-    public final Integer page;
-    public final Integer perPage;
+    @Nullable public final Integer page;
+    @Nullable public final Integer perPage;
 
     //<editor-fold desc="Constructors">
     protected SecurityListType(SecurityListType other)
@@ -14,14 +15,14 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
         this.perPage = other.perPage;
     }
 
-    protected SecurityListType(Integer page, Integer perPage)
+    protected SecurityListType(@Nullable Integer page, @Nullable Integer perPage)
     {
         this.page = page;
         this.perPage = perPage;
         validate();
     }
 
-    protected SecurityListType(Integer page)
+    protected SecurityListType(@Nullable Integer page)
     {
         this.page = page;
         this.perPage = null;

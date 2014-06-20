@@ -22,7 +22,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.StringUtils;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -41,6 +40,7 @@ import retrofit.Callback;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final CurrentUserId currentUserId;
 
+    //<editor-fold desc="Constructors">
     @Inject public SecurityServiceWrapper(
             @NotNull SecurityService securityService,
             @NotNull SecurityServiceAsync securityServiceAsync,
@@ -59,6 +59,7 @@ import retrofit.Callback;
         this.userProfileCache = userProfileCache;
         this.currentUserId = currentUserId;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Get Multiple Securities">
     public Map<Integer, SecurityCompactDTO> getMultipleSecurities(@NotNull SecurityIntegerIdList ids)
@@ -89,28 +90,28 @@ import retrofit.Callback;
             if (trendingKey instanceof TrendingBasicSecurityListType)
             {
                 received = this.securityService.getTrendingSecurities(
-                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingPriceSecurityListType)
             {
                 received =  this.securityService.getTrendingSecuritiesByPrice(
-                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingVolumeSecurityListType)
             {
                 received =  this.securityService.getTrendingSecuritiesByVolume(
-                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingAllSecurityListType)
             {
                 received =  this.securityService.getTrendingSecuritiesAllInExchange(
-                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
@@ -149,7 +150,7 @@ import retrofit.Callback;
             if (trendingKey instanceof TrendingBasicSecurityListType)
             {
                 this.securityServiceAsync.getTrendingSecurities(
-                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage,
                         middleCallback);
@@ -157,7 +158,7 @@ import retrofit.Callback;
             else if (trendingKey instanceof TrendingPriceSecurityListType)
             {
                 this.securityServiceAsync.getTrendingSecuritiesByPrice(
-                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage,
                         middleCallback);
@@ -165,7 +166,7 @@ import retrofit.Callback;
             else if (trendingKey instanceof TrendingVolumeSecurityListType)
             {
                 this.securityServiceAsync.getTrendingSecuritiesByVolume(
-                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage,
                         middleCallback);
@@ -173,7 +174,7 @@ import retrofit.Callback;
             else if (trendingKey instanceof TrendingAllSecurityListType)
             {
                 this.securityServiceAsync.getTrendingSecuritiesAllInExchange(
-                        trendingKey.exchange.equals(TrendingSecurityListType.ALL_EXCHANGES) ? null : trendingKey.exchange,
+                        trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage,
                         middleCallback);
