@@ -96,6 +96,7 @@ public class LocalyticsConstants
     public static final String WeiBo = "WeiBo";//
     public static final String QQ = "QQ";//
     public static final String Email = "Email";//
+    public static final String InviteFriends = "InviteFriends";//
 
     public static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
     public static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
