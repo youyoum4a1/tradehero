@@ -290,7 +290,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                         //profitIndicator.setText(getContext().getString(R.string.negative_prefix));
                         profitIndicator.setText(R.string.arrow_prefix_negative);
                     }
-                    profitIndicator.setTextColor(ColorUtils.getColorForPercentage(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
+                    profitIndicator.setTextColor(ColorUtils.getProperColorForNumber(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
                 }
             }
         }

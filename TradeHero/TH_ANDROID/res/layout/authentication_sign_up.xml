@@ -1,106 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-  <RelativeLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:descendantFocusability="afterDescendants"
+    >
+
+  <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical"
+      android:fillViewport="true"
+      android:layout_weight="1"
       android:background="@drawable/authentication_bg"
       >
-      <!--style="@style/TradeHero.Authentication"-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/authentication_sign_in_with"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:text="@string/authentication_sign_in_with"-->
-        <!--android:textColor="@color/text_gray_normal"-->
-        <!--android:textSize="@dimen/authentication_head_text_size"/>-->
-
-    <ImageView
-        android:id="@+id/authentication_logo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_80"
-        android:layout_marginLeft="@dimen/customer_margin_100"
-        android:layout_marginRight="@dimen/customer_margin_100"
-        android:src="@drawable/logo_text"/>
-
-    <include
-        android:id="@+id/authentication_social_sign_up"
-        android:layout_below="@id/authentication_logo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/common_margin_80"
-        android:layout_marginRight="@dimen/common_margin_50"
-        android:layout_marginLeft="@dimen/common_margin_50"
-        layout="@layout/authentication_social_auth_sign_up"
-        />
-
-    <!--<LinearLayout-->
-        <!--android:layout_below="@id/authentication_social_sign_up"-->
-        <!--android:id="@+id/authentication_email_sign_in_link"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:paddingTop="10dip"-->
-        <!--android:paddingBottom="10dip"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!-->-->
-      <!--<TextView-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:text="@string/authentication_sign_in_with_email"-->
-          <!--android:textColor="@color/text_gray_normal"-->
-          <!--android:textSize="@dimen/authentication_head_text_size"-->
-          <!--android:singleLine="true"-->
-          <!--/>-->
-      <!--<TextView-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:text="@string/authentication_email_address"-->
-          <!--android:textColor="@color/authentication_link_text"-->
-          <!--android:textSize="@dimen/authentication_head_text_size"-->
-          <!--android:singleLine="true"-->
-          <!--/>-->
-
-    <!--</LinearLayout>-->
-
-    <include
-        android:id="@+id/authentication_agreement"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/authentication_social_sign_up"
-        layout="@layout/authentication_agreement"
-        android:layout_marginTop="@dimen/common_margin_50"
-        android:layout_centerHorizontal="true"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/common_margin_60"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="@color/authentication_forgot_password_link">
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/already_registered"
-          android:textSize="@dimen/common_text_size_25"/>
-      <TextView
-          android:id="@+id/authentication_by_sign_in_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/log_in_now"
-          android:textColor="@color/timeline_action_button_text_color_pressed"
-          android:textStyle="bold"
-          android:textSize="@dimen/common_text_size_25"/>
-    </LinearLayout>
-  </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
-<!--</ScrollView>-->
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:layout_marginTop="@dimen/common_margin_30"
+          >
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+        <ImageView
+            android:id="@+id/authentication_logo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:src="@drawable/logo_text"
+            android:contentDescription="@null"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginTop="@dimen/common_margin_30"
+          >
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+        <include
+            android:id="@+id/authentication_social_sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/authentication_social_auth_sign_up"
+            android:layout_weight="2"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          />
+
+      <include
+          android:id="@+id/authentication_agreement"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          layout="@layout/authentication_agreement"
+          android:layout_gravity="bottom"
+          android:layout_marginTop="@dimen/common_margin_30"
+          android:layout_marginBottom="@dimen/common_margin_30"
+          />
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          />
+
+    </LinearLayout>
+
+  </ScrollView>
+
+  <LinearLayout
+      android:id="@+id/authentication_by_sign_in_button"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/common_margin_60"
+      android:layout_weight="0"
+      android:orientation="horizontal"
+      android:gravity="center"
+      android:background="@color/authentication_forgot_password_link"
+      android:layout_gravity="bottom"
+      >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/already_registered"
+        android:textSize="@dimen/common_text_size_25"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/log_in_now"
+        android:textColor="@color/timeline_action_button_text_color_pressed"
+        android:textStyle="bold"
+        android:textSize="@dimen/common_text_size_25"/>
+
+  </LinearLayout>
+
+</LinearLayout>

@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class AbstractPositionItemAdapter
@@ -46,7 +48,7 @@ public class AbstractPositionItemAdapter
         return true;
     }
 
-    public void setItems(List<PositionDTO> dtos)
+    public void setItems(@Nullable List<PositionDTO> dtos)
     {
         List<PositionItemType> newItemTypes = new ArrayList<>();
         List<Object> newItems = new ArrayList<>();
@@ -66,7 +68,7 @@ public class AbstractPositionItemAdapter
             PositionDTOList<PositionDTO> closedPositions = new PositionDTOList<>();
 
             // Split in open / closed
-            for (PositionDTO positionDTO : dtos)
+            for (@NotNull PositionDTO positionDTO : dtos)
             {
                 if (positionDTO.isLocked())
                 {

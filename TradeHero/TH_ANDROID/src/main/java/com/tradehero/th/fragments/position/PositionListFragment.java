@@ -634,7 +634,7 @@ public class PositionListFragment
                     BuySellFragment.putApplicablePortfolioId(args, clickedPositionDTO.getOwnedPortfolioId());
                 }
                 args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
-                getNavigator().pushFragment(BuySellFragment.class, args);
+                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
         else
@@ -721,7 +721,7 @@ public class PositionListFragment
             Bundle args = new Bundle();
             AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getNavigator().pushFragment(AlertCreateFragment.class, args);
+            getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else
         {
@@ -742,7 +742,7 @@ public class PositionListFragment
         {
             Bundle args = new Bundle();
             args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getNavigator().pushFragment(StockInfoFragment.class, args);
+            getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
         }
     }
     //</editor-fold>

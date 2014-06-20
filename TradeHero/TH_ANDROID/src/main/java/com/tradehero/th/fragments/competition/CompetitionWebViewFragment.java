@@ -27,7 +27,7 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
         switch (item.getItemId())
         {
             case R.id.webview_done:
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
                 break;
         }
         return super.onOptionsItemSelected(item);

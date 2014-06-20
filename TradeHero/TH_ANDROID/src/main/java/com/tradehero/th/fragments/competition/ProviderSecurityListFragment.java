@@ -34,6 +34,7 @@ import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
@@ -41,7 +42,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     public final static int SECURITY_ID_LIST_LOADER_ID = 2531;
 
     // TODO sort warrants
-    protected ProviderId providerId;
+    @NotNull protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     @Inject ProviderCache providerCache;
@@ -58,12 +59,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     ActionBar actionBar;
     private MenuItem wizardButton;
 
-    public static void putProviderId(Bundle args, ProviderId providerId)
+    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    private static ProviderId getProviderId(Bundle args)
+    @NotNull private static ProviderId getProviderId(@NotNull Bundle args)
     {
         return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
     }
@@ -211,7 +212,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         return SECURITY_ID_LIST_LOADER_ID + providerId.key;
     }
 
-    @Override public ProviderSecurityListType getSecurityListType(int page)
+    @Override @NotNull public ProviderSecurityListType getSecurityListType(int page)
     {
         return new BasicProviderSecurityListType(providerId, page, perPage);
     }
@@ -221,7 +222,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (CompetitionWebViewFragment) getNavigator().pushFragment(
+        this.webViewFragment = getDashboardNavigator().pushFragment(
                 CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -231,7 +232,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
         SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        getNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
+        getDashboardNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
     @Override public boolean isTabBarVisible()
@@ -281,7 +282,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
-            getNavigator().pushFragment(BuySellFragment.class, args);
+            getDashboardNavigator().pushFragment(BuySellFragment.class, args);
         }
     }
 
@@ -309,7 +310,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
         @Override protected Navigator getNavigator()
         {
-            return ProviderSecurityListFragment.this.getNavigator();
+            return ProviderSecurityListFragment.this.getDashboardNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

@@ -151,7 +151,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getNavigator().pushFragment(HeroManagerFragment.class, bundle);
+        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -163,7 +163,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     @Override public boolean isTabBarVisible()

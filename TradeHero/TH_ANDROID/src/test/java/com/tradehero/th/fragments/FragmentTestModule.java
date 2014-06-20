@@ -1,11 +1,13 @@
 package com.tradehero.th.fragments;
 
-import com.tradehero.th.fragments.security.SecurityTestModule;
+import com.tradehero.th.fragments.security.FragmentSecurityTestModule;
+import com.tradehero.th.fragments.trending.filter.FragmentTrendingTestModule;
 import dagger.Module;
 
 @Module(
         includes = {
-                SecurityTestModule.class
+                FragmentSecurityTestModule.class,
+                FragmentTrendingTestModule.class,
         },
         complete = false,
         library = true

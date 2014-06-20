@@ -197,7 +197,7 @@ public class TradeListFragment extends DashboardFragment
             {
                 Bundle args = new Bundle();
                 populateBuySellArgs(args, isBuy, securityId);
-                getNavigator().pushFragment(BuySellFragment.class, args);
+                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
     }
@@ -215,7 +215,7 @@ public class TradeListFragment extends DashboardFragment
 
         if (!currentUserId.toUserBaseKey().equals(userId.key))
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+            getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
 

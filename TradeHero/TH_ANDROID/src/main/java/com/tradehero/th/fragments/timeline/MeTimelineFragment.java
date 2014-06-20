@@ -72,7 +72,7 @@ public class MeTimelineFragment extends TimelineFragment
             case R.id.menu_edit:
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
-                getNavigator().pushFragment(SettingsProfileFragment.class, bundle);
+                getDashboardNavigator().pushFragment(SettingsProfileFragment.class, bundle);
                 return true;
             case android.R.id.home:
                 resideMenuLazy.get().openMenu();

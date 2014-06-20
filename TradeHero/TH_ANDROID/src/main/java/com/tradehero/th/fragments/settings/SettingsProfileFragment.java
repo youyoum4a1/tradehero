@@ -70,7 +70,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.authentication_email_sign_up, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings_profile, container, false);
 
         initSetup(view);
         setHasOptionsMenu(true);

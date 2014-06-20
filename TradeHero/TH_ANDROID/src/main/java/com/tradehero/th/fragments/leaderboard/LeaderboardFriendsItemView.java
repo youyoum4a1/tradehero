@@ -57,6 +57,8 @@ import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -111,6 +113,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
+    @Inject Lazy<THLocalyticsSession> localyticsSessionLazy;
 
     public LeaderboardFriendsItemView(Context context)
     {
@@ -657,6 +660,14 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         if (mLeaderboardUserDTO.liId != null || mLeaderboardUserDTO.twId != null)
         {
+            if (mLeaderboardUserDTO.liId != null)
+            {
+                localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Linkedin);
+            }
+            else
+            {
+                localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Twitter);
+            }
             InviteFormDTO inviteFriendForm = new InviteFormDTO();
             inviteFriendForm.users = new ArrayList<>();
             inviteFriendForm.users.add(mLeaderboardUserDTO.getInviteDTO());
@@ -668,6 +679,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
         else if (mLeaderboardUserDTO.fbId != null)
         {
+            localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Facebook);
             if (Session.getActiveSession() == null)
             {
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),

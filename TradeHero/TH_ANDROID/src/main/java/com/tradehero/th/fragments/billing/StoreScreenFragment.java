@@ -154,7 +154,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void handlePositionClicked(int position)
     {
-        Bundle bundle;
         switch (position)
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:

@@ -78,7 +78,7 @@ public class PositionDTOUtils
         textView.setText(getRealizedPL(textView.getResources(), positionDTO));
         if (positionDTO.realizedPLRefCcy != null)
         {
-            textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(positionDTO.realizedPLRefCcy)));
+            textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceIdForNumber(positionDTO.realizedPLRefCcy)));
         }
         else
         {
@@ -172,7 +172,7 @@ public class PositionDTOUtils
         textView.setText(getUnrealizedPL(textView.getResources(), positionDTO));
         if (positionDTO.unrealizedPLRefCcy != null)
         {
-            textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(positionDTO.unrealizedPLRefCcy)));
+            textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceIdForNumber(positionDTO.unrealizedPLRefCcy)));
         }
         else
         {
@@ -238,7 +238,7 @@ public class PositionDTOUtils
             roiText += NumberDisplayUtils.formatWithRelevantDigits(Math.abs(roiValue * 100.0), 3) + "%";
             textView.setText(roiText);
             textView.setTextColor(
-                    ColorUtils.getColorForPercentage(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
+                    ColorUtils.getProperColorForNumber(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
         }
     }
 

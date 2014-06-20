@@ -2,10 +2,13 @@ package com.tradehero.th.models.market;
 
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import java.util.Comparator;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class ExchangeCompactDTODescriptionNameComparator implements Comparator<ExchangeCompactDTO>
+public class ExchangeCompactDTODescriptionNameComparator<ExchangeCompactDTOType extends ExchangeCompactDTO>
+        implements Comparator<ExchangeCompactDTOType>
 {
-    @Override public int compare(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
+    @Override public int compare(@Nullable ExchangeCompactDTOType lhs, @Nullable ExchangeCompactDTOType rhs)
     {
         if (lhs == null)
         {
@@ -26,13 +29,7 @@ public class ExchangeCompactDTODescriptionNameComparator implements Comparator<E
         return compareName(lhs, rhs);
     }
 
-    /**
-     * It assumes parameters are not null
-     * @param lhs
-     * @param rhs
-     * @return
-     */
-    protected int compareDesc(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
+    protected int compareDesc(@NotNull ExchangeCompactDTOType lhs, @NotNull ExchangeCompactDTOType rhs)
     {
         if (lhs.desc == null)
         {
@@ -45,22 +42,8 @@ public class ExchangeCompactDTODescriptionNameComparator implements Comparator<E
         return lhs.desc.compareTo(rhs.desc);
     }
 
-    /**
-     * It assumes parameters are not null
-     * @param lhs
-     * @param rhs
-     * @return
-     */
-    protected int compareName(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
+    protected int compareName(@NotNull ExchangeCompactDTOType lhs, @NotNull ExchangeCompactDTOType rhs)
     {
-        if (lhs.name == null)
-        {
-            return rhs.name == null ? 0 : 1;
-        }
-        if (rhs.name == null)
-        {
-            return -1;
-        }
         return lhs.name.compareTo(rhs.name);
     }
 }

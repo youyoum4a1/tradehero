@@ -10,14 +10,6 @@
       android:id="@+id/profile_info"
       >
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/user_profile_info_required"-->
-        <!--android:textColor="@color/text_gray_normal"-->
-        <!--android:layout_margin="5dip"-->
-        <!--android:textSize="18sp"/>-->
-
     <com.tradehero.th.widget.ServerValidatedEmailText
         android:id="@+id/authentication_sign_up_email"
         android:layout_width="match_parent"
@@ -43,7 +35,6 @@
         <!--android:drawableLeft="@drawable/accounts_glyph_email_default"-->
         <!--app:invalidDrawable="@drawable/accounts_glyph_email_error"-->
         <!--app:validDrawable="@drawable/accounts_glyph_email_ok"-->
-        <requestFocus/>
         </com.tradehero.th.widget.ServerValidatedEmailText>
 
     <com.tradehero.th.widget.ValidatedPasswordText
@@ -119,7 +110,9 @@
           app:progressIndicator="@+id/authentication_sign_up_username_validator"
           android:textSize="@dimen/common_text_size_30"
           android:background="@drawable/authentication_edit_text"
-          />
+          >
+         <requestFocus/>
+      </com.tradehero.th.widget.ServerValidatedUsernameText>
           <!--android:drawableLeft="@drawable/accounts_glyph_username_default"-->
           <!--app:invalidDrawable="@drawable/accounts_glyph_username_error"-->
           <!--app:validDrawable="@drawable/accounts_glyph_username_ok"-->
@@ -156,7 +149,6 @@
           android:layout_alignParentLeft="true"
           android:layout_centerVertical="true"
           android:adjustViewBounds="true"
-          android:background="@drawable/authentication_edit_text"
           android:gravity="center"
           android:src="@drawable/avatar"
           android:contentDescription="@string/empty"/>
@@ -199,4 +191,5 @@
     </RelativeLayout>
 
   </com.tradehero.th.fragments.settings.ProfileInfoView>
+
 </merge>

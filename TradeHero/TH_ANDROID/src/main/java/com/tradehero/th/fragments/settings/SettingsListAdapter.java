@@ -36,7 +36,7 @@ public class SettingsListAdapter extends BaseAdapter
     public SettingsListAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super();
-        this.items = new ArrayList<String>();
+        this.items = new ArrayList<>();
         this.context = context;
         this.inflater = inflater;
         this.layoutResourceId = layoutResourceId;

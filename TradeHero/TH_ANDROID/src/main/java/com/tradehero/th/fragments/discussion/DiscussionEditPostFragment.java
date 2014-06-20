@@ -194,7 +194,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         if (searchType != null)
         {
             bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, searchType.name());
-            searchStockPeopleFragment = (SearchStockPeopleFragment) getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
+            searchStockPeopleFragment = getDashboardNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
         }
     }
     //</editor-fold>
@@ -412,7 +412,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             isPosted = true;
 
             DeviceUtil.dismissKeyboard(getActivity());
-            getNavigator().popFragment();
+            getDashboardNavigator().popFragment();
         }
 
         @Override public void failure(RetrofitError error)

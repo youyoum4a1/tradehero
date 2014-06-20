@@ -308,7 +308,7 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO separate between Private and Broadcast
         ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKey);
         ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, correspondentId);
-        getNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
+        getDashboardNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
     }
 
     private void initViews(View view)

@@ -64,7 +64,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
 
     @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
     {
-        SectionViewHolder sectionViewHolder = null;
+        SectionViewHolder sectionViewHolder;
         if (convertView == null)
         {
             convertView = inflater.inflate(R.layout.refer_friend_header_view, parent, false);

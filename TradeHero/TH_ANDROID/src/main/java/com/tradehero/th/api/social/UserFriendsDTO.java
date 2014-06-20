@@ -2,7 +2,6 @@ package com.tradehero.th.api.social;
 
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.loaders.ContactEntry;
-import com.tradehero.th.utils.Constants;
 
 public class UserFriendsDTO extends ExtendedDTO implements Comparable<UserFriendsDTO>
 {
@@ -86,7 +85,8 @@ public class UserFriendsDTO extends ExtendedDTO implements Comparable<UserFriend
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -104,7 +104,8 @@ public class UserFriendsDTO extends ExtendedDTO implements Comparable<UserFriend
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (fbId != null ? fbId.hashCode() : 0);
         result = 31 * result + (liId != null ? liId.hashCode() : 0);
@@ -116,7 +117,8 @@ public class UserFriendsDTO extends ExtendedDTO implements Comparable<UserFriend
     }
 
     @Override
-    public int compareTo(UserFriendsDTO another) {
+    public int compareTo(UserFriendsDTO another)
+    {
         if (isTradeHeroUser())
         {
             if (!another.isTradeHeroUser())
@@ -138,8 +140,6 @@ public class UserFriendsDTO extends ExtendedDTO implements Comparable<UserFriend
             {
                 return name.compareToIgnoreCase(another.name);
             }
-
         }
-
     }
 }

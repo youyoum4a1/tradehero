@@ -84,7 +84,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.SignUp_Email);
+        localyticsSession.tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Email);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

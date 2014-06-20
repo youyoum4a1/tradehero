@@ -155,7 +155,10 @@ public class FriendsInvitationFragment extends DashboardFragment
     private Bundle saveState()
     {
         Bundle state = new Bundle();
-        state.putInt(KEY_LIST_TYPE, (friendsListView.getVisibility() == View.VISIBLE) ? LIST_TYPE_FRIEND_LIST : LIST_TYPE_SOCIAL_LIST);
+        if (friendsListView != null)
+        {
+            state.putInt(KEY_LIST_TYPE, (friendsListView.getVisibility() == View.VISIBLE) ? LIST_TYPE_FRIEND_LIST : LIST_TYPE_SOCIAL_LIST);
+        }
         return state;
     }
 

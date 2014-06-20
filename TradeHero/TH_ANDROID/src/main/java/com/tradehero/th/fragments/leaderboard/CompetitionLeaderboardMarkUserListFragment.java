@@ -150,7 +150,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         Bundle args = new Bundle();
         args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (WebViewFragment) getNavigator().pushFragment(
+        this.webViewFragment = getDashboardNavigator().pushFragment(
                 WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -192,7 +192,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
         @Override protected Navigator getNavigator()
         {
-            return CompetitionLeaderboardMarkUserListFragment.this.getNavigator();
+            return CompetitionLeaderboardMarkUserListFragment.this.getDashboardNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

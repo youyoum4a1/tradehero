@@ -46,6 +46,14 @@ import org.jetbrains.annotations.NotNull;
         super.tagEvent(event);
     }
 
+    public void tagEventMethod(String event, String method)
+    {
+        TCAgent.onEvent(context, event, method);
+        Map<String, String> dic = new HashMap<>();
+        dic.put(LocalyticsConstants.METHOD_MAP_KEY, method);
+        super.tagEvent(event, dic);
+    }
+
     public void tagEvent(String event, SecurityId securityId)
     {
         Map<String, String> dic = new HashMap<>();

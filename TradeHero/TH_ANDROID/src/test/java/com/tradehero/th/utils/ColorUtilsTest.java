@@ -23,31 +23,31 @@ public class ColorUtilsTest
 
     @Test public void getColorForPercentage_onMinus1_shouldReturnRed()
     {
-        int colorMinus1 = ColorUtils.getColorForPercentage(-1);
+        int colorMinus1 = ColorUtils.getProperColorForNumber(-1);
         assertThat(colorMinus1).isEqualTo(Color.rgb(ColorUtils.MAX_RED_VALUE, 0, 0));
     }
 
     @Test public void getColorForPercentage_onMinus05_shouldReturnHalfRed()
     {
-        int colorMinus1 = ColorUtils.getColorForPercentage(-0.5f);
+        int colorMinus1 = ColorUtils.getProperColorForNumber(-0.5f);
         assertThat(colorMinus1).isEqualTo(Color.rgb(ColorUtils.MAX_RED_VALUE / 2, 0, 0));
     }
 
     @Test public void getColorForPercentage_on0_shouldReturnBlack()
     {
-        int color0 = ColorUtils.getColorForPercentage(0);
+        int color0 = ColorUtils.getProperColorForNumber(0);
         assertThat(color0).isEqualTo(Color.rgb(0, 0, 0));
     }
 
     @Test public void getColorForPercentage_on05_shouldReturnHalfGreen()
     {
-        int color1 = ColorUtils.getColorForPercentage(0.5f);
+        int color1 = ColorUtils.getProperColorForNumber(0.5f);
         assertThat(color1).isEqualTo(Color.rgb(0, ColorUtils.MAX_GREEN_VALUE / 2, 0));
     }
 
     @Test public void getColorForPercentage_on1_shouldReturnGreen()
     {
-        int color1 = ColorUtils.getColorForPercentage(1);
+        int color1 = ColorUtils.getProperColorForNumber(1);
         assertThat(color1).isEqualTo(Color.rgb(0, ColorUtils.MAX_GREEN_VALUE, 0));
     }
 }

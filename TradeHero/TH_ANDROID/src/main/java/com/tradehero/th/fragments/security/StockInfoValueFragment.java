@@ -37,7 +37,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = null;
+        View view;
         view = inflater.inflate(R.layout.fragment_stockinfo_value, container, false);
         initViews(view);
         return view;
@@ -94,7 +94,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mPreviousClose.setText(String.format("%s %,.3f", value.currencyDisplay, value.previousClose.doubleValue()));
+                mPreviousClose.setText(String.format("%s %,.3f", value.currencyDisplay, value.previousClose));
             }
         }
     }
@@ -109,7 +109,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mOpen.setText(String.format("%s %,.2f", value.currencyDisplay, value.open.doubleValue()));
+                mOpen.setText(String.format("%s %,.2f", value.currencyDisplay, value.open));
             }
         }
         //double open = YUtils.parseQuoteValue(yQuotes.get("Open"));
@@ -125,7 +125,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mDaysHigh.setText(String.format("%s %,.2f", value.currencyDisplay, value.high.doubleValue()));
+                mDaysHigh.setText(String.format("%s %,.2f", value.currencyDisplay, value.high));
             }
         }
         //double daysHigh = YUtils.parseQuoteValue(yQuotes.get("Day's High"));
@@ -141,7 +141,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mDaysLow.setText(String.format("%s %,.2f", value.currencyDisplay, value.low.doubleValue()));
+                mDaysLow.setText(String.format("%s %,.2f", value.currencyDisplay, value.low));
             }
         }
         //double daysLow = YUtils.parseQuoteValue(yQuotes.get("Day's Low"));
@@ -157,7 +157,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mMarketCap.setText(String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, NumberDisplayUtils.formatWithRelevantDigits(value.marketCap.doubleValue(), 4)));
+                mMarketCap.setText(String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, NumberDisplayUtils.formatWithRelevantDigits(value.marketCap, 4)));
             }
         }
     }
@@ -172,7 +172,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mPERatio.setText(String.format("%,.2f", value.pe.doubleValue()));
+                mPERatio.setText(String.format("%,.2f", value.pe));
             }
         }
         //double peRatio = YUtils.parseQuoteValue(yQuotes.get("P/E Ratio"));
@@ -188,7 +188,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mEps.setText(String.format("%,.3f", value.eps.doubleValue()));
+                mEps.setText(String.format("%,.3f", value.eps));
             }
         }
     }
@@ -203,7 +203,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mVolume.setText(String.format("%,.0f", value.volume.doubleValue()));
+                mVolume.setText(String.format("%,.0f", value.volume));
             }
         }
         //double volume = YUtils.parseQuoteValue(yQuotes.get("Volume"));
@@ -219,7 +219,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mAvgVolume.setText(String.format("%,.0f", value.averageDailyVolume.doubleValue()));
+                mAvgVolume.setText(String.format("%,.0f", value.averageDailyVolume));
             }
         }
         //double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
