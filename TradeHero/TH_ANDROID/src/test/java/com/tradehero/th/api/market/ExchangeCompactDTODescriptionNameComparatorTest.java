@@ -1,7 +1,6 @@
 package com.tradehero.th.api.market;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.models.market.ExchangeCompactDTODescriptionNameComparator;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;

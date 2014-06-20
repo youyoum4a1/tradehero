@@ -1,6 +1,5 @@
-package com.tradehero.th.models.market;
+package com.tradehero.th.api.market;
 
-import com.tradehero.th.api.market.ExchangeCompactDTO;
 import java.util.Comparator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

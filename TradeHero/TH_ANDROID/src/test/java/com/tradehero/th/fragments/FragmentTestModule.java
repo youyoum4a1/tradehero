@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments;
 
 import com.tradehero.th.fragments.security.FragmentSecurityTestModule;
-import com.tradehero.th.fragments.trending.filter.FragmentTrendingTestModule;
+import com.tradehero.th.fragments.trending.FragmentTrendingTestModule;
 import dagger.Module;
 
 @Module(
