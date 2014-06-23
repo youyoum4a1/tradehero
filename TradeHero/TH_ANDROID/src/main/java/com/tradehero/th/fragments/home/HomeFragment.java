@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
@@ -30,6 +31,7 @@ public class HomeFragment extends BaseWebViewFragment
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject @LanguageCode String languageCode;
     @Inject ResideMenu resideMenu;
+    @Inject CurrentUserId currentUserId;
 
     @Override protected int getLayoutResId()
     {
@@ -61,7 +63,12 @@ public class HomeFragment extends BaseWebViewFragment
         additionalHeaders.put(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
         additionalHeaders.put(Constants.TH_CLIENT_VERSION, VersionUtils.getVersionId(getActivity()));
         additionalHeaders.put(Constants.TH_LANGUAGE_CODE, languageCode);
-        loadUrl(Constants.APP_HOME, additionalHeaders);
+
+        String appHomeLink = Constants.APP_HOME;
+        // use following line instead when the server is ready
+        // String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
+
+        loadUrl(appHomeLink, additionalHeaders);
     }
 
 

@@ -16,11 +16,13 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -41,6 +43,7 @@ public class FollowerListItemView extends RelativeLayout
     @Inject Lazy<Picasso> picasso;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject PrettyTime prettyTime;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
     public FollowerListItemView(Context context)
@@ -112,7 +115,7 @@ public class FollowerListItemView extends RelativeLayout
     {
         Bundle bundle = new Bundle();
         DashboardNavigator navigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-        bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userFollowerDTO.id);
+        thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 

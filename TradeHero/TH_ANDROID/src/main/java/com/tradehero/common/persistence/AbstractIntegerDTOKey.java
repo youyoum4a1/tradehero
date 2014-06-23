@@ -9,6 +9,11 @@ import org.jetbrains.annotations.NotNull;
 abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Integer>
 {
     //<editor-fold desc="Constructors">
+    public AbstractIntegerDTOKey()
+    {
+        super();
+    }
+
     public AbstractIntegerDTOKey(Integer key)
     {
         super(key);

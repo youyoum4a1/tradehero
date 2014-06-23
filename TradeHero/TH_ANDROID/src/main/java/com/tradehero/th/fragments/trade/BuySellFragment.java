@@ -1303,13 +1303,13 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (alertId != null)
             {
                 args.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
-                getNavigator().pushFragment(AlertEditFragment.class, args);
+                getDashboardNavigator().pushFragment(AlertEditFragment.class, args);
             }
             else
             {
                 args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
                         securityId.getArgs());
-                getNavigator().pushFragment(AlertCreateFragment.class, args);
+                getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
             }
         }
         else if (securityAlertAssistant.isFailed())
@@ -1328,7 +1328,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Bundle args = new Bundle();
             WatchlistEditFragment.putSecurityId(args, securityId);
-            getNavigator().pushFragment(WatchlistEditFragment.class, args);
+            getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
         }
         else
         {
@@ -2071,7 +2071,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
                     this.providerId.getArgs());
         }
-        getNavigator().pushFragment(StockInfoFragment.class, args);
+        getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
     }
 
     private BroadcastReceiver createImageButtonClickBroadcastReceiver()

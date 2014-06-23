@@ -17,14 +17,15 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -40,6 +41,7 @@ public class NotificationItemView
     @Inject PrettyTime prettyTime;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
+    @Inject THRouter thRouter;
 
     private NotificationKey notificationKey;
     private NotificationDTO notificationDTO;
@@ -97,7 +99,7 @@ public class NotificationItemView
         Bundle bundle = new Bundle();
         if (notificationDTO != null && notificationDTO.referencedUserId != null)
         {
-            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, notificationDTO.referencedUserId);
+            thRouter.save(bundle, new UserBaseKey(notificationDTO.referencedUserId));
             getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }

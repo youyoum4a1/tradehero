@@ -5,7 +5,7 @@ import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.filter.security.SecurityCompactPaddedSymbolCIPredicate;
 import com.tradehero.th.filter.security.SecurityIdPaddedSymbolCIPredicate;
 import com.tradehero.th.filter.security.WarrantPaddedSymbolOrUnderlyingCIPredicate;

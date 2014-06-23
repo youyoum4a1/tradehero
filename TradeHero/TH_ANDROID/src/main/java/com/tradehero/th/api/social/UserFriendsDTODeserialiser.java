@@ -1,16 +1,18 @@
 package com.tradehero.th.api.social;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.th.api.UniqueFieldDTODeserialiser;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class UserFriendsDTODeserialiser extends UniqueFieldDTODeserialiser<UserFriendsDTO>
 {
     //<editor-fold desc="Constructors">
     @Inject public UserFriendsDTODeserialiser()
     {
-        super(createUniqueAttributes(), UserFriendsDTO.class);
+        super(new ObjectMapper(), createUniqueAttributes(), UserFriendsDTO.class);
 
     }
     //</editor-fold>

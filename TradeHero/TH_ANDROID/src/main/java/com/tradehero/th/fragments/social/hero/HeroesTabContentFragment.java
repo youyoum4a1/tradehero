@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -29,12 +27,14 @@ import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -61,6 +61,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject CurrentUserId currentUserId;
+    @Inject THRouter thRouter;
 
     public static void putFollowerId(Bundle args, UserBaseKey followerId)
     {
@@ -335,7 +336,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     private void pushTimelineFragment(UserBaseKey userBaseKey)
     {
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
+        thRouter.save(args, userBaseKey);
         getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 

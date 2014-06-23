@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -68,6 +69,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
+@Routable("trending-securities")
 public class TrendingFragment extends SecurityListFragment
     implements WithTutorial
 {
@@ -460,7 +462,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleEarnCreditItemOnClick()
     {
-        getNavigator().pushFragment(InviteFriendFragment.class);
+        getDashboardNavigator().pushFragment(InviteFriendFragment.class);
     }
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
@@ -469,7 +471,7 @@ public class TrendingFragment extends SecurityListFragment
                 securityCompactDTO.getSecurityId());
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-        getNavigator().pushFragment(BuySellFragment.class, args);
+        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     protected TrendingFilterSelectorView.OnFilterTypeChangedListener createTrendingFilterChangedListener()

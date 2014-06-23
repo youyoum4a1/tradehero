@@ -1,22 +1,33 @@
 package com.tradehero.th.api.security;
 
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.compact.BondCompactDTO;
+import com.tradehero.th.api.security.compact.CoveredWarrantDTO;
+import com.tradehero.th.api.security.compact.DepositoryReceiptDTO;
+import com.tradehero.th.api.security.compact.EquityCompactDTO;
+import com.tradehero.th.api.security.compact.FundCompactDTO;
+import com.tradehero.th.api.security.compact.PreferenceShareDTO;
+import com.tradehero.th.api.security.compact.PreferredSecurityDTO;
+import com.tradehero.th.api.security.compact.StapledSecurityDTO;
+import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
+import com.tradehero.th.api.security.compact.UnitCompactDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.util.HashMap;
 import java.util.Map;
 
 public enum SecurityType
 {
-    EQUITY (R.string.security_type_equity, SecurityCompactDTO.EQUITY_DTO_DESERIALISING_TYPE),
-    FUND (R.string.security_type_fund, SecurityCompactDTO.FUND_DTO_DESERIALISING_TYPE),
-    WARRANT (R.string.security_type_warrant, WarrantDTO.WARRANT_DTO_DESERIALISING_TYPE),
-    BOND (R.string.security_type_bond, SecurityCompactDTO.BOND_DTO_DESERIALISING_TYPE),
-    UNIT (R.string.security_type_unit, SecurityCompactDTO.UNIT_DTO_DESERIALISING_TYPE),
-    TRADABLE_RIGHTS_ISSUE (R.string.security_type_tradable_rights_issue, SecurityCompactDTO.TRADABLE_RIGHTS_ISSUE_DTO_DESERIALISING_TYPE),
-    PREFERENCE_SHARE (R.string.security_type_preference_share, SecurityCompactDTO.PREFERENCE_SHARE_DTO_DESERIALISING_TYPE),
-    DEPOSITORY_RECEIPTS (R.string.security_type_depository_receipt, SecurityCompactDTO.DEPOSITORY_RECEIPTS_DTO_DESERIALISING_TYPE),
-    COVERED_WARRANT (R.string.security_type_covered_warrant, SecurityCompactDTO.COVERED_WARRANT_DTO_DESERIALISING_TYPE),
-    PREFERRED_SEC (R.string.security_type_preferred_sec, SecurityCompactDTO.PREFERRED_SEC_DTO_DESERIALISING_TYPE),
-    STAPLED_SEC (R.string.security_type_stapled_sec, SecurityCompactDTO.STAPLED_SEC_DTO_DESERIALISING_TYPE);
+    EQUITY (R.string.security_type_equity, EquityCompactDTO.DTO_DESERIALISING_TYPE),
+    FUND (R.string.security_type_fund, FundCompactDTO.DTO_DESERIALISING_TYPE),
+    WARRANT (R.string.security_type_warrant, WarrantDTO.DTO_DESERIALISING_TYPE),
+    BOND (R.string.security_type_bond, BondCompactDTO.DTO_DESERIALISING_TYPE),
+    UNIT (R.string.security_type_unit, UnitCompactDTO.DTO_DESERIALISING_TYPE),
+    TRADABLE_RIGHTS_ISSUE (R.string.security_type_tradable_rights_issue, TradableRightsIssueDTO.DTO_DESERIALISING_TYPE),
+    PREFERENCE_SHARE (R.string.security_type_preference_share, PreferenceShareDTO.DTO_DESERIALISING_TYPE),
+    DEPOSITORY_RECEIPTS (R.string.security_type_depository_receipt, DepositoryReceiptDTO.DTO_DESERIALISING_TYPE),
+    COVERED_WARRANT (R.string.security_type_covered_warrant, CoveredWarrantDTO.DTO_DESERIALISING_TYPE),
+    PREFERRED_SEC (R.string.security_type_preferred_sec, PreferredSecurityDTO.DTO_DESERIALISING_TYPE),
+    STAPLED_SEC (R.string.security_type_stapled_sec, StapledSecurityDTO.DTO_DESERIALISING_TYPE);
 
     private static Map<Integer, SecurityType> valuesMap;
 

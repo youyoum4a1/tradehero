@@ -61,7 +61,6 @@
     <module>TradeHero/TH_ANDROID</module>
     <module>facebook-android-sdk/facebook</module>
     <module>StickyListHeaders/library</module>
-    <module>picasso/picasso</module>
     <module>AndroidResideMenu/ResideMenu</module>
   </modules>
 

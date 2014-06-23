@@ -74,6 +74,7 @@
       android:theme="@style/TradeHero"
       android:allowClearUserData="true"
       android:enabled="true"
+      android:largeHeap="true"
       >
 
     <activity

@@ -12,12 +12,14 @@ import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
 
 public class MarkdownTextView extends TextView implements OnElementClickListener
@@ -25,6 +27,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     @Inject THIntentFactory thIntentFactory;
     @Inject RichTextCreator parser;
     @Inject CurrentUserId currentUserId;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
     public MarkdownTextView(Context context)
@@ -112,7 +115,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     private void openUserProfile(int userId)
     {
         Bundle b = new Bundle();
-        b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
+        thRouter.save(b, new UserBaseKey(userId));
 
         if (currentUserId.get() != userId)
         {

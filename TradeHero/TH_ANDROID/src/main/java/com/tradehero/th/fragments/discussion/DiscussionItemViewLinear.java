@@ -8,10 +8,14 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.utils.THRouter;
+import javax.inject.Inject;
 
 public class DiscussionItemViewLinear<T extends DiscussionKey>
         extends AbstractDiscussionCompactItemViewLinear<T>
 {
+    @Inject THRouter thRouter;
+
     //<editor-fold desc="Constructors">
     public DiscussionItemViewLinear(Context context)
     {
@@ -59,7 +63,7 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
     protected void handleUserClicked(UserBaseKey userClicked)
     {
         Bundle bundle = new Bundle();
-        bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userClicked.key);
+        thRouter.save(bundle, userClicked);
         getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
     }
 

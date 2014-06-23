@@ -14,6 +14,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.thoj.route.InjectRoute;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
@@ -57,6 +58,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMiles
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +72,6 @@ import timber.log.Timber;
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
-    public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
     private View loadingView;
     private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
 
@@ -79,6 +80,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         TIMELINE, PORTFOLIO_LIST, STATS
     }
 
+    @Inject protected THRouter thRouter;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -99,7 +101,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private MainTimelineAdapter mainTimelineAdapter;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     protected ActionBar actionBar;
-    protected UserBaseKey shownUserBaseKey;
+    @InjectRoute UserBaseKey shownUserBaseKey;
     protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
@@ -214,7 +216,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getNavigator().pushFragment(HeroManagerFragment.class, bundle);
+        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -228,7 +230,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -317,10 +319,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        UserBaseKey newUserBaseKey =
-                new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
+        thRouter.inject(this, getArguments());
         //create adapter and so on
-        linkWith(newUserBaseKey, true);
+        linkWith(shownUserBaseKey, true);
 
         getActivity().getSupportLoaderManager().initLoader(
                 mainTimelineAdapter.getTimelineLoaderId(), null,
@@ -498,7 +499,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
-        getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
+        getDashboardNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -833,13 +834,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             Bundle args = new Bundle();
             ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
             ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(messageThreadHeaderDTO));
-            getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+            getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
         }
         else
         {
             Bundle args = new Bundle();
             NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-            getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+            getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
         }
     }
 

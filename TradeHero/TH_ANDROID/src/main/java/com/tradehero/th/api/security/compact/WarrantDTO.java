@@ -1,9 +1,13 @@
-package com.tradehero.th.api.security;
+package com.tradehero.th.api.security.compact;
 
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.WarrantType;
 import java.util.Date;
 
 public class WarrantDTO extends SecurityCompactDTO
 {
+    public static final String DTO_DESERIALISING_TYPE = "3";
+
     public String warrantType;
     public Date expiryDate;
     public Double strikePrice;

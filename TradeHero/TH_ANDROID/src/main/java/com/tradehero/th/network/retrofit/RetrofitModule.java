@@ -219,12 +219,12 @@ public class RetrofitModule
     }
 
     @Provides @Singleton ObjectMapper provideObjectMapper(
-            UserFriendsDTOJacksonModule userFriendsDTOJacksonModule,
+            UserFriendsDTOJacksonModule userFriendsDTOModule,
             PositionDTOJacksonModule positionDTOModule)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.registerModule(userFriendsDTOJacksonModule);
+        objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
 
         // TODO confirm this is correct here
