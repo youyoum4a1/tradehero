@@ -3,6 +3,7 @@ package com.tradehero.th.api.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.BaseApiTest;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;

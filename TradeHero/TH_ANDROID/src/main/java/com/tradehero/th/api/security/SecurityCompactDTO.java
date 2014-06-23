@@ -4,6 +4,18 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.market.Exchange;
+import com.tradehero.th.api.security.compact.BondCompactDTO;
+import com.tradehero.th.api.security.compact.CoveredWarrantDTO;
+import com.tradehero.th.api.security.compact.DepositoryReceiptDTO;
+import com.tradehero.th.api.security.compact.EquityCompactDTO;
+import com.tradehero.th.api.security.compact.FundCompactDTO;
+import com.tradehero.th.api.security.compact.LockedSecurityCompactDTO;
+import com.tradehero.th.api.security.compact.PreferenceShareDTO;
+import com.tradehero.th.api.security.compact.PreferredSecurityDTO;
+import com.tradehero.th.api.security.compact.StapledSecurityDTO;
+import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
+import com.tradehero.th.api.security.compact.UnitCompactDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,35 +29,22 @@ import timber.log.Timber;
         include = JsonTypeInfo.As.PROPERTY,
         property = "securityType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.SERVER_HACK_LOCKED_POSITION_SECURITY),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.EQUITY_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.FUND_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = WarrantDTO.class, name = WarrantDTO.WARRANT_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.BOND_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.UNIT_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.TRADABLE_RIGHTS_ISSUE_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.PREFERENCE_SHARE_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.DEPOSITORY_RECEIPTS_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.COVERED_WARRANT_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.PREFERRED_SEC_DTO_DESERIALISING_TYPE),
-        @JsonSubTypes.Type(value = SecurityCompactDTO.class, name = SecurityCompactDTO.STAPLED_SEC_DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = LockedSecurityCompactDTO.class, name = LockedSecurityCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = EquityCompactDTO.class, name = EquityCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = FundCompactDTO.class, name = FundCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = WarrantDTO.class, name = WarrantDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = BondCompactDTO.class, name = BondCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = UnitCompactDTO.class, name = UnitCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = TradableRightsIssueDTO.class, name = TradableRightsIssueDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = PreferenceShareDTO.class, name = PreferenceShareDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = DepositoryReceiptDTO.class, name = DepositoryReceiptDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = CoveredWarrantDTO.class, name = CoveredWarrantDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = PreferredSecurityDTO.class, name = PreferredSecurityDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = StapledSecurityDTO.class, name = StapledSecurityDTO.DTO_DESERIALISING_TYPE),
 })
 public class SecurityCompactDTO extends ExtendedDTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
-
-    public static final String SERVER_HACK_LOCKED_POSITION_SECURITY = "0";
-    public static final String EQUITY_DTO_DESERIALISING_TYPE = "1";
-    public static final String FUND_DTO_DESERIALISING_TYPE = "2";
-    public static final String WARRANT_DTO_DESERIALISING_TYPE = "3";
-    public static final String BOND_DTO_DESERIALISING_TYPE = "4";
-    public static final String UNIT_DTO_DESERIALISING_TYPE = "5";
-    public static final String TRADABLE_RIGHTS_ISSUE_DTO_DESERIALISING_TYPE = "6";
-    public static final String PREFERENCE_SHARE_DTO_DESERIALISING_TYPE = "7";
-    public static final String DEPOSITORY_RECEIPTS_DTO_DESERIALISING_TYPE = "8";
-    public static final String COVERED_WARRANT_DTO_DESERIALISING_TYPE = "9";
-    public static final String PREFERRED_SEC_DTO_DESERIALISING_TYPE = "10";
-    public static final String STAPLED_SEC_DTO_DESERIALISING_TYPE = "11";
 
     public Integer id;
     public String symbol;

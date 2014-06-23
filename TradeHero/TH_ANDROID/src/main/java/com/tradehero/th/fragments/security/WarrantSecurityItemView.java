@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.models.security.WarrantDTOFormatter;
 import java.text.SimpleDateFormat;
 import java.util.Locale;

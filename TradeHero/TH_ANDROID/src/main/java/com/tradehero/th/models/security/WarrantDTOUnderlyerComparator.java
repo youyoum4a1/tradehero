@@ -1,6 +1,6 @@
 package com.tradehero.th.models.security;
 
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.util.Comparator;
 import javax.inject.Inject;
 import javax.inject.Singleton;

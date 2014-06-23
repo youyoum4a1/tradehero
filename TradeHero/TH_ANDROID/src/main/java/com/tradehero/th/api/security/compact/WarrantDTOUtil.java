@@ -1,5 +1,6 @@
-package com.tradehero.th.api.security;
+package com.tradehero.th.api.security.compact;
 
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
