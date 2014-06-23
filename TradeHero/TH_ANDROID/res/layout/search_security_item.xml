@@ -6,17 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/security_bg_border_padding"
-    android:background="@drawable/security_item_grid_bg"
+    android:padding="@dimen/grid_item_bg_border_width"
+    android:background="@drawable/grid_item_bg"
     >
 
   <com.makeramen.RoundedImageView
      android:id="@+id/stock_bg_logo"
      android:layout_width="match_parent"
-     android:layout_height="@dimen/security_item_height"
+     android:layout_height="@dimen/grid_item_height"
      app:oval="false"
      android:scaleType="centerCrop"
-     app:corner_radius="@dimen/security_bg_radius"
+     app:corner_radius="@dimen/grid_item_bg_radius"
         />
 
   <ImageView

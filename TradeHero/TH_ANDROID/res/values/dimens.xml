@@ -12,7 +12,6 @@
   <dimen name="dashboard_padding">0dp</dimen>
 
   <!-- Trending screen -->
-  <dimen name="trending_grid_item_corner_radius">8dp</dimen>
   <dimen name="trending_people_search_image_size">60dp</dimen>
   <dimen name="trending_filter_view_pager_height">80dp</dimen>
 
@@ -105,14 +104,16 @@
 
   <dimen name="security_bg_padding_r_b">2px</dimen>
   <dimen name="security_bg_padding_t_l">1px</dimen>
-  <dimen name="security_bg_border_padding">1dp</dimen>
-  <dimen name="security_bg_radius">@dimen/trending_grid_item_corner_radius</dimen>
+
+  <dimen name="grid_item_bg_border_width">1.2dp</dimen>
+  <dimen name="grid_item_bg_radius">8dp</dimen>
+  <dimen name="grid_item_height">105dp</dimen>
 
   <dimen name="security_logo_width">180dp</dimen>
   <dimen name="security_logo_height">45dp</dimen>
   <dimen name="security_logo_margin_vertical">20dp</dimen>
   <dimen name="security_logo_offset">12dp</dimen>
-  <dimen name="security_item_height">110dp</dimen>
+
 
   <dimen name="news_item_action_padding_t_b">10dp</dimen>
   <dimen name="news_item_action_padding_l_r">10dp</dimen>

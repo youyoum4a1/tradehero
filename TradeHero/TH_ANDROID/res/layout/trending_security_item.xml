@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/security_item_height"
+    android:layout_height="@dimen/grid_item_height"
     android:orientation="vertical"
     tools:context=".activities.DashboardActivity"
-    android:padding="@dimen/security_bg_border_padding"
-    android:background="@drawable/security_item_grid_bg"
+    android:padding="@dimen/grid_item_bg_border_width"
+    android:background="@drawable/grid_item_bg"
     >
     <!--android:background="@drawable/trending_grid_item_bg2"-->
     <!--android:layout_height="@dimen/security_item_height"-->
@@ -20,7 +20,7 @@
       android:layout_alignParentTop="true"
       android:contentDescription="@null"
       app:oval="false"
-      app:corner_radius="@dimen/security_bg_radius"
+      app:corner_radius="@dimen/grid_item_bg_radius"
       android:scaleType="centerCrop"
       tools:background="@color/red"
       android:visibility="visible"

@@ -3,9 +3,10 @@
 
     <item>
         <shape android:shape="rectangle" >
+            <!--Use transparent color to reduce Overdraw-->
             <solid android:color="@color/transparent"/>
-            <corners android:radius="@dimen/security_bg_radius" />
-            <stroke android:width="@dimen/security_bg_border_padding" android:color="@color/black"/>
+            <corners android:radius="@dimen/grid_item_bg_radius" />
+            <stroke android:width="@dimen/grid_item_bg_border_width" android:color="@color/grid_item_bg_border"/>
         </shape>
     </item>
 </layer-list>

@@ -5,8 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/security_bg_border_padding"
-    android:background="@drawable/security_item_grid_bg"
+    android:padding="@dimen/grid_item_bg_border_width"
+    android:background="@drawable/grid_item_bg"
     >
 
     <com.makeramen.RoundedImageView
@@ -15,7 +15,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
       app:oval="false"
-      app:corner_radius="@dimen/security_bg_radius"
+      app:corner_radius="@dimen/grid_item_bg_radius"
       android:contentDescription="@null"
       android:scaleType="centerCrop"
       android:src="@null"
