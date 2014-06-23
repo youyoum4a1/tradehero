@@ -1,7 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.fragments.alert.AlertItemView;
@@ -45,7 +44,7 @@ public class GraphicModule
         File cacheDir = lruFileCache.getCacheDirectory();
         Picasso mPicasso = new Picasso.Builder(context)
                 .memoryCache(lruFileCache)
-				.downloader(new OkHttpDownloader(cacheDir))
+				//.downloader(new OkHttpDownloader(cacheDir))
                 .build();
 		mPicasso.setIndicatorsEnabled(Constants.PICASSO_DEBUG);
 		mPicasso.setLoggingEnabled(Constants.PICASSO_DEBUG);
