@@ -2,14 +2,13 @@ package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.EditText;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -24,7 +23,6 @@ import com.tradehero.th.fragments.authentication.EmailSignUpFragment;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
-import com.tradehero.th.fragments.authentication.WelcomeFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
@@ -39,9 +37,12 @@ import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
@@ -65,7 +66,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
-    @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject Lazy<THLocalyticsSession> localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject CredentialsDTOFactory credentialsDTOFactory;
@@ -86,7 +87,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
         if (currentFragment == null)
         {
-            currentFragment = Fragment.instantiate(this, WelcomeFragment.class.getName(), null);
+            currentFragment = Fragment.instantiate(this, SignInFragment.class.getName(), null);
+            //currentFragment = Fragment.instantiate(this, WelcomeFragment.class.getName(), null);
         }
 
         setupViewFragmentMapping();
@@ -100,13 +102,16 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Override protected void onResume()
     {
         super.onResume();
-
-        localyticsSession.get().open();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().open(custom_dimensions);
     }
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().close(custom_dimensions);
         localyticsSession.get().upload();
 
         super.onPause();
@@ -117,7 +122,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     {
         //two buttons in WelcomeFragment
         mapViewFragment.put(R.id.authentication_by_sign_up_button, SignUpFragment.class);
+        mapViewFragment.put(R.id.authentication_by_sign_up_back_button, SignUpFragment.class);
         mapViewFragment.put(R.id.authentication_by_sign_in_button, SignInFragment.class);
+        mapViewFragment.put(R.id.authentication_by_sign_in_back_button, SignInFragment.class);
         //button in SignInFragment
         mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
         //button in SignUpFragment
@@ -141,8 +148,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.topbar_authentication);
+        //getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        //getSupportActionBar().setCustomView(R.layout.topbar_authentication);
+        getSupportActionBar().hide();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -159,7 +167,16 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         Class<?> fragmentClass = mapViewFragment.get(view.getId());
         if (fragmentClass != null)
         {
-            setCurrentFragmentByClass(fragmentClass);
+            if (view.getId() == R.id.authentication_by_sign_in_back_button
+                    || view.getId() == R.id.authentication_by_sign_up_back_button
+                    || view.getId() == R.id.authentication_by_sign_in_button)
+            {
+                setCurrentFragmentByPopBack(fragmentClass);
+            }
+            else
+            {
+                setCurrentFragmentByClass(fragmentClass);
+            }
             if (currentFragment instanceof AuthenticationFragment)
             {
                 THUser.setAuthenticationMode(((AuthenticationFragment) currentFragment).getAuthenticationMode());
@@ -198,9 +215,21 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 authenticateWithQQ();
                 break;
             case R.id.txt_term_of_service_signin:
-                Intent pWebView = new Intent(this, WebViewActivity.class);
-                pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
-                startActivity(pWebView);
+                //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at https://www.tradehero.mobi/privacy ran insecure content from http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700,900.
+                //Intent pWebView = new Intent(this, WebViewActivity.class);
+                //pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
+                //startActivity(pWebView);
+                Uri uri = Uri.parse(Constants.PRIVACY_TERMS_OF_SERVICE);
+                Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(it);
+                break;
+            case R.id.txt_term_of_service_termsofuse:
+                //Intent pWebView2 = new Intent(this, WebViewActivity.class);
+                //pWebView2.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_USE);
+                //startActivity(pWebView2);
+                Uri uri2 = Uri.parse(Constants.PRIVACY_TERMS_OF_USE);
+                Intent it2 = new Intent(Intent.ACTION_VIEW, uri2);
+                startActivity(it2);
                 break;
         }
     }
@@ -215,6 +244,11 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 .replace(R.id.fragment_content, currentFragment)
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
+    }
+
+    private void setCurrentFragmentByPopBack(Class<?> fragmentClass)
+    {
+        getSupportFragmentManager().popBackStack();
     }
 
     private void authenticateWithEmail()
@@ -238,9 +272,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private LogInCallback createCallbackForEmailSign(final AuthenticationMode authenticationMode)
     {
         final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
-        return new SocialAuthenticationCallback("Email")
+        return new SocialAuthenticationCallback(LocalyticsConstants.Email)
         {
-            private boolean signingUp = isSigningUp;
+            private final boolean signingUp = isSigningUp;
 
             @Override public boolean isSigningUp()
             {
@@ -261,41 +295,43 @@ public class AuthenticationActivity extends SherlockFragmentActivity
      */
     private void authenticateWithWeibo()
     {
-        //localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_LinkedIn);
+        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.WeiBo);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_weibo);
-        weiboUtils.get().logIn(this, new SocialAuthenticationCallback("Weibo"));
+        weiboUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.WeiBo));
     }
 
     private void authenticateWithQQ()
     {
+        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.QQ);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
-        qqUtils.get().logIn(this, new SocialAuthenticationCallback("QQ"));
+        qqUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.QQ));
     }
 
     private void authenticateWithLinkedIn()
     {
-        localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_LinkedIn);
+        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Linkedin);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
-        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback("LinkedIn"));
+        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.Linkedin));
     }
 
     private void authenticateWithFacebook()
     {
-        localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_Facebook);
+        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap,
+                LocalyticsConstants.Facebook);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
-        facebookUtils.get().logIn(this, new SocialAuthenticationCallback("Facebook"));
+        facebookUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.Facebook));
     }
 
     private void authenticateWithTwitter()
     {
-        localyticsSession.get().tagEvent(LocalyticsConstants.Authentication_Twitter);
+        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Twitter);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
         twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
     }
 
     private SocialAuthenticationCallback createTwitterAuthenticationCallback()
     {
-        return new SocialAuthenticationCallback("Twitter")
+        return new SocialAuthenticationCallback(LocalyticsConstants.Twitter)
         {
             @Override public boolean isSigningUp()
             {
@@ -341,6 +377,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             {
                 if (user != null)
                 {
+                    localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Success, LocalyticsConstants.Twitter);
                     launchDashboard(user);
                     finish();
                 }
@@ -393,6 +430,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             Response response;
             if (user != null)
             {
+                localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Success, providerName);
                 launchDashboard(user);
             }
             else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
@@ -413,7 +451,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             if (!isSigningUp())
             {
                 // HACK
-                if (!"Email".equals(providerName))
+                if (!LocalyticsConstants.Email.equals(providerName))
                 {
                     progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), providerName));
                 }

@@ -64,19 +64,34 @@
   <string name="at">"@"</string>
   <string name="hashtag">$</string>
   <string name="discussion_edit_post_subtitle">在 %s</string>
+  <string name="team_credit">新加坡和上海团队倾情奉献</string>
+  <string name="about_screen_secure_by">安全:</string>
+  <string name="about_screen_text_processing_by">文字处理:</string>
+  <string name="about_screen_sentiment_analysis_by">观点分析:</string>
+  <string name="buy_sell_loading_ask_price">加载买入价格…</string>
+  <string name="buy_sell_loading_bid_price">加载卖出价格…</string>
   <string name="sell">卖</string>
   <string name="buy">买</string>
+  <string name="chart_loading_image">加载图表…</string>
   <string name="sure_to_delete_message">删除这条消息？</string>
+  <string name="currency">美元$</string>
   <string name="search_social_friend_hint">搜索你的好友</string>
   <string name="invite_social_friend">邀请%s好友</string>
 
   <string name="social_friend_empty">没有好友数据</string>
   <string name="search_social_friend_empty">没有找到好友数据</string>
-    <string name="inivte_from_weibo">邀请微博好友</string>
-    <string name="inivte_from_linkedIn">邀请LinkedIn好友</string>
-    <string name="inivte_from_facebook">邀请Facebook好友</string>
-    <string name="inivte_from_twitter">邀请Twitter好友</string>
+    <string name="invite_from_weibo">邀请微博好友</string>
+    <string name="invite_from_linkedIn">邀请LinkedIn好友</string>
+    <string name="invite_from_facebook">邀请Facebook好友</string>
+    <string name="invite_from_twitter">邀请Twitter好友</string>
     <string name="invite">邀请</string>
+  <plurals name="inbox_notification_title">
+    <item quantity="one">1 条新消息</item>
+    <item quantity="other">%d 条<b>新</b>消息</item>
+  </plurals>
+  <string name="inbox_summary">+%d 更多</string>
+  <string name="notification_unread_messages">您有 %d 条未读消息</string>
+  <string name="notification_new_activities">您有 %d 条新活动</string>
     <string name="friend_link_social_network">请绑定社交网络</string>
 
 </resources>

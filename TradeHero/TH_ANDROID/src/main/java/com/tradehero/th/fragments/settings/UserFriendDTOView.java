@@ -12,6 +12,9 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
+import com.tradehero.th.api.social.UserFriendsFacebookDTO;
+import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -94,18 +97,18 @@ public class UserFriendDTOView extends RelativeLayout
     {
         resetVisibilityOfSourceButtons();
 
-        if (userFriendDTO.fbId != null)
+        if (userFriendDTO instanceof UserFriendsFacebookDTO)
         {
             userFriendSourceFb.setVisibility(View.VISIBLE);
         }
-        else if (userFriendDTO.liId != null)
+        else if (userFriendDTO instanceof UserFriendsLinkedinDTO)
         {
             userFriendSourceLi.setVisibility(View.VISIBLE);
         }
-        else if (userFriendDTO.getEmail() != null)
+        else if (userFriendDTO instanceof UserFriendsContactEntryDTO)
         {
             userFriendSourceContact.setVisibility(View.VISIBLE);
-            userFriendSourceContact.setText(userFriendDTO.getEmail());
+            userFriendSourceContact.setText(userFriendDTO.email);
         }
     }
 
@@ -155,14 +158,14 @@ public class UserFriendDTOView extends RelativeLayout
     {
         if (userFriendDTO != null && checked != isChecked())
         {
-            userFriendDTO.setSelected(checked);
+            userFriendDTO.selected = checked;
             displaySelectionState();
         }
     }
 
     @Override public boolean isChecked()
     {
-        return userFriendDTO != null && userFriendDTO.isSelected();
+        return userFriendDTO != null && userFriendDTO.selected;
     }
 
     @Override public void toggle()

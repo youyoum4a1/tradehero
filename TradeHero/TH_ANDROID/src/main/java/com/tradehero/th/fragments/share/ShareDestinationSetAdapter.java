@@ -13,12 +13,13 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class ShareDestinationSetAdapter extends DTOSetAdapter<ShareDestination>
 {
-    public static int VIEW_RES_ID = R.layout.common_dialog_item_layout;
+    public static final int VIEW_RES_ID = R.layout.common_dialog_item_layout;
 
-    @Inject Comparator<ShareDestination> shareDestinationIndexResComparator;
+    @NotNull @Inject Comparator<ShareDestination> shareDestinationIndexResComparator;
 
     //<editor-fold desc="Constructors">
     public ShareDestinationSetAdapter(Context context)

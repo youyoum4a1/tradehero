@@ -12,35 +12,45 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class CompetitionLeaderboardCache extends PartialDTOCache<CompetitionLeaderboardId, CompetitionLeaderboardDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private THLruCache<CompetitionLeaderboardId, CompetitionLeaderboardCutDTO> lruCache;
-    @Inject protected CompetitionServiceWrapper competitionServiceWrapper;
-    @Inject protected LeaderboardCache leaderboardCache;
+    @NotNull private final THLruCache<CompetitionLeaderboardId, CompetitionLeaderboardCutDTO> lruCache;
+    @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
+    @NotNull private final LeaderboardCache leaderboardCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public CompetitionLeaderboardCache()
+    @Inject public CompetitionLeaderboardCache(
+            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NotNull LeaderboardCache leaderboardCache)
     {
-        this(DEFAULT_MAX_SIZE);
+        this(DEFAULT_MAX_SIZE, competitionServiceWrapper, leaderboardCache);
     }
 
-    public CompetitionLeaderboardCache(int maxSize)
+    public CompetitionLeaderboardCache(
+            int maxSize,
+            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NotNull LeaderboardCache leaderboardCache)
     {
         super();
         lruCache = new THLruCache<>(maxSize);
+        this.competitionServiceWrapper = competitionServiceWrapper;
+        this.leaderboardCache = leaderboardCache;
     }
     //</editor-fold>
 
-    protected CompetitionLeaderboardDTO fetch(CompetitionLeaderboardId key) throws Throwable
+    protected CompetitionLeaderboardDTO fetch(@NotNull CompetitionLeaderboardId key) throws Throwable
     {
         return competitionServiceWrapper.getCompetitionLeaderboard(key);
     }
 
-    @Override public CompetitionLeaderboardDTO get(CompetitionLeaderboardId key)
+    @Override @Nullable public CompetitionLeaderboardDTO get(@NotNull CompetitionLeaderboardId key)
     {
         CompetitionLeaderboardCutDTO competitionLeaderboardCutDTO = this.lruCache.get(key);
         if (competitionLeaderboardCutDTO == null)
@@ -50,7 +60,8 @@ import javax.inject.Singleton;
         return competitionLeaderboardCutDTO.create(leaderboardCache);
     }
 
-    public List<CompetitionLeaderboardDTO> get(List<CompetitionLeaderboardId> competitionLeaderboardIds)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<CompetitionLeaderboardDTO> get(@Nullable List<CompetitionLeaderboardId> competitionLeaderboardIds)
     {
         if (competitionLeaderboardIds == null)
         {
@@ -59,7 +70,7 @@ import javax.inject.Singleton;
 
         List<CompetitionLeaderboardDTO> fleshedValues = new ArrayList<>();
 
-        for (CompetitionLeaderboardId competitionLeaderboardId: competitionLeaderboardIds)
+        for (@NotNull CompetitionLeaderboardId competitionLeaderboardId: competitionLeaderboardIds)
         {
             fleshedValues.add(get(competitionLeaderboardId));
         }
@@ -67,7 +78,8 @@ import javax.inject.Singleton;
         return fleshedValues;
     }
 
-    public List<CompetitionLeaderboardDTO> getOrFetch(List<CompetitionLeaderboardId> competitionLeaderboardIds) throws Throwable
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<CompetitionLeaderboardDTO> getOrFetch(@Nullable List<CompetitionLeaderboardId> competitionLeaderboardIds) throws Throwable
     {
         if (competitionLeaderboardIds == null)
         {
@@ -76,7 +88,7 @@ import javax.inject.Singleton;
 
         List<CompetitionLeaderboardDTO> fleshedValues = new ArrayList<>();
 
-        for (CompetitionLeaderboardId competitionLeaderboardId: competitionLeaderboardIds)
+        for (@NotNull CompetitionLeaderboardId competitionLeaderboardId: competitionLeaderboardIds)
         {
             fleshedValues.add(getOrFetch(competitionLeaderboardId));
         }
@@ -84,7 +96,9 @@ import javax.inject.Singleton;
         return fleshedValues;
     }
 
-    @Override public CompetitionLeaderboardDTO put(CompetitionLeaderboardId key, CompetitionLeaderboardDTO value)
+    @Override @Nullable public CompetitionLeaderboardDTO put(
+            @NotNull CompetitionLeaderboardId key,
+            @NotNull CompetitionLeaderboardDTO value)
     {
         CompetitionLeaderboardDTO previous = null;
 
@@ -100,7 +114,7 @@ import javax.inject.Singleton;
         return previous;
     }
 
-    @Override public void invalidate(CompetitionLeaderboardId key)
+    @Override public void invalidate(@NotNull CompetitionLeaderboardId key)
     {
         lruCache.remove(key);
     }
@@ -114,15 +128,15 @@ import javax.inject.Singleton;
     // It is static so as not to keep a link back to the cache instance.
     private static class CompetitionLeaderboardCutDTO
     {
-        public LeaderboardKey leaderboardKey;
-        public List<AdDTO> ads;
-        public int adFrequencyRows;
-        public int adStartRow;
-        public List<PrizeDTO> prizes;
+        @Nullable public final LeaderboardKey leaderboardKey;
+        public final List<AdDTO> ads;
+        public final int adFrequencyRows;
+        public final int adStartRow;
+        public final List<PrizeDTO> prizes;
 
         public CompetitionLeaderboardCutDTO(
-                CompetitionLeaderboardDTO competitionLeaderboardDTO,
-                LeaderboardCache leaderboardCache)
+                @NotNull CompetitionLeaderboardDTO competitionLeaderboardDTO,
+                @NotNull LeaderboardCache leaderboardCache)
         {
             if (competitionLeaderboardDTO.leaderboard != null)
             {
@@ -140,7 +154,7 @@ import javax.inject.Singleton;
             prizes = competitionLeaderboardDTO.prizes;
         }
 
-        public CompetitionLeaderboardDTO create(LeaderboardCache leaderboardCache)
+        public CompetitionLeaderboardDTO create(@NotNull LeaderboardCache leaderboardCache)
         {
             return new CompetitionLeaderboardDTO(
                     leaderboardKey != null ? leaderboardCache.get(leaderboardKey) : null,

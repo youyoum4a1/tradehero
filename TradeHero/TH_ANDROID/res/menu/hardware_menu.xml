@@ -10,7 +10,7 @@
 
   <item
       android:id="@+id/hardware_menu_settings"
-      android:title="@string/action_menu_settings"
+      android:title="@string/dashboard_menu_settings"
       android:showAsAction="never"/>
 
 </menu>

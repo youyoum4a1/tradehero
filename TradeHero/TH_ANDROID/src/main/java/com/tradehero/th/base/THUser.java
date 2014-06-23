@@ -34,12 +34,12 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -47,7 +47,7 @@ public class THUser
 {
     private static AuthenticationMode authenticationMode;
     private static THAuthenticationProvider authenticator;
-    private static Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
+    private static final Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
 
     private static CredentialsDTO currentCredentials;
     private static HashMap<String, CredentialsDTO> typedCredentials;
@@ -64,6 +64,7 @@ public class THUser
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
+    @Inject static Provider<LoginFormDTO> loginFormDTOProvider;
 
     public static void initialize()
     {
@@ -152,10 +153,7 @@ public class THUser
                         createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
                 break;
             case SignIn:
-                LoginFormDTO loginFormDTO = new LoginFormDTO(
-                        DeviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                        DeviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
-                        VersionUtils.getVersionId(Application.context()));
+                LoginFormDTO loginFormDTO = loginFormDTOProvider.get();
                 // TODO save middle callback?
                 sessionServiceWrapper.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(credentialsDTO, callback));
                 break;

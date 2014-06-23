@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.DeviceUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class Navigator
@@ -30,65 +32,47 @@ public class Navigator
             R.anim.slide_left_in, R.anim.slide_right_out
     };
 
-    private final Context context;
-    private final int[] animation;
+    protected final Context context;
     protected final FragmentManager manager;
-
     private int fragmentContentId;
-    private boolean animationInitiated;
-
     private int backPressedCount;
 
     //<editor-fold desc="Constructors">
-    public Navigator(Context context, FragmentManager manager, int fragmentContentId)
-    {
-        this.animation = new int[4];
-        this.context = context;
-        this.manager = manager;
-        this.fragmentContentId = fragmentContentId;
-    }
-
     public Navigator(Activity activity, FragmentManager manager)
     {
         this(activity, manager, 0);
         setFragmentContentId(((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0).getId());
     }
+
+    public Navigator(Context context, FragmentManager manager, int fragmentContentId)
+    {
+        this.context = context;
+        this.manager = manager;
+        this.fragmentContentId = fragmentContentId;
+    }
     //</editor-fold>
-
-    public void setAnimation(int enter, int exit, int popEnter, int popExit)
-    {
-        this.animation[0] = enter;
-        this.animation[1] = exit;
-        this.animation[2] = popEnter;
-        this.animation[3] = popExit;
-        this.animationInitiated = true;
-    }
-
-    public void setAnimation(int[] anim)
-    {
-        if (anim == null || anim.length != 4)
-        {
-            anim = DEFAULT_FRAGMENT_ANIMATION;
-        }
-        setAnimation(anim[0], anim[1], anim[2], anim[3]);
-    }
-
-    private int[] getSafeAnimation()
-    {
-        if (animationInitiated)
-        {
-            return this.animation;
-        }
-        setAnimation(DEFAULT_FRAGMENT_ANIMATION);
-        return animation;
-    }
 
     public void setFragmentContentId(int fragmentContentId)
     {
         this.fragmentContentId = fragmentContentId;
     }
 
-    public <T extends Fragment> T pushFragment(Class<T> fragmentClass, Bundle args, int[] anim, String backStackName)
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass)
+    {
+        return pushFragment(fragmentClass, null);
+    }
+
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args)
+    {
+        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, null);
+    }
+
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, String addBackStack)
+    {
+        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, addBackStack);
+    }
+
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName)
     {
         resetBackPressCount();
 
@@ -99,11 +83,10 @@ public class Navigator
         fragment.setArguments(args);
         FragmentTransaction transaction = manager.beginTransaction();
 
-        if (anim == null)
+        if (anim != null)
         {
-            anim = getSafeAnimation();
+            transaction.setCustomAnimations(anim[0], anim[1], anim[2], anim[3]);
         }
-        transaction.setCustomAnimations(anim[0], anim[1], anim[2], anim[3]);
 
         if (backStackName == null)
         {
@@ -115,21 +98,6 @@ public class Navigator
         ft.commitAllowingStateLoss();
 
         return (T) fragment;
-    }
-
-    public <T extends Fragment> T pushFragment(Class<T> fragmentClass, Bundle args, String addBackStack)
-    {
-        return pushFragment(fragmentClass, args, null, addBackStack);
-    }
-
-    public <T extends Fragment> T pushFragment(Class<T> fragmentClass)
-    {
-        return pushFragment(fragmentClass, null);
-    }
-
-    public <T extends Fragment> T pushFragment(Class<T> fragmentClass, Bundle args)
-    {
-        return pushFragment(fragmentClass, args, null, null);
     }
 
     public void popFragment(String backStackName)
@@ -195,18 +163,6 @@ public class Navigator
     public boolean isBackStackEmpty()
     {
         return manager.getBackStackEntryCount() == 0;
-    }
-
-    public Fragment pushFragment(Class<? extends Fragment> fragmentClass, Bundle args, int[] pushUpFromBottom)
-    {
-        if (pushUpFromBottom != null && pushUpFromBottom.length == 4)
-        {
-            setAnimation(pushUpFromBottom[0], pushUpFromBottom[1], pushUpFromBottom[2], pushUpFromBottom[3]);
-            Fragment fragment = pushFragment(fragmentClass, args);
-            setAnimation(DEFAULT_FRAGMENT_ANIMATION);
-            return fragment;
-        }
-        return null;
     }
 
     protected void resetBackPressCount()

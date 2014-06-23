@@ -19,7 +19,7 @@ public class ValidatedText extends EditText implements ValidatedView, View.OnFoc
     private Drawable defaultDrawableRight;
     private Drawable invalidDrawableRight;
     private Drawable validDrawableRight;
-    private List<ValidationListener> listeners = new LinkedList<>();
+    private final List<ValidationListener> listeners = new LinkedList<>();
 
     //<editor-fold desc="Constructors">
     public ValidatedText(Context context)

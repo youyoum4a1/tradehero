@@ -27,8 +27,8 @@ public class GuideActivity extends Activity
         ViewPager.OnPageChangeListener,
         View.OnClickListener
 {
-
     private static final int CLOSE_IMAGE_ID = 0x88888;
+
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -39,17 +39,24 @@ public class GuideActivity extends Activity
         list.add(R.drawable.guide1);
         list.add(R.drawable.guide2);
         list.add(R.drawable.guide3);
-        list.add(R.drawable.guide4);
-        list.add(R.drawable.guide5);
+        //list.add(R.drawable.guide4);
+        //list.add(R.drawable.guide5);
 
         viewpager.setAdapter(new ListViewPagerAdapter(list));
         viewpager.setOnPageChangeListener(this);
 
-        if (isInstallShortcut())
+        try
         {
-            removeShortcut();
+            if (isInstallShortcut())
+            {
+                removeShortcut();
+            }
+            createShortcut();
         }
-        createShortcut();
+        catch (SecurityException e)
+        {
+            Timber.e(e, null);
+        }
     }
 
     private void createShortcut()
@@ -71,7 +78,6 @@ public class GuideActivity extends Activity
         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         return launchIntent;
     }
-
 
     private void printShortcutName(Cursor c)
     {
@@ -100,8 +106,8 @@ public class GuideActivity extends Activity
         }
     }
 
-    private boolean isInstallShortcut() {
-
+    private boolean isInstallShortcut()
+    {
         String name = getString(R.string.app_name);
         boolean  isInstallShortcut = false;
         final ContentResolver cr = getContentResolver();
@@ -111,19 +117,21 @@ public class GuideActivity extends Activity
 
         Cursor c = cr.query(CONTENT_URI,
                 new String[] { "title", "iconResource" },
-                "title=?", new String[]{name}, null
-        );
+                "title=?", new String[]{name}, null);
 
-        if (c != null && c.getCount() > 0) {
+        if (c != null && c.getCount() > 0)
+        {
             isInstallShortcut = true;
         }
         printShortcutName(c);
 
-        if (c != null) {
+        if (c != null)
+        {
             c.close();
         }
 
-        if (isInstallShortcut) {
+        if (isInstallShortcut)
+        {
             return isInstallShortcut;
         }
 
@@ -142,7 +150,8 @@ public class GuideActivity extends Activity
         return isInstallShortcut;
     }
 
-    private void removeShortcut() {
+    private void removeShortcut()
+    {
 
         Intent shortcutIntent = new Intent(getApplicationContext(),
                 SplashActivity.class);
@@ -188,8 +197,7 @@ public class GuideActivity extends Activity
 
         @Override public Object instantiateItem(ViewGroup container, int position)
         {
-
-            View view = null;
+            View view;
             ImageView imageView = (ImageView) LayoutInflater.from(GuideActivity.this).inflate(R.layout.guide_layout, null);
             if (position == getCount() - 1) {
                 RelativeLayout rl = new RelativeLayout(GuideActivity.this);

@@ -6,6 +6,7 @@ import com.tradehero.th.network.service.TranslationTokenServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Singleton
@@ -19,7 +20,7 @@ public class TranslationTokenCache extends StraightDTOCacheNew<TranslationTokenK
         this.translationTokenServiceWrapper = translationTokenServiceWrapper;
     }
 
-    public TranslationToken getValid(TranslationTokenKey key)
+    @Nullable public TranslationToken getValid(@NotNull TranslationTokenKey key)
     {
         TranslationToken cached = get(key);
         if (cached == null)
@@ -37,6 +38,7 @@ public class TranslationTokenCache extends StraightDTOCacheNew<TranslationTokenK
         return cached;
     }
 
+    @Nullable
     @Override public TranslationToken get(@NotNull TranslationTokenKey key)
     {
         TranslationToken token = super.get(key);

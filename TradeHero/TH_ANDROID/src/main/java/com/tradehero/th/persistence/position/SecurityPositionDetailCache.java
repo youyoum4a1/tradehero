@@ -22,13 +22,14 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class SecurityPositionDetailCache extends PartialDTOCache<SecurityId, SecurityPositionDetailDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private THLruCache<SecurityId, SecurityPositionDetailCutDTO> lruCache;
+    @NotNull private final THLruCache<SecurityId, SecurityPositionDetailCutDTO> lruCache;
     @NotNull protected final CurrentUserId currentUserId;
     @NotNull protected final Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @NotNull protected final Lazy<SecurityCompactCache> securityCompactCache;
@@ -56,12 +57,12 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    protected SecurityPositionDetailDTO fetch(SecurityId key) throws Throwable
+    protected SecurityPositionDetailDTO fetch(@NotNull SecurityId key) throws Throwable
     {
         return securityServiceWrapper.get().getSecurity(key);
     }
 
-    @Override public SecurityPositionDetailDTO get(SecurityId key)
+    @Override public SecurityPositionDetailDTO get(@NotNull SecurityId key)
     {
         SecurityPositionDetailCutDTO securityPositionDetailCutDTO = this.lruCache.get(key);
         SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(key);
@@ -73,7 +74,9 @@ import org.jetbrains.annotations.NotNull;
                 currentUserId.toUserBaseKey());
     }
 
-    @Override public SecurityPositionDetailDTO put(SecurityId key, SecurityPositionDetailDTO value)
+    @Override public SecurityPositionDetailDTO put(
+            @NotNull SecurityId key,
+            @NotNull SecurityPositionDetailDTO value)
     {
         SecurityPositionDetailDTO previous = null;
 
@@ -96,7 +99,7 @@ import org.jetbrains.annotations.NotNull;
         return previous;
     }
 
-    @Override public void invalidate(SecurityId key)
+    @Override public void invalidate(@NotNull SecurityId key)
     {
         lruCache.remove(key);
     }
@@ -110,11 +113,11 @@ import org.jetbrains.annotations.NotNull;
     // It is static so as not to keep a link back to the cache instance.
     private static class SecurityPositionDetailCutDTO
     {
-        public SecurityId securityId;
-        public List<PositionCompactId> positionIds;
-        public PortfolioId portfolioId;
-        public List<ProviderId> providerIds;
-        public int firstTradeAllTime;
+        @Nullable public final SecurityId securityId;
+        public final List<PositionCompactId> positionIds;
+        @Nullable public final PortfolioId portfolioId;
+        public final List<ProviderId> providerIds;
+        public final int firstTradeAllTime;
 
         public SecurityPositionDetailCutDTO(
                 SecurityPositionDetailDTO securityPositionDetailDTO,

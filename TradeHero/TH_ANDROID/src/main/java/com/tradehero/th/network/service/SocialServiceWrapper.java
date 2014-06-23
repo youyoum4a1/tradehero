@@ -11,18 +11,19 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class SocialServiceWrapper
 {
-    private final SocialService socialService;
-    private final SocialServiceAsync socialServiceAsync;
-    private final UserProfileCache userProfileCache;
+    @NotNull private final SocialService socialService;
+    @NotNull private final SocialServiceAsync socialServiceAsync;
+    @NotNull private final UserProfileCache userProfileCache;
 
     @Inject public SocialServiceWrapper(
-            SocialService socialService,
-            SocialServiceAsync socialServiceAsync,
-            UserProfileCache userProfileCache)
+            @NotNull SocialService socialService,
+            @NotNull SocialServiceAsync socialServiceAsync,
+            @NotNull UserProfileCache userProfileCache)
     {
         this.socialService = socialService;
         this.socialServiceAsync = socialServiceAsync;

@@ -178,7 +178,7 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
                 List<CountryLanguagePairDTO> countryLanguagePairDTOList =
                         NewsData.buildCountriesPair();
                 spinnerItemDataList =
-                        new ArrayList<SpinnerItemData>(countryLanguagePairDTOList.size());
+                        new ArrayList<>(countryLanguagePairDTOList.size());
                 int size = countryLanguagePairDTOList.size();
                 for (int i = 0; i < size; i++)
                 {
@@ -195,7 +195,7 @@ public class FilterLayout extends RelativeLayout implements View.OnClickListener
                 List<NewsItemCategoryDTO> newsItemCategoryDTOList =
                         NewsData.buildSocialCategories();
                 spinnerItemDataList =
-                        new ArrayList<SpinnerItemData>(newsItemCategoryDTOList.size());
+                        new ArrayList<>(newsItemCategoryDTOList.size());
                 int size = newsItemCategoryDTOList.size();
                 for (int i = 0; i < size; i++)
                 {

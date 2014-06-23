@@ -7,26 +7,31 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserProfileCompactCache extends StraightDTOCache<UserBaseKey, UserProfileCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject UserProfileCache userProfileCache;
+    @NotNull private final UserProfileCache userProfileCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public UserProfileCompactCache()
+    @Inject public UserProfileCompactCache(@NotNull UserProfileCache userProfileCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.userProfileCache = userProfileCache;
     }
     //</editor-fold>
 
-    @Override protected UserProfileCompactDTO fetch(UserBaseKey key) throws Throwable
+    @Override protected UserProfileCompactDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return userProfileCache.fetch(key);
     }
 
-    public List<UserProfileCompactDTO> get(List<UserBaseKey> baseKeys)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<UserProfileCompactDTO> get(@Nullable List<UserBaseKey> baseKeys)
     {
         if (baseKeys == null)
         {
@@ -34,7 +39,7 @@ import javax.inject.Singleton;
         }
 
         List<UserProfileCompactDTO> userProfileDTOs = new ArrayList<>();
-        for (UserBaseKey baseKey: baseKeys)
+        for (@NotNull UserBaseKey baseKey: baseKeys)
         {
             userProfileDTOs.add(get(baseKey));
         }

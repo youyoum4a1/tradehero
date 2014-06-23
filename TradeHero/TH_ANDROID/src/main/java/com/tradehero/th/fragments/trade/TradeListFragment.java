@@ -35,6 +35,7 @@ import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class TradeListFragment extends DashboardFragment
     @Inject PortfolioCache portfolioCache;
     @Inject CurrentUserId currentUserId;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
+    @Inject THRouter thRouter;
 
     @InjectView(android.R.id.empty) protected ProgressBar progressBar;
     @InjectView(R.id.trade_list_header) protected TradeListOverlayHeaderView header;
@@ -195,7 +197,7 @@ public class TradeListFragment extends DashboardFragment
             {
                 Bundle args = new Bundle();
                 populateBuySellArgs(args, isBuy, securityId);
-                getNavigator().pushFragment(BuySellFragment.class, args);
+                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
     }
@@ -208,12 +210,12 @@ public class TradeListFragment extends DashboardFragment
 
     private void openUserProfile(UserBaseKey userId)
     {
-        Bundle b = new Bundle();
-        b.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId.key);
+        Bundle bundle = new Bundle();
+        thRouter.save(bundle, userId);
 
         if (!currentUserId.toUserBaseKey().equals(userId.key))
         {
-            getNavigator().pushFragment(PushableTimelineFragment.class, b);
+            getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
 

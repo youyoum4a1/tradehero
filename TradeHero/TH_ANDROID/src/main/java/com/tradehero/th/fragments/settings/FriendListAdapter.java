@@ -10,6 +10,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTONameComparator;
+import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
+import com.tradehero.th.api.social.UserFriendsFacebookDTO;
+import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +67,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
 
     @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
     {
-        SectionViewHolder sectionViewHolder = null;
+        SectionViewHolder sectionViewHolder;
         if (convertView == null)
         {
             convertView = inflater.inflate(R.layout.refer_friend_header_view, parent, false);
@@ -241,7 +244,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         int count = 0;
         for (UserFriendsDTO userFriendsDTO: originalItems)
         {
-            if (userFriendsDTO != null && userFriendsDTO.isSelected())
+            if (userFriendsDTO != null && userFriendsDTO.selected)
             {
                 ++count;
             }
@@ -249,27 +252,27 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         return count;
     }
 
-    public List<UserFriendsDTO> getSelectedLinkedInFriends()
+    public List<UserFriendsLinkedinDTO> getSelectedLinkedInFriends()
     {
-        List<UserFriendsDTO> selectedItems = new ArrayList<>();
+        List<UserFriendsLinkedinDTO> selectedItems = new ArrayList<>();
         for (UserFriendsDTO userFriendsDTO: originalItems)
         {
-            if (userFriendsDTO.isSelected() && userFriendsDTO.liId != null)
+            if (userFriendsDTO.selected && userFriendsDTO instanceof UserFriendsLinkedinDTO)
             {
-                selectedItems.add(userFriendsDTO);
+                selectedItems.add((UserFriendsLinkedinDTO) userFriendsDTO);
             }
         }
         return selectedItems;
     }
 
-    public List<UserFriendsDTO> getSelectedFacebookFriends()
+    public List<UserFriendsFacebookDTO> getSelectedFacebookFriends()
     {
-        List<UserFriendsDTO> selectedItems = new ArrayList<>();
+        List<UserFriendsFacebookDTO> selectedItems = new ArrayList<>();
         for (UserFriendsDTO userFriendsDTO: originalItems)
         {
-            if (userFriendsDTO.isSelected() && userFriendsDTO.fbId != null)
+            if (userFriendsDTO.selected && userFriendsDTO instanceof UserFriendsFacebookDTO)
             {
-                selectedItems.add(userFriendsDTO);
+                selectedItems.add((UserFriendsFacebookDTO) userFriendsDTO);
             }
         }
         return selectedItems;
@@ -280,7 +283,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         List<UserFriendsDTO> selectedItems = new ArrayList<>();
         for (UserFriendsDTO userFriendsDTO: originalItems)
         {
-            if (userFriendsDTO.isSelected() && userFriendsDTO.getEmail() != null)
+            if (userFriendsDTO.selected && userFriendsDTO instanceof UserFriendsContactEntryDTO)
             {
                 selectedItems.add(userFriendsDTO);
             }
@@ -292,9 +295,9 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
     {
         for (UserFriendsDTO userFriendsDTO: originalItems)
         {
-            if (userFriendsDTO.liId != null)
+            if (userFriendsDTO instanceof UserFriendsLinkedinDTO)
             {
-                userFriendsDTO.setSelected(isSelected);
+                userFriendsDTO.selected = isSelected;
             }
         }
     }
@@ -303,9 +306,9 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
     {
         for (UserFriendsDTO userFriendsDTO: originalItems)
         {
-            if (userFriendsDTO.fbId != null)
+            if (userFriendsDTO instanceof UserFriendsFacebookDTO)
             {
-                userFriendsDTO.setSelected(isSelected);
+                userFriendsDTO.selected = isSelected;
             }
         }
     }
@@ -314,9 +317,9 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
     {
         for (UserFriendsDTO userFriendsDTO: originalItems)
         {
-            if (userFriendsDTO.getEmail() != null)
+            if (userFriendsDTO instanceof UserFriendsContactEntryDTO)
             {
-                userFriendsDTO.setSelected(isSelected);
+                userFriendsDTO.selected = isSelected;
             }
         }
     }

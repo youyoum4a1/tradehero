@@ -42,7 +42,7 @@ public class IntentDaggerModule
     @Provides(type = Provides.Type.SET)
     THIntentFactory provideTrendingIntentFactory(ProviderIntentFactory factory)
     {
-        return factory;
+        return null;//factory;
     }
     @Provides(type = Provides.Type.SET)
     THIntentFactory provideTrendingIntentFactory(SecurityIntentFactory factory)
@@ -59,7 +59,10 @@ public class IntentDaggerModule
     {
         for (THIntentFactory subFactory: subFactories)
         {
-            factory.addSubFactory(subFactory);
+            if (subFactory != null)
+            {
+                factory.addSubFactory(subFactory);
+            }
         }
         return factory;
     }

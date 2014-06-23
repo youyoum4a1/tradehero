@@ -1,5 +1,7 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
+
 public class Constants
 {
     // build constants
@@ -27,6 +29,8 @@ public class Constants
     // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
     public static final String BASE_STATIC_CONTENT_URL = "https://www.tradehero.mobi/";
     public static final String PRIVACY_TERMS_OF_SERVICE = BASE_STATIC_CONTENT_URL + "privacy";
+    public static final String PRIVACY_TERMS_OF_USE = BASE_STATIC_CONTENT_URL + "terms";
+    public static final String APP_HOME = BASE_STATIC_CONTENT_URL + "AppHome";
 
     //Header
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
@@ -38,5 +42,9 @@ public class Constants
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
-    public static final int VERSION = 0;//0 for international, 1 baidu, 2 tencent
+    // TODO remove when automated build.
+    // 0 for international, 1 baidu, 2 tencent. It is here to help with build multiple version
+    private static final int VERSION = 0;
+
+    public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
 }

@@ -12,31 +12,46 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class LeaderboardCache extends PartialDTOCache<LeaderboardKey, LeaderboardDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    private THLruCache<LeaderboardKey, LeaderboardCutDTO> lruCache;
-    @Inject protected Lazy<LeaderboardUserCache> leaderboardUserCache;
-    @Inject protected LeaderboardUserDTOUtil leaderboardUserDTOUtil;
-    @Inject protected LeaderboardServiceWrapper leaderboardServiceWrapper;
+    @NotNull private final THLruCache<LeaderboardKey, LeaderboardCutDTO> lruCache;
+    @NotNull private final Lazy<LeaderboardUserCache> leaderboardUserCache;
+    @NotNull private final LeaderboardUserDTOUtil leaderboardUserDTOUtil;
+    @NotNull private final LeaderboardServiceWrapper leaderboardServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    @Inject public LeaderboardCache()
+    @Inject public LeaderboardCache(
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
+            @NotNull LeaderboardUserDTOUtil leaderboardUserDTOUtil,
+            @NotNull LeaderboardServiceWrapper leaderboardServiceWrapper)
     {
-        this(DEFAULT_MAX_SIZE);
+        this(
+                DEFAULT_MAX_SIZE,
+                leaderboardUserCache,
+                leaderboardUserDTOUtil,
+                leaderboardServiceWrapper);
     }
 
-    public LeaderboardCache(int maxSize)
+    public LeaderboardCache(
+            int maxSize,
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
+            @NotNull LeaderboardUserDTOUtil leaderboardUserDTOUtil,
+            @NotNull LeaderboardServiceWrapper leaderboardServiceWrapper)
     {
         super();
         lruCache = new THLruCache<>(maxSize);
+        this.leaderboardUserCache = leaderboardUserCache;
+        this.leaderboardUserDTOUtil = leaderboardUserDTOUtil;
+        this.leaderboardServiceWrapper = leaderboardServiceWrapper;
     }
     //</editor-fold>
 
-    protected LeaderboardDTO fetch(LeaderboardKey key) throws Throwable
+    protected LeaderboardDTO fetch(@NotNull LeaderboardKey key) throws Throwable
     {
         return leaderboardServiceWrapper.getLeaderboard(key);
     }
@@ -48,8 +63,12 @@ import javax.inject.Singleton;
         {
             return null;
         }
-        LeaderboardDTO value =  leaderboardCutDTO.create(leaderboardUserCache.get());
-        return value;
+        LeaderboardDTO leaderboardDTO = leaderboardCutDTO.create(leaderboardUserCache.get());
+        if (leaderboardDTO != null && leaderboardDTO.getExpiresInSeconds() <= 0)
+        {
+            return null;
+        }
+        return leaderboardDTO;
     }
 
     @Override public LeaderboardDTO put(LeaderboardKey key, LeaderboardDTO value)
@@ -85,15 +104,16 @@ import javax.inject.Singleton;
     // It is static so as not to keep a link back to the cache instance.
     private static class LeaderboardCutDTO
     {
-        public int id;
-        public String name;
-        public List<LeaderboardUserId> userIds;
-        public int userIsAtPositionZeroBased;
-        public Date markUtc;
-        public int minPositionCount;
-        public double maxSharpeRatioInPeriodVsSP500;
-        public double maxStdDevPositionRoiInPeriod;
-        public double avgStdDevPositionRoiInPeriod;
+        public final int id;
+        public final String name;
+        public final List<LeaderboardUserId> userIds;
+        public final int userIsAtPositionZeroBased;
+        public final Date markUtc;
+        public final int minPositionCount;
+        public final double maxSharpeRatioInPeriodVsSP500;
+        public final double maxStdDevPositionRoiInPeriod;
+        public final double avgStdDevPositionRoiInPeriod;
+        @NotNull public final Date expirationDate;
 
         public LeaderboardCutDTO(
                 LeaderboardDTO leaderboardDTO,
@@ -112,6 +132,7 @@ import javax.inject.Singleton;
             this.maxSharpeRatioInPeriodVsSP500 = leaderboardDTO.maxSharpeRatioInPeriodVsSP500;
             this.maxStdDevPositionRoiInPeriod = leaderboardDTO.maxStdDevPositionRoiInPeriod;
             this.avgStdDevPositionRoiInPeriod = leaderboardDTO.avgStdDevPositionRoiInPeriod;
+            this.expirationDate = leaderboardDTO.expirationDate;
         }
 
         public LeaderboardDTO create(LeaderboardUserCache leaderboardUserCache)
@@ -125,8 +146,8 @@ import javax.inject.Singleton;
                     minPositionCount,
                     maxSharpeRatioInPeriodVsSP500,
                     maxStdDevPositionRoiInPeriod,
-                    avgStdDevPositionRoiInPeriod
-            );
+                    avgStdDevPositionRoiInPeriod,
+                    expirationDate);
         }
     }
 }

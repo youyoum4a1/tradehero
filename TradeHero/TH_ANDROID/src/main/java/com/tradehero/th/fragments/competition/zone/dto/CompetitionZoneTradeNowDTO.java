@@ -5,12 +5,14 @@ public class CompetitionZoneTradeNowDTO extends CompetitionZoneDTO
     public final int imageResId;
     public final String imageUrl;
 
+    //<editor-fold desc="Constructors">
     public CompetitionZoneTradeNowDTO(String title, String description, int imageResId, String imageUrl)
     {
         super(title, description);
         this.imageResId = imageResId;
         this.imageUrl = imageUrl;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {

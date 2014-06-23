@@ -1,7 +1,7 @@
 package com.tradehero.th.models.security;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.util.Iterator;
 import java.util.TreeSet;
 import org.junit.After;

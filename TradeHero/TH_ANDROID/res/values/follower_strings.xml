@@ -10,7 +10,7 @@
   </string>
   <string name="not_follow_subtitle">FREE Follow</string>
   <string name="not_follow_subtitle2">Free</string>
-  <string name="follower_item_with_subtitle">%1$s (%2$s)</string>
+  <string name="follower_item_with_subtitle" translatable="false">%1$s (%2$s)</string>
   <string name="not_follow_premium_subtitle">PREMIUM Follow</string>
   <string name="not_follow_premium_subtitle2">Premium</string>
   <string name="free_follow_title">You are now following</string>

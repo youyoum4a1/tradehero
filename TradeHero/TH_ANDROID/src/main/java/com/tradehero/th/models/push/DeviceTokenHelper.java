@@ -5,6 +5,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.misc.DeviceType;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.metrics.MarketSegment;
 import com.urbanairship.push.PushManager;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -16,10 +17,7 @@ public class DeviceTokenHelper
 
     public static boolean isChineseVersion()
     {
-        //TODO need to improve
-        boolean flag = Constants.VERSION > 0;
-        //MetaHelper.isChineseLocale(context.getApplicationContext());
-        return flag;
+        return Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA);
     }
 
     /**
@@ -37,16 +35,8 @@ public class DeviceTokenHelper
         return PushManager.shared().getAPID();
     }
 
-    /**
-     * just return DeviceType.Android
-     * @return
-     */
     public static DeviceType getDeviceType()
     {
-        if (isChineseVersion())
-        {
-            return DeviceType.ChineseVersion;
-        }
-        return DeviceType.Android;
+        return Constants.TAP_STREAM_TYPE.marketSegment.deviceType;
     }
 }

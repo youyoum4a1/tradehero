@@ -24,6 +24,7 @@
       android:visibility="visible"
       android:background="#80F3F3F3"
       >
+      <!--TODO use dropdown/spinner view-->
 
     <TextView
         android:id="@+id/selected_title_anchor"
@@ -67,7 +68,7 @@
     <ImageView
         android:id="@+id/stock_bg_logo"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="@dimen/buy_sell_header_bg_height"
         android:layout_alignParentTop="true"
         android:scaleType="fitCenter"
         android:alpha="0.08"
@@ -207,6 +208,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/common_margin_1"
         android:layout_below="@id/belt"
+        tools:background="#ffeeee"
         />
 
     <include layout="@layout/buy_sell_buttons"/>

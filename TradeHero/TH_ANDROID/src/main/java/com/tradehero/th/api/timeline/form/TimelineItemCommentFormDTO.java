@@ -5,7 +5,7 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 
 public class TimelineItemCommentFormDTO extends DiscussionFormDTO
 {
-    public static DiscussionType TYPE = DiscussionType.TIMELINE_ITEM;
+    public static final DiscussionType TYPE = DiscussionType.TIMELINE_ITEM;
 
     public TimelineItemCommentFormDTO()
     {

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -9,28 +8,32 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HeroManagerInfoFetcher
 {
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected Lazy<HeroListCache> heroListCache;
-    @Inject protected Lazy<HeroCache> heroCache;
+    @NotNull protected final Lazy<UserProfileCache> userProfileCache;
+    @NotNull protected final Lazy<HeroListCache> heroListCache;
+    @NotNull protected final Lazy<HeroCache> heroCache;
 
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    private DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener;
 
-    public HeroManagerInfoFetcher(
-            DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener,
-            DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
+    //<editor-fold desc="Constructors">
+    @Inject public HeroManagerInfoFetcher(
+            @NotNull Lazy<UserProfileCache> userProfileCache,
+            @NotNull Lazy<HeroListCache> heroListCache,
+            @NotNull Lazy<HeroCache> heroCache)
     {
         super();
-        this.userProfileListener = userProfileListener;
-        this.heroListListener = heroListListener;
-        DaggerUtils.inject(this);
+        this.userProfileCache = userProfileCache;
+        this.heroListCache = heroListCache;
+        this.heroCache = heroCache;
     }
+    //</editor-fold>
 
     public void onDestroyView()
     {
@@ -56,59 +59,57 @@ public class HeroManagerInfoFetcher
         }
     }
 
-    public void setUserProfileListener(
+    public void setUserProfileListener(@Nullable
             DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener)
     {
         this.userProfileListener = userProfileListener;
     }
 
-    public void setHeroListListener(
+    public void setHeroListListener(@Nullable
             DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
     {
         this.heroListListener = heroListListener;
     }
 
-    public void fetch(UserBaseKey userBaseKey)
+    public void fetch(@NotNull UserBaseKey followerId)
     {
-        fetchUserProfile(userBaseKey);
-        fetchHeroes(userBaseKey);
+        fetchUserProfile(followerId);
+        fetchHeroes(followerId);
     }
 
-    public void fetchUserProfile(UserBaseKey userBaseKey)
+    public void fetchUserProfile(@NotNull UserBaseKey userBaseKey)
     {
         detachUserProfileCache();
         this.userProfileCache.get().register(userBaseKey, userProfileListener);
         this.userProfileCache.get().getOrFetchAsync(userBaseKey);
     }
 
-    public void fetchHeroes(UserBaseKey userBaseKey)
+    public void fetchHeroes(@NotNull UserBaseKey followerId)
     {
-        HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(userBaseKey);
+        HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(followerId);
         HeroIdList heroIds = (heroIdExtWrapper != null) ? heroIdExtWrapper.allActiveHeroes : null;
-        HeroDTOList heroDTOs = heroCache.get().get(heroIds);
-        if (heroIds != null
-                && heroDTOs != null
-                && heroIds.size()
-                == heroDTOs.size()) // We need this longer test in case DTO have been flushed.
+        if (heroCache.get().haveAllHeros(heroIds))
         {
             if (this.heroListListener != null)
             {
-                this.heroListListener.onDTOReceived(userBaseKey, heroIdExtWrapper);
+                this.heroListListener.onDTOReceived(followerId, heroIdExtWrapper);
             }
         }
         else
         {
-            detachHeroListCache();
-            heroListCache.get().register(userBaseKey, heroListListener);
-            heroListCache.get().getOrFetchAsync(userBaseKey);
+            fetchHeroes(followerId, false);
         }
     }
 
-    public void reloadHeroes(UserBaseKey userBaseKey,
-            DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
+    public void reloadHeroes(UserBaseKey followerId)
+    {
+        fetchHeroes(followerId, true);
+    }
+
+    protected void fetchHeroes(@NotNull UserBaseKey followerId, boolean force)
     {
         detachHeroListCache();
-        heroListCache.get().register(userBaseKey, heroListListener);
-        heroListCache.get().getOrFetchAsync(userBaseKey, true);
+        heroListCache.get().register(followerId, heroListListener);
+        heroListCache.get().getOrFetchAsync(followerId, force);
     }
 }

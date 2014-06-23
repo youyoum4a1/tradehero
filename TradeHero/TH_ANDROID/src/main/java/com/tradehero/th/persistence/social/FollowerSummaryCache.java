@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class FollowerSummaryCache extends StraightDTOCache<UserBaseKey, FollowerSummaryDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    protected FollowerServiceWrapper followerServiceWrapper;
+    @NotNull protected final FollowerServiceWrapper followerServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public FollowerSummaryCache(FollowerServiceWrapper followerServiceWrapper)
@@ -23,12 +26,13 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected FollowerSummaryDTO fetch(UserBaseKey key) throws Throwable
+    @Override protected FollowerSummaryDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return followerServiceWrapper.getAllFollowersSummary(key);
     }
 
-    public List<FollowerSummaryDTO> getOrFetch(List<UserBaseKey> baseKeys) throws Throwable
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<FollowerSummaryDTO> getOrFetch(@Nullable List<UserBaseKey> baseKeys) throws Throwable
     {
         if (baseKeys == null)
         {
@@ -36,7 +40,7 @@ import javax.inject.Singleton;
         }
 
         List<FollowerSummaryDTO> followerSummaryDTOs = new ArrayList<>();
-        for (UserBaseKey baseKey : baseKeys)
+        for (@NotNull UserBaseKey baseKey : baseKeys)
         {
             followerSummaryDTOs.add(getOrFetch(baseKey, false));
         }

@@ -2,4 +2,22 @@
 <resources>
   <dimen name="security_logo_midium">60dp</dimen>
   <dimen name="button_height_30">30dp</dimen>
+
+  <!--common margin should not change-->
+  <dimen name="common_margin_1">1dp</dimen>
+  <dimen name="common_margin_2">2dp</dimen>
+  <dimen name="common_margin_4">4dp</dimen>
+  <dimen name="common_margin_10">10dp</dimen>
+  <dimen name="common_margin_15">15dp</dimen>
+  <dimen name="common_margin_20">20dp</dimen>
+  <dimen name="common_margin_30">30dp</dimen>
+  <dimen name="common_margin_50">50dp</dimen>
+  <dimen name="common_margin_60">100px</dimen>
+  <dimen name="common_margin_80">140px</dimen>
+  <dimen name="customer_margin_100">200px</dimen>
+  <dimen name="common_margin_110">220px</dimen>
+  <dimen name="common_margin_130">130dp</dimen>
+  <dimen name="common_height_40">40dp</dimen>
+  <dimen name="common_text_size_30">50px</dimen>
+  <dimen name="common_text_size_25">40px</dimen>
 </resources>

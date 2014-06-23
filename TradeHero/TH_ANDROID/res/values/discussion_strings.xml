@@ -4,6 +4,7 @@
   <string name="discussion_translate_button">Translate</string>
   <string name="discussion_translating_button">Translating</string>
   <string name="discussion_show_original_button">Show Original</string>
+  <string name="discussion_translation_failed_button">Failed to Translate</string>
 
   <string name="discussion_translate_button_with_powered"><b>( %1$s )</b> Powered by</string>
 

@@ -7,14 +7,23 @@ import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.DebugModule;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
+import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.dagger.TradeHeroModule;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +34,7 @@ import timber.log.Timber;
 public class Application extends PApplication
 {
     @Inject protected PushNotificationManager pushNotificationManager;
+    @Inject protected THRouter thRouter;
 
     @Override protected void init()
     {
@@ -58,6 +68,22 @@ public class Application extends PApplication
 
         pushNotificationManager.initialise();
 
+        thRouter.registerRoutes(
+                PushableTimelineFragment.class,
+                MeTimelineFragment.class,
+
+                NotificationsCenterFragment.class,
+                MessagesCenterFragment.class,
+                UpdateCenterFragment.class,
+
+                TrendingFragment.class,
+                FriendsInvitationFragment.class,
+                SettingsFragment.class,
+                MainCompetitionFragment.class
+        );
+        thRouter.registerAlias("messages", "updatecenter/0");
+        thRouter.registerAlias("notifications", "updatecenter/1");
+
         THLog.showDeveloperKeyHash();
     }
 
@@ -74,7 +100,7 @@ public class Application extends PApplication
         if (!Constants.RELEASE)
         {
             List<Object> listModules = new ArrayList<>(Arrays.asList(modules));
-            listModules.add(new DebugModule());
+            //listModules.add(new com.tradehero.th.DebugModule());
             return listModules.toArray();
         }
         return modules;

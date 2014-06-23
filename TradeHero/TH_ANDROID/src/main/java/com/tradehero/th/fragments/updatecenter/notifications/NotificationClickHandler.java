@@ -23,6 +23,7 @@ import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -33,6 +34,7 @@ public class NotificationClickHandler
     private final Context context;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject THRouter thRouter;
 
     public NotificationClickHandler(
             Context context,
@@ -211,7 +213,7 @@ public class NotificationClickHandler
         if (notificationDTO != null && notificationDTO.referencedUserId != null)
         {
             Bundle bundle = new Bundle();
-            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, notificationDTO.referencedUserId);
+            thRouter.save(bundle, new UserBaseKey(notificationDTO.referencedUserId));
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }

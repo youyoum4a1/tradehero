@@ -17,7 +17,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
@@ -44,6 +43,7 @@ import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
@@ -321,7 +321,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                                     new DecimalFormat("##.##").format(gainLoss));
                         }
 
-                        gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceForNumber(pl)));
+                        gainLossLabel.setTextColor(getResources().getColor(ColorUtils.getColorResourceIdForNumber(pl)));
                     }
                     else
                     {
@@ -541,7 +541,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             WatchlistEditFragment.putSecurityId(args, securityId);
             DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     private Navigator getNavigator()

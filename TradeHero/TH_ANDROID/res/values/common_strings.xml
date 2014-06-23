@@ -6,7 +6,6 @@
   <string name="na">N/A</string>
   <string name="empty"/>
   <string name="cancel">Cancel</string>
-  <string name="action_menu_settings">Settings</string>
 
   <string name="network_error">Please check your network connection!</string>
   <!-- data format-->
@@ -27,14 +26,14 @@
   <string name="splash_copyright_3">Patents Pending</string>
 
   <!-- Dashboard -->
+  <string name="dashboard_timeline">Timeline</string>
+  <string name="dashboard_home">Home</string>
   <string name="dashboard_trending">Trade</string>
   <string name="dashboard_community">Social</string>
-  <string name="dashboard_home">Home</string>
-  <string name="dashboard_portfolio">Portfolio</string>
+  <string name="dashboard_message_center">Message</string>
   <string name="dashboard_referral">Refer Friends</string>
   <string name="dashboard_store">Store</string>
-  <string name="dashboard_headline">Headline</string>
-  <string name="message_center">Message</string>
+  <string name="dashboard_menu_settings">Settings</string>
   <string name="dashboard_admin_settings">Admin Settings</string>
 
   <!-- To get rid of? -->

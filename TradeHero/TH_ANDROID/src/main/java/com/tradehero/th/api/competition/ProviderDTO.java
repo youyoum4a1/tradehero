@@ -49,6 +49,8 @@ public class ProviderDTO implements DTO
     public String ruleText;
     public boolean hasHelpVideo;
     public String wizardUrl;
+    public String wizardTitle;
+    public String wizardImageUrl;
     public String ctaLocationTags;
     public String currencyDisplay;
     public String currencyISO;

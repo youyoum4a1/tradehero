@@ -15,7 +15,7 @@ public class AlertCompactDTO implements DTO
     public boolean active;
     @Nullable public Date activeUntilDate;
 
-    public SecurityCompactDTO security;
+    @Nullable public SecurityCompactDTO security;
 
     public AlertCompactDTO()
     {

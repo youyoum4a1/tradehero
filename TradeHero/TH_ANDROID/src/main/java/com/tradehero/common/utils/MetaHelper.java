@@ -26,7 +26,6 @@ import java.util.TimeZone;
 
 public class MetaHelper
 {
-
     @SuppressLint("NewApi")
     public static int[] getScreensize(Context ctx)
     {

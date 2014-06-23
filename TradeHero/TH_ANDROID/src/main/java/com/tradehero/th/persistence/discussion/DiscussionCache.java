@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.discussion;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOList;
@@ -14,30 +14,31 @@ import com.tradehero.th.persistence.news.NewsItemCache;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
-public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDiscussionCompactDTO>
+public class DiscussionCache extends StraightDTOCacheNew<DiscussionKey, AbstractDiscussionCompactDTO>
 {
-    private final DiscussionServiceWrapper discussionServiceWrapper;
-    private final NewsItemCache newsItemCache;
-    private final UserTimelineServiceWrapper timelineServiceWrapper;
+    @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
+    @NotNull private final NewsItemCache newsItemCache;
+    @NotNull private final UserTimelineServiceWrapper timelineServiceWrapper;
 
+    //<editor-fold desc="Constructors">
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            NewsItemCache newsItemCache,
-            UserTimelineServiceWrapper userTimelineServiceWrapper,
-            DiscussionServiceWrapper discussionServiceWrapper)
+            @NotNull NewsItemCache newsItemCache,
+            @NotNull UserTimelineServiceWrapper userTimelineServiceWrapper,
+            @NotNull DiscussionServiceWrapper discussionServiceWrapper)
     {
         super(maxSize.get());
 
         this.discussionServiceWrapper = discussionServiceWrapper;
-
-        // very hacky, but server hacks it first :(
         this.newsItemCache = newsItemCache;
         this.timelineServiceWrapper = userTimelineServiceWrapper;
     }
+    //</editor-fold>
 
-    @Override protected AbstractDiscussionCompactDTO fetch(DiscussionKey discussionKey) throws Throwable
+    @Override public AbstractDiscussionCompactDTO fetch(@NotNull DiscussionKey discussionKey) throws Throwable
     {
         if (discussionKey instanceof TimelineItemDTOKey)
         {
@@ -70,20 +71,6 @@ public class DiscussionCache extends StraightDTOCache<DiscussionKey, AbstractDis
         for (DiscussionKey discussionKey : discussionKeys)
         {
             dtos.add(get(discussionKey));
-        }
-        return dtos;
-    }
-
-    public DiscussionDTOList<? super AbstractDiscussionCompactDTO> getOrFetch(List<DiscussionKey> discussionKeys) throws Throwable
-    {
-        if (discussionKeys == null)
-        {
-            return null;
-        }
-        DiscussionDTOList<? super AbstractDiscussionCompactDTO> dtos = new DiscussionDTOList<>();
-        for (DiscussionKey discussionKey : discussionKeys)
-        {
-            dtos.add(getOrFetch(discussionKey));
         }
         return dtos;
     }

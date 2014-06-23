@@ -38,6 +38,6 @@ public class PortfolioIntentTest
 
     @Test public void typeIsDashboard()
     {
-        assertEquals(DashboardTabType.PORTFOLIO, new PortfolioIntent().getDashboardType());
+        assertEquals(DashboardTabType.TIMELINE, new PortfolioIntent().getDashboardType());
     }
 }

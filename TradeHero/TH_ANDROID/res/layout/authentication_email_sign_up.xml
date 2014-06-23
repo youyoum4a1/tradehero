@@ -1,43 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<!--<ScrollView-->
+<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!---->
+<!--android:orientation="vertical"-->
+<!--android:focusableInTouchMode="true"-->
+<!--android:stackFromBottom="true"-->
+<!--android:clickable="true"-->
+<!--android:fillViewport="true"-->
+<!--android:focusable="false">-->
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sign_up_form_wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/authentication_bg"
     android:orientation="vertical"
-    android:focusableInTouchMode="true"
-    android:stackFromBottom="true"
     android:clickable="true"
-    android:fillViewport="true"
-    android:focusable="false">
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:gravity="top">
+
+  <ImageView
+      android:id="@+id/authentication_by_sign_up_back_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/settings_back_light_default"/>
 
   <LinearLayout
-      android:id="@+id/sign_up_form_wrapper"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/white"
-      android:orientation="vertical"
+      android:layout_height="match_parent"
       style="@style/TradeHero.Authentication"
-      android:clickable="true"
-      android:focusable="true"
-      android:focusableInTouchMode="true"
-      android:gravity="top">
+      android:orientation="vertical">
 
-    <include layout="@layout/profile_info"/>
+    <include
+        layout="@layout/profile_info"/>
 
     <Button
         android:id="@+id/authentication_sign_up_button"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_height="@dimen/common_margin_60"
+        android:layout_marginTop="@dimen/common_margin_80"
         android:background="@drawable/authentication_button"
-        android:padding="@dimen/common_margin_10"
-        android:text="@string/authentication_sign_up"
+        android:text="@string/authentication_register"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="@dimen/common_text_size_30"
         android:textStyle="bold"
         />
-
   </LinearLayout>
 
-</ScrollView>
+</LinearLayout>
+
+    <!--</ScrollView>-->

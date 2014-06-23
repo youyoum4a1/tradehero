@@ -23,14 +23,15 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.InviteDTO;
+import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.InviteContactEntryDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsFacebookDTO;
+import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -48,8 +49,9 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +75,7 @@ public class InviteFriendFragment extends DashboardFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     private FriendListAdapter referFriendListAdapter;
@@ -84,8 +86,8 @@ public class InviteFriendFragment extends DashboardFragment
     @InjectView(R.id.sticky_list) StickyListHeadersListView stickyListHeadersListView;
     private SocialNetworkEnum currentSocialNetworkConnect;
 
-    private List<UserFriendsDTO> selectedLinkedInFriends;
-    private List<UserFriendsDTO> selectedFacebookFriends;
+    private List<UserFriendsLinkedinDTO> selectedLinkedInFriends;
+    private List<UserFriendsFacebookDTO> selectedFacebookFriends;
 
     private ToggleButton fbToggle;
     private ToggleButton liToggle;
@@ -425,8 +427,8 @@ public class InviteFriendFragment extends DashboardFragment
             inviteFriendForm.users = new ArrayList<>();
             for (UserFriendsDTO userFriendsDTO : selectedContacts)
             {
-                InviteDTO inviteDTO = new InviteDTO();
-                inviteDTO.email = userFriendsDTO.getEmail();
+                InviteContactEntryDTO inviteDTO = new InviteContactEntryDTO();
+                inviteDTO.email = userFriendsDTO.email;
                 inviteFriendForm.users.add(inviteDTO);
             }
             //getProgressDialog().setMessage(getString(R.string.sending_email_invitation));
@@ -600,11 +602,9 @@ public class InviteFriendFragment extends DashboardFragment
                     {
                         InviteFormDTO inviteFriendForm = new InviteFormDTO();
                         inviteFriendForm.users = new ArrayList<>();
-                        for (UserFriendsDTO userFriendsDTO : selectedLinkedInFriends)
+                        for (UserFriendsLinkedinDTO userFriendsDTO : selectedLinkedInFriends)
                         {
-                            InviteDTO inviteDTO = new InviteDTO();
-                            inviteDTO.liId = userFriendsDTO.liId;
-                            inviteFriendForm.users.add(inviteDTO);
+                            inviteFriendForm.users.add(userFriendsDTO.createInvite());
                         }
                         selectedLinkedInFriends = null;
                         getProgressDialog().show();

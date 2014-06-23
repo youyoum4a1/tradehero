@@ -21,8 +21,8 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
@@ -71,6 +71,7 @@ import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -80,6 +81,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
+@Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
@@ -108,7 +110,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
@@ -713,12 +715,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
         PackageInfo packageInfo = null;
-        String timeStr = "";
+        String timeStr;
         try
         {
             packageInfo = getActivity().getPackageManager().getPackageInfo(
                     getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e)
+        }
+        catch (PackageManager.NameNotFoundException e)
         {
             e.printStackTrace();
         }
@@ -736,7 +739,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void handleTopBannerClicked()
     {
         getNavigator().pushFragment(InviteFriendFragment.class, null,
-                Navigator.PUSH_UP_FROM_BOTTOM);
+                Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     private void updateNotificationStatus()

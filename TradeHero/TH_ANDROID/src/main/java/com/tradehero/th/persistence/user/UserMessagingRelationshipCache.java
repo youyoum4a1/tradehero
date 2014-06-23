@@ -8,27 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserMessagingRelationshipCache extends StraightDTOCache<UserBaseKey, UserMessagingRelationshipDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    private final MessageServiceWrapper messageServiceWrapper;
+    @NotNull private final MessageServiceWrapper messageServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    @Inject public UserMessagingRelationshipCache(MessageServiceWrapper messageServiceWrapper)
+    @Inject public UserMessagingRelationshipCache(@NotNull MessageServiceWrapper messageServiceWrapper)
     {
         super(DEFAULT_MAX_SIZE);
         this.messageServiceWrapper = messageServiceWrapper;
     }
     //</editor-fold>
 
-    @Override protected UserMessagingRelationshipDTO fetch(UserBaseKey key) throws Throwable
+    @Override protected UserMessagingRelationshipDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return messageServiceWrapper.getMessagingRelationgshipStatus(key);
     }
 
-    public List<UserMessagingRelationshipDTO> get(List<UserBaseKey> baseKeys)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<UserMessagingRelationshipDTO> get(@Nullable List<UserBaseKey> baseKeys)
     {
         if (baseKeys == null)
         {
@@ -36,7 +40,7 @@ import javax.inject.Singleton;
         }
 
         List<UserMessagingRelationshipDTO> userMessagingRelationshipDTOs = new ArrayList<>();
-        for (UserBaseKey baseKey: baseKeys)
+        for (@NotNull UserBaseKey baseKey: baseKeys)
         {
             userMessagingRelationshipDTOs.add(get(baseKey));
         }

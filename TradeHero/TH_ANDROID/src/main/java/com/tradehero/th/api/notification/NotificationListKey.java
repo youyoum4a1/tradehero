@@ -10,7 +10,7 @@ public class NotificationListKey extends AbstractIntegerDTOKey
     implements Querylizable<String>
 {
     private static final Integer ALL_NOTIFICATIONS_KEY = Integer.MIN_VALUE;
-    private static String BUNDLE_KEY_KEY = NotificationListKey.class.getName() + ".key";
+    private static final String BUNDLE_KEY_KEY = NotificationListKey.class.getName() + ".key";
 
     public NotificationListKey()
     {

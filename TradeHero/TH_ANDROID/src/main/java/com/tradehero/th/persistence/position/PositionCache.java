@@ -22,10 +22,10 @@ import org.jetbrains.annotations.Nullable;
 {
     private static final int DEFAULT_MAX_SIZE = 5000;
 
-    @NotNull protected Lazy<PositionCompactIdCache> positionCompactIdCache;
-    @NotNull protected Lazy<LeaderboardPositionIdCache> positionIdCache;
-    @NotNull protected Lazy<TradeListCache> tradeListCache;
-    @NotNull protected PositionDTOFactory positionDTOFactory;
+    @NotNull protected final Lazy<PositionCompactIdCache> positionCompactIdCache;
+    @NotNull protected final Lazy<LeaderboardPositionIdCache> positionIdCache;
+    @NotNull protected final Lazy<TradeListCache> tradeListCache;
+    @NotNull protected final PositionDTOFactory positionDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCache(

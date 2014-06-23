@@ -4,37 +4,35 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.Window;
 import com.tradehero.th.api.social.InviteDTO;
-import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by tradehero on 14-5-27.
- */
-@Singleton
-public class SocialFriendHandler {
+@Singleton public class SocialFriendHandler
+{
+    @NotNull Lazy<UserServiceWrapper> userService;
 
-    @Inject Lazy<UserServiceWrapper> userService;
-
-    @Inject
-    public SocialFriendHandler() {
-        DaggerUtils.inject(this);
+    //<editor-fold desc="Constructors">
+    @Inject public SocialFriendHandler(@NotNull Lazy<UserServiceWrapper> userService)
+    {
+        this.userService = userService;
     }
+    //</editor-fold>
 
-    public static class RequestCallback<T> implements Callback<T>{
-
+    public static class RequestCallback<T> implements Callback<T>
+    {
         private ProgressDialog dialog;
         private Context context;
 
@@ -43,20 +41,23 @@ public class SocialFriendHandler {
             this.context = context;
         }
 
-        private void showDialog(Context context) {
-            if (dialog == null) {
+        private void showDialog(Context context)
+        {
+            if (dialog == null)
+            {
                 dialog = new ProgressDialog(context);
             }
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.show();
         }
 
-        private void dismissDialog() {
-            if (dialog != null && dialog.isShowing()) {
+        private void dismissDialog()
+        {
+            if (dialog != null && dialog.isShowing())
+            {
                 dialog.dismiss();
             }
         }
-
 
         public void onRequestStart()
         {
@@ -64,28 +65,30 @@ public class SocialFriendHandler {
         }
 
         @Override
-        public void success(T data, Response response) {
+        public void success(T data, Response response)
+        {
             dismissDialog();
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
             dismissDialog();
         }
     }
 
-    public MiddleCallback<UserProfileDTO> followFriends(List<UserFriendsDTO> users,RequestCallback<UserProfileDTO> callback) {
-
+    public MiddleCallback<UserProfileDTO> followFriends(List<UserFriendsDTO> users, RequestCallback<UserProfileDTO> callback)
+    {
         if (callback != null)
         {
             callback.onRequestStart();
         }
         MiddleCallback<UserProfileDTO> middleCallback = null;
-        if(users.size() > 1)
+        if (users.size() > 1)
         {
             FollowFriendsForm followFriendsForm = new FollowFriendsForm();
-            followFriendsForm.userIds = new ArrayList<Integer>();
-            for (int i=0,j=users.size();i<j;i++)
+            followFriendsForm.userIds = new ArrayList<>();
+            for (int i = 0, j = users.size(); i < j; i++)
             {
                 followFriendsForm.userIds.add(users.get(i).thUserId);
             }
@@ -99,34 +102,21 @@ public class SocialFriendHandler {
         return middleCallback;
     }
 
-
     // TODO
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users,RequestCallback<Response> callback) {
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
+    {
 
         InviteFormDTO inviteFormDTO = new InviteFormDTO();
         List<InviteDTO> usersToFollow = new ArrayList<>(users.size());
-        for (int i=0;i<users.size();i++)
+        for (int i = 0; i < users.size(); i++)
         {
-            InviteDTO inviteDTO = new InviteDTO();
-            UserFriendsDTO userFriendsDTO = users.get(i);
-            inviteDTO.email = userFriendsDTO.getEmail();
-            inviteDTO.fbId = userFriendsDTO.fbId;
-            inviteDTO.liId = userFriendsDTO.liId;
-            inviteDTO.twId = userFriendsDTO.twId;
-
-            usersToFollow.add(inviteDTO);
+            usersToFollow.add(users.get(i).createInvite());
         }
         inviteFormDTO.users = usersToFollow;
         if (callback != null)
         {
             callback.onRequestStart();
         }
-        MiddleCallback<Response> middleCallback = userService.get().inviteFriends(userKey,inviteFormDTO, callback);
-       return middleCallback;
+        return userService.get().inviteFriends(userKey, inviteFormDTO, callback);
     }
-
-
-
-
-
 }

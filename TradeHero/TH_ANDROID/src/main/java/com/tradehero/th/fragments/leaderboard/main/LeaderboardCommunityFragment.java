@@ -11,7 +11,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -31,7 +30,6 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -52,6 +50,7 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +65,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject Lazy<ProviderCache> providerCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
 
@@ -98,6 +97,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override protected void initViews(View view)
     {
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
         leaderboardDefListView.setOnItemClickListener(createItemClickListener());
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
@@ -139,7 +143,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO);
-        actionBar.setTitle(getString(R.string.dashboard_community));
+        actionBar.setTitle(R.string.dashboard_community);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
 
@@ -414,10 +418,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();
-            args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
-            OwnedPortfolioId associatedPortfolioId =
-                    new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
-            MainCompetitionFragment.putApplicablePortfolioId(args, associatedPortfolioId);
+            MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
             getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)

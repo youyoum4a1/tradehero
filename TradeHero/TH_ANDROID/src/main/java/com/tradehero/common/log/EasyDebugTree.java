@@ -8,7 +8,7 @@ import timber.log.Timber;
 public class EasyDebugTree implements Timber.Tree, Timber.TaggedTree
 {
     public static final Pattern ANONYMOUS_CLASS = Pattern.compile("\\$\\d+$");
-    private static final ThreadLocal<String> NEXT_TAG = new ThreadLocal<String>();
+    private static final ThreadLocal<String> NEXT_TAG = new ThreadLocal<>();
 
     protected String getTag()
     {

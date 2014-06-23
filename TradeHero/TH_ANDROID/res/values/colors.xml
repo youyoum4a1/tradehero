@@ -16,6 +16,7 @@
   <color name="notification_background_color">#181818</color>
   <color name="dashboard_background_color">#E3E8EE</color>
   <color name="profile_view_gradient_top">#80ffffff</color>
+  <color name="authentication_edit_text_bg">#D0ffffff</color>
   <color name="profile_view_gradient_bottom">#ffffff</color>
   <color name="invite_friend_header_background_color">@color/invite_friend_background_color</color>
   <color name="invite_friend_background_color">#e3e4e6</color>
@@ -49,6 +50,8 @@
   <color name="light_yellow">#FFD000</color>
   <color name="dark_dark_yellow">#FAB000</color>
   <color name="discussion_action_buttons_border_top_color">#fafafa</color>
+
+  <color name="grid_item_bg_border">#88000000</color>
 
   <string-array name="rangeColors2" translatable="false">
     <item>#FF0C2B</item>

@@ -3,9 +3,12 @@ package com.tradehero.th.api.users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.api.market.Country;
 import java.io.IOException;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class UserBaseDTO extends ExtendedDTO
 {
@@ -19,15 +22,31 @@ public class UserBaseDTO extends ExtendedDTO
     public String activeSurveyURL;
     public String activeSurveyImageURL;
     public Double roiSinceInception;
-    public String countryCode;
+    @Nullable public String countryCode;
 
     public UserBaseDTO()
     {
     }
 
-    @JsonIgnore public UserBaseKey getBaseKey()
+    @JsonIgnore @NotNull public UserBaseKey getBaseKey()
     {
         return new UserBaseKey(id);
+    }
+
+    @JsonIgnore @Nullable public Country getCountry()
+    {
+        if (countryCode != null)
+        {
+            try
+            {
+                return Country.valueOf(countryCode);
+            }
+            catch (IllegalArgumentException e)
+            {
+                Timber.e(e, "Failed to get Country.%s", countryCode);
+            }
+        }
+        return null;
     }
 
     @Override public int hashCode()

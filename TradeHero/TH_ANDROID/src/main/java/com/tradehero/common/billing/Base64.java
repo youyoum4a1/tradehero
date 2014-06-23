@@ -498,9 +498,9 @@ public class Base64
 
         byte[] b4 = new byte[4];
         int b4Posn = 0;
-        int i = 0;
-        byte sbiCrop = 0;
-        byte sbiDecode = 0;
+        int i;
+        byte sbiCrop;
+        byte sbiDecode;
         for (i = 0; i < len; i++)
         {
             sbiCrop = (byte) (source[i + off] & 0x7f); // Only the low seven bits

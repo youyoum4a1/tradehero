@@ -315,7 +315,7 @@ public class SendMessageFragment extends DashboardFragment
         int followerCountPaid = userProfileDTO.paidFollowerCount;
         Timber.d("allFollowerCount:%d,followerCountFree:%d,followerCountPaid:%d", allFollowerCount,
                 followerCountFree, followerCountPaid);
-        int result = 0;
+        int result;
         switch (messageType)
         {
             case BROADCAST_FREE_FOLLOWERS:
@@ -339,7 +339,7 @@ public class SendMessageFragment extends DashboardFragment
                 followerSummaryCache.get().get(currentUserId.toUserBaseKey());
         if (followerSummaryDTO != null)
         {
-            int result = 0;
+            int result;
             switch (messageType)
             {
                 case BROADCAST_FREE_FOLLOWERS:
@@ -395,9 +395,9 @@ public class SendMessageFragment extends DashboardFragment
             if (dialog != null && dialog.isShowing())
             {
                 dialog.dismiss();
-                dialog = null;
             }
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
 
         }

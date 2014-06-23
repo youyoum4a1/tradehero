@@ -19,6 +19,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -33,17 +35,19 @@ import timber.log.Timber;
 {
     public static final int DEFAULT_MAX_SIZE = 15;
 
-    private Lazy<SecurityCompactCache> securityCache;
-    private YahooNewsServiceWrapper yahooServiceWrapper;
+    @NotNull private final Lazy<SecurityCompactCache> securityCache;
+    @NotNull private final YahooNewsServiceWrapper yahooServiceWrapper;
 
+    //<editor-fold desc="Constructors">
     @Inject public YahooNewsHeadlineCache(
-            Lazy<SecurityCompactCache> securityCache,
-            YahooNewsServiceWrapper yahooNewsServiceWrapper)
+            @NotNull Lazy<SecurityCompactCache> securityCache,
+            @NotNull YahooNewsServiceWrapper yahooNewsServiceWrapper)
     {
         super(DEFAULT_MAX_SIZE);
         this.securityCache = securityCache;
         this.yahooServiceWrapper = yahooNewsServiceWrapper;
     }
+    //</editor-fold>
 
     /**
      *  the fetch operation works as follow:
@@ -52,21 +56,17 @@ import timber.log.Timber;
      *  - use YahooNewsService to fetch the news for the given yahooSymbol
      *  - parse the xml feed
      */
-    @Override protected NewsHeadlineList fetch(SecurityId key) throws Throwable
+    @Override @Nullable protected NewsHeadlineList fetch(@NotNull SecurityId key) throws Throwable
     {
-        if(BuildConfig.DEBUG){
-            Timber.d("NewsHeadlineList fetch news, key:%s",key);
-        }
         String yahooSymbol = getYahooSymbol(key);
-        Response rawResponse = null;
         if (yahooSymbol != null)
         {
-            return fetchYahooNews(yahooSymbol, rawResponse);
+            return fetchYahooNews(yahooSymbol);
         }
         return null;
     }
 
-    private String getYahooSymbol(SecurityId key) throws Throwable
+    private String getYahooSymbol(@NotNull SecurityId key) throws Throwable
     {
         String yahooSymbol = null;
         SecurityCompactDTO security = securityCache.get().get(key);
@@ -77,9 +77,9 @@ import timber.log.Timber;
         return yahooSymbol;
     }
 
-    private NewsHeadlineList fetchYahooNews(String yahooSymbol, Response rawResponse) throws Throwable
+    @Nullable private NewsHeadlineList fetchYahooNews(@NotNull String yahooSymbol) throws Throwable
     {
-        rawResponse = yahooServiceWrapper.getNews(yahooSymbol);
+        Response rawResponse = yahooServiceWrapper.getNews(yahooSymbol);
 
         if (rawResponse == null)
         {
@@ -89,7 +89,7 @@ import timber.log.Timber;
         return new NewsHeadlineList(tryParseResponse(rawResponse));
     }
 
-    private List<YahooNewsHeadline> tryParseResponse(Response response)
+    @NotNull private List<YahooNewsHeadline> tryParseResponse(@NotNull Response response)
     {
         try
         {
@@ -106,7 +106,7 @@ import timber.log.Timber;
         return null;
     }
 
-    private List<YahooNewsHeadline> parseResponse(Response response) throws XPathExpressionException, IOException
+    @NotNull private List<YahooNewsHeadline> parseResponse(@NotNull Response response) throws XPathExpressionException, IOException
     {
         XPathExpression xpathItems = getxPathExpression();
         InputSource input = new InputSource(response.getBody().in());
@@ -121,7 +121,7 @@ import timber.log.Timber;
         return xPath.compile("//item");
     }
 
-    private List<YahooNewsHeadline> processItems(NodeList nodes)
+    @NotNull private List<YahooNewsHeadline> processItems(@NotNull NodeList nodes)
     {
         List<YahooNewsHeadline> result = new ArrayList<>();
         for (int i = 0; i < nodes.getLength(); i++)

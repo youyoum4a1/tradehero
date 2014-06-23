@@ -18,8 +18,9 @@ public class PortfolioIntent extends THIntent
         return getHostUriPath(R.string.intent_host_portfolio);
     }
 
+    // TODO need to change to go to portfolio view
     @Override public DashboardTabType getDashboardType()
     {
-        return DashboardTabType.PORTFOLIO;
+        return DashboardTabType.TIMELINE;
     }
 }

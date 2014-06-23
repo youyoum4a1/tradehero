@@ -16,7 +16,7 @@ public class NewsData
     /**
      * Regions of news
      */
-    static String countriesPairString = "[" +
+    static final String countriesPairString = "[" +
             "        {" +
             "            'name': '中国 (China)'," +
             "            'countryCode': 'CN'," +
@@ -377,7 +377,7 @@ public class NewsData
     /**
      * Categories of social media news
      */
-    static String categoriesString = "[" +
+    static final String categoriesString = "[" +
             "        {" +
             "            'id': 6," +
             "            'name': 'Business_Finance'" +
@@ -392,7 +392,7 @@ public class NewsData
             "        }" +
             "    ]";
 
-    public static final List<CountryLanguagePairDTO> buildCountriesPair()
+    public static List<CountryLanguagePairDTO> buildCountriesPair()
     {
         List<CountryLanguagePairDTO> languagePairDTOList = null;
         try
@@ -412,14 +412,14 @@ public class NewsData
                         new CountryLanguagePairDTO(name, countryCode, languageCode);
                 languagePairDTOList.add(dto);
             }
-        } catch (JSONException e)
+        }
+        catch (JSONException e)
         {
-
         }
         return languagePairDTOList;
     }
 
-    public static final List<NewsItemCategoryDTO> buildSocialCategories()
+    public static List<NewsItemCategoryDTO> buildSocialCategories()
     {
         List<NewsItemCategoryDTO> list = null;
         try
@@ -437,9 +437,9 @@ public class NewsData
                 NewsItemCategoryDTO dto = new NewsItemCategoryDTO(id, name);
                 list.add(dto);
             }
-        } catch (JSONException e)
+        }
+        catch (JSONException e)
         {
-
         }
         return list;
     }
@@ -449,7 +449,6 @@ public class NewsData
      */
     public static enum PageTab
     {
-
         REGION_NEWS(0, "Regional", null, true, R.layout.trending_filter_spinner_dropdown_item),
         MY_HEADLINE_NEWS(1, "My Headline", "From Portfolios and Watchlist", false,
                 R.layout.trending_filter_spinner_dropdown_item),

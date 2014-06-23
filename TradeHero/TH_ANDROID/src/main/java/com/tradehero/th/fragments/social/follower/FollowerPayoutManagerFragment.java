@@ -14,15 +14,16 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -48,6 +49,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     private DTOCache.Listener<FollowerHeroRelationId, UserFollowerDTO> userFollowerListener;
     private DTOCache.GetOrFetchTask<FollowerHeroRelationId, UserFollowerDTO> userFollowerFetchTask;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
     @Override public boolean isTabBarVisible()
@@ -70,12 +72,12 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         followerPicture = (ImageView) view.findViewById(R.id.follower_profile_picture);
         if (followerPicture != null)
         {
-            followerPicture.setOnClickListener(userClickHandler);
+            followerPicture.setOnClickListener(createUserClickHandler());
         }
         followerName = (TextView) view.findViewById(R.id.follower_title);
         if (followerName != null)
         {
-            followerName.setOnClickListener(userClickHandler);
+            followerName.setOnClickListener(createUserClickHandler());
         }
 
         totalRevenue = (TextView) view.findViewById(R.id.follower_revenue);
@@ -281,16 +283,19 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private View.OnClickListener userClickHandler = new View.OnClickListener()
+    private View.OnClickListener createUserClickHandler()
     {
-        @Override public void onClick(View v)
+        return new View.OnClickListener()
         {
-            if (userFollowerDTO != null)
+            @Override public void onClick(View v)
             {
-                Bundle bundle = new Bundle();
-                bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userFollowerDTO.id);
-                getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                if (userFollowerDTO != null)
+                {
+                    Bundle bundle = new Bundle();
+                    thRouter.save(bundle, new UserBaseKey(userFollowerDTO.id));
+                    getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+                }
             }
-        }
-    };
+        };
+    }
 }

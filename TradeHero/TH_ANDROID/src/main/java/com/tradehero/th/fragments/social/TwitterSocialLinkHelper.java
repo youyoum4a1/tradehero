@@ -2,32 +2,37 @@ package com.tradehero.th.fragments.social;
 
 import android.app.Activity;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.fragments.social.SocialLinkHelper;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.TwitterUtils;
-import dagger.Lazy;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by tradehero on 14-6-5.
- */
-public class TwitterSocialLinkHelper extends SocialLinkHelper {
+public class TwitterSocialLinkHelper extends SocialLinkHelper
+{
+    @NotNull private final TwitterUtils twitterUtils;
 
-
-    @Inject
-    Lazy<TwitterUtils> twitterUtils;
-
-    public TwitterSocialLinkHelper(Activity context) {
-        super(context);
-        DaggerUtils.inject(this);
-    }
-
-    protected void doLoginAction(Activity context, LogInCallback logInCallback)
+    //<editor-fold desc="Constructors">
+    @Inject public TwitterSocialLinkHelper(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull TwitterUtils twitterUtils)
     {
-        twitterUtils.get().logIn(context, logInCallback);
+        super(currentUserId, progressDialogUtil, socialServiceWrapper, currentActivityHolder);
+        this.twitterUtils = twitterUtils;
+    }
+    //</editor-fold>
+
+    protected SocialNetworkEnum getSocialNetwork()
+    {
+        return SocialNetworkEnum.TW;
     }
 
     protected int getLinkDialogTitle()
@@ -40,8 +45,8 @@ public class TwitterSocialLinkHelper extends SocialLinkHelper {
         return R.string.authentication_twitter_connecting;
     }
 
-    protected SocialNetworkEnum getSocialNetwork()
+    protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        return SocialNetworkEnum.TW;
+        twitterUtils.logIn(context, logInCallback);
     }
 }

@@ -10,13 +10,15 @@ import org.jetbrains.annotations.Nullable;
 abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends PartialDTOCache<DTOKeyType, DTOType>
 {
-    private THLruCache<DTOKeyType, DTOType> lruCache;
+    final private THLruCache<DTOKeyType, DTOType> lruCache;
 
+    //<editor-fold desc="Constructors">
     public StraightDTOCache(int maxSize)
     {
         super();
         this.lruCache = new THLruCache<>(maxSize);
     }
+    //</editor-fold>
 
     @Contract("null -> null; !null -> _")
     @Nullable
@@ -26,7 +28,12 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         {
             return null;
         }
-        return this.lruCache.get(key);
+        DTOType value = this.lruCache.get(key);
+        if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
+        {
+            return null;
+        }
+        return value;
     }
 
     @Nullable
@@ -45,7 +52,7 @@ abstract public class StraightDTOCache<DTOKeyType extends DTOKey, DTOType extend
         lruCache.evictAll();
     }
 
-    protected Map<DTOKeyType, DTOType> snapshot()
+    @NotNull protected Map<DTOKeyType, DTOType> snapshot()
     {
         return lruCache.snapshot();
     }

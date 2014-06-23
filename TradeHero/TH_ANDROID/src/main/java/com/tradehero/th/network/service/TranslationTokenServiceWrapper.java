@@ -8,29 +8,35 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class TranslationTokenServiceWrapper
 {
-    private TranslationTokenService translationTokenService;
-    private TranslationTokenServiceAsync translationTokenServiceAsync;
-    private TranslationTokenFactory translationTokenFactory;
+    @NotNull private final TranslationTokenService translationTokenService;
+    @NotNull private final TranslationTokenServiceAsync translationTokenServiceAsync;
+    @NotNull private final TranslationTokenFactory translationTokenFactory;
 
+    //<editor-fold desc="Constructors">
     @Inject public TranslationTokenServiceWrapper(
-            TranslationTokenService translationTokenService,
-            TranslationTokenServiceAsync translationTokenServiceAsync,
-            TranslationTokenFactory translationTokenFactory)
+            @NotNull TranslationTokenService translationTokenService,
+            @NotNull TranslationTokenServiceAsync translationTokenServiceAsync,
+            @NotNull TranslationTokenFactory translationTokenFactory)
     {
         this.translationTokenService = translationTokenService;
         this.translationTokenServiceAsync = translationTokenServiceAsync;
         this.translationTokenFactory = translationTokenFactory;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="DTO Processors">
     protected DTOProcessor<TranslationToken> createDTOProcessorGetTranslationToken()
     {
         return new DTOProcessorGetTranslationToken(translationTokenFactory);
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Get Token">
     public TranslationToken getToken()
     {
         return createDTOProcessorGetTranslationToken().process(translationTokenService.requestToken());
@@ -44,4 +50,5 @@ import retrofit.Callback;
         translationTokenServiceAsync.requestToken(middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 }

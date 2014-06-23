@@ -9,8 +9,10 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
+import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
+import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -21,17 +23,21 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.market.ExchangeListCache;
+import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
+
+//import com.mobileapptracker.MobileAppTracker;
 
 public class SplashActivity extends SherlockActivity
 {
@@ -42,13 +48,15 @@ public class SplashActivity extends SherlockActivity
     private AsyncTask<Void, Void, Void> initialAsyncTask;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject ExchangeListCache exchangeListCache;
+    @Inject ExchangeCompactListCache exchangeCompactListCache;
     @Inject ProviderListCache providerListCache;
     @Inject @FacebookAppId String facebookAppId;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<Tapstream> tapStream;
+    @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
+    @Inject CurrentActivityHolder currentActivityHolder;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -67,6 +75,7 @@ public class SplashActivity extends SherlockActivity
         }
 
         DaggerUtils.inject(this);
+        currentActivityHolder.setCurrentActivity(this);
     }
 
     @Override protected void onResume()
@@ -91,9 +100,19 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-        localyticsSession.get().open();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().open(custom_dimensions);
         AppEventsLogger.activateApp(this, facebookAppId);
-        tapStream.get().fireEvent(new Event(getString(TapStreamType.fromType(Constants.VERSION).getOpenResId()), false));
+        tapStream.get().fireEvent(
+                new Event(getString(Constants.TAP_STREAM_TYPE.openResId),
+                        false));
+        mobileAppTrackerLazy.get().setReferralSources(this);
+        //mobileAppTrackerLazy.get().setDebugMode(true);//no debug, no log by alex
+        mobileAppTrackerLazy.get().measureSession();
+        TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY,
+                Constants.TAP_STREAM_TYPE.name());
+        //TCAgent.LOG_ON = false;
 
         if (!Constants.RELEASE)
         {
@@ -103,7 +122,9 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().close(custom_dimensions);
         localyticsSession.get().upload();
 
         super.onPause();
@@ -153,7 +174,7 @@ public class SplashActivity extends SherlockActivity
             canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
-                exchangeListCache.getOrFetchAsync(new ExchangeListType());
+                exchangeCompactListCache.getOrFetchAsync(new ExchangeListType());
             }
             catch (Throwable throwable)
             {

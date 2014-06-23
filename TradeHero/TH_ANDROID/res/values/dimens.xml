@@ -12,7 +12,6 @@
   <dimen name="dashboard_padding">0dp</dimen>
 
   <!-- Trending screen -->
-  <dimen name="trending_grid_item_corner_radius">8dp</dimen>
   <dimen name="trending_people_search_image_size">60dp</dimen>
   <dimen name="trending_filter_view_pager_height">80dp</dimen>
 
@@ -105,13 +104,16 @@
 
   <dimen name="security_bg_padding_r_b">2px</dimen>
   <dimen name="security_bg_padding_t_l">1px</dimen>
-  <dimen name="security_bg_radius">9dp</dimen>
+
+  <dimen name="grid_item_bg_border_width">1.2dp</dimen>
+  <dimen name="grid_item_bg_radius">8dp</dimen>
+  <dimen name="grid_item_height">105dp</dimen>
 
   <dimen name="security_logo_width">180dp</dimen>
   <dimen name="security_logo_height">45dp</dimen>
   <dimen name="security_logo_margin_vertical">20dp</dimen>
   <dimen name="security_logo_offset">12dp</dimen>
-  <dimen name="security_item_height">110dp</dimen>
+
 
   <dimen name="news_item_action_padding_t_b">10dp</dimen>
   <dimen name="news_item_action_padding_l_r">10dp</dimen>
@@ -133,12 +135,18 @@
   <dimen name="common_margin_10">10dp</dimen>
   <dimen name="common_margin_15">15dp</dimen>
   <dimen name="common_margin_20">20dp</dimen>
+  <dimen name="common_margin_30">30dp</dimen>
   <dimen name="common_margin_50">50dp</dimen>
+  <dimen name="common_margin_60">60dp</dimen>
+  <dimen name="common_margin_80">80dp</dimen>
   <dimen name="common_margin_100">100dp</dimen>
   <dimen name="common_margin_110">110dp</dimen>
+  <dimen name="common_margin_130">130dp</dimen>
   <dimen name="common_height_40">40dp</dimen>
-  <dimen name="stock_item_width">200dp</dimen>
+  <dimen name="common_text_size_30">30sp</dimen>
+  <dimen name="common_text_size_25">25sp</dimen>
 
+  <dimen name="stock_item_width">200dp</dimen>
   <dimen name="buysell_dialog_scroll_height">160dp</dimen>
   <dimen name="guide_close_margin">15dp</dimen>
   <dimen name="security_logo_midium">60dp</dimen>

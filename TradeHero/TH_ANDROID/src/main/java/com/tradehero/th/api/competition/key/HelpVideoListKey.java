@@ -5,7 +5,7 @@ import com.tradehero.th.api.competition.ProviderId;
 
 public class HelpVideoListKey implements DTOKey
 {
-    private ProviderId providerId;
+    private final ProviderId providerId;
 
     //<editor-fold desc="Constructor">
     public HelpVideoListKey(ProviderId providerId)

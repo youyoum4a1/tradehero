@@ -16,6 +16,7 @@ import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -44,6 +45,7 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +55,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
+@Routable("messages")
 public class MessagesCenterFragment extends DashboardFragment
         implements
         MessageItemViewWrapper.OnElementClickedListener,
@@ -67,6 +70,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject THRouter thRouter;
 
     private DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchMessageTask;
     private MessageListKey nextOlderMessageListKey;
@@ -292,7 +296,7 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 targetUser = messageHeaderDTO.senderUserId;
             }
-            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, targetUser);
+            thRouter.save(bundle, new UserBaseKey(targetUser));
             Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s",messageHeaderDTO.recipientUserId,messageHeaderDTO.senderUserId,currentUserId.get());
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
@@ -304,7 +308,7 @@ public class MessagesCenterFragment extends DashboardFragment
         // TODO separate between Private and Broadcast
         ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKey);
         ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, correspondentId);
-        getNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
+        getDashboardNavigator().pushFragment(ReplyPrivateMessageFragment.class, args);
     }
 
     private void initViews(View view)
@@ -638,13 +642,15 @@ public class MessagesCenterFragment extends DashboardFragment
 
     class OnScrollListener extends FlagNearEdgeScrollListener
     {
-        AbsListView.OnScrollListener onScrollListener;
+        final AbsListView.OnScrollListener onScrollListener;
 
+        //<editor-fold desc="Constructors">
         public OnScrollListener(AbsListView.OnScrollListener onScrollListener)
         {
             activateEnd();
             this.onScrollListener = onScrollListener;
         }
+        //</editor-fold>
 
         @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
                 int totalItemCount)
@@ -808,12 +814,14 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private class MessageDeletionCallback implements Callback<Response>
     {
-        private MessageHeaderId messageId;
+        private final MessageHeaderId messageId;
 
+        //<editor-fold desc="Constructors">
         MessageDeletionCallback(MessageHeaderId messageId)
         {
             this.messageId = messageId;
         }
+        //</editor-fold>
 
         @Override public void success(Response response, Response response2)
         {

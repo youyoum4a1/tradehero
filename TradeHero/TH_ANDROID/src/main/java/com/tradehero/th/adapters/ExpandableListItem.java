@@ -3,12 +3,14 @@ package com.tradehero.th.adapters;
 public class ExpandableListItem<T> implements ExpandableItem, OnSizeChangedListener
 {
     protected boolean expanded;
-    protected T model;
+    protected final T model;
 
+    //<editor-fold desc="Constructors">
     public ExpandableListItem(T model)
     {
         this.model = model;
     }
+    //</editor-fold>
 
     public T getModel()
     {

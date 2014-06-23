@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCache;
@@ -37,6 +36,7 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.Callback;
@@ -67,7 +67,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
 
@@ -424,7 +424,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 {
                     currentUserWatchlistSecurities.remove(securityKeyId);
                 }
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
             }
             else
             {
@@ -454,7 +454,7 @@ public class WatchlistEditFragment extends DashboardFragment
                     currentUserWatchlistSecurities.add(securityKeyId);
                 }
 
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
             }
             else
             {

@@ -2,31 +2,37 @@ package com.tradehero.th.fragments.social;
 
 import android.app.Activity;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.misc.callback.LogInCallback;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.FacebookUtils;
+import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.utils.LinkedInUtils;
-import dagger.Lazy;
+import com.tradehero.th.utils.ProgressDialogUtil;
 
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by tradehero on 14-6-5.
- */
-public class LinkedInSocialLinkHelper extends SocialLinkHelper {
+public class LinkedInSocialLinkHelper extends SocialLinkHelper
+{
+    @NotNull private final LinkedInUtils linkedInUtils;
 
-    @Inject
-    Lazy<LinkedInUtils> linkedInUtilsLazy;
-
-    public LinkedInSocialLinkHelper(Activity context) {
-        super(context);
-        DaggerUtils.inject(this);
-    }
-
-    protected void doLoginAction(Activity context, LogInCallback logInCallback)
+    //<editor-fold desc="Constructors">
+    @Inject public LinkedInSocialLinkHelper(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull LinkedInUtils linkedInUtils)
     {
-        linkedInUtilsLazy.get().logIn(context, logInCallback);
+        super(currentUserId, progressDialogUtil, socialServiceWrapper, currentActivityHolder);
+        this.linkedInUtils = linkedInUtils;
+    }
+    //</editor-fold>
+
+    protected SocialNetworkEnum getSocialNetwork()
+    {
+        return SocialNetworkEnum.LN;
     }
 
     protected int getLinkDialogTitle()
@@ -39,8 +45,8 @@ public class LinkedInSocialLinkHelper extends SocialLinkHelper {
         return R.string.authentication_connecting_to_linkedin;
     }
 
-    protected SocialNetworkEnum getSocialNetwork()
+    protected void doLoginAction(Activity context, LogInCallback logInCallback)
     {
-        return SocialNetworkEnum.LN;
+        linkedInUtils.logIn(context, logInCallback);
     }
 }

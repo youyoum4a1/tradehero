@@ -188,7 +188,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                     Bundle bundle = new Bundle();
                     AlertEditFragment.putApplicablePortfolioId(bundle, getApplicablePortfolioId());
                     bundle.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
-                    getNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM);
+                    getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
                 }
                 return true;
         }
@@ -310,7 +310,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         }
         else if (alertDTO.activeUntilDate != null)
         {
-            activeUntil.setText(DateUtils.getDisplayableDate(getActivity(), alertDTO.activeUntilDate));
+            activeUntil.setText(DateUtils.getDisplayableDate(getResources(), alertDTO.activeUntilDate));
         }
         else
         {

@@ -14,18 +14,20 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class CompetitionServiceWrapper
 {
-    private final CompetitionService competitionService;
-    private final CompetitionServiceAsync competitionServiceAsync;
-    private final UserProfileCache userProfileCache;
+    @NotNull private final CompetitionService competitionService;
+    @NotNull private final CompetitionServiceAsync competitionServiceAsync;
+    @NotNull private final UserProfileCache userProfileCache;
 
     @Inject public CompetitionServiceWrapper(
-            CompetitionService competitionService,
-            CompetitionServiceAsync competitionServiceAsync,
-            UserProfileCache userProfileCache)
+            @NotNull CompetitionService competitionService,
+            @NotNull CompetitionServiceAsync competitionServiceAsync,
+            @NotNull UserProfileCache userProfileCache)
     {
         super();
         this.competitionService = competitionService;
@@ -39,12 +41,14 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Competitions">
-    public List<CompetitionDTO> getCompetitions(ProviderId providerId)
+    public List<CompetitionDTO> getCompetitions(@NotNull ProviderId providerId)
     {
         return this.competitionService.getCompetitions(providerId.key);
     }
 
-    public MiddleCallback<List<CompetitionDTO>> getCompetitions(ProviderId providerId, Callback<List<CompetitionDTO>> callback)
+    @NotNull public MiddleCallback<List<CompetitionDTO>> getCompetitions(
+            @NotNull ProviderId providerId,
+            @Nullable Callback<List<CompetitionDTO>> callback)
     {
         MiddleCallback<List<CompetitionDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         this.competitionServiceAsync.getCompetitions(providerId.key, middleCallback);
@@ -53,7 +57,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Competition Leaderboard">
-    public CompetitionLeaderboardDTO getCompetitionLeaderboard(CompetitionLeaderboardId competitionLeaderboardId)
+    public CompetitionLeaderboardDTO getCompetitionLeaderboard(@NotNull CompetitionLeaderboardId competitionLeaderboardId)
     {
         return this.competitionService.getCompetitionLeaderboard(
                 competitionLeaderboardId.providerId,
@@ -62,9 +66,9 @@ import retrofit.Callback;
                 competitionLeaderboardId.perPage);
     }
 
-    public MiddleCallback<CompetitionLeaderboardDTO> getCompetitionLeaderboard(
-            CompetitionLeaderboardId competitionLeaderboardId,
-            Callback<CompetitionLeaderboardDTO> callback)
+    @NotNull public MiddleCallback<CompetitionLeaderboardDTO> getCompetitionLeaderboard(
+            @NotNull CompetitionLeaderboardId competitionLeaderboardId,
+            @Nullable Callback<CompetitionLeaderboardDTO> callback)
     {
         MiddleCallback<CompetitionLeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
         this.competitionServiceAsync.getCompetitionLeaderboard(
@@ -78,12 +82,14 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Enroll">
-    public UserProfileDTO enroll(CompetitionFormDTO form)
+    public UserProfileDTO enroll(@NotNull CompetitionFormDTO form)
     {
         return createDTOProcessorUserProfile().process(this.competitionService.enroll(form));
     }
 
-    public MiddleCallback<UserProfileDTO> enroll(CompetitionFormDTO form, Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> enroll(
+            @NotNull CompetitionFormDTO form,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
         this.competitionServiceAsync.enroll(form, middleCallback);
@@ -92,12 +98,14 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Outbound">
-   public UserProfileDTO outbound(CompetitionFormDTO form)
-   {
+    public UserProfileDTO outbound(@NotNull CompetitionFormDTO form)
+    {
        return createDTOProcessorUserProfile().process(this.competitionService.outbound(form));
-   }
+    }
 
-    public MiddleCallback<UserProfileDTO> outbound(CompetitionFormDTO form, Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> outbound(
+            @NotNull CompetitionFormDTO form,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
         this.competitionServiceAsync.outbound(form, middleCallback);

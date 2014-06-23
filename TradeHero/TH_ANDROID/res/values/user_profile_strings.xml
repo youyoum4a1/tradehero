@@ -14,10 +14,10 @@
   <string name="user_profile_button_stats">Stats</string>
 
   <string name="user_profile_info_required">required</string>
-  <string name="user_profile_email">Email</string>
-  <string name="user_profile_password">Password</string>
-  <string name="user_profile_confirm_pwd">Confirm Password</string>
-  <string name="user_profile_display_name">Display Name</string>
+  <string name="user_profile_email">*Email</string>
+  <string name="user_profile_password">*Password</string>
+  <string name="user_profile_confirm_pwd">*Confirm Password</string>
+  <string name="user_profile_display_name">*Display Name</string>
   <string name="user_profile_optional">optional</string>
   <string name="user_profile_first_name">First Name</string>
   <string name="user_profile_last_name">Last Name</string>

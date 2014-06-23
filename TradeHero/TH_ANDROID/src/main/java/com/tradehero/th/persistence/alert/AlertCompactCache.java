@@ -13,24 +13,28 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class AlertCompactCache extends PartialDTOCache<AlertId, AlertCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    private THLruCache<AlertId, AlertCompactCutDTO> lruCache;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    private final THLruCache<AlertId, AlertCompactCutDTO> lruCache;
+    @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public AlertCompactCache()
+    @Inject public AlertCompactCache(@NotNull Lazy<SecurityCompactCache> securityCompactCache)
     {
-        this(DEFAULT_MAX_SIZE);
+        this(DEFAULT_MAX_SIZE, securityCompactCache);
     }
     
-    public AlertCompactCache(int maxSize)
+    public AlertCompactCache(int maxSize, @NotNull Lazy<SecurityCompactCache> securityCompactCache)
     {
         super();
         lruCache = new THLruCache<>(maxSize);
+        this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>
 
@@ -39,7 +43,7 @@ import javax.inject.Singleton;
         throw new IllegalStateException("No fetcher on this cache");
     }
 
-    @Override public AlertCompactDTO get(AlertId key)
+    @Override @Nullable public AlertCompactDTO get(@NotNull AlertId key)
     {
         AlertCompactCutDTO alertCompactCutDTO = this.lruCache.get(key);
         if (alertCompactCutDTO == null)
@@ -49,7 +53,7 @@ import javax.inject.Singleton;
         return alertCompactCutDTO.create(securityCompactCache.get());
     }
 
-    @Override public AlertCompactDTO put(AlertId key, AlertCompactDTO value)
+    @Override @Nullable public AlertCompactDTO put(@NotNull AlertId key, @NotNull AlertCompactDTO value)
     {
         AlertCompactDTO previous = null;
 
@@ -70,7 +74,8 @@ import javax.inject.Singleton;
         return previous;
     }
 
-    public ArrayList<AlertCompactDTO> put(UserBaseKey userBaseKey, List<AlertCompactDTO> values)
+    @Contract("_, null -> null; _, !null -> !null")
+    public ArrayList<AlertCompactDTO> put(@NotNull UserBaseKey userBaseKey, @Nullable List<AlertCompactDTO> values)
     {
         if (values == null)
         {
@@ -85,7 +90,7 @@ import javax.inject.Singleton;
         return previous;
     }
 
-    @Override public void invalidate(AlertId key)
+    @Override public void invalidate(@NotNull AlertId key)
     {
         lruCache.remove(key);
     }
@@ -97,21 +102,26 @@ import javax.inject.Singleton;
 
     private static class AlertCompactCutDTO
     {
-        public int id;
-        public double targetPrice;
-        public Boolean upOrDown;
-        public Double priceMovement;
-        public boolean active;
-        public Date activeUntilDate;
+        public final int id;
+        public final double targetPrice;
+        public final Boolean upOrDown;
+        public final Double priceMovement;
+        public final boolean active;
+        public final Date activeUntilDate;
+        @Nullable public final SecurityId securityId;
 
-        public SecurityId securityId;
-
-        public AlertCompactCutDTO(AlertCompactDTO alertCompactDTO, SecurityCompactCache securityCompactCache)
+        public AlertCompactCutDTO(
+                @NotNull AlertCompactDTO alertCompactDTO,
+                @NotNull SecurityCompactCache securityCompactCache)
         {
             if (alertCompactDTO.security != null)
             {
                 securityCompactCache.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO.security);
                 this.securityId = alertCompactDTO.security.getSecurityId();
+            }
+            else
+            {
+                this.securityId = null;
             }
             this.id = alertCompactDTO.id;
             this.targetPrice = alertCompactDTO.targetPrice;
@@ -121,7 +131,7 @@ import javax.inject.Singleton;
             this.activeUntilDate = alertCompactDTO.activeUntilDate;
         }
 
-        public AlertCompactDTO create(SecurityCompactCache securityCompactCache)
+        public AlertCompactDTO create(@NotNull SecurityCompactCache securityCompactCache)
         {
             AlertCompactDTO compactDTO = new AlertCompactDTO();
             compactDTO.id = this.id;
@@ -133,6 +143,10 @@ import javax.inject.Singleton;
             if (securityId != null)
             {
                 compactDTO.security = securityCompactCache.get(securityId);
+            }
+            else
+            {
+                compactDTO.security = null;
             }
             
             return compactDTO;

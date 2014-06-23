@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
         return translationServiceWrapper.translate(key.from, key.to, key.translatableText);
     }
 
-    @Override public TranslationResult put(TranslationKey key, TranslationResult value)
+    @Override public TranslationResult put(@NotNull TranslationKey key, @NotNull TranslationResult value)
     {
         TranslationResult previous = super.put(key, value);
         // HACK to limit RAM usage

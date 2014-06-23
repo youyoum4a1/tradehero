@@ -2,33 +2,57 @@ package com.tradehero.th.utils.metrics.localytics;
 
 import android.content.Context;
 import com.localytics.android.LocalyticsSession;
+import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.th.api.security.SecurityId;
-
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-public class THLocalyticsSession extends LocalyticsSession
+@Singleton public class THLocalyticsSession extends LocalyticsSession
 {
     public static final String SECURITY_ID_FORMAT = "%s:%s";
-
-    protected ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory;
+    @NotNull final Context context;
+    @NotNull protected final ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory;
 
     //<editor-fold desc="Constructors">
-    public THLocalyticsSession(Context context, ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
+    @Inject public THLocalyticsSession(
+            @NotNull Context context,
+            @NotNull ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
     {
         super(context);
+        this.context = context;
         this.chartTimeSpanMetricsCodeFactory = chartTimeSpanMetricsCodeFactory;
     }
 
-    public THLocalyticsSession(Context context, String key, ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
+    public THLocalyticsSession(
+            @NotNull Context context,
+            String key,
+            @NotNull ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
     {
         super(context, key);
+        this.context = context;
         this.chartTimeSpanMetricsCodeFactory = chartTimeSpanMetricsCodeFactory;
     }
     //</editor-fold>
+
+    public void tagEvent(String event)
+    {
+        TCAgent.onEvent(context, event);
+        super.tagEvent(event);
+    }
+
+    public void tagEventMethod(String event, String method)
+    {
+        TCAgent.onEvent(context, event, method);
+        Map<String, String> dic = new HashMap<>();
+        dic.put(LocalyticsConstants.METHOD_MAP_KEY, method);
+        super.tagEvent(event, dic);
+    }
 
     public void tagEvent(String event, SecurityId securityId)
     {

@@ -73,7 +73,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         NotificationCompat.Builder notificationBuilder = getCommonNotificationBuilder();
         notificationBuilder.setContentTitle(title);
 
-        Notification notification = null;
+        Notification notification;
         if (firstMessageOfTheGroup)
         {
             notificationDTOs = new ArrayList<>();

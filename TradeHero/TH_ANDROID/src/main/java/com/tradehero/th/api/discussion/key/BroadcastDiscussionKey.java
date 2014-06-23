@@ -5,8 +5,9 @@ import com.tradehero.th.api.discussion.DiscussionType;
 
 public class BroadcastDiscussionKey extends DiscussionKey
 {
-    private static DiscussionType TYPE = DiscussionType.BROADCAST_MESSAGE;
+    private static final DiscussionType TYPE = DiscussionType.BROADCAST_MESSAGE;
 
+    //<editor-fold desc="Constructors">
     public BroadcastDiscussionKey(Integer id)
     {
         super(id);
@@ -16,6 +17,7 @@ public class BroadcastDiscussionKey extends DiscussionKey
     {
         super(args);
     }
+    //</editor-fold>
 
     @Override public DiscussionType getType()
     {

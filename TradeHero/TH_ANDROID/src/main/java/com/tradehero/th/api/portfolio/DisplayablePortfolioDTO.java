@@ -5,12 +5,14 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DisplayablePortfolioDTO implements Comparable
 {
-    public OwnedPortfolioId ownedPortfolioId;
-    public UserBaseDTO userBaseDTO;
-    public PortfolioDTO portfolioDTO;
+    @Nullable public OwnedPortfolioId ownedPortfolioId;
+    @Nullable public UserBaseDTO userBaseDTO;
+    @Nullable public PortfolioDTO portfolioDTO;
 
     //<editor-fold desc="Constructors">
     public DisplayablePortfolioDTO()
@@ -18,12 +20,15 @@ public class DisplayablePortfolioDTO implements Comparable
         super();
     }
 
-    public DisplayablePortfolioDTO(OwnedPortfolioId ownedPortfolioId)
+    public DisplayablePortfolioDTO(@Nullable OwnedPortfolioId ownedPortfolioId)
     {
         this.ownedPortfolioId = ownedPortfolioId;
     }
 
-    public DisplayablePortfolioDTO(OwnedPortfolioId ownedPortfolioId, UserBaseDTO userBaseDTO, PortfolioDTO portfolioDTO)
+    public DisplayablePortfolioDTO(
+            @Nullable OwnedPortfolioId ownedPortfolioId,
+            @Nullable UserBaseDTO userBaseDTO,
+            @Nullable PortfolioDTO portfolioDTO)
     {
         this.ownedPortfolioId = ownedPortfolioId;
         this.userBaseDTO = userBaseDTO;
@@ -92,7 +97,7 @@ public class DisplayablePortfolioDTO implements Comparable
      * @param other
      * @return
      */
-    @Override public int compareTo(Object other)
+    @Override public int compareTo(@Nullable Object other)
     {
         if (other == null)
         {

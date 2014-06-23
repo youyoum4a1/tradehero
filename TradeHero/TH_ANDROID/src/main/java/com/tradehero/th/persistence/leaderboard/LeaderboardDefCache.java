@@ -15,12 +15,15 @@ import org.jetbrains.annotations.NotNull;
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    @NotNull private final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
 
-    @Inject public LeaderboardDefCache()
+    //<editor-fold desc="Constructors">
+    @Inject public LeaderboardDefCache(@NotNull Lazy<LeaderboardDefListCache> leaderboardDefListCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.leaderboardDefListCache = leaderboardDefListCache;
     }
+    //</editor-fold>
 
     @Override protected LeaderboardDefDTO fetch(LeaderboardDefKey key) throws Throwable
     {
@@ -36,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
         }
 
         LeaderboardDefDTOList ret = new LeaderboardDefDTOList();
-        for (LeaderboardDefKey key: keys)
+        for (@NotNull LeaderboardDefKey key: keys)
         {
             ret.add(get(key));
         }

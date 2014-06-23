@@ -16,6 +16,11 @@ import retrofit.RestAdapter;
 public class RetrofitProtectedModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton AlertPlanServiceAsync provideAlertPlanServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(AlertPlanServiceAsync.class);
+    }
+
     @Provides @Singleton AlertServiceAsync provideAlertService(RestAdapter adapter)
     {
         return adapter.create(AlertServiceAsync.class);
@@ -39,6 +44,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton LeaderboardServiceAsync provideLeaderboardService(RestAdapter adapter)
     {
         return adapter.create(LeaderboardServiceAsync.class);
+    }
+
+    @Provides @Singleton MarketServiceAsync provideMarketServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(MarketServiceAsync.class);
     }
 
     @Provides @Singleton MessageServiceAsync provideMessageServiceAsync(RestAdapter adapter)

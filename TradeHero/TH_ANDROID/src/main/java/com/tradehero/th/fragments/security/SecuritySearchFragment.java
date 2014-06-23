@@ -16,7 +16,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -33,12 +32,14 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class SecuritySearchFragment
@@ -53,7 +54,7 @@ public class SecuritySearchFragment
 
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     @InjectView(R.id.search_empty_container) View searchEmptyContainer;
     @InjectView(R.id.search_empty_textview) View searchEmptyTextView;
@@ -378,7 +379,7 @@ public class SecuritySearchFragment
         updateVisibilities();
     }
 
-    public SecurityListType makeSearchSecurityListType(int page)
+    @NotNull public SecurityListType makeSearchSecurityListType(int page)
     {
         return new SearchSecurityListType(mSearchText, page, perPage);
     }
@@ -402,7 +403,7 @@ public class SecuritySearchFragment
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        getNavigator().pushFragment(BuySellFragment.class, args);
+        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">

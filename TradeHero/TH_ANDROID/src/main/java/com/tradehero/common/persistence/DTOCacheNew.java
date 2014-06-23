@@ -47,7 +47,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     abstract public static class CacheValue<DTOKeyType extends DTOKey, DTOType extends DTO>
     {
         private DTOType value;
-        private Set<Listener<DTOKeyType, DTOType>> listeners;
+        private final Set<Listener<DTOKeyType, DTOType>> listeners;
         protected WeakReference<GetOrFetchTask<DTOKeyType, DTOType>> fetchTask = new WeakReference<>(null);
 
         public CacheValue()
@@ -125,9 +125,10 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     abstract public static class GetOrFetchTask<DTOKeyType extends DTOKey, DTOType extends DTO>
             extends AsyncTask<Void, Void, DTOType>
     {
-        protected DTOKeyType key;
-        protected boolean forceUpdateCache;
+        protected final DTOKeyType key;
+        protected final boolean forceUpdateCache;
 
+        //<editor-fold desc="Constructors">
         public GetOrFetchTask(DTOKeyType key)
         {
             this(key, false);
@@ -138,6 +139,24 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             super();
             this.key = key;
             this.forceUpdateCache = forceUpdateCache;
+        }
+        //</editor-fold>
+
+        abstract protected Class<?> getContainerCacheClass();
+
+        public final AsyncTask<Void, Void, DTOType> execute()
+        {
+            return executePool();
+        }
+
+        protected AsyncTask<Void, Void, DTOType> executePool()
+        {
+            return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        protected final AsyncTask<Void, Void, DTOType> executeSerial()
+        {
+            return executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
     }
 }

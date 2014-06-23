@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter<SecurityCompactDTO>
 {
-    protected Filter filterToUse;
+    protected final Filter filterToUse;
     @Inject ListCharSequencePredicateFilter<SecurityCompactDTO> securityCompactPredicateFilter;
 
     //<editor-fold desc="Constructors">

@@ -12,12 +12,13 @@ public class RoundedCornerTransformation  implements com.squareup.picasso.Transf
 {
     public static final int DEFAULT_PIXEL_RADIUS = 10;
     public static final int DEFAULT_COLOR = 0xff424242;
-    private int pixelRadius;
+    private final int pixelRadius;
     /**
      * The color with which the SRC_IN will be performed. For full content, use alpha = 1.
      */
-    private int color;
+    private final int color;
 
+    //<editor-fold desc="Constructors">
     public RoundedCornerTransformation()
     {
         super();
@@ -31,6 +32,7 @@ public class RoundedCornerTransformation  implements com.squareup.picasso.Transf
         this.pixelRadius = pixelRadius;
         this.color = color;
     }
+    //</editor-fold>
 
     @Override public Bitmap transform(Bitmap bitmap)
     {

@@ -242,6 +242,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         this.leaderboardFilterFragment = null;
         saveCurrentFilterKey();
+        getActivity().getSupportLoaderManager().destroyLoader(leaderboardDefKey.key);
         super.onDestroy();
     }
 
@@ -287,7 +288,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         Bundle args = new Bundle();
         LeaderboardFilterFragment.putPerPagedFilteredLeaderboardKey(args, (PerPagedFilteredLeaderboardKey) currentLeaderboardKey);
-        this.leaderboardFilterFragment = (LeaderboardFilterFragment) getNavigator().pushFragment(LeaderboardFilterFragment.class, args);
+        this.leaderboardFilterFragment = getDashboardNavigator().pushFragment(LeaderboardFilterFragment.class, args);
     }
 
     protected void displayFilterIcon(MenuItem filterIcon)

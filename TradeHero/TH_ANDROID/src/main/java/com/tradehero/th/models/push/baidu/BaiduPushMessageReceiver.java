@@ -97,7 +97,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
     private void handleReceiveMessage(Context context, String message)
     {
-        BaiduPushMessageDTO baiduPushMessageDTO = null;
+        BaiduPushMessageDTO baiduPushMessageDTO;
         try
         {
             TypedString typedString = new TypedString(message);

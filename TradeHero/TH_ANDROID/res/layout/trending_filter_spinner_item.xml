@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
@@ -30,4 +30,4 @@
       tools:text="US NYSE - NYSE"
       />
 
-</RelativeLayout>
+</com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerItemView>

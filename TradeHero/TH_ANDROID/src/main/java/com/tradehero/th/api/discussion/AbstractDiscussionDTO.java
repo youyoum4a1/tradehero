@@ -2,11 +2,12 @@ package com.tradehero.th.api.discussion;
 
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractDiscussionDTO extends AbstractDiscussionCompactDTO
 {
     public int userId;
-    public String text;
+    @Nullable public String text;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionDTO()

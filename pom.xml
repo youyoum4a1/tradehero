@@ -61,7 +61,6 @@
     <module>TradeHero/TH_ANDROID</module>
     <module>facebook-android-sdk/facebook</module>
     <module>StickyListHeaders/library</module>
-    <module>picasso/picasso</module>
     <module>AndroidResideMenu/ResideMenu</module>
   </modules>
 
@@ -104,9 +103,9 @@
         <version>${android.version}</version>
       </dependency>
       <!--<dependency>-->
-        <!--<groupId>com.google.android</groupId>-->
-        <!--<artifactId>support-v4</artifactId>-->
-        <!--<version>${android-support.version}</version>-->
+      <!--<groupId>com.google.android</groupId>-->
+      <!--<artifactId>support-v4</artifactId>-->
+      <!--<version>${android-support.version}</version>-->
       <!--</dependency>-->
 
       <dependency>
@@ -131,6 +130,40 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
         </plugin>
+
+
+        <plugin>
+          <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+          <artifactId>android-maven-plugin</artifactId>
+          <version>3.8.0</version>
+          <configuration>
+            <nativeLibrariesDirectory>ignored</nativeLibrariesDirectory>
+            <sdk>
+              <platform>${android.platform}</platform>
+            </sdk>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.8</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.9</version>
+          <configuration>
+            <failOnError>false</failOnError>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.google.code.maven-replacer-plugin</groupId>
+          <artifactId>maven-replacer-plugin</artifactId>
+          <version>1.4.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -148,12 +181,6 @@
         <configuration>
           <failOnError>false</failOnError>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>maven-replacer-plugin</artifactId>
-        <version>1.4.0</version>
       </plugin>
 
       <plugin>
@@ -175,21 +202,6 @@
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>android-maven-plugin</artifactId>
-        <version>3.5.0</version>
-        <configuration>
-          <sdk>
-            <path>${ANDROID_HOME}</path>
-            <!-- platform or api level (api level 14 = platform 4.0)-->
-            <platform>14</platform>
-          </sdk>
-          <undeployBeforeDeploy>true</undeployBeforeDeploy>
-        </configuration>
-        <extensions>true</extensions>
       </plugin>
 
       <plugin>

@@ -12,6 +12,7 @@ public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
     private int itemResId;
     private int itemDropDrownResId;
 
+    //<editor-fold desc="Constructors">
     public TrendingFilterSpinnerIconAdapter(Context context, CharSequence[] objects, int[] icons, int[] dropDownIcons)
     {
         super(context,
@@ -23,6 +24,7 @@ public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
 
         this.itemResId = R.layout.trending_filter_spinner_item;
     }
+    //</editor-fold>
 
     @Override public void setDropDownViewResource(int resource)
     {

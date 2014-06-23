@@ -4,11 +4,18 @@ import android.view.View;
 
 public class ValidationMessage
 {
-    private View sender;
+    private final View sender;
+    private final String message;
+    private final boolean status;
 
-    private String message;
-
-    private boolean status;
+    //<editor-fold desc="Constructors">
+    public ValidationMessage(View sender, boolean status, String message)
+    {
+        this.sender = sender;
+        this.status = status;
+        this.message = message;
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Accessors">
     public String getMessage()
@@ -26,11 +33,4 @@ public class ValidationMessage
         return sender;
     }
     //</editor-fold>
-
-    public ValidationMessage(View sender, boolean status, String message)
-    {
-        this.sender = sender;
-        this.status = status;
-        this.message = message;
-    }
 }

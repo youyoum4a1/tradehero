@@ -7,7 +7,7 @@ abstract public class EndlessScrollListener implements AbsListView.OnScrollListe
 {
     public static final int DEFAULT_VISIBLE_THRESHOLD = 5;
 
-    private int visibleThreshold;
+    private final int visibleThreshold;
     private int currentPage = 0;
     private int previousTotal = 0;
     private boolean loading = true;

@@ -13,8 +13,8 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
 {
     public static final int DEFAULT_AUTO_FETCH_TASK_MAX_SIZE = 50;
 
-    private List<WeakReference<Listener<DTOKeyType, DTOType>>> listeners;
-    private THLruCache<DTOKeyType, GetOrFetchTask<DTOKeyType, DTOType>> autoFetchTasks = new THLruCache<>(DEFAULT_AUTO_FETCH_TASK_MAX_SIZE);
+    private final List<WeakReference<Listener<DTOKeyType, DTOType>>> listeners;
+    private final THLruCache<DTOKeyType, GetOrFetchTask<DTOKeyType, DTOType>> autoFetchTasks = new THLruCache<>(DEFAULT_AUTO_FETCH_TASK_MAX_SIZE);
 
     public PartialDTOCache()
     {
@@ -60,69 +60,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
     @Override public GetOrFetchTask<DTOKeyType, DTOType> getOrFetch(
             final DTOKeyType key, final boolean forceUpdateCache, final Listener<DTOKeyType, DTOType> initialListener)
     {
-        return new GetOrFetchTask<DTOKeyType, DTOType>(initialListener)
-        {
-            private Throwable error = null;
-            private boolean shouldNotifyListenerOnCacheUpdated = true;
-
-            long start = 0;
-            @Override protected void onPreExecute()
-            {
-                DTOType cached = PartialDTOCache.this.get(key);
-                Listener<DTOKeyType, DTOType> currentListener = getListener();
-                if (cached != null && currentListener != null)
-                {
-                    currentListener.onDTOReceived(key, cached, true);
-                    shouldNotifyListenerOnCacheUpdated = forceUpdateCache;
-                }
-                start = System.currentTimeMillis();
-            }
-
-            @Override protected DTOType doInBackground(Void... voids)
-            {
-                DTOType gotOrFetched = null;
-                try
-                {
-                    gotOrFetched = getOrFetch(key, forceUpdateCache);
-                }
-                catch (Throwable e)
-                {
-                    error = e;
-                }
-                return gotOrFetched;
-            }
-
-            @Override protected void onPostExecute(DTOType value)
-            {
-                super.onPostExecute(value);
-                if (!isCancelled())
-                {
-                    // We retrieve the callback right away to avoid having it vanish between the 2 usages.
-                    Listener<DTOKeyType, DTOType> currentListener = getListener();
-                    if (currentListener != null)
-                    {
-                        if (error != null)
-                        {
-                            currentListener.onErrorThrown(key, error);
-                        }
-                        // not to notify listener about data come from cache again
-                        else if (shouldNotifyListenerOnCacheUpdated)
-                        {
-                            if (value == null)
-                            {
-                                Timber.e(new Exception(String.format("Null value returned for key %s, on cache %s", key, getCacheClass())), null);
-                            }
-                            currentListener.onDTOReceived(key, value, !forceUpdateCache);
-                        }
-                    }
-
-                    if (error == null)
-                    {
-                        pushToListeners(key);
-                    }
-                }
-            }
-        };
+        return new PartialGetOrFetchTask(key, forceUpdateCache, initialListener);
     }
 
     @Override public boolean isListenerRegistered(Listener<DTOKeyType, DTOType> listener)
@@ -251,5 +189,86 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
     private Class<?> getCacheClass()
     {
         return getClass();
+    }
+
+    public class PartialGetOrFetchTask extends GetOrFetchTask<DTOKeyType, DTOType>
+    {
+        private final DTOKeyType key;
+        private final boolean forceUpdateCache;
+        private Throwable error = null;
+        private boolean shouldNotifyListenerOnCacheUpdated = true;
+
+        long start = 0;
+
+        //<editor-fold desc="Constructors">
+        public PartialGetOrFetchTask(DTOKeyType key, boolean forceUpdateCache, Listener<DTOKeyType, DTOType> listener)
+        {
+            super(listener);
+            this.key = key;
+            this.forceUpdateCache = forceUpdateCache;
+        }
+        //</editor-fold>
+
+        @Override protected Class<?> getContainerCacheClass()
+        {
+            return getCacheClass();
+        }
+
+        @Override protected void onPreExecute()
+        {
+            DTOType cached = PartialDTOCache.this.get(key);
+            Listener<DTOKeyType, DTOType> currentListener = getListener();
+            if (cached != null && currentListener != null)
+            {
+                currentListener.onDTOReceived(key, cached, true);
+                shouldNotifyListenerOnCacheUpdated = forceUpdateCache;
+            }
+            start = System.currentTimeMillis();
+        }
+
+        @Override protected DTOType doInBackground(Void... voids)
+        {
+            DTOType gotOrFetched = null;
+            try
+            {
+                gotOrFetched = getOrFetch(key, forceUpdateCache);
+            }
+            catch (Throwable e)
+            {
+                error = e;
+            }
+            return gotOrFetched;
+        }
+
+        @Override protected void onPostExecute(DTOType value)
+        {
+            super.onPostExecute(value);
+            if (!isCancelled())
+            {
+                // We retrieve the callback right away to avoid having it vanish between the 2 usages.
+                Listener<DTOKeyType, DTOType> currentListener = getListener();
+                if (currentListener != null)
+                {
+                    if (error != null)
+                    {
+                        currentListener.onErrorThrown(key, error);
+                    }
+                    // not to notify listener about data come from cache again
+                    else if (shouldNotifyListenerOnCacheUpdated)
+                    {
+                        if (value == null)
+                        {
+                            Timber.e(new Exception(String.format("Null value returned for key %s, on cache %s", key, getCacheClass())), null);
+                        }
+                        currentListener.onDTOReceived(key, value, !forceUpdateCache);
+                    }
+                }
+
+                if (error == null)
+                {
+                    pushToListeners(key);
+                }
+            }
+        }
     }
 }

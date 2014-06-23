@@ -49,6 +49,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -98,6 +99,7 @@ public class PositionListFragment
 
     protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOTask;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(Bundle args, GetPositionsDTOKey getPositionsDTOKey)
@@ -632,7 +634,7 @@ public class PositionListFragment
                     BuySellFragment.putApplicablePortfolioId(args, clickedPositionDTO.getOwnedPortfolioId());
                 }
                 args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
-                getNavigator().pushFragment(BuySellFragment.class, args);
+                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
         else
@@ -686,9 +688,9 @@ public class PositionListFragment
     @Override public void onTimelineRequested(UserBaseKey userBaseKey)
     {
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
-                PushableTimelineFragment.class, args);
+        thRouter.save(args, userBaseKey);
+        ((DashboardActivity) getActivity())
+                .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
     //</editor-fold>
 
@@ -719,7 +721,7 @@ public class PositionListFragment
             Bundle args = new Bundle();
             AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getNavigator().pushFragment(AlertCreateFragment.class, args);
+            getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else
         {
@@ -740,7 +742,7 @@ public class PositionListFragment
         {
             Bundle args = new Bundle();
             args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getNavigator().pushFragment(StockInfoFragment.class, args);
+            getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
         }
     }
     //</editor-fold>

@@ -1,23 +1,27 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
+import com.thoj.route.InjectRoute;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 {
-    public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
+    private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
 
-    protected ProviderId providerId;
+    @InjectRoute protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
@@ -25,24 +29,27 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
     @Inject ProviderCache providerCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    @Inject THRouter thRouter;
+
+    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
+
+    public static ProviderId getProviderId(@NotNull Bundle args)
+    {
+        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_KEY_PROVIDER_ID))
+        thRouter.inject(this, getArguments());
+        if (this.providerId == null || this.providerId.key == null)
         {
-            this.providerId = new ProviderId(savedInstanceState.getBundle(BUNDLE_KEY_PROVIDER_ID));
+            this.providerId = getProviderId(getArguments());
         }
-        else if (getArguments() != null && getArguments().containsKey(BUNDLE_KEY_PROVIDER_ID))
-        {
-            this.providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
-        }
-        else
-        {
-            throw new IllegalArgumentException("There is no defined providerId");
-        }
-
         this.providerCacheListener = new CompetitionFragmentProviderCacheListener();
     }
 
@@ -80,9 +87,14 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         this.providerDTO = providerDTO;
         providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
 
+        OwnedPortfolioId associatedPortfolioId =
+                new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
+        putApplicablePortfolioId(getArguments(), associatedPortfolioId);
+
+        prepareApplicableOwnedPortolioId();
+
         if (andDisplay)
         {
-
         }
     }
 

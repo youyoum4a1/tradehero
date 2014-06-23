@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserTransactionHistoryCache extends StraightDTOCache<UserTransactionHistoryId, UserTransactionHistoryDTO>
 {
@@ -24,7 +27,8 @@ import javax.inject.Singleton;
         throw new IllegalArgumentException("There is no fetch on this cache");
     }
 
-    public List<UserTransactionHistoryDTO> get(List<UserTransactionHistoryId> baseKeys)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<UserTransactionHistoryDTO> get(@Nullable List<UserTransactionHistoryId> baseKeys)
     {
         if (baseKeys == null)
         {
@@ -32,7 +36,7 @@ import javax.inject.Singleton;
         }
 
         List<UserTransactionHistoryDTO> UserTransactionHistoryDTOs = new ArrayList<>();
-        for (UserTransactionHistoryId baseKey: baseKeys)
+        for (@NotNull UserTransactionHistoryId baseKey: baseKeys)
         {
             UserTransactionHistoryDTOs.add(get(baseKey));
         }

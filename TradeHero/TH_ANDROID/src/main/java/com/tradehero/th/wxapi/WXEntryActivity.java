@@ -32,9 +32,11 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
 {
@@ -54,12 +56,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Inject Lazy<Picasso> picassoLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
 
-    public static void putWeChatDTO(Intent intent, WeChatDTO weChatDTO)
+    public static void putWeChatDTO(@NotNull Intent intent, @NotNull WeChatDTO weChatDTO)
     {
         intent.putExtra(WECHAT_DTO_INTENT_KEY, weChatDTO.getArgs());
     }
 
-    public static WeChatDTO getWeChatDTO(Intent intent)
+    @NotNull public static WeChatDTO getWeChatDTO(@NotNull Intent intent)
     {
         return new WeChatDTO(intent.getBundleExtra(WECHAT_DTO_INTENT_KEY));
     }
@@ -136,11 +138,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 {
                     try
                     {
-                        Bitmap tempBitmap = Bitmap.createBitmap(picassoLazy.get().load(weChatDTOCopy.imageURL).get());
-                        // TODO find a way to force picasso to redownload and not have a recycled image.
-                        if (tempBitmap != null && !tempBitmap.isRecycled())
+                        Bitmap picassoBmp = picassoLazy.get().load(weChatDTOCopy.imageURL).get();
+                        if (picassoBmp != null)
                         {
-                            mBitmap = Bitmap.createScaledBitmap(tempBitmap, 250, 250, false);
+                            Bitmap tempBitmap = Bitmap.createBitmap(picassoBmp);
+                            // TODO find a way to force picasso to redownload and not have a recycled image.
+                            if (tempBitmap != null && !tempBitmap.isRecycled())
+                            {
+                                mBitmap = Bitmap.createScaledBitmap(tempBitmap, 250, 250, false);
+                            }
                         }
                     }
                     catch (IOException e)
@@ -156,11 +162,18 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     private void initBitmap()
     {
-        if (mBitmap == null)
+        try
         {
-            mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.splash_logo);
-            //mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
-            mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
+            if (mBitmap == null)
+            {
+                mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.splash_logo);
+                //mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_logo);
+                mBitmap = Bitmap.createScaledBitmap(mBitmap, 250, 250, false);
+            }
+        }
+        catch (OutOfMemoryError e)
+        {
+            Timber.e(e, null);
         }
     }
 

@@ -4,19 +4,20 @@ import android.os.Bundle;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
+import org.jetbrains.annotations.NotNull;
 
 public class SecuritySearchProviderFragment extends SecuritySearchFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = SecuritySearchProviderFragment.class.getName() + ".providerId";
 
-    protected ProviderId providerId;
+    @NotNull protected ProviderId providerId;
 
-    public static void putProviderId(Bundle args, ProviderId providerId)
+    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    public static ProviderId getProviderId(Bundle args)
+    @NotNull public static ProviderId getProviderId(@NotNull Bundle args)
     {
         return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
     }
@@ -31,7 +32,7 @@ public class SecuritySearchProviderFragment extends SecuritySearchFragment
         }
     }
 
-    @Override public SecurityListType makeSearchSecurityListType(int page)
+    @Override @NotNull public SecurityListType makeSearchSecurityListType(int page)
     {
         return new SearchProviderSecurityListType(providerId, mSearchText, page, perPage);
 

@@ -6,6 +6,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.form.UserFormFactory;
 import java.text.ParseException;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,12 +17,12 @@ public class CredentialsDTOFactory
         super();
     }
 
-    public CredentialsDTO create(String savedToken) throws JSONException, ParseException
+    @NotNull public CredentialsDTO create(@NotNull String savedToken) throws JSONException, ParseException
     {
         return create(new JSONObject(savedToken));
     }
 
-    public CredentialsDTO create(JSONObject object) throws JSONException, ParseException
+    @NotNull public CredentialsDTO create(@NotNull JSONObject object) throws JSONException, ParseException
     {
         CredentialsDTO created;
         String type = object.getString(UserFormFactory.KEY_TYPE);
@@ -72,7 +73,7 @@ public class CredentialsDTOFactory
         if (oldType != null && oldTokenPref != null)
         {
             String authToken = oldTokenPref.get();
-            if (authToken != null && !TextUtils.isEmpty(authToken))
+            if (!TextUtils.isEmpty(authToken))
             {
                 switch(oldType)
                 {

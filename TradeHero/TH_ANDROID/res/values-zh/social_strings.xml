@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="social_search_people_hint">输入一个名字</string>
   <integer-array name="ordered_social_logins">
     <item>@integer/social_destination_id_weibo</item>
     <item>@integer/social_destination_id_qq</item>
@@ -10,6 +11,7 @@
   </integer-array>
 
   <integer-array name="ordered_share_destinations">
+    <item>@integer/social_destination_id_weibo</item>
     <item>@integer/social_destination_id_wechat</item>
     <item>@integer/social_destination_id_linkedin</item>
     <item>@integer/social_destination_id_twitter</item>

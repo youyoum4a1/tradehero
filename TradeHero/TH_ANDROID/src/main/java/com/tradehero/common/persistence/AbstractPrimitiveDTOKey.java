@@ -2,13 +2,16 @@ package com.tradehero.common.persistence;
 
 import android.os.Bundle;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements Comparable, DTOKey
 {
-    public final T key;
+    @Nullable public T key;
 
     //<editor-fold desc="Constructors">
-    public AbstractPrimitiveDTOKey(T key)
+    public AbstractPrimitiveDTOKey() {}
+
+    public AbstractPrimitiveDTOKey(@Nullable T key)
     {
         super();
         this.key = key;

@@ -9,8 +9,8 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -22,6 +22,7 @@ import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -39,8 +40,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     private ProfileInfoView profileView;
     private EditText emailEditText;
+    private ImageView backButton;
 
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -67,6 +69,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
         this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);
         this.signButton.setOnClickListener(this);
+
+        backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_up_back_button);
+        backButton.setOnClickListener(onClickListener);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -79,7 +84,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.SignUp_Email);
+        localyticsSession.tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Email);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -152,6 +157,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             this.signButton.setOnClickListener(null);
         }
         this.signButton = null;
+        if (backButton != null)
+        {
+            backButton.setOnClickListener(null);
+            backButton = null;
+        }
 
         super.onDestroyView();
     }

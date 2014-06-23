@@ -13,23 +13,32 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class ProviderCache extends StraightDTOCache<ProviderId, ProviderDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<ProviderListCache> providerListCache;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
+    @NotNull private final Lazy<ProviderListCache> providerListCache;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
     //<editor-fold desc="Constructors">
-    @Inject public ProviderCache()
+    @Inject public ProviderCache(
+            @NotNull Lazy<ProviderListCache> providerListCache,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory)
     {
         super(DEFAULT_MAX_SIZE);
+        this.providerListCache = providerListCache;
+        this.currentUserId = currentUserId;
+        this.warrantSpecificKnowledgeFactory = warrantSpecificKnowledgeFactory;
     }
     //</editor-fold>
 
-    @Override protected ProviderDTO fetch(ProviderId key) throws Throwable
+    @Override protected ProviderDTO fetch(@NotNull ProviderId key) throws Throwable
     {
         // Just have the list cache download them all
         providerListCache.get().fetch(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
@@ -37,20 +46,18 @@ import javax.inject.Singleton;
         return get(key);
     }
 
-    @Override public ProviderDTO put(ProviderId key, ProviderDTO value)
+    @Override @Nullable public ProviderDTO put(@NotNull ProviderId key, @NotNull ProviderDTO value)
     {
-        if (value != null)
+        OwnedPortfolioId associatedPortfolioId = value.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey());
+        if (associatedPortfolioId != null)
         {
-            OwnedPortfolioId associatedPortfolioId = value.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey());
-            if (associatedPortfolioId != null)
-            {
-                warrantSpecificKnowledgeFactory.add(key, associatedPortfolioId);
-            }
+            warrantSpecificKnowledgeFactory.add(key, associatedPortfolioId);
         }
         return super.put(key, value);
     }
 
-    public List<ProviderDTO> getOrFetch(List<ProviderId> providerIds) throws Throwable
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<ProviderDTO> getOrFetch(@Nullable List<ProviderId> providerIds) throws Throwable
     {
         if (providerIds == null)
         {
@@ -58,14 +65,15 @@ import javax.inject.Singleton;
         }
 
         List<ProviderDTO> providerDTOList = new ArrayList<>();
-        for (ProviderId providerId : providerIds)
+        for (@NotNull ProviderId providerId : providerIds)
         {
             providerDTOList.add(getOrFetch(providerId, false));
         }
         return providerDTOList;
     }
 
-    public ProviderDTOList get(List<ProviderId> providerIds)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public ProviderDTOList get(@Nullable List<ProviderId> providerIds)
     {
         if (providerIds == null)
         {
@@ -74,7 +82,7 @@ import javax.inject.Singleton;
 
         ProviderDTOList fleshedValues = new ProviderDTOList();
 
-        for (ProviderId providerId: providerIds)
+        for (@NotNull ProviderId providerId: providerIds)
         {
             fleshedValues.add(get(providerId));
         }
@@ -82,7 +90,8 @@ import javax.inject.Singleton;
         return fleshedValues;
     }
 
-    public List<ProviderDTO> put(List<ProviderDTO> values)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<ProviderDTO> put(@Nullable List<ProviderDTO> values)
     {
         if (values == null)
         {
@@ -91,7 +100,7 @@ import javax.inject.Singleton;
 
         List<ProviderDTO> previousValues = new ArrayList<>();
 
-        for (ProviderDTO providerDTO: values)
+        for (@NotNull ProviderDTO providerDTO: values)
         {
             previousValues.add(put(providerDTO.getProviderId(), providerDTO));
         }

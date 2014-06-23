@@ -35,6 +35,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         {
             throw new IllegalStateException("Context must be non-null for LinkedIn authentication to proceed.");
         }
+        callback.onStart();
 
         linkedIn.authorize(context, new THAuthenticationCallback()
         {
