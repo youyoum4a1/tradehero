@@ -7,6 +7,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
@@ -85,6 +86,12 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     {
         this.providerDTO = providerDTO;
         providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
+
+        OwnedPortfolioId associatedPortfolioId =
+                new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
+        putApplicablePortfolioId(getArguments(), associatedPortfolioId);
+
+        prepareApplicableOwnedPortolioId();
 
         if (andDisplay)
         {

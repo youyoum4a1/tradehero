@@ -59,7 +59,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 {
     private ActionBar actionBar;
     private ProgressBar progressBar;
-    private AbsListView listView;
+    AbsListView listView;
     private CompetitionZoneListItemAdapter competitionZoneListItemAdapter;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
@@ -92,7 +92,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override protected void initViews(View view)
     {
-        this.progressBar = (ProgressBar) view.findViewById(android.R.id.empty);
+        this.progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
         if (this.progressBar != null)
         {
             this.progressBar.setVisibility(View.VISIBLE);
