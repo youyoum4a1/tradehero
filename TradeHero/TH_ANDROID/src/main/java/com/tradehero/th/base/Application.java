@@ -9,8 +9,15 @@ import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.competition.CompetitionModule;
+import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
@@ -61,8 +68,21 @@ public class Application extends PApplication
 
         pushNotificationManager.initialise();
 
-        thRouter.mapFragment(THRouter.USER_TIMELINE, PushableTimelineFragment.class);
-        thRouter.mapFragment(THRouter.USER_ME, MeTimelineFragment.class);
+        thRouter.registerRoutes(
+                PushableTimelineFragment.class,
+                MeTimelineFragment.class,
+
+                NotificationsCenterFragment.class,
+                MessagesCenterFragment.class,
+                UpdateCenterFragment.class,
+
+                TrendingFragment.class,
+                FriendsInvitationFragment.class,
+                SettingsFragment.class,
+                MainCompetitionFragment.class
+        );
+        thRouter.registerAlias("messages", "updatecenter/0");
+        thRouter.registerAlias("notifications", "updatecenter/1");
 
         THLog.showDeveloperKeyHash();
     }

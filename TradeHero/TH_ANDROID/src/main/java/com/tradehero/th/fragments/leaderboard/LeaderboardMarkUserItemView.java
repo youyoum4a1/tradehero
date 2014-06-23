@@ -44,6 +44,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
@@ -63,6 +64,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject THLocalyticsSession localyticsSession;
+    @Inject THRouter thRouter;
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
@@ -755,7 +757,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (currentUserId != null && currentUserId.get() != userId)
         {
             Bundle bundle = new Bundle();
-            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
+            thRouter.save(bundle, new UserBaseKey(userId));
             getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }

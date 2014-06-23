@@ -35,6 +35,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -59,6 +60,7 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
+    @Inject THRouter thRouter;
 
     private UserProfileRetrievedMilestone currentUserProfileRetrievedMilestone;
     private Milestone.OnCompleteListener currentUserProfileRetrievedMilestoneListener;
@@ -144,8 +146,7 @@ public class PortfolioListItemView extends RelativeLayout
         Bundle bundle = new Bundle();
         DashboardNavigator navigator =
                 ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-        bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID,
-                displayablePortfolioDTO.userBaseDTO.id);
+        thRouter.save(bundle, new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id));
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 

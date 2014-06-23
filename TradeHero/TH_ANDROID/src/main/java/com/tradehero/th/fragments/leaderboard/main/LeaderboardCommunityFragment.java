@@ -30,7 +30,6 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -420,9 +419,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         {
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            OwnedPortfolioId associatedPortfolioId =
-                    new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
-            MainCompetitionFragment.putApplicablePortfolioId(args, associatedPortfolioId);
             getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)

@@ -1,13 +1,13 @@
 package com.tradehero.common;
 
 import com.tradehero.common.persistence.PersistenceTestModule;
-import com.tradehero.common.utils.UtilsModule;
+import com.tradehero.common.utils.UtilsTestModule;
 import dagger.Module;
 
 @Module(
         includes = {
                 PersistenceTestModule.class,
-                UtilsModule.class
+                UtilsTestModule.class
         },
         complete = false,
         library = true

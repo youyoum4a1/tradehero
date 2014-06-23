@@ -25,6 +25,7 @@ import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
@@ -35,6 +36,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject THLocalyticsSession localyticsSession;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
     public TimelineItemViewLinear(Context context)
@@ -171,7 +173,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 if (currentUserId.get() != user.id)
                 {
                     Bundle bundle = new Bundle();
-                    bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
+                    thRouter.save(bundle, new UserBaseKey(user.id));
                     getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
                 }
             }
