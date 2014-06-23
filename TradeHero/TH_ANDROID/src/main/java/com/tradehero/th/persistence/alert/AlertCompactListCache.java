@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.alert;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class AlertCompactListCache extends StraightDTOCache<UserBaseKey, AlertIdList>
+@Singleton public class AlertCompactListCache extends StraightDTOCacheNew<UserBaseKey, AlertIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override @Nullable protected AlertIdList fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @Nullable public AlertIdList fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return putInternal(key, alertServiceWrapper.getAlerts(key));
     }

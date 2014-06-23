@@ -50,8 +50,7 @@ public class DTOCacheGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 138; userId++)
         {
-            DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> task = alertCompactListCache.getOrFetch(new UserBaseKey(userId), null);
-            task.executePool();
+            alertCompactListCache.getOrFetchAsync(new UserBaseKey(userId));
         }
     }
 
@@ -60,8 +59,7 @@ public class DTOCacheGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 139; userId++)
         {
-            DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> task = alertCompactListCache.getOrFetch(new UserBaseKey(userId), null);
-            task.executePool();
+            alertCompactListCache.getOrFetchAsync(new UserBaseKey(userId));
         }
         assertTrue(false);
     }
@@ -71,8 +69,7 @@ public class DTOCacheGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 138; userId++)
         {
-            DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> task = alertCompactListCache.getOrFetch(new UserBaseKey(userId), null);
-            task.execute();
+            alertCompactListCache.getOrFetchAsync(new UserBaseKey(userId));
         }
     }
 
@@ -81,8 +78,7 @@ public class DTOCacheGetOrFetchTaskTest
     {
         for (int userId = 0; userId < 139; userId++)
         {
-            DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> task = alertCompactListCache.getOrFetch(new UserBaseKey(userId), null);
-            task.execute();
+            alertCompactListCache.getOrFetchAsync(new UserBaseKey(userId));
         }
     }
 }

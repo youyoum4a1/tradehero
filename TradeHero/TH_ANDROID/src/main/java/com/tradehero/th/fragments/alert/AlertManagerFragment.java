@@ -19,7 +19,7 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -53,7 +53,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
     protected BaseListHeaderView footerView;
 
-    @Inject protected Lazy<AlertCompactListCache> alertCompactListCache;
+    @Inject protected AlertCompactListCache alertCompactListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
@@ -62,8 +62,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     private UserProfileRetrievedMilestone userProfileRetrievedMilestone;
 
     private AlertListItemAdapter alertListItemAdapter;
-    private DTOCache.GetOrFetchTask<UserBaseKey, AlertIdList> refreshAlertCompactListCacheTask;
-    private DTOCache.Listener<UserBaseKey, AlertIdList> alertCompactListCallback;
+    private DTOCacheNew.Listener<UserBaseKey, AlertIdList> alertCompactListListener;
     private int currentDisplayLayoutId;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -82,19 +81,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
                 THToast.show(new THException(throwable));
             }
         };
-        alertCompactListCallback = new DTOCache.Listener<UserBaseKey, AlertIdList>()
-        {
-            @Override public void onDTOReceived(UserBaseKey key, AlertIdList value, boolean fromCache)
-            {
-                progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
-                alertListItemAdapter.notifyDataSetChanged();
-            }
-
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-            {
-                THToast.show(R.string.error_fetch_alert);
-            }
-        };
+        alertCompactListListener = createAlertIdListListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -175,9 +162,8 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         }
 
         detachAlertCompactListCacheFetchTask();
-        refreshAlertCompactListCacheTask = alertCompactListCache.get().getOrFetch(
-                currentUserId.toUserBaseKey(), true, alertCompactListCallback);
-        refreshAlertCompactListCacheTask.execute();
+        alertCompactListCache.register(currentUserId.toUserBaseKey(), alertCompactListListener);
+        alertCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
     }
 
     @Override public void onPause()
@@ -216,7 +202,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         userProfileRetrievedMilestoneCompleteListener = null;
-        alertCompactListCallback = null;
+        alertCompactListListener = null;
         super.onDestroy();
     }
 
@@ -231,11 +217,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     protected void detachAlertCompactListCacheFetchTask()
     {
-        if (refreshAlertCompactListCacheTask != null)
-        {
-            refreshAlertCompactListCacheTask.setListener(null);
-        }
-        refreshAlertCompactListCacheTask = null;
+        alertCompactListCache.unregister(alertCompactListListener);
     }
 
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
@@ -315,4 +297,23 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         return false;
     }
     //</editor-fold>
+
+    protected DTOCacheNew.Listener<UserBaseKey, AlertIdList> createAlertIdListListener()
+    {
+        return new AlertManagerFragmentAlertIdListListener();
+    }
+
+    protected class AlertManagerFragmentAlertIdListListener implements DTOCacheNew.Listener<UserBaseKey, AlertIdList>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, AlertIdList value)
+        {
+            progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
+            alertListItemAdapter.notifyDataSetChanged();
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_alert);
+        }
+    }
 }

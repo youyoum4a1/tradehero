@@ -255,7 +255,7 @@ import javax.inject.Singleton;
 
     public void preFetchAlerts()
     {
-        alertCompactListCache.get().autoFetch(currentUserId.toUserBaseKey());
+        alertCompactListCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     public void preFetchTranslationToken()
