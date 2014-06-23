@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.message;
 
 import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
-public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, MessageHeaderIdList>
+public class MessageHeaderListCache extends StraightDTOCacheNew<MessageListKey, MessageHeaderIdList>
 {
     @NotNull final private MessageHeaderCache messageHeaderCache;
     @NotNull final private MessageServiceWrapper messageServiceWrapper;
@@ -47,7 +48,7 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
     }
     //</editor-fold>
 
-    @Override protected MessageHeaderIdList fetch(@NotNull MessageListKey key) throws Throwable
+    @Override public MessageHeaderIdList fetch(@NotNull MessageListKey key) throws Throwable
     {
         return putInternal(messageServiceWrapper.getMessageHeaders(key));
     }
@@ -106,9 +107,9 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
      */
     public void invalidateKeysThatList(@NotNull MessageHeaderId messageHeaderId)
     {
-        for (Map.Entry<MessageListKey, MessageHeaderIdList> entry : new HashMap<>(snapshot()).entrySet())
+        for (Map.Entry<MessageListKey, CacheValue<MessageListKey, MessageHeaderIdList>> entry : new HashMap<>(snapshot()).entrySet())
         {
-            if (entry.getValue().contains(messageHeaderId))
+            if (entry.getValue().getValue() != null && entry.getValue().getValue().contains(messageHeaderId))
             {
                 invalidateSameListing(entry.getKey());
             }
