@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -22,6 +21,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
+import com.thoj.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -39,6 +40,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
@@ -47,6 +49,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
+@Routable("updatecenter/:pageIndex")
 public class UpdateCenterFragment extends BaseFragment
         implements PopupMenu.OnMenuItemClickListener,
         OnTitleNumberChangeListener,
@@ -62,6 +65,9 @@ public class UpdateCenterFragment extends BaseFragment
 
     @Inject MessageHeaderListCache messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
+    @Inject THRouter thRouter;
+
+    @RouteProperty("pageIndex") int selectedPageIndex = -1;
 
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
@@ -71,6 +77,8 @@ public class UpdateCenterFragment extends BaseFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        thRouter.inject(this);
         broadcastReceiver = createBroadcastReceiver();
         Timber.d("onCreate");
     }
@@ -97,6 +105,11 @@ public class UpdateCenterFragment extends BaseFragment
         LocalBroadcastManager.getInstance(getActivity())
                 .registerReceiver(broadcastReceiver,
                         new IntentFilter(REQUEST_UPDATE_UNREAD_COUNTER));
+
+        if (selectedPageIndex > 0)
+        {
+            mTabHost.setCurrentTab(selectedPageIndex);
+        }
     }
 
     @Override public void onPause()
@@ -144,19 +157,22 @@ public class UpdateCenterFragment extends BaseFragment
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
-        mNewMsgButton =
-                (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
-        if (mNewMsgButton != null)
+        if (menuFollow != null && menuFollow.getActionView() != null)
         {
-            mNewMsgButton.setOnClickListener(new View.OnClickListener()
+            mNewMsgButton =
+                    (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
+            if (mNewMsgButton != null)
             {
-                @Override public void onClick(View v)
+                mNewMsgButton.setOnClickListener(new View.OnClickListener()
                 {
-                    showPopup(v);
-                }
-            });
+                    @Override public void onClick(View v)
+                    {
+                        showPopup(v);
+                    }
+                });
+            }
+            Timber.d("onCreateOptionsMenu");
         }
-        Timber.d("onCreateOptionsMenu");
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -277,8 +293,7 @@ public class UpdateCenterFragment extends BaseFragment
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(),
-                FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         //mTabHost.setOnTabChangedListener(new HeroManagerOnTabChangeListener());
         Bundle args = getArguments();
         if (args == null)
@@ -296,7 +311,6 @@ public class UpdateCenterFragment extends BaseFragment
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
             mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
         }
-        mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
         return mTabHost;
     }
 
