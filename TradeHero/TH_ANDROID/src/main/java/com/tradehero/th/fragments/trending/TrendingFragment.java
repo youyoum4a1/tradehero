@@ -460,7 +460,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleEarnCreditItemOnClick()
     {
-        getNavigator().pushFragment(InviteFriendFragment.class);
+        getDashboardNavigator().pushFragment(InviteFriendFragment.class);
     }
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
@@ -469,7 +469,7 @@ public class TrendingFragment extends SecurityListFragment
                 securityCompactDTO.getSecurityId());
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-        getNavigator().pushFragment(BuySellFragment.class, args);
+        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     protected TrendingFilterSelectorView.OnFilterTypeChangedListener createTrendingFilterChangedListener()

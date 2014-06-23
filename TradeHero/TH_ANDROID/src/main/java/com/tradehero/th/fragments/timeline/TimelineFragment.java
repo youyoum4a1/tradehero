@@ -214,7 +214,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getNavigator().pushFragment(HeroManagerFragment.class, bundle);
+        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -228,7 +228,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -498,7 +498,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
-        getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
+        getDashboardNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -833,13 +833,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             Bundle args = new Bundle();
             ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
             ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(messageThreadHeaderDTO));
-            getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+            getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
         }
         else
         {
             Bundle args = new Bundle();
             NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-            getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+            getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
         }
     }
 
