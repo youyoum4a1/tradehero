@@ -34,12 +34,9 @@ import org.jetbrains.annotations.Nullable;
 
     @Override public PaginatedDTO<NewsItemCompactDTO> put(
             @NotNull NewsItemListKey key,
-            @Nullable PaginatedDTO<NewsItemCompactDTO> value)
+            @NotNull PaginatedDTO<NewsItemCompactDTO> value)
     {
-        if (value != null)
-        {
-            newsItemCompactCacheNew.get().put(value.getData());
-        }
+        newsItemCompactCacheNew.get().put(value.getData());
         return value;
     }
 }

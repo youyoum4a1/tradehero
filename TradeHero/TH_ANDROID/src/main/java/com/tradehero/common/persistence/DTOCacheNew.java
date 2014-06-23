@@ -15,7 +15,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     public static final boolean DEFAULT_FORCE_UPDATE = false;
 
     boolean isValid(@NotNull DTOType value);
-    DTOType put(DTOKeyType key, DTOType value);
+    DTOType put(@NotNull DTOKeyType key, @NotNull DTOType value);
     /**
      * This method should be implemented so that it is very fast. Indeed this method is sometimes used before deciding
      * whether to getOrFetch

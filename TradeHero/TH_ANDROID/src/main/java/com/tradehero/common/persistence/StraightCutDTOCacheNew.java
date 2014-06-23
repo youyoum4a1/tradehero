@@ -1,5 +1,8 @@
 package com.tradehero.common.persistence;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 abstract public class StraightCutDTOCacheNew<
         DTOKeyType extends DTOKey,
         DTOType extends DTO,
@@ -11,8 +14,8 @@ abstract public class StraightCutDTOCacheNew<
         super(maxSize);
     }
 
-    abstract protected DTOCutType cutValue(DTOKeyType key, DTOType value);
-    abstract protected DTOType inflateValue(DTOKeyType key, DTOCutType cutValue);
+    @NotNull abstract protected DTOCutType cutValue(@NotNull DTOKeyType key, @NotNull DTOType value);
+    @Nullable abstract protected DTOType inflateValue(@NotNull DTOKeyType key, @Nullable DTOCutType cutValue);
 
     @Override protected CacheValue<DTOKeyType, DTOType> createCacheValue(DTOKeyType key)
     {
@@ -24,10 +27,10 @@ abstract public class StraightCutDTOCacheNew<
      */
     protected class PartialCutCacheValue extends PartialCacheValue
     {
-        private final DTOKeyType key;
-        private DTOCutType shrunkValue;
+        @NotNull private final DTOKeyType key;
+        @Nullable private DTOCutType shrunkValue;
 
-        public PartialCutCacheValue(DTOKeyType key)
+        public PartialCutCacheValue(@NotNull DTOKeyType key)
         {
             super();
             this.key = key;

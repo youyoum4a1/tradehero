@@ -42,7 +42,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return true;
     }
 
-    @Override public DTOType put(DTOKeyType key, DTOType value)
+    @Override public DTOType put(@NotNull DTOKeyType key, @NotNull DTOType value)
     {
         CacheValue<DTOKeyType, DTOType> cacheValue = this.getOrCreateCacheValue(key);
         DTOType previous = cacheValue.getValue();
