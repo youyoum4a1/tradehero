@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +60,15 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
     @NotNull @JsonIgnore public String getUsableDisplayName()
     {
         return name.equals(ALL_EXCHANGES) ? resources.getString(R.string.trending_filter_exchange_all) : name;
+    }
+
+    @Nullable @Override public Exchange getExchangeByName()
+    {
+        if (name.equals(ALL_EXCHANGES))
+        {
+            return null;
+        }
+        return super.getExchangeByName();
     }
 
     @Override @NotNull public String toString()

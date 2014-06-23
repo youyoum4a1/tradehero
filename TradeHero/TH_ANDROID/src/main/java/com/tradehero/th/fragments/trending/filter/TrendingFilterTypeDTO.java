@@ -52,19 +52,4 @@ abstract public class TrendingFilterTypeDTO
     @NotNull abstract public TrendingFilterTypeDTO getNext();
     @NotNull abstract public TrendingSecurityListType getSecurityListType(@Nullable String usableExchangeName, @Nullable Integer page, @Nullable Integer perPage);
     @NotNull abstract public String getTrackEventCategory();
-
-    protected void putParameters(@NotNull Bundle args)
-    {
-        args.putInt(BUNDLE_KEY_TITLE_RES_ID, this.titleResId);
-        args.putInt(BUNDLE_KEY_TITLE_ICON_RES_ID, this.titleIconResId);
-        args.putInt(BUNDLE_KEY_DESCRIPTION_RES_ID, this.descriptionResId);
-        args.putBundle(BUNDLE_KEY_EXCHANGE, this.exchange.getArgs());
-    }
-
-    @NotNull public Bundle getArgs()
-    {
-        Bundle args = new Bundle();
-        putParameters(args);
-        return args;
-    }
 }

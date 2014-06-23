@@ -94,9 +94,19 @@ public class ExchangeCompactDTO implements DTO
 
     @Nullable @JsonIgnore public Integer getNameFlagResId()
     {
+        Exchange exchange = getExchangeByName();
+        if (exchange != null)
+        {
+            return exchange.logoId;
+        }
+        return null;
+    }
+
+    @Nullable @JsonIgnore public Exchange getExchangeByName()
+    {
         try
         {
-            return Exchange.valueOf(name).logoId;
+            return Exchange.valueOf(name);
         }
         catch (IllegalArgumentException e)
         {
@@ -107,13 +117,10 @@ public class ExchangeCompactDTO implements DTO
 
     @Nullable @JsonIgnore public Integer getCountryCodeFlagResId()
     {
-        try
+        Country country = getCountry();
+        if (country != null)
         {
-            return Country.valueOf(countryCode).logoId;
-        }
-        catch (IllegalArgumentException e)
-        {
-            Timber.e(e, "Exchange logo does not exist for countryCode %s", countryCode);
+            return country.logoId;
         }
         return null;
     }

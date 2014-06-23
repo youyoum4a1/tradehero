@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,8 +17,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
-import org.w3c.dom.Text;
-
 import javax.inject.Inject;
 import timber.log.Timber;
 

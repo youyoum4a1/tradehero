@@ -12,8 +12,9 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -188,7 +189,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
         int size = friendsDTOs.size();
         for (int i = 0; i < size && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
         {
-            stringBuilder.append(friendsDTOs.get(i).fbId).append(',');
+            stringBuilder.append(((UserFriendsFacebookDTO) friendsDTOs.get(i)).fbId).append(',');
         }
         if (stringBuilder.length() > 0)
         {

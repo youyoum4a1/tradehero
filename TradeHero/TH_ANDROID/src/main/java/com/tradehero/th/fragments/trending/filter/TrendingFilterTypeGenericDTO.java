@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.content.res.Resources;
-import android.os.Bundle;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
@@ -33,11 +32,6 @@ public class TrendingFilterTypeGenericDTO extends TrendingFilterTypeDTO
                 DEFAULT_DESCRIPTION_RES_ID,
                 exchangeCompactSpinnerDTO);
     }
-
-    public TrendingFilterTypeGenericDTO(@NotNull Resources resources, @NotNull Bundle bundle)
-    {
-        super(resources, bundle);
-    }
     //</editor-fold>
 
     @Override @NotNull public TrendingFilterTypeDTO getPrevious()
@@ -61,11 +55,5 @@ public class TrendingFilterTypeGenericDTO extends TrendingFilterTypeDTO
     @Override @NotNull public String getTrackEventCategory()
     {
         return TRACK_EVENT_SYMBOL;
-    }
-
-    @Override protected void putParameters(@NotNull Bundle args)
-    {
-        super.putParameters(args);
-        args.putString(BUNDLE_KEY_CLASS_TYPE, TrendingFilterTypeGenericDTO.class.getName());
     }
 }

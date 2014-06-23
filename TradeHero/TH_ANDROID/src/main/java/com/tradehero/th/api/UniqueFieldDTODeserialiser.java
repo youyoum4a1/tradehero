@@ -10,25 +10,29 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class UniqueFieldDTODeserialiser<DTOType> extends StdDeserializer<DTOType>
 {
-    private final Map<String, Class<? extends DTOType>> uniqueAttributes;
+    @NotNull private final Map<String, Class<? extends DTOType>> uniqueAttributes;
     // We need an inner mapper to avoid infinite looping
-    private final ObjectMapper innerMapper;
+    @NotNull private final ObjectMapper innerMapper;
 
     //<editor-fold desc="Constructors">
-    protected UniqueFieldDTODeserialiser(Map<String, Class<? extends DTOType>> uniqueAttributes, Class<? extends DTOType> baseClass)
+    protected UniqueFieldDTODeserialiser(
+            @NotNull ObjectMapper innerMapper,
+            @NotNull Map<String, Class<? extends DTOType>> uniqueAttributes,
+            @NotNull Class<? extends DTOType> baseClass)
     {
         super(baseClass);
         this.uniqueAttributes = uniqueAttributes;
-        innerMapper = new ObjectMapper();
+        this.innerMapper = innerMapper;
         innerMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     //</editor-fold>
 
     @Override
-    public DTOType deserialize(JsonParser jp, DeserializationContext ctxt)
+    public DTOType deserialize(@NotNull JsonParser jp, DeserializationContext ctxt)
             throws IOException
     {
         ObjectMapper mapper = (ObjectMapper) jp.getCodec();

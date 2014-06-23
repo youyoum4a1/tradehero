@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
