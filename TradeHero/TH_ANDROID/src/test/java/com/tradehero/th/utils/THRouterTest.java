@@ -8,7 +8,7 @@ import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.friend.SocialFriendsFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -152,10 +152,10 @@ public class THRouterTest
 
     @Test public void shouldOpenReferFriendScreen()
     {
-        thRouter.mapFragment(THRouter.REFER_FRIENDS, SocialFriendsFragment.class);
+        thRouter.mapFragment(THRouter.REFER_FRIENDS, FriendsInvitationFragment.class);
         thRouter.open("refer-friends");
 
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(SocialFriendsFragment.class);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(FriendsInvitationFragment.class);
     }
 
     @Test public void shouldOpenNotificationCenter()
