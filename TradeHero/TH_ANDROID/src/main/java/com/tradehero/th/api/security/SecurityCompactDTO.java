@@ -27,6 +27,7 @@ import timber.log.Timber;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
+        defaultImpl = SecurityCompactDTO.class,
         property = "securityType")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LockedSecurityCompactDTO.class, name = LockedSecurityCompactDTO.DTO_DESERIALISING_TYPE),
