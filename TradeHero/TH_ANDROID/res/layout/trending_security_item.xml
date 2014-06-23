@@ -2,28 +2,30 @@
 <com.tradehero.th.fragments.security.SecurityItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/security_item_height"
+    android:layout_height="@dimen/grid_item_height"
     android:orientation="vertical"
     tools:context=".activities.DashboardActivity"
-    android:background="@drawable/trending_grid_item_bg2"
+    android:padding="@dimen/grid_item_bg_border_width"
+    android:background="@drawable/grid_item_bg"
     >
     <!--android:background="@drawable/trending_grid_item_bg2"-->
     <!--android:layout_height="@dimen/security_item_height"-->
 
-  <ImageView
-      android:padding="@dimen/trending_grid_item_padding"
+    <com.makeramen.RoundedImageView
       android:id="@+id/stock_bg_logo"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_alignParentTop="true"
       android:contentDescription="@null"
+      app:oval="false"
+      app:corner_radius="@dimen/grid_item_bg_radius"
       android:scaleType="centerCrop"
       tools:background="@color/red"
       android:visibility="visible"
-
       />
-    <!--remove the alpha :android:alpha="0.2"-->
+
   <TextView
       android:id="@+id/stock_name"
       android:layout_width="wrap_content"
@@ -32,6 +34,7 @@
       android:layout_marginRight="5dp"
       android:layout_centerHorizontal="true"
       android:ellipsize="marquee"
+      android:marqueeRepeatLimit="marquee_forever"
       android:lines="1"
       android:textColor="@color/trending_grid_item_stock_name"
       android:textStyle="bold"
@@ -42,7 +45,7 @@
 
   <ImageView
       android:id="@+id/stock_logo"
-      android:layout_width="match_parent"
+      android:layout_width="@dimen/security_logo_width"
       android:layout_height="@dimen/security_logo_height"
       android:layout_below="@id/stock_name"
       android:layout_centerHorizontal="true"
@@ -50,9 +53,8 @@
       android:layout_marginTop="0dp"
       android:layout_marginLeft="20dp"
       android:layout_marginRight="20dp"
-      android:adjustViewBounds="true"
       android:contentDescription="@null"
-      android:scaleType="centerInside"
+      android:scaleType="fitCenter"
       tools:src="@drawable/flag_country_round_united_states"/>
 
   <TextView
