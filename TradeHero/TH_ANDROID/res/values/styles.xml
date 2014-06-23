@@ -213,7 +213,7 @@
     <item name="android:ellipsize">middle</item>
     <item name="android:layout_marginLeft">5dp</item>
     <item name="android:layout_marginRight">5dp</item>
-    <item name="android:background">@color/white</item>
+    <item name="android:background">@drawable/btn_basic_white</item>
   </style>
 
   <style name="TH.Time_Text">
@@ -306,11 +306,7 @@
 
   <style name="TH.DiscussionActionButtons.Text" parent="TH.DiscussionActionButtons">
     <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
-    <!--<item name="android:textStyle">bold</item>-->
     <item name="android:textSize">16sp</item>
-    <!--<item name="android:shadowColor">@color/timeline_action_button_text_color_shadow</item>-->
-    <!--<item name="android:shadowDy">1</item>-->
-    <!--<item name="android:shadowRadius">1</item>-->
     <item name="android:layout_gravity">center_vertical</item>
     <item name="android:drawablePadding">@dimen/discussion_action_buttons_drawable_padding</item>
   </style>
