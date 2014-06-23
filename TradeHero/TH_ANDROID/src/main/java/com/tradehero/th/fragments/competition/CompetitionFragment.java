@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
+import com.thoj.route.InjectRoute;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -10,6 +11,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -18,7 +20,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
 
-    protected ProviderId providerId;
+    @InjectRoute protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
     private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
@@ -26,6 +28,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
     @Inject ProviderCache providerCache;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    @Inject THRouter thRouter;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
@@ -41,7 +44,11 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     {
         super.onCreate(savedInstanceState);
 
-        this.providerId = getProviderId(getArguments());
+        thRouter.inject(this, getArguments());
+        if (this.providerId == null)
+        {
+            this.providerId = getProviderId(getArguments());
+        }
         this.providerCacheListener = new CompetitionFragmentProviderCacheListener();
     }
 
