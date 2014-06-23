@@ -34,7 +34,6 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
     private TextView profitIndicator;
     private TextView stockPercentage;
     private TextView date;
-    //private CircularImageView userImage;
     private ImageView userPhoto;
     private ImageView peopleBgImage;
     private int defaultDrawable = R.drawable.superman_facebook;
@@ -45,7 +44,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
     //<editor-fold desc="Constructors">
     public SearchPeopleItemView(Context context)
     {
-        super(context);    
+        super(context);
     }
 
     public SearchPeopleItemView(Context context, AttributeSet attrs)
@@ -72,7 +71,6 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         profitIndicator = (TextView) findViewById(R.id.profit_indicator);
         stockPercentage = (TextView) findViewById(R.id.stock_percentage);
         date = (TextView) findViewById(R.id.date);
-        //userImage = (CircularImageView) findViewById(R.id.user_image);
         userPhoto = (ImageView) findViewById(R.id.user_photo);
         if (userPhoto != null)
         {
