@@ -54,8 +54,10 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
         else
         {
             // open with thRouter when url is not handlable by THIntent
+
             // remove the protocol
             String url = intent.getDataString();
+            Timber.d("Handling: %s", url);
             url = url.substring("tradehero://".length());
 
             // ignore query for now, TODO handle deeplink query
