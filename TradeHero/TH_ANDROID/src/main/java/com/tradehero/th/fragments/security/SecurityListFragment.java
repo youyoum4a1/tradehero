@@ -31,6 +31,7 @@ import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 import javax.inject.Inject;
@@ -65,7 +66,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         filterTextWatcher = new SecurityListOnFilterTextWatcher();
     }
 
@@ -245,7 +245,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         return getSecurityListType(FIRST_PAGE - 1);
     }
 
-    abstract public SecurityListType getSecurityListType(int page);
+    @NotNull abstract public SecurityListType getSecurityListType(int page);
 
     protected void showProgressSpinner(boolean flag)
     {

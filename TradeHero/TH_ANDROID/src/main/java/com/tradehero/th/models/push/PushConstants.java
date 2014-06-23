@@ -15,4 +15,10 @@ public class PushConstants
     {
         Opened, Received, RegistrationFinished, GcmDeleted
     }
+
+    public static enum PushProvider
+    {
+        URBAN_AIRSHIP,
+        BAIDU,
+    }
 }

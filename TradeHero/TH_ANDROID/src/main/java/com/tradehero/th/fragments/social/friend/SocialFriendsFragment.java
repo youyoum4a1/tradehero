@@ -18,14 +18,13 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +35,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public abstract class SocialFriendsFragment extends DashboardFragment implements SocialFriendItemView.OnElementClickListener, View.OnClickListener
+public abstract class SocialFriendsFragment extends DashboardFragment
+        implements SocialFriendItemView.OnElementClickListener, View.OnClickListener
 {
     @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
     @InjectView(R.id.search_social_friends) EditText searchEdit;
@@ -48,7 +48,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
     protected SocialFriendHandler socialFriendHandler;
 
     private FriendsListKey friendsListKey;
-    private FriendDTOList friendDTOList;
+    private UserFriendsDTOList friendDTOList;
     private SocialFriendsAdapter socialFriendsListAdapter;
 
     @Override
@@ -223,7 +223,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
     }
 
-    private void displayContentView(FriendDTOList value)
+    private void displayContentView(UserFriendsDTOList value)
     {
 
         this.friendDTOList = filterTheDublicated(value);
@@ -239,11 +239,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
     }
 
-    private FriendDTOList filterTheDublicated(FriendDTOList friendDTOList)
+    private UserFriendsDTOList filterTheDublicated(UserFriendsDTOList friendDTOList)
     {
         TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
         hashSet.addAll(friendDTOList);
-        FriendDTOList list = new FriendDTOList();
+        UserFriendsDTOList list = new UserFriendsDTOList();
         list.addAll(hashSet);
         return list;
     }
@@ -334,7 +334,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         return listView.getAdapter() != null && listView.getAdapter().getCount() > 0;
     }
 
-    protected DTOCache.Listener<FriendsListKey, FriendDTOList> createFriendsFetchListener()
+    protected DTOCache.Listener<FriendsListKey, UserFriendsDTOList> createFriendsFetchListener()
     {
         return new FriendFetchListener();
     }
@@ -453,7 +453,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
 
     class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
     {
-
         List<UserFriendsDTO> usersToInvite;
 
         private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
@@ -482,10 +481,10 @@ public abstract class SocialFriendsFragment extends DashboardFragment implements
         }
     }
 
-    class FriendFetchListener implements DTOCache.Listener<FriendsListKey, FriendDTOList>
+    class FriendFetchListener implements DTOCache.Listener<FriendsListKey, UserFriendsDTOList>
     {
         @Override
-        public void onDTOReceived(FriendsListKey key, FriendDTOList value, boolean fromCache)
+        public void onDTOReceived(FriendsListKey key, UserFriendsDTOList value, boolean fromCache)
         {
             if (!hasView())
             {

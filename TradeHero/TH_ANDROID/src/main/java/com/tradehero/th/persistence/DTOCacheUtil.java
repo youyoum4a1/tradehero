@@ -250,7 +250,7 @@ import javax.inject.Singleton;
 
     public void preFetchTrending()
     {
-        this.securityCompactListCache.get().autoFetch(new TrendingBasicSecurityListType(TrendingSecurityListType.ALL_EXCHANGES, 1, TrendingFragment.DEFAULT_PER_PAGE));
+        this.securityCompactListCache.get().autoFetch(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
     }
 
     public void preFetchAlerts()

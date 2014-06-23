@@ -2,41 +2,26 @@ package com.tradehero.th.api.market;
 
 import android.os.Bundle;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ExchangeDTO extends ExchangeCompactDTO
 {
-    public SectorDTOList sectors;
+    @Nullable public SectorDTOList sectors;
 
     //<editor-fold desc="Constructors">
-    public ExchangeDTO()
-    {
-        super();
-    }
-
     public ExchangeDTO(
-            int id, String name,
+            int id,
+            String name,
             String countryCode,
             double sumMarketCap,
             String desc,
             boolean isInternal,
             boolean isIncludedInTrending,
             boolean chartDataSource,
-            SectorDTOList sectors)
+            @Nullable SectorDTOList sectors)
     {
         super(id, name, countryCode, sumMarketCap, desc, isInternal, isIncludedInTrending, chartDataSource);
         this.sectors = sectors;
-    }
-
-    public ExchangeDTO(int id, String name, double sumMarketCap, SectorDTOList sectors, String desc, boolean isInternal,
-            boolean isIncludedInTrending)
-    {
-        this.id = id;
-        this.name = name;
-        this.sumMarketCap = sumMarketCap;
-        this.sectors = sectors;
-        this.desc = desc;
-        this.isInternal = isInternal;
-        this.isIncludedInTrending = isIncludedInTrending;
     }
 
     public ExchangeDTO(@NotNull ExchangeDTO other)

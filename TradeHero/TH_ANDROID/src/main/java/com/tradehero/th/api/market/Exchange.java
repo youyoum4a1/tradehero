@@ -5,79 +5,81 @@ import com.tradehero.th.R;
 public enum Exchange
 {
     // United Kingdom
-    LSE(R.drawable.square_gb/*R.drawable.flag_country_round_united_kingdom*/),
+    LSE(R.drawable.square_gb, true),
 
     // United States of America
-    NASDAQ(R.drawable.square_us/*R.drawable.flag_country_round_united_states*/),
-    NYSE(R.drawable.square_us/*R.drawable.flag_country_round_united_states*/),
-    OTCBB(R.drawable.square_us/*R.drawable.flag_country_round_united_states*/),
-    AMEX(R.drawable.square_us/*R.drawable.flag_country_round_united_states*/),
+    NASDAQ(R.drawable.square_us, false),
+    NYSE(R.drawable.square_us, true),
+    OTCBB(R.drawable.square_us, false),
+    AMEX(R.drawable.square_us, false),
 
     // Singapore
-    SGX(R.drawable.square_sg/*R.drawable.flag_country_round_singapore*/),
+    SGX(R.drawable.square_sg, true),
 
     // Australia
-    ASX(R.drawable.square_au/*R.drawable.flag_country_round_australia*/),
+    ASX(R.drawable.square_au, true),
 
     // Canada
-    TSX(R.drawable.square_ca/*R.drawable.flag_country_round_canada*/),
-    TSXV(R.drawable.square_ca/*R.drawable.flag_country_round_canada*/),
+    TSX(R.drawable.square_ca, true),
+    TSXV(R.drawable.square_ca, false),
 
     // Hong Kong
-    HKEX(R.drawable.square_hk/*R.drawable.flag_country_round_hong_kong*/),
+    HKEX(R.drawable.square_hk, true),
 
     // France
-    PAR(R.drawable.square_fr/*R.drawable.flag_country_round_france*/),
+    PAR(R.drawable.square_fr, true),
 
     // Netherlands
-    AMS(R.drawable.square_nl/*R.drawable.flag_country_round_netherlands*/),
+    AMS(R.drawable.square_nl, true),
 
     // Belgium
-    BRU(R.drawable.square_br/*R.drawable.flag_country_round_belgium*/),
+    BRU(R.drawable.square_be, true),
 
     // Portugal
-    LIS(R.drawable.square_pt/*R.drawable.flag_country_round_portugal*/),
+    LIS(R.drawable.square_pt, true),
 
     // Italy
-    MLSE(R.drawable.square_it/*R.drawable.flag_country_round_italy*/),
+    MLSE(R.drawable.square_it, true),
 
     // New Zealand
-    NZX(R.drawable.square_nz/*R.drawable.flag_country_round_new_zealand*/),
+    NZX(R.drawable.square_nz, true),
 
     // China
-    SHA(R.drawable.square_cn/*R.drawable.flag_country_round_china*/),
-    SHE(R.drawable.square_cn/*R.drawable.flag_country_round_china*/),
+    SHA(R.drawable.square_cn, true),
+    SHE(R.drawable.square_cn, false),
 
     // Indonesia
-    JKT(R.drawable.square_id/*R.drawable.flag_country_round_indonesia*/),
+    JKT(R.drawable.square_id, true),
 
     // South Korea
-    KDQ(R.drawable.square_kr/*R.drawable.flag_country_round_korea_south*/),
-    KRX(R.drawable.square_kr/*R.drawable.flag_country_round_korea_south*/),
+    KDQ(R.drawable.square_kr, true),
+    KRX(R.drawable.square_kr, false),
 
     // Taiwan
-    TPE(R.drawable.square_tw/*R.drawable.flag_country_round_taiwan*/),
+    TPE(R.drawable.square_tw, true),
 
     // Thailand
-    SET(R.drawable.square_th/*R.drawable.flag_country_round_thailand*/),
+    SET(R.drawable.square_th, true),
 
     // Philippines
-    PSE(R.drawable.square_ph/*R.drawable.flag_country_round_philippines*/),
+    PSE(R.drawable.square_ph, true),
 
     // Malaysia
-    MYX(R.drawable.square_my/*R.drawable.flag_country_round_malaysia*/),
+    MYX(R.drawable.square_my, true),
 
     // India
-    NSE(R.drawable.square_in/*R.drawable.flag_country_round_india*/),
-    BSE(R.drawable.square_in/*R.drawable.flag_country_round_india*/),
+    NSE(R.drawable.square_in, false),
+    BSE(R.drawable.square_in, true),
 
     // Japan
-    TSE(R.drawable.square_jp/*R.drawable.flag_country_round_japan*/);
+    TSE(R.drawable.square_jp, true);
 
     public final int logoId;
+    public final boolean isCountryDefault;
 
-    private Exchange(int logoId)
+    private Exchange(int logoId, boolean isCountryDefault)
     {
         this.logoId = logoId;
+        this.isCountryDefault = isCountryDefault;
     }
 }

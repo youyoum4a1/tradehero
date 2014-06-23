@@ -1,7 +1,6 @@
 package com.tradehero.th.api.market;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.models.market.ExchangeCompactDTODescriptionNameComparator;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -27,84 +26,63 @@ public class ExchangeCompactDTODescriptionNameComparatorTest
     {
     }
 
-    private ExchangeDTO getBcAb()
+    private ExchangeCompactDTO getBcAb()
     {
-        return new ExchangeDTO(1, "Bc", 1, null, "Ab", true, true);
+        return new ExchangeCompactDTO(1, "Bc", "SG", 1, "Ab", true, true, true);
     }
 
-    private ExchangeDTO getBcAc()
+    private ExchangeCompactDTO getBcAc()
     {
-        return new ExchangeDTO(1, "Bc", 1, null, "Ac", true, true);
+        return new ExchangeCompactDTO(1, "Bc", "SG", 1, "Ac", true, true, true);
     }
 
-    private ExchangeDTO getBcNull()
+    private ExchangeCompactDTO getBcNull()
     {
-        return new ExchangeDTO(1, "Bc", 1, null, null, true, true);
+        return new ExchangeCompactDTO(1, "Bc", "SG", 1, null, true, true, true);
     }
 
-    private ExchangeDTO getBdAb()
+    private ExchangeCompactDTO getBdAb()
     {
-        return new ExchangeDTO(1, "Bd", 1, null, "Ab", true, true);
+        return new ExchangeCompactDTO(1, "Bd", "SG", 1, "Ab", true, true, true);
     }
 
-    private ExchangeDTO getBdAc()
+    private ExchangeCompactDTO getBdAc()
     {
-        return new ExchangeDTO(1, "Bd", 1, null, "Ac", true, true);
+        return new ExchangeCompactDTO(1, "Bd", "SG", 1, "Ac", true, true, true);
     }
 
-    private ExchangeDTO getBdNull()
+    private ExchangeCompactDTO getBdNull()
     {
-        return new ExchangeDTO(1, "Bd", 1, null, null, true, true);
+        return new ExchangeCompactDTO(1, "Bd", "SG", 1, null, true, true, true);
     }
 
-    private ExchangeDTO getNullAb()
-    {
-        return new ExchangeDTO(1, null, 1, null, "Ab", true, true);
-    }
-
-    private ExchangeDTO getNullAc()
-    {
-        return new ExchangeDTO(1, null, 1, null, "Ac", true, true);
-    }
-
-    private ExchangeDTO getNullNull()
-    {
-        return new ExchangeDTO();
-    }
-
-    private boolean sameNameAndDesc(ExchangeDTO lhs, ExchangeDTO rhs)
+    private boolean sameNameAndDesc(ExchangeCompactDTO lhs, ExchangeCompactDTO rhs)
     {
         return (lhs.desc == null ? rhs.desc == null : lhs.desc.equals(rhs.desc)) &&
-                (lhs.name == null ? rhs.name == null : lhs.name.equals(rhs.name));
+                lhs.name.equals(rhs.name);
     }
 
     @Test public void getExpectedOrder()
     {
-        SortedSet<ExchangeDTO> set = new TreeSet<>(new ExchangeCompactDTODescriptionNameComparator());
+        SortedSet<ExchangeCompactDTO> set = new TreeSet<>(new ExchangeCompactDTODescriptionNameComparator<>());
 
-        set.add(getNullAb());
-        set.add(getNullNull());
         set.add(getBdAb());
         set.add(getBcNull());
         set.add(getBdAc());
-        set.add(getNullAc());
         set.add(getBcAc());
         set.add(null);
         set.add(getBcAb());
         set.add(getBdNull());
 
         assertEquals(10, set.size());
-        Iterator<ExchangeDTO> iterator = set.iterator();
+        Iterator<ExchangeCompactDTO> iterator = set.iterator();
 
         assertTrue(sameNameAndDesc(iterator.next(), getBcAb()));
         assertTrue(sameNameAndDesc(iterator.next(), getBdAb()));
-        assertTrue(sameNameAndDesc(iterator.next(), getNullAb()));
         assertTrue(sameNameAndDesc(iterator.next(), getBcAc()));
         assertTrue(sameNameAndDesc(iterator.next(), getBdAc()));
-        assertTrue(sameNameAndDesc(iterator.next(), getNullAc()));
         assertTrue(sameNameAndDesc(iterator.next(), getBcNull()));
         assertTrue(sameNameAndDesc(iterator.next(), getBdNull()));
-        assertTrue(sameNameAndDesc(iterator.next(), getNullNull()));
         assertNull(iterator.next());
     }
 }

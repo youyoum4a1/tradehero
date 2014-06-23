@@ -7,6 +7,11 @@ import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.social.InviteDTO;
+import com.tradehero.th.api.social.InviteContactEntryDTO;
+import com.tradehero.th.api.social.InviteFacebookDTO;
+import com.tradehero.th.api.social.InviteLinkedinDTO;
+import com.tradehero.th.api.social.InviteTwitterDTO;
+import com.tradehero.th.api.social.InviteWeiboDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
@@ -212,16 +217,23 @@ public class LeaderboardUserDTO extends UserBaseDTO
 
     public InviteDTO getInviteDTO()
     {
-        InviteDTO inviteDTO = new InviteDTO();
-        if (liId != null && !liId.isEmpty())
+        if (fbId != null && !fbId.isEmpty())
         {
-            inviteDTO.liId = liId;
+         return new InviteFacebookDTO(fbId);
+        }
+        else if (liId != null && !liId.isEmpty())
+        {
+            return new InviteLinkedinDTO(liId);
         }
         else if (twId != null && !twId.isEmpty())
         {
-            inviteDTO.twId = twId;
+            return new InviteTwitterDTO(twId);
         }
-        return inviteDTO;
+        else if (wbId != null && !wbId.isEmpty())
+        {
+            return new InviteWeiboDTO(wbId);
+        }
+        return new InviteContactEntryDTO();// TODO better than this?
     }
 
     @JsonIgnore

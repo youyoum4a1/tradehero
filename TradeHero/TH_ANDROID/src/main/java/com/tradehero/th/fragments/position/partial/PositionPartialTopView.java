@@ -266,7 +266,7 @@ public class PositionPartialTopView extends LinearLayout
                 {
                     stockMovementIndicator.setText(R.string.arrow_prefix_negative);
                 }
-                stockMovementIndicator.setTextColor(ColorUtils.getColorForPercentage(securityCompactDTO.pc50DMA / 5));
+                stockMovementIndicator.setTextColor(ColorUtils.getProperColorForNumber(securityCompactDTO.pc50DMA / 5));
             }
         }
     }

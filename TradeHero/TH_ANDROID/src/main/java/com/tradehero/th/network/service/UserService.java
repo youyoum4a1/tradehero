@@ -6,6 +6,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -19,7 +20,6 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
-import com.tradehero.th.fragments.social.friend.FriendDTOList;
 import java.util.List;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -187,16 +187,16 @@ public interface UserService
 
     //<editor-fold desc="Get Friends">
     @GET("/users/{userId}/getFriends")
-    FriendDTOList getFriends(
+    UserFriendsDTOList getFriends(
             @Path("userId") int userId);
 
     @GET("/users/{userId}/GetNewFriends")
-    FriendDTOList getSocialFriends(
+    UserFriendsDTOList getSocialFriends(
             @Path("userId") int userId,
             @Query("socialNetwork") SocialNetworkEnum socialNetwork);
 
     @GET("/users/{userId}/SearchFriends")
-    FriendDTOList searchSocialFriends(
+    UserFriendsDTOList searchSocialFriends(
             @Path("userId") int userId,
             @Query("socialNetwork") SocialNetworkEnum socialNetwork,
             @Query("q")String query);
