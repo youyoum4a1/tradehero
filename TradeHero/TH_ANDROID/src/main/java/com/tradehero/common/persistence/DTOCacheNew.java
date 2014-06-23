@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * See DTOKeyIdList to avoid duplicating data in caches.
@@ -13,6 +14,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 {
     public static final boolean DEFAULT_FORCE_UPDATE = false;
 
+    boolean isValid(@NotNull DTOType value);
     DTOType put(DTOKeyType key, DTOType value);
     /**
      * This method should be implemented so that it is very fast. Indeed this method is sometimes used before deciding
@@ -46,7 +48,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 
     abstract public static class CacheValue<DTOKeyType extends DTOKey, DTOType extends DTO>
     {
-        private DTOType value;
+        @Nullable private DTOType value;
         private final Set<Listener<DTOKeyType, DTOType>> listeners;
         protected WeakReference<GetOrFetchTask<DTOKeyType, DTOType>> fetchTask = new WeakReference<>(null);
 
@@ -58,7 +60,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             fetchTask = new WeakReference<>(null);
         }
 
-        public DTOType getValue()
+        @Nullable public DTOType getValue()
         {
             return value;
         }

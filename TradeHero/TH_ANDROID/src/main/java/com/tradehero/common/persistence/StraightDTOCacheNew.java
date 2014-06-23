@@ -28,8 +28,9 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
             return null;
         }
         DTOType value = cacheValue.getValue();
-        if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
+        if (value != null && !isValid(value))
         {
+            invalidate(key);
             return null;
         }
         return value;

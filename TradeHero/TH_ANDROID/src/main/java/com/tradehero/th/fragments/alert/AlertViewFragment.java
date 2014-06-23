@@ -17,7 +17,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -63,8 +63,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
     @Inject protected Lazy<AlertCache> alertCache;
-    protected DTOCache.Listener<AlertId, AlertDTO> alertCacheListener;
-    protected DTOCache.GetOrFetchTask<AlertId, AlertDTO> alertCacheFetchTask;
+    protected DTOCacheNew.Listener<AlertId, AlertDTO> alertCacheListener;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<PrettyTime> prettyTime;
@@ -111,29 +110,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                 handleAlertToggleChanged(isChecked);
             }
         };
-        alertCacheListener = new DTOCache.Listener<AlertId, AlertDTO>()
-        {
-            private void finish()
-            {
-                if (progressDialog != null)
-                {
-                    progressDialog.dismiss();
-                }
-            }
-
-            @Override public void onDTOReceived(AlertId key, AlertDTO value, boolean fromCache)
-            {
-                linkWith(value, true);
-                finish();
-            }
-
-            @Override public void onErrorThrown(AlertId key, Throwable error)
-            {
-                THToast.show(R.string.error_fetch_alert);
-                Timber.e(error, "Failed fetching alert " + key);
-                finish();
-            }
-        };
+        alertCacheListener = createAlertCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -216,11 +193,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     protected void detachAlertFetchTask()
     {
-        if (alertCacheFetchTask != null)
-        {
-            alertCacheFetchTask.setListener(null);
-        }
-        alertCacheFetchTask = null;
+        alertCache.get().unregister(alertCacheListener);
     }
 
     @Override public void onDestroy()
@@ -238,8 +211,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             detachAlertFetchTask();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
-            alertCacheFetchTask = alertCache.get().getOrFetch(alertId, alertCacheListener);
-            alertCacheFetchTask.execute();
+            alertCache.get().register(alertId, alertCacheListener);
+            alertCache.get().getOrFetchAsync(alertId);
         }
     }
 
@@ -401,4 +374,33 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         return false;
     }
     //endregion
+
+    protected DTOCacheNew.Listener<AlertId, AlertDTO> createAlertCacheListener()
+    {
+        return new AlertViewFragmentAlertCacheListener();
+    }
+
+    protected class AlertViewFragmentAlertCacheListener implements DTOCacheNew.Listener<AlertId, AlertDTO>
+    {
+        private void finish()
+        {
+            if (progressDialog != null)
+            {
+                progressDialog.dismiss();
+            }
+        }
+
+        @Override public void onDTOReceived(AlertId key, AlertDTO value)
+        {
+            linkWith(value, true);
+            finish();
+        }
+
+        @Override public void onErrorThrown(AlertId key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_alert);
+            Timber.e(error, "Failed fetching alert " + key);
+            finish();
+        }
+    }
 }

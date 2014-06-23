@@ -47,7 +47,7 @@ public class DashboardNavigator extends Navigator
         {
             Fragment currentDashboardFragment = manager.findFragmentById(R.id.realtabcontent);
             currentDashboardFragment.getArguments().putBundle(BasePurchaseManagerFragment.BUNDLE_KEY_THINTENT_BUNDLE, thIntent.getBundle());
-            currentDashboardFragment.onResume();
+            //currentDashboardFragment.onResume();
             return;
         }
 
