@@ -45,7 +45,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
 
         thRouter.inject(this, getArguments());
-        if (this.providerId == null)
+        if (this.providerId == null || this.providerId.key == null)
         {
             this.providerId = getProviderId(getArguments());
         }
