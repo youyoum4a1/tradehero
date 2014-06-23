@@ -11,6 +11,7 @@ import com.thoj.route.internal.RouterOptions;
 import com.thoj.route.internal.RouterParams;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -101,11 +102,23 @@ public class THRouter extends Router
 
     private void openFragment(RouterParams params, Bundle extras, Context context)
     {
-        if (context instanceof DashboardActivity)
+        if (context instanceof DashboardActivity && params != null)
         {
             DashboardNavigator navigator = ((DashboardActivity) context).getDashboardNavigator();
             THRouterOptions options = (THRouterOptions) params.routerOptions;
-            navigator.pushFragment(options.getOpenFragmentClass(), extras != null ? extras : new Bundle());
+            Bundle args = new Bundle();
+            if (extras != null)
+            {
+                args.putAll(extras);
+            }
+            if (params.openParams != null)
+            {
+                for (Map.Entry<String, String> param: params.openParams.entrySet())
+                {
+                    args.putString(param.getKey(), param.getValue());
+                }
+            }
+            navigator.pushFragment(options.getOpenFragmentClass(), args);
         }
     }
 
