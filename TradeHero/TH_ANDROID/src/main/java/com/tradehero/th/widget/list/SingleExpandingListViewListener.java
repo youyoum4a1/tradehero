@@ -27,7 +27,7 @@ public class SingleExpandingListViewListener extends BaseExpandingListViewListen
             if (position == i) continue;
 
             Object o = parent.getItemAtPosition(i);
-            if (o != null  && o instanceof ExpandableItem)
+            if (o instanceof ExpandableItem)
             {
                 ((ExpandableItem) o).setExpanded(false);
                 if (i >= firstVisibleItemPosition && i <= lastVisibleItemPosition)
