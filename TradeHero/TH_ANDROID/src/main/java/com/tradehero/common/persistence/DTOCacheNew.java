@@ -50,7 +50,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     {
         @Nullable private DTOType value;
         private final Set<Listener<DTOKeyType, DTOType>> listeners;
-        protected WeakReference<GetOrFetchTask<DTOKeyType, DTOType>> fetchTask = new WeakReference<>(null);
+        @NotNull protected WeakReference<GetOrFetchTask<DTOKeyType, DTOType>> fetchTask = new WeakReference<>(null);
 
         public CacheValue()
         {
@@ -65,7 +65,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             return value;
         }
 
-        public void setValue(DTOType value)
+        public void setValue(@Nullable DTOType value)
         {
             this.value = value;
         }
@@ -101,6 +101,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 
         public void notifyListenersReceived(DTOKeyType key, DTOType value)
         {
+            fetchTask = new WeakReference<>(null);
             for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
                 if (listener != null)
@@ -113,6 +114,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 
         public void notifyListenersFailed(DTOKeyType key, Throwable error)
         {
+            fetchTask = new WeakReference<>(null);
             for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
                 if (listener != null)
