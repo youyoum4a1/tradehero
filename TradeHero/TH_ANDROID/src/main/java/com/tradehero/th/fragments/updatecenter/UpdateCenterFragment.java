@@ -71,7 +71,6 @@ public class UpdateCenterFragment extends BaseFragment
 
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    private ImageButton mNewMsgButton;
     private BroadcastReceiver broadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -159,8 +158,7 @@ public class UpdateCenterFragment extends BaseFragment
         MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
         if (menuFollow != null && menuFollow.getActionView() != null)
         {
-            mNewMsgButton =
-                    (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
+            ImageButton mNewMsgButton = (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
             if (mNewMsgButton != null)
             {
                 mNewMsgButton.setOnClickListener(new View.OnClickListener()
@@ -343,7 +341,7 @@ public class UpdateCenterFragment extends BaseFragment
         }
     }
 
-    private Fragment getCurrentFragment()
+    public Fragment getCurrentFragment()
     {
         if (mTabHost == null)
         {
@@ -351,8 +349,7 @@ public class UpdateCenterFragment extends BaseFragment
         }
         String tag = mTabHost.getCurrentTabTag();
         android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(tag);
-        return fragment;
+        return fm.findFragmentByTag(tag);
     }
 
     private void changeTabTitleNumber(@NotNull UpdateCenterTabType tabType, int number)

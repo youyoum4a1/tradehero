@@ -15,6 +15,8 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -180,6 +182,9 @@ public class THRouterTest
 
         thRouter.open("notifications");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(UpdateCenterFragment.class);
+
+        UpdateCenterFragment updateCenterFragment = (UpdateCenterFragment) dashboardNavigator.getCurrentFragment();
+        assertThat(updateCenterFragment.getCurrentFragment()).isInstanceOf(NotificationsCenterFragment.class);
     }
 
     @Test public void shouldOpenMessageScreen()
@@ -188,6 +193,9 @@ public class THRouterTest
 
         thRouter.open("messages");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(UpdateCenterFragment.class);
+
+        UpdateCenterFragment updateCenterFragment = (UpdateCenterFragment) dashboardNavigator.getCurrentFragment();
+        assertThat(updateCenterFragment.getCurrentFragment()).isInstanceOf(MessagesCenterFragment.class);
     }
 
     @Test public void shouldOpenTrendingScreen()
