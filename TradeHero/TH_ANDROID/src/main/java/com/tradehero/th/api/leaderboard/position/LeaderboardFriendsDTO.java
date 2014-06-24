@@ -1,11 +1,10 @@
 package com.tradehero.th.api.leaderboard.position;
 
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import java.util.List;
+import com.tradehero.th.api.social.UserFriendsDTOList;
 
 public class LeaderboardFriendsDTO
 {
     public LeaderboardDTO leaderboard;
-    public List<LeaderboardUserDTO> socialFriends;
+    public UserFriendsDTOList socialFriends;
 }

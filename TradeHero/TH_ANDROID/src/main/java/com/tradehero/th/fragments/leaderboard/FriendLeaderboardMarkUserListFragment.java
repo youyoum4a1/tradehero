@@ -13,7 +13,6 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -26,7 +25,6 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import java.util.Date;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -39,7 +37,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
-    protected LeaderboardFriendsListAdapter leaderboardMarkUserListAdapter;
+    protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
     private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
     private TextView leaderboardMarkUserMarkingTime;
     @Inject LeaderboardServiceWrapper leaderboardServiceWrapper;
@@ -50,13 +48,14 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        if (leaderboardMarkUserListAdapter == null)
+        if (leaderboardFriendsUserListAdapter == null)
         {
-            leaderboardMarkUserListAdapter = new LeaderboardFriendsListAdapter(
-                    getActivity(), getActivity().getLayoutInflater(),
-                    R.layout.leaderboard_friends_item_view);
-            leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
-            leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+            leaderboardFriendsUserListAdapter = new LeaderboardFriendsListAdapter(
+                    getActivity(),
+                    R.layout.lbmu_item_roi_mode,
+                    R.layout.leaderboard_friends_social_item_view);
+            leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
+            leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
             leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         }
     }
@@ -144,10 +143,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                 leaderboardMarkUserMarkingTime.setText(
                         String.format("(%s)", prettyTime.get().format(markingTime)));
             }
-            List<LeaderboardUserDTO> list = dto.leaderboard.users;
-            list.addAll(dto.socialFriends);
-            leaderboardMarkUserListAdapter.setItems(list);
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
+            leaderboardFriendsUserListAdapter.add(dto);
+            leaderboardFriendsUserListAdapter.notifyDataSetChanged();
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -184,11 +181,11 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             leaderboardMarkUserListView.addHeaderView(null);
             leaderboardMarkUserListView = null;
         }
-        if (leaderboardMarkUserListAdapter != null)
+        if (leaderboardFriendsUserListAdapter != null)
         {
-            leaderboardMarkUserListAdapter.setItems(null);
-            leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
-            leaderboardMarkUserListAdapter = null;
+            leaderboardFriendsUserListAdapter.clear();
+            leaderboardFriendsUserListAdapter.setFollowRequestedListener(null);
+            leaderboardFriendsUserListAdapter = null;
         }
         if (mProgress != null)
         {
@@ -205,10 +202,10 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if (leaderboardMarkUserListAdapter != null)
+        if (leaderboardFriendsUserListAdapter != null)
         {
-            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
+            leaderboardFriendsUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+            leaderboardFriendsUserListAdapter.notifyDataSetChanged();
         }
     }
 
