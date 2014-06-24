@@ -64,9 +64,7 @@ public class HomeFragment extends BaseWebViewFragment
         additionalHeaders.put(Constants.TH_CLIENT_VERSION, VersionUtils.getVersionId(getActivity()));
         additionalHeaders.put(Constants.TH_LANGUAGE_CODE, languageCode);
 
-        String appHomeLink = Constants.APP_HOME;
-        // use following line instead when the server is ready
-        // String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
+        String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
 
         loadUrl(appHomeLink, additionalHeaders);
     }
