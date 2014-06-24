@@ -22,6 +22,11 @@ public class UserFriendsContactEntryDTO extends UserFriendsDTO
     }
     //</editor-fold>
 
+    @Override public int getNetworkLabelImage()
+    {
+        return 0;
+    }
+
     @Override public String getProfilePictureURL()
     {
         // TODO do something here

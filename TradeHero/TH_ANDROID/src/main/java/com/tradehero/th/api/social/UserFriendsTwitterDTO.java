@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import com.tradehero.th.R;
 import org.jetbrains.annotations.NotNull;
 
 public class UserFriendsTwitterDTO extends UserFriendsDTO
@@ -15,6 +16,11 @@ public class UserFriendsTwitterDTO extends UserFriendsDTO
         super();
     }
     //</editor-fold>
+
+    @Override public int getNetworkLabelImage()
+    {
+        return R.drawable.icon_share_tw_on;
+    }
 
     @Override public String getProfilePictureURL()
     {

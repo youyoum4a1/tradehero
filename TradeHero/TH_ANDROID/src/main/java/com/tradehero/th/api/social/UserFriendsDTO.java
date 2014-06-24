@@ -20,6 +20,8 @@ abstract public class UserFriendsDTO
     }
     //</editor-fold>
 
+    abstract public int getNetworkLabelImage();
+
     public String getProfilePictureURL()
     {
         return null;
