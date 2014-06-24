@@ -155,23 +155,6 @@ public class UpdateCenterFragment extends BaseFragment
         actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
-        MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
-        if (menuFollow != null && menuFollow.getActionView() != null)
-        {
-            ImageButton mNewMsgButton = (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
-            if (mNewMsgButton != null)
-            {
-                mNewMsgButton.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override public void onClick(View v)
-                    {
-                        showPopup(v);
-                    }
-                });
-            }
-            Timber.d("onCreateOptionsMenu");
-        }
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -181,6 +164,14 @@ public class UpdateCenterFragment extends BaseFragment
         {
             case android.R.id.home:
                 resideMenuLazy.get().openMenu();
+                return true;
+            case R.id.menu_private:
+                localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
+                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
+                        .pushFragment(AllRelationsFragment.class);
+                return true;
+            case R.id.menu_broadcast:
+                jumpToSendBroadcastMessage();
                 return true;
         }
         Fragment f = getCurrentFragment();
@@ -227,13 +218,6 @@ public class UpdateCenterFragment extends BaseFragment
         super.onDestroyOptionsMenu();
     }
 
-    private void showPopup(View v)
-    {
-        PopupMenu popup = new PopupMenu(getActivity(), v);
-        popup.inflate(R.menu.notification_new_message_menu);
-        popup.setOnMenuItemClickListener(this);
-        popup.show();
-    }
 
     @Override
     public boolean onMenuItemClick(android.view.MenuItem item)
