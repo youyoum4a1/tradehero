@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:orientation="horizontal"
-    android:id="@+id/message_item_front"
+    android:id="@+id/swipelist_frontview"
     android:tag="message_item_front"
     android:background="@color/white"
     android:padding="@dimen/timeline_item_padding"

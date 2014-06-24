@@ -19,8 +19,8 @@
       android:layout_marginRight="@dimen/message_center_horizontal_margin"
       android:layout_marginTop="@dimen/message_center_vertical_margin"
       android:layout_marginBottom="@dimen/message_center_vertical_margin"
-      swipe:swipeFrontView="@id/message_item_front"
-      swipe:swipeBackView="@id/message_item_back"
+      swipe:swipeFrontView="@id/swipelist_frontview"
+      swipe:swipeBackView="@id/swipelist_backview"
       swipe:swipeCloseAllItemsWhenMoveList="true"
       swipe:swipeMode="left"
       swipe:swipeDrawableChecked="@drawable/ic_info"
@@ -31,8 +31,7 @@
       ptr:ptrScrollingWhileRefreshingEnabled="true"
       ptr:ptrListViewExtrasEnabled="false"
       android:fadingEdge="none"
-      android:scrollbars="none"
-      />
+      android:scrollbars="none"/>
 
   <TextView
       style="@style/TH.Loading_Empty_Text"
