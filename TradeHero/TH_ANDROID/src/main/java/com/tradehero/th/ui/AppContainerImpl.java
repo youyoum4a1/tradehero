@@ -119,6 +119,10 @@ public class AppContainerImpl implements AppContainer
             created = resideMenuItem;
         }
         created.setTag(tabType);
+
+        //Add the background selector
+        created.setBackgroundResource(R.drawable.basic_transparent_selector);
+
         return created;
     }
 
