@@ -31,20 +31,12 @@ public class THRouterTest
 {
     public static final String USER_TIMELINE = "user/:userId";
     public static final String USER_ME = "user/me";
-    public static final String STORE = "store";
-    public static final String PORTFOLIO_POSITION = "user/:userId/portfolio/:portfolioId";
     public static final String POSITION_TRADE_HISTORY = "user/:userId/portfolio/:portfolioId/position/:positionId";
-    public static final String SETTING = "settings";
     public static final String STORE_RESET_PORTFOLIO = "store/reset-portfolio";
     public static final String RESET_PORTFOLIO = "reset-portfolio";
-    public static final String PROVIDER_LIST = "providers";
-    public static final String PROVIDER = "providers/:providerId";
     public static final String PROVIDER_ENROLL = "providers-enroll/:providerId";
     public static final String PROVIDER_ENROLL_WITH_PAGE = "providers-enroll/:providerId/pages/:encodedUrl";
     public static final String REFER_FRIENDS = "refer-friends";
-    public static final String NOTIFICATION = "notifications";
-    public static final String TRENDING = "trending-securities";
-    public static final String MESSAGE = "messages";
 
     private DashboardNavigator dashboardNavigator;
     @Inject THRouter thRouter;
@@ -79,8 +71,6 @@ public class THRouterTest
     //region Portfolios & Positions
     @Test public void shouldGoToPositionListOfGivenPortfolio()
     {
-        thRouter.mapFragment(PORTFOLIO_POSITION, PositionListFragment.class);
-
         thRouter.open("/user/108805/portfolio/883124");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(PositionListFragment.class);
@@ -99,8 +89,6 @@ public class THRouterTest
     //region Store
     @Test public void shouldOpenStoreScreenForStoreRoute()
     {
-        thRouter.mapFragment(STORE, StoreScreenFragment.class);
-
         thRouter.open("store");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
     }
@@ -117,8 +105,6 @@ public class THRouterTest
     //region Settings
     @Test public void shouldGoToSettingScreen()
     {
-        thRouter.mapFragment(SETTING, SettingsFragment.class);
-
         thRouter.open("settings");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(SettingsFragment.class);
     }
@@ -136,12 +122,13 @@ public class THRouterTest
     //region Providers
     @Test public void shouldOpenProviderListScreen()
     {
-        thRouter.mapFragment(PROVIDER_LIST, LeaderboardCommunityFragment.class);
+        thRouter.open("providers");
+
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(LeaderboardCommunityFragment.class);
     }
 
     @Test public void shouldOpenProviderScreen()
     {
-        thRouter.mapFragment(PROVIDER, MainCompetitionFragment.class);
         thRouter.open("providers/23");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(MainCompetitionFragment.class);
@@ -176,8 +163,6 @@ public class THRouterTest
 
     @Test public void shouldOpenNotificationCenter()
     {
-        thRouter.mapFragment(NOTIFICATION, UpdateCenterFragment.class);
-
         thRouter.open("notifications");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(UpdateCenterFragment.class);
 
@@ -187,8 +172,6 @@ public class THRouterTest
 
     @Test public void shouldOpenMessageScreen()
     {
-        thRouter.mapFragment(MESSAGE, UpdateCenterFragment.class);
-
         thRouter.open("messages");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(UpdateCenterFragment.class);
 
@@ -198,8 +181,6 @@ public class THRouterTest
 
     @Test public void shouldOpenTrendingScreen()
     {
-        thRouter.mapFragment(TRENDING, TrendingFragment.class);
-
         thRouter.open("trending-securities");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(TrendingFragment.class);
     }

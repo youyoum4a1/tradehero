@@ -8,8 +8,10 @@ import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.filter.FilterModule;
+import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -81,7 +83,10 @@ public class Application extends PApplication
                 FriendsInvitationFragment.class,
                 SettingsFragment.class,
                 MainCompetitionFragment.class,
-                BuySellFragment.class
+                BuySellFragment.class,
+                StoreScreenFragment.class,
+
+                LeaderboardCommunityFragment.class
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
