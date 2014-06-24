@@ -37,7 +37,6 @@ public class THRouterTest
     public static final String SETTING = "settings";
     public static final String STORE_RESET_PORTFOLIO = "store/reset-portfolio";
     public static final String RESET_PORTFOLIO = "reset-portfolio";
-    public static final String SECURITY = "security/:securityId_:exchange_:securitySymbol";
     public static final String PROVIDER_LIST = "providers";
     public static final String PROVIDER = "providers/:providerId";
     public static final String PROVIDER_ENROLL = "providers-enroll/:providerId";
@@ -128,7 +127,6 @@ public class THRouterTest
     //region Security
     @Test public void shouldOpenSecurityScreen()
     {
-        thRouter.mapFragment(SECURITY, BuySellFragment.class);
         thRouter.open("security/4_NASDAQ_AAPL");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(BuySellFragment.class);

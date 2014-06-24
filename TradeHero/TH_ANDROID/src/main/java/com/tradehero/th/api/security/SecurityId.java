@@ -1,18 +1,24 @@
 package com.tradehero.th.api.security;
 
 import android.os.Bundle;
+import com.thoj.route.RouteProperty;
+import com.tradehero.common.billing.googleplay.Security;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
 
+@RouteProperty
 public class SecurityId implements Comparable, DTOKey, DTO
 {
     private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
 
-    public final String exchange;
-    public final String securitySymbol;
+    String exchange;
+
+    String securitySymbol;
 
     //<editor-fold desc="Constructors">
+    public SecurityId() {}
+
     public SecurityId(final String exchange, final String securitySymbol)
     {
         this.exchange = exchange;
@@ -25,6 +31,34 @@ public class SecurityId implements Comparable, DTOKey, DTO
         this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);
     }
     //</editor-fold>
+
+    public String getSecuritySymbol()
+    {
+        return securitySymbol;
+    }
+
+    public String getExchange()
+    {
+        return exchange;
+    }
+
+    /**
+     * Parse security raw info, follow this form: id_exchangeName_securitySymbol into securityId
+     * @param securityRawInfo
+     */
+    @RouteProperty("securityRawInfo")
+    public void setSecurityRawInfo(String securityRawInfo)
+    {
+        if (securityRawInfo != null && securityRawInfo.length() > 0)
+        {
+            String[] parts = securityRawInfo.split("_");
+            if (parts.length >= 2)
+            {
+                securitySymbol = parts[parts.length-1].trim();
+                exchange = parts[parts.length-2].trim();
+            }
+        }
+    }
 
     // When passing the symbol in an API path as the last element of the path,
     // you have to use this instead of the symbol.

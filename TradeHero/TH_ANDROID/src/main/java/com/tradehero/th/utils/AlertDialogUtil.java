@@ -241,7 +241,7 @@ public class AlertDialogUtil
             return popWithNegativeButton(context,
                     context.getString(R.string.alert_dialog_market_close_title),
                     String.format(context.getString(R.string.alert_dialog_market_close_message),
-                            securityId.exchange, securityId.securitySymbol),
+                            securityId.getExchange(), securityId.getSecuritySymbol()),
                     context.getString(R.string.alert_dialog_market_close_cancel));
         }
     }

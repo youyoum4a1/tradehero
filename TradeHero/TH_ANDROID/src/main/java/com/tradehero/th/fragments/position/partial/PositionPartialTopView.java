@@ -223,7 +223,7 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (securityId != null)
             {
-                stockSymbol.setText(String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
+                stockSymbol.setText(String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol()));
             }
             else
             {

@@ -349,7 +349,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
         if (andDisplay && securityId != null)
         {
-            String securityName = String.format("%s:%s", securityId.exchange, securityId.securitySymbol);
+            String securityName = String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol());
             discussionPostContent.setHint(getString(R.string.discussion_new_post_hint, securityName));
         }
 

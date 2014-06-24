@@ -305,7 +305,7 @@ public class StockInfoFragment extends DashboardFragment
         {
             if (securityId != null)
             {
-                actionBar.setTitle(String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
+                actionBar.setTitle(String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol()));
             }
             else
             {

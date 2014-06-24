@@ -205,7 +205,7 @@ import retrofit.Callback;
     //<editor-fold desc="Get Security">
     public SecurityPositionDetailDTO getSecurity(@NotNull SecurityId securityId)
     {
-        return this.securityService.getSecurity(securityId.exchange, securityId.getPathSafeSymbol());
+        return this.securityService.getSecurity(securityId.getExchange(), securityId.getPathSafeSymbol());
     }
 
     @NotNull public MiddleCallback<SecurityPositionDetailDTO> getSecurity(
@@ -213,7 +213,7 @@ import retrofit.Callback;
             @Nullable Callback<SecurityPositionDetailDTO> callback)
     {
         MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        this.securityServiceAsync.getSecurity(securityId.exchange, securityId.getPathSafeSymbol(), middleCallback);
+        this.securityServiceAsync.getSecurity(securityId.getExchange(), securityId.getPathSafeSymbol(), middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -224,7 +224,7 @@ import retrofit.Callback;
             @NotNull TransactionFormDTO transactionFormDTO)
     {
         return createSecurityPositionProcessor(securityId).process(
-                this.securityService.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO));
+                this.securityService.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
     }
 
     @NotNull public MiddleCallback<SecurityPositionDetailDTO> buy(
@@ -233,7 +233,7 @@ import retrofit.Callback;
             @Nullable Callback<SecurityPositionDetailDTO> callback)
     {
         MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionProcessor(securityId));
-        this.securityServiceAsync.buy(securityId.exchange, securityId.securitySymbol, transactionFormDTO, middleCallback);
+        this.securityServiceAsync.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -244,7 +244,7 @@ import retrofit.Callback;
             @NotNull TransactionFormDTO transactionFormDTO)
     {
         return createSecurityPositionProcessor(securityId).process(
-                this.securityService.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO));
+                this.securityService.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
     }
 
     @NotNull public MiddleCallback<SecurityPositionDetailDTO> sell(
@@ -253,7 +253,7 @@ import retrofit.Callback;
             @Nullable Callback<SecurityPositionDetailDTO> callback)
     {
         MiddleCallback<SecurityPositionDetailDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionProcessor(securityId));
-        this.securityServiceAsync.sell(securityId.exchange, securityId.securitySymbol, transactionFormDTO, middleCallback);
+        this.securityServiceAsync.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

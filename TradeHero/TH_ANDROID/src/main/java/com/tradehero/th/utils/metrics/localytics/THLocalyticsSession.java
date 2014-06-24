@@ -72,7 +72,8 @@ import org.jetbrains.annotations.NotNull;
     {
         if (securityId != null)
         {
-            dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY, String.format(SECURITY_ID_FORMAT, securityId.exchange, securityId.securitySymbol));
+            dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY,
+                    String.format(SECURITY_ID_FORMAT, securityId.getExchange(), securityId.getSecuritySymbol()));
         }
     }
 
