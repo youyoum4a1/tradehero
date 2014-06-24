@@ -32,7 +32,7 @@
       android:paddingBottom="@dimen/preference_fragment_padding_bottom"
       android:paddingLeft="@dimen/preference_fragment_padding_side"
       android:paddingRight="@dimen/preference_fragment_padding_side"
-      android:scrollbarStyle="@integer/preference_fragment_scrollbarStyle"
+      android:scrollbarStyle="outsideOverlay"
       android:clipToPadding="false"
       android:drawSelectorOnTop="false"
       android:cacheColorHint="@android:color/transparent"
