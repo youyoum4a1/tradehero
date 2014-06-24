@@ -80,15 +80,20 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        messageHeaderFetchListener = createMessageHeaderListener();
-        discussionFetchListener = createDiscussionCacheListener();
+        if (messageHeaderFetchListener == null)
+        {
+            messageHeaderFetchListener = createMessageHeaderListener();
+        }
+        if (discussionFetchListener == null)
+        {
+            discussionFetchListener = createDiscussionCacheListener();
+        }
         setRecipientOnPostCommentView();
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachDiscussionFetchTask();
-
         detachMessageHeaderFetchTask();
         messageHeaderFetchListener = null;
         discussionFetchListener = null;
