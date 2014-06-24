@@ -2,8 +2,8 @@ package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -41,14 +41,14 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Contract("null -> null; !null -> !null")
-    public List<LeaderboardUserDTO> get(List<LeaderboardUserId> leaderboardUserIds)
+    public LeaderboardUserDTOList get(List<LeaderboardUserId> leaderboardUserIds)
     {
         if (leaderboardUserIds == null)
         {
             return null;
         }
 
-        List<LeaderboardUserDTO> returned = new ArrayList<>();
+        LeaderboardUserDTOList  returned = new LeaderboardUserDTOList();
         for (@NotNull LeaderboardUserId leaderboardUserId: leaderboardUserIds)
         {
             returned.add(get(leaderboardUserId));

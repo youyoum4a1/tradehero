@@ -9,7 +9,6 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 public class LeaderboardDTO implements DTO, HasExpiration
@@ -19,7 +18,7 @@ public class LeaderboardDTO implements DTO, HasExpiration
 
     public int id;
     public String name;
-    public List<LeaderboardUserDTO> users;
+    public LeaderboardUserDTOList users;
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
@@ -40,7 +39,7 @@ public class LeaderboardDTO implements DTO, HasExpiration
         setExpirationDateSecondsInFuture(DEFAULT_LIFE_EXPECTANCY_SECONDS);
     }
 
-    public LeaderboardDTO(int id, String name, List<LeaderboardUserDTO> users, int userIsAtPositionZeroBased, Date markUtc,
+    public LeaderboardDTO(int id, String name, LeaderboardUserDTOList users, int userIsAtPositionZeroBased, Date markUtc,
             int minPositionCount, double maxSharpeRatioInPeriodVsSP500,
             double maxStdDevPositionRoiInPeriod, double avgStdDevPositionRoiInPeriod,
             @NotNull Date expirationDate)
