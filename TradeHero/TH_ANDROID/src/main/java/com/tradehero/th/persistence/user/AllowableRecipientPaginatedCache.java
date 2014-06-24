@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
-public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
+public class AllowableRecipientPaginatedCache extends StraightDTOCacheNew<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
 {
     public static final int DEFAULT_MAX_SIZE = 20;
 
@@ -36,7 +36,7 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAll
     }
     //</editor-fold>
 
-    @Override protected PaginatedDTO<AllowableRecipientDTO> fetch(@NotNull SearchAllowableRecipientListType key)
+    @Override public PaginatedDTO<AllowableRecipientDTO> fetch(@NotNull SearchAllowableRecipientListType key)
             throws Throwable
     {
         return putInternal(key, userServiceWrapper.searchAllowableRecipients(key));
