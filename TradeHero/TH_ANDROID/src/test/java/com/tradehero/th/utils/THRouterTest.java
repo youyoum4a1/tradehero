@@ -29,13 +29,9 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(RobolectricMavenTestRunner.class)
 public class THRouterTest
 {
-    public static final String USER_TIMELINE = "user/:userId";
-    public static final String USER_ME = "user/me";
     public static final String POSITION_TRADE_HISTORY = "user/:userId/portfolio/:portfolioId/position/:positionId";
     public static final String STORE_RESET_PORTFOLIO = "store/reset-portfolio";
     public static final String RESET_PORTFOLIO = "reset-portfolio";
-    public static final String PROVIDER_ENROLL = "providers-enroll/:providerId";
-    public static final String PROVIDER_ENROLL_WITH_PAGE = "providers-enroll/:providerId/pages/:encodedUrl";
     public static final String REFER_FRIENDS = "refer-friends";
 
     private DashboardNavigator dashboardNavigator;
@@ -51,19 +47,21 @@ public class THRouterTest
     //region Timeline
     @Test public void shouldOpenUserTimelineForUserProfileRoute()
     {
-        thRouter.mapFragment(USER_TIMELINE, PushableTimelineFragment.class);
-
+        // suspend to prevent loader from being run along with uiThread in robolectric
+        Robolectric.getBackgroundScheduler().pause();
         thRouter.open("user/108805");
 
+        Robolectric.runBackgroundTasks();
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(PushableTimelineFragment.class);
     }
 
     @Test public void shouldOpenOwnTimelineForMeRoute()
     {
-        thRouter.mapFragment(USER_ME, MeTimelineFragment.class);
-
+        // suspend to prevent loader from being run along with uiThread in robolectric
+        Robolectric.getBackgroundScheduler().pause();
         thRouter.open("user/me");
 
+        Robolectric.runBackgroundTasks();
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(MeTimelineFragment.class);
     }
     //endregion
@@ -97,8 +95,9 @@ public class THRouterTest
     {
         // have something to say
         thRouter.mapFragment(STORE_RESET_PORTFOLIO, null);
-
         thRouter.mapFragment(RESET_PORTFOLIO, null);
+
+        assert(false);
     }
     //endregion
 
@@ -136,7 +135,8 @@ public class THRouterTest
 
     @Test public void shouldOpenProviderEnrollmentScreen()
     {
-        thRouter.mapFragment(PROVIDER_ENROLL, WebViewFragment.class);
+        // providers-enroll/:providerId
+        //thRouter.mapFragment(PROVIDER_ENROLL, WebViewFragment.class);
         thRouter.open("providers-enroll/23");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(WebViewFragment.class);
@@ -145,7 +145,8 @@ public class THRouterTest
 
     @Test public void shouldOpenProviderEnrollmentWithSpecificPage()
     {
-        thRouter.mapFragment(PROVIDER_ENROLL_WITH_PAGE, WebViewFragment.class);
+        // providers-enroll/:providerId/pages/:encodedUrl
+        //thRouter.mapFragment(PROVIDER_ENROLL_WITH_PAGE, WebViewFragment.class);
         thRouter.open("providers-enroll/22/pages/http:%2F%2Fgoogle.com");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(WebViewFragment.class);

@@ -419,7 +419,7 @@ public class TrendingFragment extends SecurityListFragment
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
-            webFragment = (BaseWebViewFragment) getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
