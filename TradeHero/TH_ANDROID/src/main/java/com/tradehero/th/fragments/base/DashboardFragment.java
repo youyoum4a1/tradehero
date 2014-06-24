@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment
-    implements BaseFragment.TabBarVisibilityInformer
 {
     private static final String BUNDLE_KEY_TITLE = DashboardFragment.class.getName() + ".title";
 

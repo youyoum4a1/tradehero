@@ -406,13 +406,6 @@ public class SecuritySearchFragment
         getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Listeners">
     private FlagNearEdgeScrollListener createFlagNearEdgeScrollListener()
     {

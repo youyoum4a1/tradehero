@@ -693,11 +693,6 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     private void unsetMiddleCallback()
     {
         unsetDeletionMiddleCallback();

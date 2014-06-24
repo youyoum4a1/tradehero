@@ -290,11 +290,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     //    }
     //}
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
         messageHeaderListCache.invalidateWithRecipient(correspondentId);

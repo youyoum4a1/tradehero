@@ -1354,13 +1354,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         return true;
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Interface Creators">
     private Callback createLogoReadyCallback()
     {

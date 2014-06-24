@@ -98,11 +98,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         }
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     abstract protected void handleCommentPosted(DiscussionDTO discussionDTO);
 
     protected PostCommentView.CommentPostedListener createCommentPostedListener()

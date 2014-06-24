@@ -192,11 +192,4 @@ public class SettingsPayPalFragment extends DashboardFragment
             }
         };
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

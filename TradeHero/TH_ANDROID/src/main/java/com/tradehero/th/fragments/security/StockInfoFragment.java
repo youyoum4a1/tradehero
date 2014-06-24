@@ -368,11 +368,4 @@ public class StockInfoFragment extends DashboardFragment
         bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
         navigator.pushFragment(NewsDiscussionFragment.class, bundle);
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

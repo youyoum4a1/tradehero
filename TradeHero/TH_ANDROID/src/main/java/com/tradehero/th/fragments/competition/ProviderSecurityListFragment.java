@@ -235,11 +235,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         getDashboardNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
     {
         @Override public void onDTOReceived(ProviderId key, ProviderDTO value, boolean fromCache)

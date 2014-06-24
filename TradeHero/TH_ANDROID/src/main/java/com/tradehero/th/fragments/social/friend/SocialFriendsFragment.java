@@ -527,10 +527,4 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             Timber.d("SocialFriendsFragment onPause Error" + e.toString());
         }
     }
-
-    @Override
-    public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

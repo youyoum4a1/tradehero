@@ -123,9 +123,4 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     {
         // TODO
     }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

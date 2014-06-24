@@ -85,9 +85,4 @@ public class SecurityDiscussionFragment extends DashboardFragment
         }
         super.onDestroy();
     }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

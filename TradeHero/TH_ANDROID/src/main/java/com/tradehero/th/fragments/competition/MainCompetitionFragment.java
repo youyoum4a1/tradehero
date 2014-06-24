@@ -224,11 +224,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         placeAdapterInList();
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     protected void placeAdapterInList()
     {
         CompetitionZoneListItemAdapter newAdapter = new CompetitionZoneListItemAdapter(

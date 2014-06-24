@@ -358,11 +358,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     @Override public void notifyValidation(ValidationMessage message)
     {
         if (message != null && !message.getStatus() && message.getMessage() != null)

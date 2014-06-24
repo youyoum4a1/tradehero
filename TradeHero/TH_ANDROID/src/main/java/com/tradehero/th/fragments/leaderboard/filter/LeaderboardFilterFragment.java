@@ -153,9 +153,4 @@ public class LeaderboardFilterFragment extends DashboardFragment
         collectPagedFilteredLeaderboardKey();
         getDashboardNavigator().popFragment();
     }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

@@ -546,10 +546,4 @@ public class FriendsInvitationFragment extends DashboardFragment
             }
         }
     }
-
-    @Override
-    public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

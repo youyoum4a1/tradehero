@@ -51,13 +51,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {

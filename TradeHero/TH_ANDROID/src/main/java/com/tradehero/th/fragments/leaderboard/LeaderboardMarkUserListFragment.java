@@ -329,13 +329,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         setCurrentUserProfileDTO(userProfileDTO);
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     protected class LeaderboardMarkUserListViewFragmentListLoaderCallback extends LoaderDTOAdapter.ListLoaderCallback<LeaderboardUserDTO>
     {
         @Override public ListLoader<LeaderboardUserDTO> onCreateLoader(Bundle args)

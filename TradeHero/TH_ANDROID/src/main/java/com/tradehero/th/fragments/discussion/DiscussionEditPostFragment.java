@@ -386,11 +386,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     public boolean isPosted()
     {
         return isPosted;

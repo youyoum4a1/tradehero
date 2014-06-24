@@ -451,9 +451,4 @@ public class SendMessageFragment extends DashboardFragment
             closeMe();
         }
     }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

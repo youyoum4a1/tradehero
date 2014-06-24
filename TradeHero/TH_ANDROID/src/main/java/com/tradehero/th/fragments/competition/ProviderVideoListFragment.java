@@ -134,11 +134,6 @@ public class ProviderVideoListFragment extends CompetitionFragment
         helpVideoListFetchTask = null;
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);

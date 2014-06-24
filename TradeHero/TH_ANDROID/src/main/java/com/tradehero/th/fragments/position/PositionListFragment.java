@@ -60,8 +60,7 @@ import timber.log.Timber;
 
 public class PositionListFragment
         extends BasePurchaseManagerFragment
-        implements BaseFragment.TabBarVisibilityInformer,
-        PositionListener<PositionDTO>,
+        implements PositionListener<PositionDTO>,
         PortfolioHeaderView.OnFollowRequestedListener,
         PortfolioHeaderView.OnTimelineRequestedListener,
         WithTutorial
@@ -642,13 +641,6 @@ public class PositionListFragment
             Timber.e("Was passed a null clickedPositionDTO", new IllegalArgumentException());
         }
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)

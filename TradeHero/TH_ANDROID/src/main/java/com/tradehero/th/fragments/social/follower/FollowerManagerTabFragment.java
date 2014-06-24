@@ -412,11 +412,4 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             loadedListener.onFollowerLoaded(getHeroTypeResource().followerTabIndex, value);
         }
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

@@ -291,13 +291,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         getActivity().startActivity(intent);
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     protected DTOCacheNew.Listener<UserBaseKey, AlertIdList> createAlertIdListListener()
     {
         return new AlertManagerFragmentAlertIdListListener();

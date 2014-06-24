@@ -110,11 +110,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
-    }
-
     public void cancelOthersAndShowBillingAvailable()
     {
         if (alreadyNotifiedNeedCreateAccount)

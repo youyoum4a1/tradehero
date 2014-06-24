@@ -237,7 +237,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(
-                (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
+                ActionBar.DISPLAY_HOME_AS_UP
                         | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setHomeButtonEnabled(true);
         displayActionBarTitle();
@@ -869,13 +869,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         return 0;
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 
     protected void freeFollow(UserBaseKey heroId, Callback<UserProfileDTO> followCallback)
     {

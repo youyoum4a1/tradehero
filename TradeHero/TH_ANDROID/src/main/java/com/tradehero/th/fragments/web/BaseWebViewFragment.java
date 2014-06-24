@@ -159,11 +159,4 @@ abstract public class BaseWebViewFragment extends DashboardFragment
             Timber.d("notifyParentIntentPassed listener is null");
         }
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

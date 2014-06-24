@@ -187,13 +187,6 @@ public class PortfolioListFragment extends DashboardFragment
         }
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="WithTutorial">
     @Override public int getTutorialLayout()
     {

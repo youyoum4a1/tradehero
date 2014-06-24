@@ -16,9 +16,4 @@ public class NotificationsCenterFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.notifications_center, container, false);
         return view;
     }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

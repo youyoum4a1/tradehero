@@ -368,13 +368,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         }
     }
 
-    //region TabBarInformer
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //endregion
-
     protected DTOCacheNew.Listener<AlertId, AlertDTO> createAlertCacheListener()
     {
         return new AlertViewFragmentAlertCacheListener();
