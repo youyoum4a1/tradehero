@@ -24,7 +24,7 @@
         android:src="@drawable/trending_filter_back"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
-        android:background="@android:color/transparent"
+        android:background="@drawable/basic_transparent_selector"
         />
 
     <ImageButton
@@ -36,7 +36,7 @@
         android:src="@drawable/trending_filter_forward"
         android:scaleType="fitCenter"
         android:contentDescription="@null"
-        android:background="@android:color/transparent"
+        android:background="@drawable/basic_transparent_selector"
         />
 
     <LinearLayout
