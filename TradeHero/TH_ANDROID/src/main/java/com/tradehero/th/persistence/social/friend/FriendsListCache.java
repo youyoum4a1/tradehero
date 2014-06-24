@@ -1,17 +1,17 @@
-package com.tradehero.th.fragments.social.friend;
+package com.tradehero.th.persistence.social.friend;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-// TODO move to persistence
 @Singleton
-public class FriendsListCache extends StraightDTOCache<FriendsListKey, UserFriendsDTOList>
+public class FriendsListCache extends StraightDTOCacheNew<FriendsListKey, UserFriendsDTOList>
 {
     @NotNull private final UserServiceWrapper userServiceWrapper;
 
@@ -25,7 +25,7 @@ public class FriendsListCache extends StraightDTOCache<FriendsListKey, UserFrien
     }
     //</editor-fold>
 
-    @Override protected UserFriendsDTOList fetch(@NotNull FriendsListKey key) throws Throwable
+    @Override public UserFriendsDTOList fetch(@NotNull FriendsListKey key) throws Throwable
     {
         return userServiceWrapper.getSocialFriends(key.userBaseKey, key.socialNetworkEnum);
     }
