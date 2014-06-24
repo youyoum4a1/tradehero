@@ -190,7 +190,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     {
         if (discussionDTO != null && discussionDTO.createdAtUtc != null)
         {
-            prettyTime.formatUnrounded(discussionDTO.createdAtUtc);
+            return prettyTime.formatUnrounded(discussionDTO.createdAtUtc);
         }
         return null;
     }
