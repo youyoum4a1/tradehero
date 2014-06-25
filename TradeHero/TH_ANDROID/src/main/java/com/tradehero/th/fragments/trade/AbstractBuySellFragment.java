@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.thoj.route.InjectRoute;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -62,7 +61,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected PositionDTOCompactList positionDTOCompactList;
     protected PortfolioCompactDTO portfolioCompactDTO;
     protected boolean querying = false;
-    protected DTOCache.GetOrFetchTask<SecurityId, SecurityPositionDetailDTO> fetchPositionDetailTask;
+    protected DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailListener;
 
     protected ProviderId providerId;
     protected UserProfileDTO userProfileDTO;
@@ -83,6 +82,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
+        securityPositionDetailListener = createSecurityPositionCacheListener();
+        userProfileCacheListener = createUserProfileCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -174,7 +175,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         super.onSaveInstanceState(outState);
 
-        detachFetchPositionDetailTask();
+        detachSecurityPositionDetailCache();
         detachUserProfileCache();
         destroyFreshQuoteHolder();
 
@@ -191,7 +192,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
-        detachFetchPositionDetailTask();
+        detachSecurityPositionDetailCache();
         detachUserProfileCache();
         destroyFreshQuoteHolder();
         querying = false;
@@ -210,25 +211,19 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroy()
     {
+        userProfileCacheListener = null;
+        securityPositionDetailListener = null;
         super.onDestroy();
     }
 
-    protected void detachFetchPositionDetailTask()
+    protected void detachSecurityPositionDetailCache()
     {
-        if (fetchPositionDetailTask != null)
-        {
-            fetchPositionDetailTask.setListener(null);
-        }
-        fetchPositionDetailTask = null;
+        securityPositionDetailCache.get().unregister(securityPositionDetailListener);
     }
 
     protected void detachUserProfileCache()
     {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.get().unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
+        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     public void setTransactionTypeBuy(boolean transactionTypeBuy)
@@ -260,21 +255,16 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void requestPositionDetail()
     {
-        if (fetchPositionDetailTask != null)
-        {
-            fetchPositionDetailTask.setListener(null);
-        }
-        fetchPositionDetailTask = securityPositionDetailCache.get().getOrFetch(this.securityId, false, createSecurityPositionCacheListener(securityId));
-        fetchPositionDetailTask.execute();
+        detachSecurityPositionDetailCache();
+        securityPositionDetailCache.get().register(this.securityId, securityPositionDetailListener);
+        securityPositionDetailCache.get().getOrFetchAsync(this.securityId);
     }
 
     protected void requestUserProfile()
     {
         detachUserProfileCache();
-        UserBaseKey baseKey = currentUserId.toUserBaseKey();
-        userProfileCacheListener = createUserProfileCacheListener(baseKey);
-        userProfileCache.get().register(baseKey, userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(baseKey);
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -478,26 +468,16 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected DTOCache.Listener<SecurityId, SecurityPositionDetailDTO> createSecurityPositionCacheListener(SecurityId securityId)
+    protected DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO> createSecurityPositionCacheListener()
     {
-        return new AbstractBuySellSecurityPositionCacheListener(securityId);
+        return new AbstractBuySellSecurityPositionCacheListener();
     }
 
-    private class AbstractBuySellSecurityPositionCacheListener implements DTOCache.Listener<SecurityId, SecurityPositionDetailDTO>
+    protected class AbstractBuySellSecurityPositionCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO>
     {
-        private final SecurityId securityId;
-
-        public AbstractBuySellSecurityPositionCacheListener(final SecurityId securityId)
+        @Override public void onDTOReceived(final SecurityId key, final SecurityPositionDetailDTO value)
         {
-            this.securityId = securityId;
-        }
-
-        @Override public void onDTOReceived(final SecurityId key, final SecurityPositionDetailDTO value, boolean fromCache)
-        {
-            if (key.equals(this.securityId))
-            {
-                linkWith(value, true);
-            }
+            linkWith(value, true);
         }
 
         @Override public void onErrorThrown(SecurityId key, Throwable error)
@@ -507,26 +487,16 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener(UserBaseKey userBaseKey)
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
-        return new AbstractBuySellUserProfileCacheListener(userBaseKey);
+        return new AbstractBuySellUserProfileCacheListener();
     }
 
-    private class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        private final UserBaseKey userBaseKey;
-
-        public AbstractBuySellUserProfileCacheListener(final UserBaseKey userBaseKey)
-        {
-            this.userBaseKey = userBaseKey;
-        }
-
         @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value)
         {
-            if (key.equals(userBaseKey))
-            {
-                linkWith(value, true);
-            }
+            linkWith(value, true);
         }
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
