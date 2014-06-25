@@ -16,7 +16,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.thoj.route.InjectRoute;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -110,7 +109,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
     private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchTask;
+    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
     protected MessageHeaderDTO messageThreadHeaderDTO;
 
     private boolean cancelRefreshingOnResume;
@@ -126,6 +125,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         userProfileRetrievedMilestoneListener = createUserProfileRetrievedMilestoneListener();
         portfolioCompactListRetrievedMilestoneListener = createPortfolioCompactListRetrievedMilestoneListener();
+        messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
     }
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -392,6 +392,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
+        messageThreadHeaderFetchListener = null;
         portfolioCompactListRetrievedMilestoneListener = null;
         userProfileRetrievedMilestoneListener = null;
         super.onDestroy();
@@ -430,18 +431,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void detachMessageThreadHeaderFetchTask()
     {
-        if (messageThreadHeaderFetchTask != null)
-        {
-            messageThreadHeaderFetchTask.setListener(null);
-        }
-        messageThreadHeaderFetchTask = null;
+        messageThreadHeaderCache.unregister(messageThreadHeaderFetchListener);
     }
 
     protected void fetchMessageThreadHeader()
     {
         detachMessageThreadHeaderFetchTask();
-        messageThreadHeaderFetchTask = messageThreadHeaderCache.getOrFetch(shownUserBaseKey, createMessageThreadHeaderCacheListener());
-        messageThreadHeaderFetchTask.execute();
+        messageThreadHeaderCache.register(shownUserBaseKey, messageThreadHeaderFetchListener);
+        messageThreadHeaderCache.getOrFetchAsync(shownUserBaseKey);
     }
 
     //<editor-fold desc="Display methods">
@@ -965,14 +962,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
     {
         return new TimelineMessageThreadHeaderCacheListener();
     }
 
-    protected class TimelineMessageThreadHeaderCacheListener implements DTOCache.Listener<UserBaseKey, MessageHeaderDTO>
+    protected class TimelineMessageThreadHeaderCacheListener implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value)
         {
             linkWithMessageThread(value, true);
         }
