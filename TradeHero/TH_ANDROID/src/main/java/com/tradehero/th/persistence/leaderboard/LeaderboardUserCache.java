@@ -1,9 +1,10 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserIdList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class LeaderboardUserCache extends StraightDTOCache<LeaderboardUserId, LeaderboardUserDTO>
+@Singleton public class LeaderboardUserCache extends StraightDTOCacheNew<LeaderboardUserId, LeaderboardUserDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected LeaderboardUserDTO fetch(LeaderboardUserId key) throws Throwable
+    @Override public LeaderboardUserDTO fetch(@NotNull LeaderboardUserId key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch on LeaderboardUserCache");
     }
@@ -40,8 +41,8 @@ import org.jetbrains.annotations.Nullable;
         }
     }
 
-    @Contract("null -> null; !null -> !null")
-    public LeaderboardUserDTOList get(List<LeaderboardUserId> leaderboardUserIds)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public LeaderboardUserDTOList get(@Nullable List<LeaderboardUserId> leaderboardUserIds)
     {
         if (leaderboardUserIds == null)
         {
@@ -54,5 +55,10 @@ import org.jetbrains.annotations.Nullable;
             returned.add(get(leaderboardUserId));
         }
         return returned;
+    }
+
+    public LeaderboardUserIdList getAllKeys()
+    {
+        return new LeaderboardUserIdList(snapshot().keySet());
     }
 }

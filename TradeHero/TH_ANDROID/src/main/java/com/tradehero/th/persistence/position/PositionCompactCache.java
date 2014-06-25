@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.position;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class PositionCompactCache extends StraightDTOCache<PositionCompactId, PositionDTOCompact>
+@Singleton public class PositionCompactCache extends StraightDTOCacheNew<PositionCompactId, PositionDTOCompact>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override protected PositionDTOCompact fetch(PositionCompactId key)
+    @Override public PositionDTOCompact fetch(@NotNull PositionCompactId key)
     {
         throw new IllegalStateException("You should not fetch PositionDTOCompact");
     }
