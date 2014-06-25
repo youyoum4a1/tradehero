@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserBaseKeyListCache extends StraightDTOCache<UserListType, UserBaseKeyList>
+@Singleton public class UserBaseKeyListCache extends StraightDTOCacheNew<UserListType, UserBaseKeyList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override protected UserBaseKeyList fetch(@NotNull UserListType key) throws Throwable
+    @Override public UserBaseKeyList fetch(@NotNull UserListType key) throws Throwable
     {
         return putInternal(key, userServiceWrapper.get().searchUsers(key));
     }
