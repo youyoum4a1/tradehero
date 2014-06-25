@@ -4,7 +4,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.LoginFormDTO;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
@@ -14,9 +13,7 @@ import com.tradehero.th.models.user.DTOProcessorUserLogin;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
-import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -31,35 +28,26 @@ import retrofit.Callback;
     @NotNull private final SessionServiceAsync sessionServiceAsync;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final DTOCacheUtil dtoCacheUtil;
-    @NotNull private final UserBaseDTOUtil userBaseDTOUtil;
     @NotNull private final Context context;
     @NotNull private final StringPreference savedPushDeviceIdentifier;
     @NotNull private final Lazy<SystemStatusCache> systemStatusCache;
-    @NotNull private final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
-    @NotNull private final Lazy<SecurityCompactListCache> securityCompactListCache;
 
     @Inject public SessionServiceWrapper(
             @NotNull SessionService sessionService,
             @NotNull SessionServiceAsync sessionServiceAsync,
             @NotNull UserProfileCache userProfileCache,
             @NotNull DTOCacheUtil dtoCacheUtil,
-            @NotNull UserBaseDTOUtil userBaseDTOUtil,
             @NotNull Context context,
             @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
-            @NotNull Lazy<SystemStatusCache> systemStatusCache,
-            @NotNull Lazy<ExchangeCompactListCache> exchangeCompactListCache,
-            @NotNull Lazy<SecurityCompactListCache> securityCompactListCache)
+            @NotNull Lazy<SystemStatusCache> systemStatusCache)
     {
         this.sessionService = sessionService;
         this.sessionServiceAsync = sessionServiceAsync;
         this.userProfileCache = userProfileCache;
         this.dtoCacheUtil = dtoCacheUtil;
-        this.userBaseDTOUtil = userBaseDTOUtil;
         this.context = context;
         this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
         this.systemStatusCache = systemStatusCache;
-        this.exchangeCompactListCache = exchangeCompactListCache;
-        this.securityCompactListCache = securityCompactListCache;
     }
 
     //<editor-fold desc="DTO Processors">
@@ -68,9 +56,7 @@ import retrofit.Callback;
         return new DTOProcessorUserLogin(
                 userProfileCache,
                 systemStatusCache.get(),
-                userBaseDTOUtil,
-                exchangeCompactListCache.get(),
-                securityCompactListCache.get());
+                dtoCacheUtil);
     }
 
     protected DTOProcessor<UserProfileDTO> createUpdateDeviceProcessor()

@@ -4,9 +4,14 @@ import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.api.users.UserLoginDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
@@ -48,6 +53,7 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class DTOCacheUtil
 {
@@ -59,7 +65,7 @@ import javax.inject.Singleton;
     protected final Lazy<AlertCompactListCache> alertCompactListCache;
     protected final Lazy<DiscussionCache> discussionCache;
     protected final Lazy<DiscussionListCacheNew> discussionListCache;
-    protected final Lazy<ExchangeCompactListCache> exchangeListCache;
+    protected final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
     protected final Lazy<FollowerSummaryCache> followerSummaryCache;
     protected final Lazy<GetPositionsCache> getPositionsCache;
     protected final Lazy<LeaderboardDefCache> leaderboardDefCache;
@@ -93,6 +99,7 @@ import javax.inject.Singleton;
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     protected final StringPreference serverEndpointPreference;
+    @NotNull protected final UserBaseDTOUtil userBaseDTOUtil;
 
     //<editor-fold desc="Constructors">
     @Inject public DTOCacheUtil(
@@ -102,7 +109,7 @@ import javax.inject.Singleton;
             Lazy<AlertCompactListCache> alertCompactListCache,
             Lazy<DiscussionCache> discussionCache,
             Lazy<DiscussionListCacheNew> discussionListCache,
-            Lazy<ExchangeCompactListCache> exchangeListCache,
+            Lazy<ExchangeCompactListCache> exchangeCompactListCache,
             Lazy<FollowerSummaryCache> followerSummaryCache,
             Lazy<GetPositionsCache> getPositionsCache,
             Lazy<LeaderboardDefCache> leaderboardDefCache,
@@ -133,7 +140,8 @@ import javax.inject.Singleton;
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
             Lazy<WatchlistPositionCache> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
-            @ServerEndpoint StringPreference serverEndpointPreference)
+            @ServerEndpoint StringPreference serverEndpointPreference,
+            @NotNull UserBaseDTOUtil userBaseDTOUtil)
     {
         this.currentUserId = currentUserId;
         this.alertCache = alertCache;
@@ -141,7 +149,7 @@ import javax.inject.Singleton;
         this.alertCompactListCache = alertCompactListCache;
         this.discussionCache = discussionCache;
         this.discussionListCache = discussionListCache;
-        this.exchangeListCache = exchangeListCache;
+        this.exchangeCompactListCache = exchangeCompactListCache;
         this.followerSummaryCache = followerSummaryCache;
         this.getPositionsCache = getPositionsCache;
         this.leaderboardDefCache = leaderboardDefCache;
@@ -173,6 +181,7 @@ import javax.inject.Singleton;
         this.watchlistPositionCache = watchlistPositionCache;
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
+        this.userBaseDTOUtil = userBaseDTOUtil;
     }
     //</editor-fold>
 
@@ -226,13 +235,40 @@ import javax.inject.Singleton;
 
     public void preFetchExchanges()
     {
-        exchangeListCache.get().getOrFetchAsync(new ExchangeListType());
+        exchangeCompactListCache.get().getOrFetchAsync(new ExchangeListType());
     }
 
     public void preFetchTrending()
     {
         // TODO Make it take care of the users's default stock exchange.
         this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+    }
+
+    public void prefetchesUponLogin(UserLoginDTO userLoginDTO)
+    {
+        if (userLoginDTO != null)
+        {
+            UserProfileDTO profile = userLoginDTO.profileDTO;
+            if (profile != null)
+            {
+                ExchangeCompactDTOList exchangeCompacts = exchangeCompactListCache.get().get(new ExchangeListType());
+                if (exchangeCompacts != null)
+                {
+                    ExchangeCompactDTO initialExchange = userBaseDTOUtil.getInitialExchange(profile, exchangeCompacts);
+                    if (initialExchange != null)
+                    {
+                        securityCompactListCache.get().getOrFetchAsync(
+                                new TrendingBasicSecurityListType(
+                                        initialExchange.name,
+                                        1,
+                                        TrendingFragment.DEFAULT_PER_PAGE));
+                    }
+                }
+            }
+        }
+
+
+        initialPrefetches();
     }
 
     public void initialPrefetches()
