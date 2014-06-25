@@ -349,7 +349,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
         if (andDisplay && securityId != null)
         {
-            String securityName = String.format("%s:%s", securityId.exchange, securityId.securitySymbol);
+            String securityName = String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol());
             discussionPostContent.setHint(getString(R.string.discussion_new_post_hint, securityName));
         }
 
@@ -384,11 +384,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
             getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
             getSherlockActivity().invalidateOptionsMenu();
         }
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 
     public boolean isPosted()

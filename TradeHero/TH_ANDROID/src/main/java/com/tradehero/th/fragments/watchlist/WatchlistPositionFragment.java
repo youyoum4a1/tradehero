@@ -48,7 +48,6 @@ import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
 public class WatchlistPositionFragment extends DashboardFragment
-    implements BaseFragment.TabBarVisibilityInformer
 {
     private static final String BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE = WatchlistPositionFragment.class.getName() + ".showPortfolioId";
     private static final int NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND = 2;
@@ -412,11 +411,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         {
             progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         }
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 
     protected DTOCache.Listener<UserBaseKey, SecurityIdList> createSecurityIdListCacheListener()

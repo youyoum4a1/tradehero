@@ -17,7 +17,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -71,7 +70,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
 
-    private DTOCache.GetOrFetchTask<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchTask;
+    private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchListener;
     private MessageHeaderId messageHeaderId;
 
     public static void putCorrespondentUserBaseKey(@NotNull Bundle args, @NotNull UserBaseKey correspondentBaseKey)
@@ -87,6 +86,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        messageHeaderFetchListener = createMessageHeaderCacheListener();
         correspondentId = collectCorrespondentId(getArguments());
     }
 
@@ -186,6 +186,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDestroy()
     {
+        messageHeaderFetchListener = null;
         super.onDestroy();
     }
 
@@ -200,23 +201,13 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         this.messageHeaderId = messageHeaderId;
         detachMessageHeaderFetchTask();
-        messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false,
-                createMessageHeaderCacheListener());
-        messageHeaderFetchTask.execute();
+        messageHeaderCache.register(messageHeaderId, messageHeaderFetchListener);
+        messageHeaderCache.getOrFetchAsync(messageHeaderId, false);
     }
 
     private void detachMessageHeaderFetchTask()
     {
-        if (messageHeaderFetchTask != null)
-        {
-            messageHeaderFetchTask.setListener(null);
-        }
-        messageHeaderFetchTask = null;
-    }
-
-    private DTOCache.Listener<MessageHeaderId, MessageHeaderDTO> createMessageHeaderCacheListener()
-    {
-        return new MessageHeaderFetchListener();
+        messageHeaderCache.unregister(messageHeaderFetchListener);
     }
 
     protected void refresh()
@@ -299,11 +290,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     //    }
     //}
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
@@ -376,11 +362,16 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
+    private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> createMessageHeaderCacheListener()
+    {
+        return new MessageHeaderFetchListener();
+    }
+
     private class MessageHeaderFetchListener
-            implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
+            implements DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO>
     {
         @Override
-        public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
+        public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value)
         {
             Timber.d("MessageHeaderDTO=%s", value);
             ActionBar actionBar = getSherlockActivity().getSupportActionBar();

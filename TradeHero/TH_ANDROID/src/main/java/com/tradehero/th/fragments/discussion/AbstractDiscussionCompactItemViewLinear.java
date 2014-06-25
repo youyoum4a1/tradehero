@@ -63,7 +63,10 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        discussionFetchListener = createDiscussionFetchListener();
+        if (discussionFetchListener == null)
+        {
+            discussionFetchListener = createDiscussionFetchListener();
+        }
         viewHolder.onAttachedToWindow(this);
         viewHolder.linkWith(abstractDiscussionCompactDTO, true);
         viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());

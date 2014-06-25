@@ -112,11 +112,4 @@ public class AboutFragment extends DashboardFragment
         mainContentWrapper.setAnimation(null);
         super.onDestroyView();
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

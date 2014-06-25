@@ -24,9 +24,4 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
     {
         // Nothing to do
     }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

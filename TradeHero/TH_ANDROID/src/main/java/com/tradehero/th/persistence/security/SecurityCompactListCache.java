@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
@@ -13,7 +13,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, SecurityIdList>
+@Singleton public class SecurityCompactListCache extends StraightDTOCacheNew<SecurityListType, SecurityIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override protected SecurityIdList fetch(@NotNull SecurityListType key) throws Throwable
+    @Override public SecurityIdList fetch(@NotNull SecurityListType key) throws Throwable
     {
         return putInternal(key, securityServiceWrapper.get().getSecurities(key));
     }

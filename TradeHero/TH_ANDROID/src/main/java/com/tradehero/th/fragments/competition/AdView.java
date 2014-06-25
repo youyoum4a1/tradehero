@@ -101,8 +101,10 @@ public class AdView extends RelativeLayout
             {
                 // Ok, this is the only way I found to workaround this problem, converting url to a filename, and manually put 9-patch image
                 // with that name to android resource folder.
-                int bannerResourceId = getResources().getIdentifier(getResourceFileName(adDTO.bannerImageUrl), "drawable", getContext().getPackageName());
-                if (bannerResourceId != 0)
+                String bannerResourceFileName = getResourceFileName(adDTO.bannerImageUrl);
+                int bannerResourceId = 0;
+                if (bannerResourceFileName != null &&
+                        (bannerResourceId = getResources().getIdentifier(bannerResourceFileName, "drawable", getContext().getPackageName())) != 0)
                 {
                     banner.setBackgroundResource(bannerResourceId);
                 }
@@ -121,13 +123,17 @@ public class AdView extends RelativeLayout
 
     private String getResourceFileName(String url)
     {
-        String fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
-
-        fileName = fileName.substring(0, fileName.lastIndexOf('.'));
-        if (fileName.contains("@"))
+        if (url != null)
         {
-            fileName = fileName.substring(0, fileName.lastIndexOf('@'));
+            String fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
+
+            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+            if (fileName.contains("@"))
+            {
+                fileName = fileName.substring(0, fileName.lastIndexOf('@'));
+            }
+            return fileName.replace('-', '_').toLowerCase();
         }
-        return fileName.replace('-', '_').toLowerCase();
+        return null;
     }
 }

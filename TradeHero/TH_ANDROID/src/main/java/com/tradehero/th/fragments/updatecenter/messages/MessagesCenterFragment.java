@@ -17,7 +17,7 @@ import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
@@ -72,7 +72,8 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
 
-    private DTOCache.GetOrFetchTask<MessageListKey, MessageHeaderIdList> fetchMessageTask;
+    private DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> fetchMessageListListener;
+    private DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> fetchMessageRefreshListListener;
     private MessageListKey nextOlderMessageListKey;
     private MessageListKey nextMoreRecentMessageListKey;
     private MessageHeaderIdList alreadyFetched;
@@ -89,6 +90,8 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         middleCallbackMap = new HashMap<>();
+        fetchMessageListListener = createMessageHeaderIdListCacheListener();
+        fetchMessageRefreshListListener = createRefreshMessageHeaderIdListCacheListener();
         registerMessageReceiver();
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
@@ -188,6 +191,7 @@ public class MessagesCenterFragment extends DashboardFragment
         //we set a message unread when click the item, so don't remove callback at the moment and do it in onDestroy.
         //unsetMiddleCallback();
         detachFetchMessageTask();
+        detachFetchMessageRefreshTask();
         SwipeListView swipeListView = messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
         swipeListener = null;
@@ -206,6 +210,8 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         alreadyFetched = null;
         nextMoreRecentMessageListKey = null;
+        fetchMessageListListener = null;
+        fetchMessageRefreshListListener = null;
         unsetMiddleCallback();
         unregisterMessageReceiver();
 
@@ -335,10 +341,8 @@ public class MessagesCenterFragment extends DashboardFragment
     private void getOrFetchMessages()
     {
         detachFetchMessageTask();
-        fetchMessageTask = messageListCache.get()
-                .getOrFetch(nextMoreRecentMessageListKey, false,
-                        createMessageHeaderIdListCacheListener());
-        fetchMessageTask.execute();
+        messageListCache.get().register(nextMoreRecentMessageListKey, fetchMessageListListener);
+        messageListCache.get().getOrFetchAsync(nextMoreRecentMessageListKey, false);
     }
 
     private void refreshContent()
@@ -354,9 +358,9 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListKey messageListKey =
                 new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
-        fetchMessageTask = messageListCache.get().getOrFetch(messageListKey, true,
-                createRefreshMessageHeaderIdListCacheListener());
-        fetchMessageTask.execute();
+        detachFetchMessageRefreshTask();
+        messageListCache.get().register(messageListKey, fetchMessageRefreshListListener);
+        messageListCache.get().getOrFetchAsync(messageListKey, true);
     }
 
     private void loadNextMessages()
@@ -394,11 +398,12 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void detachFetchMessageTask()
     {
-        if (fetchMessageTask != null)
-        {
-            fetchMessageTask.setListener(null);
-        }
-        fetchMessageTask = null;
+        messageListCache.get().unregister(fetchMessageListListener);
+    }
+
+    private void detachFetchMessageRefreshTask()
+    {
+        messageListCache.get().unregister(fetchMessageRefreshListListener);
     }
 
     private void appendMessagesList(MessageHeaderIdList messageKeys)
@@ -545,31 +550,39 @@ public class MessagesCenterFragment extends DashboardFragment
         messageListCache.get().put(messageListKey, data);
     }
 
-    protected DTOCache.Listener<MessageListKey, MessageHeaderIdList> createMessageHeaderIdListCacheListener()
+    protected DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> createMessageHeaderIdListCacheListener()
     {
         return new MessageFetchListener();
     }
 
-    class MessageFetchListener implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
+    class MessageFetchListener implements DTOCacheNew.HurriedListener<MessageListKey, MessageHeaderIdList>
     {
-        @Override
-        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value, boolean fromCache)
+        @Override public void onPreCachedDTOReceived(MessageListKey key, MessageHeaderIdList value)
         {
             if (value.size() == 0)
             {
                 hasMorePage = false;
-            }
-            if (!fromCache)
-            {
-                requestUpdateTabCounter();
             }
             if (getView() == null)
             {
                 return;
             }
             displayContent(value);
-            Timber.d("onDTOReceived key:%s,MessageHeaderIdList:%s,fromCache:%b", key, value,
-                    fromCache);
+        }
+
+        @Override
+        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value)
+        {
+            if (value.size() == 0)
+            {
+                hasMorePage = false;
+            }
+            requestUpdateTabCounter();
+            if (getView() == null)
+            {
+                return;
+            }
+            displayContent(value);
             //TODO how to invalidate the old data ..
         }
 
@@ -594,22 +607,17 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    protected DTOCache.Listener<MessageListKey, MessageHeaderIdList> createRefreshMessageHeaderIdListCacheListener()
+    protected DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> createRefreshMessageHeaderIdListCacheListener()
     {
         return new RefreshMessageFetchListener();
     }
 
     class RefreshMessageFetchListener
-            implements DTOCache.Listener<MessageListKey, MessageHeaderIdList>
+            implements DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList>
     {
         @Override
-        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value, boolean fromCache)
+        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value)
         {
-            if (fromCache)
-            {
-                //force to get news from the server
-                return;
-            }
             requestUpdateTabCounter();
             hasMorePage = (value.size() > 0);
             refreshCache(value);
@@ -683,11 +691,6 @@ public class MessagesCenterFragment extends DashboardFragment
                 loadNextMessages();
             }
         }
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 
     private void unsetMiddleCallback()

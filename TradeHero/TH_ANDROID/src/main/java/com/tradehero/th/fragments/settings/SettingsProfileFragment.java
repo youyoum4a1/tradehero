@@ -32,9 +32,12 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
@@ -65,6 +68,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject @AuthHeader String authenticationHeader;
+    @Inject MainCredentialsPreference mainCredentialsPreference;
+
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
@@ -250,11 +256,15 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
         try
         {
-            this.profileView.populateCredentials(THUser.getCurrentCredentials().createJSON());
+            CredentialsDTO credentials = mainCredentialsPreference.getCredentials();
+            if (credentials != null)
+            {
+                this.profileView.populateCredentials(credentials.createJSON());
+            }
         }
         catch (JSONException e)
         {
-            Timber.e(e, "Failed to populate current user %s", THUser.getCurrentCredentials());
+            Timber.e(e, "Failed to populate current user %s", authenticationHeader);
         }
     }
 
@@ -321,7 +331,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 THToast.show(R.string.settings_update_profile_successful);
                 Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 navigator.popFragment();
-                if (emailCredentialsDTO != null && THUser.getCurrentCredentials() instanceof EmailCredentialsDTO)
+                if (emailCredentialsDTO != null && mainCredentialsPreference.getCredentials() instanceof EmailCredentialsDTO)
                 {
                     THUser.saveCredentialsToUserDefaults(emailCredentialsDTO);
                 }
@@ -356,11 +366,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         //cameraIntent.setType("image/jpeg");
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 
     @Override public void notifyValidation(ValidationMessage message)

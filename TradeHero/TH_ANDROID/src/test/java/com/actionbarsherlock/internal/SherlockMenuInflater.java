@@ -14,50 +14,63 @@ import org.robolectric.util.I18nException;
 import static org.robolectric.Robolectric.shadowOf;
 
 /**
- * Inflates menus that are part of ActionBarSherlock instead. Uses ABS custom {@link
- * com.actionbarsherlock.view.Menu} instead of the stock one.
+ * Inflates menus that are part of ActionBarSherlock instead. Uses ABS custom {@link com.actionbarsherlock.view.Menu} instead of the stock one.
  */
-public class SherlockMenuInflater extends MenuInflater {
+public class SherlockMenuInflater extends MenuInflater
+{
     private final Context context;
 
-    public SherlockMenuInflater(Context context) {
+    public SherlockMenuInflater(Context context)
+    {
         super(context);
         this.context = context;
     }
 
     @Implementation
-    public void inflate(int resource, Menu root) {
+    public void inflate(int resource, Menu root)
+    {
         String qualifiers = shadowOf(context.getResources().getConfiguration()).getQualifiers();
         ResourceLoader resourceLoader = shadowOf(context).getResourceLoader();
         ResName resName = shadowOf(context).getResName(resource);
         MenuNode menuNode = resourceLoader.getMenuNode(resName, qualifiers);
 
-        try {
+        try
+        {
             addChildrenInGroup(menuNode, 0, root);
-        } catch (I18nException e) {
+        } catch (I18nException e)
+        {
             throw e;
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             throw new RuntimeException("error inflating " + resName, e);
         }
     }
 
-    private void addChildrenInGroup(MenuNode source, int groupId, Menu root) {
-        for (MenuNode child : source.getChildren()) {
+    private void addChildrenInGroup(MenuNode source, int groupId, Menu root)
+    {
+        for (MenuNode child : source.getChildren())
+        {
             String name = child.getName();
             AttributeSet attributes = shadowOf(context).createAttributeSet(child.getAttributes(), null);
-            if (name.equals("item")) {
-                if (child.isSubMenuItem()) {
+            if (name.equals("item"))
+            {
+                if (child.isSubMenuItem())
+                {
                     SubMenu sub = root.addSubMenu(groupId,
                             attributes.getAttributeResourceValue("android", "id", 0),
                             0, attributes.getAttributeValue("android", "title"));
                     MenuNode subMenuNode = child.getChildren().get(0);
                     addChildrenInGroup(subMenuNode, groupId, sub);
-                } else {
+                }
+                else
+                {
                     root.add(groupId,
                             attributes.getAttributeResourceValue("android", "id", 0),
                             0, attributes.getAttributeValue("android", "title"));
                 }
-            } else if (name.equals("group")) {
+            }
+            else if (name.equals("group"))
+            {
                 int newGroupId = attributes.getAttributeResourceValue("android", "id", 0);
                 addChildrenInGroup(child, newGroupId, root);
             }

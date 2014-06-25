@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     >
+
+  <include layout="@layout/security_discussion_view"/>
+
   <TextView
       android:id="@+id/security_discussion_add"
       android:layout_width="match_parent"
@@ -15,11 +17,10 @@
       android:layout_marginBottom="@dimen/timeline_item_margin"
       android:text="@string/security_discussion_add"
       android:gravity="center"
-      android:background="@color/btn_bg_yellow"
+      android:background="@drawable/btn_basic_yellow"
       android:layout_marginLeft="10dp"
       android:layout_marginRight="10dp"
       android:textColor="@color/btn_text_blue"
       />
 
-  <include layout="@layout/security_discussion_view"/>
-</LinearLayout>
+</FrameLayout>

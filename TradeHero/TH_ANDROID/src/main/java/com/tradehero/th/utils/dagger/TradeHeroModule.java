@@ -8,6 +8,7 @@ import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
+import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
@@ -379,7 +380,8 @@ import javax.inject.Singleton;
                         LinkedInSocialFriendsFragment.class,
                         WeiboSocialFriendsFragment.class,
 
-                        HomeFragment.class
+                        HomeFragment.class,
+                        GuideActivity.class,
                 },
         staticInjections =
                 {

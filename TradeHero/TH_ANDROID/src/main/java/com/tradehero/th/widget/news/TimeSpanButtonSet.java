@@ -66,6 +66,7 @@ public class TimeSpanButtonSet extends LinearLayout
         if (quickPriceButton != null)
         {
             quickPriceButton.setOnClickListener(createButtonOnClickListener());
+            quickPriceButton.setBackgroundResource(R.drawable.basic_transparent_selector);
             buttons.add(quickPriceButton);
         }
     }

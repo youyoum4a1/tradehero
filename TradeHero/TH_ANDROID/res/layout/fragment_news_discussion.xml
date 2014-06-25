@@ -16,6 +16,7 @@
       android:layout_height="wrap_content"
       android:listSelector="@color/transparent"
       android:divider="@color/transparent"
+      android:clipToPadding="false"
       android:paddingBottom="@dimen/discussion_comment_box_height"
       />
 

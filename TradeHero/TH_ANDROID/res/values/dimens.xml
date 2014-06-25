@@ -152,6 +152,8 @@
   <dimen name="security_logo_midium">60dp</dimen>
   <dimen name="button_height_30">30dp</dimen>
   <dimen name="leaderboard_numerical_label_text_size">11sp</dimen>
+
   <dimen name="discussion_separator_thickness">0.5dp</dimen>
+  <dimen name="discussion_list_padding">60dp</dimen>
 
 </resources>

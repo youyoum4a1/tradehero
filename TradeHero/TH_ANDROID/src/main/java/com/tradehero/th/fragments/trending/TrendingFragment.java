@@ -46,7 +46,6 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -75,7 +74,6 @@ public class TrendingFragment extends SecurityListFragment
 {
     public final static int SECURITY_ID_LIST_LOADER_ID = 2532;
 
-    @Inject TrendingFilterTypeDTOFactory trendingFilterTypeDTOFactory;
     @Inject Lazy<ExchangeCompactListCache> exchangeCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<ProviderCache> providerCache;
@@ -340,13 +338,6 @@ public class TrendingFragment extends SecurityListFragment
         getDashboardNavigator().pushFragment(SecuritySearchFragment.class, args);
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Listeners">
     @Override protected OnItemClickListener createOnItemClickListener()
     {
@@ -426,7 +417,7 @@ public class TrendingFragment extends SecurityListFragment
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
-            webFragment = (BaseWebViewFragment) getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }

@@ -2,12 +2,15 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import retrofit.Callback;
-import retrofit.http.*;
-
-import java.util.List;
 import java.util.Map;
+import retrofit.Callback;
+import retrofit.http.Body;
+import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 interface SecurityServiceAsync
 {
@@ -24,7 +27,7 @@ interface SecurityServiceAsync
             @Query("exchange") String exchange,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<List<SecurityCompactDTO>> callback);
+            Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Trending By Volume">
@@ -33,7 +36,7 @@ interface SecurityServiceAsync
             @Query("exchange") String exchange,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<List<SecurityCompactDTO>> callback);
+            Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Trending By Price">
@@ -42,7 +45,7 @@ interface SecurityServiceAsync
             @Query("exchange") String exchange,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<List<SecurityCompactDTO>> callback);
+            Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Trending For All">
@@ -51,7 +54,7 @@ interface SecurityServiceAsync
             @Query("exchange") String exchange,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<List<SecurityCompactDTO>> callback);
+            Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Search Securities">
@@ -60,7 +63,7 @@ interface SecurityServiceAsync
             @Query("q") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<List<SecurityCompactDTO>> callback);
+            Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Security">

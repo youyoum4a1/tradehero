@@ -5,8 +5,17 @@
 
   <item
       android:id="@+id/btn_new_message"
-      android:actionLayout="@layout/menu_new_message_button"
+      android:title="@string/message_center_new_message_title"
+      android:icon="@drawable/icn_message_white"
       android:showAsAction="always"
-      android:visible="true"/>
+      android:visible="true">
+    <menu>
+      <item android:id="@+id/menu_private"
+          android:title="@string/message_center_private_message_menu"/>
+      <item android:id="@+id/menu_broadcast"
+          android:title="@string/message_center_broadcast_message_menu"/>
+    </menu>
+      </item>
+
 
 </menu>

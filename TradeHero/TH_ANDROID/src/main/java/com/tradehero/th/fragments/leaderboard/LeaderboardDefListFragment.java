@@ -9,7 +9,7 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -28,7 +28,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchTask;
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchListener;
 
     private LeaderboardDefListAdapter leaderboardDefListAdapter;
     @InjectView(android.R.id.list) protected ListView contentListView;
@@ -36,6 +36,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        leaderboardDefListCacheFetchListener = createLeaderboardDefKeyListListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -69,11 +70,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 
     protected void detachLeaderboardDefListCacheFetchTask()
     {
-        if (leaderboardDefListCacheFetchTask != null)
-        {
-            leaderboardDefListCacheFetchTask.setListener(null);
-        }
-        leaderboardDefListCacheFetchTask = null;
+        leaderboardDefListCache.get().unregister(leaderboardDefListCacheFetchListener);
     }
 
     @OnItemClick(android.R.id.list)
@@ -101,27 +98,21 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     private void updateLeaderboardDefListKey(Bundle bundle)
     {
         detachLeaderboardDefListCacheFetchTask();
-        leaderboardDefListCacheFetchTask  = leaderboardDefListCache.get().getOrFetch(
-                leaderboardDefListKeyFactory.create(bundle),
-                createLeaderboardDefKeyListListener());
-        leaderboardDefListCacheFetchTask.execute();
+        LeaderboardDefListKey key = leaderboardDefListKeyFactory.create(bundle);
+        leaderboardDefListCache.get().register(key, leaderboardDefListCacheFetchListener);
+        leaderboardDefListCache.get().getOrFetchAsync(key);
     }
 
-    protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createLeaderboardDefKeyListListener()
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createLeaderboardDefKeyListListener()
     {
         return new LeaderboardDefListViewFragmentDefKeyListListener();
     }
 
-    protected class LeaderboardDefListViewFragmentDefKeyListListener implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+    protected class LeaderboardDefListViewFragmentDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
     {
-        public LeaderboardDefListViewFragmentDefKeyListListener()
+        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
         {
-            super();
-        }
-
-        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
-        {
-            handleDTOReceived(key, value, fromCache);
+            handleDTOReceived(key, value);
         }
 
         @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
@@ -131,7 +122,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected void handleDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+    protected void handleDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
     {
         if (leaderboardDefListAdapter != null)
         {

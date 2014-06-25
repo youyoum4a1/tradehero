@@ -97,6 +97,18 @@ public class LocalyticsConstants
     public static final String QQ = "QQ";//
     public static final String Email = "Email";//
     public static final String InviteFriends = "InviteFriends";//
+    public static final String Loading = "Loading";//
+    public static final String LoadingScreen = "LoadingScreen";//
+    public static final String Splash = "Splash";//
+    public static final String SplashScreen = "SplashScreen";//
+    public static final String Screen = "Screen ";//
+    public static final String SplashScreenCancel = "SplashScreenCancel";//
+    public static final String Login_Register = "Login/Register";//
+    public static final String LoginRegisterScreen = "LoginRegisterScreen";//
+    public static final String Login_Form = "LoginForm";//
+    public static final String LoginFormScreen = "LoginFormScreen";//
+    public static final String Register_Form = "RegisterForm";//
+    public static final String RegisterFormScreen = "RegisterFormScreen";//
 
     public static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
     public static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";

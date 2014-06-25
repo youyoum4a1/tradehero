@@ -25,9 +25,4 @@ public class SecurityDiscussionCommentFragment extends AbstractDiscussionFragmen
     {
         // Nothing to do
     }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

@@ -3,8 +3,8 @@ package com.tradehero.th.api.competition;
 import android.net.Uri;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.CompetitionUrl;
+import com.tradehero.th.persistence.prefs.AuthHeader;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -25,11 +25,16 @@ import javax.inject.Singleton;
 
     private final CurrentUserId currentUserId;
     private final String competitionUrl;
+    private final String authenticationHeader;
 
-    @Inject ProviderUtil(CurrentUserId currentUserId, @CompetitionUrl String competitionUrl)
+    @Inject ProviderUtil(
+            CurrentUserId currentUserId,
+            @CompetitionUrl String competitionUrl,
+            @AuthHeader String authenticationHeader)
     {
         this.currentUserId = currentUserId;
         this.competitionUrl = competitionUrl;
+        this.authenticationHeader = authenticationHeader;
     }
 
     public String getLandingPage(ProviderId providerId, UserBaseKey userBaseKey)
@@ -76,12 +81,24 @@ import javax.inject.Singleton;
 
     public String appendProviderId(String url, char separator, ProviderId providerId)
     {
-        return url + separator + QUERY_KEY_PROVIDER_ID + "=" + providerId.key;
+        return appendToUrl(url, separator + QUERY_KEY_PROVIDER_ID + "=" + providerId.key);
     }
 
     public String appendUserId(String url, char separator, UserBaseKey userBaseKey)
     {
-        return url + separator + QUERY_KEY_USER_ID + "=" + userBaseKey.key;
+        return appendToUrl(url, separator + QUERY_KEY_USER_ID + "=" + userBaseKey.key);
+    }
+
+    public String appendToUrl(String url, String forAppend)
+    {
+        if (url.contains("?") || forAppend.startsWith("?"))
+        {
+            return url + forAppend;
+        }
+        else
+        {
+            return url + "?" + forAppend;
+        }
     }
 
     public String appendShowNextButton(String url, char separator)
@@ -91,7 +108,7 @@ import javax.inject.Singleton;
 
     public String appendAuthorization(String url, char separator)
     {
-        return url + separator + QUERY_KEY_AUTHORISATION + "=" + Uri.encode(THUser.getAuthHeader());
+        return url + separator + QUERY_KEY_AUTHORISATION + "=" + Uri.encode(authenticationHeader);
     }
 
     public String appendFullScreen(String url, char separator)

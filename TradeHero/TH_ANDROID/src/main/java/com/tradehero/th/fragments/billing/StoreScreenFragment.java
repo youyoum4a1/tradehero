@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
@@ -31,6 +32,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable("store")
 public class StoreScreenFragment extends BasePurchaseManagerFragment
         implements WithTutorial
 {
@@ -110,11 +112,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         listView = null;
         storeItemAdapter = null;
         super.onDestroyView();
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
     }
 
     public void cancelOthersAndShowBillingAvailable()

@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
-        implements BaseFragment.TabBarVisibilityInformer
 {
     private static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
     public static final String BUNDLE_KEY_LEADERBOARD_DEF_TITLE = BaseLeaderboardFragment.class.getName() + ".leaderboardDefTitle";
@@ -164,11 +163,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()

@@ -48,9 +48,4 @@ public class BaseFragment extends SherlockFragment
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    public static interface TabBarVisibilityInformer
-    {
-        boolean isTabBarVisible();
-    }
 }

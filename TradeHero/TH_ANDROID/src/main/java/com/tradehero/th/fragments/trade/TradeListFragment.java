@@ -351,12 +351,12 @@ public class TradeListFragment extends DashboardFragment
                     if (securityCompactDTO == null || securityCompactDTO.name == null)
                     {
                         actionBarCopy.setTitle(
-                                String.format(getString(R.string.trade_list_title_with_security), securityId.exchange, securityId.securitySymbol));
+                                String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(), securityId.getSecuritySymbol()));
                     }
                     else
                     {
                         actionBarCopy.setTitle(securityCompactDTO.name);
-                        actionBarCopy.setSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.exchange, securityId.securitySymbol));
+                        actionBarCopy.setSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(), securityId.getSecuritySymbol()));
                     }
                 }
             }
@@ -370,13 +370,6 @@ public class TradeListFragment extends DashboardFragment
             progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 
     protected TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList> createTradeListeCacheListener()
     {

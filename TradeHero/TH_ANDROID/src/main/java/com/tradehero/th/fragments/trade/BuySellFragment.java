@@ -38,6 +38,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
+import com.thoj.route.Routable;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
@@ -106,6 +107,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
+@Routable("security/:securityRawInfo")
 public class BuySellFragment extends AbstractBuySellFragment
         implements SecurityAlertAssistant.OnPopulatedListener, ViewPager.OnPageChangeListener,
         WithTutorial
@@ -1355,13 +1357,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         return true;
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Interface Creators">
     private Callback createLogoReadyCallback()
     {
@@ -1491,6 +1486,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void showBuySellDialog()
     {
+        // TODO Move to DialogFragment? and pass the values to be shared using bundle/intent
         setPublishToShareBySetting();
         shareLocation = true;
         sharePublic = false;
@@ -1940,8 +1936,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private boolean checkValidToBuyOrSell()
     {
-        return securityId != null && securityId.exchange != null
-                && securityId.securitySymbol != null;
+        return securityId != null && securityId.getExchange() != null
+                && securityId.getSecuritySymbol() != null;
     }
 
     private void detachBuySellMiddleCallback()

@@ -25,7 +25,7 @@
 
     <ImageView
         android:id="@+id/discussion_action_button_share"
-        style="@style/TH.DiscussionActionButtons"
+        style="@style/TH.DiscussionActionButtons.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"

@@ -11,7 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -345,21 +345,21 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheListener()
     {
         return new FollowerManagerFollowerSummaryListener();
     }
 
-    protected DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheRefreshListener()
+    protected DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> createFollowerSummaryCacheRefreshListener()
     {
         return new RefresFollowerManagerFollowerSummaryListener();
     }
 
     protected class FollowerManagerFollowerSummaryListener
-            implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
         {
             Timber.d("onDTOReceived");
 
@@ -377,15 +377,11 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     }
 
     protected class RefresFollowerManagerFollowerSummaryListener
-            implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
         {
-            if (fromCache)
-            {
-                return;
-            }
             displayProgress(false);
             onRefreshCompleted();
             handleFollowerSummaryDTOReceived(value);
@@ -412,11 +408,4 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             loadedListener.onFollowerLoaded(getHeroTypeResource().followerTabIndex, value);
         }
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

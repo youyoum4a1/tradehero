@@ -31,7 +31,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -280,12 +279,24 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private void displayTopSection()
     {
         lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
+        if (currentUserId.get() == leaderboardItem.id)
+        {
+            lbmuPosition.setTextColor(
+                    getContext().getResources().getColor(R.color.button_green));
+        }
+        else
+        {
+            lbmuPosition.setTextColor(
+                    getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+        }
+
         lbmuDisplayName.setText(leaderboardItem.displayName);
         lbmuHeroQuotient.setText(leaderboardItem.getHeroQuotientFormatted());
         if (lbmuFoF != null)
         {
             lbmuFoF.setVisibility(
-                    leaderboardItem.isIncludeFoF() && !StringUtils.isNullOrEmptyOrSpaces(
+                    leaderboardItem.isIncludeFoF() != null &&leaderboardItem.isIncludeFoF() &&
+                            !StringUtils.isNullOrEmptyOrSpaces(
                             leaderboardItem.friendOfMarkupString) ? VISIBLE : GONE);
             lbmuFoF.setText(leaderboardItem.friendOfMarkupString);
         }

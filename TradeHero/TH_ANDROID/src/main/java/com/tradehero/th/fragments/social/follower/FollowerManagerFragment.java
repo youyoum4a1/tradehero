@@ -377,9 +377,4 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
     }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 }

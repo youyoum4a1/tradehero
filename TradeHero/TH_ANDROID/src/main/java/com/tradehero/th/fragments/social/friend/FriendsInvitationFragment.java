@@ -21,8 +21,8 @@ import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
@@ -487,6 +487,11 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
 
         @Override
+        public void success(){
+            handleInviteSuccess(usersToInvite);
+        }
+
+        @Override
         public void failure(RetrofitError retrofitError)
         {
             super.failure(retrofitError);
@@ -545,11 +550,5 @@ public class FriendsInvitationFragment extends DashboardFragment
                 showSocialTypeList();
             }
         }
-    }
-
-    @Override
-    public boolean isTabBarVisible()
-    {
-        return false;
     }
 }

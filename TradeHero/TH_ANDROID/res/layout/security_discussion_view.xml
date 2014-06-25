@@ -15,6 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:paddingTop="@dimen/discussion_list_padding"
         />
 
     <ListView
@@ -22,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:listSelector="@color/transparent"
+        android:paddingTop="@dimen/discussion_list_padding"
         android:paddingBottom="@dimen/buy_sell_button_container_height"
         android:clipToPadding="false"
         android:divider="@color/transparent"
@@ -33,6 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:paddingTop="@dimen/discussion_list_padding"
         />
 
   </com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView>

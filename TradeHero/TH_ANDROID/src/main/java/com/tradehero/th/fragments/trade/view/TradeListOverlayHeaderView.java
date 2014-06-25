@@ -137,7 +137,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
         this.securityId = this.securityIdCache.get().get(securityIntegerId);
         if (this.securityId != null)
         {
-            this.qualifiedSymbol = String.format("%s:%s", securityId.exchange.toUpperCase(), securityId.securitySymbol.toUpperCase());
+            this.qualifiedSymbol = String.format("%s:%s", securityId.getExchange().toUpperCase(), securityId.getSecuritySymbol().toUpperCase());
         }
         display();
     }

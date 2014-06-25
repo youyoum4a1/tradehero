@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +25,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
@@ -36,6 +34,7 @@ import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
@@ -44,6 +43,7 @@ import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
+import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
@@ -59,12 +59,15 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.et_firstname) EditText firstName;
     @InjectView(R.id.et_lastname) EditText lastName;
     @InjectView(R.id.image_optional) @Optional ImageView profileImage;
+
     @Inject ChooseImageFromDTOFactory chooseImageFromDTOFactory;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
+    @Inject @AuthHeader Lazy<String> authenticationHeader;
+
     ProgressDialog progressDialog;
     private UserBaseDTO userBaseDTO;
     private String newImagePath;
@@ -391,7 +394,7 @@ public class ProfileInfoView extends LinearLayout
     {
         if (credentials == null)
         {
-            Timber.e(new NullPointerException("credentials were null current auth type " +  THUser.getAuthHeader()), "");
+            Timber.e(new NullPointerException("credentials were null current auth type " +  authenticationHeader.get()), "");
             THToast.show(R.string.error_fetch_your_user_profile);
         }
         else

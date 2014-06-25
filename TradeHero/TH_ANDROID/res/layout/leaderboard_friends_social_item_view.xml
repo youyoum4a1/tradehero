@@ -31,11 +31,12 @@
         android:shadowDy="1"
         android:shadowRadius="1"
         android:layout_centerVertical="true"
+        android:visibility="invisible"
         tools:text="1"
         />
 
     <ImageView
-        android:id="@+id/leaderboard_user_item_lable"
+        android:id="@+id/leaderboard_user_item_network_label"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginLeft="12dp"
@@ -51,48 +52,6 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
         />
-
-    <TextView
-        android:id="@+id/leaderboard_user_item_display_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/common_margin_10"
-        android:layout_marginRight="@dimen/common_margin_110"
-        android:ellipsize="end"
-        android:textStyle="bold"
-        android:textSize="@dimen/leaderboard_title_text_size"
-        android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
-        android:shadowColor="@color/light_grey"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        tools:text="Rafael Barba"
-        />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/leaderboard_user_item_display_name"
-        android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
-        android:layout_marginTop="2dp"
-        android:layout_marginLeft="@dimen/common_margin_10"
-        >
-
-      <TextView
-          android:id="@+id/lbmu_roi"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="+87%"
-          />
-
-      <TextView
-          android:id="@+id/lbmu_roi_annualized"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingLeft="5dp"
-          android:textColor="@color/gray_1"
-          tools:text="(annualised: +1200%)"
-          />
-    </LinearLayout>
 
     <TextView
         android:id="@+id/leaderboard_user_item_social_name"
@@ -111,17 +70,6 @@
         tools:text="Rafael Barba"
         />
 
-    <ImageView
-        android:id="@+id/leaderboard_user_item_country_logo"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:scaleType="centerInside"
-        android:contentDescription="@null"
-        android:layout_marginRight="10dp"
-        />
-
     <TextView
         android:id="@+id/leaderboard_user_item_invite_btn"
         android:layout_width="100dp"
@@ -137,12 +85,7 @@
         android:gravity="center"
         android:background="@drawable/yellow_rounded_button_selector"
         />
-  </RelativeLayout>
 
-  <include
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      layout="@layout/leaderboard_item_expendview_2"
-      />
+  </RelativeLayout>
 
 </com.tradehero.th.fragments.leaderboard.LeaderboardFriendsItemView>

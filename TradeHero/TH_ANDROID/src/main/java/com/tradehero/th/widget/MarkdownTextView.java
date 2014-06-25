@@ -1,8 +1,6 @@
 package com.tradehero.th.widget;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
@@ -90,11 +88,30 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
                 break;
 
             case "link":
-                if (matchStrings.length < 3) break;
-                String link = matchStrings[2];
+                //if (matchStrings.length < 3) break;
+                //String link = matchStrings[2];
+                //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                //getNavigator().goToPage(thIntentFactory.create(i));
 
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                getNavigator().goToPage(thIntentFactory.create(i));
+                String USER = "tradehero://user/";
+                if (matchStrings.length < 3) break;
+                String link = matchStrings[1];
+                String link2 = matchStrings[2];
+                //"$NASDAQ:GOOG"
+                if (link != null && link.startsWith("$"))
+                {
+                    String str[] = link.substring(1).split(":");
+                    if (str.length == 2)
+                    {
+                        openSecurityProfile(str[0], str[1]);
+                    }
+                }
+                //"tradehero://user/99106"
+                else if (link2 != null && link2.startsWith(USER))
+                {
+                    int uid = Integer.parseInt(link2.substring(USER.length()));
+                    openUserProfile(uid);
+                }
                 break;
         }
     }

@@ -148,7 +148,7 @@ public class SecurityAlertAssistant
 
     protected void requestAlertListFromCache() throws Throwable
     {
-        populate(alertCompactListCache.getOrFetch(userBaseKey));
+        populate(alertCompactListCache.getOrFetchSync(userBaseKey));
     }
 
     protected void populate(AlertIdList alertIds)

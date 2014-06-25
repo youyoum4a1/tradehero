@@ -4,20 +4,8 @@
 
   <item
       android:icon="@drawable/btn_friends_add"
+      android:title="@string/invite_friends"
       android:id="@+id/friend_leaderboard_menu"
       android:showAsAction="always">
-
-    <!--<menu>-->
-
-      <!--<item android:title="@string/leaderboard_show_friends_only"-->
-          <!--android:id="@+id/friend_leaderboard_menu_show_friends_only"-->
-          <!--/>-->
-
-      <!--<item android:title="@string/leaderboard_show_friends_of_friends"-->
-          <!--android:id="@+id/friend_leaderboard_menu_show_friends_of_friends"-->
-          <!--/>-->
-
-    <!--</menu>-->
-
   </item>
 </menu>

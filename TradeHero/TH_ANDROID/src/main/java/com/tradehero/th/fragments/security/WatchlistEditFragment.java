@@ -385,13 +385,6 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    //<editor-fold desc="TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     protected Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
     {
         return new WatchlistEditTHCallback();

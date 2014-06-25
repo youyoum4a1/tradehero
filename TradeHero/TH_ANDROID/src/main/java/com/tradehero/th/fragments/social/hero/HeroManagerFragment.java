@@ -221,11 +221,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         // TODO
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     protected class HeroManagerOnTabChangeListener implements TabHost.OnTabChangeListener
     {
         @Override public void onTabChanged(String tabId)

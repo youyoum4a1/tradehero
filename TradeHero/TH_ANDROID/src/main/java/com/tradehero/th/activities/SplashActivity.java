@@ -22,6 +22,7 @@ import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.utils.Constants;
@@ -55,6 +56,7 @@ public class SplashActivity extends SherlockActivity
     @Inject Lazy<Tapstream> tapStream;
     @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
     @Inject CurrentActivityHolder currentActivityHolder;
+    @Inject DTOCacheUtil dtoCacheUtil;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,6 +77,7 @@ public class SplashActivity extends SherlockActivity
 
         DaggerUtils.inject(this);
         currentActivityHolder.setCurrentActivity(this);
+        dtoCacheUtil.anonymousPrefetches();
     }
 
     @Override protected void onResume()
@@ -102,6 +105,7 @@ public class SplashActivity extends SherlockActivity
         List custom_dimensions = new ArrayList();
         custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
         localyticsSession.get().open(custom_dimensions);
+        localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
         AppEventsLogger.activateApp(this, facebookAppId);
         tapStream.get().fireEvent(
                 new Event(getString(Constants.TAP_STREAM_TYPE.openResId),
@@ -132,6 +136,7 @@ public class SplashActivity extends SherlockActivity
     protected void initialisation()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
+        localyticsSession.get().tagEvent(LocalyticsConstants.LoadingScreen);
         // TODO use Dagger to inject pref?
         SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
 

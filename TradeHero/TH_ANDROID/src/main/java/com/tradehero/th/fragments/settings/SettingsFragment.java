@@ -52,6 +52,8 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -114,6 +116,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
+    @Inject MainCredentialsPreference mainCredentialsPreference;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
@@ -872,7 +875,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     new SocialNetworkFormDTO(socialNetwork),
                     createSocialDisconnectCallback());
 
-            if (socialNetwork.getAuthenticationHeader().equals(THUser.getCurrentCredentials().getAuthType()))
+            CredentialsDTO mainCredentials = mainCredentialsPreference.getCredentials();
+            if (mainCredentials != null && socialNetwork.getAuthenticationHeader().equals(mainCredentials.getAuthType()))
             {
                 effectSignOut();
             }

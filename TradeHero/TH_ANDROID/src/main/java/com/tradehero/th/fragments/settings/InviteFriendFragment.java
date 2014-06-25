@@ -536,13 +536,6 @@ public class InviteFriendFragment extends DashboardFragment
     }
     //</editor-fold>
 
-    //<editor-fold desc="Tab bar informer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Callback for authentication & rest service">
     private void conditionalSendInvitations()
     {

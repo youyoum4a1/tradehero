@@ -46,9 +46,9 @@ import timber.log.Timber;
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
             if (providerDTO.hasAdvertisement())
             {
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
                 int randomAds = (int) (Math.random() * providerDTO.advertisements.size());
                 AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
                 preparedOrderedItems.add(new CompetitionZoneAdvertisementDTO(null, null, 0, pickedAdDTO));

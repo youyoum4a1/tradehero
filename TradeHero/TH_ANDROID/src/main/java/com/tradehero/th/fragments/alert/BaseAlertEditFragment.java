@@ -684,11 +684,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     protected DTOCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
         return new BaseAlertEditSecurityCompactCacheListener();

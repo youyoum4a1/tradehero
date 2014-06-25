@@ -133,12 +133,5 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         transactionListCacheListener = null;
         super.onDestroy();
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }
 

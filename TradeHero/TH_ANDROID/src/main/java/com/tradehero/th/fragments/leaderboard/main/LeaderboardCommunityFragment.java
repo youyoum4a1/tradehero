@@ -12,6 +12,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -57,6 +58,7 @@ import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
+@Routable("providers")
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     implements WithTutorial,View.OnClickListener
 {
@@ -77,13 +79,14 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
     private ProviderIdList providerIds;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchListener;
     private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
+        leaderboardDefListFetchListener = createDefKeyListListener();
     }
 
     @Override
@@ -130,6 +133,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
+        leaderboardDefListFetchListener = null;
         this.thIntentPassedListener = null;
         detachWebFragment();
         super.onDestroy();
@@ -203,11 +207,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void detachLeaderboardDefListCacheFetchTask()
     {
-        if (leaderboardDefListFetchTask != null)
-        {
-            leaderboardDefListFetchTask.setListener(null);
-        }
-        leaderboardDefListFetchTask = null;
+        leaderboardDefListCache.get().unregister(leaderboardDefListFetchListener);
     }
 
     private void detachProviderListFetchTask()
@@ -229,19 +229,18 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void fetchLeaderboardDefList()
     {
         detachLeaderboardDefListCacheFetchTask();
-        leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
-                new LeaderboardDefListKey(), createDefKeyListListener());
-        leaderboardDefListFetchTask.execute();
+        leaderboardDefListCache.get().register(new LeaderboardDefListKey(), leaderboardDefListFetchListener);
+        leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
     }
 
-    protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
     {
         return new LeaderboardCommunityLeaderboardDefKeyListListener();
     }
 
-    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
     {
-        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
         {
             recreateAdapter();
         }
@@ -463,12 +462,5 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         getDashboardNavigator().goToTab(DashboardTabType.REFERRAL);
     }
 
-    //</editor-fold>
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
-    }
     //</editor-fold>
 }

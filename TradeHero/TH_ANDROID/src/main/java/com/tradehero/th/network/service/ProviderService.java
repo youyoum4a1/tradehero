@@ -2,7 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.List;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -17,7 +17,7 @@ public interface ProviderService
 
     //<editor-fold desc="Get Provider Securities">
     @GET("/providers/{providerId}/securities")
-    List<SecurityCompactDTO> getSecurities(
+    SecurityCompactDTOList getSecurities(
             @Path("providerId") int providerId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
@@ -25,7 +25,7 @@ public interface ProviderService
 
     //<editor-fold desc="Get Provider Warrant Underlyers">
     @GET("/providers/{providerId}/warrantUnderlyers")
-    List<SecurityCompactDTO> getWarrantUnderlyers(
+    SecurityCompactDTOList getWarrantUnderlyers(
             @Path("providerId") int providerId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
@@ -33,7 +33,7 @@ public interface ProviderService
 
     //<editor-fold desc="Search Provider Securities">
     @GET("/providers/{providerId}/securities")
-    List<SecurityCompactDTO> searchSecurities(
+    SecurityCompactDTOList searchSecurities(
             @Path("providerId") int providerId,
             @Query("q") String searchString,
             @Query("page") Integer page,

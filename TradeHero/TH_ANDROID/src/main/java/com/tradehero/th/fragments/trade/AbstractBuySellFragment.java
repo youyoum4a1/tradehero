@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.thoj.route.InjectRoute;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -28,6 +29,7 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -52,8 +54,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject SecurityPositionDetailDTOUtil securityPositionDetailDTOUtil;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
+    @Inject THRouter thRouter;
 
-    protected SecurityId securityId;
+    @InjectRoute protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     protected SecurityPositionDetailDTO securityPositionDetailDTO;
     protected PositionDTOCompactList positionDTOCompactList;
@@ -130,7 +133,16 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
         Bundle args = getArguments();
         Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-        linkWith(new SecurityId(securityIdBundle), true);
+
+        if (securityIdBundle != null)
+        {
+            linkWith(new SecurityId(securityIdBundle), true);
+        }
+        else
+        {
+            thRouter.inject(this);
+            linkWith(securityId, true);
+        }
 
         UserProfileDTO profileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (profileDTO != null)

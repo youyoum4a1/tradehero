@@ -17,6 +17,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.thoj.route.InjectRoute;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -237,7 +238,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(
-                (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
+                ActionBar.DISPLAY_HOME_AS_UP
                         | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setHomeButtonEnabled(true);
         displayActionBarTitle();
@@ -286,10 +287,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         lastItemVisibleListener = new TimelineLastItemVisibleListener();
     }
 
-    private class FollowerSummaryListener implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
+    private class FollowerSummaryListener implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
         {
             updateHeroType(value);
         }
@@ -857,13 +858,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         return 0;
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 
     protected void freeFollow(UserBaseKey heroId, Callback<UserProfileDTO> followCallback)
     {

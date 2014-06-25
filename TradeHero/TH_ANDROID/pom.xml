@@ -29,10 +29,6 @@
     <!-- Compilation -->
     <java.version>1.7</java.version>
 
-    <!-- Dependencies -->
-    <android.version>4.1.1.4</android.version>
-    <android.platform>16</android.platform>
-
     <!-- Test Dependencies -->
     <junit.version>4.10</junit.version>
     <fest.version>2.0M10</fest.version>
@@ -620,26 +616,6 @@
           </execution>
         </executions>
       </plugin>
-      <!--<plugin>-->
-      <!--<groupId>org.codehaus.mojo</groupId>-->
-      <!--<artifactId>build-helper-maven-plugin</artifactId>-->
-      <!--<version>1.8</version>-->
-      <!--</plugin>-->
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
-        <configuration>
-          <failOnError>false</failOnError>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>maven-replacer-plugin</artifactId>
-        <version>1.4.0</version>
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -656,7 +632,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.3.2</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
@@ -665,17 +640,11 @@
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>android-maven-plugin</artifactId>
-        <version>3.7.0</version>
         <configuration>
-          <sdk>
-            <!-- platform or api level (api level 14 = platform 4.0)-->
-            <platform>${android.platform}</platform>
-          </sdk>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
         </configuration>
         <extensions>true</extensions>
       </plugin>
-
 
       <plugin>
         <groupId>com.crashlytics</groupId>

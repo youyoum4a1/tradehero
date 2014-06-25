@@ -2,8 +2,13 @@ package com.tradehero.th.utils;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -15,38 +20,35 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
+import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowWebView;
+import org.robolectric.shadows.ShadowWebViewNew;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricMavenTestRunner.class)
+@Config(shadows = ShadowWebViewNew.class)
 public class THRouterTest
 {
-    public static final String USER_TIMELINE = "user/:userId";
-    public static final String USER_ME = "user/me";
-    public static final String STORE = "store";
-    public static final String PORTFOLIO_POSITION = "user/:userId/portfolio/:portfolioId";
     public static final String POSITION_TRADE_HISTORY = "user/:userId/portfolio/:portfolioId/position/:positionId";
-    public static final String SETTING = "settings";
     public static final String STORE_RESET_PORTFOLIO = "store/reset-portfolio";
     public static final String RESET_PORTFOLIO = "reset-portfolio";
-    public static final String SECURITY = "security/:securityId_:exchange_:securitySymbol";
-    public static final String PROVIDER_LIST = "providers";
-    public static final String PROVIDER = "providers/:providerId";
-    public static final String PROVIDER_ENROLL = "providers-enroll/:providerId";
-    public static final String PROVIDER_ENROLL_WITH_PAGE = "providers-enroll/:providerId/pages/:encodedUrl";
     public static final String REFER_FRIENDS = "refer-friends";
-    public static final String NOTIFICATION = "notifications";
-    public static final String TRENDING = "trending-securities";
-    public static final String MESSAGE = "messages";
 
     private DashboardNavigator dashboardNavigator;
     @Inject THRouter thRouter;
+    @Inject ProviderCache providerCache;
+    @Inject ProviderUtil providerUtil;
+    @Inject CurrentUserId currentUserId;
 
     @Before public void setUp()
     {
@@ -58,19 +60,21 @@ public class THRouterTest
     //region Timeline
     @Test public void shouldOpenUserTimelineForUserProfileRoute()
     {
-        thRouter.mapFragment(USER_TIMELINE, PushableTimelineFragment.class);
-
+        // suspend to prevent loader from being run along with uiThread in robolectric
+        Robolectric.getBackgroundScheduler().pause();
         thRouter.open("user/108805");
 
+        Robolectric.runBackgroundTasks();
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(PushableTimelineFragment.class);
     }
 
     @Test public void shouldOpenOwnTimelineForMeRoute()
     {
-        thRouter.mapFragment(USER_ME, MeTimelineFragment.class);
-
+        // suspend to prevent loader from being run along with uiThread in robolectric
+        Robolectric.getBackgroundScheduler().pause();
         thRouter.open("user/me");
 
+        Robolectric.runBackgroundTasks();
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(MeTimelineFragment.class);
     }
     //endregion
@@ -78,8 +82,6 @@ public class THRouterTest
     //region Portfolios & Positions
     @Test public void shouldGoToPositionListOfGivenPortfolio()
     {
-        thRouter.mapFragment(PORTFOLIO_POSITION, PositionListFragment.class);
-
         thRouter.open("/user/108805/portfolio/883124");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(PositionListFragment.class);
@@ -98,8 +100,6 @@ public class THRouterTest
     //region Store
     @Test public void shouldOpenStoreScreenForStoreRoute()
     {
-        thRouter.mapFragment(STORE, StoreScreenFragment.class);
-
         thRouter.open("store");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
     }
@@ -108,16 +108,15 @@ public class THRouterTest
     {
         // have something to say
         thRouter.mapFragment(STORE_RESET_PORTFOLIO, null);
-
         thRouter.mapFragment(RESET_PORTFOLIO, null);
+
+        assert(false);
     }
     //endregion
 
     //region Settings
     @Test public void shouldGoToSettingScreen()
     {
-        thRouter.mapFragment(SETTING, SettingsFragment.class);
-
         thRouter.open("settings");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(SettingsFragment.class);
     }
@@ -126,7 +125,6 @@ public class THRouterTest
     //region Security
     @Test public void shouldOpenSecurityScreen()
     {
-        thRouter.mapFragment(SECURITY, BuySellFragment.class);
         thRouter.open("security/4_NASDAQ_AAPL");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(BuySellFragment.class);
@@ -136,12 +134,13 @@ public class THRouterTest
     //region Providers
     @Test public void shouldOpenProviderListScreen()
     {
-        thRouter.mapFragment(PROVIDER_LIST, LeaderboardCommunityFragment.class);
+        thRouter.open("providers");
+
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(LeaderboardCommunityFragment.class);
     }
 
     @Test public void shouldOpenProviderScreen()
     {
-        thRouter.mapFragment(PROVIDER, MainCompetitionFragment.class);
         thRouter.open("providers/23");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(MainCompetitionFragment.class);
@@ -149,19 +148,32 @@ public class THRouterTest
 
     @Test public void shouldOpenProviderEnrollmentScreen()
     {
-        thRouter.mapFragment(PROVIDER_ENROLL, WebViewFragment.class);
-        thRouter.open("providers-enroll/23");
+        ProviderDTO providerDTO = new ProviderDTO();
+        providerDTO.id = 23;
+        ProviderId providerId = providerDTO.getProviderId();
+        providerCache.put(providerId, providerDTO);
 
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(WebViewFragment.class);
-        // assertWebPage...
+        currentUserId.set(108805);
+
+        thRouter.open("providers-enroll/" + providerId.key);
+
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
+
+        CompetitionWebViewFragment competitionWebViewFragment = (CompetitionWebViewFragment) dashboardNavigator.getCurrentFragment();
+        assertThat(competitionWebViewFragment.getWebView()).isNotNull();
+
+        ShadowWebView shadowWebView = shadowOf(competitionWebViewFragment.getWebView());
+        String landingPage = providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(landingPage);
     }
 
     @Test public void shouldOpenProviderEnrollmentWithSpecificPage()
     {
-        thRouter.mapFragment(PROVIDER_ENROLL_WITH_PAGE, WebViewFragment.class);
+        // providers-enroll/:providerId/pages/:encodedUrl
+        //thRouter.mapFragment(PROVIDER_ENROLL_WITH_PAGE, WebViewFragment.class);
         thRouter.open("providers-enroll/22/pages/http:%2F%2Fgoogle.com");
 
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(WebViewFragment.class);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
         // assertWebPage should be google.com
     }
     //endregion
@@ -176,24 +188,24 @@ public class THRouterTest
 
     @Test public void shouldOpenNotificationCenter()
     {
-        thRouter.mapFragment(NOTIFICATION, UpdateCenterFragment.class);
-
         thRouter.open("notifications");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(UpdateCenterFragment.class);
+
+        UpdateCenterFragment updateCenterFragment = (UpdateCenterFragment) dashboardNavigator.getCurrentFragment();
+        assertThat(updateCenterFragment.getCurrentFragment()).isInstanceOf(NotificationsCenterFragment.class);
     }
 
     @Test public void shouldOpenMessageScreen()
     {
-        thRouter.mapFragment(MESSAGE, UpdateCenterFragment.class);
-
         thRouter.open("messages");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(UpdateCenterFragment.class);
+
+        UpdateCenterFragment updateCenterFragment = (UpdateCenterFragment) dashboardNavigator.getCurrentFragment();
+        assertThat(updateCenterFragment.getCurrentFragment()).isInstanceOf(MessagesCenterFragment.class);
     }
 
     @Test public void shouldOpenTrendingScreen()
     {
-        thRouter.mapFragment(TRENDING, TrendingFragment.class);
-
         thRouter.open("trending-securities");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(TrendingFragment.class);
     }

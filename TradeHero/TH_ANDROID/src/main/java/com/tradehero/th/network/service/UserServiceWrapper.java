@@ -24,6 +24,7 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
@@ -31,6 +32,7 @@ import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
@@ -52,6 +54,7 @@ import retrofit.client.Response;
     @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
     @NotNull private final Lazy<HeroListCache> heroListCache;
     @NotNull private final GetPositionsCache getPositionsCache;
+    @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
 
     @Inject public UserServiceWrapper(
             @NotNull UserService userService,
@@ -59,7 +62,8 @@ import retrofit.client.Response;
             @NotNull UserProfileCache userProfileCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
-            @NotNull GetPositionsCache getPositionsCache)
+            @NotNull GetPositionsCache getPositionsCache,
+            @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -67,6 +71,7 @@ import retrofit.client.Response;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
+        this.leaderboardFriendsCache = leaderboardFriendsCache;
     }
 
     //<editor-fold desc="DTO Processors">
@@ -387,7 +392,7 @@ import retrofit.client.Response;
         {
             return searchUsers((SearchUserListType) key);
         }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+        throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
     protected List<UserSearchResultDTO> searchUsers(SearchUserListType key)
@@ -405,7 +410,7 @@ import retrofit.client.Response;
         {
             return searchUsers((SearchUserListType) key, callback);
         }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+        throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
     protected MiddleCallback<List<UserSearchResultDTO>> searchUsers(SearchUserListType key, Callback<List<UserSearchResultDTO>> callback)
@@ -603,14 +608,20 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
+
+    protected DTOProcessor<Response> createDTOProcessorFriendInvited()
+    {
+        return new DTOProcessorFriendInvited(this.leaderboardFriendsCache.get());
+    }
+
     public Response inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO)
     {
-        return userService.inviteFriends(userKey.key, inviteFormDTO);
+        return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
     }
 
     public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorFriendInvited());
         userServiceAsync.inviteFriends(userKey.key, inviteFormDTO, middleCallback);
         return middleCallback;
     }

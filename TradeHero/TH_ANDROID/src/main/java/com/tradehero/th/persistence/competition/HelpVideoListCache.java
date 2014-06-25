@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.competition;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.HelpVideoIdList;
 import com.tradehero.th.api.competition.key.HelpVideoId;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-@Singleton public class HelpVideoListCache extends StraightDTOCache<HelpVideoListKey, HelpVideoIdList>
+@Singleton public class HelpVideoListCache extends StraightDTOCacheNew<HelpVideoListKey, HelpVideoIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -32,7 +32,7 @@ import timber.log.Timber;
     }
     //</editor-fold>
 
-    @Override protected HelpVideoIdList fetch(@NotNull HelpVideoListKey key) throws Throwable
+    @Override public HelpVideoIdList fetch(@NotNull HelpVideoListKey key) throws Throwable
     {
         return putInternal(key, providerServiceWrapper.getHelpVideos(key));
     }

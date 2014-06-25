@@ -12,8 +12,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -272,8 +272,8 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
         //THToast.show(R.string.invite_friend_request_sent);
         if (callback != null)
         {
-            // TODO
-            callback.success(null, null);
+            //TODO
+            callback.success();
         }
     }
 }

@@ -119,6 +119,6 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
 
     @Override public String toString()
     {
-        return String.format("[key=%s]", key);
+        return String.format("[%s key=%s]", getClass(), key);
     }
 }

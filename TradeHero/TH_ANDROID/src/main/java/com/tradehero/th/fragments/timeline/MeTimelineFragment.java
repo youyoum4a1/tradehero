@@ -91,11 +91,6 @@ public class MeTimelineFragment extends TimelineFragment
         portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(currentUserId.toUserBaseKey());
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
-    }
-
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_timeline;

@@ -3,9 +3,9 @@ package com.tradehero.th.persistence;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.competition.key.ProviderListKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
@@ -218,24 +218,29 @@ import javax.inject.Singleton;
         serverEndpointPreference.delete();
     }
 
-    // TODO split between those that need authentication and those that do not
-    public void initialPrefetches()
+    public void anonymousPrefetches()
     {
         preFetchExchanges();
-        preFetchWatchlist();
-        preFetchProviders();
-
-        // TODO reinstate when this cache is ported to DTOCacheNew
-//        preFetchTrending();
-        // It would be too heavy on the server as we now jump first to Trending.
-
-        preFetchAlerts();
-        preFetchTranslationToken();
+        preFetchTrending();
     }
-    
+
     public void preFetchExchanges()
     {
         exchangeListCache.get().getOrFetchAsync(new ExchangeListType());
+    }
+
+    public void preFetchTrending()
+    {
+        // TODO Make it take care of the users's default stock exchange.
+        this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+    }
+
+    public void initialPrefetches()
+    {
+        preFetchWatchlist();
+        preFetchProviders();
+
+        conveniencePrefetches(); // TODO move them so time after the others
     }
     
     public void preFetchWatchlist()
@@ -248,18 +253,25 @@ import javax.inject.Singleton;
         this.providerListCache.get().autoFetch(new ProviderListKey());
     }
 
-    public void preFetchTrending()
+    public void conveniencePrefetches()
     {
-        this.securityCompactListCache.get().autoFetch(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+        preFetchAlerts();
+        preFetchTranslationToken();
+        preFetchLeaderboardDefs();
     }
 
     public void preFetchAlerts()
     {
-        alertCompactListCache.get().autoFetch(currentUserId.toUserBaseKey());
+        alertCompactListCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     public void preFetchTranslationToken()
     {
         translationTokenCache.get().getOrFetchAsync(new TranslationTokenKey());
+    }
+
+    public void preFetchLeaderboardDefs()
+    {
+        leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
     }
 }

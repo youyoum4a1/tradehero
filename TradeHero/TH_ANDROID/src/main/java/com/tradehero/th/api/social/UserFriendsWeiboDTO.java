@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import com.tradehero.th.R;
 import org.jetbrains.annotations.NotNull;
 
 public class UserFriendsWeiboDTO extends UserFriendsDTO
@@ -15,6 +16,11 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
         super();
     }
     //</editor-fold>
+
+    @Override public int getNetworkLabelImage()
+    {
+        return R.drawable.icn_weibo_round;
+    }
 
     @Override public String getProfilePictureURL()
     {

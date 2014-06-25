@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import java.lang.ref.WeakReference;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -32,7 +33,16 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return new PartialCacheValue();
     }
 
-    @Override public DTOType put(DTOKeyType key, DTOType value)
+    @Override public boolean isValid(@NotNull DTOType value)
+    {
+        if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    @Override public DTOType put(@NotNull DTOKeyType key, @NotNull DTOType value)
     {
         CacheValue<DTOKeyType, DTOType> cacheValue = this.getOrCreateCacheValue(key);
         DTOType previous = cacheValue.getValue();

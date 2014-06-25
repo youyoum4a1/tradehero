@@ -1,16 +1,12 @@
 package com.tradehero.th.persistence.position;
 
-import com.tradehero.common.persistence.PartialDTOCache;
-import com.tradehero.common.persistence.THLruCache;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.position.PositionDTOKey;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import com.tradehero.th.network.service.PositionServiceWrapper;
@@ -18,19 +14,16 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 
-@Singleton public class GetPositionsCache extends PartialDTOCache<GetPositionsDTOKey, GetPositionsDTO>
+@Singleton public class GetPositionsCache extends StraightCutDTOCacheNew<GetPositionsDTOKey, GetPositionsDTO, GetPositionsCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    // We need to compose here, instead of inheritance, otherwise we get a compile error regarding erasure on put and put.
-    @NotNull private final THLruCache<GetPositionsDTOKey, GetPositionsCutDTO> lruCache;
     @NotNull private final Lazy<PositionServiceWrapper> positionServiceWrapper;
     @NotNull private final Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
     @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
@@ -64,8 +57,7 @@ import retrofit.RetrofitError;
             @NotNull Lazy<PositionCache> filedPositionCache,
             @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
-        super();
-        lruCache = new THLruCache<>(maxSize);
+        super(maxSize);
         this.positionServiceWrapper = positionServiceWrapper;
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
         this.securityCompactCache = securityCompactCache;
@@ -76,7 +68,7 @@ import retrofit.RetrofitError;
     //</editor-fold>
 
     @NotNull
-    protected GetPositionsDTO fetch(@NotNull final GetPositionsDTOKey key) throws RetrofitError
+    public GetPositionsDTO fetch(@NotNull final GetPositionsDTOKey key) throws RetrofitError
     {
         if (key instanceof OwnedPortfolioId)
         {
@@ -89,17 +81,18 @@ import retrofit.RetrofitError;
         throw new IllegalArgumentException("Unhandled key type " + key.getClass());
     }
 
-    @Nullable
-    @Override public GetPositionsDTO get(@NotNull final GetPositionsDTOKey key)
+    @NotNull @Override protected GetPositionsCutDTO cutValue(@NotNull GetPositionsDTOKey key, @NotNull GetPositionsDTO value)
     {
-        final GetPositionsCutDTO getPositionsCutDTO = this.lruCache.get(key);
-        if (getPositionsCutDTO == null)
+        return new GetPositionsCutDTO(value, securityCompactCache.get(), filedPositionCache.get());
+    }
+
+    @Nullable @Override protected GetPositionsDTO inflateValue(@NotNull GetPositionsDTOKey key, @Nullable GetPositionsCutDTO cutValue)
+    {
+        if (cutValue == null)
         {
             return null;
         }
-        return getPositionsCutDTO.create(
-                securityCompactCache.get(),
-                filedPositionCache.get());
+        return cutValue.create(securityCompactCache.get(), filedPositionCache.get());
     }
 
     @Nullable
@@ -110,17 +103,8 @@ import retrofit.RetrofitError;
         // We invalidate the previous list of positions before it get updated
         invalidateMatchingPositionCache(get(key));
 
-        GetPositionsDTO previous = null;
-        GetPositionsCutDTO previousCut = lruCache.put(
-                key,
-                new GetPositionsCutDTO(
-                        value,
-                        securityCompactCache.get(),
-                        filedPositionCache.get()));
-        if (previousCut != null)
-        {
-            previous = previousCut.create(securityCompactCache.get(), filedPositionCache.get());
-        }
+        GetPositionsDTO previous = super.put(key, value);
+
         if (key instanceof OwnedPortfolioId)
         {
             portfolioCache.get().autoFetch((OwnedPortfolioId) key);
@@ -135,7 +119,7 @@ import retrofit.RetrofitError;
      */
     public void invalidate(@NotNull final UserBaseKey userBaseKey)
     {
-        for (@NotNull GetPositionsDTOKey key : lruCache.snapshot().keySet())
+        for (@NotNull GetPositionsDTOKey key : snapshot().keySet())
         {
             if (key instanceof OwnedPortfolioId && ((OwnedPortfolioId) key).userId.equals(userBaseKey.key))
             {
@@ -161,12 +145,7 @@ import retrofit.RetrofitError;
     @Override public void invalidate(@NotNull final GetPositionsDTOKey key)
     {
         invalidateMatchingPositionCache(get(key));
-        lruCache.remove(key);
-    }
-
-    @Override public void invalidateAll()
-    {
-        lruCache.evictAll();
+        super.invalidate(key);
     }
 
     protected void invalidateMatchingPositionCache(@Nullable final GetPositionsDTO value)
@@ -180,42 +159,6 @@ import retrofit.RetrofitError;
                     filedPositionCache.get().invalidate(positionDTO.getPositionDTOKey());
                 }
             }
-        }
-    }
-
-    private static class GetPositionsCutDTO
-    {
-        @Nullable public final List<PositionDTOKey> ownedPositionIds;
-        @Nullable public final List<SecurityId> securityIds;
-        public final int openPositionsCount;
-        public final int closedPositionsCount;
-
-        public GetPositionsCutDTO(
-                @NotNull GetPositionsDTO getPositionsDTO,
-                @NotNull SecurityCompactCache securityCompactCache,
-                @NotNull PositionCache positionCache)
-        {
-            positionCache.put(getPositionsDTO.positions);
-            this.ownedPositionIds = PositionDTO.getFiledPositionIds(getPositionsDTO.positions);
-
-            securityCompactCache.put(getPositionsDTO.securities);
-            this.securityIds = SecurityCompactDTO.getSecurityIds(getPositionsDTO.securities);
-            
-            this.openPositionsCount = getPositionsDTO.openPositionsCount;
-            this.closedPositionsCount = getPositionsDTO.closedPositionsCount;
-        }
-
-        @NotNull
-        public GetPositionsDTO create(
-                @NotNull SecurityCompactCache securityCompactCache,
-                @NotNull PositionCache positionCache)
-        {
-            return new GetPositionsDTO(
-                    positionCache.get(ownedPositionIds),
-                    securityCompactCache.get(securityIds),
-                    openPositionsCount,
-                    closedPositionsCount
-            );
         }
     }
 }
