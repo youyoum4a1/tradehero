@@ -2,8 +2,13 @@ package com.tradehero.th.utils;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
@@ -17,16 +22,21 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.persistence.competition.ProviderCache;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowWebView;
+import org.robolectric.shadows.ShadowWebViewNew;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricMavenTestRunner.class)
+@Config(shadows = ShadowWebViewNew.class)
 public class THRouterTest
 {
     public static final String POSITION_TRADE_HISTORY = "user/:userId/portfolio/:portfolioId/position/:positionId";
@@ -36,6 +46,9 @@ public class THRouterTest
 
     private DashboardNavigator dashboardNavigator;
     @Inject THRouter thRouter;
+    @Inject ProviderCache providerCache;
+    @Inject ProviderUtil providerUtil;
+    @Inject CurrentUserId currentUserId;
 
     @Before public void setUp()
     {
@@ -135,12 +148,23 @@ public class THRouterTest
 
     @Test public void shouldOpenProviderEnrollmentScreen()
     {
-        // providers-enroll/:providerId
-        //thRouter.mapFragment(PROVIDER_ENROLL, WebViewFragment.class);
-        thRouter.open("providers-enroll/23");
+        ProviderDTO providerDTO = new ProviderDTO();
+        providerDTO.id = 23;
+        ProviderId providerId = providerDTO.getProviderId();
+        providerCache.put(providerId, providerDTO);
 
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(WebViewFragment.class);
-        // assertWebPage...
+        currentUserId.set(108805);
+
+        thRouter.open("providers-enroll/" + providerId.key);
+
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
+
+        CompetitionWebViewFragment competitionWebViewFragment = (CompetitionWebViewFragment) dashboardNavigator.getCurrentFragment();
+        assertThat(competitionWebViewFragment.getWebView()).isNotNull();
+
+        ShadowWebView shadowWebView = shadowOf(competitionWebViewFragment.getWebView());
+        String landingPage = providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(landingPage);
     }
 
     @Test public void shouldOpenProviderEnrollmentWithSpecificPage()
@@ -149,7 +173,7 @@ public class THRouterTest
         //thRouter.mapFragment(PROVIDER_ENROLL_WITH_PAGE, WebViewFragment.class);
         thRouter.open("providers-enroll/22/pages/http:%2F%2Fgoogle.com");
 
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(WebViewFragment.class);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
         // assertWebPage should be google.com
     }
     //endregion

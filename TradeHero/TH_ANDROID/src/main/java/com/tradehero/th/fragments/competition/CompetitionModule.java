@@ -21,6 +21,7 @@ import dagger.Module;
                         ProviderVideoListFragment.class,
                         ProviderVideoListItem.class,
                         ProviderSecurityListFragment.class,
+                        CompetitionWebViewFragment.class
                 },
         complete = false,
         library = true

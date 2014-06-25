@@ -10,6 +10,7 @@ import com.tradehero.common.utils.THLog;
 import com.tradehero.th.filter.FilterModule;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionModule;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
@@ -86,7 +87,9 @@ public class Application extends PApplication
                 BuySellFragment.class,
                 StoreScreenFragment.class,
 
-                LeaderboardCommunityFragment.class
+                LeaderboardCommunityFragment.class,
+
+                CompetitionWebViewFragment.class
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
