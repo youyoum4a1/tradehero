@@ -5,7 +5,6 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
@@ -224,11 +223,7 @@ import javax.inject.Singleton;
         preFetchExchanges();
         preFetchWatchlist();
         preFetchProviders();
-
-        // TODO reinstate when this cache is ported to DTOCacheNew
-//        preFetchTrending();
-        // It would be too heavy on the server as we now jump first to Trending.
-
+        //preFetchTrending();
         preFetchAlerts();
         preFetchTranslationToken();
     }
@@ -250,7 +245,8 @@ import javax.inject.Singleton;
 
     public void preFetchTrending()
     {
-        this.securityCompactListCache.get().autoFetch(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+        // TODO Make it take care of the users's default stock exchange.
+        this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
     }
 
     public void preFetchAlerts()
