@@ -5,11 +5,13 @@ import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
+import java.util.ArrayList;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,17 +19,32 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class MainCompetitionFragmentTest
 {
     private DashboardNavigator dashboardNavigator;
     @Inject ProviderCache providerCache;
+    private ProviderId providerId;
 
     @Before public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
         dashboardNavigator = activity.getDashboardNavigator();
+
+        providerId = new ProviderId(23);
+        // creating mock object for providerDTO
+        ProviderDTO mockProviderDTO = new ProviderDTO();
+        mockProviderDTO.id = providerId.key;
+        mockProviderDTO.associatedPortfolio = mock(PortfolioCompactDTO.class);
+
+        AdDTO adDTO = new AdDTO();
+        adDTO.redirectUrl = "http://www.google.com";
+        mockProviderDTO.advertisements = new ArrayList<>();
+        mockProviderDTO.advertisements.add(adDTO);
+
+        providerCache.put(providerId, mockProviderDTO);
     }
 
     @Test public void shouldAbleToNavigateToMainCompetitionFragmentWithOutApplicablePortfolioId()
@@ -48,9 +65,7 @@ public class MainCompetitionFragmentTest
     {
         Bundle args = new Bundle();
 
-        ProviderId providerId = new ProviderId(23);
         MainCompetitionFragment.putProviderId(args, providerId);
-
         MainCompetitionFragment mainCompetitionFragment = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
 
         AbsListView competitionListView = mainCompetitionFragment.listView;
@@ -78,12 +93,9 @@ public class MainCompetitionFragmentTest
     @Test public void shouldGoToWebFragmentAfterClickOnAds()
     {
         Bundle args = new Bundle();
-
-        ProviderId providerId = new ProviderId(23);
         MainCompetitionFragment.putProviderId(args, providerId);
 
         ProviderDTO providerDTO = providerCache.get(providerId);
-        assertThat(providerDTO).isNotNull();
         // make sure that we has advertisement before testing Ads Cell
         assertThat(providerDTO.hasAdvertisement()).isTrue();
 
@@ -106,11 +118,10 @@ public class MainCompetitionFragmentTest
             }
         }
 
-        providerDTO.advertisements.get(0).redirectUrl = "http://www.google.com";
         competitionListView.performItemClick(
                 competitionListAdapter.getView(firstAdsButtonPosition, null, null),
                 firstAdsButtonPosition,
                 competitionListAdapter.getItemId(firstAdsButtonPosition));
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(WebViewFragment.class);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
     }
 }

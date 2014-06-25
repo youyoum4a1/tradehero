@@ -313,7 +313,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             Bundle args = new Bundle();
             String url = adDTO.redirectUrl + String.format("&userId=%s", currentUserId.get());
             args.putString(WebViewFragment.BUNDLE_KEY_URL, url);
-            getDashboardNavigator().pushFragment(WebViewFragment.class, args);
+            getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         }
     }
 
