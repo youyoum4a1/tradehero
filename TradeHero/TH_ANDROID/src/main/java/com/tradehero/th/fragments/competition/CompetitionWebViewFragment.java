@@ -10,6 +10,8 @@ import com.thoj.route.InjectRoute;
 import com.thoj.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
@@ -21,7 +23,9 @@ import javax.inject.Inject;
 public class CompetitionWebViewFragment extends BaseWebViewFragment
 {
     @InjectRoute protected ProviderId providerId;
+    @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
+    @Inject ProviderUtil providerUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -53,6 +57,15 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
+
+    @Override public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        String providerLandingPage = providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
+
+        loadUrl(providerLandingPage);
+    }
 
     @Override protected void onProgressChanged(WebView view, int newProgress)
     {
