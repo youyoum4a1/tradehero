@@ -178,18 +178,22 @@
   <string name="invite_social_friend">Invite %s Friend</string>
   <string name="search_social_friend_hint">Search your friend</string>
 
-    <string name="social_friend_empty">Sorry,no friends</string>
-    <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
-    <string name="invite_from_weibo">Invite from Weibo</string>
-    <string name="invite_from_linkedIn">Invite from LinkedIn</string>
-    <string name="invite_from_twitter">Invite from Twitter</string>
-    <string name="invite_from_facebook">Invite from Facebook</string>
-    <string name="invite">Invite</string>
+  <string name="social_friend_empty">Sorry,no friends</string>
+  <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
+  <string name="invite_from_weibo">Invite from Weibo</string>
+  <string name="invite_from_linkedIn">Invite from LinkedIn</string>
+  <string name="invite_from_twitter">Invite from Twitter</string>
+  <string name="invite_from_facebook">Invite from Facebook</string>
+  <string name="invite">Invite</string>
+
+  <string name="social_no_friend_to_invite">No user to Invite</string>
+  <string name="social_no_friend_to_follow">No user to follow</string>
 
   <plurals name="inbox_notification_title">
     <item quantity="one">1 New Message</item>
     <item quantity="other">%d <b>New</b> Messages</item>
   </plurals>
+
   <string name="inbox_summary">+%d more</string>
   <string name="notification_unread_messages">You have %d unread messages</string>
   <string name="notification_new_activities">You have %d new activities</string>
