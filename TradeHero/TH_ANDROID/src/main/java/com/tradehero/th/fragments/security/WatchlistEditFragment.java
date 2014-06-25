@@ -39,6 +39,7 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import timber.log.Timber;
 
@@ -51,7 +52,7 @@ public class WatchlistEditFragment extends DashboardFragment
     private TextView securityDesc;
     private EditText watchPrice;
     private EditText watchQuantity;
-    private SecurityId securityKeyId;
+    @Nullable private SecurityId securityKeyId;
     private TextView watchAction;
     private TextView deleteButton;
     private ProgressDialog progressBar;
@@ -114,11 +115,10 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void checkDeleteButtonEnable()
     {
-        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
-        if (watchlistPositionDTO == null)
+        if (securityKeyId != null)
         {
-            //deleteButton.setEnabled(false);
-            Timber.d("checkDeleteButtonEnable watchlistPositionDTO:%s ",watchlistPositionDTO);
+            WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
+            deleteButton.setEnabled(watchlistPositionDTO != null);
         }
     }
 
@@ -303,6 +303,7 @@ public class WatchlistEditFragment extends DashboardFragment
         if (andDisplay)
         {
             displaySecurityTitle();
+            checkDeleteButtonEnable();
         }
     }
 

@@ -107,7 +107,7 @@ import retrofit.RetrofitError;
 
         if (key instanceof OwnedPortfolioId)
         {
-            portfolioCache.get().autoFetch((OwnedPortfolioId) key);
+            portfolioCache.get().getOrFetchAsync((OwnedPortfolioId) key);
         }
 
         return previous;

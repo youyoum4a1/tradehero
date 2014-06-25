@@ -513,7 +513,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void linkWith(OwnedPortfolioIdList ownedPortfolioIdList, boolean andDisplay)
     {
         this.portfolioIdList = ownedPortfolioIdList;
-        portfolioCache.get().autoFetch(ownedPortfolioIdList, (OwnedPortfolioId) null);
+        if (ownedPortfolioIdList != null)
+        {
+            for(OwnedPortfolioId ownedPortfolioId: ownedPortfolioIdList)
+            {
+                portfolioCache.get().getOrFetchAsync(ownedPortfolioId);
+            }
+        }
 
         if (andDisplay)
         {
