@@ -56,7 +56,7 @@
           android:src="@null"
           android:contentDescription="@null"
           android:layout_toLeftOf="@id/in_watchlist_indicator"
-          tools:background="@android:color/darker_gray"
+          android:background="@drawable/basic_transparent_selector"
           tools:layout_width="30dp"
           tools:layout_height="30dp"
           />

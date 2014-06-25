@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="wrap_content"
+    android:background="@drawable/basic_white_selector">
 
   <com.tradehero.common.widget.ColorIndicator
       android:id="@+id/color_indicator"
@@ -36,6 +36,7 @@
           android:layout_height="48dp"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
+          android:layout_gravity="center_vertical"
           android:src="@drawable/lock"
           />
 

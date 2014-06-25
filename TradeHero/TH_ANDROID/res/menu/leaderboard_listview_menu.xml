@@ -12,10 +12,11 @@
       />
 
   <item
-    android:id="@+id/button_leaderboard_filter"
-    android:icon="@drawable/filter"
-    android:showAsAction="always"
-    android:visible="true"
-    />
+      android:id="@+id/button_leaderboard_filter"
+      android:title="@string/leaderboard_filter_menu_title"
+      android:icon="@drawable/filter"
+      android:showAsAction="always"
+      android:visible="true"
+      />
 
 </menu>

@@ -79,14 +79,14 @@
           android:text="@string/continue_free_follow"
           android:textSize="14sp"
           android:textColor="#77a4fd"
-          android:background="@color/white"/>
+          android:background="@drawable/basic_white_selector"/>
 
       <Button
           android:id="@+id/btn_premium"
           android:layout_height="match_parent"
           android:layout_width="0dp"
           android:layout_weight="1"
-          android:background="#ffb0e872"
+          android:background="@drawable/basic_green_selector"
           android:text="@string/upgrade"
           android:textSize="16sp"
           android:textColor="@color/black"
@@ -109,7 +109,7 @@
         android:padding="@dimen/common_margin_10"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:background="#cacaca"
+        android:background="@drawable/basic_light_grey_selector"
         android:orientation="vertical">
 
       <TextView
@@ -129,7 +129,7 @@
         android:id="@+id/premium_follow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#abe874"
+        android:background="@drawable/basic_green_selector"
         android:padding="@dimen/common_margin_10"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"

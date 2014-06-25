@@ -14,6 +14,6 @@
       android:text="@string/follow"
       android:textStyle="bold"
       android:gravity="center"
-      android:textColor="@color/actionbar_menu_text_color"
+      android:textColor="@color/white"
       android:contentDescription="@null"/>
 </merge>
