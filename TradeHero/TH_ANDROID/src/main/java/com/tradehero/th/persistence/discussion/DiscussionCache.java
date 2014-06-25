@@ -8,9 +8,9 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
-import com.tradehero.th.persistence.news.NewsItemCache;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,20 +20,20 @@ import org.jetbrains.annotations.NotNull;
 public class DiscussionCache extends StraightDTOCacheNew<DiscussionKey, AbstractDiscussionCompactDTO>
 {
     @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
-    @NotNull private final NewsItemCache newsItemCache;
+    @NotNull private final NewsServiceWrapper newsServiceWrapper;
     @NotNull private final UserTimelineServiceWrapper timelineServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public DiscussionCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            @NotNull NewsItemCache newsItemCache,
+            @NotNull NewsServiceWrapper newsServiceWrapper,
             @NotNull UserTimelineServiceWrapper userTimelineServiceWrapper,
             @NotNull DiscussionServiceWrapper discussionServiceWrapper)
     {
         super(maxSize.get());
 
         this.discussionServiceWrapper = discussionServiceWrapper;
-        this.newsItemCache = newsItemCache;
+        this.newsServiceWrapper = newsServiceWrapper;
         this.timelineServiceWrapper = userTimelineServiceWrapper;
     }
     //</editor-fold>
@@ -46,7 +46,7 @@ public class DiscussionCache extends StraightDTOCacheNew<DiscussionKey, Abstract
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
-            return newsItemCache.getOrFetch((NewsItemDTOKey) discussionKey);
+            return newsServiceWrapper.getSecurityNewsDetail(discussionKey.id);
         }
         return discussionServiceWrapper.getComment(discussionKey);
     }
