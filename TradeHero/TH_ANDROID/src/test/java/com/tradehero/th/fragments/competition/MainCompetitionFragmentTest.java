@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
+import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.ListAdapter;
 import com.tradehero.RobolectricMavenTestRunner;
@@ -8,7 +9,9 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import java.util.ArrayList;
@@ -17,15 +20,23 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowWebView;
+import org.robolectric.shadows.ShadowWebViewNew;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricMavenTestRunner.class)
+@Config( shadows = ShadowWebViewNew.class )
 public class MainCompetitionFragmentTest
 {
+    private static final String TEST_ADS_WEB_URL = "http://www.google.com";
     private DashboardNavigator dashboardNavigator;
     @Inject ProviderCache providerCache;
+    @Inject ProviderUtil providerUtil;
+    @Inject CurrentUserId currentUserId;
     private ProviderId providerId;
 
     @Before public void setUp()
@@ -40,7 +51,7 @@ public class MainCompetitionFragmentTest
         mockProviderDTO.associatedPortfolio = mock(PortfolioCompactDTO.class);
 
         AdDTO adDTO = new AdDTO();
-        adDTO.redirectUrl = "http://www.google.com";
+        adDTO.redirectUrl = TEST_ADS_WEB_URL;
         mockProviderDTO.advertisements = new ArrayList<>();
         mockProviderDTO.advertisements.add(adDTO);
 
@@ -123,5 +134,12 @@ public class MainCompetitionFragmentTest
                 firstAdsButtonPosition,
                 competitionListAdapter.getItemId(firstAdsButtonPosition));
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
+
+        CompetitionWebViewFragment competitionWebViewFragment = (CompetitionWebViewFragment) dashboardNavigator.getCurrentFragment();
+
+        WebView webView = competitionWebViewFragment.getWebView();
+        ShadowWebView shadowWebView = shadowOf(webView);
+        assertThat(webView).isNotNull();
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&', currentUserId.toUserBaseKey()));
     }
 }

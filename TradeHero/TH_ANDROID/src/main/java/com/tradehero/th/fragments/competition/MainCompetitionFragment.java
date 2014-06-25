@@ -41,7 +41,6 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserList
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
@@ -311,8 +310,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (adDTO != null && adDTO.redirectUrl != null)
         {
             Bundle args = new Bundle();
-            String url = adDTO.redirectUrl + String.format("&userId=%s", currentUserId.get());
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, url);
+            String url = providerUtil.appendUserId(adDTO.redirectUrl, '&', currentUserId.toUserBaseKey());
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, url);
             getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         }
     }

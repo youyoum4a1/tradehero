@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -158,5 +159,11 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         {
             Timber.d("notifyParentIntentPassed listener is null");
         }
+    }
+
+    @VisibleForTesting
+    public WebView getWebView()
+    {
+        return webView;
     }
 }

@@ -76,12 +76,24 @@ import javax.inject.Singleton;
 
     public String appendProviderId(String url, char separator, ProviderId providerId)
     {
-        return url + separator + QUERY_KEY_PROVIDER_ID + "=" + providerId.key;
+        return appendToUrl(url, separator + QUERY_KEY_PROVIDER_ID + "=" + providerId.key);
     }
 
     public String appendUserId(String url, char separator, UserBaseKey userBaseKey)
     {
-        return url + separator + QUERY_KEY_USER_ID + "=" + userBaseKey.key;
+        return appendToUrl(url, separator + QUERY_KEY_USER_ID + "=" + userBaseKey.key);
+    }
+
+    public String appendToUrl(String url, String forAppend)
+    {
+        if (url.contains("?") || forAppend.startsWith("?"))
+        {
+            return url + forAppend;
+        }
+        else
+        {
+            return url + "?" + forAppend;
+        }
     }
 
     public String appendShowNextButton(String url, char separator)
