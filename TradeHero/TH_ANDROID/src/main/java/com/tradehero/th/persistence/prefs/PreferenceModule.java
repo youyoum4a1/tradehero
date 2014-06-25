@@ -54,6 +54,12 @@ public class PreferenceModule
         return newPrefs;
     }
 
+    @Provides @AuthHeader String provideAuthenticationHeader(MainCredentialsPreference mainCredentialsPreference)
+    {
+        CredentialsDTO currentCredentials = mainCredentialsPreference.getCredentials();
+        return String.format("%1$s %2$s", currentCredentials.getAuthType(), currentCredentials.getAuthHeaderParameter());
+    }
+
     @Provides @Singleton @SavedCredentials StringPreference provideMainCredentialsPreference(MainCredentialsPreference mainCredentialsPreference)
     {
         return mainCredentialsPreference;
