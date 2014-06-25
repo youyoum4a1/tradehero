@@ -21,8 +21,8 @@ import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
@@ -484,6 +484,11 @@ public class FriendsInvitationFragment extends DashboardFragment
             {
                 THToast.show(R.string.invite_friend_request_error);
             }
+        }
+
+        @Override
+        public void success(){
+            handleInviteSuccess(usersToInvite);
         }
 
         @Override
