@@ -39,7 +39,6 @@ import static org.robolectric.Robolectric.shadowOf;
 @Config(shadows = ShadowWebViewNew.class)
 public class THRouterTest
 {
-    public static final String POSITION_TRADE_HISTORY = "user/:userId/portfolio/:portfolioId/position/:positionId";
     public static final String STORE_RESET_PORTFOLIO = "store/reset-portfolio";
     public static final String RESET_PORTFOLIO = "reset-portfolio";
     public static final String REFER_FRIENDS = "refer-friends";
@@ -89,8 +88,7 @@ public class THRouterTest
 
     @Test public void shouldGoToTradeHistoryOfGivenPosition()
     {
-        thRouter.mapFragment(POSITION_TRADE_HISTORY, TradeListFragment.class);
-
+        // user/:userId/portfolio/:portfolioId/position/:positionId
         thRouter.open("/user/108805/portfolio/883124/position/1610238");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(TradeListFragment.class);
