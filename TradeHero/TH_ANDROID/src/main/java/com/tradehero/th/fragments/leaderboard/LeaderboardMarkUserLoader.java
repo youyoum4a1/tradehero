@@ -50,7 +50,7 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
 
         try
         {
-            LeaderboardDTO fetched = leaderboardCache.getOrFetch(pagedLeaderboardKey);
+            LeaderboardDTO fetched = leaderboardCache.getOrFetchSync(pagedLeaderboardKey);
 
             if (fetched == null)
             {
