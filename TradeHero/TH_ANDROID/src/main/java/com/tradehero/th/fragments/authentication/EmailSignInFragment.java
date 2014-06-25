@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -24,9 +25,13 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -41,6 +46,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject Lazy<LocalyticsSession> localyticsSession;
 
     protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
 
@@ -48,6 +54,11 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().open(custom_dimensions);
+        localyticsSession.get().tagScreen(LocalyticsConstants.Login_Form);
+        localyticsSession.get().tagEvent(LocalyticsConstants.LoginFormScreen);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -117,7 +128,10 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             backButton.setOnClickListener(null);
             backButton = null;
         }
-
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().close(custom_dimensions);
+        localyticsSession.get().upload();
         super.onDestroyView();
     }
 

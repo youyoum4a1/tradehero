@@ -106,6 +106,7 @@ public class SplashActivity extends SherlockActivity
         List custom_dimensions = new ArrayList();
         custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
         localyticsSession.get().open(custom_dimensions);
+        localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
         AppEventsLogger.activateApp(this, facebookAppId);
         tapStream.get().fireEvent(
                 new Event(getString(Constants.TAP_STREAM_TYPE.openResId),
@@ -136,6 +137,7 @@ public class SplashActivity extends SherlockActivity
     protected void initialisation()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
+        localyticsSession.get().tagEvent(LocalyticsConstants.LoadingScreen);
         // TODO use Dagger to inject pref?
         SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
 
