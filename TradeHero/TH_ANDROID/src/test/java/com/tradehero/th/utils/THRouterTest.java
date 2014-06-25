@@ -1,5 +1,6 @@
 package com.tradehero.th.utils;
 
+import android.webkit.WebView;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -81,7 +82,7 @@ public class THRouterTest
     //region Portfolios & Positions
     @Test public void shouldGoToPositionListOfGivenPortfolio()
     {
-        thRouter.open("/user/108805/portfolio/883124");
+        thRouter.open("user/108805/portfolio/883124");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(PositionListFragment.class);
     }
@@ -89,7 +90,7 @@ public class THRouterTest
     @Test public void shouldGoToTradeHistoryOfGivenPosition()
     {
         // user/:userId/portfolio/:portfolioId/position/:positionId
-        thRouter.open("/user/108805/portfolio/883124/position/1610238");
+        thRouter.open("user/108805/portfolio/883124/position/1610238");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(TradeListFragment.class);
     }
@@ -165,14 +166,21 @@ public class THRouterTest
         assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(landingPage);
     }
 
-    @Test public void shouldOpenProviderEnrollmentWithSpecificPage()
+    // we won't test this anymore since this feature is deprecated
+    @Deprecated
+    public void shouldOpenProviderEnrollmentWithSpecificPage()
     {
         // providers-enroll/:providerId/pages/:encodedUrl
-        //thRouter.mapFragment(PROVIDER_ENROLL_WITH_PAGE, WebViewFragment.class);
         thRouter.open("providers-enroll/22/pages/http:%2F%2Fgoogle.com");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
-        // assertWebPage should be google.com
+
+        CompetitionWebViewFragment competitionWebViewFragment = (CompetitionWebViewFragment) dashboardNavigator.getCurrentFragment();
+        WebView webView = competitionWebViewFragment.getWebView();
+        assertThat(webView).isNotNull();
+
+        ShadowWebView shadowWebView = shadowOf(webView);
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo("http://google.com");
     }
     //endregion
 

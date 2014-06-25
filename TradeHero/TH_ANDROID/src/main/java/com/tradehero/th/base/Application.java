@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -89,7 +90,9 @@ public class Application extends PApplication
 
                 LeaderboardCommunityFragment.class,
 
-                CompetitionWebViewFragment.class
+                CompetitionWebViewFragment.class,
+
+                PositionListFragment.class
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
