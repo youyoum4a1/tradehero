@@ -19,6 +19,8 @@
       android:layout_height="wrap_content"
       android:background="@drawable/basic_transparent_selector"
       android:addStatesFromChildren="true"
+      android:layout_alignParentLeft="true"
+      android:layout_toLeftOf="@+id/header_portfolio_following_container"
       android:clickable="true"
       >
 
@@ -38,12 +40,16 @@
         android:textStyle="bold"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        tools:text="Sergio Barca"
+        android:singleLine="false"
+        android:lines="2"
+        android:maxLines="2"
+        tools:text="Sergio Barca lorem ipsum dolor amet sit"
         android:gravity="center_vertical"/>
 
   </LinearLayout>
 
   <RelativeLayout
+      android:id="@+id/header_portfolio_following_container"
       android:layout_width="121dp"
       android:layout_height="wrap_content"
       android:gravity="right"
