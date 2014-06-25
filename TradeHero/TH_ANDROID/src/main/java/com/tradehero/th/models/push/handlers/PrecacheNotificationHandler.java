@@ -38,7 +38,7 @@ public abstract class PrecacheNotificationHandler implements PushNotificationHan
                 int notificationId = Integer.parseInt(notificationIdValue);
 
                 notificationKey = new NotificationKey(notificationId);
-                notificationCache.autoFetch(notificationKey);
+                notificationCache.getOrFetchAsync(notificationKey);
             }
             catch (Exception ex)
             {
