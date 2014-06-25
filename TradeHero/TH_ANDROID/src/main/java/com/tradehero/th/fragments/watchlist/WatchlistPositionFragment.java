@@ -24,6 +24,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
@@ -34,7 +35,6 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
@@ -61,7 +61,8 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject THLocalyticsSession localyticsSession;
 
-    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistPositionFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionFetchListener;
+    private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionRefreshListener;
     private DTOCache.GetOrFetchTask<OwnedPortfolioId, PortfolioDTO> portfolioFetchTask;
 
     //@InjectView(android.R.id.list) SwipeListView watchlistListView;
@@ -94,6 +95,8 @@ public class WatchlistPositionFragment extends DashboardFragment
         gainLossModeListener = createGainLossModeListener();
         broadcastReceiver =createBroadcastReceiver();
         setOffsetRunnable = createSetOffsetRunnable();
+        userWatchlistPositionFetchListener = createWatchlistListener();
+        userWatchlistPositionRefreshListener = createRefreshWatchlistListener();
     }
 
     protected Milestone.OnCompleteListener createWatchlistRetrievedMilestoneListener()
@@ -196,22 +199,16 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected void refretchSecurityIdList()
     {
-        detachUserWatchlistFetchTask();
-        userWatchlistPositionFetchTask = userWatchlistPositionCache.getOrFetch(
-                currentUserId.toUserBaseKey(),
-                true,
-                new RefreshWatchlisListener());
-        userWatchlistPositionFetchTask.execute();
+        detachUserWatchlistRefreshTask();
+        userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionRefreshListener);
+        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
     }
 
     protected void fetchSecurityIdList()
     {
         detachUserWatchlistFetchTask();
-        userWatchlistPositionFetchTask = userWatchlistPositionCache.getOrFetch(
-                currentUserId.toUserBaseKey(),
-                true,
-                createSecurityIdListCacheListener());
-        userWatchlistPositionFetchTask.execute();
+        userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
+        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -285,6 +282,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         detachWatchlistRetrievedMilestone();
         detachUserWatchlistFetchTask();
+        detachUserWatchlistRefreshTask();
         detachPortfolioFetchTask();
         if (watchlistPortfolioHeaderView != null)
         {
@@ -330,11 +328,12 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected void detachUserWatchlistFetchTask()
     {
-        if (userWatchlistPositionFetchTask != null)
-        {
-            userWatchlistPositionFetchTask.setListener(null);
-        }
-        userWatchlistPositionFetchTask = null;
+        userWatchlistPositionCache.unregister(userWatchlistPositionFetchListener);
+    }
+
+    protected void detachUserWatchlistRefreshTask()
+    {
+        userWatchlistPositionCache.unregister(userWatchlistPositionRefreshListener);
     }
 
     protected void detachPortfolioFetchTask()
@@ -348,6 +347,8 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
+        userWatchlistPositionRefreshListener = null;
+        userWatchlistPositionFetchListener = null;
         broadcastReceiver = null;
         gainLossModeListener = null;
         setOffsetRunnable = null;
@@ -413,11 +414,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, SecurityIdList> createSecurityIdListCacheListener()
-    {
-        return new WatchlistPositionFragmentSecurityIdListCacheListener();
-    }
-
     protected DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
     {
         return new WatchlistPositionFragmentPortfolioCacheListener();
@@ -428,9 +424,14 @@ public class WatchlistPositionFragment extends DashboardFragment
         return new WatchlistPositionFragmentSwipeListViewListener();
     }
 
-    protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCache.Listener<UserBaseKey, SecurityIdList>
+    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createWatchlistListener()
     {
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
+        return new WatchlistPositionFragmentSecurityIdListCacheListener();
+    }
+
+    protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
         {
             displayWatchlist(value);
         }
@@ -442,14 +443,15 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
     }
 
-    protected class RefreshWatchlisListener implements DTOCache.Listener<UserBaseKey, SecurityIdList>
+    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createRefreshWatchlistListener()
     {
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
+        return new RefreshWatchlisListener();
+    }
+
+    protected class RefreshWatchlisListener implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
         {
-            if (fromCache)
-            {
-                return;
-            }
             watchlistPositionListView.onRefreshComplete();
             displayWatchlist(value);
         }

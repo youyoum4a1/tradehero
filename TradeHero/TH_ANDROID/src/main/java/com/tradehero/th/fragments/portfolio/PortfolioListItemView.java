@@ -13,7 +13,6 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -67,9 +66,7 @@ public class PortfolioListItemView extends RelativeLayout
     private Milestone.OnCompleteListener currentUserProfileRetrievedMilestoneListener;
 
     private DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> getPositionsListener;
-
-    private DTOCache.Listener<UserBaseKey, SecurityIdList> userWatchlistListener;
-    private DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> userWatchlistFetchTask;
+    private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistListener;
 
     //<editor-fold desc="Constructors">
     public PortfolioListItemView(Context context)
@@ -98,6 +95,7 @@ public class PortfolioListItemView extends RelativeLayout
             displayDefaultUserIcon();
         }
         getPositionsListener = createGetPositionsListener();
+        userWatchlistListener = createUserWatchlistCacheListener();
     }
 
     @Override protected void onAttachedToWindow()
@@ -110,7 +108,10 @@ public class PortfolioListItemView extends RelativeLayout
         {
             this.getPositionsListener = createGetPositionsListener();
         }
-        this.userWatchlistListener = new PortfolioListItemViewWatchedSecurityIdListListener();
+        if (userWatchlistListener == null)
+        {
+            this.userWatchlistListener = new PortfolioListItemViewWatchedSecurityIdListListener();
+        }
         if (this.userIcon != null)
         {
             this.userIcon.setOnClickListener(this);
@@ -125,8 +126,9 @@ public class PortfolioListItemView extends RelativeLayout
         detachGetPositionsCache();
         this.getPositionsListener = null;
 
-        this.userWatchlistListener = null;
         detachUserWatchlistTask();
+        this.userWatchlistListener = null;
+
         if (this.userIcon != null)
         {
             this.userIcon.setOnClickListener(null);
@@ -171,13 +173,7 @@ public class PortfolioListItemView extends RelativeLayout
 
     protected void detachUserWatchlistTask()
     {
-        DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> securityTaskCopy =
-                this.userWatchlistFetchTask;
-        if (securityTaskCopy != null)
-        {
-            securityTaskCopy.setListener(null);
-        }
-        this.userWatchlistFetchTask = null;
+        userWatchlistPositionCache.unregister(userWatchlistListener);
     }
 
     public DisplayablePortfolioDTO getDisplayablePortfolioDTO()
@@ -251,12 +247,9 @@ public class PortfolioListItemView extends RelativeLayout
                         .equals(currentUserId.toUserBaseKey()))
         {
             Timber.d("fetchWatchedSecurities launching");
-            DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList> task =
-                    this.userWatchlistPositionCache.getOrFetch(
-                            displayablePortfolioDTOCopy.userBaseDTO.getBaseKey(),
-                            userWatchlistListener);
-            this.userWatchlistFetchTask = task;
-            task.execute();
+            UserBaseKey key = displayablePortfolioDTOCopy.userBaseDTO.getBaseKey();
+            userWatchlistPositionCache.register(key, userWatchlistListener);
+            userWatchlistPositionCache.getOrFetchAsync(key);
         }
         else
         {
@@ -435,15 +428,15 @@ public class PortfolioListItemView extends RelativeLayout
         }
     }
 
-    private class PortfolioListItemViewWatchedSecurityIdListListener
-            implements DTOCache.Listener<UserBaseKey, SecurityIdList>
+    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createUserWatchlistCacheListener()
     {
-        public PortfolioListItemViewWatchedSecurityIdListListener()
-        {
-        }
+        return new PortfolioListItemViewWatchedSecurityIdListListener();
+    }
 
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value,
-                boolean fromCache)
+    protected class PortfolioListItemViewWatchedSecurityIdListListener
+            implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
                     PortfolioListItemView.this.displayablePortfolioDTO;

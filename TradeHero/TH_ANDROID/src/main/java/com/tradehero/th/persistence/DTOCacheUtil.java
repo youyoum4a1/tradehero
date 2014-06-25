@@ -281,7 +281,7 @@ import org.jetbrains.annotations.NotNull;
     
     public void preFetchWatchlist()
     {
-        userWatchlistPositionCache.get().autoFetch(currentUserId.toUserBaseKey());
+        userWatchlistPositionCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     public void preFetchProviders()
