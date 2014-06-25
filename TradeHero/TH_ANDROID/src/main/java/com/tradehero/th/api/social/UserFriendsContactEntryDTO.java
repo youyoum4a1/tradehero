@@ -1,6 +1,7 @@
 package com.tradehero.th.api.social;
 
 import android.net.Uri;
+import com.tradehero.th.R;
 import com.tradehero.th.loaders.ContactEntry;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +25,7 @@ public class UserFriendsContactEntryDTO extends UserFriendsDTO
 
     @Override public int getNetworkLabelImage()
     {
-        return 0;
+        return R.drawable.default_image;
     }
 
     @Override public String getProfilePictureURL()
