@@ -54,6 +54,7 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
+import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
@@ -487,12 +488,22 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override protected void handleSecurityItemReceived(SecurityIdList securityIds)
     {
+        if (AppTiming.trendingFilled == 0)
+        {
+            AppTiming.trendingFilled = System.currentTimeMillis();
+        }
+
         if (securityItemViewAdapter != null)
         {
             // It may have been nullified if coming out
             securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
             refreshAdapterWithTiles(false);
         }
+
+        Timber.d("splash %d, dash %d, trending %d",
+                AppTiming.splashCreate - AppTiming.appCreate,
+                AppTiming.dashboardCreate - AppTiming.splashCreate,
+                AppTiming.trendingFilled - AppTiming.dashboardCreate);
     }
 
     private void refreshAdapterWithTiles(boolean refreshTileTypes)

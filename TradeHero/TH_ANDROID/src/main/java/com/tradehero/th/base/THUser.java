@@ -201,7 +201,6 @@ public class THUser
         {
             @Override public void success(UserProfileDTO userProfileDTO, THResponse response)
             {
-                currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(credentialsDTO);
 
                 UserLoginDTO userLoginDTO = new UserLoginDTO();
@@ -223,12 +222,7 @@ public class THUser
         {
             @Override public void success(UserLoginDTO userLoginDTO, THResponse response)
             {
-                UserProfileDTO userProfileDTO = userLoginDTO.profileDTO;
-                //TODO should not save userProfileDTO here for heroIds will be null, i don't know why but follow first login logic by alex
-                //userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-                currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(credentialsDTO);
-
                 callback.done(userLoginDTO, null);
             }
 

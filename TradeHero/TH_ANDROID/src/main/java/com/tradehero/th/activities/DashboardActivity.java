@@ -43,6 +43,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -107,6 +108,8 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
+        AppTiming.dashboardCreate = System.currentTimeMillis();
+
         // this need tobe early than super.onCreate or it will crash
         // when device scroll into landscape.
         // request the progress-bar feature for the activity

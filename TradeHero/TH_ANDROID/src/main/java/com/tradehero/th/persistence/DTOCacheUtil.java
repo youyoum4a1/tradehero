@@ -55,6 +55,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class DTOCacheUtil
 {
@@ -248,29 +249,24 @@ import org.jetbrains.annotations.NotNull;
         this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
     }
 
-    public void prefetchesUponLogin(UserLoginDTO userLoginDTO)
+    public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
     {
-        if (userLoginDTO != null)
+        if (profile != null)
         {
-            UserProfileDTO profile = userLoginDTO.profileDTO;
-            if (profile != null)
+            ExchangeCompactDTOList exchangeCompacts = exchangeCompactListCache.get().get(new ExchangeListType());
+            if (exchangeCompacts != null)
             {
-                ExchangeCompactDTOList exchangeCompacts = exchangeCompactListCache.get().get(new ExchangeListType());
-                if (exchangeCompacts != null)
+                ExchangeCompactDTO initialExchange = userBaseDTOUtil.getInitialExchange(profile, exchangeCompacts);
+                if (initialExchange != null)
                 {
-                    ExchangeCompactDTO initialExchange = userBaseDTOUtil.getInitialExchange(profile, exchangeCompacts);
-                    if (initialExchange != null)
-                    {
-                        securityCompactListCache.get().getOrFetchAsync(
-                                new TrendingBasicSecurityListType(
-                                        initialExchange.name,
-                                        1,
-                                        TrendingFragment.DEFAULT_PER_PAGE));
-                    }
+                    securityCompactListCache.get().getOrFetchAsync(
+                            new TrendingBasicSecurityListType(
+                                    initialExchange.name,
+                                    1,
+                                    TrendingFragment.DEFAULT_PER_PAGE));
                 }
             }
         }
-
 
         initialPrefetches();
     }

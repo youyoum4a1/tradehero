@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -24,6 +25,7 @@ import retrofit.Callback;
 
 @Singleton public class SessionServiceWrapper
 {
+    @NotNull private final CurrentUserId currentUserId;
     @NotNull private final SessionService sessionService;
     @NotNull private final SessionServiceAsync sessionServiceAsync;
     @NotNull private final UserProfileCache userProfileCache;
@@ -32,7 +34,9 @@ import retrofit.Callback;
     @NotNull private final StringPreference savedPushDeviceIdentifier;
     @NotNull private final Lazy<SystemStatusCache> systemStatusCache;
 
+    //<editor-fold desc="Constructors">
     @Inject public SessionServiceWrapper(
+            @NotNull CurrentUserId currentUserId,
             @NotNull SessionService sessionService,
             @NotNull SessionServiceAsync sessionServiceAsync,
             @NotNull UserProfileCache userProfileCache,
@@ -41,6 +45,7 @@ import retrofit.Callback;
             @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
             @NotNull Lazy<SystemStatusCache> systemStatusCache)
     {
+        this.currentUserId = currentUserId;
         this.sessionService = sessionService;
         this.sessionServiceAsync = sessionServiceAsync;
         this.userProfileCache = userProfileCache;
@@ -49,13 +54,15 @@ import retrofit.Callback;
         this.savedPushDeviceIdentifier = savedPushDeviceIdentifier;
         this.systemStatusCache = systemStatusCache;
     }
+    //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
     protected DTOProcessor<UserLoginDTO> createUserLoginProcessor()
     {
         return new DTOProcessorUserLogin(
-                userProfileCache,
                 systemStatusCache.get(),
+                userProfileCache,
+                currentUserId,
                 dtoCacheUtil);
     }
 

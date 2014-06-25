@@ -1,6 +1,7 @@
 package com.tradehero.th.models.user;
 
 import com.tradehero.th.api.system.SystemStatusDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -12,19 +13,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
 {
-    @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final SystemStatusCache systemStatusCache;
-    @NotNull private final DTOCacheUtil dtoCacheUtil;
+    @NotNull private final DTOProcessorSignInUpUserProfile processorSignInUp;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorUserLogin(
-            @NotNull UserProfileCache userProfileCache,
             @NotNull SystemStatusCache systemStatusCache,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull CurrentUserId currentUserId,
             @NotNull DTOCacheUtil dtoCacheUtil)
     {
-        this.userProfileCache = userProfileCache;
         this.systemStatusCache = systemStatusCache;
-        this.dtoCacheUtil = dtoCacheUtil;
+        this.processorSignInUp = new DTOProcessorSignInUpUserProfile(
+                userProfileCache,
+                currentUserId,
+                dtoCacheUtil);
     }
     //</editor-fold>
 
@@ -35,8 +38,9 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
             UserProfileDTO profile = value.profileDTO;
             if (profile != null)
             {
+                value.profileDTO = processorSignInUp.process(profile);
+
                 UserBaseKey userKey = profile.getBaseKey();
-                userProfileCache.put(userKey, profile);
                 if (value.systemStatusDTO == null)
                 {
                     value.systemStatusDTO = new SystemStatusDTO();
@@ -44,7 +48,6 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
                 systemStatusCache.put(userKey, value.systemStatusDTO);
             }
         }
-        dtoCacheUtil.prefetchesUponLogin(value);
         return value;
     }
 }
