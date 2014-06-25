@@ -3,14 +3,14 @@ package com.tradehero.th.fragments.security;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 
 abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         extends SherlockFragment
-        implements DTOCache.Listener<SecurityId, InfoType>
+        implements DTOCacheNew.Listener<SecurityId, InfoType>
 {
     private static final String BUNDLE_KEY_SECURITY_ID = AbstractSecurityInfoFragment.class.getName() + ".securityId";
 
@@ -38,7 +38,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         linkWith(getSecurityId(getArguments()), true);
     }
 
-    abstract protected DTOCache<SecurityId, InfoType> getInfoCache();
+    abstract protected DTOCacheNew<SecurityId, InfoType> getInfoCache();
 
     /**
      * Called in onResume.
@@ -50,7 +50,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         this.securityId = securityId;
     }
 
-    @Override public void onDTOReceived(SecurityId key, InfoType value, boolean fromCache)
+    @Override public void onDTOReceived(SecurityId key, InfoType value)
     {
         if (key.equals(securityId))
         {

@@ -23,7 +23,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -88,8 +88,14 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
     protected SecurityCompactDTO securityCompactDTO;
-    protected DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
+    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
     protected ProgressDialog progressDialog;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        securityCompactCacheFetchListener = createSecurityCompactCacheListener();
+    }
 
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
     {
@@ -205,13 +211,15 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        securityCompactCacheFetchListener = null;
+        super.onDestroy();
+    }
+
     protected void detachSecurityCompactCacheFetchTask()
     {
-        if (securityCompactCacheFetchTask != null)
-        {
-            securityCompactCacheFetchTask.setListener(null);
-        }
-        securityCompactCacheFetchTask = null;
+        securityCompactCache.unregister(securityCompactCacheFetchListener);
     }
 
     protected void linkWith(SecurityId securityId, boolean andDisplay)
@@ -220,8 +228,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         detachSecurityCompactCacheFetchTask();
-        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, createSecurityCompactCacheListener());
-        securityCompactCacheFetchTask.execute();
+        securityCompactCache.register(securityId, securityCompactCacheFetchListener);
+        securityCompactCache.getOrFetchAsync(securityId, true);
     }
 
     protected AlertFormDTO getFormDTO()
@@ -659,15 +667,14 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
         return new BaseAlertEditSecurityCompactCacheListener();
     }
 
-    protected class BaseAlertEditSecurityCompactCacheListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+    protected class BaseAlertEditSecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
         {
             hideDialog();
             linkWith(value, true);

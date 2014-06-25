@@ -11,7 +11,7 @@ import butterknife.InjectView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
@@ -50,7 +50,7 @@ public class PositionPartialTopView extends LinearLayout
     protected SecurityCompactDTO securityCompactDTO;
     protected PositionDTO positionDTO;
 
-    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
+    private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
 
     //<editor-fold desc="Constructors">
     public PositionPartialTopView(Context context)
@@ -75,6 +75,7 @@ public class PositionPartialTopView extends LinearLayout
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
         initViews();
+        securityCompactCacheFetchListener = createSecurityCompactCacheListener();
     }
 
     protected void initViews()
@@ -82,6 +83,15 @@ public class PositionPartialTopView extends LinearLayout
         if (stockLogo != null)
         {
             stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        }
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (securityCompactCacheFetchListener == null)
+        {
+            securityCompactCacheFetchListener = createSecurityCompactCacheListener();
         }
     }
 
@@ -93,16 +103,18 @@ public class PositionPartialTopView extends LinearLayout
         }
         tradeHistoryButton = null;
 
-        if (securityCompactCacheFetchTask != null)
-        {
-            securityCompactCacheFetchTask.setListener(null);
-        }
-        securityCompactCacheFetchTask = null;
+        detachSecurityCompactCache();
+        securityCompactCacheFetchListener = null;
         if (stockLogo != null)
         {
             stockLogo.setImageDrawable(null);
         }
         super.onDetachedFromWindow();
+    }
+
+    protected void detachSecurityCompactCache()
+    {
+        securityCompactCache.get().unregister(securityCompactCacheFetchListener);
     }
 
     public void linkWith(PositionDTO positionDTO, boolean andDisplay)
@@ -127,12 +139,9 @@ public class PositionPartialTopView extends LinearLayout
         SecurityCompactDTO cachedSecurityCompactDTO = securityCompactCache.get().get(securityId);
         if (cachedSecurityCompactDTO == null)
         {
-            if (securityCompactCacheFetchTask != null)
-            {
-                securityCompactCacheFetchTask.setListener(null);
-            }
-            securityCompactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, createSecurityCompactCacheListener());
-            securityCompactCacheFetchTask.execute();
+            detachSecurityCompactCache();
+            securityCompactCache.get().register(securityId, securityCompactCacheFetchListener);
+            securityCompactCache.get().getOrFetchAsync(securityId);
         }
         else
         {
@@ -387,7 +396,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         return new SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO>()
         {
-            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
+            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
             {
                 if (key.equals(securityId))
                 {
