@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
@@ -22,7 +23,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -81,9 +81,9 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Securities">
-    public List<SecurityCompactDTO> getSecurities(@NotNull SecurityListType key)
+    public SecurityCompactDTOList getSecurities(@NotNull SecurityListType key)
     {
-        List<SecurityCompactDTO> received;
+        SecurityCompactDTOList received;
         if (key instanceof TrendingSecurityListType)
         {
             TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
@@ -139,11 +139,11 @@ import retrofit.Callback;
         return received;
     }
 
-    @NotNull public MiddleCallback<List<SecurityCompactDTO>> getSecurities(
+    @NotNull public MiddleCallback<SecurityCompactDTOList> getSecurities(
             @NotNull SecurityListType key,
-            @Nullable Callback<List<SecurityCompactDTO>> callback)
+            @Nullable Callback<SecurityCompactDTOList> callback)
     {
-        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<SecurityCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         if (key instanceof TrendingSecurityListType)
         {
             TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
@@ -179,7 +179,10 @@ import retrofit.Callback;
                         trendingKey.perPage,
                         middleCallback);
             }
-            throw new IllegalArgumentException("Unhandled type " + trendingKey.getClass().getName());
+            else
+            {
+                throw new IllegalArgumentException("Unhandled type " + trendingKey.getClass().getName());
+            }
         }
         else if (key instanceof SearchSecurityListType)
         {

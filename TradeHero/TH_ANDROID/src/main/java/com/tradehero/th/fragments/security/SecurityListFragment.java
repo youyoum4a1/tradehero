@@ -27,14 +27,13 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.loaders.PagedDTOCacheLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {

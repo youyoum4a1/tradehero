@@ -46,7 +46,6 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -75,7 +74,6 @@ public class TrendingFragment extends SecurityListFragment
 {
     public final static int SECURITY_ID_LIST_LOADER_ID = 2532;
 
-    @Inject TrendingFilterTypeDTOFactory trendingFilterTypeDTOFactory;
     @Inject Lazy<ExchangeCompactListCache> exchangeCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<ProviderCache> providerCache;
