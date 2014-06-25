@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.competition;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class ProviderCache extends StraightDTOCache<ProviderId, ProviderDTO>
+@Singleton public class ProviderCache extends StraightDTOCacheNew<ProviderId, ProviderDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override protected ProviderDTO fetch(@NotNull ProviderId key) throws Throwable
+    @Override public ProviderDTO fetch(@NotNull ProviderId key) throws Throwable
     {
         // Just have the list cache download them all
         providerListCache.get().fetch(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
@@ -54,22 +54,6 @@ import org.jetbrains.annotations.Nullable;
             warrantSpecificKnowledgeFactory.add(key, associatedPortfolioId);
         }
         return super.put(key, value);
-    }
-
-    @Contract("null -> null; !null -> !null") @Nullable
-    public List<ProviderDTO> getOrFetch(@Nullable List<ProviderId> providerIds) throws Throwable
-    {
-        if (providerIds == null)
-        {
-            return null;
-        }
-
-        List<ProviderDTO> providerDTOList = new ArrayList<>();
-        for (@NotNull ProviderId providerId : providerIds)
-        {
-            providerDTOList.add(getOrFetch(providerId, false));
-        }
-        return providerDTOList;
     }
 
     @Contract("null -> null; !null -> !null") @Nullable

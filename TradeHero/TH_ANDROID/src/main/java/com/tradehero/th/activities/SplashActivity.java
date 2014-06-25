@@ -14,7 +14,6 @@ import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -85,8 +84,6 @@ public class SplashActivity extends SherlockActivity
     {
         super.onResume();
 
-        // TODO HAcK to load provider early
-        providerListCache.autoFetch(new ProviderListKey());
         initialAsyncTask = new AsyncTask<Void, Void, Void>()
         {
             @Override protected Void doInBackground(Void... params)

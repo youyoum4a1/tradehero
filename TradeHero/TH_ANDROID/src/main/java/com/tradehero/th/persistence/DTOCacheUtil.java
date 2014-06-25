@@ -286,7 +286,7 @@ import org.jetbrains.annotations.NotNull;
 
     public void preFetchProviders()
     {
-        this.providerListCache.get().autoFetch(new ProviderListKey());
+        this.providerListCache.get().getOrFetchAsync(new ProviderListKey());
     }
 
     public void conveniencePrefetches()

@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
 import com.thoj.route.InjectRoute;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -23,8 +23,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
     @InjectRoute protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
-    private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
+    private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
     protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
 
     @Inject ProviderCache providerCache;
@@ -50,15 +49,13 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         {
             this.providerId = getProviderId(getArguments());
         }
-        this.providerCacheListener = new CompetitionFragmentProviderCacheListener();
+        this.providerCacheListener = createProviderCacheListener();
     }
 
     @Override public void onStart()
     {
         super.onStart();
-        this.detachProviderFetchTask();
-        this.providerCacheFetchTask = providerCache.getOrFetch(this.providerId, this.providerCacheListener);
-        this.providerCacheFetchTask.execute();
+        fetchProviderDTO();
     }
 
     @Override public void onStop()
@@ -75,11 +72,14 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
     protected void detachProviderFetchTask()
     {
-        if (this.providerCacheFetchTask != null)
-        {
-            this.providerCacheFetchTask.setListener(null);
-        }
-        this.providerCacheFetchTask = null;
+        providerCache.unregister(providerCacheListener);
+    }
+
+    protected void fetchProviderDTO()
+    {
+        this.detachProviderFetchTask();
+        providerCache.register(this.providerId, this.providerCacheListener);
+        providerCache.getOrFetchAsync(this.providerId);
     }
 
     protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
@@ -98,9 +98,14 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class CompetitionFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
+    protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
     {
-        @Override public void onDTOReceived(ProviderId key, ProviderDTO value, boolean fromCache)
+        return new CompetitionFragmentProviderCacheListener();
+    }
+
+    protected class CompetitionFragmentProviderCacheListener implements DTOCacheNew.Listener<ProviderId, ProviderDTO>
+    {
+        @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
         {
             if (key.equals(CompetitionFragment.this.providerId))
             {
