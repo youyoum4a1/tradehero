@@ -79,13 +79,14 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
     private ProviderIdList providerIds;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchListener;
     private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
+        leaderboardDefListFetchListener = createDefKeyListListener();
     }
 
     @Override
@@ -132,6 +133,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
+        leaderboardDefListFetchListener = null;
         this.thIntentPassedListener = null;
         detachWebFragment();
         super.onDestroy();
@@ -205,11 +207,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void detachLeaderboardDefListCacheFetchTask()
     {
-        if (leaderboardDefListFetchTask != null)
-        {
-            leaderboardDefListFetchTask.setListener(null);
-        }
-        leaderboardDefListFetchTask = null;
+        leaderboardDefListCache.get().unregister(leaderboardDefListFetchListener);
     }
 
     private void detachProviderListFetchTask()
@@ -231,19 +229,18 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void fetchLeaderboardDefList()
     {
         detachLeaderboardDefListCacheFetchTask();
-        leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
-                new LeaderboardDefListKey(), createDefKeyListListener());
-        leaderboardDefListFetchTask.execute();
+        leaderboardDefListCache.get().register(new LeaderboardDefListKey(), leaderboardDefListFetchListener);
+        leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
     }
 
-    protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
     {
         return new LeaderboardCommunityLeaderboardDefKeyListListener();
     }
 
-    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
     {
-        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
         {
             recreateAdapter();
         }

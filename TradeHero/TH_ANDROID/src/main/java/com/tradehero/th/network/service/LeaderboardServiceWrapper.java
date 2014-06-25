@@ -53,7 +53,7 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Leaderboard Definitions">
-    public LeaderboardDefDTOList getLeaderboardDefinitions()
+    @NotNull public LeaderboardDefDTOList getLeaderboardDefinitions()
     {
         return createProcessorLeaderboardDefDTOList().process(leaderboardService.getLeaderboardDefinitions());
     }

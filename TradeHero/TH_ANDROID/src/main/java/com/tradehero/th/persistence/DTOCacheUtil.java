@@ -3,6 +3,7 @@ package com.tradehero.th.persistence;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.competition.key.ProviderListKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -223,18 +224,23 @@ import javax.inject.Singleton;
         preFetchTrending();
     }
 
-    // TODO split between those that need authentication and those that do not
+    public void preFetchExchanges()
+    {
+        exchangeListCache.get().getOrFetchAsync(new ExchangeListType());
+    }
+
+    public void preFetchTrending()
+    {
+        // TODO Make it take care of the users's default stock exchange.
+        this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+    }
+
     public void initialPrefetches()
     {
         preFetchWatchlist();
         preFetchProviders();
-        preFetchAlerts();
-        preFetchTranslationToken();
-    }
-    
-    public void preFetchExchanges()
-    {
-        exchangeListCache.get().getOrFetchAsync(new ExchangeListType());
+
+        conveniencePrefetches(); // TODO move them so time after the others
     }
     
     public void preFetchWatchlist()
@@ -247,10 +253,11 @@ import javax.inject.Singleton;
         this.providerListCache.get().autoFetch(new ProviderListKey());
     }
 
-    public void preFetchTrending()
+    public void conveniencePrefetches()
     {
-        // TODO Make it take care of the users's default stock exchange.
-        this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+        preFetchAlerts();
+        preFetchTranslationToken();
+        preFetchLeaderboardDefs();
     }
 
     public void preFetchAlerts()
@@ -261,5 +268,10 @@ import javax.inject.Singleton;
     public void preFetchTranslationToken()
     {
         translationTokenCache.get().getOrFetchAsync(new TranslationTokenKey());
+    }
+
+    public void preFetchLeaderboardDefs()
+    {
+        leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
     }
 }

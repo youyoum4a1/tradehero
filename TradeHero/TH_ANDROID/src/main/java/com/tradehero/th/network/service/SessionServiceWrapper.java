@@ -53,7 +53,7 @@ import retrofit.Callback;
     //<editor-fold desc="DTO Processors">
     protected DTOProcessor<UserLoginDTO> createUserLoginProcessor()
     {
-        return new DTOProcessorUserLogin(systemStatusCache.get());
+        return new DTOProcessorUserLogin(userProfileCache, systemStatusCache.get());
     }
 
     protected DTOProcessor<UserProfileDTO> createUpdateDeviceProcessor()
