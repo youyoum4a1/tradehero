@@ -217,13 +217,17 @@ import javax.inject.Singleton;
         serverEndpointPreference.delete();
     }
 
+    public void anonymousPrefetches()
+    {
+        preFetchExchanges();
+        preFetchTrending();
+    }
+
     // TODO split between those that need authentication and those that do not
     public void initialPrefetches()
     {
-        preFetchExchanges();
         preFetchWatchlist();
         preFetchProviders();
-        //preFetchTrending();
         preFetchAlerts();
         preFetchTranslationToken();
     }
