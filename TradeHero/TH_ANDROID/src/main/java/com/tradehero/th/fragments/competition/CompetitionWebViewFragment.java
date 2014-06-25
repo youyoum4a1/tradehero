@@ -58,13 +58,17 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
     }
     //</editor-fold>
 
-    @Override public void onActivityCreated(Bundle savedInstanceState)
+    @Override protected String getLoadingUrl()
     {
-        super.onActivityCreated(savedInstanceState);
-
-        String providerLandingPage = providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
-
-        loadUrl(providerLandingPage);
+        String loadingUrl = super.getLoadingUrl();
+        if (loadingUrl == null)
+        {
+            return providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
+        }
+        else
+        {
+            return loadingUrl;
+        }
     }
 
     @Override protected void onProgressChanged(WebView view, int newProgress)

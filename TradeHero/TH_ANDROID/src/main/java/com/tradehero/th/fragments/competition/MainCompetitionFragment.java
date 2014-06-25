@@ -356,9 +356,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         }
         
-        args.putString(
-                CompetitionWebViewFragment.BUNDLE_KEY_URL,
-                competitionUrl + "&previous=whatever");
+        args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, competitionUrl);
         this.webViewFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
