@@ -128,10 +128,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
                 | ActionBar.DISPLAY_SHOW_TITLE
                 | ActionBar.DISPLAY_SHOW_HOME);
-        //actionBar.setSubtitle(R.string.private_message_subtitle);
 
         correspondentImage = (ImageView) menu.findItem(R.id.correspondent_picture);
-        //displayTitle();
         displayCorrespondentImage();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -142,9 +140,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         {
             case R.id.private_message_refresh_btn:
                 refresh();
-                return true;
-            case android.R.id.home:
-                getDashboardNavigator().goToTab(DashboardTabType.UPDATE_CENTER);
                 return true;
         }
         return super.onOptionsItemSelected(item);
