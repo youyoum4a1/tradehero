@@ -11,7 +11,7 @@ branches:
 
 notifications:
   email:
-    - tho@tradehero.mobi
+    - dev@tradehero.mobi
 
 env:
   global:
@@ -77,4 +77,4 @@ before_install:
   - export PATH="${BASEDIR}/gradle-1.6/bin:${PATH}"
   
   # Let's try to build...
-install: mvn install
+install: mvn install -DskipTests=true
