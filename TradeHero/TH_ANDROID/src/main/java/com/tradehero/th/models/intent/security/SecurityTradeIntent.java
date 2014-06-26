@@ -31,8 +31,8 @@ abstract public class SecurityTradeIntent extends TrendingIntent
                 getString(R.string.intent_scheme),
                 getString(R.string.intent_host_trending),
                 getString(getIntentActionResId()),
-                securityId.exchange,
-                securityId.securitySymbol);
+                securityId.getExchange(),
+                securityId.getSecuritySymbol());
     }
 
     public int getIntentActionUriResId()

@@ -105,6 +105,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         List custom_dimensions = new ArrayList();
         custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
         localyticsSession.get().open(custom_dimensions);
+        localyticsSession.get().tagScreen(LocalyticsConstants.Login_Register);
+        localyticsSession.get().tagEvent(LocalyticsConstants.LoginRegisterScreen);
     }
 
     @Override protected void onPause()

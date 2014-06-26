@@ -11,52 +11,56 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.LeaderboardServiceWrapper;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import java.util.Date;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @InjectView(R.id.progress) ProgressBar mProgress;
 
-    protected LeaderboardFriendsListAdapter leaderboardMarkUserListAdapter;
-    private MiddleCallback<LeaderboardFriendsDTO> getFriendsMiddleCallback;
+    protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;
-    @Inject LeaderboardServiceWrapper leaderboardServiceWrapper;
+    private DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> leaderboardFriendsKeyDTOListener;
     @Inject THLocalyticsSession localyticsSession;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
+    @Inject LeaderboardFriendsCache leaderboardFriendsCache;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        leaderboardFriendsKeyDTOListener = this.createFriendsCacheListener();
+    }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        if (leaderboardMarkUserListAdapter == null)
+        if (leaderboardFriendsUserListAdapter == null)
         {
-            leaderboardMarkUserListAdapter = new LeaderboardFriendsListAdapter(
-                    getActivity(), getActivity().getLayoutInflater(),
-                    R.layout.leaderboard_friends_item_view);
-            leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
-            leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+            leaderboardFriendsUserListAdapter = new LeaderboardFriendsListAdapter(
+                    getActivity(),
+                    R.layout.lbmu_item_roi_mode,
+                    R.layout.leaderboard_friends_social_item_view);
+            leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
+            leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
             leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         }
     }
@@ -118,43 +122,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         super.onResume();
         localyticsSession.tagEvent(LocalyticsConstants.FriendsLeaderboard_Filter_FoF);
-        detachGetFriendsMiddleCallBack();
-        getFriendsMiddleCallback =
-                leaderboardServiceWrapper.getNewFriendsLeaderboard(new FriendsCallback());
+        fetchLeaderboardFriends();
         mProgress.setVisibility(View.VISIBLE);
-    }
-
-    private void detachGetFriendsMiddleCallBack()
-    {
-        if (getFriendsMiddleCallback != null)
-        {
-            getFriendsMiddleCallback.setPrimaryCallback(null);
-        }
-        getFriendsMiddleCallback = null;
-    }
-
-    public class FriendsCallback implements Callback<LeaderboardFriendsDTO>
-    {
-        @Override public void success(LeaderboardFriendsDTO dto, Response response)
-        {
-            mProgress.setVisibility(View.INVISIBLE);
-            Date markingTime = dto.leaderboard.markUtc;
-            if (markingTime != null && leaderboardMarkUserMarkingTime != null)
-            {
-                leaderboardMarkUserMarkingTime.setText(
-                        String.format("(%s)", prettyTime.get().format(markingTime)));
-            }
-            List<LeaderboardUserDTO> list = dto.leaderboard.users;
-            list.addAll(dto.socialFriends);
-            leaderboardMarkUserListAdapter.setItems(list);
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            mProgress.setVisibility(View.INVISIBLE);
-            THToast.show(new THException(retrofitError));
-        }
     }
 
     @Override protected int getMenuResource()
@@ -173,9 +142,14 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onStop()
+    {
+        detachLeaderboardFriendsCacheListener();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
-        detachGetFriendsMiddleCallBack();
         if (leaderboardMarkUserListView != null)
         {
             leaderboardMarkUserListView.setAdapter(null);
@@ -184,17 +158,29 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             leaderboardMarkUserListView.addHeaderView(null);
             leaderboardMarkUserListView = null;
         }
-        if (leaderboardMarkUserListAdapter != null)
+        if (leaderboardFriendsUserListAdapter != null)
         {
-            leaderboardMarkUserListAdapter.setItems(null);
-            leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
-            leaderboardMarkUserListAdapter = null;
+            leaderboardFriendsUserListAdapter.clear();
+            leaderboardFriendsUserListAdapter.setFollowRequestedListener(null);
+            leaderboardFriendsUserListAdapter = null;
         }
         if (mProgress != null)
         {
             mProgress = null;
         }
+
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        leaderboardFriendsKeyDTOListener = null;
+        super.onDestroy();
+    }
+
+    private void detachLeaderboardFriendsCacheListener()
+    {
+        leaderboardFriendsCache.unregister(leaderboardFriendsKeyDTOListener);
     }
 
     protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
@@ -205,12 +191,34 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if (leaderboardMarkUserListAdapter != null)
+        if (leaderboardFriendsUserListAdapter != null)
         {
-            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
+            leaderboardFriendsUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+            leaderboardFriendsUserListAdapter.notifyDataSetChanged();
         }
     }
+
+    private void fetchLeaderboardFriends()
+    {
+        detachLeaderboardFriendsCacheListener();
+        LeaderboardFriendsKey key = new LeaderboardFriendsKey();
+        leaderboardFriendsCache.register(key, this.leaderboardFriendsKeyDTOListener);
+        leaderboardFriendsCache.getOrFetchAsync(key);
+    }
+
+    private void handleFriendsLeaderboardReceived(LeaderboardFriendsDTO dto)
+    {
+        Date markingTime = dto.leaderboard.markUtc;
+        if (markingTime != null && leaderboardMarkUserMarkingTime != null)
+        {
+            leaderboardMarkUserMarkingTime.setText(
+                    String.format("(%s)", prettyTime.get().format(markingTime)));
+        }
+        leaderboardFriendsUserListAdapter.add(dto);
+        leaderboardFriendsUserListAdapter.notifyDataSetChanged();
+
+    }
+
 
     protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardFriendsItemView.OnFollowRequestedListener
     {
@@ -248,5 +256,33 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     protected void handleFollowSuccess(UserProfileDTO userProfileDTO)
     {
         setCurrentUserProfileDTO(userProfileDTO);
+    }
+
+    protected DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> createFriendsCacheListener()
+    {
+        return new FriendLeaderboarMarkUserListFragmentCacheListener();
+    }
+
+    protected class FriendLeaderboarMarkUserListFragmentCacheListener implements DTOCacheNew.HurriedListener<LeaderboardFriendsKey, LeaderboardFriendsDTO>
+    {
+        @Override public void onPreCachedDTOReceived(LeaderboardFriendsKey key, LeaderboardFriendsDTO dto)
+        {
+            handleFriendsLeaderboardReceived(dto);
+        }
+
+        @Override public void onDTOReceived(LeaderboardFriendsKey key, LeaderboardFriendsDTO dto)
+        {
+            mProgress.setVisibility(View.INVISIBLE);
+            leaderboardFriendsUserListAdapter.clear();
+            handleFriendsLeaderboardReceived(dto);        }
+
+        @Override public void onErrorThrown(LeaderboardFriendsKey key, Throwable error)
+        {
+            mProgress.setVisibility(View.INVISIBLE);
+            if (error instanceof RetrofitError)
+            {
+                THToast.show(new THException(error));
+            }
+        }
     }
 }

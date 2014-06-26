@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.competition;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionIdList;
 import com.tradehero.th.api.competition.ProviderId;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class CompetitionListCache extends StraightDTOCache<ProviderId, CompetitionIdList>
+@Singleton public class CompetitionListCache extends StraightDTOCacheNew<ProviderId, CompetitionIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override protected CompetitionIdList fetch(@NotNull ProviderId key) throws Throwable
+    @Override public CompetitionIdList fetch(@NotNull ProviderId key) throws Throwable
     {
         return putInternal(key, competitionServiceWrapper.getCompetitions(key));
     }

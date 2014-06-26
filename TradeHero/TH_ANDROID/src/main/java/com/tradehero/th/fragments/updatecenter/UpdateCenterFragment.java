@@ -71,7 +71,6 @@ public class UpdateCenterFragment extends BaseFragment
 
     private FragmentTabHost mTabHost;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    private ImageButton mNewMsgButton;
     private BroadcastReceiver broadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -156,24 +155,6 @@ public class UpdateCenterFragment extends BaseFragment
         actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
-        MenuItem menuFollow = menu.findItem(R.id.btn_new_message);
-        if (menuFollow != null && menuFollow.getActionView() != null)
-        {
-            mNewMsgButton =
-                    (ImageButton) menuFollow.getActionView().findViewById(R.id.new_message_button);
-            if (mNewMsgButton != null)
-            {
-                mNewMsgButton.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override public void onClick(View v)
-                    {
-                        showPopup(v);
-                    }
-                });
-            }
-            Timber.d("onCreateOptionsMenu");
-        }
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -183,6 +164,14 @@ public class UpdateCenterFragment extends BaseFragment
         {
             case android.R.id.home:
                 resideMenuLazy.get().openMenu();
+                return true;
+            case R.id.menu_private:
+                localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
+                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
+                        .pushFragment(AllRelationsFragment.class);
+                return true;
+            case R.id.menu_broadcast:
+                jumpToSendBroadcastMessage();
                 return true;
         }
         Fragment f = getCurrentFragment();
@@ -229,13 +218,6 @@ public class UpdateCenterFragment extends BaseFragment
         super.onDestroyOptionsMenu();
     }
 
-    private void showPopup(View v)
-    {
-        PopupMenu popup = new PopupMenu(getActivity(), v);
-        popup.inflate(R.menu.notification_new_message_menu);
-        popup.setOnMenuItemClickListener(this);
-        popup.show();
-    }
 
     @Override
     public boolean onMenuItemClick(android.view.MenuItem item)
@@ -343,7 +325,7 @@ public class UpdateCenterFragment extends BaseFragment
         }
     }
 
-    private Fragment getCurrentFragment()
+    public Fragment getCurrentFragment()
     {
         if (mTabHost == null)
         {
@@ -351,8 +333,7 @@ public class UpdateCenterFragment extends BaseFragment
         }
         String tag = mTabHost.getCurrentTabTag();
         android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(tag);
-        return fragment;
+        return fm.findFragmentByTag(tag);
     }
 
     private void changeTabTitleNumber(@NotNull UpdateCenterTabType tabType, int number)
@@ -372,7 +353,7 @@ public class UpdateCenterFragment extends BaseFragment
         changeTabTitleNumber(tabType, number);
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    @NotNull protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
         return new FetchUserProfileListener();
     }
@@ -380,12 +361,12 @@ public class UpdateCenterFragment extends BaseFragment
     private class FetchUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, @NotNull UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, Throwable error)
         {
             THToast.show(new THException(error));
         }

@@ -12,7 +12,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -68,7 +68,8 @@ public class TradeListFragment extends DashboardFragment
     protected TradeListItemAdapter adapter;
     protected TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
-    private DTOCache.GetOrFetchTask<OwnedPositionId, OwnedTradeIdList> fetchTradesTask;
+    private DTOCacheNew.Listener<OwnedPositionId, OwnedTradeIdList> fetchTradesListener;
+    private TradeListOverlayHeaderView.Listener overlayHeaderListener;
 
     public static void putPositionDTOKey(Bundle args, PositionDTOKey positionDTOKey)
     {
@@ -95,6 +96,7 @@ public class TradeListFragment extends DashboardFragment
                 pushBuySellFragment(false);
             }
         };
+        fetchTradesListener = createTradeListeCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -166,18 +168,23 @@ public class TradeListFragment extends DashboardFragment
             return;
         }
 
-        this.header.setListener(new TradeListOverlayHeaderView.Listener()
+        if (this.overlayHeaderListener == null)
         {
-            @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId)
+            this.overlayHeaderListener = new TradeListOverlayHeaderView.Listener()
             {
-                pushBuySellFragment(true);
-            }
+                @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId)
+                {
+                    pushBuySellFragment(true);
+                }
 
-            @Override public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId)
-            {
-                openUserProfile(userId);
-            }
-        });
+                @Override public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId)
+                {
+                    openUserProfile(userId);
+                }
+            };
+        }
+
+        this.header.setListener(this.overlayHeaderListener);
     }
 
     private void pushBuySellFragment(boolean isBuy)
@@ -251,17 +258,14 @@ public class TradeListFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
+        fetchTradesListener = null;
         buttonListener = null;
         super.onDestroy();
     }
 
     protected void detachFetchTradesTask()
     {
-        if (fetchTradesTask != null)
-        {
-            fetchTradesTask.setListener(null);
-        }
-        fetchTradesTask = null;
+        tradeListCache.get().unregister(fetchTradesListener);
     }
 
     public void linkWith(PositionDTOKey newPositionDTOKey, boolean andDisplay)
@@ -290,14 +294,11 @@ public class TradeListFragment extends DashboardFragment
     {
         if (positionDTO != null)
         {
-            if (fetchTradesTask != null)
-            {
-                fetchTradesTask.setListener(null);
-            }
-            fetchTradesTask = tradeListCache.get().getOrFetch(positionDTO.getOwnedPositionId(),
-                    createTradeListeCacheListener());
+            detachFetchTradesTask();
+            OwnedPositionId key = positionDTO.getOwnedPositionId();
+            tradeListCache.get().register(key, fetchTradesListener);
+            tradeListCache.get().getOrFetchAsync(key);
             displayProgress(true);
-            fetchTradesTask.execute();
         }
     }
 
@@ -351,12 +352,14 @@ public class TradeListFragment extends DashboardFragment
                     if (securityCompactDTO == null || securityCompactDTO.name == null)
                     {
                         actionBarCopy.setTitle(
-                                String.format(getString(R.string.trade_list_title_with_security), securityId.exchange, securityId.securitySymbol));
+                                String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                                        securityId.getSecuritySymbol()));
                     }
                     else
                     {
                         actionBarCopy.setTitle(securityCompactDTO.name);
-                        actionBarCopy.setSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.exchange, securityId.securitySymbol));
+                        actionBarCopy.setSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                                securityId.getSecuritySymbol()));
                     }
                 }
             }
@@ -378,7 +381,7 @@ public class TradeListFragment extends DashboardFragment
 
     private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList>
     {
-        @Override public void onDTOReceived(OwnedPositionId key, OwnedTradeIdList ownedTradeIds, boolean fromCache)
+        @Override public void onDTOReceived(OwnedPositionId key, OwnedTradeIdList ownedTradeIds)
         {
             displayProgress(false);
             linkWith(ownedTradeIds, true);

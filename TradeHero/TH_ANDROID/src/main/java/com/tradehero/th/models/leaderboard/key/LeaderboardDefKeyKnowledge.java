@@ -4,6 +4,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 public class LeaderboardDefKeyKnowledge
 {
@@ -131,7 +132,8 @@ public class LeaderboardDefKeyKnowledge
                 return R.drawable.icn_lb_6m;
 
             default:
-                return 0;
+                Timber.e(new Exception(), "Unknown LeaderboardDefKey %d", leaderboardDefKey.key);
+                return R.drawable.default_image;
         }
     }
 }

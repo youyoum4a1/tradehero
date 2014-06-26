@@ -42,7 +42,7 @@
         android:src="@drawable/add_alert_default"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-        android:background="@android:color/transparent"
+        android:background="@drawable/basic_transparent_selector"
         android:layout_alignParentRight="true"
         />
 

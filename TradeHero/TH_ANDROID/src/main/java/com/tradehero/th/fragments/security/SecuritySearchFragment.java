@@ -16,7 +16,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
@@ -34,7 +34,6 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +70,7 @@ public class SecuritySearchFragment
 
     private SecurityItemViewAdapterNew<SecurityCompactDTO> securityItemViewAdapter;
     private Map<Integer, List<SecurityCompactDTO>> pagedSecurityIds;
-    private Map<Integer, WeakReference<DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList>>> securitySearchTasks;
+    private Map<Integer, DTOCacheNew.Listener<SecurityListType, SecurityIdList>> securitySearchListeners;
 
     private Runnable requestDataTask;
 
@@ -107,7 +106,7 @@ public class SecuritySearchFragment
     {
         super.onCreate(savedInstanceState);
         pagedSecurityIds = new HashMap<>();
-        securitySearchTasks = new HashMap<>();
+        securitySearchListeners = new HashMap<>();
         mSearchText = getSearchString(getArguments());
         mSearchText = getSearchString(savedInstanceState);
         perPage = getPerPage(getArguments());
@@ -196,7 +195,7 @@ public class SecuritySearchFragment
 
     @Override public void onDestroyView()
     {
-        detachSecuritySearchTasks();
+        detachSecuritySearchCache();
         DeviceUtil.dismissKeyboard(getActivity());
 
         if (listView != null)
@@ -224,7 +223,7 @@ public class SecuritySearchFragment
 
     protected void startAnew()
     {
-        detachSecuritySearchTasks();
+        detachSecuritySearchCache();
         this.pagedSecurityIds.clear();
         if (nearEndScrollListener != null)
         {
@@ -313,32 +312,30 @@ public class SecuritySearchFragment
 
     protected boolean isRequesting()
     {
-        for (Map.Entry<Integer, WeakReference<DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList>>> entry : securitySearchTasks.entrySet())
-        {
-            if (entry.getValue().get() != null)
-            {
-                return true;
-            }
-        }
-        return false;
+        return securitySearchListeners.size() > 0;
     }
 
     protected boolean isRequesting(int page)
     {
-        return securitySearchTasks.containsKey(page) && securitySearchTasks.get(page).get() != null;
+        return securitySearchListeners.containsKey(page);
     }
 
-    protected void detachSecuritySearchTasks()
+    protected void detachSecuritySearchCache()
     {
-        for (WeakReference<DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList>> weakSecuritySearchTask : securitySearchTasks.values())
+        for (DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener : securitySearchListeners.values())
         {
-            DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask = weakSecuritySearchTask.get();
-            if (securitySearchTask != null)
-            {
-                securitySearchTask.setListener(null);
-            }
+            securityCompactListCache.get().unregister(listener);
         }
-        securitySearchTasks.clear();
+        securitySearchListeners.clear();
+    }
+
+    protected void detachSecuritySearchCache(int page)
+    {
+        DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener = securitySearchListeners.get(page);
+        if (listener != null)
+        {
+            securityCompactListCache.get().unregister(listener);
+        }
     }
 
     protected void scheduleRequestData()
@@ -369,12 +366,11 @@ public class SecuritySearchFragment
         if (pageToLoad != null && mSearchText != null && !mSearchText.isEmpty())
         {
             SecurityListType searchSecurityListType = makeSearchSecurityListType(pageToLoad);
-            DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask = securityCompactListCache.get()
-                    .getOrFetch(searchSecurityListType, createSecurityIdListCacheListener());
-            securitySearchTasks.put(
-                    searchSecurityListType.page,
-                    new WeakReference<>(securitySearchTask));
-            securitySearchTask.execute();
+            detachSecuritySearchCache(pageToLoad);
+            DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener = createSecurityIdListCacheListener();
+            securityCompactListCache.get().register(searchSecurityListType, listener);
+            securitySearchListeners.put(pageToLoad, listener);
+            securityCompactListCache.get().getOrFetchAsync(searchSecurityListType);
         }
         updateVisibilities();
     }
@@ -480,21 +476,21 @@ public class SecuritySearchFragment
         }
     }
 
-    private DTOCache.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
+    private DTOCacheNew.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
     {
         return new SecurityIdListCacheListener();
     }
 
     private class SecurityIdListCacheListener
-            implements DTOCache.Listener<SecurityListType, SecurityIdList>
+            implements DTOCacheNew.Listener<SecurityListType, SecurityIdList>
     {
         @Override
-        public void onDTOReceived(SecurityListType key, SecurityIdList value, boolean fromCache)
+        public void onDTOReceived(SecurityListType key, SecurityIdList value)
         {
             Timber.d("Page loaded: %d", key.getPage());
             List<SecurityCompactDTO> fleshedValues = securityCompactCache.get().get(value);
             pagedSecurityIds.put(key.getPage(), fleshedValues);
-            securitySearchTasks.remove(key.getPage());
+            securitySearchListeners.remove(key.getPage());
 
             loadAdapterWithAvailableData();
 
@@ -512,7 +508,7 @@ public class SecuritySearchFragment
 
         @Override public void onErrorThrown(SecurityListType key, Throwable error)
         {
-            securitySearchTasks.remove(key.getPage());
+            securitySearchListeners.remove(key.getPage());
             nearEndScrollListener.lowerEndFlag();
             THToast.show(getString(R.string.error_fetch_security_list_info));
             Timber.e("Error fetching the list of securities " + key, error);

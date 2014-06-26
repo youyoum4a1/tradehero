@@ -4,8 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.Window;
 import com.tradehero.th.api.social.InviteDTO;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -66,6 +66,11 @@ import retrofit.client.Response;
 
         @Override
         public void success(T data, Response response)
+        {
+            dismissDialog();
+        }
+
+        public void success()
         {
             dismissDialog();
         }

@@ -49,7 +49,6 @@ public class THUser
     private static THAuthenticationProvider authenticator;
     private static final Map<String, THAuthenticationProvider> authenticationProviders = new HashMap<>();
 
-    private static CredentialsDTO currentCredentials;
     private static HashMap<String, CredentialsDTO> typedCredentials;
 
     @Inject static MainCredentialsPreference mainCredentialsPreference;
@@ -73,7 +72,6 @@ public class THUser
         {
             typedCredentials.put(credentialsDTO.getAuthType(), credentialsDTO);
         }
-        currentCredentials = mainCredentialsPreference.getCredentials();
     }
 
     public static void logInWithAsync(String authType, LogInCallback callback)
@@ -203,7 +201,6 @@ public class THUser
         {
             @Override public void success(UserProfileDTO userProfileDTO, THResponse response)
             {
-                currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(credentialsDTO);
 
                 UserLoginDTO userLoginDTO = new UserLoginDTO();
@@ -225,12 +222,7 @@ public class THUser
         {
             @Override public void success(UserLoginDTO userLoginDTO, THResponse response)
             {
-                UserProfileDTO userProfileDTO = userLoginDTO.profileDTO;
-                //TODO should not save userProfileDTO here for heroIds will be null, i don't know why but follow first login logic by alex
-                //userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-                currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(credentialsDTO);
-
                 callback.done(userLoginDTO, null);
             }
 
@@ -285,12 +277,11 @@ public class THUser
     {
         Timber.d("%d authentication tokens loaded", typedCredentials.size());
 
-        currentCredentials = credentialsDTO;
+
+        mainCredentialsPreference.setCredentials(credentialsDTO);
         mainCredentialsPreference.setCredentials(credentialsDTO);
         typedCredentials.put(credentialsDTO.getAuthType(), credentialsDTO);
         credentialsSetPreference.replaceOrAddCredentials(credentialsDTO);
-
-        THAuthenticationProvider currentProvider = authenticationProviders.get(credentialsDTO.getAuthType());
     }
 
     public static void clearCurrentUser()
@@ -300,6 +291,7 @@ public class THUser
         currentUserId.delete();
         VisitedFriendListPrefs.clearVisitedIdList();
 
+        CredentialsDTO currentCredentials = mainCredentialsPreference.getCredentials();
         if (currentCredentials != null)
         {
             THAuthenticationProvider currentProvider = authenticationProviders.get(currentCredentials.getAuthType());
@@ -310,7 +302,6 @@ public class THUser
         }
 
         // clear all preferences
-        currentCredentials = null;
         mainCredentialsPreference.delete();
         credentialsSetPreference.delete();
         SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
@@ -321,16 +312,6 @@ public class THUser
     public static void setAuthenticationMode(AuthenticationMode authenticationMode)
     {
         THUser.authenticationMode = authenticationMode;
-    }
-
-    public static CredentialsDTO getCurrentCredentials()
-    {
-        return currentCredentials;
-    }
-
-    public static String getAuthHeader()
-    {
-        return String.format("%1$s %2$s", currentCredentials.getAuthType(), currentCredentials.getAuthHeaderParameter());
     }
 
     public static void removeCredential(String authenticationHeader)

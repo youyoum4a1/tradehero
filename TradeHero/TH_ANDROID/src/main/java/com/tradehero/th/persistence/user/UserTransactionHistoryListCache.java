@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryId;
 import com.tradehero.th.api.users.UserTransactionHistoryIdList;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserTransactionHistoryListCache extends StraightDTOCache<UserTransactionHistoryListType, UserTransactionHistoryIdList>
+@Singleton public class UserTransactionHistoryListCache extends StraightDTOCacheNew<UserTransactionHistoryListType, UserTransactionHistoryIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override protected UserTransactionHistoryIdList fetch(@NotNull UserTransactionHistoryListType key)
+    @Override public UserTransactionHistoryIdList fetch(@NotNull UserTransactionHistoryListType key)
     {
         return putInternal(key, userServiceWrapper.getUserTransactions(key));
     }

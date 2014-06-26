@@ -17,7 +17,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -32,6 +32,7 @@ import com.tradehero.th.persistence.competition.HelpVideoListCache;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class ProviderVideoListFragment extends CompetitionFragment
@@ -46,10 +47,15 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private ActionBar actionBar;
     private HelpVideoIdList helpVideoIds;
-    private DTOCache.Listener<HelpVideoListKey, HelpVideoIdList> helpVideoListCacheListener;
-    private DTOCache.GetOrFetchTask<HelpVideoListKey, HelpVideoIdList> helpVideoListFetchTask;
+    private DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList> helpVideoListCacheListener;
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        helpVideoListCacheListener = createVideoListCacheListener();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -99,22 +105,20 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
 
         detachListVideoFetchTask();
-
-        helpVideoListFetchTask = helpVideoListCache.getOrFetch(new HelpVideoListKey(providerId), false, helpVideoListCacheListener);
-        helpVideoListFetchTask.execute();
+        HelpVideoListKey key = new HelpVideoListKey(providerId);
+        helpVideoListCache.register(key, helpVideoListCacheListener);
+        helpVideoListCache.getOrFetchAsync(key, false);
     }
 
     @Override public void onPause()
     {
         currentDisplayedChild = helpVideoListScreen.getDisplayedChildLayoutId();
-
         super.onPause();
     }
 
     @Override public void onDestroyView()
     {
         detachListVideoFetchTask();
-        helpVideoListCacheListener = null;
         providerVideoAdapter = null;
         if (videoListView != null)
         {
@@ -125,16 +129,18 @@ public class ProviderVideoListFragment extends CompetitionFragment
         super.onDestroyView();
     }
 
-    private void detachListVideoFetchTask()
+    @Override public void onDestroy()
     {
-        if (helpVideoListFetchTask != null)
-        {
-            helpVideoListFetchTask.setListener(null);
-        }
-        helpVideoListFetchTask = null;
+        helpVideoListCacheListener = null;
+        super.onDestroy();
     }
 
-    @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    private void detachListVideoFetchTask()
+    {
+        helpVideoListCache.unregister(helpVideoListCacheListener);
+    }
+
+    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
         if (andDisplay)
@@ -245,9 +251,14 @@ public class ProviderVideoListFragment extends CompetitionFragment
         startActivity(intent);
     }
 
-    private class ProviderVideoListFragmentVideoListCacheListener implements DTOCache.Listener<HelpVideoListKey, HelpVideoIdList>
+    protected DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList> createVideoListCacheListener()
     {
-        @Override public void onDTOReceived(HelpVideoListKey key, HelpVideoIdList value, boolean fromCache)
+        return new ProviderVideoListFragmentVideoListCacheListener();
+    }
+
+    protected class ProviderVideoListFragmentVideoListCacheListener implements DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList>
+    {
+        @Override public void onDTOReceived(HelpVideoListKey key, HelpVideoIdList value)
         {
             onFinished();
             if (videoListView != null)

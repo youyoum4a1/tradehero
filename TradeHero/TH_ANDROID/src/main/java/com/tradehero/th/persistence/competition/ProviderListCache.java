@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.competition;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdList;
@@ -12,9 +12,8 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
-@Singleton public class ProviderListCache extends StraightDTOCache<ProviderListKey, ProviderIdList>
+@Singleton public class ProviderListCache extends StraightDTOCacheNew<ProviderListKey, ProviderIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -32,7 +31,7 @@ import timber.log.Timber;
     }
     //</editor-fold>
 
-    @Override protected ProviderIdList fetch(@NotNull ProviderListKey key) throws Throwable
+    @Override public ProviderIdList fetch(@NotNull ProviderListKey key) throws Throwable
     {
         if (key.key.equals(ProviderListKey.ALL_PROVIDERS))
         {

@@ -2,7 +2,7 @@
 <resources>
 
   <style name="Leaderboard_ActionButton">
-    <item name="android:background">@drawable/leaderboard_user_item_border_background</item>
+    <item name="android:background">@drawable/leaderboard_user_item_action_button</item>
     <item name="android:paddingTop">@dimen/leaderboard_user_item_action_button_vertical_padding</item>
     <item name="android:paddingBottom">@dimen/leaderboard_user_item_action_button_vertical_padding</item>
     <item name="android:paddingLeft">@dimen/leaderboard_user_item_action_button_horizontal_padding</item>
@@ -26,5 +26,6 @@
   <dimen name="leaderboard_user_item_action_button_horizontal_padding">10sp</dimen>
   <dimen name="leaderboard_user_item_action_follow_button_horizontal_padding">20sp</dimen>
   <dimen name="leaderboard_user_item_action_button_corner_radius">4dp</dimen>
+  <dimen name="leaderboard_user_item_action_button_border_width">1dp</dimen>
 
 </resources>

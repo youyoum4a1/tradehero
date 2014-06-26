@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import com.tradehero.th.R;
 import org.jetbrains.annotations.NotNull;
 
 public class UserFriendsLinkedinDTO extends UserFriendsDTO
@@ -16,6 +17,11 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
         super();
     }
     //</editor-fold>
+
+    @Override public int getNetworkLabelImage()
+    {
+        return R.drawable.icon_share_linkedin_on;
+    }
 
     @Override public String getProfilePictureURL()
     {

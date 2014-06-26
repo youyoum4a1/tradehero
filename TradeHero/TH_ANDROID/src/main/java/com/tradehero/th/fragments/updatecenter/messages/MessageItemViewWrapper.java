@@ -12,8 +12,8 @@ import com.tradehero.th.api.discussion.key.MessageHeaderId;
 
 public class MessageItemViewWrapper extends FrameLayout implements DTOView<MessageHeaderId>
 {
-    @InjectView(R.id.message_item_front) MessageItemView messageItemView;
-    @InjectView(R.id.message_item_back) View messageItemBackView;
+    @InjectView(R.id.swipelist_frontview) MessageItemView messageItemView;
+    @InjectView(R.id.swipelist_backview) View messageItemBackView;
 
     private MessageHeaderId messageHeaderId;
     private OnElementClickedListener elementClickedListener;

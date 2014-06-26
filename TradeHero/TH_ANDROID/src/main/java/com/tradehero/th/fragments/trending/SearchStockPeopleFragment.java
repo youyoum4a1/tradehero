@@ -18,7 +18,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
@@ -96,8 +96,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     private PeopleItemViewAdapter peopleItemViewAdapter;
 
-    private DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask;
-    private DTOCache.GetOrFetchTask<UserListType, UserBaseKeyList> peopleSearchTask;
+    private DTOCacheNew.Listener<SecurityListType, SecurityIdList> securitySearchFetchListener;
+    private DTOCacheNew.Listener<UserListType, UserBaseKeyList> peopleSearchListener;
 
     private List<SecurityId> securityIds;
     private List<UserBaseKey> userBaseKeys;
@@ -117,6 +117,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         collectParameters(savedInstanceState);
+        securitySearchFetchListener = createSecurityIdListCacheListener();
+        peopleSearchListener = createUserCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -363,29 +365,28 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        peopleSearchListener = null;
+        securitySearchFetchListener = null;
+        super.onDestroy();
+    }
+
     private void cancelSearchTasks()
     {
-        detachSecuritySearchTask();
+        detachSecuritySearchCache();
         detachPeopleSearchTask();
         isQuerying = false;
     }
 
-    protected void detachSecuritySearchTask()
+    protected void detachSecuritySearchCache()
     {
-        if (securitySearchTask != null)
-        {
-            securitySearchTask.setListener(null);
-        }
-        securitySearchTask = null;
+        securityCompactListCache.get().unregister(securitySearchFetchListener);
     }
 
     protected void detachPeopleSearchTask()
     {
-        if (peopleSearchTask != null)
-        {
-            peopleSearchTask.setListener(null);
-        }
-        peopleSearchTask = null;
+        userBaseKeyListCache.get().unregister(peopleSearchListener);
     }
 
     protected void scheduleRequestData()
@@ -456,9 +457,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     makeSearchSecurityListType(lastLoadedPage + 1);
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
-            securitySearchTask = securityCompactListCache.get()
-                    .getOrFetch(searchSecurityListType, createSecurityIdListCacheListener());
-            securitySearchTask.execute();
+            securityCompactListCache.get().register(searchSecurityListType, securitySearchFetchListener);
+            securityCompactListCache.get().getOrFetchAsync(searchSecurityListType);
         }
     }
 
@@ -470,9 +470,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             UserListType searchUserListType = makeSearchUserListType(lastLoadedPage + 1);
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
-            peopleSearchTask = userBaseKeyListCache.get()
-                    .getOrFetch(searchUserListType, createUserCacheListener());
-            peopleSearchTask.execute();
+            userBaseKeyListCache.get().register(searchUserListType, peopleSearchListener);
+            userBaseKeyListCache.get().getOrFetchAsync(searchUserListType);
         }
     }
 
@@ -695,16 +694,16 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private DTOCache.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
+    private DTOCacheNew.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
     {
         return new SecurityIdListCacheListener();
     }
 
     private class SecurityIdListCacheListener
-            implements DTOCache.Listener<SecurityListType, SecurityIdList>
+            implements DTOCacheNew.Listener<SecurityListType, SecurityIdList>
     {
         @Override
-        public void onDTOReceived(SecurityListType key, SecurityIdList value, boolean fromCache)
+        public void onDTOReceived(SecurityListType key, SecurityIdList value)
         {
             if (lastLoadedPage + 1 != key.getPage())
             {
@@ -748,16 +747,16 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private DTOCache.Listener<UserListType, UserBaseKeyList> createUserCacheListener()
+    private DTOCacheNew.Listener<UserListType, UserBaseKeyList> createUserCacheListener()
     {
         return new PeopleListCacheListener();
     }
 
     private class PeopleListCacheListener
-            implements DTOCache.Listener<UserListType, UserBaseKeyList>
+            implements DTOCacheNew.Listener<UserListType, UserBaseKeyList>
     {
         @Override
-        public void onDTOReceived(UserListType key, UserBaseKeyList value, boolean fromCache)
+        public void onDTOReceived(UserListType key, UserBaseKeyList value)
         {
             SearchUserListType castedKey = (SearchUserListType) key;
             if (lastLoadedPage + 1 != castedKey.page)

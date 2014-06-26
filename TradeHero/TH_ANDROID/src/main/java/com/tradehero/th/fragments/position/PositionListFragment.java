@@ -15,12 +15,14 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.common.persistence.DTOCache;
+import com.thoj.route.InjectRoute;
+import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
@@ -30,7 +32,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
@@ -58,6 +59,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends BasePurchaseManagerFragment
         implements PositionListener<PositionDTO>,
@@ -84,7 +86,10 @@ public class PositionListFragment
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView ;
     @InjectView(android.R.id.progress) ProgressBar progressBar ;
-    @InjectView(R.id.error) View errorView ;
+    @InjectView(R.id.error) View errorView;
+
+    @InjectRoute UserBaseKey injectedUserBaseKey;
+    @InjectRoute PortfolioId injectedPortfolioId;
 
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
@@ -96,7 +101,8 @@ public class PositionListFragment
     private int firstPositionVisible = 0;
     private boolean[] expandedPositions;
 
-    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOTask;
+    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
+    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> refreshGetPositionsDTOListener;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject THRouter thRouter;
 
@@ -125,9 +131,27 @@ public class PositionListFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        thRouter.inject(this);
         Bundle args = getArguments();
-        getPositionsDTOKey = getGetPositionsDTOKey(getPositionsDTOKeyFactory, args);
-        shownUser = getUserBaseKey(args);
+        if (args.containsKey(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE))
+        {
+            shownUser = getUserBaseKey(args);
+        }
+        else
+        {
+            shownUser = injectedUserBaseKey;
+        }
+        if (args.containsKey(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE))
+        {
+            getPositionsDTOKey = getGetPositionsDTOKey(getPositionsDTOKeyFactory, args);
+        }
+        else
+        {
+            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey, injectedPortfolioId);
+        }
+
+        fetchGetPositionsDTOListener = createGetPositionsCacheListener();
+        refreshGetPositionsDTOListener = createGetPositionsRefreshCacheListener();
     }
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -227,7 +251,7 @@ public class PositionListFragment
     {
         if (progressBar != null)
         {
-            progressBar.setVisibility( View.GONE);
+            progressBar.setVisibility(View.GONE);
         }
         if (pullToRefreshListView != null)
         {
@@ -402,6 +426,7 @@ public class PositionListFragment
     @Override public void onStop()
     {
         detachGetPositionsTask();
+        detachRefreshGetPositionsTask();
         detachUserProfileCache();
 
         super.onStop();
@@ -427,6 +452,13 @@ public class PositionListFragment
         }
 
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        fetchGetPositionsDTOListener = null;
+        refreshGetPositionsDTOListener = null;
+        super.onDestroy();
     }
 
     /**
@@ -473,35 +505,26 @@ public class PositionListFragment
         if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
         {
             detachGetPositionsTask();
-            fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
-            fetchGetPositionsDTOTask.execute();
+            getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
+            getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
     }
 
     protected void refreshSimplePage()
     {
-        detachGetPositionsTask();
-        fetchGetPositionsDTOTask = createRefreshPositionsCacheFetchTask();
-        fetchGetPositionsDTOTask.execute();
-    }
-
-    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
-    {
-        return getPositionsCache.get().getOrFetch(getPositionsDTOKey, force, createGetPositionsCacheListener());
-    }
-
-    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
-    {
-        return getPositionsCache.get().getOrFetch(getPositionsDTOKey, true, createGetPositionsRefreshCacheListener());
+        detachRefreshGetPositionsTask();
+        getPositionsCache.get().register(getPositionsDTOKey, refreshGetPositionsDTOListener);
+        getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
     }
 
     protected void detachGetPositionsTask()
     {
-        if (fetchGetPositionsDTOTask != null)
-        {
-            fetchGetPositionsDTOTask.setListener(null);
-        }
-        fetchGetPositionsDTOTask = null;
+        getPositionsCache.get().unregister(fetchGetPositionsDTOListener);
+    }
+
+    protected void detachRefreshGetPositionsTask()
+    {
+        getPositionsCache.get().unregister(refreshGetPositionsDTOListener);
     }
 
     protected void detachUserProfileCache()
@@ -739,15 +762,21 @@ public class PositionListFragment
     }
     //</editor-fold>
 
-    protected DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
+    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
     {
         return new GetPositionsListener();
     }
 
     protected class GetPositionsListener
-            implements DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO>
+            implements DTOCacheNew.HurriedListener<GetPositionsDTOKey, GetPositionsDTO>
     {
-        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value, boolean fromCache)
+        @Override public void onPreCachedDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
+        {
+            linkWith(value, true);
+            showResultIfNecessary();
+        }
+
+        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
         {
             linkWith(value, true);
             showResultIfNecessary();
@@ -762,19 +791,16 @@ public class PositionListFragment
         }
     }
 
-    protected DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener()
+    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener()
     {
         return new RefreshPositionsListener();
     }
 
     protected class RefreshPositionsListener extends GetPositionsListener
     {
-        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value, boolean fromCache)
+        @Override public void onPreCachedDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
         {
-            if (!fromCache)
-            {
-                super.onDTOReceived(key, value, fromCache);
-            }
+            // Do nothing
         }
 
         @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)

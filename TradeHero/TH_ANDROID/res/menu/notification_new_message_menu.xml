@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/menu_private"
-      android:title="@string/message_center_private_message_menu"/>
-  <item android:id="@+id/menu_broadcast"
-      android:title="@string/message_center_broadcast_message_menu"/>
-</menu>

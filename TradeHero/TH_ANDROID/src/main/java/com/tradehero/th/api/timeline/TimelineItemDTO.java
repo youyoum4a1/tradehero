@@ -10,6 +10,7 @@ import com.tradehero.th.api.security.SecurityMediaDTOList;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Date;
+import org.jetbrains.annotations.Nullable;
 
 public class TimelineItemDTO extends AbstractDiscussionDTO
 {
@@ -60,7 +61,7 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
         return medias.getFlavorSecurityForDisplay();
     }
 
-    public SecurityId createFlavorSecurityIdForDisplay()
+    @Nullable public SecurityId createFlavorSecurityIdForDisplay()
     {
         if (medias == null)
         {

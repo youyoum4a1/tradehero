@@ -15,15 +15,17 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.social.friend.FriendsListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,12 +51,14 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private FriendsListKey friendsListKey;
     private UserFriendsDTOList friendDTOList;
+    private DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> friendsListCacheListener;
     private SocialFriendsAdapter socialFriendsListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        this.friendsListCacheListener = createFriendsFetchListener();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -81,6 +85,23 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         initView();
+    }
+
+    @Override public void onStop()
+    {
+        detachFriendsListCache();
+        super.onStop();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.friendsListCacheListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachFriendsListCache()
+    {
+        friendsListCache.unregister(friendsListCacheListener);
     }
 
     @Override
@@ -133,7 +154,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
             if (usersUnInvited == null || usersUnInvited.size() == 0)
             {
-                THToast.show("No user to Invite");
+                THToast.show(R.string.social_no_friend_to_invite);
                 return;
             }
             handleInviteUsers(usersUnInvited);
@@ -143,7 +164,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             List<UserFriendsDTO> usersUnfollowed = findAllUsersUnfollowed();
             if (usersUnfollowed == null || usersUnfollowed.size() == 0)
             {
-                THToast.show("No user to follow");
+                THToast.show(R.string.social_no_friend_to_follow);
                 return;
             }
             handleFollowUsers(usersUnfollowed);
@@ -200,8 +221,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         {
             friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
         }
-        DTOCache.GetOrFetchTask fetchTask = friendsListCache.getOrFetch(friendsListKey, true, createFriendsFetchListener());
-        fetchTask.execute();
+        detachFriendsListCache();
+        friendsListCache.register(friendsListKey, friendsListCacheListener);
+        friendsListCache.getOrFetchAsync(friendsListKey, true);
         //fetchTask.getStatus();
     }
 
@@ -334,7 +356,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return listView.getAdapter() != null && listView.getAdapter().getCount() > 0;
     }
 
-    protected DTOCache.Listener<FriendsListKey, UserFriendsDTOList> createFriendsFetchListener()
+    protected DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> createFriendsFetchListener()
     {
         return new FriendFetchListener();
     }
@@ -481,18 +503,16 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    class FriendFetchListener implements DTOCache.Listener<FriendsListKey, UserFriendsDTOList>
+    class FriendFetchListener implements DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList>
     {
         @Override
-        public void onDTOReceived(FriendsListKey key, UserFriendsDTOList value, boolean fromCache)
+        public void onDTOReceived(FriendsListKey key, UserFriendsDTOList value)
         {
             if (!hasView())
             {
                 return;
             }
             displayContentView(value);
-            Timber.d("onDTOReceived key:%s,FriendsListKey:%s,fromCache:%b", key, value,
-                    fromCache);
         }
 
         @Override public void onErrorThrown(FriendsListKey key, Throwable error)

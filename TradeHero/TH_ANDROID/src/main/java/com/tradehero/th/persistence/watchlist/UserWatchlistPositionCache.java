@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.watchlist;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserWatchlistPositionCache extends StraightDTOCache<UserBaseKey, SecurityIdList>
+@Singleton public class UserWatchlistPositionCache extends StraightDTOCacheNew<UserBaseKey, SecurityIdList>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
     private static final int DEFAULT_WATCHLIST_FETCH_SIZE = 100;
@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
         return new PerPagedWatchlistKey(1, DEFAULT_WATCHLIST_FETCH_SIZE);
     }
 
-    @Override protected SecurityIdList fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override public SecurityIdList fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return putInternal(
                 watchlistServiceWrapper.get().getAllByUser(createUniqueKey()));

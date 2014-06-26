@@ -11,7 +11,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.thoj.route.Routable;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -42,7 +41,6 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserList
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
@@ -75,12 +73,13 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected List<CompetitionId> competitionIds;
-    private DTOCache.GetOrFetchTask<ProviderId, CompetitionIdList> competitionListCacheFetchTask;
+    private DTOCacheNew.Listener<ProviderId, CompetitionIdList> competitionListCacheFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
+        this.competitionListCacheFetchListener = createCompetitionListCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -133,10 +132,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
 
         detachCompetitionListCacheTask();
-        competitionListCacheFetchTask = competitionListCache.getOrFetch(
-                        providerId,
-                        createCompetitionListCacheListener());
-        competitionListCacheFetchTask.execute();
+        competitionListCache.register(providerId, competitionListCacheFetchListener);
+        competitionListCache.getOrFetchAsync(providerId);
     }
 
     @Override public void onResume()
@@ -176,6 +173,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public void onDestroy()
     {
+        this.competitionListCacheFetchListener = null;
         this.webViewTHIntentPassedListener = null;
         super.onDestroy();
     }
@@ -191,11 +189,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void detachCompetitionListCacheTask()
     {
-        if (competitionListCacheFetchTask != null)
-        {
-            competitionListCacheFetchTask.setListener(null);
-        }
-        competitionListCacheFetchTask = null;
+        competitionListCache.unregister(competitionListCacheFetchListener);
     }
 
     protected void linkWith(UserProfileCompactDTO userProfileCompactDTO, boolean andDisplay)
@@ -204,7 +198,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         placeAdapterInList();
     }
 
-    @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
         placeAdapterInList();
@@ -316,9 +310,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (adDTO != null && adDTO.redirectUrl != null)
         {
             Bundle args = new Bundle();
-            String url = adDTO.redirectUrl + String.format("&userId=%s", currentUserId.get());
-            args.putString(WebViewFragment.BUNDLE_KEY_URL, url);
-            getDashboardNavigator().pushFragment(WebViewFragment.class, args);
+            String url = providerUtil.appendUserId(adDTO.redirectUrl, '&', currentUserId.toUserBaseKey());
+            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, url);
+            getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         }
     }
 
@@ -362,9 +356,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         }
         
-        args.putString(
-                CompetitionWebViewFragment.BUNDLE_KEY_URL,
-                competitionUrl + "&previous=whatever");
+        args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, competitionUrl);
         this.webViewFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -420,11 +412,6 @@ public class MainCompetitionFragment extends CompetitionFragment
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
     {
         return new MainCompetitionUserProfileCacheListener();
-    }
-
-    private DTOCache.Listener<ProviderId, CompetitionIdList> createCompetitionListCacheListener()
-    {
-        return new MainCompetitionCompetitionListCacheListener();
     }
 
     private class MainCompetitionFragmentItemClickListener
@@ -509,11 +496,15 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private class MainCompetitionCompetitionListCacheListener
-            implements DTOCache.Listener<ProviderId, CompetitionIdList>
+    private DTOCacheNew.Listener<ProviderId, CompetitionIdList> createCompetitionListCacheListener()
     {
-        @Override public void onDTOReceived(ProviderId providerId, CompetitionIdList value,
-                boolean fromCache)
+        return new MainCompetitionCompetitionListCacheListener();
+    }
+
+    private class MainCompetitionCompetitionListCacheListener
+            implements DTOCacheNew.Listener<ProviderId, CompetitionIdList>
+    {
+        @Override public void onDTOReceived(ProviderId providerId, CompetitionIdList value)
         {
             linkWith(value, true);
         }

@@ -17,7 +17,7 @@
       android:layout_marginBottom="@dimen/timeline_item_margin"
       android:text="@string/security_discussion_add"
       android:gravity="center"
-      android:background="@drawable/btn_basic_yellow"
+      android:background="@drawable/basic_yellow_selector"
       android:layout_marginLeft="10dp"
       android:layout_marginRight="10dp"
       android:textColor="@color/btn_text_blue"

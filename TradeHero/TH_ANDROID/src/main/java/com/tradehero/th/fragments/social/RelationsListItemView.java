@@ -27,6 +27,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>, View.OnClickListener
@@ -288,8 +289,9 @@ public class RelationsListItemView extends RelativeLayout
         }
         catch (IllegalArgumentException ex)
         {
-            return 0;
+            Timber.e(ex, "No country for %s", country);
         }
+        return R.drawable.default_image;
     }
 
     protected void notifyFollowRequested()

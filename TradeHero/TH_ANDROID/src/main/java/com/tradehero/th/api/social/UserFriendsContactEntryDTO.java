@@ -1,6 +1,7 @@
 package com.tradehero.th.api.social;
 
 import android.net.Uri;
+import com.tradehero.th.R;
 import com.tradehero.th.loaders.ContactEntry;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +22,11 @@ public class UserFriendsContactEntryDTO extends UserFriendsDTO
         this.photoUri = contactEntry.getPhotoUri();
     }
     //</editor-fold>
+
+    @Override public int getNetworkLabelImage()
+    {
+        return R.drawable.default_image;
+    }
 
     @Override public String getProfilePictureURL()
     {

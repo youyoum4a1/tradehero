@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class LeaderboardDefListCache extends StraightDTOCache<LeaderboardDefListKey, LeaderboardDefKeyList>
+@Singleton public class LeaderboardDefListCache extends StraightDTOCacheNew<LeaderboardDefListKey, LeaderboardDefKeyList>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -32,17 +32,9 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override protected LeaderboardDefKeyList fetch(@NotNull LeaderboardDefListKey listKey) throws Throwable
+    @Override public LeaderboardDefKeyList fetch(@NotNull LeaderboardDefListKey listKey) throws Throwable
     {
-        LeaderboardDefDTOList leaderboardDefinitions = leaderboardServiceWrapper.getLeaderboardDefinitions();
-        if (leaderboardDefinitions != null)
-        {
-            return putInternal(listKey, leaderboardDefinitions);
-        }
-        else
-        {
-            return null;
-        }
+        return putInternal(listKey, leaderboardServiceWrapper.getLeaderboardDefinitions());
     }
 
     private LeaderboardDefKeyList putInternal(

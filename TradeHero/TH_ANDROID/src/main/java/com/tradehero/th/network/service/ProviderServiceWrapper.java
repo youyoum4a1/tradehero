@@ -8,7 +8,7 @@ import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
@@ -47,9 +47,9 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
-    public List<SecurityCompactDTO> getProviderSecurities(@NotNull ProviderSecurityListType key)
+    public SecurityCompactDTOList getProviderSecurities(@NotNull ProviderSecurityListType key)
     {
-        List<SecurityCompactDTO> received;
+        SecurityCompactDTOList received;
         if (key instanceof SearchProviderSecurityListType)
         {
             SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
@@ -80,11 +80,11 @@ import retrofit.Callback;
         return received;
     }
 
-    @NotNull public MiddleCallback<List<SecurityCompactDTO>> getProviderSecurities(
+    @NotNull public MiddleCallback<SecurityCompactDTOList> getProviderSecurities(
             @NotNull ProviderSecurityListType key,
-            @Nullable Callback<List<SecurityCompactDTO>> callback)
+            @Nullable Callback<SecurityCompactDTOList> callback)
     {
-        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<SecurityCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         if (key instanceof SearchProviderSecurityListType)
         {
             SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;

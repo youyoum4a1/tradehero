@@ -19,11 +19,14 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
@@ -49,6 +52,12 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.open(custom_dimensions);
+        localyticsSession.tagScreen(LocalyticsConstants.Register_Form);
+        localyticsSession.tagEvent(LocalyticsConstants.RegisterFormScreen);
+        localyticsSession.tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Email);
     }
 
     @Override public int getDefaultViewId()
@@ -78,13 +87,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     {
         super.onViewCreated(view, savedInstanceState);
         DeviceUtil.showKeyboardDelayed(emailEditText);
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        localyticsSession.tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Email);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -162,7 +164,10 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             backButton.setOnClickListener(null);
             backButton = null;
         }
-
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.close(custom_dimensions);
+        localyticsSession.upload();
         super.onDestroyView();
     }
 

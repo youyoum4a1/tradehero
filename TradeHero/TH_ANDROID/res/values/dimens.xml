@@ -41,6 +41,7 @@
   <dimen name="comment_action_buttons_horizontal_padding">3dp</dimen>
   <dimen name="timeline_action_buttons_padding">3dp</dimen>
   <dimen name="discussion_action_buttons_vertical_padding">3dp</dimen>
+  <dimen name="discussion_action_buttons_drawable_padding">6dp</dimen>
   <dimen name="timeline_action_buttons_vertical_padding_big">10dp</dimen>
   <dimen name="leaderboard_fof_text_size">12sp</dimen>
   <dimen name="notification_margin">10dp</dimen>

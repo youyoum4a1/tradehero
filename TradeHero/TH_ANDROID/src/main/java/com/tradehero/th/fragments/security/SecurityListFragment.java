@@ -25,16 +25,15 @@ import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.loaders.PagedDTOCacheLoader;
+import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
@@ -122,7 +121,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        //may encounter NullPointerException
+        //TODO may encounter NullPointerException
         securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
         if (listViewScrollListener != null)
         {
@@ -143,7 +142,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     }
 
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
     }
 
@@ -291,7 +291,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected PagedDTOCacheLoader.OnQueryingChangedListener queryingChangedListener = new PagedDTOCacheLoader.OnQueryingChangedListener()
+    protected PagedDTOCacheLoaderNew.OnQueryingChangedListener queryingChangedListener = new PagedDTOCacheLoaderNew.OnQueryingChangedListener()
     {
         @Override public void onQueryingChanged(boolean querying)
         {
@@ -311,21 +311,22 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     };
 
-    protected PagedDTOCacheLoader.OnNoMorePagesChangedListener noMorePagesChangedListener = new PagedDTOCacheLoader.OnNoMorePagesChangedListener()
-    {
-        @Override public void onNoMorePagesChanged(boolean noMorePages)
-        {
-            if (listViewScrollListener != null && !noMorePages)
+    protected PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener noMorePagesChangedListener =
+            new PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener()
             {
-                // There are more pages, so we want to raise the flag  when at the end.
-                listViewScrollListener.lowerEndFlag();
-            }
-            else if (listViewScrollListener != null)
-            {
-                listViewScrollListener.deactivateEnd();
-            }
-        }
-    };
+                @Override public void onNoMorePagesChanged(boolean noMorePages)
+                {
+                    if (listViewScrollListener != null && !noMorePages)
+                    {
+                        // There are more pages, so we want to raise the flag  when at the end.
+                        listViewScrollListener.lowerEndFlag();
+                    }
+                    else if (listViewScrollListener != null)
+                    {
+                        listViewScrollListener.deactivateEnd();
+                    }
+                }
+            };
 
     protected class SecurityListLoaderCallback implements LoaderManager.LoaderCallbacks<SecurityIdList>
     {

@@ -1,5 +1,6 @@
 package com.tradehero.th.api.translation;
 
+import com.tradehero.th.R;
 import com.tradehero.th.api.ExtendedDTO;
 
 public class TranslationResult extends ExtendedDTO
@@ -24,6 +25,6 @@ public class TranslationResult extends ExtendedDTO
 
     public int logoResId()
     {
-        return 0;
+        return R.drawable.default_image;
     }
 }

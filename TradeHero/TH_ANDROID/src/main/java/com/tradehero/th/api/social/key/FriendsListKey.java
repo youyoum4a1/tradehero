@@ -1,14 +1,13 @@
-package com.tradehero.th.fragments.social.friend;
+package com.tradehero.th.api.social.key;
 
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 
-// TODO move to API package
 public class FriendsListKey implements DTOKey
 {
-    UserBaseKey userBaseKey;
-    SocialNetworkEnum socialNetworkEnum;
+    public UserBaseKey userBaseKey;
+    public SocialNetworkEnum socialNetworkEnum;
 
     //<editor-fold desc="Constructors">
     public FriendsListKey()
