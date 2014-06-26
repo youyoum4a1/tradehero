@@ -7,10 +7,11 @@ branches:
 # whitelist
 branches:
   only:
-    - tho@tradehero.mobi
+    - develop
 
 notifications:
-  email: false
+  email:
+    - tho@tradehero.mobi
 
 env:
   global:
