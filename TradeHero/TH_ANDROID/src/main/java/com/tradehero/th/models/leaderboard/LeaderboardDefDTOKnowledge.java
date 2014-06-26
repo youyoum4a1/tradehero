@@ -10,8 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class LeaderboardDefDTOKnowledge
 {
-    @NotNull
-    private final LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge;
+    @NotNull private final LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefDTOKnowledge(@NotNull LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge)
@@ -31,7 +30,7 @@ public class LeaderboardDefDTOKnowledge
         }
         else if (leaderboardDefDTO.countryCodes != null)
         {
-            for (String countryCode : leaderboardDefDTO.countryCodes)
+            for (@NotNull String countryCode : leaderboardDefDTO.countryCodes)
             {
                 try
                 {
