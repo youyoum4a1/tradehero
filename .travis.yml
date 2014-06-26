@@ -12,6 +12,8 @@ branches:
 notifications:
   email:
     - dev@tradehero.mobi
+    on_success: change
+    on_failure: change
 
 env:
   global:
