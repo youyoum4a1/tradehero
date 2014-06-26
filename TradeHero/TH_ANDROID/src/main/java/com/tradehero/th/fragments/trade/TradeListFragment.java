@@ -247,19 +247,21 @@ public class TradeListFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachFetchTradesTask();
-        tradeListView = null;
         if (adapter != null)
         {
             adapter.setTradeListHeaderClickListener(null);
         }
         adapter = null;
+        header.setListener(null);
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        fetchTradesListener = null;
         buttonListener = null;
+        fetchTradesListener = null;
+        overlayHeaderListener = null;
         super.onDestroy();
     }
 
