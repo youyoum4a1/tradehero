@@ -353,7 +353,7 @@ public class UpdateCenterFragment extends BaseFragment
         changeTabTitleNumber(tabType, number);
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    @NotNull protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
         return new FetchUserProfileListener();
     }
@@ -361,12 +361,12 @@ public class UpdateCenterFragment extends BaseFragment
     private class FetchUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, @NotNull UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, Throwable error)
         {
             THToast.show(new THException(error));
         }
