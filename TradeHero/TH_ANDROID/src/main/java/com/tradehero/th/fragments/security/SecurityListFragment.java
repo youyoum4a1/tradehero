@@ -142,7 +142,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     }
 
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
     }
 
@@ -310,21 +311,22 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     };
 
-    protected PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener noMorePagesChangedListener = new PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener()
-    {
-        @Override public void onNoMorePagesChanged(boolean noMorePages)
-        {
-            if (listViewScrollListener != null && !noMorePages)
+    protected PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener noMorePagesChangedListener =
+            new PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener()
             {
-                // There are more pages, so we want to raise the flag  when at the end.
-                listViewScrollListener.lowerEndFlag();
-            }
-            else if (listViewScrollListener != null)
-            {
-                listViewScrollListener.deactivateEnd();
-            }
-        }
-    };
+                @Override public void onNoMorePagesChanged(boolean noMorePages)
+                {
+                    if (listViewScrollListener != null && !noMorePages)
+                    {
+                        // There are more pages, so we want to raise the flag  when at the end.
+                        listViewScrollListener.lowerEndFlag();
+                    }
+                    else if (listViewScrollListener != null)
+                    {
+                        listViewScrollListener.deactivateEnd();
+                    }
+                }
+            };
 
     protected class SecurityListLoaderCallback implements LoaderManager.LoaderCallbacks<SecurityIdList>
     {
