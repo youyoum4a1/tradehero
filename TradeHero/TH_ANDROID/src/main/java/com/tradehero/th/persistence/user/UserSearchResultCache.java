@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public UserSearchResultDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public UserSearchResultDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch mechanism on this cache");
     }

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public UserProfileCompactDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public UserProfileCompactDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return userProfileCache.getOrFetchSync(key);
     }

@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public AlertDTO fetch(@NotNull AlertId key) throws Throwable
+    @Override @NotNull public AlertDTO fetch(@NotNull AlertId key) throws Throwable
     {
         return this.alertServiceWrapper.get().getAlert(key);
     }

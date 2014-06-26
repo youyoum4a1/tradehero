@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override public WatchlistPositionDTO fetch(@NotNull SecurityId key) throws Throwable
+    @Override @NotNull public WatchlistPositionDTO fetch(@NotNull SecurityId key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch on WatchlistPositionCache");
     }

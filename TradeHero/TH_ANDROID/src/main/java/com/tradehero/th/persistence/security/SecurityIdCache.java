@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override public SecurityId fetch(@NotNull SecurityIntegerId key) throws Throwable
+    @Override @NotNull public SecurityId fetch(@NotNull SecurityIntegerId key) throws Throwable
     {
         throw new IllegalStateException("You should never fetch a SecurityId this way");
     }

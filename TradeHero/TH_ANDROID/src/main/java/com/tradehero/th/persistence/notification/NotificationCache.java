@@ -25,7 +25,7 @@ public class NotificationCache extends StraightDTOCacheNew<NotificationKey, Noti
         this.notificationServiceWrapper = notificationServiceWrapper;
     }
 
-    @Override public NotificationDTO fetch(@NotNull NotificationKey key) throws Throwable
+    @Override @NotNull public NotificationDTO fetch(@NotNull NotificationKey key) throws Throwable
     {
         return notificationServiceWrapper.get().getNotificationDetail(key);
     }

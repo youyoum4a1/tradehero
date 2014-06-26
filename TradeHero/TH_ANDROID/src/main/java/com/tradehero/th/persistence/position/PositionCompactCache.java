@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public PositionDTOCompact fetch(@NotNull PositionCompactId key)
+    @Override @NotNull public PositionDTOCompact fetch(@NotNull PositionCompactId key)
     {
         throw new IllegalStateException("You should not fetch PositionDTOCompact");
     }

@@ -21,7 +21,7 @@ public class LeaderboardFriendsCache extends StraightDTOCacheNew<LeaderboardFrie
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
     }
 
-    @Override public LeaderboardFriendsDTO fetch(@NotNull LeaderboardFriendsKey key) throws Throwable
+    @Override @NotNull public LeaderboardFriendsDTO fetch(@NotNull LeaderboardFriendsKey key) throws Throwable
     {
         return leaderboardServiceWrapper.getNewFriendsLeaderboard();
     }

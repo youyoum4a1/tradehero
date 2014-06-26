@@ -17,7 +17,7 @@ public class LeaderboardPositionIdCache extends StraightDTOCacheNew<LeaderboardM
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override public OwnedLeaderboardPositionId fetch(@NotNull LeaderboardMarkUserPositionId key)
+    @Override @NotNull public OwnedLeaderboardPositionId fetch(@NotNull LeaderboardMarkUserPositionId key)
     {
         throw new IllegalStateException("You should not fetch for OwnedLeaderboardPositionId");
     }

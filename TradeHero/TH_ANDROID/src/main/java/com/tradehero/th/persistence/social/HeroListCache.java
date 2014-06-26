@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public HeroIdExtWrapper fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public HeroIdExtWrapper fetch(@NotNull UserBaseKey key) throws Throwable
     {
         HeroDTOList allHeros = userServiceWrapper.getHeroes(key);
         return putInternal(key, allHeros);

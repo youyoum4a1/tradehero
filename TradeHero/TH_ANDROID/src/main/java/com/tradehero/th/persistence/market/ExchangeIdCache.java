@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public ExchangeIntegerId fetch(@NotNull ExchangeStringId key) throws Throwable
+    @Override @NotNull public ExchangeIntegerId fetch(@NotNull ExchangeStringId key) throws Throwable
     {
         throw new IllegalArgumentException("Cannot fetch here");
     }

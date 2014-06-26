@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public ExchangeDTO fetch(@NotNull ExchangeIntegerId key) throws Throwable
+    @Override @NotNull public ExchangeDTO fetch(@NotNull ExchangeIntegerId key) throws Throwable
     {
         return marketServiceWrapper.get().getExchange(key);
     }

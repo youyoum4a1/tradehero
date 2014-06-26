@@ -9,9 +9,7 @@ import com.tradehero.th.network.service.TradeServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class TradeListCache extends StraightDTOCacheNew<OwnedPositionId, OwnedTradeIdList>
 {
@@ -34,30 +32,25 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public OwnedTradeIdList fetch(@NotNull OwnedPositionId key) throws Throwable
+    @Override @NotNull public OwnedTradeIdList fetch(@NotNull OwnedPositionId key) throws Throwable
     {
         return putInternal(key, tradeServiceWrapper.getTrades(key));
     }
 
-    @Contract("_, null -> null; _, !null -> !null") @Nullable
-    protected OwnedTradeIdList putInternal(
+    @NotNull protected OwnedTradeIdList putInternal(
             @NotNull OwnedPositionId key,
-            @Nullable List<TradeDTO> fleshedValues)
+            @NotNull List<TradeDTO> fleshedValues)
     {
-        OwnedTradeIdList tradeIds = null;
-        if (fleshedValues != null)
+        OwnedTradeIdList tradeIds = new OwnedTradeIdList();
+        OwnedTradeId ownedTradeId;
+        for (@NotNull TradeDTO trade: fleshedValues)
         {
-            tradeIds = new OwnedTradeIdList();
-            OwnedTradeId ownedTradeId;
-            for (@NotNull TradeDTO trade: fleshedValues)
-            {
-                ownedTradeId = new OwnedTradeId(key, trade.id);
-                tradeIds.add(ownedTradeId);
-                tradeCache.put(ownedTradeId, trade);
-                tradeIdCache.put(trade.getTradeId(), ownedTradeId);
-            }
-            put(key, tradeIds);
+            ownedTradeId = new OwnedTradeId(key, trade.id);
+            tradeIds.add(ownedTradeId);
+            tradeCache.put(ownedTradeId, trade);
+            tradeIdCache.put(trade.getTradeId(), ownedTradeId);
         }
+        put(key, tradeIds);
         return tradeIds;
     }
 }

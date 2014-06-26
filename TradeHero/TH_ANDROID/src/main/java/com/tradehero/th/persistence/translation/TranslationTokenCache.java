@@ -12,13 +12,16 @@ import timber.log.Timber;
 @Singleton
 public class TranslationTokenCache extends StraightDTOCacheNew<TranslationTokenKey, TranslationToken>
 {
-    private final TranslationTokenServiceWrapper translationTokenServiceWrapper;
+    @NotNull private final TranslationTokenServiceWrapper translationTokenServiceWrapper;
 
-    @Inject public TranslationTokenCache(TranslationTokenServiceWrapper translationTokenServiceWrapper)
+    //<editor-fold desc="Constructors">
+    @Inject public TranslationTokenCache(
+            @NotNull TranslationTokenServiceWrapper translationTokenServiceWrapper)
     {
         super(1);
         this.translationTokenServiceWrapper = translationTokenServiceWrapper;
     }
+    //</editor-fold>
 
     @Nullable public TranslationToken getValid(@NotNull TranslationTokenKey key)
     {
@@ -32,25 +35,18 @@ public class TranslationTokenCache extends StraightDTOCacheNew<TranslationTokenK
             }
             catch (Throwable throwable)
             {
-                Timber.e(throwable, "");
+                Timber.e(throwable, null);
             }
         }
         return cached;
     }
 
-    @Nullable
-    @Override public TranslationToken get(@NotNull TranslationTokenKey key)
+    @Override public boolean isValid(@NotNull TranslationToken token)
     {
-        TranslationToken token = super.get(key);
-        if (token == null || !token.isValid())
-        {
-            // This will do the trick to force redownload.
-            return null;
-        }
-        return token;
+        return token.isValid();
     }
 
-    @Override public TranslationToken fetch(@NotNull TranslationTokenKey key) throws Throwable
+    @Override @NotNull public TranslationToken fetch(@NotNull TranslationTokenKey key) throws Throwable
     {
         return translationTokenServiceWrapper.getToken();
     }

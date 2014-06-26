@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public OwnedPortfolioIdList fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public OwnedPortfolioIdList fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return putInternal(key, portfolioService.get().getPortfolios(key.key, key.equals(currentUserId.toUserBaseKey())));
     }
@@ -88,13 +88,10 @@ import org.jetbrains.annotations.Nullable;
         for (OwnedPortfolioId ownedPortfolioId : list)
         {
             portfolioId = ownedPortfolioId.getPortfolioIdKey();
-            if (portfolioId != null)
+            portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
+            if (portfolioCompactDTO != null && portfolioCompactDTO.isDefault())
             {
-                portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
-                if (portfolioCompactDTO != null && portfolioCompactDTO.isDefault())
-                {
-                    return ownedPortfolioId;
-                }
+                return ownedPortfolioId;
             }
         }
         return null;

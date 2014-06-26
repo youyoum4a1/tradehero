@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public UserTransactionHistoryDTO fetch(@NotNull UserTransactionHistoryId key)
+    @Override @NotNull public UserTransactionHistoryDTO fetch(@NotNull UserTransactionHistoryId key)
     {
         throw new IllegalArgumentException("There is no fetch on this cache");
     }

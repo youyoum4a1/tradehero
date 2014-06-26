@@ -1,7 +1,6 @@
 package com.tradehero.common.persistence;
 
 import java.util.Map;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,8 +17,7 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
     }
     //</editor-fold>
 
-    @Contract("null -> null; !null -> _") @Nullable
-    @Override public DTOType get(@NotNull DTOKeyType key)
+    @Override @Nullable public DTOType get(@NotNull DTOKeyType key)
     {
         @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (cacheValue == null)

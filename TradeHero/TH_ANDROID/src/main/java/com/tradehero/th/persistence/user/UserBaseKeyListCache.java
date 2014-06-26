@@ -10,7 +10,6 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,30 +31,25 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public UserBaseKeyList fetch(@NotNull UserListType key) throws Throwable
+    @Override @NotNull public UserBaseKeyList fetch(@NotNull UserListType key) throws Throwable
     {
         return putInternal(key, userServiceWrapper.get().searchUsers(key));
     }
 
-    @Contract("_, null -> null; _, !null -> !null") @Nullable
-    protected UserBaseKeyList putInternal(@NotNull UserListType key, @Nullable List<UserSearchResultDTO> fleshedValues)
+    @NotNull protected UserBaseKeyList putInternal(@NotNull UserListType key, @NotNull List<UserSearchResultDTO> fleshedValues)
     {
-        UserBaseKeyList userBaseKeys = null;
-        if (fleshedValues != null)
+        UserBaseKeyList userBaseKeys = new UserBaseKeyList();
+        UserBaseKey userBaseKey;
+        for (@Nullable UserSearchResultDTO userSearchResultDTO: fleshedValues)
         {
-            userBaseKeys = new UserBaseKeyList();
-            UserBaseKey userBaseKey;
-            for (@Nullable UserSearchResultDTO userSearchResultDTO: fleshedValues)
+            if (userSearchResultDTO != null)
             {
-                if (userSearchResultDTO != null)
-                {
-                    userBaseKey = userSearchResultDTO.getUserBaseKey();
-                    userBaseKeys.add(userBaseKey);
-                    userSearchResultCache.get().put(userBaseKey, userSearchResultDTO);
-                }
+                userBaseKey = userSearchResultDTO.getUserBaseKey();
+                userBaseKeys.add(userBaseKey);
+                userSearchResultCache.get().put(userBaseKey, userSearchResultDTO);
             }
-            put(key, userBaseKeys);
         }
+        put(key, userBaseKeys);
         return userBaseKeys;
     }
 }

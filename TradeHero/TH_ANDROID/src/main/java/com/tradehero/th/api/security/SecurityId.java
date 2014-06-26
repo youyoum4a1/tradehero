@@ -154,6 +154,6 @@ public class SecurityId implements Comparable, DTOKey, DTO
 
     @Override public String toString()
     {
-        return String.format("[exchange=%s; securitySymbol=%s]", exchange, securitySymbol);
+        return String.format("[SecurityId exchange=%s; securitySymbol=%s]", exchange, securitySymbol);
     }
 }

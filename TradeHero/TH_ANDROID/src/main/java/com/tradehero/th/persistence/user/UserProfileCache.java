@@ -8,13 +8,9 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfileDTO>
 {
@@ -40,26 +36,10 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public UserProfileDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public UserProfileDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         VisitedFriendListPrefs.addVisitedId(key);
         return userServiceWrapper.get().getUser(key);
-    }
-
-    @Contract("null -> null; !null -> !null") @Nullable
-    public List<UserProfileDTO> getOrFetchSync(@Nullable List<UserBaseKey> baseKeys) throws Throwable
-    {
-        if (baseKeys == null)
-        {
-            return null;
-        }
-
-        List<UserProfileDTO> userProfileDTOs = new ArrayList<>();
-        for (@NotNull UserBaseKey baseKey: baseKeys)
-        {
-            userProfileDTOs.add(getOrFetchSync(baseKey, false));
-        }
-        return userProfileDTOs;
     }
 
     @Override public UserProfileDTO put(@NotNull UserBaseKey userBaseKey, @NotNull UserProfileDTO userProfileDTO)

@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public PositionDTO fetch(@NotNull PositionDTOKey key)
+    @Override @NotNull public PositionDTO fetch(@NotNull PositionDTOKey key)
     {
         throw new IllegalStateException("You should not fetch PositionDTO individually");
     }

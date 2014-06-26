@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public ProviderIdList fetch(@NotNull ProviderListKey key) throws Throwable
+    @Override @NotNull public ProviderIdList fetch(@NotNull ProviderListKey key) throws Throwable
     {
         if (key.key.equals(ProviderListKey.ALL_PROVIDERS))
         {

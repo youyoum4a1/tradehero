@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override public LeaderboardUserDTO fetch(@NotNull LeaderboardUserId key) throws Throwable
+    @Override @NotNull public LeaderboardUserDTO fetch(@NotNull LeaderboardUserId key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch on LeaderboardUserCache");
     }

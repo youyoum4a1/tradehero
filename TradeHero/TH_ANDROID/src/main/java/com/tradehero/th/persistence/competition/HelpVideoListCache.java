@@ -9,10 +9,7 @@ import com.tradehero.th.network.service.ProviderServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 @Singleton public class HelpVideoListCache extends StraightDTOCacheNew<HelpVideoListKey, HelpVideoIdList>
 {
@@ -32,27 +29,22 @@ import timber.log.Timber;
     }
     //</editor-fold>
 
-    @Override public HelpVideoIdList fetch(@NotNull HelpVideoListKey key) throws Throwable
+    @Override @NotNull public HelpVideoIdList fetch(@NotNull HelpVideoListKey key) throws Throwable
     {
         return putInternal(key, providerServiceWrapper.getHelpVideos(key));
     }
 
-    @Contract("_, null -> null; _, !null -> !null")
-    protected HelpVideoIdList putInternal(@NotNull HelpVideoListKey key, @Nullable List<HelpVideoDTO> fleshedValues)
+    @NotNull protected HelpVideoIdList putInternal(@NotNull HelpVideoListKey key, @NotNull List<HelpVideoDTO> fleshedValues)
     {
-        HelpVideoIdList helpVideoIds = null;
-        if (fleshedValues != null)
+        HelpVideoIdList helpVideoIds = new HelpVideoIdList();
+        @NotNull HelpVideoId helpVideoId;
+        for (@NotNull HelpVideoDTO providerDTO: fleshedValues)
         {
-            helpVideoIds = new HelpVideoIdList();
-            @NotNull HelpVideoId helpVideoId;
-            for (@NotNull HelpVideoDTO providerDTO: fleshedValues)
-            {
-                helpVideoId = providerDTO.getHelpVideoId();
-                helpVideoIds.add(helpVideoId);
-                helpVideoCache.put(helpVideoId, providerDTO);
-            }
-            put(key, helpVideoIds);
+            helpVideoId = providerDTO.getHelpVideoId();
+            helpVideoIds.add(helpVideoId);
+            helpVideoCache.put(helpVideoId, providerDTO);
         }
+        put(key, helpVideoIds);
         return helpVideoIds;
     }
 }

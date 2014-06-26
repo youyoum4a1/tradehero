@@ -39,8 +39,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @NotNull
-    @Override public PortfolioDTO fetch(@NotNull OwnedPortfolioId key) throws Throwable
+    @Override @NotNull public PortfolioDTO fetch(@NotNull OwnedPortfolioId key) throws Throwable
     {
         return portfolioServiceWrapper.get().getPortfolio(key);
     }

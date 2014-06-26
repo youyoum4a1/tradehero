@@ -27,7 +27,7 @@ public class MessageThreadHeaderCache extends StraightDTOCacheNew<UserBaseKey, M
         this.messageHeaderCache = messageHeaderCache;
     }
 
-    @Override public MessageHeaderDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public MessageHeaderDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return messageServiceWrapper.getMessageThread(key);
     }

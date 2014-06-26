@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public SecurityPositionDetailDTO fetch(@NotNull SecurityId key) throws Throwable
+    @Override @NotNull public SecurityPositionDetailDTO fetch(@NotNull SecurityId key) throws Throwable
     {
         return securityServiceWrapper.get().getSecurity(key);
     }

@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public OwnedPositionId fetch(@NotNull PositionCompactId key)
+    @Override @NotNull public OwnedPositionId fetch(@NotNull PositionCompactId key)
     {
         throw new IllegalStateException("You should not fetch for OwnedPositionId");
     }

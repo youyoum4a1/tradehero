@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public LeaderboardDTO fetch(@NotNull LeaderboardKey key) throws Throwable
+    @Override @NotNull public LeaderboardDTO fetch(@NotNull LeaderboardKey key) throws Throwable
     {
         return leaderboardServiceWrapper.getLeaderboard(key);
     }

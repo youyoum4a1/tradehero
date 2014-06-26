@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public PortfolioCompactDTO fetch(@NotNull PortfolioId key) throws Throwable
+    @Override @NotNull public PortfolioCompactDTO fetch(@NotNull PortfolioId key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch an individual PortfolioCompactDTO");
     }

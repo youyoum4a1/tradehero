@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public SecurityCompactDTO fetch(@NotNull SecurityId key) throws Throwable
+    @Override @NotNull public SecurityCompactDTO fetch(@NotNull SecurityId key) throws Throwable
     {
         SecurityCompactDTO securityCompactDTO = null;
         SecurityPositionDetailDTO securityPositionDetailDTO = securityServiceWrapper.get().getSecurity(key);
@@ -45,12 +45,13 @@ import org.jetbrains.annotations.Nullable;
         if (securityPositionDetailDTO != null)
         {
             securityPositionDetailCache.get().put(key, securityPositionDetailDTO);
-
-            // We do a get again here because the put may have cloned into subclasses.
-            // And we want the subclass
-            securityCompactDTO = get(key);
+            securityCompactDTO = securityPositionDetailDTO.security;
         }
 
+        if (securityCompactDTO == null)
+        {
+            throw new NullPointerException("SecurityCompact was null for " + key);
+        }
         return securityCompactDTO;
     }
 

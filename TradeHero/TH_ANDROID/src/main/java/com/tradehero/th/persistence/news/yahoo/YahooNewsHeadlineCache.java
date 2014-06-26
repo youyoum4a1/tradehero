@@ -19,7 +19,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -55,7 +54,7 @@ import timber.log.Timber;
      *  - use YahooNewsService to fetch the news for the given yahooSymbol
      *  - parse the xml feed
      */
-    @Override @Nullable public NewsHeadlineList fetch(@NotNull SecurityId key) throws Throwable
+    @Override @NotNull public NewsHeadlineList fetch(@NotNull SecurityId key) throws Throwable
     {
         String yahooSymbol = getYahooSymbol(key);
         if (yahooSymbol != null)
@@ -76,13 +75,13 @@ import timber.log.Timber;
         return yahooSymbol;
     }
 
-    @Nullable private NewsHeadlineList fetchYahooNews(@NotNull String yahooSymbol) throws Throwable
+    @NotNull private NewsHeadlineList fetchYahooNews(@NotNull String yahooSymbol) throws Throwable
     {
         Response rawResponse = yahooServiceWrapper.getNews(yahooSymbol);
 
         if (rawResponse == null)
         {
-            return null;
+            throw new NullPointerException("Response was null");
         }
 
         return new NewsHeadlineList(tryParseResponse(rawResponse));

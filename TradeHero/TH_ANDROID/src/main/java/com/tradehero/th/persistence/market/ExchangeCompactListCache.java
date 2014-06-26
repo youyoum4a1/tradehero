@@ -8,6 +8,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class ExchangeCompactListCache extends StraightDTOCacheNew<ExchangeListType, ExchangeCompactDTOList>
 {
@@ -27,12 +28,12 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public ExchangeCompactDTOList fetch(@NotNull ExchangeListType key) throws Throwable
+    @Override @NotNull public ExchangeCompactDTOList fetch(@NotNull ExchangeListType key) throws Throwable
     {
         return marketServiceWrapper.get().getExchanges();
     }
 
-    @Override public ExchangeCompactDTOList put(@NotNull ExchangeListType key, @NotNull ExchangeCompactDTOList value)
+    @Override @Nullable public ExchangeCompactDTOList put(@NotNull ExchangeListType key, @NotNull ExchangeCompactDTOList value)
     {
         exchangeIdCache.get().put(value);
         return super.put(key, value);

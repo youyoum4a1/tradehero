@@ -9,9 +9,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserTransactionHistoryListCache extends StraightDTOCacheNew<UserTransactionHistoryListType, UserTransactionHistoryIdList>
 {
@@ -31,29 +29,24 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public UserTransactionHistoryIdList fetch(@NotNull UserTransactionHistoryListType key)
+    @Override @NotNull public UserTransactionHistoryIdList fetch(@NotNull UserTransactionHistoryListType key)
     {
         return putInternal(key, userServiceWrapper.getUserTransactions(key));
     }
 
-    @Contract("_, null -> null; _, !null -> !null") @Nullable
-    protected UserTransactionHistoryIdList putInternal(
+    @NotNull protected UserTransactionHistoryIdList putInternal(
             @NotNull UserTransactionHistoryListType key,
-            @Nullable List<UserTransactionHistoryDTO> fleshedValues)
+            @NotNull  List<UserTransactionHistoryDTO> fleshedValues)
     {
-        UserTransactionHistoryIdList userTransactionHistoryIds = null;
-        if (fleshedValues != null)
+        UserTransactionHistoryIdList userTransactionHistoryIds = new UserTransactionHistoryIdList();
+        UserTransactionHistoryId userTransactionHistoryId;
+        for (@NotNull UserTransactionHistoryDTO userTransactionHistoryDTO: fleshedValues)
         {
-            userTransactionHistoryIds = new UserTransactionHistoryIdList();
-            UserTransactionHistoryId userTransactionHistoryId;
-            for (@NotNull UserTransactionHistoryDTO userTransactionHistoryDTO: fleshedValues)
-            {
-                userTransactionHistoryId = userTransactionHistoryDTO.getUserTransactionHistoryId();
-                userTransactionHistoryIds.add(userTransactionHistoryId);
-                userTransactionHistoryCache.put(userTransactionHistoryId, userTransactionHistoryDTO);
-            }
-            put(key, userTransactionHistoryIds);
+            userTransactionHistoryId = userTransactionHistoryDTO.getUserTransactionHistoryId();
+            userTransactionHistoryIds.add(userTransactionHistoryId);
+            userTransactionHistoryCache.put(userTransactionHistoryId, userTransactionHistoryDTO);
         }
+        put(key, userTransactionHistoryIds);
         return userTransactionHistoryIds;
     }
 }

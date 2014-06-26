@@ -38,12 +38,17 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public ProviderDTO fetch(@NotNull ProviderId key) throws Throwable
+    @Override @NotNull public ProviderDTO fetch(@NotNull ProviderId key) throws Throwable
     {
         // Just have the list cache download them all
-        providerListCache.get().fetch(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
+        providerListCache.get().getOrFetchSync(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
         // By then, the list cache has updated this cache
-        return get(key);
+        ProviderDTO value = get(key);
+        if (value == null)
+        {
+            throw new NullPointerException("Unavailable ProviderDTO.id=" + key.key);
+        }
+        return value;
     }
 
     @Override @Nullable public ProviderDTO put(@NotNull ProviderId key, @NotNull ProviderDTO value)

@@ -19,7 +19,7 @@ public class NewsItemCompactCacheNew extends StraightDTOCacheNew<NewsItemDTOKey,
         super(maxSize.get());
     }
 
-    @Override public NewsItemCompactDTO fetch(@NotNull NewsItemDTOKey newsItemDTOKey) throws Throwable
+    @Override @NotNull public NewsItemCompactDTO fetch(@NotNull NewsItemDTOKey newsItemDTOKey) throws Throwable
     {
         throw new IllegalStateException("No fetch yet");
     }

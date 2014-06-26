@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public UserMessagingRelationshipDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public UserMessagingRelationshipDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return messageServiceWrapper.getMessagingRelationgshipStatus(key);
     }

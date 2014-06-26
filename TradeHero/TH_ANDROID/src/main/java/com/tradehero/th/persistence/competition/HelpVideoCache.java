@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public HelpVideoDTO fetch(@NotNull HelpVideoId key) throws Throwable
+    @Override @NotNull public HelpVideoDTO fetch(@NotNull HelpVideoId key) throws Throwable
     {
         throw new RuntimeException();
     }

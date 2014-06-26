@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override public OwnedTradeId fetch(@NotNull TradeId key) throws Throwable
+    @Override @NotNull public OwnedTradeId fetch(@NotNull TradeId key) throws Throwable
     {
         throw new IllegalStateException("You are not supposed to fetch an individual OwnedTradeId");
     }

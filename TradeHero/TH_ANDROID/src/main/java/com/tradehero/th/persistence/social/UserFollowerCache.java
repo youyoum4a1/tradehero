@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public UserFollowerDTO fetch(@NotNull FollowerHeroRelationId key) throws Throwable
+    @Override @NotNull public UserFollowerDTO fetch(@NotNull FollowerHeroRelationId key) throws Throwable
     {
         return this.followerServiceWrapper.get().getFollowerSubscriptionDetail(key);
     }

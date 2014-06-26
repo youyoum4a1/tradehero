@@ -38,7 +38,7 @@ public class DiscussionCache extends StraightDTOCacheNew<DiscussionKey, Abstract
     }
     //</editor-fold>
 
-    @Override public AbstractDiscussionCompactDTO fetch(@NotNull DiscussionKey discussionKey) throws Throwable
+    @Override @NotNull public AbstractDiscussionCompactDTO fetch(@NotNull DiscussionKey discussionKey) throws Throwable
     {
         if (discussionKey instanceof TimelineItemDTOKey)
         {

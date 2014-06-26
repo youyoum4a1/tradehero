@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
         this.userServiceWrapper = userServiceWrapper;
     }
 
-    @Override public UserAvailabilityDTO fetch(@NotNull DisplayNameDTO key) throws Throwable
+    @Override @NotNull public UserAvailabilityDTO fetch(@NotNull DisplayNameDTO key) throws Throwable
     {
         return userServiceWrapper.checkDisplayNameAvailable(key.displayName);
     }

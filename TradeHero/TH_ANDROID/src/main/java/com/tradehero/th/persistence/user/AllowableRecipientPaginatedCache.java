@@ -36,22 +36,16 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCacheNew<Search
     }
     //</editor-fold>
 
-    @Override public PaginatedDTO<AllowableRecipientDTO> fetch(@NotNull SearchAllowableRecipientListType key)
+    @Override @NotNull public PaginatedDTO<AllowableRecipientDTO> fetch(@NotNull SearchAllowableRecipientListType key)
             throws Throwable
     {
         return putInternal(key, userServiceWrapper.searchAllowableRecipients(key));
     }
 
-    @Contract("_, null -> null; _, !null -> !null") @Nullable
-    private PaginatedDTO<AllowableRecipientDTO> putInternal(
+    @NotNull private PaginatedDTO<AllowableRecipientDTO> putInternal(
             @NotNull SearchAllowableRecipientListType key,
-            PaginatedDTO<AllowableRecipientDTO> value)
+            @NotNull PaginatedDTO<AllowableRecipientDTO> value)
     {
-        if (value == null)
-        {
-            return null;
-        }
-
         PaginatedDTO<AllowableRecipientDTO> reprocessed = new PaginatedDTO<>();
         reprocessed.setPagination(value.getPagination());
         if (value.getData() != null)
@@ -66,19 +60,6 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCacheNew<Search
             reprocessed.setData(data);
         }
         return reprocessed;
-    }
-
-    @Contract("null -> null; !null -> !null") @Nullable
-    private AllowableRecipientDTO get(@Nullable UserBaseKey userBaseKey)
-    {
-        if (userBaseKey == null)
-        {
-            return null;
-        }
-        AllowableRecipientDTO allowableRecipientDTO = new AllowableRecipientDTO();
-        allowableRecipientDTO.user = userProfileCompactCache.get(userBaseKey);
-        allowableRecipientDTO.relationship = userRelationCache.get(userBaseKey);
-        return allowableRecipientDTO;
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
