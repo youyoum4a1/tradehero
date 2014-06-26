@@ -7,10 +7,14 @@ branches:
 # whitelist
 branches:
   only:
-    - tho@tradehero.mobi
+    - develop
 
 notifications:
-  email: false
+  email:
+    recipients:
+      - dev@tradehero.mobi
+    on_success: change
+    on_failure: change
 
 env:
   global:
@@ -76,4 +80,4 @@ before_install:
   - export PATH="${BASEDIR}/gradle-1.6/bin:${PATH}"
   
   # Let's try to build...
-install: mvn install
+install: mvn install -DskipTests=true

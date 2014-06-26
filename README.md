@@ -1,5 +1,8 @@
-Getting started:
-================
+TradeHero Android
+=================
+
+[![Build Status](https://magnum.travis-ci.com/TradeHero/TH_ANDROID.svg?token=vUqojFu6gnzhdpmzXo1z)](http://travis-ci.org/TradeHero/TH_ANDROID)
+
 #### Checkout source code
 Clone the repository with all the submodules 
 ```
