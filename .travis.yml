@@ -11,7 +11,8 @@ branches:
 
 notifications:
   email:
-    - dev@tradehero.mobi
+    recipients:
+      - dev@tradehero.mobi
     on_success: change
     on_failure: change
 
