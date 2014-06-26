@@ -121,7 +121,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        //may encounter NullPointerException
+        //TODO may encounter NullPointerException
         securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
         if (listViewScrollListener != null)
         {

@@ -16,7 +16,7 @@
         android:id="@+id/list_news_headline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:listSelector="@android:color/transparent"
+        android:listSelector="@drawable/basic_transparent_selector"
         android:visibility="gone"
         android:divider="@null"
         android:fadeScrollbars="true"
