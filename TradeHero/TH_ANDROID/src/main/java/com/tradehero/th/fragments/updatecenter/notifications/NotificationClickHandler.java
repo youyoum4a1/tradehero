@@ -146,15 +146,10 @@ public class NotificationClickHandler
                 case PRIVATE_MESSAGE:
                 {
                     Bundle args = new Bundle();
-                    if (notificationDTO.referencedUserId != null)
-                    {
-                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
-                    }
-
-                    if (notificationDTO.threadId != null)
-                    {
-                        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
-                    }
+                    Timber.d("%s", notificationDTO);
+                    // Both are needed in ReplyPrivateMessageFragment
+                    ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
+                    ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
                     navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
                 }
                 break;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.NotNull;
 
 public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
 {
@@ -145,7 +146,7 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
         return new UserBaseKey(userId);
     }
 
-    @JsonIgnore public PortfolioId getPortfolioIdKey()
+    @JsonIgnore @NotNull public PortfolioId getPortfolioIdKey()
     {
         return new PortfolioId(portfolioId);
     }
