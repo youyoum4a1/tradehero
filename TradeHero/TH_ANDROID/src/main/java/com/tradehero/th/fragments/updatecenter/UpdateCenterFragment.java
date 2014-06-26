@@ -78,6 +78,7 @@ public class UpdateCenterFragment extends BaseFragment
         super.onCreate(savedInstanceState);
 
         thRouter.inject(this);
+        userProfileCacheListener = createUserProfileCacheListener();
         broadcastReceiver = createBroadcastReceiver();
         Timber.d("onCreate");
     }
@@ -123,19 +124,13 @@ public class UpdateCenterFragment extends BaseFragment
     private void fetchUserProfile()
     {
         detachUserProfileCache();
-
-        userProfileCacheListener = createUserProfileCacheListener();
         userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     private void detachUserProfileCache()
     {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
+        userProfileCache.unregister(userProfileCacheListener);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -268,6 +263,7 @@ public class UpdateCenterFragment extends BaseFragment
     @Override public void onDestroy()
     {
         Timber.d("onDestroy");
+        userProfileCacheListener = null;
         broadcastReceiver = null;
         super.onDestroy();
     }
