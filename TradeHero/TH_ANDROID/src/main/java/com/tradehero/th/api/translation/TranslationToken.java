@@ -1,6 +1,7 @@
 package com.tradehero.th.api.translation;
 
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.R;
 import com.tradehero.th.api.ExtendedDTO;
 
 public class TranslationToken extends ExtendedDTO implements DTO
@@ -27,6 +28,6 @@ public class TranslationToken extends ExtendedDTO implements DTO
 
     public int logoResId()
     {
-        return 0;
+        return R.drawable.default_image;
     }
 }

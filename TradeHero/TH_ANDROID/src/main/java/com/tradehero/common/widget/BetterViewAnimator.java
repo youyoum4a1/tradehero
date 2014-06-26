@@ -46,6 +46,7 @@ public class BetterViewAnimator extends ViewAnimator
         }
         else
         {
+            // TODO other value as 0 may cause ResourceNotFound?
             return 0;
         }
     }
