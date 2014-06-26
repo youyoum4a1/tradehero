@@ -74,7 +74,7 @@ public class ExchangeCompactDTODescriptionNameComparatorTest
         set.add(getBcAb());
         set.add(getBdNull());
 
-        assertEquals(10, set.size());
+        assertEquals(7, set.size());
         Iterator<ExchangeCompactDTO> iterator = set.iterator();
 
         assertTrue(sameNameAndDesc(iterator.next(), getBcAb()));
