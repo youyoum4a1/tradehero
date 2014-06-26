@@ -4,9 +4,14 @@ branches:
   excludes:
     - gh-pages
 
+# whitelist
+branches:
+  only:
+    - tho@tradehero.mobi
+
 notifications:
   email: false
-  
+
 env:
   global:
     - ANDROID_SDK_VERSION="r22.0.1"
