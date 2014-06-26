@@ -68,7 +68,7 @@ import retrofit.RetrofitError;
     //</editor-fold>
 
     @NotNull
-    public GetPositionsDTO fetch(@NotNull final GetPositionsDTOKey key) throws RetrofitError
+    public GetPositionsDTO fetch(@NotNull final GetPositionsDTOKey key) throws Throwable
     {
         if (key instanceof OwnedPortfolioId)
         {

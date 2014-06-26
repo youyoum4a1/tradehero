@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends PartialDTOCacheNew<DTOKeyType, DTOType>
 {
-    final private THLruCache<DTOKeyType, CacheValue<DTOKeyType, DTOType>> lruCache;
+    @NotNull final private THLruCache<DTOKeyType, CacheValue<DTOKeyType, DTOType>> lruCache;
 
     //<editor-fold desc="Constructors">
     public StraightDTOCacheNew(int maxSize)
@@ -18,16 +18,15 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
     }
     //</editor-fold>
 
-    @Contract("null -> null; !null -> _")
-    @Nullable
+    @Contract("null -> null; !null -> _") @Nullable
     @Override public DTOType get(@NotNull DTOKeyType key)
     {
-        CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
+        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (cacheValue == null)
         {
             return null;
         }
-        DTOType value = cacheValue.getValue();
+        @Nullable DTOType value = cacheValue.getValue();
         if (value != null && !isValid(value))
         {
             invalidate(key);
@@ -36,17 +35,17 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
         return value;
     }
 
-    @Override protected CacheValue<DTOKeyType, DTOType> getCacheValue(DTOKeyType key)
+    @Override @Nullable protected CacheValue<DTOKeyType, DTOType> getCacheValue(@NotNull DTOKeyType key)
     {
         return lruCache.get(key);
     }
 
-    @Override protected void putCacheValue(DTOKeyType key, CacheValue<DTOKeyType, DTOType> cacheValue)
+    @Override protected void putCacheValue(@NotNull DTOKeyType key, @NotNull CacheValue<DTOKeyType, DTOType> cacheValue)
     {
         lruCache.put(key, cacheValue);
     }
 
-    @Override public void invalidate(DTOKeyType key)
+    @Override public void invalidate(@NotNull DTOKeyType key)
     {
         lruCache.remove(key);
     }
@@ -56,18 +55,18 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
         lruCache.evictAll();
     }
 
-    @Override public void unregister(Listener<DTOKeyType, DTOType> callback)
+    @Override public void unregister(@Nullable Listener<DTOKeyType, DTOType> callback)
     {
-        for (CacheValue<DTOKeyType, DTOType> value : lruCache.snapshot().values())
+        if (callback != null)
         {
-            if (value != null)
+            for (@NotNull CacheValue<DTOKeyType, DTOType> value : lruCache.snapshot().values())
             {
                 value.unregisterListener(callback);
             }
         }
     }
 
-    protected Map<DTOKeyType, CacheValue<DTOKeyType, DTOType>> snapshot()
+    @NotNull protected Map<DTOKeyType, CacheValue<DTOKeyType, DTOType>> snapshot()
     {
         return lruCache.snapshot();
     }

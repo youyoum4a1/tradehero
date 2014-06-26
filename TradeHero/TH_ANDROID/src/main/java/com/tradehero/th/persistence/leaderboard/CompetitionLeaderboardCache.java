@@ -35,18 +35,20 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public CompetitionLeaderboardDTO fetch(@NotNull CompetitionLeaderboardId key) throws Throwable
+    @Override @NotNull public CompetitionLeaderboardDTO fetch(@NotNull CompetitionLeaderboardId key) throws Throwable
     {
         return competitionServiceWrapper.getCompetitionLeaderboard(key);
     }
 
-    @NotNull @Override protected CompetitionLeaderboardCutDTO cutValue(@NotNull CompetitionLeaderboardId key,
+    @NotNull @Override protected CompetitionLeaderboardCutDTO cutValue(
+            @NotNull CompetitionLeaderboardId key,
             @NotNull CompetitionLeaderboardDTO value)
     {
         return new CompetitionLeaderboardCutDTO(value, leaderboardCache);
     }
 
-    @Nullable @Override protected CompetitionLeaderboardDTO inflateValue(@NotNull CompetitionLeaderboardId key,
+    @Nullable @Override protected CompetitionLeaderboardDTO inflateValue(
+            @NotNull CompetitionLeaderboardId key,
             @Nullable CompetitionLeaderboardCutDTO cutValue)
     {
         if (cutValue == null)

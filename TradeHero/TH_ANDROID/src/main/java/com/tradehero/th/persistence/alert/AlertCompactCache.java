@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public AlertCompactDTO fetch(@NotNull AlertId key) throws Throwable
+    @Override @NotNull public AlertCompactDTO fetch(@NotNull AlertId key) throws Throwable
     {
         throw new IllegalStateException("No fetcher on this cache");
     }
@@ -63,7 +63,7 @@ import org.jetbrains.annotations.Nullable;
         }
 
         ArrayList<AlertCompactDTO> previous = new ArrayList<>();
-        for (AlertCompactDTO alertCompactDTO : values)
+        for (@NotNull AlertCompactDTO alertCompactDTO : values)
         {
             previous.add(put(new AlertId(userBaseKey, alertCompactDTO.id), alertCompactDTO));
         }

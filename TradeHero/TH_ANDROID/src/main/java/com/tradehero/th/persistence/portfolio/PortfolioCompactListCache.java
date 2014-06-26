@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class PortfolioCompactListCache extends StraightDTOCacheNew<UserBaseKey, OwnedPortfolioIdList>
 {
@@ -61,12 +62,12 @@ import org.jetbrains.annotations.NotNull;
         return ownedPortfolioIds;
     }
 
-    @Override public void invalidate(UserBaseKey key)
+    @Override public void invalidate(@NotNull UserBaseKey key)
     {
-        OwnedPortfolioIdList value = get(key);
+        @Nullable OwnedPortfolioIdList value = get(key);
         if (value != null)
         {
-            for (OwnedPortfolioId ownedPortfolioId : value)
+            for (@NotNull OwnedPortfolioId ownedPortfolioId : value)
             {
                 portfolioCompactCache.get().invalidate(ownedPortfolioId.getPortfolioIdKey());
                 portfolioCache.get().invalidate(ownedPortfolioId);

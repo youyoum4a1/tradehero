@@ -34,12 +34,12 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public CompetitionDTO fetch(@NotNull CompetitionId key) throws Throwable
+    @Override @NotNull public CompetitionDTO fetch(@NotNull CompetitionId key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch on this cache");
     }
 
-    @NotNull @Override protected CompetitionCutDTO cutValue(@NotNull CompetitionId key, @NotNull CompetitionDTO value)
+    @Override @NotNull protected CompetitionCutDTO cutValue(@NotNull CompetitionId key, @NotNull CompetitionDTO value)
     {
         return new CompetitionCutDTO(value, leaderboardDefCache);
     }
@@ -53,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
         return cutValue.create(leaderboardDefCache);
     }
 
-    @Contract("null -> null; !null -> !null")
+    @Contract("null -> null; !null -> !null") @Nullable
     public List<CompetitionDTO> get(@Nullable List<CompetitionId> competitionIds)
     {
         if (competitionIds == null)
@@ -62,16 +62,14 @@ import org.jetbrains.annotations.Nullable;
         }
 
         List<CompetitionDTO> fleshedValues = new ArrayList<>();
-
         for (@NotNull CompetitionId competitionId: competitionIds)
         {
             fleshedValues.add(get(competitionId));
         }
-
         return fleshedValues;
     }
 
-    @Contract("null -> null; !null -> !null")
+    @Contract("null -> null; !null -> !null") @Nullable
     public List<CompetitionDTO> put(@Nullable List<CompetitionDTO> values)
     {
         if (values == null)
@@ -80,12 +78,10 @@ import org.jetbrains.annotations.Nullable;
         }
 
         List<CompetitionDTO> previousValues = new ArrayList<>();
-
         for (@NotNull CompetitionDTO competitionDTO: values)
         {
             previousValues.add(put(competitionDTO.getCompetitionId(), competitionDTO));
         }
-
         return previousValues;
     }
 }
