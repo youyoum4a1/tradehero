@@ -198,7 +198,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         placeAdapterInList();
     }
 
-    @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
         placeAdapterInList();

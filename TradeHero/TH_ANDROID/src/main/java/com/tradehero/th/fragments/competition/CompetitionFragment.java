@@ -82,7 +82,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         providerCache.getOrFetchAsync(this.providerId);
     }
 
-    protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
         providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
@@ -105,7 +105,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
     protected class CompetitionFragmentProviderCacheListener implements DTOCacheNew.Listener<ProviderId, ProviderDTO>
     {
-        @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
+        @Override public void onDTOReceived(@NotNull ProviderId key, @NotNull ProviderDTO value)
         {
             if (key.equals(CompetitionFragment.this.providerId))
             {
@@ -113,7 +113,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
             }
         }
 
-        @Override public void onErrorThrown(ProviderId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull ProviderId key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
             Timber.e("Error fetching the provider info " + key, error);
