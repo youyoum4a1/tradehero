@@ -295,28 +295,28 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     /**
      * Chinese
      */
-    private void authenticateWithWeibo()
+    public void authenticateWithWeibo()
     {
         localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.WeiBo);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_weibo);
         weiboUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.WeiBo));
     }
 
-    private void authenticateWithQQ()
+    public void authenticateWithQQ()
     {
         localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.QQ);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
         qqUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.QQ));
     }
 
-    private void authenticateWithLinkedIn()
+    public void authenticateWithLinkedIn()
     {
         localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Linkedin);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
         linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.Linkedin));
     }
 
-    private void authenticateWithFacebook()
+    public void authenticateWithFacebook()
     {
         localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap,
                 LocalyticsConstants.Facebook);
@@ -324,7 +324,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         facebookUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.Facebook));
     }
 
-    private void authenticateWithTwitter()
+    public void authenticateWithTwitter()
     {
         localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Twitter);
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
