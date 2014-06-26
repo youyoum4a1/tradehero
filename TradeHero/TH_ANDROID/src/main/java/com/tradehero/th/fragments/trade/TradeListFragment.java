@@ -69,7 +69,6 @@ public class TradeListFragment extends DashboardFragment
     protected TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
     private DTOCacheNew.Listener<OwnedPositionId, OwnedTradeIdList> fetchTradesListener;
-    private TradeListOverlayHeaderView.Listener overlayHeaderListener;
 
     public static void putPositionDTOKey(Bundle args, PositionDTOKey positionDTOKey)
     {
@@ -168,23 +167,18 @@ public class TradeListFragment extends DashboardFragment
             return;
         }
 
-        if (this.overlayHeaderListener == null)
+        this.header.setListener(new TradeListOverlayHeaderView.Listener()
         {
-            this.overlayHeaderListener = new TradeListOverlayHeaderView.Listener()
+            @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId)
             {
-                @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId)
-                {
-                    pushBuySellFragment(true);
-                }
+                pushBuySellFragment(true);
+            }
 
-                @Override public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId)
-                {
-                    openUserProfile(userId);
-                }
-            };
-        }
-
-        this.header.setListener(this.overlayHeaderListener);
+            @Override public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId)
+            {
+                openUserProfile(userId);
+            }
+        });
     }
 
     private void pushBuySellFragment(boolean isBuy)
@@ -261,7 +255,6 @@ public class TradeListFragment extends DashboardFragment
     {
         buttonListener = null;
         fetchTradesListener = null;
-        overlayHeaderListener = null;
         super.onDestroy();
     }
 
