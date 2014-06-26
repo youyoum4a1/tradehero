@@ -5,8 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 class ProviderCommunityPageDTO implements CommunityPageDTO
 {
-    @NotNull
-    public final ProviderId providerId;
+    @NotNull public final ProviderId providerId;
 
     //<editor-fold desc="Constructors">
     ProviderCommunityPageDTO(@NotNull ProviderId providerId)
