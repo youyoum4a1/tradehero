@@ -229,6 +229,7 @@ public class THUser
             @Override public void failure(THException error)
             {
                 checkNeedForUpgrade(error);
+                checkNeedToRenewSocialToken(error);
                 callback.done(null, error);
             }
         };
@@ -240,7 +241,11 @@ public class THUser
         {
             final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
             alertDialogUtil.get().popWithOkCancelButton(
-                    currentActivity, R.string.upgrade_needed, R.string.please_update, R.string.update_now, R.string.later,
+                    currentActivity,
+                    R.string.upgrade_needed,
+                    R.string.please_update,
+                    R.string.update_now,
+                    R.string.later,
                     new DialogInterface.OnClickListener()
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
@@ -260,6 +265,26 @@ public class THUser
                                                 Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
                                 currentActivity.finish();
                             }
+                        }
+                    });
+        }
+    }
+
+    private static void checkNeedToRenewSocialToken(THException error)
+    {
+        if (error.getCode() == ExceptionCode.RenewSocialToken)
+        {
+            final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
+            alertDialogUtil.get().popWithOkCancelButton(currentActivity,
+                    R.string.please_update_token_title,
+                    R.string.please_update_token_description,
+                    R.string.ok,
+                    R.string.later,
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                            mainCredentialsPreference.delete();
                         }
                     });
         }

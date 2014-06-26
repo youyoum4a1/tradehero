@@ -1,16 +1,24 @@
 package com.tradehero.th.misc.exception;
 
 import com.facebook.FacebookOperationCanceledException;
+import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.api.ErrorMessageDTO;
+import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.utils.Constants;
+import java.util.List;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
+import retrofit.client.Header;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public class THException extends Exception
 {
     private ExceptionCode code;
 
+    //<editor-fold desc="Constructors">
     public THException(Throwable cause)
     {
         initCause(cause);
@@ -20,6 +28,7 @@ public class THException extends Exception
     {
         initCause(new Exception(message));
     }
+    //</editor-fold>
 
     @Override public Throwable initCause(Throwable throwable)
     {
@@ -31,25 +40,51 @@ public class THException extends Exception
             {
                 this.code = ExceptionCode.NetworkError;
             }
-            else if (error.getResponse() != null && error.getResponse().getStatus() == 417)
+            else if (error.getResponse() != null)
             {
-                this.code = ExceptionCode.DoNotRunBelow;
-            }
-            else if (error.getResponse() != null && error.getResponse().getStatus() != 200) // Bad Request
-            {
-                ErrorMessageDTO dto = null;
-                // surprisingly, server does return garbage sometime
-                try
+                Response response = error.getResponse();
+                if (response.getStatus() == 417)
                 {
-                    dto = (ErrorMessageDTO) error.getBodyAs(ErrorMessageDTO.class);
+                    this.code = ExceptionCode.DoNotRunBelow;
+                    List<Header> headers = response.getHeaders();
+                    if (headers != null)
+                    {
+                        Header responseCodeHeader = new RetrofitHelper().findByName(headers, Constants.TH_ERROR_CODE);
+                        if (responseCodeHeader != null)
+                        {
+                            @Nullable ResponseErrorCode errorCode = ResponseErrorCode.getByCode(Integer.parseInt(responseCodeHeader.getValue()));
+                            if (errorCode != null)
+                            {
+                                switch (errorCode)
+                                {
+                                    case OutDatedVersion:
+                                        this.code = ExceptionCode.DoNotRunBelow;
+                                        break;
+
+                                    case ExpiredSocialToken:
+                                        this.code = ExceptionCode.RenewSocialToken;
+                                        break;
+                                }
+                            }
+                        }
+                    }
                 }
-                catch (Exception ex)
+                else if (response.getStatus() != 200) // Bad Request
                 {
-                    Timber.d(ex.getMessage());
+                    ErrorMessageDTO dto = null;
+                    // surprisingly, server does return garbage sometime
+                    try
+                    {
+                        dto = (ErrorMessageDTO) error.getBodyAs(ErrorMessageDTO.class);
+                    }
+                    catch (Exception ex)
+                    {
+                        Timber.d(ex.getMessage());
+                    }
+                    this.code = ExceptionCode.UnknownError;
+                    String errorMessage = dto != null ? Application.getResourceString(R.string.server_response) + dto.Message : Application.getResourceString(R.string.error_unknown);
+                    return super.initCause(new Exception(errorMessage));
                 }
-                this.code = ExceptionCode.UnknownError;
-                String errorMessage = dto != null ? Application.getResourceString(R.string.server_response) + dto.Message : Application.getResourceString(R.string.error_unknown);
-                return super.initCause(new Exception(errorMessage));
             }
         }
         else if (throwable instanceof FacebookOperationCanceledException)
@@ -85,7 +120,9 @@ public class THException extends Exception
         UserCanceled(true, R.string.error_canceled),
         UnknownError(R.string.error_unknown),
         NetworkError(R.string.error_network_connection),
-        DoNotRunBelow(R.string.please_update);
+        DoNotRunBelow(R.string.please_update),
+        RenewSocialToken(R.string.please_update_token_title),
+        ;
 
         private boolean canContinue;
         private String errorMessage;
