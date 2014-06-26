@@ -132,6 +132,7 @@ public class MainCompetitionFragmentTest
                 break;
             }
         }
+        assertThat(firstAdsButtonPosition).isGreaterThan(-1);
 
         competitionListView.performItemClick(
                 competitionListAdapter.getView(firstAdsButtonPosition, null, null),

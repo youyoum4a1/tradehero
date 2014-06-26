@@ -103,7 +103,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         return new CompetitionFragmentProviderCacheListener();
     }
 
-    protected class CompetitionFragmentProviderCacheListener implements DTOCacheNew.Listener<ProviderId, ProviderDTO>
+    protected class CompetitionFragmentProviderCacheListener implements DTOCacheNew.HurriedListener<ProviderId, ProviderDTO>
     {
         @Override public void onDTOReceived(@NotNull ProviderId key, @NotNull ProviderDTO value)
         {
@@ -117,6 +117,11 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
             Timber.e("Error fetching the provider info " + key, error);
+        }
+
+        @Override public void onPreCachedDTOReceived(ProviderId key, ProviderDTO value)
+        {
+            onDTOReceived(key, value);
         }
     }
 }
