@@ -34,7 +34,9 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-@Routable("store/:action")
+@Routable({
+        "store", "store/:action"
+})
 public class StoreScreenFragment extends BasePurchaseManagerFragment
     implements WithTutorial
 {
