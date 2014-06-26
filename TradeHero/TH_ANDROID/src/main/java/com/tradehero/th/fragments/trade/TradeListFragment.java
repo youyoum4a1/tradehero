@@ -69,6 +69,7 @@ public class TradeListFragment extends DashboardFragment
     protected TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
     private DTOCacheNew.Listener<OwnedPositionId, OwnedTradeIdList> fetchTradesListener;
+    private TradeListOverlayHeaderView.Listener overlayHeaderListener;
 
     public static void putPositionDTOKey(Bundle args, PositionDTOKey positionDTOKey)
     {
@@ -167,18 +168,23 @@ public class TradeListFragment extends DashboardFragment
             return;
         }
 
-        this.header.setListener(new TradeListOverlayHeaderView.Listener()
+        if (this.overlayHeaderListener == null)
         {
-            @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId)
+            this.overlayHeaderListener = new TradeListOverlayHeaderView.Listener()
             {
-                pushBuySellFragment(true);
-            }
+                @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId)
+                {
+                    pushBuySellFragment(true);
+                }
 
-            @Override public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId)
-            {
-                openUserProfile(userId);
-            }
-        });
+                @Override public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId)
+                {
+                    openUserProfile(userId);
+                }
+            };
+        }
+
+        this.header.setListener(this.overlayHeaderListener);
     }
 
     private void pushBuySellFragment(boolean isBuy)
@@ -346,12 +352,14 @@ public class TradeListFragment extends DashboardFragment
                     if (securityCompactDTO == null || securityCompactDTO.name == null)
                     {
                         actionBarCopy.setTitle(
-                                String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(), securityId.getSecuritySymbol()));
+                                String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                                        securityId.getSecuritySymbol()));
                     }
                     else
                     {
                         actionBarCopy.setTitle(securityCompactDTO.name);
-                        actionBarCopy.setSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(), securityId.getSecuritySymbol()));
+                        actionBarCopy.setSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                                securityId.getSecuritySymbol()));
                     }
                 }
             }
