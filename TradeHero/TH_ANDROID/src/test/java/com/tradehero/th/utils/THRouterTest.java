@@ -1,7 +1,9 @@
 package com.tradehero.th.utils;
 
+import android.app.AlertDialog;
 import android.webkit.WebView;
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -30,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
@@ -40,11 +43,8 @@ import static org.robolectric.Robolectric.shadowOf;
 @Config(shadows = ShadowWebViewNew.class)
 public class THRouterTest
 {
-    public static final String STORE_RESET_PORTFOLIO = "store/reset-portfolio";
-    public static final String RESET_PORTFOLIO = "reset-portfolio";
-    public static final String REFER_FRIENDS = "refer-friends";
-
     private DashboardNavigator dashboardNavigator;
+
     @Inject THRouter thRouter;
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
@@ -103,13 +103,30 @@ public class THRouterTest
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
     }
 
-    @Test public void shouldOpenStoreAndResetPortfolioDialog()
+    @Test public void shouldOpenStoreAndResetPortfolioDialog() throws Throwable
     {
-        // have something to say
-        thRouter.mapFragment(STORE_RESET_PORTFOLIO, null);
-        thRouter.mapFragment(RESET_PORTFOLIO, null);
+        thRouter.open("reset-portfolio");
 
-        assert(false);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
+
+        AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertThat(resetPortfolioDialog.isShowing()).isTrue();
+
+        CharSequence dialogTitle = shadowOf(resetPortfolioDialog).getTitle();
+        assertThat(dialogTitle).isEqualTo(Robolectric.application.getString(R.string.store_billing_loading_info_window_title));
+    }
+
+    @Test public void shouldOpenStoreAndResetPortfolioDialogFullUrl()
+    {
+        thRouter.open("store/reset-portfolio");
+
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
+
+        AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertThat(resetPortfolioDialog.isShowing()).isTrue();
+
+        CharSequence dialogTitle = shadowOf(resetPortfolioDialog).getTitle();
+        assertThat(dialogTitle).isEqualTo(Robolectric.application.getString(R.string.store_billing_loading_info_window_title));
     }
     //endregion
 
@@ -186,7 +203,6 @@ public class THRouterTest
 
     @Test public void shouldOpenReferFriendScreen()
     {
-        thRouter.mapFragment(REFER_FRIENDS, FriendsInvitationFragment.class);
         thRouter.open("refer-friends");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(FriendsInvitationFragment.class);

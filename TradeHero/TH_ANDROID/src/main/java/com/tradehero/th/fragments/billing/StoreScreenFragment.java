@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
+import com.thoj.route.RouteProperty;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
@@ -26,13 +27,14 @@ import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-@Routable("store")
+@Routable("store/:action")
 public class StoreScreenFragment extends BasePurchaseManagerFragment
     implements WithTutorial
 {
@@ -42,9 +44,18 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Inject CurrentUserId currentUserId;
     @Inject THLocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject THRouter thRouter;
+
+    @RouteProperty("action") Integer routeClickedPosition = -1;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        thRouter.inject(this);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -99,6 +110,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         storeItemAdapter.notifyDataSetChanged();
         cancelOthersAndShowBillingAvailable();
+
+        if (routeClickedPosition != null)
+        {
+            handlePositionClicked(routeClickedPosition);
+        }
     }
 
     @Override public void onDestroyView()
