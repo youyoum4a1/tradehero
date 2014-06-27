@@ -2,7 +2,9 @@ package com.tradehero;
 
 public class TestConstants
 {
-    public static final boolean IS_INTELLIJ = System.getProperties().containsKey("idea.launcher.bin.path");
+    public static final String TEST_COMMAND = System.getProperties().getProperty("sun.java.command");
+    public static final boolean IS_INTELLIJ = TEST_COMMAND != null && TEST_COMMAND.toLowerCase().contains("intellij");
+
     public static final String BASE_APP_FOLDER = IS_INTELLIJ ? "./TradeHero/TH_ANDROID/" : "./";
     public static final String JSON_MIME_UTF8 = "application/json; charset=utf-8";
 
