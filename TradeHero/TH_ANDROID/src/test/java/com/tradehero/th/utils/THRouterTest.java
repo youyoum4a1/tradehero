@@ -33,6 +33,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
+import org.robolectric.shadows.ShadowHandler;
+import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
@@ -126,6 +128,11 @@ public class THRouterTest
         thRouter.open("store/reset-portfolio");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
+
+        // ensure that there is no unwanted toast due to clicking on a unexpected list item
+        ShadowHandler.idleMainLooper();
+        assertThat(ShadowToast.getLatestToast()).isNull();
+        ShadowHandler.runMainLooperToEndOfTasks();
 
         AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();
         assertThat(resetPortfolioDialog.isShowing()).isTrue();

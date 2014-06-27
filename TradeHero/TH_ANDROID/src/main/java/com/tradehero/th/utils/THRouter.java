@@ -121,7 +121,10 @@ public class THRouter extends Router
 
     public void inject(Fragment fragment)
     {
-        inject(fragment, fragment.getArguments());
+        if (fragment.getArguments() != null)
+        {
+            inject(fragment, fragment.getArguments());
+        }
     }
 
     public static class THRouterOptions extends RouterOptions

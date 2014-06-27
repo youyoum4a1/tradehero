@@ -106,7 +106,9 @@ public class Navigator
         }
         ft.commitAllowingStateLoss();
 
-        return (T) fragment;
+        @SuppressWarnings("unchecked")
+        T returnFragment = (T) fragment;
+        return returnFragment;
     }
 
     public void popFragment(String backStackName)

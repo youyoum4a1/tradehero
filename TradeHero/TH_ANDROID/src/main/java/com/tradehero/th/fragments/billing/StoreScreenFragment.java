@@ -48,7 +48,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject THRouter thRouter;
 
-    @RouteProperty("action") Integer routeClickedPosition = -1;
+    @RouteProperty("action") Integer routeClickedPosition;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
