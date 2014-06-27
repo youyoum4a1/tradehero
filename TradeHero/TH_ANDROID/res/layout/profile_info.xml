@@ -144,8 +144,8 @@
 
       <ImageView
           android:id="@+id/image_optional"
-          android:layout_width="@dimen/common_margin_110"
-          android:layout_height="@dimen/common_margin_110"
+          android:layout_width="@dimen/big_avatar_w_h"
+          android:layout_height="@dimen/big_avatar_w_h"
           android:layout_alignParentLeft="true"
           android:layout_centerVertical="true"
           android:adjustViewBounds="true"

@@ -153,8 +153,8 @@
     <!--Default Portfolio-->
     <ImageView
         android:id="@+id/btn_user_profile_default_portfolio"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:scaleType="fitXY"
         android:src="@drawable/icn_info_normal"
         android:contentDescription="@null"

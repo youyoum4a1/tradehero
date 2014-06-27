@@ -83,8 +83,8 @@
 
     <RelativeLayout
         android:id="@+id/news_action_back"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:layout_alignParentLeft="true"
         android:layout_gravity="center_horizontal"
         android:layout_centerVertical="true"

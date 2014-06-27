@@ -23,8 +23,8 @@
 
   <ImageView
       android:id="@+id/icn_competition_zone"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
       tools:src="@drawable/icn_portfolio_pressed"
       android:contentDescription="@null"

@@ -140,8 +140,8 @@
 
       <ImageButton
           android:id="@+id/btn_trade_history"
-          android:layout_width="48dp"
-          android:layout_height="48dp"
+          android:layout_width="@dimen/medium_logo_w_h"
+          android:layout_height="@dimen/medium_logo_w_h"
           android:padding="16dp"
           android:layout_centerInParent="true"
           android:layout_alignParentRight="true"

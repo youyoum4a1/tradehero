@@ -13,8 +13,8 @@
 
     <ImageButton
         android:id="@+id/btn_buy_now"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:layout_alignParentLeft="true"
         android:src="@drawable/buy_stock"
         android:contentDescription="@null"
@@ -24,8 +24,8 @@
 
     <ImageButton
         android:id="@+id/btn_sell_now"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@id/btn_buy_now"
         android:src="@drawable/sell_stock"
@@ -36,8 +36,8 @@
 
     <ImageButton
         android:id="@+id/btn_add_alert"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:layout_marginLeft="8dp"
         android:src="@drawable/add_alert_default"
         android:contentDescription="@null"
@@ -48,8 +48,8 @@
 
     <ImageButton
         android:id="@+id/btn_stock_info"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:layout_marginLeft="8dp"
         android:src="@drawable/graph"
         android:contentDescription="@null"

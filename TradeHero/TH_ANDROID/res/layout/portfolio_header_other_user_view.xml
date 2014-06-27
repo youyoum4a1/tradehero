@@ -26,8 +26,8 @@
 
     <ImageView
         android:id="@+id/portfolio_header_avatar"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:background="@drawable/layout_oval"
         android:src="@drawable/default_image"
         android:contentDescription="@null"/>

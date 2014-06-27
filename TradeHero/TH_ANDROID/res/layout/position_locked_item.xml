@@ -31,9 +31,9 @@
         >
 
       <ImageView
-          android:layout_width="48dp"
+          android:layout_width="@dimen/medium_logo_w_h"
           android:layout_weight="1"
-          android:layout_height="48dp"
+          android:layout_height="@dimen/medium_logo_w_h"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
           android:layout_gravity="center_vertical"

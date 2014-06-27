@@ -12,7 +12,6 @@
   <dimen name="dashboard_padding">0dp</dimen>
 
   <!-- Trending screen -->
-  <dimen name="trending_people_search_image_size">60dp</dimen>
   <dimen name="trending_filter_view_pager_height">80dp</dimen>
 
   <!-- Trade screen -->
@@ -129,6 +128,7 @@
   <dimen name="timeline_belt_height">40dp</dimen>
   <dimen name="comment_count_drawable_padding">4dp</dimen>
   <dimen name="notification_logo_padding">5dp</dimen>
+
   <!--common margin should not change-->
   <dimen name="common_margin_1">1dp</dimen>
   <dimen name="common_margin_2">2dp</dimen>
@@ -146,6 +146,10 @@
   <dimen name="common_height_40">40dp</dimen>
   <dimen name="common_text_size_30">30sp</dimen>
   <dimen name="common_text_size_25">25sp</dimen>
+
+  <dimen name="clickable_element_min_height">48dp</dimen>
+  <dimen name="medium_logo_w_h">48dp</dimen>
+  <dimen name="big_avatar_w_h">70dp</dimen>
 
   <dimen name="stock_item_width">200dp</dimen>
   <dimen name="buysell_dialog_scroll_height">160dp</dimen>
