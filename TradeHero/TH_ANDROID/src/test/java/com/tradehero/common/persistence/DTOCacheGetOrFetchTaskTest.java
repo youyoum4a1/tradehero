@@ -1,17 +1,24 @@
 package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import static org.junit.Assert.assertTrue;
 
-//@RunWith(RobolectricMavenTestRunner.class)
+// TODO
+@Ignore("This unit test depend on Environment resources")
+@RunWith(RobolectricMavenTestRunner.class)
 public class DTOCacheGetOrFetchTaskTest
 {
     @Inject AlertCompactListCache alertCompactListCache;
@@ -32,7 +39,7 @@ public class DTOCacheGetOrFetchTaskTest
         ((ThreadPoolExecutor) AsyncTask.THREAD_POOL_EXECUTOR).getQueue().clear();
     }
 
-    //@Test
+    @Test
     public void checkNotCrashWhen138TasksQueuedPool()
     {
         for (int userId = 0; userId < 138; userId++)
@@ -41,7 +48,7 @@ public class DTOCacheGetOrFetchTaskTest
         }
     }
 
-    //@Test(expected = RejectedExecutionException.class)
+    @Test(expected = RejectedExecutionException.class)
     public void checkCrashWhen139TasksQueuedPool()
     {
         for (int userId = 0; userId < 139; userId++)
@@ -51,7 +58,7 @@ public class DTOCacheGetOrFetchTaskTest
         assertTrue(false);
     }
 
-    //@Test
+    @Test
     public void checkNotCrashWhen138TasksQueuedDefault()
     {
         for (int userId = 0; userId < 138; userId++)
@@ -60,7 +67,7 @@ public class DTOCacheGetOrFetchTaskTest
         }
     }
 
-    //@Test
+    @Test
     public void checkNotCrashWhen139TasksQueuedDefault()
     {
         for (int userId = 0; userId < 139; userId++)

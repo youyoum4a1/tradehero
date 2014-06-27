@@ -1,15 +1,22 @@
 package com.tradehero.common.persistence;
 
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.social.HeroListCache;
+import java.util.concurrent.RejectedExecutionException;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import static org.junit.Assert.assertTrue;
 
-//@RunWith(RobolectricMavenTestRunner.class)
+// TODO
+@Ignore("This unit test depend on Environment resources")
+@RunWith(RobolectricMavenTestRunner.class)
 public class DTOCacheNewGetOrFetchTaskTest
 {
     @Inject HeroListCache heroListCache;
@@ -25,7 +32,7 @@ public class DTOCacheNewGetOrFetchTaskTest
         heroListCache.invalidateAll();
     }
 
-    //@Test
+    @Test
     public void checkNotCrashWhen138TasksQueued()
     {
         for (int userId = 0; userId < 138; userId++)
@@ -34,7 +41,7 @@ public class DTOCacheNewGetOrFetchTaskTest
         }
     }
 
-    //@Test(expected = RejectedExecutionException.class)
+    @Test(expected = RejectedExecutionException.class)
     public void checkCrashWhen139TasksQueued()
     {
         for (int userId = 0; userId < 139; userId++)
