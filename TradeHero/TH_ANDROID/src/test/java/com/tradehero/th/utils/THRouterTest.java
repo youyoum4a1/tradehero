@@ -126,6 +126,7 @@ public class THRouterTest
     @Test public void shouldOpenStoreAndResetPortfolioDialogFullUrl()
     {
         thRouter.open("store/reset-portfolio");
+        ShadowToast.reset();
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
 
