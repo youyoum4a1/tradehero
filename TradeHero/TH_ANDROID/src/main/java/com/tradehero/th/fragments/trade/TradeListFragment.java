@@ -12,6 +12,8 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.thoj.route.Routable;
+import com.thoj.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -42,6 +44,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
 public class TradeListFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = TradeListFragment.class.getName() + ".positionDTOKey";
@@ -58,6 +61,10 @@ public class TradeListFragment extends DashboardFragment
     @InjectView(android.R.id.empty) protected ProgressBar progressBar;
     @InjectView(R.id.trade_list_header) protected TradeListOverlayHeaderView header;
     @InjectView(R.id.trade_list) protected ListView tradeListView;
+
+    @RouteProperty("userId") Integer routeUserId;
+    @RouteProperty("portfolioId") Integer routePortfolioId;
+    @RouteProperty("positionId") Integer routePositionId;
 
     private ActionBar actionBar;
 
@@ -83,6 +90,12 @@ public class TradeListFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        thRouter.inject(this);
+        if (getArguments() != null && routeUserId != null && routePortfolioId != null && routePositionId != null)
+        {
+            putPositionDTOKey(getArguments(), new OwnedPositionId(routeUserId, routePortfolioId, routePositionId));
+        }
+
         this.buttonListener = new TradeListHeaderView.TradeListHeaderClickListener()
         {
             @Override public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView)

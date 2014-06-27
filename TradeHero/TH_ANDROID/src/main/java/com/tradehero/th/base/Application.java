@@ -20,6 +20,7 @@ import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
@@ -77,23 +78,19 @@ public class Application extends PApplication
         thRouter.registerRoutes(
                 PushableTimelineFragment.class,
                 MeTimelineFragment.class,
-
                 NotificationsCenterFragment.class,
                 MessagesCenterFragment.class,
                 UpdateCenterFragment.class,
-
                 TrendingFragment.class,
                 FriendsInvitationFragment.class,
                 SettingsFragment.class,
                 MainCompetitionFragment.class,
                 BuySellFragment.class,
                 StoreScreenFragment.class,
-
                 LeaderboardCommunityFragment.class,
-
                 CompetitionWebViewFragment.class,
-
-                PositionListFragment.class
+                PositionListFragment.class,
+                TradeListFragment.class
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
