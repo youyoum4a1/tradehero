@@ -17,9 +17,11 @@
     <com.tradehero.common.widget.BetterViewAnimator
         android:id="@+id/post_comment_action_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/common_height_40"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/post_comment_text"
+        android:layout_alignTop="@+id/post_comment_text"
         android:addStatesFromChildren="true"
         android:background="@drawable/basic_transparent_selector"
         >
@@ -43,7 +45,7 @@
           android:layout_gravity="center"
           />
     </com.tradehero.common.widget.BetterViewAnimator>
-    
+
     <EditText
         android:id="@+id/post_comment_text"
         android:layout_centerVertical="true"
@@ -55,7 +57,7 @@
         style="@style/TH.DiscussionTextBox"
         >
 
-      <requestFocus />
+      <requestFocus/>
 
     </EditText>
 
