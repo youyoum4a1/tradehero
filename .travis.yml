@@ -81,3 +81,6 @@ before_install:
   
   # Let's try to build...
 install: mvn install -DskipTests=true
+
+script:
+    - mvn test
