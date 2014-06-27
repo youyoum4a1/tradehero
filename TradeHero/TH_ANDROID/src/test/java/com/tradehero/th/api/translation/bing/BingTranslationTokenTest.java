@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class BingTranslationTokenTest extends BaseApiTest
@@ -29,10 +29,11 @@ public class BingTranslationTokenTest extends BaseApiTest
     @Test public void testDeserialiseBingToken() throws IOException
     {
         TranslationToken token = normalMapper.readValue(bingTranslationTokenBody1Stream, TranslationToken.class);
-        assertTrue(token instanceof BingTranslationToken);
-        assertEquals("http%3a%2f%2fschemas.xmlsoap.org%2fws%2f2005%2f05%2fidentity%2fclaims%2fnameidentifier=678176493872198431482632&http%3a%2f%2fschemas.microsoft.com%2faccesscontrolservice%2f2010%2f07%2fclaims%2fidentityprovider=https%3a%2f%2fdatamarket.accesscontrol.windows.net%2f&Audience=http%3a%2f%2fapi.microsofttranslator.com&ExpiresOn=1403752024&Issuer=https%3a%2f%2fdatamarket.accesscontrol.windows.net%2f&HMACSHA256=UBI8fuInv%2fsztiwOiTDmV4Lsm2ftT937APAaP%2bpq2Bg%3d",
-                ((BingTranslationToken) token).accessToken);
-        assertEquals("600", ((BingTranslationToken) token).getExpiresIn());
+        assertThat(token).isInstanceOf(BingTranslationToken.class);
+        assertThat(
+                "http%3a%2f%2fschemas.xmlsoap.org%2fws%2f2005%2f05%2fidentity%2fclaims%2fnameidentifier=678176493872198431482632&http%3a%2f%2fschemas.microsoft.com%2faccesscontrolservice%2f2010%2f07%2fclaims%2fidentityprovider=https%3a%2f%2fdatamarket.accesscontrol.windows.net%2f&Audience=http%3a%2f%2fapi.microsofttranslator.com&ExpiresOn=1403752024&Issuer=https%3a%2f%2fdatamarket.accesscontrol.windows.net%2f&HMACSHA256=UBI8fuInv%2fsztiwOiTDmV4Lsm2ftT937APAaP%2bpq2Bg%3d")
+                .isEqualTo(((BingTranslationToken) token).accessToken);
+        assertThat("600").isEqualTo(((BingTranslationToken) token).getExpiresIn());
     }
 
     @Test public void testExpiresCorrect() throws IOException
