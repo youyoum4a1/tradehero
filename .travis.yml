@@ -80,7 +80,4 @@ before_install:
   - export PATH="${BASEDIR}/gradle-1.6/bin:${PATH}"
   
   # Let's try to build...
-install: mvn install -DskipTests=true
-
-script:
-    - mvn test
+install: mvn install
