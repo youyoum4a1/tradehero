@@ -35,9 +35,9 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -456,7 +456,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void pushInvitationFragment()
     {
-        getDashboardNavigator().goToTab(DashboardTabType.REFERRAL);
+        Bundle args = new Bundle();
+        FriendsInvitationFragment.putKeyShowHomeAsUp(args, true);
+        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class, args);
     }
 
     //</editor-fold>

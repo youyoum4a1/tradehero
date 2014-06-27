@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -51,6 +52,9 @@ import timber.log.Timber;
 public class FriendsInvitationFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener, SocialFriendItemView.OnElementClickListener
 {
+    public static final String BUNDLE_KEY_SHOW_HOME_AS_UP =
+            FriendsInvitationFragment.class.getName() + ".show_home_as_up";
+
     @InjectView(R.id.search_social_friends) EditText searchTextView;
     @InjectView(R.id.social_friend_type_list) ListView socialListView;
     @InjectView(R.id.social_friends_list) ListView friendsListView;
@@ -81,6 +85,11 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private Bundle savedState;
 
+    public static void putKeyShowHomeAsUp(@NotNull Bundle args, @NotNull Boolean showAsUp)
+    {
+        args.putBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, showAsUp);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -94,9 +103,18 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_USE_LOGO);
+        if (shouldShowHomeAsUp())
+        {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                    | ActionBar.DISPLAY_SHOW_TITLE
+                    | ActionBar.DISPLAY_SHOW_HOME);
+        }
+        else
+        {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+                    | ActionBar.DISPLAY_SHOW_HOME
+                    | ActionBar.DISPLAY_USE_LOGO);
+        }
         actionBar.setTitle(getString(R.string.action_invite));
         actionBar.setHomeButtonEnabled(true);
     }
@@ -184,8 +202,15 @@ public class FriendsInvitationFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                resideMenuLazy.get().openMenu();
-                return true;
+                if (shouldShowHomeAsUp())
+                {
+                    return super.onOptionsItemSelected(item);
+                }
+                else
+                {
+                    resideMenuLazy.get().openMenu();
+                    return true;
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -322,6 +347,18 @@ public class FriendsInvitationFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putBoolean(SettingsFragment.KEY_SHOW_AS_HOME_UP, true);
         getDashboardNavigator().pushFragment(SettingsFragment.class, bundle);
+    }
+
+    private boolean shouldShowHomeAsUp()
+    {
+        // Default to false
+        Bundle args = getArguments();
+        if (args == null)
+        {
+            return false;
+        }
+
+        return args.getBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, false);
     }
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
@@ -487,7 +524,8 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
 
         @Override
-        public void success(){
+        public void success()
+        {
             handleInviteSuccess(usersToInvite);
         }
 

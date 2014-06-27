@@ -3,9 +3,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item
+      android:id="@+id/friend_leaderboard_invite"
       android:icon="@drawable/btn_friends_add"
       android:title="@string/invite_friends"
-      android:id="@+id/friend_leaderboard_menu"
       android:showAsAction="always">
   </item>
 </menu>
