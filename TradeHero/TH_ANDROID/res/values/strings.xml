@@ -86,6 +86,8 @@
   <string name="buy">Buy</string>
   <string name="chart_loading_image">Loading chart image…</string>
 
+  <string name="plus_symbol">+</string>
+
   <!--do not translate begin-->
   <string name="tap_stream_type_google_install" translatable="false">android-tradehero-google-install</string>
   <string name="tap_stream_type_google_open" translatable="false">android-tradehero-google-open</string>

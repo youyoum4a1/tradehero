@@ -92,7 +92,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         gainLossModeListener = createGainLossModeListener();
-        broadcastReceiver =createBroadcastReceiver();
+        broadcastReceiver = createBroadcastReceiver();
         setOffsetRunnable = createSetOffsetRunnable();
         userWatchlistPositionFetchListener = createWatchlistListener();
         userWatchlistPositionRefreshListener = createRefreshWatchlistListener();
@@ -219,21 +219,22 @@ public class WatchlistPositionFragment extends DashboardFragment
         actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(getString(R.string.watchlist_title));
         super.onCreateOptionsMenu(menu, inflater);
-
-        MenuItem menuItem = menu.findItem(R.id.position_watchlist_add);
-        View menuAddWatchlist = menuItem.getActionView().findViewById(R.id.position_watchlist_add_view);
-        if (menuAddWatchlist != null)
-        {
-            menuAddWatchlist.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    Bundle bundle = new Bundle();
-                    getDashboardNavigator().pushFragment(SecuritySearchWatchlistFragment.class, bundle);
-                }
-            });
-        }
     }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.position_watchlist_add:
+            {
+                Bundle bundle = new Bundle();
+                getDashboardNavigator().pushFragment(SecuritySearchWatchlistFragment.class, bundle);
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     //</editor-fold>
 
     @Override public void onResume()
@@ -460,7 +461,6 @@ public class WatchlistPositionFragment extends DashboardFragment
             {
                 THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
             }
-
         }
     }
 
