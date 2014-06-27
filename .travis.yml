@@ -83,6 +83,5 @@ before_install:
 install: mvn install -DskipTests=true
 
 script:
-  - pwd
-  - cd $CI_HOME/TradeHero/TH_Android
+  - cd TradeHero/TH_ANDROID
   - mvn test
