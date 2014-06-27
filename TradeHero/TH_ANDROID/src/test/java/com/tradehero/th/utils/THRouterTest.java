@@ -131,7 +131,7 @@ public class THRouterTest
 
         // ensure that there is no unwanted toast due to clicking on a unexpected list item
         ShadowHandler.idleMainLooper();
-        assertThat(ShadowToast.getLatestToast()).isNull();
+        assertThat(ShadowToast.getTextOfLatestToast()).isNull();
         ShadowHandler.runMainLooperToEndOfTasks();
 
         AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();

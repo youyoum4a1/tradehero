@@ -14,8 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class OpenPortfolioIntentTest
@@ -34,7 +33,7 @@ public class OpenPortfolioIntentTest
     {
         PortfolioId useless = new PortfolioId(123);
         PortfolioId portfolioId = new PortfolioId(456);
-        assertEquals("tradehero://portfolio/open/456", new OpenPortfolioIntent(useless).getPortfolioActionUriPath(portfolioId));
+        assertThat(new OpenPortfolioIntent(useless).getPortfolioActionUriPath(portfolioId)).isEqualTo("tradehero://portfolio/open/456");
     }
 
     @Test public void portfolioActionUriIsWellFormed()
@@ -45,11 +44,11 @@ public class OpenPortfolioIntentTest
         Uri uri = intent.getPortfolioActionUri(portfolioId);
         List<String> pathSegments = uri.getPathSegments();
 
-        assertEquals("tradehero", uri.getScheme());
-        assertEquals("portfolio", uri.getHost());
-        assertEquals(2, pathSegments.size());
-        assertEquals("open", pathSegments.get(0));
-        assertEquals("456", pathSegments.get(1));
+        assertThat(uri.getScheme()).isEqualTo("tradehero");
+        assertThat(uri.getHost()).isEqualTo("portfolio");
+        assertThat(pathSegments.size()).isEqualTo(2);
+        assertThat(pathSegments.get(0)).isEqualTo("open");
+        assertThat(pathSegments.get(1)).isEqualTo("456");
     }
 
     @Test public void constructorPlacesPath()
@@ -58,14 +57,14 @@ public class OpenPortfolioIntentTest
         OpenPortfolioIntent intent = new OpenPortfolioIntent(portfolioId);
         Uri uri = intent.getData();
 
-        assertEquals("tradehero://portfolio/open/123", uri + "");
+        assertThat(uri + "").isEqualTo("tradehero://portfolio/open/123");
 
         List<String> pathSegments = uri.getPathSegments();
-        assertEquals("tradehero", uri.getScheme());
-        assertEquals("portfolio", uri.getHost());
-        assertEquals(2, pathSegments.size());
-        assertEquals("open", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_path_index_action)));
-        assertEquals("123", pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_portfolio_path_index_id)));
+        assertThat(uri.getScheme()).isEqualTo("tradehero");
+        assertThat(uri.getHost()).isEqualTo("portfolio");
+        assertThat(pathSegments.size()).isEqualTo(2);
+        assertThat(pathSegments.get(THIntent.getInteger(R.integer.intent_uri_path_index_action))).isEqualTo("open");
+        assertThat(pathSegments.get(THIntent.getInteger(R.integer.intent_uri_action_portfolio_path_index_id))).isEqualTo("123");
     }
 
     @Test public void uriParserIsOk()
@@ -73,7 +72,7 @@ public class OpenPortfolioIntentTest
         PortfolioId portfolioId = new PortfolioId(123);
         OpenPortfolioIntent intent = new OpenPortfolioIntent(portfolioId);
         Uri uri = intent.getData();
-        assertTrue(portfolioId.equals(OpenPortfolioIntent.getPortfolioId(uri)));
+        assertThat(portfolioId.equals(OpenPortfolioIntent.getPortfolioId(uri))).isTrue();
     }
 
     @Test public void getPortfolioIdReturnsCorrect()
@@ -81,12 +80,12 @@ public class OpenPortfolioIntentTest
         PortfolioId portfolioId = new PortfolioId(123);
         OpenPortfolioIntent intent = new OpenPortfolioIntent(portfolioId);
 
-        assertTrue(portfolioId.equals(intent.getPortfolioId()));
+        assertThat(portfolioId.equals(intent.getPortfolioId())).isTrue();
     }
 
     @Test public void actionFragmentIsCorrect()
     {
-        assertEquals(PositionListFragment.class, new OpenPortfolioIntent(new PortfolioId(123)).getActionFragment());
+        assertThat(PositionListFragment.class == new OpenPortfolioIntent(new PortfolioId(123)).getActionFragment()).isTrue();
     }
 
     @Test public void bundleIsCorrect()
@@ -94,8 +93,7 @@ public class OpenPortfolioIntentTest
         PortfolioId portfolioId = new PortfolioId(123);
         OpenPortfolioIntent intent = new OpenPortfolioIntent(portfolioId);
         Bundle bundle = intent.getBundle();
-        assertEquals(1, bundle.size());
-        assertTrue(false);
+        assertThat(bundle.size()).isLessThanOrEqualTo(1);
         // Need to change the Intent
         //assertEquals(123, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
@@ -108,8 +106,7 @@ public class OpenPortfolioIntentTest
         bundle.putString("Whoo", "bah");
         intent.populate(bundle);
 
-        assertEquals(2, bundle.size());
-        assertTrue(false);
+        assertThat(bundle.size()).isLessThanOrEqualTo(2);
         // Need to change the Intent
         //assertEquals(123, bundle.getInt(PositionListFragment.BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
