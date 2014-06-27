@@ -83,4 +83,5 @@ before_install:
 install: mvn install -DskipTests=true
 
 script:
-    - mvn test
+  - cd TradeHero/TH_Android
+  - mvn test
