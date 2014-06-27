@@ -96,7 +96,7 @@ public class BingTranslationToken extends TranslationToken
     {
         return Math.max(
                 0,
-                (expirationDate.getTime() - Calendar.getInstance().getTime().getTime()) / 1000);
+                Math.round((expirationDate.getTime() - Calendar.getInstance().getTime().getTime()) / 1000));
     }
 
     @Override public boolean isValid()
