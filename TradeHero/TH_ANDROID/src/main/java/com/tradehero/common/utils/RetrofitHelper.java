@@ -15,13 +15,13 @@ public class RetrofitHelper
     }
     //</editor-fold>
 
-    @Nullable public Header findByName(
+    @Nullable public Header findHeaderByName(
             @NotNull Collection<? extends Header> headers,
             @NotNull String name)
     {
         for (Header header : headers)
         {
-            if (header.getName().equals(name))
+            if (header.getName() != null && header.getName().equals(name))
             {
                 return header;
             }

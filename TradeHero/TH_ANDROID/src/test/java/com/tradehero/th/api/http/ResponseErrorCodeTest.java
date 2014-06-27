@@ -12,20 +12,20 @@ public class ResponseErrorCodeTest
 {
     @Test public void unknownReturnsNull()
     {
-        assertNull(ResponseErrorCode.getByCode(-1));
+        assertNull(ResponseErrorCode.getByCode(""));
     }
 
     @Test public void canGetOutdated()
     {
         assertEquals(
                 ResponseErrorCode.OutDatedVersion,
-                ResponseErrorCode.getByCode(ResponseErrorCode.OutDatedVersion.code));
+                ResponseErrorCode.getByCode(ResponseErrorCode.OutDatedVersion.toString()));
     }
 
     @Test public void canGetExpiredToken()
     {
         assertEquals(
                 ResponseErrorCode.ExpiredSocialToken,
-                ResponseErrorCode.getByCode(ResponseErrorCode.ExpiredSocialToken.code));
+                ResponseErrorCode.getByCode(ResponseErrorCode.ExpiredSocialToken.toString()));
     }
 }

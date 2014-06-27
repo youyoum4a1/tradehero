@@ -49,10 +49,10 @@ public class THException extends Exception
                     List<Header> headers = response.getHeaders();
                     if (headers != null)
                     {
-                        Header responseCodeHeader = new RetrofitHelper().findByName(headers, Constants.TH_ERROR_CODE);
+                        Header responseCodeHeader = new RetrofitHelper().findHeaderByName(headers, Constants.TH_ERROR_CODE);
                         if (responseCodeHeader != null)
                         {
-                            @Nullable ResponseErrorCode errorCode = ResponseErrorCode.getByCode(Integer.parseInt(responseCodeHeader.getValue()));
+                            @Nullable ResponseErrorCode errorCode = ResponseErrorCode.getByCode(responseCodeHeader.getValue());
                             if (errorCode != null)
                             {
                                 switch (errorCode)

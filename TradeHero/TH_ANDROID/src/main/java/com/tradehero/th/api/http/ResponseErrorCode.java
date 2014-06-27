@@ -1,29 +1,22 @@
 package com.tradehero.th.api.http;
 
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public enum ResponseErrorCode
 {
-    OutDatedVersion(0),
-    ExpiredSocialToken(1),
-    ;
+    OutDatedVersion,
+    ExpiredSocialToken;
 
-    public final int code;
-
-    ResponseErrorCode(int code)
+    @Nullable public static ResponseErrorCode getByCode(String code)
     {
-        this.code = code;
-    }
-
-    @Nullable public static ResponseErrorCode getByCode(int code)
-    {
-        for (ResponseErrorCode responseErrorCode: values())
+        try
         {
-            if (responseErrorCode.code == code)
-            {
-                return responseErrorCode;
-            }
+            return ResponseErrorCode.valueOf(code);
+        } catch (IllegalArgumentException e)
+        {
+            Timber.e("Invalid error code %s", code);
+            return null;
         }
-        return null;
     }
 }
