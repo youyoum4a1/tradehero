@@ -8,13 +8,14 @@ branches:
 branches:
   only:
     - develop
+    - /^develop.*$/
 
 notifications:
   email:
     recipients:
       - dev@tradehero.mobi
     on_success: change
-    on_failure: change
+    on_failure: always
 
 env:
   global:
@@ -23,7 +24,7 @@ env:
     - ANDROID_PLATFORM_TOOLS_VERSION="r17"
     
 jdk:
-  - openjdk7
+  - oraclejdk7
 
 before_install:
   # Update a system for ia32 libraries
@@ -75,9 +76,9 @@ before_install:
   
   # We are should update Gradle, because Android Build Tools works with 1.6,
   # but on travis installed 1.4
-  - wget http://downloads.gradle.org/distributions/gradle-1.6-all.zip
-  - unzip -q -o gradle-1.6-all.zip
-  - export PATH="${BASEDIR}/gradle-1.6/bin:${PATH}"
+  # - wget http://downloads.gradle.org/distributions/gradle-1.6-all.zip
+  # - unzip -q -o gradle-1.6-all.zip
+  # - export PATH="${BASEDIR}/gradle-1.6/bin:${PATH}"
   
   # Let's try to build...
 install: mvn install -DskipTests=true
