@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.billing;
 
-import android.widget.Toast;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -28,7 +27,7 @@ public class StoreScreenFragmentTest
         StoreScreenFragment storeScreenFragment = dashboardNavigator.pushFragment(StoreScreenFragment.class);
         assertThat(storeScreenFragment).isNotNull();
 
-        Toast latestToast = ShadowToast.getLatestToast();
-        assertThat(latestToast).isNull();
+        String latestToastText = ShadowToast.getTextOfLatestToast();
+        assertThat(latestToastText).isNull();
     }
 }
