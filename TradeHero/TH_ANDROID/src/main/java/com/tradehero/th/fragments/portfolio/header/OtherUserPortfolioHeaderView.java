@@ -19,6 +19,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -54,6 +55,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
     private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
+    protected FollowDialogCombo followDialogCombo;
 
     //<editor-fold desc="Constructors">
     public OtherUserPortfolioHeaderView(Context context)
@@ -115,7 +117,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     public void showFollowDialog()
     {
         localyticsSession.tagEvent(LocalyticsConstants.Positions_Follow);
-        alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
+        detachFollowDialogCombo();
+        followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
                 new OtherUserPortfolioFollowRequestedListener());
     }
@@ -159,6 +162,16 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         freeFollowMiddleCallback = null;
     }
 
+    protected void detachFollowDialogCombo()
+    {
+        FollowDialogCombo followDialogComboCopy = followDialogCombo;
+        if (followDialogComboCopy != null)
+        {
+            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
+        }
+        followDialogCombo = null;
+    }
+
     public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
@@ -188,6 +201,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         }
 
         detachFreeFollowMiddleCallback();
+        detachFollowDialogCombo();
 
         super.onDetachedFromWindow();
     }
