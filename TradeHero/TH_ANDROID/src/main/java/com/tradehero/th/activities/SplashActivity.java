@@ -1,7 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -13,44 +11,40 @@ import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tendcloud.tenddata.TCAgent;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.RequestHeaders;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
 
-//import com.mobileapptracker.MobileAppTracker;
-
 public class SplashActivity extends SherlockActivity
 {
-    public static final String KEY_PREFS = SplashActivity.class.getName();
-    private static final String KEY_FIRST_BOOT = "key_first_boot";
-
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject RequestHeaders requestHeaders;
     @Inject Provider<LoginFormDTO> loginFormDTOProvider;
     @Inject @FacebookAppId String facebookAppId;
+    @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
@@ -101,20 +95,15 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().open(custom_dimensions);
+        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
         AppEventsLogger.activateApp(this, facebookAppId);
         tapStream.get().fireEvent(
-                new Event(getString(Constants.TAP_STREAM_TYPE.openResId),
-                        false));
+                new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
         mobileAppTrackerLazy.get().setReferralSources(this);
         //mobileAppTrackerLazy.get().setDebugMode(true);//no debug, no log by alex
         mobileAppTrackerLazy.get().measureSession();
-        TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY,
-                Constants.TAP_STREAM_TYPE.name());
-        //TCAgent.LOG_ON = false;
+        TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
 
         if (!Constants.RELEASE)
         {
@@ -124,9 +113,7 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onPause()
     {
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().close(custom_dimensions);
+        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().upload();
 
         super.onPause();
@@ -136,13 +123,11 @@ public class SplashActivity extends SherlockActivity
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
         localyticsSession.get().tagEvent(LocalyticsConstants.LoadingScreen);
-        // TODO use Dagger to inject pref?
-        SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
 
-        if (preferences.getBoolean(KEY_FIRST_BOOT, true))
+        if (firstLaunchPreference.get())
         {
             ActivityHelper.launchGuide(SplashActivity.this);
-            preferences.edit().putBoolean(KEY_FIRST_BOOT, false).apply();
+            firstLaunchPreference.set(false);
         }
         else
         {
