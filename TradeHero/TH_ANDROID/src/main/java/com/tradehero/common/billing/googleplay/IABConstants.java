@@ -6,7 +6,7 @@ import timber.log.Timber;
 
 public class IABConstants
 {
-    public static final String BASE_64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhVgfcepa4NXGyS5kSGD1TmksVWhZcyMrqqJVBsuQgi+Io0+vFmboFN5n/nYPWWFOPjpvo8ht/11bglW+V+LtPOauk3/lCyFYGMVxuzv55J+YPimNBBnpECIqr6wfHyk0k6h2XPDJeEG2fPV3CIgAWiyNlH3JZVPrmVUIoU4537GACssREjFi7DERyv0JPg9n+0qlBb/NKhpbh00uniDXbNcb9KAb3e+kWI3+qpextDn0k6nt6/nqEFNZMD4JFlbqdrbc9Lfd+Zj2XUO983oVBbuRoIW11UUL5nY6qnjdh+FHG6254mbqoPtWeMnYrMPp3d733WOQdXhsfxwC0Fx99QIDAQAB";
+    public static final String BASE_64_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqH5fSwp7nx5BbfzSbqHbXJrtz0R6ZhbGQLh7b8uSrjcEWh75OIx9BK/3/G3XhrAU8D2dV8Vzj3q4NMJpsdB0HPsueepXDLLdN1wrm1S3vRy5k4UinqdH5cRpEBKlXVA6fL191Hi1R9LxgLbsRQsxXicivFfOdWieLova3TXCmsaZi0tnsR1JHHfVuT5d3eb827iJkWYaxxC5XXfYsRKCAgDg1Arm8+61LY/qnQ76pK3Q40P5/XuRrfD4DnA7E0ujMtvjPEMVXgqubXX84DbRQN70B7KpfrLHRw8LfstS2ep6gAS/fE8V6FHq5PqymDUx7M7yfKohXhSSERTgF/ohSQIDAQAB";
 
     // Billing response codes
     public static final int BILLING_RESPONSE_RESULT_OK = 0;
