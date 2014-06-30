@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,12 +10,15 @@
 
   <ScrollView
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:fillViewport="true"
       android:background="@drawable/authentication_bg"
       android:scrollbarStyle="outsideOverlay"
       android:paddingLeft="@dimen/common_margin_60"
       android:paddingRight="@dimen/common_margin_60"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentTop="true"
+      android:layout_above="@+id/authentication_by_sign_up_button"
       >
 
     <LinearLayout
@@ -60,12 +63,13 @@
       android:id="@+id/authentication_by_sign_up_button"
       android:layout_width="match_parent"
       android:layout_height="@dimen/clickable_element_min_height"
-      android:layout_gravity="bottom"
+      android:layout_alignParentBottom="true"
       android:orientation="horizontal"
       android:gravity="center"
       android:background="@drawable/basic_light_grey_selector"
       android:addStatesFromChildren="true"
-      >
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="0dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -88,4 +92,4 @@
 
   </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
