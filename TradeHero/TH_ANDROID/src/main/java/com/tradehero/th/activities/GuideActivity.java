@@ -16,12 +16,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.thm.R;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.thm.R;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class GuideActivity extends Activity
 
     private void printShortcutName(Cursor c)
     {
-        if (!BuildConfig.DEBUG)
+        if (Constants.TAP_STREAM_TYPE.marketSegment != MarketSegment.CHINA)
         {
             return;
         }

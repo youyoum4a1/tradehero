@@ -39,9 +39,9 @@
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
   <permission
-      android:name="com.tradehero.th.permission.C2D_MESSAGE"
+      android:name="com.tradehero.thm.permission.C2D_MESSAGE"
       android:protectionLevel="signature"/>
-  <uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE"/>
+  <uses-permission android:name="com.tradehero.thm.permission.C2D_MESSAGE"/>
 
   <!-- OPTIONAL - This permission is only necessary if your app has multiple processes -->
   <!-- <uses-permission android:name="android.permission.BROADCAST_STICKY" /> -->
@@ -204,7 +204,7 @@
 
     <provider
         android:name="com.urbanairship.UrbanAirshipProvider"
-        android:authorities="com.tradehero.th.urbanairship.provider"
+        android:authorities="com.tradehero.thm.urbanairship.provider"
         android:exported="false"
         android:multiprocess="true"/>
 
