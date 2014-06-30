@@ -109,7 +109,6 @@ public class TrendingFragment extends SecurityListFragment
         defaultFilterSelected = false;
 
         exchangeListTypeCacheListener = createExchangeListTypeFetchListener();
-        fetchExchangeList();
         userProfileCacheListener = createUserProfileFetchListener();
         providerListCallback = createProviderListFetchListener();
     }
@@ -132,6 +131,7 @@ public class TrendingFragment extends SecurityListFragment
         }
 
         thIntentPassedListener = createCompetitionTHIntentPassedListener();
+        fetchExchangeList();
     }
 
     @Override public void onResume()
@@ -304,11 +304,14 @@ public class TrendingFragment extends SecurityListFragment
     private void setUpFilterSelectorView()
     {
         setDefaultExchange();
-        if (exchangeCompactSpinnerDTOs != null)
+        if (filterSelectorView != null)
         {
-            filterSelectorView.setUpExchangeSpinner(exchangeCompactSpinnerDTOs);
+            if (exchangeCompactSpinnerDTOs != null)
+            {
+                filterSelectorView.setUpExchangeSpinner(exchangeCompactSpinnerDTOs);
+            }
+            filterSelectorView.apply(trendingFilterTypeDTO);
         }
-        filterSelectorView.apply(trendingFilterTypeDTO);
     }
 
     private void setDefaultExchange()

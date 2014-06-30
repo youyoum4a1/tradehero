@@ -235,6 +235,7 @@ import org.jetbrains.annotations.Nullable;
     {
         preFetchExchanges();
         preFetchTrending();
+        preFetchProviders();
     }
 
     public void preFetchExchanges()
@@ -273,7 +274,7 @@ import org.jetbrains.annotations.Nullable;
     public void initialPrefetches()
     {
         preFetchWatchlist();
-        preFetchProviders();
+        //preFetchProviders();
 
         conveniencePrefetches(); // TODO move them so time after the others
     }
