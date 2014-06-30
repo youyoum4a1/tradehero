@@ -31,27 +31,33 @@
       android:background="@drawable/basic_transparent_selector"
       android:src="@drawable/settings_back_light_default"/>
 
-  <LinearLayout
+  <ScrollView
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      style="@style/TradeHero.Authentication"
-      android:orientation="vertical">
+      android:layout_height="match_parent">
 
-    <include
-        layout="@layout/profile_info"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TradeHero.Authentication"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/authentication_sign_up_button"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/common_margin_60"
-        android:layout_marginTop="@dimen/common_margin_80"
-        android:background="@drawable/authentication_button"
-        android:text="@string/authentication_register"
-        android:textColor="@color/white"
-        android:textSize="@dimen/common_text_size_30"
-        android:textStyle="bold"
-        />
-  </LinearLayout>
+      <include
+          layout="@layout/profile_info"/>
+
+      <Button
+          android:id="@+id/authentication_sign_up_button"
+          android:layout_width="fill_parent"
+          android:layout_height="@dimen/common_margin_60"
+          android:layout_marginTop="@dimen/common_margin_80"
+          android:background="@drawable/authentication_button"
+          android:text="@string/authentication_register"
+          android:textColor="@color/white"
+          android:textSize="@dimen/common_text_size_30"
+          android:textStyle="bold"
+          />
+    </LinearLayout>
+
+  </ScrollView>
 
 </LinearLayout>
 
