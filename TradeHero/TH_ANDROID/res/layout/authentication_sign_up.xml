@@ -37,6 +37,11 @@
           android:contentDescription="@null"
           android:adjustViewBounds="true"/>
 
+      <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"/>
+
       <include
           android:id="@+id/authentication_social_sign_up"
           android:layout_width="match_parent"
@@ -51,6 +56,11 @@
           android:layout_marginTop="@dimen/common_margin_10"
           layout="@layout/authentication_agreement"
           />
+
+      <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"/>
 
     </LinearLayout>
 
