@@ -32,10 +32,8 @@
         android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         >
-        <!--android:drawableLeft="@drawable/accounts_glyph_email_default"-->
-        <!--app:invalidDrawable="@drawable/accounts_glyph_email_error"-->
-        <!--app:validDrawable="@drawable/accounts_glyph_email_ok"-->
-        </com.tradehero.th.widget.ServerValidatedEmailText>
+      <requestFocus/>
+    </com.tradehero.th.widget.ServerValidatedEmailText>
 
     <com.tradehero.th.widget.ValidatedPasswordText
         android:id="@+id/authentication_sign_up_password"
@@ -57,9 +55,6 @@
         android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         />
-        <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
-        <!--app:invalidDrawable="@drawable/accounts_glyph_password_error"-->
-        <!--app:validDrawable="@drawable/accounts_glyph_password_ok"-->
 
     <com.tradehero.th.widget.MatchingPasswordText
         android:id="@+id/authentication_sign_up_confirm_password"
@@ -81,9 +76,9 @@
         android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
         />
-        <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
-        <!--app:invalidDrawable="@drawable/accounts_glyph_password_error"-->
-        <!--app:validDrawable="@drawable/accounts_glyph_password_ok"-->
+    <!--android:drawableLeft="@drawable/accounts_glyph_password_default"-->
+    <!--app:invalidDrawable="@drawable/accounts_glyph_password_error"-->
+    <!--app:validDrawable="@drawable/accounts_glyph_password_ok"-->
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -111,11 +106,10 @@
           android:textSize="@dimen/common_text_size_30"
           android:background="@drawable/authentication_edit_text"
           >
-         <requestFocus/>
       </com.tradehero.th.widget.ServerValidatedUsernameText>
-          <!--android:drawableLeft="@drawable/accounts_glyph_username_default"-->
-          <!--app:invalidDrawable="@drawable/accounts_glyph_username_error"-->
-          <!--app:validDrawable="@drawable/accounts_glyph_username_ok"-->
+      <!--android:drawableLeft="@drawable/accounts_glyph_username_default"-->
+      <!--app:invalidDrawable="@drawable/accounts_glyph_username_error"-->
+      <!--app:validDrawable="@drawable/accounts_glyph_username_ok"-->
 
       <ProgressBar
           android:id="@+id/authentication_sign_up_username_validator"
@@ -128,13 +122,6 @@
 
     </FrameLayout>
 
-    <!--<TextView-->
-        <!--android:id="@+id/optional_text"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:text="@string/user_profile_optional"-->
-        <!--android:textColor="@color/text_gray_normal"/>-->
 
     <RelativeLayout
         android:id="@+id/layout_optional"
@@ -152,7 +139,7 @@
           android:gravity="center"
           android:src="@drawable/avatar"
           android:contentDescription="@string/empty"/>
-          <!--android:background="@drawable/image_selector"-->
+      <!--android:background="@drawable/image_selector"-->
 
       <LinearLayout
           android:layout_width="fill_parent"
@@ -172,7 +159,7 @@
             style="@style/TradeHero.Authentication.EditText"
             android:textSize="@dimen/common_text_size_30"
             android:background="@drawable/authentication_edit_text"/>
-            <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
+        <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
 
         <EditText
             android:id="@+id/et_lastname"
@@ -184,7 +171,7 @@
             style="@style/TradeHero.Authentication.EditText"
             android:textSize="@dimen/common_text_size_30"
             android:background="@drawable/authentication_edit_text"/>
-            <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
+        <!--android:drawableLeft="@drawable/accounts_glyph_name_default"-->
 
       </LinearLayout>
 
