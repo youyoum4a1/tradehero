@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.timeline;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -11,11 +10,11 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
-import com.tradehero.thm.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.thm.R;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 
@@ -287,17 +286,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (profileTop != null)
             {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-				{
-					// only available since API level 16
-					profileTop.setBackground(new BitmapDrawable(context.getResources(), bitmap));
-				} else
-				{
-					profileTop.setBackgroundDrawable(
-							new BitmapDrawable(context.getResources(), bitmap));
-				}
-
-
+                profileTop.setBackgroundDrawable(
+                        new BitmapDrawable(context.getResources(), bitmap));
             }
         }
 

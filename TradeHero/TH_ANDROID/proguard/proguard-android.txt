@@ -111,6 +111,8 @@
 -assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
 -keep class !com.tradehero.** { *; }
+-dontwarn com.handmark.**
+-dontwarn com.thoj.**
 -dontwarn org.apache.**
 -dontwarn twitter4j.**
 -dontwarn retrofit.**

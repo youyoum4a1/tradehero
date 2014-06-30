@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.thm.R;
@@ -174,7 +173,6 @@ public class TradeListOverlayHeaderView extends LinearLayout
                 .into(this.imageProfile);
     }
 
-    @VisibleForTesting
     public Listener getListener()
     {
         return listener;
