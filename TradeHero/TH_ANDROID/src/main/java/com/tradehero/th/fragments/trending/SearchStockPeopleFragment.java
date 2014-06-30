@@ -785,8 +785,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 {
                     userBaseKeys.addAll(value);
                 }
-                peopleItemViewAdapter.clear();
-                peopleItemViewAdapter.addAll(userBaseKeys);
+                peopleItemViewAdapter.addAll(value);
             }
             setQuerying(false);
             peopleItemViewAdapter.notifyDataSetChanged();
