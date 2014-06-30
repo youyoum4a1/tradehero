@@ -32,6 +32,7 @@ import com.tradehero.th.persistence.competition.HelpVideoListCache;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class ProviderVideoListFragment extends CompetitionFragment
@@ -139,7 +140,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         helpVideoListCache.unregister(helpVideoListCacheListener);
     }
 
-    @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
         if (andDisplay)

@@ -61,7 +61,19 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        loadUrl(getArguments().getString(BUNDLE_KEY_URL));
+        loadUrl(getLoadingUrl());
+    }
+
+    protected String getLoadingUrl()
+    {
+        if (getArguments() != null)
+        {
+            return getArguments().getString(BUNDLE_KEY_URL);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     protected void initViews(View v)

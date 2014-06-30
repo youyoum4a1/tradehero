@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public LeaderboardDefKeyList fetch(@NotNull LeaderboardDefListKey listKey) throws Throwable
+    @Override @NotNull public LeaderboardDefKeyList fetch(@NotNull LeaderboardDefListKey listKey) throws Throwable
     {
         return putInternal(listKey, leaderboardServiceWrapper.getLeaderboardDefinitions());
     }

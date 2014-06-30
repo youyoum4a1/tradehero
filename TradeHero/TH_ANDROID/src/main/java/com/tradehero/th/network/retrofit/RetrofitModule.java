@@ -232,7 +232,7 @@ public class RetrofitModule
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.DEFAULT)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.ANY));
         return objectMapper;
     }

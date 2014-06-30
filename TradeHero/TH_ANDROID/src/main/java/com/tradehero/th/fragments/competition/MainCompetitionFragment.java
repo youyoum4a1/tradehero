@@ -198,7 +198,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         placeAdapterInList();
     }
 
-    @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
         placeAdapterInList();
@@ -356,9 +356,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         }
         
-        args.putString(
-                CompetitionWebViewFragment.BUNDLE_KEY_URL,
-                competitionUrl + "&previous=whatever");
+        args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, competitionUrl);
         this.webViewFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }

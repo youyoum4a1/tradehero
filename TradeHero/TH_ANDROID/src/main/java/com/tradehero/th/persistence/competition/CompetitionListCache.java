@@ -9,9 +9,7 @@ import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class CompetitionListCache extends StraightDTOCacheNew<ProviderId, CompetitionIdList>
 {
@@ -31,27 +29,22 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public CompetitionIdList fetch(@NotNull ProviderId key) throws Throwable
+    @Override @NotNull public CompetitionIdList fetch(@NotNull ProviderId key) throws Throwable
     {
         return putInternal(key, competitionServiceWrapper.getCompetitions(key));
     }
 
-    @Contract("_, null -> null; _, !null -> !null") @Nullable
-    protected CompetitionIdList putInternal(@NotNull ProviderId key, @Nullable List<CompetitionDTO> fleshedValues)
+    @NotNull protected CompetitionIdList putInternal(@NotNull ProviderId key, @NotNull List<CompetitionDTO> fleshedValues)
     {
-        CompetitionIdList competitionIds = null;
-        if (fleshedValues != null)
+        CompetitionIdList competitionIds = new CompetitionIdList();
+        CompetitionId competitionId;
+        for (@NotNull CompetitionDTO competitionDTO: fleshedValues)
         {
-            competitionIds = new CompetitionIdList();
-            CompetitionId competitionId;
-            for (@NotNull CompetitionDTO competitionDTO: fleshedValues)
-            {
-                competitionId = competitionDTO.getCompetitionId();
-                competitionIds.add(competitionId);
-                competitionCache.put(competitionId, competitionDTO);
-            }
-            put(key, competitionIds);
+            competitionId = competitionDTO.getCompetitionId();
+            competitionIds.add(competitionId);
+            competitionCache.put(competitionId, competitionDTO);
         }
+        put(key, competitionIds);
         return competitionIds;
     }
 }

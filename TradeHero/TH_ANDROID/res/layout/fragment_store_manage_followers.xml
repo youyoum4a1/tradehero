@@ -92,10 +92,11 @@
       ptr:ptrMode="pullFromStart"
       ptr:ptrScrollingWhileRefreshingEnabled="true"
       android:fadingEdge="none"
-      android:scrollbars="none"
+      android:scrollbars="vertical"
+      android:scrollbarStyle="outsideOverlay"
       android:layout_below="@id/manage_followers_header"
       android:background="@null"
-      android:layout_marginBottom="50dp"
+      android:paddingBottom="@dimen/discussion_list_padding"
       />
 
   <!--<com.tradehero.th.fragments.social.follower.FollowerListView-->

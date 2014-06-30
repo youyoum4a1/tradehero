@@ -15,11 +15,14 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.thoj.route.InjectRoute;
+import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
@@ -56,6 +59,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends BasePurchaseManagerFragment
         implements PositionListener<PositionDTO>,
@@ -82,7 +86,10 @@ public class PositionListFragment
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView ;
     @InjectView(android.R.id.progress) ProgressBar progressBar ;
-    @InjectView(R.id.error) View errorView ;
+    @InjectView(R.id.error) View errorView;
+
+    @InjectRoute UserBaseKey injectedUserBaseKey;
+    @InjectRoute PortfolioId injectedPortfolioId;
 
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
@@ -124,9 +131,25 @@ public class PositionListFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        thRouter.inject(this);
         Bundle args = getArguments();
-        getPositionsDTOKey = getGetPositionsDTOKey(getPositionsDTOKeyFactory, args);
-        shownUser = getUserBaseKey(args);
+        if (args.containsKey(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE))
+        {
+            shownUser = getUserBaseKey(args);
+        }
+        else
+        {
+            shownUser = injectedUserBaseKey;
+        }
+        if (args.containsKey(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE))
+        {
+            getPositionsDTOKey = getGetPositionsDTOKey(getPositionsDTOKeyFactory, args);
+        }
+        else
+        {
+            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey, injectedPortfolioId);
+        }
+
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         refreshGetPositionsDTOListener = createGetPositionsRefreshCacheListener();
     }

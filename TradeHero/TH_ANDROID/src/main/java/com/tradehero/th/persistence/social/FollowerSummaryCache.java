@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public FollowerSummaryDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public FollowerSummaryDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return followerServiceWrapper.getAllFollowersSummary(key);
     }

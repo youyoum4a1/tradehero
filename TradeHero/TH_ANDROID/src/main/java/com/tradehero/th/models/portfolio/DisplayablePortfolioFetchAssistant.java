@@ -1,6 +1,5 @@
 package com.tradehero.th.models.portfolio;
 
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -88,7 +87,8 @@ public class DisplayablePortfolioFetchAssistant
                     if (displayablePortfolioDTO.portfolioDTO == null && !displayablePortfolioDTO.fetchingPortfolio)
                     {
                         displayablePortfolioDTO.fetchingPortfolio = true;
-                        portfolioCache.getOrFetch(displayablePortfolioDTO.ownedPortfolioId, createPortfolioDTOListener()).execute();
+                        portfolioCache.register(displayablePortfolioDTO.ownedPortfolioId, createPortfolioDTOListener());
+                        portfolioCache.getOrFetchAsync(displayablePortfolioDTO.ownedPortfolioId);
                     }
                 }
             }
@@ -148,11 +148,11 @@ public class DisplayablePortfolioFetchAssistant
         };
     }
 
-    private DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioDTOListener()
+    private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioDTOListener()
     {
-        return new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
+        return new DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO>()
         {
-            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value)
             {
                 Timber.d("Received PortfolioDTO for %s: %s", key, value);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key.getUserBaseKey());

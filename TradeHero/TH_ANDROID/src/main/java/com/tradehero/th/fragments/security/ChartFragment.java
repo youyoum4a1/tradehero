@@ -15,7 +15,6 @@ import butterknife.Optional;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
-import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
@@ -224,7 +223,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.onDestroyView();
     }
 
-    @Override protected LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    @Override protected SecurityCompactCache getInfoCache()
     {
         return securityCompactCache;
     }

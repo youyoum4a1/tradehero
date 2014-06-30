@@ -13,6 +13,7 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import java.util.ArrayList;
 import javax.inject.Inject;
@@ -26,6 +27,8 @@ import org.robolectric.shadows.ShadowWebViewNew;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricMavenTestRunner.class)
@@ -33,6 +36,7 @@ import static org.robolectric.Robolectric.shadowOf;
 public class MainCompetitionFragmentTest
 {
     private static final String TEST_ADS_WEB_URL = "http://www.google.com";
+    private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";
     private DashboardNavigator dashboardNavigator;
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
@@ -128,6 +132,7 @@ public class MainCompetitionFragmentTest
                 break;
             }
         }
+        assertThat(firstAdsButtonPosition).isGreaterThan(-1);
 
         competitionListView.performItemClick(
                 competitionListAdapter.getView(firstAdsButtonPosition, null, null),
@@ -141,5 +146,73 @@ public class MainCompetitionFragmentTest
         ShadowWebView shadowWebView = shadowOf(webView);
         assertThat(webView).isNotNull();
         assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&', currentUserId.toUserBaseKey()));
+    }
+
+    @Test public void shouldGoToTradeQuestPageAfterClickOnWizardCellWhenWizardUrlIsSetToTradeQuestUrl()
+    {
+        ProviderDTO providerDTO = providerCache.get(providerId);
+        providerDTO.wizardUrl = TEST_WIZARD_WEB_URL;
+        shouldGoToCorrectWebPageAfterClickOnWizardCell(TEST_WIZARD_WEB_URL);
+    }
+
+    @Test public void shouldGoToProviderWizardPageAfterClickOnWizardCell()
+    {
+        // we do not hardcoded on client anymore for generating competition url from providerId
+        // but I would like to test it anyway
+        ProviderDTO providerDTO = providerCache.get(providerId);
+        providerDTO.wizardUrl = null;
+        ProviderDTO providerDTOWithHardcodedWizard = spy(providerDTO);
+
+        // for enabling wizard cell
+        when(providerDTOWithHardcodedWizard.hasWizard()).thenReturn(true);
+        providerCache.put(providerId, providerDTOWithHardcodedWizard);
+
+        String expectedWizardPage = providerUtil.getWizardPage(providerId);
+        shouldGoToCorrectWebPageAfterClickOnWizardCell(expectedWizardPage);
+    }
+
+    private void shouldGoToCorrectWebPageAfterClickOnWizardCell(String webLink)
+    {
+        Bundle args = new Bundle();
+        MainCompetitionFragment.putProviderId(args, providerId);
+
+        // make sure that we have wizard before proceed testing it
+        ProviderDTO providerDTO = providerCache.get(providerId);
+        assertThat(providerDTO.hasWizard()).isTrue();
+
+        MainCompetitionFragment mainCompetitionFragment = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
+
+        AbsListView competitionListView = mainCompetitionFragment.listView;
+        assertThat(competitionListView).isNotNull();
+
+        CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
+        assertThat(competitionListAdapter).isNotNull();
+
+        int firstWizardButtonPosition = -1;
+
+        for (int i = 0; i < competitionListAdapter.getCount(); ++i)
+        {
+            if (competitionListAdapter.getItemViewType(i) == CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM
+                    && competitionListAdapter.getItem(i) instanceof CompetitionZoneWizardDTO)
+            {
+                firstWizardButtonPosition = i;
+                break;
+            }
+        }
+
+        assertThat(firstWizardButtonPosition).isGreaterThan(-1);
+
+        competitionListView.performItemClick(
+                competitionListAdapter.getView(firstWizardButtonPosition, null, null),
+                firstWizardButtonPosition,
+                competitionListAdapter.getItemId(firstWizardButtonPosition));
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
+
+        CompetitionWebViewFragment competitionWebViewFragment = (CompetitionWebViewFragment) dashboardNavigator.getCurrentFragment();
+
+        WebView webView = competitionWebViewFragment.getWebView();
+        ShadowWebView shadowWebView = shadowOf(webView);
+        assertThat(webView).isNotNull();
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(webLink);
     }
 }

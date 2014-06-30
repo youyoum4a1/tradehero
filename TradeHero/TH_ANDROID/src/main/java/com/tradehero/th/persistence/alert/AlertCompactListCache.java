@@ -8,9 +8,7 @@ import com.tradehero.th.network.service.AlertServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class AlertCompactListCache extends StraightDTOCacheNew<UserBaseKey, AlertIdList>
 {
@@ -30,22 +28,16 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override @Nullable public AlertIdList fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public AlertIdList fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return putInternal(key, alertServiceWrapper.getAlerts(key));
     }
 
-    @Contract("_, null -> null; _, !null -> !null")
-    protected AlertIdList putInternal(@NotNull UserBaseKey key, @Nullable List<AlertCompactDTO> fleshedValues)
+    @NotNull protected AlertIdList putInternal(@NotNull UserBaseKey key, @NotNull List<AlertCompactDTO> fleshedValues)
     {
-        AlertIdList alertIds = null;
-        if (fleshedValues != null)
-        {
-            alertIds = new AlertIdList(key, fleshedValues);
-            //alertCompactCache.invalidateAll();
-            alertCompactCache.put(key, fleshedValues);
-            put(key, alertIds);
-        }
+        AlertIdList alertIds = new AlertIdList(key, fleshedValues);
+        alertCompactCache.put(key, fleshedValues);
+        put(key, alertIds);
         return alertIds;
     }
 

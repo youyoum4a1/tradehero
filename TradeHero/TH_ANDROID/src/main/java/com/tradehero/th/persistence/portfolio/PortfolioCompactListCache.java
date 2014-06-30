@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class PortfolioCompactListCache extends StraightDTOCacheNew<UserBaseKey, OwnedPortfolioIdList>
 {
@@ -38,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public OwnedPortfolioIdList fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public OwnedPortfolioIdList fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return putInternal(key, portfolioService.get().getPortfolios(key.key, key.equals(currentUserId.toUserBaseKey())));
     }
@@ -61,12 +62,12 @@ import org.jetbrains.annotations.NotNull;
         return ownedPortfolioIds;
     }
 
-    @Override public void invalidate(UserBaseKey key)
+    @Override public void invalidate(@NotNull UserBaseKey key)
     {
-        OwnedPortfolioIdList value = get(key);
+        @Nullable OwnedPortfolioIdList value = get(key);
         if (value != null)
         {
-            for (OwnedPortfolioId ownedPortfolioId : value)
+            for (@NotNull OwnedPortfolioId ownedPortfolioId : value)
             {
                 portfolioCompactCache.get().invalidate(ownedPortfolioId.getPortfolioIdKey());
                 portfolioCache.get().invalidate(ownedPortfolioId);
@@ -87,13 +88,10 @@ import org.jetbrains.annotations.NotNull;
         for (OwnedPortfolioId ownedPortfolioId : list)
         {
             portfolioId = ownedPortfolioId.getPortfolioIdKey();
-            if (portfolioId != null)
+            portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
+            if (portfolioCompactDTO != null && portfolioCompactDTO.isDefault())
             {
-                portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
-                if (portfolioCompactDTO != null && portfolioCompactDTO.isDefault())
-                {
-                    return ownedPortfolioId;
-                }
+                return ownedPortfolioId;
             }
         }
         return null;

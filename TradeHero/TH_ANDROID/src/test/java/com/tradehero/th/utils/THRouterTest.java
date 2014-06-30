@@ -1,6 +1,9 @@
 package com.tradehero.th.utils;
 
+import android.app.AlertDialog;
+import android.webkit.WebView;
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -29,6 +32,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowAlertDialog;
+import org.robolectric.shadows.ShadowHandler;
+import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
@@ -39,12 +45,8 @@ import static org.robolectric.Robolectric.shadowOf;
 @Config(shadows = ShadowWebViewNew.class)
 public class THRouterTest
 {
-    public static final String POSITION_TRADE_HISTORY = "user/:userId/portfolio/:portfolioId/position/:positionId";
-    public static final String STORE_RESET_PORTFOLIO = "store/reset-portfolio";
-    public static final String RESET_PORTFOLIO = "reset-portfolio";
-    public static final String REFER_FRIENDS = "refer-friends";
-
     private DashboardNavigator dashboardNavigator;
+
     @Inject THRouter thRouter;
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
@@ -82,16 +84,15 @@ public class THRouterTest
     //region Portfolios & Positions
     @Test public void shouldGoToPositionListOfGivenPortfolio()
     {
-        thRouter.open("/user/108805/portfolio/883124");
+        thRouter.open("user/108805/portfolio/883124");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(PositionListFragment.class);
     }
 
     @Test public void shouldGoToTradeHistoryOfGivenPosition()
     {
-        thRouter.mapFragment(POSITION_TRADE_HISTORY, TradeListFragment.class);
-
-        thRouter.open("/user/108805/portfolio/883124/position/1610238");
+        // user/:userId/portfolio/:portfolioId/position/:positionId
+        thRouter.open("user/108805/portfolio/883124/position/1610238");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(TradeListFragment.class);
     }
@@ -102,15 +103,43 @@ public class THRouterTest
     {
         thRouter.open("store");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
+
+        AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertThat(resetPortfolioDialog).isNull();
+
     }
 
-    @Test public void shouldOpenStoreAndResetPortfolioDialog()
+    @Test public void shouldOpenStoreAndResetPortfolioDialog() throws Throwable
     {
-        // have something to say
-        thRouter.mapFragment(STORE_RESET_PORTFOLIO, null);
-        thRouter.mapFragment(RESET_PORTFOLIO, null);
+        thRouter.open("reset-portfolio");
 
-        assert(false);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
+
+        AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertThat(resetPortfolioDialog).isNotNull();
+        assertThat(resetPortfolioDialog.isShowing()).isTrue();
+
+        CharSequence dialogTitle = shadowOf(resetPortfolioDialog).getTitle();
+        assertThat(dialogTitle).isEqualTo(Robolectric.application.getString(R.string.store_billing_loading_info_window_title));
+    }
+
+    @Test public void shouldOpenStoreAndResetPortfolioDialogFullUrl()
+    {
+        thRouter.open("store/reset-portfolio");
+        ShadowToast.reset();
+
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
+
+        // ensure that there is no unwanted toast due to clicking on a unexpected list item
+        ShadowHandler.idleMainLooper();
+        assertThat(ShadowToast.getTextOfLatestToast()).isNull();
+        ShadowHandler.runMainLooperToEndOfTasks();
+
+        AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertThat(resetPortfolioDialog.isShowing()).isTrue();
+
+        CharSequence dialogTitle = shadowOf(resetPortfolioDialog).getTitle();
+        assertThat(dialogTitle).isEqualTo(Robolectric.application.getString(R.string.store_billing_loading_info_window_title));
     }
     //endregion
 
@@ -167,20 +196,26 @@ public class THRouterTest
         assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(landingPage);
     }
 
-    @Test public void shouldOpenProviderEnrollmentWithSpecificPage()
+    // we won't test this anymore since this feature is deprecated
+    @Deprecated
+    public void shouldOpenProviderEnrollmentWithSpecificPage()
     {
         // providers-enroll/:providerId/pages/:encodedUrl
-        //thRouter.mapFragment(PROVIDER_ENROLL_WITH_PAGE, WebViewFragment.class);
         thRouter.open("providers-enroll/22/pages/http:%2F%2Fgoogle.com");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionWebViewFragment.class);
-        // assertWebPage should be google.com
+
+        CompetitionWebViewFragment competitionWebViewFragment = (CompetitionWebViewFragment) dashboardNavigator.getCurrentFragment();
+        WebView webView = competitionWebViewFragment.getWebView();
+        assertThat(webView).isNotNull();
+
+        ShadowWebView shadowWebView = shadowOf(webView);
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo("http://google.com");
     }
     //endregion
 
     @Test public void shouldOpenReferFriendScreen()
     {
-        thRouter.mapFragment(REFER_FRIENDS, FriendsInvitationFragment.class);
         thRouter.open("refer-friends");
 
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(FriendsInvitationFragment.class);

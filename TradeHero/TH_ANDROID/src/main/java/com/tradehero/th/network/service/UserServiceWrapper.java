@@ -8,6 +8,7 @@ import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
@@ -26,12 +27,14 @@ import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
+import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
@@ -50,15 +53,20 @@ import retrofit.client.Response;
 {
     @NotNull private final UserService userService;
     @NotNull private final UserServiceAsync userServiceAsync;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final DTOCacheUtil dtoCacheUtil;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
     @NotNull private final Lazy<HeroListCache> heroListCache;
     @NotNull private final GetPositionsCache getPositionsCache;
     @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
 
+    //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
             @NotNull UserService userService,
             @NotNull UserServiceAsync userServiceAsync,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull DTOCacheUtil dtoCacheUtil,
             @NotNull UserProfileCache userProfileCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
@@ -67,14 +75,25 @@ import retrofit.client.Response;
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
+        this.currentUserId = currentUserId;
+        this.dtoCacheUtil = dtoCacheUtil;
         this.userProfileCache = userProfileCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
         this.leaderboardFriendsCache = leaderboardFriendsCache;
     }
+    //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
+    @NotNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
+    {
+        return new DTOProcessorSignInUpUserProfile(
+                userProfileCache,
+                currentUserId,
+                dtoCacheUtil);
+    }
+
     @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
         return new DTOProcessorUpdateUserProfile(userProfileCache);
@@ -149,7 +168,7 @@ import retrofit.client.Response;
                     userFormDTO.website,
                     userFormDTO.profilePicture);
         }
-        return createUpdateProfileProcessor().process(created);
+        return createSignInUpProfileProcessor().process(created);
     }
 
     public MiddleCallback<UserProfileDTO> signUpWithEmail(
@@ -157,7 +176,7 @@ import retrofit.client.Response;
             UserFormDTO userFormDTO,
             Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createSignInUpProfileProcessor());
         if (userFormDTO.profilePicture == null)
         {
             userServiceAsync.signUpWithEmail(
@@ -206,7 +225,7 @@ import retrofit.client.Response;
             String authorization,
             UserFormDTO userFormDTO)
     {
-        return createUpdateProfileProcessor().process(userService.signUp(authorization, userFormDTO));
+        return createSignInUpProfileProcessor().process(userService.signUp(authorization, userFormDTO));
     }
 
     public MiddleCallback<UserProfileDTO> signUp(
@@ -214,7 +233,7 @@ import retrofit.client.Response;
             UserFormDTO userFormDTO,
             Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createSignInUpProfileProcessor());
         userServiceAsync.signUp(authorization, userFormDTO, middleCallback);
         return middleCallback;
     }

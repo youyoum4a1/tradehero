@@ -16,7 +16,7 @@ import javax.inject.Singleton;
     {
         if (count == 0)
         {
-            return 0;
+            return R.drawable.default_image;
         }
         else if (count <= 2)
         {
@@ -57,7 +57,6 @@ import javax.inject.Singleton;
 
             case THIABConstants.SERVER_ALERT_UNLIMITED:
                 return new IABSKU(THIABConstants.ALERT_UNLIMITED);
-
         }
 
         return null;

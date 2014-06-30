@@ -1,19 +1,13 @@
 package com.tradehero.th.persistence.portfolio;
 
-import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import java.util.ArrayList;
-import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-@Singleton public class PortfolioCompactCache extends StraightDTOCache<PortfolioId, PortfolioCompactDTO>
+@Singleton public class PortfolioCompactCache extends StraightDTOCacheNew<PortfolioId, PortfolioCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 200;
 
@@ -24,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    protected PortfolioCompactDTO fetch(PortfolioId key) throws Throwable
+    @Override @NotNull public PortfolioCompactDTO fetch(@NotNull PortfolioId key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch an individual PortfolioCompactDTO");
     }
@@ -40,34 +34,6 @@ import org.jetbrains.annotations.Nullable;
             }
         }
 
-        return super.put(key, value);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    public PortfolioCompactDTO getFirstByProvider(@NotNull ProviderId providerId)
-    {
-        for (@NotNull PortfolioCompactDTO portfolioCompactDTO : new ArrayList<>(snapshot().values()))
-        {
-            if (providerId.equals(portfolioCompactDTO.getProviderIdKey()))
-            {
-                return portfolioCompactDTO;
-            }
-        }
-        return null;
-    }
-
-    @Contract("null -> null; !null -> !null") @Nullable
-    public PortfolioCompactDTOList get(@Nullable Collection<PortfolioId> portfolioIds)
-    {
-        if (portfolioIds == null)
-        {
-            return null;
-        }
-
-        PortfolioCompactDTOList portfolioCompactDTOs = new PortfolioCompactDTOList();
-        for (@NotNull PortfolioId portfolioId: portfolioIds)
-        {
-            portfolioCompactDTOs.add(get(portfolioId));
-        }
-        return portfolioCompactDTOs;
+        return super.put(key, value);
     }
 }

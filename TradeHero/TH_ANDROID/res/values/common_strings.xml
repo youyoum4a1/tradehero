@@ -34,7 +34,7 @@
   <string name="dashboard_referral">Refer Friends</string>
   <string name="dashboard_store">Store</string>
   <string name="dashboard_menu_settings">Settings</string>
-  <string name="dashboard_admin_settings">Admin Settings</string>
+  <string name="dashboard_admin_settings" translatable="false">Admin Settings</string>
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>

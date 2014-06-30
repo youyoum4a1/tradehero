@@ -10,8 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class LeaderboardDefDTOKnowledge
 {
-    @NotNull
-    private final LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge;
+    @NotNull private final LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefDTOKnowledge(@NotNull LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge)
@@ -24,14 +23,14 @@ public class LeaderboardDefDTOKnowledge
     public List<Integer> getLeaderboardDefIcon(@NotNull LeaderboardDefDTO leaderboardDefDTO)
     {
         List<Integer> iconResIds = new ArrayList<>();
-        int byKey = leaderboardDefKeyKnowledge.getLeaderboardDefIcon(leaderboardDefDTO.getLeaderboardDefKey());
-        if (byKey != 0)
+        Integer byKey = leaderboardDefKeyKnowledge.getLeaderboardDefIcon(leaderboardDefDTO.getLeaderboardDefKey());
+        if (byKey != null)
         {
             iconResIds.add(byKey);
         }
         else if (leaderboardDefDTO.countryCodes != null)
         {
-            for (String countryCode : leaderboardDefDTO.countryCodes)
+            for (@NotNull String countryCode : leaderboardDefDTO.countryCodes)
             {
                 try
                 {

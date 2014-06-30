@@ -17,7 +17,7 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
@@ -134,8 +134,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         switch (item.getItemId())
         {
-            case R.id.friend_leaderboard_menu:
-                getDashboardNavigator().goToTab(DashboardTabType.REFERRAL);
+            case R.id.friend_leaderboard_invite:
+                pushInvitationFragment();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -185,6 +185,12 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
     {
         return inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
+    }
+
+    private void pushInvitationFragment(){
+        Bundle args = new Bundle();
+        FriendsInvitationFragment.putKeyShowHomeAsUp(args, true);
+        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class, args);
     }
 
     @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)

@@ -154,7 +154,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
             if (usersUnInvited == null || usersUnInvited.size() == 0)
             {
-                THToast.show("No user to Invite");
+                THToast.show(R.string.social_no_friend_to_invite);
                 return;
             }
             handleInviteUsers(usersUnInvited);
@@ -164,7 +164,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             List<UserFriendsDTO> usersUnfollowed = findAllUsersUnfollowed();
             if (usersUnfollowed == null || usersUnfollowed.size() == 0)
             {
-                THToast.show("No user to follow");
+                THToast.show(R.string.social_no_friend_to_follow);
                 return;
             }
             handleFollowUsers(usersUnfollowed);

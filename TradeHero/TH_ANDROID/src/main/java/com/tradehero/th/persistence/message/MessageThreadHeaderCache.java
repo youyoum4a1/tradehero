@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.message;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -11,7 +11,7 @@ import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
 @Singleton
-public class MessageThreadHeaderCache extends StraightDTOCache<UserBaseKey, MessageHeaderDTO>
+public class MessageThreadHeaderCache extends StraightDTOCacheNew<UserBaseKey, MessageHeaderDTO>
 {
     @NotNull private final MessageServiceWrapper messageServiceWrapper;
     @NotNull private final MessageHeaderCache messageHeaderCache;
@@ -27,7 +27,7 @@ public class MessageThreadHeaderCache extends StraightDTOCache<UserBaseKey, Mess
         this.messageHeaderCache = messageHeaderCache;
     }
 
-    @Override protected MessageHeaderDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public MessageHeaderDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return messageServiceWrapper.getMessageThread(key);
     }

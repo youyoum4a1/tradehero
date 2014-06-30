@@ -11,7 +11,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class NewsItemCompactListCacheNew extends StraightDTOCacheNew<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
 {
@@ -27,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
         this.newsItemCompactCacheNew = newsItemCompactCacheNew;
     }
 
-    @Override public PaginatedDTO<NewsItemCompactDTO> fetch(@NotNull NewsItemListKey key) throws Throwable
+    @Override @NotNull public PaginatedDTO<NewsItemCompactDTO> fetch(@NotNull NewsItemListKey key) throws Throwable
     {
         return newsServiceWrapper.getNews(key);
     }

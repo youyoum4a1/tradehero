@@ -11,7 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -46,10 +46,15 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<UserFollowerCache> userFollowerCache;
-    private DTOCache.Listener<FollowerHeroRelationId, UserFollowerDTO> userFollowerListener;
-    private DTOCache.GetOrFetchTask<FollowerHeroRelationId, UserFollowerDTO> userFollowerFetchTask;
+    private DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO> userFollowerListener;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        userFollowerListener = createFollowerListener();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -110,15 +115,10 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         fetchFollowerSummary();
     }
 
-    @Override public void onPause()
+    @Override public void onStop()
     {
-        userFollowerListener = null;
-        if (userFollowerFetchTask != null)
-        {
-            userFollowerFetchTask.setListener(null);
-        }
-        userFollowerFetchTask = null;
-        super.onPause();
+        detachUserFollowerCache();
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -129,43 +129,22 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        userFollowerListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachUserFollowerCache()
+    {
+        userFollowerCache.get().unregister(userFollowerListener);
+    }
+
     protected void fetchFollowerSummary()
     {
-        UserFollowerDTO followerDTO = userFollowerCache.get().get(followerHeroRelationId);
-        if (followerDTO != null)
-        {
-            display(followerDTO);
-        }
-        else
-        {
-            if (userFollowerListener == null)
-            {
-                userFollowerListener =
-                        new DTOCache.Listener<FollowerHeroRelationId, UserFollowerDTO>()
-                        {
-                            @Override public void onDTOReceived(FollowerHeroRelationId key,
-                                    UserFollowerDTO value, boolean fromCache)
-                            {
-                                display(value);
-                            }
-
-                            @Override
-                            public void onErrorThrown(FollowerHeroRelationId key, Throwable error)
-                            {
-                                THToast.show(
-                                        "There was an error fetching your follower information");
-                                showErrorView();
-                            }
-                        };
-            }
-            if (userFollowerFetchTask != null)
-            {
-                userFollowerFetchTask.setListener(null);
-            }
-            userFollowerFetchTask = userFollowerCache.get()
-                    .getOrFetch(followerHeroRelationId, userFollowerListener);
-            userFollowerFetchTask.execute();
-        }
+        detachUserFollowerCache();
+        userFollowerCache.get().register(followerHeroRelationId, userFollowerListener);
+        userFollowerCache.get().getOrFetchAsync(followerHeroRelationId);
     }
 
     protected String getDisplayName()
@@ -290,5 +269,26 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
                 }
             }
         };
+    }
+
+    protected DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO> createFollowerListener()
+    {
+        return new FollowerPayoutManagerFollowerListener();
+    }
+
+    protected class FollowerPayoutManagerFollowerListener implements DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO>
+    {
+        @Override public void onDTOReceived(FollowerHeroRelationId key, UserFollowerDTO value)
+        {
+            display(value);
+        }
+
+        @Override
+        public void onErrorThrown(FollowerHeroRelationId key, Throwable error)
+        {
+            THToast.show(
+                    "There was an error fetching your follower information");
+            showErrorView();
+        }
     }
 }

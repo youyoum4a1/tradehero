@@ -9,9 +9,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -51,7 +49,6 @@ public class NewsHeadlineFragment
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
 
     private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> fetchSecurityTask;
     private NewsHeadlineAdapter adapter;
     private PaginatedDTO<NewsItemCompactDTO> paginatedNews;
 
@@ -112,7 +109,7 @@ public class NewsHeadlineFragment
 
     @Override public void onDestroyView()
     {
-        detachFetchTask();
+        detachSecurityCache();
         newsTitleCache.unregister(newsCacheListener);
 
         if (listView != null)
@@ -131,7 +128,7 @@ public class NewsHeadlineFragment
         super.onDestroy();
     }
 
-    @Override protected LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    @Override protected SecurityCompactCache getInfoCache()
     {
         return securityCompactCache;
     }
@@ -141,10 +138,6 @@ public class NewsHeadlineFragment
         super.linkWith(securityId, andDisplay);
 
         fetchSecurity(securityId);
-        if (this.securityId != null)
-        {
-            fetchSecurityNews();
-        }
     }
 
     public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -157,26 +150,22 @@ public class NewsHeadlineFragment
         }
     }
 
-    protected void detachFetchTask()
+    protected void detachSecurityCache()
     {
-        if (fetchSecurityTask != null)
-        {
-            fetchSecurityTask.setListener(null);
-        }
-        fetchSecurityTask = null;
+        securityCompactCache.unregister(this);
     }
 
     protected void fetchSecurity(SecurityId securityId)
     {
-        detachFetchTask();
-        fetchSecurityTask = getInfoCache().getOrFetch(securityId, this);
-        fetchSecurityTask.execute();
+        detachSecurityCache();
+        securityCompactCache.register(securityId, this);
+        getInfoCache().getOrFetchAsync(securityId);
     }
 
     private void fetchSecurityNews()
     {
         Timber.d("%s fetchSecurityNews,consume: %s",TEST_KEY,(System.currentTimeMillis() - start));
-        detachFetchTask();
+        detachSecurityCache();
 
         NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
         newsTitleCache.register(listKey, newsCacheListener);

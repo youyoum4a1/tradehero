@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.RetrofitError;
 
 @Singleton public class GetPositionsCache extends StraightCutDTOCacheNew<GetPositionsDTOKey, GetPositionsDTO, GetPositionsCutDTO>
 {
@@ -67,8 +66,7 @@ import retrofit.RetrofitError;
     }
     //</editor-fold>
 
-    @NotNull
-    public GetPositionsDTO fetch(@NotNull final GetPositionsDTOKey key) throws RetrofitError
+    @Override @NotNull public GetPositionsDTO fetch(@NotNull final GetPositionsDTOKey key) throws Throwable
     {
         if (key instanceof OwnedPortfolioId)
         {
@@ -107,7 +105,7 @@ import retrofit.RetrofitError;
 
         if (key instanceof OwnedPortfolioId)
         {
-            portfolioCache.get().autoFetch((OwnedPortfolioId) key);
+            portfolioCache.get().getOrFetchAsync((OwnedPortfolioId) key);
         }
 
         return previous;

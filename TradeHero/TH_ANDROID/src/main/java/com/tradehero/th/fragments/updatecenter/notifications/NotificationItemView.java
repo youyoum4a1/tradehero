@@ -11,7 +11,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -46,8 +46,7 @@ public class NotificationItemView
     private NotificationKey notificationKey;
     private NotificationDTO notificationDTO;
 
-    private DTOCache.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
-    private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
+    private DTOCacheNew.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
 
     //<editor-fold desc="Constructors">
     public NotificationItemView(Context context)
@@ -73,19 +72,22 @@ public class NotificationItemView
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
 
-        notificationFetchListener = new NotificationFetchListener();
+        notificationFetchListener = createNotificationFetchListener();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
 
-        notificationFetchListener = new NotificationFetchListener();
+        if (notificationFetchListener == null)
+        {
+            notificationFetchListener = createNotificationFetchListener();
+        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        detachNotificationFetchTask();
+        detachNotificationCache();
 
         resetView();
 
@@ -153,24 +155,24 @@ public class NotificationItemView
 
     private void fetchNotification()
     {
-        detachNotificationFetchTask();
-
-        notificationFetchTask = notificationCache.getOrFetch(notificationKey, false, notificationFetchListener);
-        notificationFetchTask.execute();
+        detachNotificationCache();
+        notificationCache.register(notificationKey, notificationFetchListener);
+        notificationCache.getOrFetchAsync(notificationKey, false);
     }
 
-    private void detachNotificationFetchTask()
+    private void detachNotificationCache()
     {
-        if (notificationFetchTask != null)
-        {
-            notificationFetchTask.setListener(null);
-        }
-        notificationFetchTask = null;
+        notificationCache.unregister(notificationFetchListener);
     }
 
-    private class NotificationFetchListener implements DTOCache.Listener<NotificationKey,NotificationDTO>
+    protected DTOCacheNew.Listener<NotificationKey,NotificationDTO> createNotificationFetchListener()
     {
-        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
+        return new NotificationFetchListener();
+    }
+
+    protected class NotificationFetchListener implements DTOCacheNew.Listener<NotificationKey,NotificationDTO>
+    {
+        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value)
         {
             linkWith(value, true);
         }

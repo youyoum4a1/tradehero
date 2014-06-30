@@ -37,7 +37,7 @@ public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKe
         this.discussionCache = discussionCache;
     }
 
-    @Override public DiscussionKeyList fetch(@NotNull DiscussionListKey discussionListKey) throws Throwable
+    @Override @NotNull public DiscussionKeyList fetch(@NotNull DiscussionListKey discussionListKey) throws Throwable
     {
         if (discussionListKey instanceof MessageDiscussionListKey)
         {

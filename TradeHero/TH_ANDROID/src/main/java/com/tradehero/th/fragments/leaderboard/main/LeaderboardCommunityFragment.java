@@ -13,7 +13,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -36,9 +35,9 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -80,13 +79,14 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private int currentDisplayedChildLayoutId;
     private ProviderIdList providerIds;
     protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchListener;
-    private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
+    private DTOCacheNew.Listener<ProviderListKey, ProviderIdList> providerListFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
         leaderboardDefListFetchListener = createDefKeyListListener();
+        providerListFetchListener = createProviderIdListListener();
     }
 
     @Override
@@ -133,6 +133,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
+        providerListFetchListener = null;
         leaderboardDefListFetchListener = null;
         this.thIntentPassedListener = null;
         detachWebFragment();
@@ -212,11 +213,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void detachProviderListFetchTask()
     {
-        if (providerListFetchTask != null)
-        {
-            providerListFetchTask.setListener(null);
-        }
-        providerListFetchTask = null;
+        providerListCache.get().unregister(providerListFetchListener);
     }
 
     private void loadLeaderboardData()
@@ -255,18 +252,18 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void fetchProviderIdList()
     {
         detachProviderListFetchTask();
-        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), createProviderIdListListener());
-        providerListFetchTask.execute();
+        providerListCache.get().register(new ProviderListKey(), providerListFetchListener);
+        providerListCache.get().getOrFetchAsync(new ProviderListKey());
     }
 
-    protected DTOCache.Listener<ProviderListKey, ProviderIdList> createProviderIdListListener()
+    protected DTOCacheNew.Listener<ProviderListKey, ProviderIdList> createProviderIdListListener()
     {
         return new LeaderboardCommunityProviderListListener();
     }
 
-    protected class LeaderboardCommunityProviderListListener implements DTOCache.Listener<ProviderListKey, ProviderIdList>
+    protected class LeaderboardCommunityProviderListListener implements DTOCacheNew.Listener<ProviderListKey, ProviderIdList>
     {
-        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
+        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value)
         {
             providerIds = value;
             recreateAdapter();
@@ -459,7 +456,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void pushInvitationFragment()
     {
-        getDashboardNavigator().goToTab(DashboardTabType.REFERRAL);
+        Bundle args = new Bundle();
+        FriendsInvitationFragment.putKeyShowHomeAsUp(args, true);
+        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class, args);
     }
 
     //</editor-fold>

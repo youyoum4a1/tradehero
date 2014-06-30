@@ -42,7 +42,7 @@ import com.thoj.route.Routable;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
@@ -191,8 +191,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     protected SecurityAlertAssistant securityAlertAssistant;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, SecurityIdList>
-            userWatchlistPositionCacheFetchTask;
+    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchListener;
 
     private int mQuantity = 0;
     private Bundle desiredArguments;
@@ -213,6 +212,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.onCreate(savedInstanceState);
         securityAlertAssistant = new SecurityAlertAssistant();
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
+        userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
     }
 
     @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
@@ -569,6 +569,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onDestroy()
     {
+        userWatchlistPositionCacheFetchListener = null;
         chartImageButtonClickReceiver = null;
         securityAlertAssistant = null;
         super.onDestroy();
@@ -585,11 +586,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     protected void detachWatchlistFetchTask()
     {
-        if (this.userWatchlistPositionCacheFetchTask != null)
-        {
-            this.userWatchlistPositionCacheFetchTask.setListener(null);
-        }
-        this.userWatchlistPositionCacheFetchTask = null;
+        userWatchlistPositionCache.unregister(userWatchlistPositionCacheFetchListener);
     }
 
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
@@ -607,10 +604,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     public void fetchWatchlist()
     {
         detachWatchlistFetchTask();
-        this.userWatchlistPositionCacheFetchTask =
-                userWatchlistPositionCache.getOrFetch(currentUserId.toUserBaseKey(),
-                        createUserWatchlistCacheListener());
-        this.userWatchlistPositionCacheFetchTask.execute();
+        userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionCacheFetchListener);
+        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -2173,20 +2168,16 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, SecurityIdList> createUserWatchlistCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createUserWatchlistCacheListener()
     {
         return new BuySellUserWatchlistCacheListener();
     }
 
     protected class BuySellUserWatchlistCacheListener
-            implements DTOCache.Listener<UserBaseKey, SecurityIdList>
+            implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
     {
-        public BuySellUserWatchlistCacheListener()
-        {
-        }
-
         @Override
-        public void onDTOReceived(UserBaseKey key, SecurityIdList value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, SecurityIdList value)
         {
             linkWithWatchlist(value, true);
         }

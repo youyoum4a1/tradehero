@@ -11,7 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -50,8 +50,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
-    private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
-    private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
+    private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
@@ -82,7 +81,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         }
         this.providerSpecificResourcesDTO = this.providerSpecificResourcesFactory.createResourcesDTO(providerId);
 
-        this.providerCacheListener = new ProviderSecurityListFragmentProviderCacheListener();
+        this.providerCacheListener = createProviderCacheListener();
         this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
     }
 
@@ -135,10 +134,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Override public void onStart()
     {
         super.onStart();
-        this.detachProviderFetchTask();
-        this.providerCacheFetchTask = providerCache.getOrFetch(this.providerId, this.providerCacheListener);
-        this.providerCacheFetchTask.execute();
-        //forceInitialLoad();
+        fetchProviderDTO();
     }
 
     @Override public void onResume()
@@ -174,11 +170,15 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected void detachProviderFetchTask()
     {
-        if (this.providerCacheFetchTask != null)
-        {
-            this.providerCacheFetchTask.setListener(null);
-        }
-        this.providerCacheFetchTask = null;
+        providerCache.unregister(providerCacheListener);
+    }
+
+    protected void fetchProviderDTO()
+    {
+        this.detachProviderFetchTask();
+        providerCache.register(this.providerId, providerCacheListener);
+        providerCache.getOrFetchAsync(this.providerId);
+        //forceInitialLoad();
     }
 
     protected void prepareSecurityLoader()
@@ -235,9 +235,14 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         getDashboardNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
-    protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
+    protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
     {
-        @Override public void onDTOReceived(ProviderId key, ProviderDTO value, boolean fromCache)
+        return new ProviderSecurityListFragmentProviderCacheListener();
+    }
+
+    protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCacheNew.Listener<ProviderId, ProviderDTO>
+    {
+        @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
         {
             if (key.equals(ProviderSecurityListFragment.this.providerId))
             {

@@ -1,6 +1,5 @@
 package com.tradehero.th.persistence.message;
 
-import com.tradehero.common.persistence.StraightDTOCache;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -48,7 +47,7 @@ public class MessageHeaderListCache extends StraightDTOCacheNew<MessageListKey, 
     }
     //</editor-fold>
 
-    @Override public MessageHeaderIdList fetch(@NotNull MessageListKey key) throws Throwable
+    @Override @NotNull public MessageHeaderIdList fetch(@NotNull MessageListKey key) throws Throwable
     {
         return putInternal(messageServiceWrapper.getMessageHeaders(key));
     }

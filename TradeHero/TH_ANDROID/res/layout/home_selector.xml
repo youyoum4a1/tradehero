@@ -29,8 +29,8 @@
         >
       <ImageView
           android:id="@+id/user_profile_avatar"
-          android:layout_width="50dp"
-          android:layout_height="50dp"
+          android:layout_width="@dimen/medium_logo_w_h"
+          android:layout_height="@dimen/medium_logo_w_h"
           android:contentDescription="@null"
           android:layout_gravity="center_vertical"
           android:background="@drawable/layout_oval"

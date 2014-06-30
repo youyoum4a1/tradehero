@@ -46,7 +46,7 @@
   <FrameLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@color/gray_normal"
+      android:background="@drawable/buy_sell_action_buttons_background"
       android:layout_gravity="bottom|center_horizontal"
       tools:visibility="visible"
       >

@@ -74,9 +74,14 @@ public class DashboardNavigator extends Navigator
 
     public void goToTab(@NotNull DashboardTabType tabType)
     {
+        this.goToTab(tabType, false);
+    }
+
+    public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack)
+    {
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
-        updateTabBarOnTabChanged(pushFragment(tabType.fragmentClass, new Bundle(), null, null).getClass().getName());
+        updateTabBarOnTabChanged(pushFragment(tabType.fragmentClass, new Bundle(), null, null, shouldAddToBackStack).getClass().getName());
     }
 
     private void postPushActionFragment(final THIntent thIntent)
@@ -104,10 +109,11 @@ public class DashboardNavigator extends Navigator
     //    manager.popBackStack(rootFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     //}
 
-    @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName)
+    @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
+            @Nullable String backStackName, Boolean shouldAddToBackStack)
     {
         resideMenu.closeMenu();
-        T fragment = super.pushFragment(fragmentClass, args, anim, backStackName);
+        T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, shouldAddToBackStack);
         executePending(fragment);
         return fragment;
     }

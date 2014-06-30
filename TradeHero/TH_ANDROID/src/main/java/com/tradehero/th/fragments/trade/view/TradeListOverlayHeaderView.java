@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -22,7 +23,6 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 
 public class TradeListOverlayHeaderView extends LinearLayout
@@ -42,7 +42,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
     private UserBaseDTO user;
     private String qualifiedSymbol;
 
-    private WeakReference<Listener> listener = new WeakReference<>(null);
+    private Listener listener;
 
     //<editor-fold desc="Constructors">
     public TradeListOverlayHeaderView(Context context)
@@ -75,7 +75,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
         {
             @Override public void onClick(View v)
             {
-                Listener l = listener.get();
+                Listener l = listener;
                 if (l != null && position != null)
                 {
                     l.onUserClicked(TradeListOverlayHeaderView.this, position.getUserBaseKey());
@@ -99,7 +99,7 @@ public class TradeListOverlayHeaderView extends LinearLayout
             {
                 @Override public void onClick(View v)
                 {
-                    Listener l = listener.get();
+                    Listener l = listener;
                     if (l != null && position != null)
                     {
                         l.onSecurityClicked(TradeListOverlayHeaderView.this, position.getOwnedPositionId());
@@ -174,9 +174,15 @@ public class TradeListOverlayHeaderView extends LinearLayout
                 .into(this.imageProfile);
     }
 
+    @VisibleForTesting
+    public Listener getListener()
+    {
+        return listener;
+    }
+
     public void setListener(Listener listener)
     {
-        this.listener = new WeakReference<>(listener);
+        this.listener = listener;
     }
 
     public static interface Listener

@@ -9,12 +9,14 @@
   <ScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:clipToPadding="false"
       >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="40dp"
+        android:paddingTop="@dimen/common_margin_50"
+        android:paddingBottom="@dimen/common_margin_50"
         android:orientation="horizontal"
         >
 
@@ -26,7 +28,7 @@
           android:background="@drawable/trend_price_bar"
           tools:visibility="visible"
           android:layout_marginLeft="@dimen/common_margin_10"
-          android:layout_marginBottom="20dp"
+          android:layout_marginBottom="@dimen/common_margin_20"
           >
 
         <include layout="@layout/yahoo_chart_buttons_merge"/>
@@ -43,6 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:minHeight="@dimen/discussion_list_padding"
+            android:gravity="center"
             android:text="@string/chart_loading_image"
             />
 
@@ -74,7 +78,7 @@
       android:text="@string/security_close"
       android:textColor="@color/tab_scroll_color"
       android:textStyle="bold"
-      android:background="#72ffd36b"
+      android:background="@drawable/basic_yellow_selector"
       android:layout_gravity="top|right"
       />
 

@@ -16,7 +16,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.thoj.route.InjectRoute;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -48,6 +47,7 @@ import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -110,8 +110,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
     private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchTask;
+    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
     protected MessageHeaderDTO messageThreadHeaderDTO;
+    protected FollowDialogCombo followDialogCombo;
 
     private boolean cancelRefreshingOnResume;
     protected boolean mIsOtherProfile = false;
@@ -126,6 +127,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         userProfileRetrievedMilestoneListener = createUserProfileRetrievedMilestoneListener();
         portfolioCompactListRetrievedMilestoneListener = createPortfolioCompactListRetrievedMilestoneListener();
+        messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
     }
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -364,14 +366,20 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onDestroyOptionsMenu();
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachTimelineAdapter();
         detachTimelineListView();
         detachFreeFollowMiddleCallback();
         detachMessageThreadHeaderFetchTask();
+        detachFollowDialogCombo();
 
         displayablePortfolioFetchAssistant.setFetchedListener(null);
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         displayablePortfolioFetchAssistant = null;
 
         if (userProfileRetrievedMilestone != null)
@@ -392,6 +400,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
+        messageThreadHeaderFetchListener = null;
         portfolioCompactListRetrievedMilestoneListener = null;
         userProfileRetrievedMilestoneListener = null;
         super.onDestroy();
@@ -430,18 +439,24 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void detachMessageThreadHeaderFetchTask()
     {
-        if (messageThreadHeaderFetchTask != null)
+        messageThreadHeaderCache.unregister(messageThreadHeaderFetchListener);
+    }
+
+    protected void detachFollowDialogCombo()
+    {
+        FollowDialogCombo followDialogComboCopy = followDialogCombo;
+        if (followDialogComboCopy != null)
         {
-            messageThreadHeaderFetchTask.setListener(null);
+            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
         }
-        messageThreadHeaderFetchTask = null;
+        followDialogCombo = null;
     }
 
     protected void fetchMessageThreadHeader()
     {
         detachMessageThreadHeaderFetchTask();
-        messageThreadHeaderFetchTask = messageThreadHeaderCache.getOrFetch(shownUserBaseKey, createMessageThreadHeaderCacheListener());
-        messageThreadHeaderFetchTask.execute();
+        messageThreadHeaderCache.register(shownUserBaseKey, messageThreadHeaderFetchListener);
+        messageThreadHeaderCache.getOrFetchAsync(shownUserBaseKey);
     }
 
     //<editor-fold desc="Display methods">
@@ -516,7 +531,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void linkWith(OwnedPortfolioIdList ownedPortfolioIdList, boolean andDisplay)
     {
         this.portfolioIdList = ownedPortfolioIdList;
-        portfolioCache.get().autoFetch(ownedPortfolioIdList, (OwnedPortfolioId) null);
+        if (ownedPortfolioIdList != null)
+        {
+            for(OwnedPortfolioId ownedPortfolioId: ownedPortfolioIdList)
+            {
+                portfolioCache.get().getOrFetchAsync(ownedPortfolioId);
+            }
+        }
 
         if (andDisplay)
         {
@@ -804,7 +825,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                detachFollowDialogCombo();
+                followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                         mFollowType, createFollowRequestedListener());
             }
         });
@@ -816,7 +838,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
                         || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
                 {
-                    alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                    detachFollowDialogCombo();
+                    followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                             UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
                             createFollowForMessageRequestedListener());
                 }
@@ -953,14 +976,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
     {
         return new TimelineMessageThreadHeaderCacheListener();
     }
 
-    protected class TimelineMessageThreadHeaderCacheListener implements DTOCache.Listener<UserBaseKey, MessageHeaderDTO>
+    protected class TimelineMessageThreadHeaderCacheListener implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value)
         {
             linkWithMessageThread(value, true);
         }

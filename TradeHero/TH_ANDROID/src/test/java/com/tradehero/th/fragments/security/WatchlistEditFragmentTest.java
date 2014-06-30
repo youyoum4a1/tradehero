@@ -17,7 +17,6 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
-import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -46,7 +45,7 @@ public class WatchlistEditFragmentTest
 
     @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
-    @Inject protected SecurityIdCache securityIdCache;
+    @Inject protected SecurityCompactCache securityCompactCache;
 
     private WatchlistEditFragment watchlistFragment;
     private DashboardNavigator dashboardNavigator;
@@ -57,14 +56,12 @@ public class WatchlistEditFragmentTest
         DashboardActivity activity = activityController.get();
         dashboardNavigator = spy(activity.getDashboardNavigator());
 
-        // TODO should we do like following, or should we get the object by deserialize json data from test resource?
         SecurityCompactDTO googleSecurityCompactDTO = new SecurityCompactDTO();
         googleSecurityCompactDTO.id = 162075;
         googleSecurityCompactDTO.name = GOOGLE_NAME;
         googleSecurityCompactDTO.lastPrice = GOOGLE_STOCK_WATCHING_PRICE;
 
-        SecurityCompactCache securityCompactCache = spy(new SecurityCompactCache(securityServiceWrapper, securityPositionDetailCache, securityIdCache));
-        when(securityCompactCache.get(any(SecurityId.class))).thenReturn(googleSecurityCompactDTO);
+        securityCompactCache.put(GOOGLE_SECURITY_ID, googleSecurityCompactDTO);
 
         Bundle args = new Bundle();
         WatchlistEditFragment.putSecurityId(args, GOOGLE_SECURITY_ID);

@@ -67,12 +67,18 @@ public class Navigator
         return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, null);
     }
 
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, String addBackStack)
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, String backStackName)
     {
-        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, addBackStack);
+        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName);
     }
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName)
+    {
+        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, true);
+    }
+
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName,
+            Boolean shouldAddToBackStack)
     {
         resetBackPressCount();
 
@@ -94,10 +100,15 @@ public class Navigator
         }
 
         FragmentTransaction ft = transaction.replace(fragmentContentId, fragment);
-        ft.addToBackStack(backStackName);
+        if (shouldAddToBackStack)
+        {
+            ft.addToBackStack(backStackName);
+        }
         ft.commitAllowingStateLoss();
 
-        return (T) fragment;
+        @SuppressWarnings("unchecked")
+        T returnFragment = (T) fragment;
+        return returnFragment;
     }
 
     public void popFragment(String backStackName)

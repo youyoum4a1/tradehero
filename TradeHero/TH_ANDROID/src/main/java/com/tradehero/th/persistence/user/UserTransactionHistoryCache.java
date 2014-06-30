@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.UserTransactionHistoryId;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserTransactionHistoryCache extends StraightDTOCache<UserTransactionHistoryId, UserTransactionHistoryDTO>
+@Singleton public class UserTransactionHistoryCache extends StraightDTOCacheNew<UserTransactionHistoryId, UserTransactionHistoryDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override protected UserTransactionHistoryDTO fetch(UserTransactionHistoryId key)
+    @Override @NotNull public UserTransactionHistoryDTO fetch(@NotNull UserTransactionHistoryId key)
     {
         throw new IllegalArgumentException("There is no fetch on this cache");
     }

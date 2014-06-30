@@ -9,15 +9,17 @@ abstract public class StraightCutDTOCacheNew<
         DTOCutType extends DTO>
     extends StraightDTOCacheNew<DTOKeyType, DTOType>
 {
+    //<editor-fold desc="Constructors">
     public StraightCutDTOCacheNew(int maxSize)
     {
         super(maxSize);
     }
+    //</editor-fold>
 
     @NotNull abstract protected DTOCutType cutValue(@NotNull DTOKeyType key, @NotNull DTOType value);
     @Nullable abstract protected DTOType inflateValue(@NotNull DTOKeyType key, @Nullable DTOCutType cutValue);
 
-    @Override protected CacheValue<DTOKeyType, DTOType> createCacheValue(DTOKeyType key)
+    @Override @NotNull protected CacheValue<DTOKeyType, DTOType> createCacheValue(@NotNull DTOKeyType key)
     {
         return new PartialCutCacheValue(key);
     }
@@ -30,18 +32,20 @@ abstract public class StraightCutDTOCacheNew<
         @NotNull private final DTOKeyType key;
         @Nullable private DTOCutType shrunkValue;
 
+        //<editor-fold desc="Constructors">
         public PartialCutCacheValue(@NotNull DTOKeyType key)
         {
             super();
             this.key = key;
         }
+        //</editor-fold>
 
-        @Override public DTOType getValue()
+        @Override @Nullable public DTOType getValue()
         {
             return inflateValue(key, shrunkValue);
         }
 
-        @Override public void setValue(DTOType value)
+        @Override public void setValue(@NotNull DTOType value)
         {
             shrunkValue = cutValue(key, value);
         }

@@ -8,6 +8,7 @@ import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.RequestInterceptor;
 
 public class RequestHeaders implements RequestInterceptor
@@ -43,7 +44,7 @@ public class RequestHeaders implements RequestInterceptor
         request.addHeader(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
     }
 
-    public String createTypedAuthParameters(CredentialsDTO credentialsDTO)
+    public String createTypedAuthParameters(@NotNull CredentialsDTO credentialsDTO)
     {
         return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
     }

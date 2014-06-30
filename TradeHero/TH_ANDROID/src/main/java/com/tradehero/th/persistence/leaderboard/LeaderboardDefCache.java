@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public LeaderboardDefDTO fetch(@NotNull LeaderboardDefKey key) throws Throwable
+    @Override @NotNull public LeaderboardDefDTO fetch(@NotNull LeaderboardDefKey key) throws Throwable
     {
         throw new IllegalStateException("Cannot fetch on this cache");
     }

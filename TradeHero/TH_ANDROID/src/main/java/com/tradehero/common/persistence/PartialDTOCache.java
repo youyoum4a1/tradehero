@@ -3,6 +3,7 @@ package com.tradehero.common.persistence;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 /**
@@ -240,7 +241,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
             return gotOrFetched;
         }
 
-        @Override protected void onPostExecute(DTOType value)
+        @Override protected void onPostExecute(@Nullable DTOType value)
         {
             super.onPostExecute(value);
             if (!isCancelled())
@@ -258,7 +259,7 @@ abstract public class PartialDTOCache<DTOKeyType extends DTOKey, DTOType extends
                     {
                         if (value == null)
                         {
-                            Timber.e(new Exception(String.format("Null value returned for key %s, on cache %s", key, getCacheClass())), null);
+                            Timber.e(new NullPointerException(), "Null value returned for key %s, on cache %s", key, getCacheClass());
                         }
                         currentListener.onDTOReceived(key, value, !forceUpdateCache);
                     }

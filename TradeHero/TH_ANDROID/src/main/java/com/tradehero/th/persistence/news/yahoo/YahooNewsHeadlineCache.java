@@ -1,7 +1,6 @@
 package com.tradehero.th.persistence.news.yahoo;
 
-import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.BuildConfig;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.news.NewsHeadlineList;
 import com.tradehero.th.api.news.yahoo.YahooNewsHeadline;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -20,7 +19,6 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -31,7 +29,7 @@ import timber.log.Timber;
  * Cache for Yahoo News - uses SecurityId as a key and store List<News> as values.
  * This class uses internally the SecurityCompactCache (see the fetch method implementation)
  */
-@Singleton public class YahooNewsHeadlineCache extends StraightDTOCache<SecurityId, NewsHeadlineList>
+@Singleton public class YahooNewsHeadlineCache extends StraightDTOCacheNew<SecurityId, NewsHeadlineList>
 {
     public static final int DEFAULT_MAX_SIZE = 15;
 
@@ -56,7 +54,7 @@ import timber.log.Timber;
      *  - use YahooNewsService to fetch the news for the given yahooSymbol
      *  - parse the xml feed
      */
-    @Override @Nullable protected NewsHeadlineList fetch(@NotNull SecurityId key) throws Throwable
+    @Override @NotNull public NewsHeadlineList fetch(@NotNull SecurityId key) throws Throwable
     {
         String yahooSymbol = getYahooSymbol(key);
         if (yahooSymbol != null)
@@ -77,13 +75,13 @@ import timber.log.Timber;
         return yahooSymbol;
     }
 
-    @Nullable private NewsHeadlineList fetchYahooNews(@NotNull String yahooSymbol) throws Throwable
+    @NotNull private NewsHeadlineList fetchYahooNews(@NotNull String yahooSymbol) throws Throwable
     {
         Response rawResponse = yahooServiceWrapper.getNews(yahooSymbol);
 
         if (rawResponse == null)
         {
-            return null;
+            throw new NullPointerException("Response was null");
         }
 
         return new NewsHeadlineList(tryParseResponse(rawResponse));

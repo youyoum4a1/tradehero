@@ -7,6 +7,7 @@ import dagger.Module;
         injects = {
                 ConverterDeserialisationTest.class,
                 ConverterSerialisationTest.class,
+                RetrofitHelperTest.class,
                 THRouterTest.class
         },
         complete = false,

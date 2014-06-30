@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override public HeroDTO fetch(@NotNull FollowerHeroRelationId key)
+    @Override @NotNull public HeroDTO fetch(@NotNull FollowerHeroRelationId key)
     {
         throw new UnsupportedOperationException("Not implemented");
     }

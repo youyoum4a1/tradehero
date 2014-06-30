@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
         this.authenticationHeader = authenticationHeader;
     }
 
-    @Override public SystemStatusDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public SystemStatusDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return sessionService.get().login(authenticationHeader, loginFormDTOProvider.get()).systemStatusDTO;
     }

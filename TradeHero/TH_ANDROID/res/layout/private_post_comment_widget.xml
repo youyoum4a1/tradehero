@@ -10,16 +10,20 @@
       android:id="@+id/discussion_comment_widget"
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
-      android:paddingLeft="6dp"
-      android:paddingRight="6dp"
+      android:padding="6dp"
       android:background="@drawable/timeline_discussion_edit_widget_background"
       >
 
     <com.tradehero.common.widget.BetterViewAnimator
         android:id="@+id/post_comment_action_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/common_height_40"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/post_comment_text"
+        android:layout_alignTop="@+id/post_comment_text"
+        android:addStatesFromChildren="true"
+        android:background="@drawable/basic_transparent_selector"
         >
 
       <TextView
@@ -27,6 +31,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
+          android:padding="@dimen/discussion_action_buttons_drawable_padding"
           android:text="@string/timeline_discussion_post"
           android:gravity="center"
           android:textStyle="bold"
@@ -40,10 +45,7 @@
           android:layout_gravity="center"
           />
     </com.tradehero.common.widget.BetterViewAnimator>
-    
-    <!--<include-->
-        <!--layout="@layout/discussion_edit_post_mention_buttons"-->
-        <!--/>-->
+
     <EditText
         android:id="@+id/post_comment_text"
         android:layout_centerVertical="true"
@@ -51,15 +53,11 @@
         android:layout_toLeftOf="@id/post_comment_action_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text|textMultiLine|textImeMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
         android:hint="@string/timeline_discussion_comment_box_hint"
-        android:gravity="left|center_vertical"
-        android:background="@drawable/textbox_light_background"
-        android:padding="5dp"
-        android:textSize="14sp"
+        style="@style/TH.DiscussionTextBox"
         >
 
-      <requestFocus />
+      <requestFocus/>
 
     </EditText>
 

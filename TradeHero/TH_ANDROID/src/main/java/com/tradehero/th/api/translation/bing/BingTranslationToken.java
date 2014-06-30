@@ -15,33 +15,27 @@ public class BingTranslationToken extends TranslationToken
     private Date expirationDate;
     public String tokenType;
     public String accessToken;
-    public String expiresIn;
+    private String expiresIn;
     public String scope;
 
     //<editor-fold desc="Constructors">
     public BingTranslationToken()
     {
         super();
-        type = TOKEN_TYPE;
         setExpirationDateSecondsInFuture(0);
     }
 
-    public BingTranslationToken(String tokenType, String accessToken, String expiresIn,
+    public BingTranslationToken(
+            String tokenType,
+            String accessToken,
+            String expiresIn,
             String scope)
     {
         super();
-        type = TOKEN_TYPE;
         this.tokenType = tokenType;
         this.accessToken = accessToken;
         setExpiresIn(expiresIn);
         this.scope = scope;
-    }
-
-    public BingTranslationToken(TranslationToken other, Class<? extends BingTranslationToken> myClass)
-    {
-        super(other, myClass);
-        type = TOKEN_TYPE;
-        setExpiresIn(expiresIn);
     }
     //</editor-fold>
 
@@ -102,7 +96,7 @@ public class BingTranslationToken extends TranslationToken
     {
         return Math.max(
                 0,
-                expirationDate.getTime() - Calendar.getInstance().getTime().getTime());
+                Math.round((expirationDate.getTime() - Calendar.getInstance().getTime().getTime()) / 1000));
     }
 
     @Override public boolean isValid()

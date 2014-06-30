@@ -33,7 +33,6 @@ import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
@@ -121,11 +120,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        //may encounter NullPointerException
-        if (securityListView != null)
-        {
-            securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
-        }
+        //TODO may encounter NullPointerException
+        securityListView.setSelection(Math.min(firstVisiblePosition, securityListView.getCount()));
         if (listViewScrollListener != null)
         {
             listViewScrollListener.lowerEndFlag();
@@ -145,7 +141,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     }
 
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
     }
 
@@ -313,27 +310,28 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     };
 
-    protected PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener noMorePagesChangedListener = new PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener()
-    {
-        @Override public void onNoMorePagesChanged(boolean noMorePages)
-        {
-            if (listViewScrollListener != null && !noMorePages)
+    protected PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener noMorePagesChangedListener =
+            new PagedDTOCacheLoaderNew.OnNoMorePagesChangedListener()
             {
-                // There are more pages, so we want to raise the flag  when at the end.
-                listViewScrollListener.lowerEndFlag();
-            }
-            else if (listViewScrollListener != null)
-            {
-                listViewScrollListener.deactivateEnd();
-            }
-        }
-    };
+                @Override public void onNoMorePagesChanged(boolean noMorePages)
+                {
+                    if (listViewScrollListener != null && !noMorePages)
+                    {
+                        // There are more pages, so we want to raise the flag  when at the end.
+                        listViewScrollListener.lowerEndFlag();
+                    }
+                    else if (listViewScrollListener != null)
+                    {
+                        listViewScrollListener.deactivateEnd();
+                    }
+                }
+            };
 
     protected class SecurityListLoaderCallback implements LoaderManager.LoaderCallbacks<SecurityIdList>
     {
         @Override public Loader<SecurityIdList> onCreateLoader(int id, Bundle args)
         {
-            Timber.d("Wangliang onCreateLoader");
+            //Timber.d("onCreateLoader");
             if (id == getSecurityIdListLoaderId())
             {
                 SecurityListPagedLoader loader = new SecurityListPagedLoader(getActivity());
@@ -346,7 +344,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
         @Override public void onLoadFinished(Loader<SecurityIdList> securityIdListLoader, SecurityIdList securityIds)
         {
-            Timber.d("Wangliang onLoadFinished");
+            //Timber.d("onLoadFinished");
             handleSecurityItemReceived(securityIds);
 
             if (listViewScrollListener != null)

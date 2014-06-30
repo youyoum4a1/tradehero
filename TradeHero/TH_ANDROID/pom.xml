@@ -7,7 +7,7 @@
 
   <name>TradeHero Android</name>
   <artifactId>TH_Android</artifactId>
-  <version>1.5.9-SNAPSHOT</version>
+  <version>2.2.2-SNAPSHOT</version>
   <packaging>apk</packaging>
 
   <parent>

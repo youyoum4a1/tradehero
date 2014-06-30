@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -26,7 +27,12 @@ import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
+import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
+import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
+import com.tradehero.th.models.user.auth.QQCredentialsDTO;
+import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
+import com.tradehero.th.models.user.auth.WeiboCredentialsDTO;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
@@ -201,7 +207,6 @@ public class THUser
         {
             @Override public void success(UserProfileDTO userProfileDTO, THResponse response)
             {
-                currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(credentialsDTO);
 
                 UserLoginDTO userLoginDTO = new UserLoginDTO();
@@ -223,18 +228,14 @@ public class THUser
         {
             @Override public void success(UserLoginDTO userLoginDTO, THResponse response)
             {
-                UserProfileDTO userProfileDTO = userLoginDTO.profileDTO;
-                //TODO should not save userProfileDTO here for heroIds will be null, i don't know why but follow first login logic by alex
-                //userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-                currentUserId.set(userProfileDTO.id);
                 saveCredentialsToUserDefaults(credentialsDTO);
-
                 callback.done(userLoginDTO, null);
             }
 
             @Override public void failure(THException error)
             {
                 checkNeedForUpgrade(error);
+                checkNeedToRenewSocialToken(error, credentialsDTO);
                 callback.done(null, error);
             }
         };
@@ -246,7 +247,11 @@ public class THUser
         {
             final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
             alertDialogUtil.get().popWithOkCancelButton(
-                    currentActivity, R.string.upgrade_needed, R.string.please_update, R.string.update_now, R.string.later,
+                    currentActivity,
+                    R.string.upgrade_needed,
+                    R.string.please_update,
+                    R.string.update_now,
+                    R.string.later,
                     new DialogInterface.OnClickListener()
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
@@ -271,6 +276,56 @@ public class THUser
         }
     }
 
+    private static void checkNeedToRenewSocialToken(THException error, CredentialsDTO credentialsDTO)
+    {
+        if (error.getCode() == ExceptionCode.RenewSocialToken)
+        {
+            mainCredentialsPreference.delete();
+            final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
+
+            if (currentActivity instanceof AuthenticationActivity)
+            {
+                if (credentialsDTO instanceof FacebookCredentialsDTO)
+                {
+                    ((AuthenticationActivity) currentActivity).authenticateWithFacebook();
+                    return;
+                }
+                if (credentialsDTO instanceof LinkedinCredentialsDTO)
+                {
+                    ((AuthenticationActivity) currentActivity).authenticateWithLinkedIn();
+                    return;
+                }
+                if (credentialsDTO instanceof QQCredentialsDTO)
+                {
+                    ((AuthenticationActivity) currentActivity).authenticateWithQQ();
+                    return;
+                }
+                if (credentialsDTO instanceof TwitterCredentialsDTO)
+                {
+                    ((AuthenticationActivity) currentActivity).authenticateWithTwitter();
+                    return;
+                }
+                if (credentialsDTO instanceof WeiboCredentialsDTO)
+                {
+                    ((AuthenticationActivity) currentActivity).authenticateWithWeibo();
+                    return;
+                }
+            }
+
+            alertDialogUtil.get().popWithOkCancelButton(currentActivity,
+                    R.string.please_update_token_title,
+                    R.string.please_update_token_description,
+                    R.string.ok,
+                    R.string.later,
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                        }
+                    });
+        }
+    }
+
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
     {
         authenticationProviders.put(provider.getAuthType(), provider);
@@ -282,7 +337,6 @@ public class THUser
     public static void saveCredentialsToUserDefaults(CredentialsDTO credentialsDTO)
     {
         Timber.d("%d authentication tokens loaded", typedCredentials.size());
-
 
         mainCredentialsPreference.setCredentials(credentialsDTO);
         mainCredentialsPreference.setCredentials(credentialsDTO);

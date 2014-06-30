@@ -14,17 +14,16 @@ import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.market.ExchangeListType;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.LoginFormDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.network.retrofit.RequestHeaders;
+import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
-import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -36,6 +35,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import retrofit.RetrofitError;
 
 public class SplashActivity extends SherlockActivity
@@ -45,10 +45,9 @@ public class SplashActivity extends SherlockActivity
 
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
-    @Inject UserServiceWrapper userServiceWrapper;
-    @Inject CurrentUserId currentUserId;
-    @Inject ExchangeCompactListCache exchangeCompactListCache;
-    @Inject ProviderListCache providerListCache;
+    @Inject SessionServiceWrapper sessionServiceWrapper;
+    @Inject RequestHeaders requestHeaders;
+    @Inject Provider<LoginFormDTO> loginFormDTOProvider;
     @Inject @FacebookAppId String facebookAppId;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
@@ -60,6 +59,7 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
+        AppTiming.splashCreate = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
 
         if (Constants.RELEASE)
@@ -84,8 +84,6 @@ public class SplashActivity extends SherlockActivity
     {
         super.onResume();
 
-        // TODO HAcK to load provider early
-        providerListCache.autoFetch(new ProviderListKey());
         initialAsyncTask = new AsyncTask<Void, Void, Void>()
         {
             @Override protected Void doInBackground(Void... params)
@@ -170,27 +168,24 @@ public class SplashActivity extends SherlockActivity
 
     public boolean canLoadApp()
     {
-        // TODO HACK to ensure DashboardActivity has exchange list
-        boolean canLoad = mainCredentialsPreference.getCredentials() != null && currentUserId.toUserBaseKey().key != 0;
-        try
+        CredentialsDTO credentialsDTO = mainCredentialsPreference.getCredentials();
+        boolean canLoad = credentialsDTO != null;
+        if (canLoad)
         {
-            UserProfileDTO profileDTO = userServiceWrapper.getUser(currentUserId.toUserBaseKey());
-            canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
-                exchangeCompactListCache.getOrFetchAsync(new ExchangeListType());
+                UserLoginDTO userLoginDTO = sessionServiceWrapper.login(
+                        requestHeaders.createTypedAuthParameters(credentialsDTO),
+                        loginFormDTOProvider.get());
+                canLoad = userLoginDTO != null && userLoginDTO.profileDTO != null;
             }
-            catch (Throwable throwable)
+            catch (RetrofitError retrofitError)
             {
-                throwable.printStackTrace();
-            }
-        }
-        catch (RetrofitError retrofitError)
-        {
-            canLoad = false;
-            if (retrofitError.isNetworkError())
-            {
-                //THToast.show(R.string.network_error);
+                canLoad = false;
+                if (retrofitError.isNetworkError())
+                {
+                    //THToast.show(R.string.network_error);
+                }
             }
         }
         return canLoad;

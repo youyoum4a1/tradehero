@@ -4,8 +4,8 @@
 
   <item
       android:id="@+id/position_watchlist_add"
-      android:showAsAction="ifRoom"
-      android:actionLayout="@layout/action_bar_menu_plus"
+      android:showAsAction="always"
+      android:title="@string/plus_symbol"
       />
 
 </menu>

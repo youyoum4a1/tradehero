@@ -134,7 +134,7 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">
-    @Nullable public WatchlistPositionDTOList getAllByUser(@NotNull PagedWatchlistKey pagedWatchlistKey)
+    @NotNull public WatchlistPositionDTOList getAllByUser(@NotNull PagedWatchlistKey pagedWatchlistKey)
     {
         if (pagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
         {
