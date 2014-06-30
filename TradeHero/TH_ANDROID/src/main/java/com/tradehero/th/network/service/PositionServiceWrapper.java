@@ -4,11 +4,10 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 

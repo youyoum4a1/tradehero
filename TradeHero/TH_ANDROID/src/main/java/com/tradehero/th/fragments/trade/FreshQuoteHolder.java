@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.trade;
 import android.os.CountDownTimer;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;

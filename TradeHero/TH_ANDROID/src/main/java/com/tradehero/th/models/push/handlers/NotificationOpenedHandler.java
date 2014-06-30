@@ -3,7 +3,7 @@ package com.tradehero.th.models.push.handlers;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.models.push.NotificationGroupHolder;

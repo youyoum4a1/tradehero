@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.alert;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;

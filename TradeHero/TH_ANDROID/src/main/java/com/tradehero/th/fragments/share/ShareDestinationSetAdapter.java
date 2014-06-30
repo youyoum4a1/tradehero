@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.adapters.DTOSetAdapter;
 import com.tradehero.th.models.share.ShareDestination;
 import java.util.Collection;

@@ -1,7 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import dagger.Lazy;

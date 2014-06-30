@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.view.View;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class CompetitionLeaderboardMarkUserListOnGoingFragment extends CompetitionLeaderboardMarkUserListFragment
 {

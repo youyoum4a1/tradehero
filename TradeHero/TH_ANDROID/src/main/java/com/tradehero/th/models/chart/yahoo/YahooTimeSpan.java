@@ -1,6 +1,6 @@
 package com.tradehero.th.models.chart.yahoo;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
 public enum YahooTimeSpan

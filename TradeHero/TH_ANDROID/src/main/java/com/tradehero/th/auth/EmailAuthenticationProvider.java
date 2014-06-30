@@ -2,8 +2,8 @@ package com.tradehero.th.auth;
 
 import android.util.Base64;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import org.json.JSONException;
 
 public class EmailAuthenticationProvider implements THAuthenticationProvider

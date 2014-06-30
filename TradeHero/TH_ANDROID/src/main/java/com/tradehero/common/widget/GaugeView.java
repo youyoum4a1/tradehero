@@ -34,7 +34,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import java.util.Arrays;
 
 public class GaugeView extends View {

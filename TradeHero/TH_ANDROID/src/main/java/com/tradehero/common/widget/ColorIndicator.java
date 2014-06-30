@@ -3,7 +3,7 @@ package com.tradehero.common.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.utils.ColorUtils;
 
 public class ColorIndicator extends RelativeLayout

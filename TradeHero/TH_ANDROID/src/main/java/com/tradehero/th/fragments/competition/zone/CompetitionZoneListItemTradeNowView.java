@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneTradeNowDTO;
 import com.tradehero.th.utils.DaggerUtils;

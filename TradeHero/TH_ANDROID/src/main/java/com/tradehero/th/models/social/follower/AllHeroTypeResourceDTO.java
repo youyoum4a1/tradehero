@@ -1,6 +1,6 @@
 package com.tradehero.th.models.social.follower;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.persistence.social.HeroType;

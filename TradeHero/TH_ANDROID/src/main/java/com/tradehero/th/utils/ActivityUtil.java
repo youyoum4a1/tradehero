@@ -2,7 +2,7 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

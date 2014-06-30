@@ -2,7 +2,7 @@ package com.tradehero.th.widget.list;
 
 import android.view.View;
 import android.widget.AdapterView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
 import javax.inject.Inject;

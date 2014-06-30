@@ -3,7 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.VoteDirection;
 

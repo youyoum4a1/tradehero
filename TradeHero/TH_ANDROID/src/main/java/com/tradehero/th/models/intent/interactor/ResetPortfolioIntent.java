@@ -1,6 +1,6 @@
 package com.tradehero.th.models.intent.interactor;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 
 public class ResetPortfolioIntent extends InteractorIntent

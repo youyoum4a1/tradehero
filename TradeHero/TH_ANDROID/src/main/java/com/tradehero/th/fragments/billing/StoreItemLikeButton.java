@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.billing;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import timber.log.Timber;
 
 public class StoreItemLikeButton extends StoreItemHasFurther

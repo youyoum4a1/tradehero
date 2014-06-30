@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 

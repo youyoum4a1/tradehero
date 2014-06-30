@@ -3,7 +3,7 @@ package com.tradehero.th.utils;
 import android.app.AlertDialog;
 import android.webkit.WebView;
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;

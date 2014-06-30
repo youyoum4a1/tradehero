@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.competition.zone;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 

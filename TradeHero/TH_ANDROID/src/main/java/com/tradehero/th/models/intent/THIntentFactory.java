@@ -2,7 +2,7 @@ package com.tradehero.th.models.intent;
 
 import android.content.Intent;
 import android.net.Uri;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.base.Application;
 import java.util.List;
 

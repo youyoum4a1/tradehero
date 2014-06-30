@@ -5,7 +5,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.security.SecurityId;
 
 abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>

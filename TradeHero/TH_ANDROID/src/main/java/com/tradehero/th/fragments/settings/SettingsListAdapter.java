@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;

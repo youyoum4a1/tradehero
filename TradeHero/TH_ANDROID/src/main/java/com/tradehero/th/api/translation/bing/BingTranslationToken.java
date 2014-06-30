@@ -1,7 +1,7 @@
 package com.tradehero.th.api.translation.bing;
 
 import com.tradehero.common.persistence.HasExpiration;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.translation.TranslationToken;
 import java.util.Calendar;
 import java.util.Date;

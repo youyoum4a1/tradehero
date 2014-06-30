@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tradehero.th"
+    package="com.tradehero.thm"
     android:versionName="2.2.5"
     android:versionCode="102"
     android:installLocation="auto">
@@ -59,7 +59,7 @@
   <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
 
   <application
-      android:name=".base.Application"
+      android:name="com.tradehero.th.base.Application"
       android:allowBackup="true"
       android:icon="@drawable/launcher"
       android:label="@string/app_name"
@@ -70,7 +70,7 @@
       >
 
     <activity
-        android:name=".activities.SplashActivity"
+        android:name="com.tradehero.th.activities.SplashActivity"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
         android:theme="@style/AppBaseTheme.NoActionBar2">
@@ -81,24 +81,24 @@
     </activity>
 
     <activity
-        android:name=".activities.WebViewActivity"
+        android:name="com.tradehero.th.activities.WebViewActivity"
         android:screenOrientation="portrait"
         android:theme="@style/AppBaseTheme.NoActionBar"/>
 
     <activity
-        android:name=".activities.AuthenticationActivity"
+        android:name="com.tradehero.th.activities.AuthenticationActivity"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"
         />
 
     <activity
-        android:name=".activities.GuideActivity"
+        android:name="com.tradehero.th.activities.GuideActivity"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"
         />
 
     <activity
-        android:name=".activities.DashboardActivity"
+        android:name="com.tradehero.th.activities.DashboardActivity"
         android:screenOrientation="portrait"
         android:theme="@style/TradeHero.Dashboard"
         android:windowSoftInputMode="adjustResize">
@@ -126,18 +126,18 @@
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     <activity
-        android:name=".activities.StockChartActivity"
+        android:name="com.tradehero.th.activities.StockChartActivity"
         android:screenOrientation="sensorLandscape"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     <activity
-        android:name=".activities.WeiboAuthAcitivity"
+        android:name="com.tradehero.th.activities.WeiboAuthAcitivity"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"
         />
 
     <activity
-        android:name=".wxapi.WXEntryActivity"
+        android:name="com.tradehero.th.wxapi.WXEntryActivity"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Translucent"
         android:launchMode="singleInstance"
@@ -213,8 +213,8 @@
 
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
-    <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
-    <receiver android:name=".models.push.baidu.BaiduIntentReceiver">
+    <receiver android:name="com.tradehero.th.models.push.urbanairship.UrbanAirshipIntentReceiver"/>
+    <receiver android:name="com.tradehero.th.models.push.baidu.BaiduIntentReceiver">
       <intent-filter>
         <action android:name="com.tradehero.th.ACTION_NOTIFICATION_CLICKED"/>
       </intent-filter>

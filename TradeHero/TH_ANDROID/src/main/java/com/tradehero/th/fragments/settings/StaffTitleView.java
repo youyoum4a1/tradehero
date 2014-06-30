@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.staff.StaffDTO;
 
 public class StaffTitleView extends LinearLayout

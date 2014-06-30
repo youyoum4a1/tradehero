@@ -1,7 +1,7 @@
 package com.tradehero.th.models.intent.security;
 
 import android.os.Bundle;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 

@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.view.LayoutInflater;
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;

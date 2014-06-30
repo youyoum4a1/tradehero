@@ -3,7 +3,7 @@ package com.tradehero.th.models.intent.competition;
 import android.net.Uri;
 import android.os.Bundle;
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
 import com.tradehero.th.models.intent.THIntent;

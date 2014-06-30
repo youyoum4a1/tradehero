@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;

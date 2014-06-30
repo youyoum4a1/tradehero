@@ -2,7 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import timber.log.Timber;
 

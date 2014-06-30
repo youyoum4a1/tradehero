@@ -1,7 +1,7 @@
 package com.tradehero.th.utils;
 
 import android.content.res.Resources;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;

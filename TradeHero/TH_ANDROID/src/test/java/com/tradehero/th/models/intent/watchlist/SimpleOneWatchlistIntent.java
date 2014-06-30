@@ -1,8 +1,7 @@
 package com.tradehero.th.models.intent.watchlist;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.models.intent.position.OnePortfolioIntent;
 
 public class SimpleOneWatchlistIntent extends OneWatchlistIntent
 {

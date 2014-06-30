@@ -3,7 +3,7 @@ package com.tradehero.th.models.intent.position;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.models.intent.portfolio.PortfolioIntent;

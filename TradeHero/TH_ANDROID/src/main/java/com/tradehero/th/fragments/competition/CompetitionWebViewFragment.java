@@ -8,7 +8,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.thoj.route.InjectRoute;
 import com.thoj.route.Routable;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.users.CurrentUserId;

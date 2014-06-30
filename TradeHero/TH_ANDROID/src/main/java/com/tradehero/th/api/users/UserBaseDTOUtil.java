@@ -1,12 +1,10 @@
 package com.tradehero.th.api.users;
 
 import android.content.Context;
-import com.tradehero.th.R;
-
+import com.tradehero.thm.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;

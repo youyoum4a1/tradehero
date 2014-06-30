@@ -13,7 +13,7 @@ import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tendcloud.tenddata.TCAgent;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;

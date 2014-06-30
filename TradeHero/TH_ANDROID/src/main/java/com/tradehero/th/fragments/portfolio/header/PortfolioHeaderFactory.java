@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.portfolio.header;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;

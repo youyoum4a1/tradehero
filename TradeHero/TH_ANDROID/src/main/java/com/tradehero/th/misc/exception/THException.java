@@ -2,7 +2,7 @@ package com.tradehero.th.misc.exception;
 
 import com.facebook.FacebookOperationCanceledException;
 import com.tradehero.common.utils.RetrofitHelper;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.base.Application;

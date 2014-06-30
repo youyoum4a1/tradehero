@@ -3,7 +3,7 @@ package com.tradehero.th.billing.samsung;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.samsung.SamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
 

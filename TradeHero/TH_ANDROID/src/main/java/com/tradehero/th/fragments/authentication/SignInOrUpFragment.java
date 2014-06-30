@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.MetaHelper;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.utils.DaggerUtils;

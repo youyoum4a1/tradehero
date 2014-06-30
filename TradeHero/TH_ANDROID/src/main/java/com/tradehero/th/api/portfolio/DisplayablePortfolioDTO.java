@@ -5,7 +5,6 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DisplayablePortfolioDTO implements Comparable

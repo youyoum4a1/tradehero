@@ -1,6 +1,6 @@
 package com.tradehero.th.api.share.wechat;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public enum WeChatMessageType
 {

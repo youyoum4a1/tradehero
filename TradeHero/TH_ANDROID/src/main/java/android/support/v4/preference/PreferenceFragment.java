@@ -33,7 +33,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public abstract class PreferenceFragment extends SherlockFragment implements
         PreferenceManagerCompat.OnPreferenceTreeClickListener

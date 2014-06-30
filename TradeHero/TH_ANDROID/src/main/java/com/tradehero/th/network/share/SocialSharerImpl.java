@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.share.DiscussionShareResultDTO;

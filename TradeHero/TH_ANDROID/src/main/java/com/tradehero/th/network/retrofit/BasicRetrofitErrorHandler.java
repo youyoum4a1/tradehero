@@ -1,7 +1,7 @@
 package com.tradehero.th.network.retrofit;
 
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import retrofit.RetrofitError;
 
 public class BasicRetrofitErrorHandler

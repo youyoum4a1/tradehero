@@ -3,12 +3,8 @@ package com.tradehero.th.api.share;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTOFactory;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.models.share.FacebookShareDestination;
-import com.tradehero.th.models.share.LinkedInShareDestination;
 import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationWithEnum;
-import com.tradehero.th.models.share.TwitterShareDestination;
 import com.tradehero.th.models.share.WeChatShareDestination;
 import javax.inject.Inject;
 

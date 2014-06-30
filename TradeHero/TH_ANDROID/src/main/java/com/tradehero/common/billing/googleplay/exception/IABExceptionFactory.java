@@ -2,8 +2,6 @@ package com.tradehero.common.billing.googleplay.exception;
 
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.googleplay.IABConstants;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 public class IABExceptionFactory implements BillingExceptionFactory
 {

@@ -2,7 +2,7 @@ package com.tradehero.th.models.graphics;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import javax.inject.Inject;
 

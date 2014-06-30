@@ -8,7 +8,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.widget.ColorIndicator;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.fragments.position.PositionListener;

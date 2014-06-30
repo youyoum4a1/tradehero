@@ -1,13 +1,12 @@
 package com.tradehero.common.graphics;
 
 import android.graphics.Bitmap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import com.squareup.picasso.Transformation;
-import timber.log.Timber;
-
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import timber.log.Timber;
 
 /**
  * StackBlur v1.0 for Android

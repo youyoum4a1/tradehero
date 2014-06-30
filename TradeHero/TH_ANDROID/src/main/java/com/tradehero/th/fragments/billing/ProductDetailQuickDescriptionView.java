@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 
 public class ProductDetailQuickDescriptionView extends RelativeLayout

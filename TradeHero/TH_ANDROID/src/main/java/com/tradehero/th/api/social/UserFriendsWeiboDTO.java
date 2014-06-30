@@ -1,6 +1,6 @@
 package com.tradehero.th.api.social;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import org.jetbrains.annotations.NotNull;
 
 public class UserFriendsWeiboDTO extends UserFriendsDTO

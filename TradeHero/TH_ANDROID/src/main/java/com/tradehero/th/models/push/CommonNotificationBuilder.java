@@ -11,7 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;

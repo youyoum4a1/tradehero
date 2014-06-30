@@ -3,7 +3,7 @@ package com.tradehero.th.models.intent;
 import android.content.Intent;
 import android.net.Uri;
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

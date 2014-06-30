@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.position;
 
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import timber.log.Timber;
 
 public class LeaderboardPositionListFragment

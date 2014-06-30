@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.security;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
-import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import dagger.Lazy;
 import org.junit.After;

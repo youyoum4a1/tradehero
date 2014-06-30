@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.billing.THProductDetail;
 import timber.log.Timber;
 

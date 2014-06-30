@@ -6,12 +6,12 @@ import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 

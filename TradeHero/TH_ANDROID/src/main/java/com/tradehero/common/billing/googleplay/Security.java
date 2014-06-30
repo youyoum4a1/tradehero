@@ -16,7 +16,6 @@
 package com.tradehero.common.billing.googleplay;
 
 import android.text.TextUtils;
-import android.util.Log;
 import com.tradehero.common.billing.Base64;
 import com.tradehero.common.billing.Base64DecoderException;
 import java.security.InvalidKeyException;

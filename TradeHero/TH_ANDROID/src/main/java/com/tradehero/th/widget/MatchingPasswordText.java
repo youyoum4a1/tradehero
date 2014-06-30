@@ -6,7 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class MatchingPasswordText extends ValidatedPasswordText
 {

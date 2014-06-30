@@ -10,7 +10,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class MessagesView extends RelativeLayout
 {

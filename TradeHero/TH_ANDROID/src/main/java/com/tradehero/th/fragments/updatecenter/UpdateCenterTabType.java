@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.updatecenter;
 
 import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 

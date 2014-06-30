@@ -2,7 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

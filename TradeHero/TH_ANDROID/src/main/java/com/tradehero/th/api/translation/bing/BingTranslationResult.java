@@ -1,6 +1,6 @@
 package com.tradehero.th.api.translation.bing;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.translation.TranslationResult;
 import org.simpleframework.xml.Text;
 

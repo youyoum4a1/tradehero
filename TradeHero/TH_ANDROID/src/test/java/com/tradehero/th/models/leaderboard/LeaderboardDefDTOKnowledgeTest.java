@@ -1,7 +1,7 @@
 package com.tradehero.th.models.leaderboard;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.leaderboard.CountryCodeList;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import java.util.List;

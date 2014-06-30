@@ -9,7 +9,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.users.CurrentUserId;

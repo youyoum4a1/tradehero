@@ -3,7 +3,6 @@ package com.tradehero.common.persistence.prefs;
 import android.content.SharedPreferences;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class LongPreference extends AbstractPreference<Long>
 {

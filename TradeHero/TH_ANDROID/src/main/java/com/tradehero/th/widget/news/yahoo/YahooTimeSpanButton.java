@@ -3,7 +3,7 @@ package com.tradehero.th.widget.news.yahoo;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.widget.news.TimeSpanButton;
 

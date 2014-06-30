@@ -6,7 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.utils.ActivityUtil;
 import java.util.List;
 import javax.inject.Inject;

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class SocialFriendsListView extends RelativeLayout {
 

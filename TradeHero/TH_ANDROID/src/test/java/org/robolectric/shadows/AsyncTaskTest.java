@@ -2,6 +2,8 @@ package org.robolectric.shadows;
 
 import android.os.AsyncTask;
 import com.tradehero.RobolectricMavenTestRunner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,9 +11,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.util.Join;
 import org.robolectric.util.Transcript;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;

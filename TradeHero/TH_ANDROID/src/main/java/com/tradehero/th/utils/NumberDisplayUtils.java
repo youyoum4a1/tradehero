@@ -2,7 +2,7 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.base.Application;
 import javax.inject.Inject;
 

@@ -1,7 +1,7 @@
 package com.tradehero.th.models.staff;
 
 import android.content.res.Resources;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

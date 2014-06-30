@@ -2,7 +2,6 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
-import java.util.List;
 import retrofit.http.GET;
 import retrofit.http.Path;
 

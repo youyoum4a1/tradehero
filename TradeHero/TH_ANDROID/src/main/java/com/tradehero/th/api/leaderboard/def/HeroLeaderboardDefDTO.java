@@ -1,7 +1,7 @@
 package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 
 public class HeroLeaderboardDefDTO extends ConnectedLeaderboardDefDTO

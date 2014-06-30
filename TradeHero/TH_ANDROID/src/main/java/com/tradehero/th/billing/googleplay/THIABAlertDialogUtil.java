@@ -11,7 +11,7 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailsDecreasingPriceComparator;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.googleplay.THIABStoreProductDetailView;

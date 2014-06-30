@@ -2,7 +2,7 @@ package com.tradehero.th.models.trade;
 
 import android.content.res.Resources;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.THSignedNumber;

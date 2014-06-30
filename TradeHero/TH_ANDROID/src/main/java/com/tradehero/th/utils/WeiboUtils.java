@@ -5,7 +5,6 @@ import android.content.Intent;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

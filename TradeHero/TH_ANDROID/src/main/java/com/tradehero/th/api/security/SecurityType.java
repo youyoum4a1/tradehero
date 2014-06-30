@@ -1,6 +1,6 @@
 package com.tradehero.th.api.security;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.security.compact.BondCompactDTO;
 import com.tradehero.th.api.security.compact.CoveredWarrantDTO;
 import com.tradehero.th.api.security.compact.DepositoryReceiptDTO;

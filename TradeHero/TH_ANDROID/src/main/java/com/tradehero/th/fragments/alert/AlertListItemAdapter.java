@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.common.persistence.DTOListCacheAdapter;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.CurrentUserId;

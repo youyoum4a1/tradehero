@@ -2,8 +2,6 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.http.GET;
 import retrofit.http.Path;
 

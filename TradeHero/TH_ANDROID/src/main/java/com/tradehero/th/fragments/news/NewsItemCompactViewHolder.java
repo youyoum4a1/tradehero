@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.news;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import java.net.MalformedURLException;

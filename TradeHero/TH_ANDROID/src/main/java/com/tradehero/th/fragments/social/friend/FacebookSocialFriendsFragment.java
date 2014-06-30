@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;

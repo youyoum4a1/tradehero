@@ -2,7 +2,7 @@ package com.tradehero.th.billing.samsung;
 
 import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import timber.log.Timber;
 

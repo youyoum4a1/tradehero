@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 @Deprecated
 public enum LeaderboardSortType

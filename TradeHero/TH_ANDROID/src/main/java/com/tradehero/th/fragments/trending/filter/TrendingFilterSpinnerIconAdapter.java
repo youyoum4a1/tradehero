@@ -1,11 +1,10 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class TrendingFilterSpinnerIconAdapter extends SpinnerIconAdapter
 {

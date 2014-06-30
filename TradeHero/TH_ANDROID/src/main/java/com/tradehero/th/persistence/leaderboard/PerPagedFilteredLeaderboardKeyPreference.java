@@ -2,13 +2,11 @@ package com.tradehero.th.persistence.leaderboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import java.util.Set;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PerPagedFilteredLeaderboardKeyPreference extends PerPagedLeaderboardKeyPreference
 {

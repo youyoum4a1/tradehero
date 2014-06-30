@@ -8,7 +8,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.widget.GaugeView;
 import com.tradehero.common.widget.NumericalAnimatedTextView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.CurrentUserId;

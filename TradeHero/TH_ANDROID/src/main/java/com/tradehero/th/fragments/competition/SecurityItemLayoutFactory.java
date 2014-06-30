@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.competition;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import javax.inject.Inject;

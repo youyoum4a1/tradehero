@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.dashboard;
 
 import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;

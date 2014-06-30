@@ -1,7 +1,7 @@
 package com.tradehero.th.models.intent.portfolio;
 
 import android.content.Intent;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import com.tradehero.th.models.intent.position.OnePortfolioIntent;
 import com.tradehero.th.models.intent.position.OpenPortfolioIntent;

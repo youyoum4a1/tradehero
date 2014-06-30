@@ -1,7 +1,7 @@
 package com.tradehero.th.models.chart;
 
-import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class ChartTimeSpanMetricsCodeFactory
 {

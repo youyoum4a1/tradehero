@@ -2,7 +2,7 @@ package com.tradehero.th.models.position;
 
 import android.content.res.Resources;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.utils.ColorUtils;

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class WeiboAuthAcitivity extends SherlockFragmentActivity implements View.OnClickListener
 {

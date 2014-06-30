@@ -11,7 +11,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.user.auth.CredentialsDTO;

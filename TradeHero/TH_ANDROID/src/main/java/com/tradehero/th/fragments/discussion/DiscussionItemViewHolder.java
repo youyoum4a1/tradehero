@@ -4,7 +4,7 @@ import android.view.View;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.RequestCreator;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 
 public class DiscussionItemViewHolder<DiscussionDTOType extends DiscussionDTO>

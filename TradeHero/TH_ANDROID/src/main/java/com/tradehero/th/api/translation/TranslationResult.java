@@ -1,6 +1,6 @@
 package com.tradehero.th.api.translation;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.ExtendedDTO;
 
 public class TranslationResult extends ExtendedDTO

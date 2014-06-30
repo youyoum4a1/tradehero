@@ -14,7 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import java.text.NumberFormat;
 import timber.log.Timber;
 

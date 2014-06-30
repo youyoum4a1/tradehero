@@ -1,7 +1,7 @@
 package com.tradehero.th.models.intent.security;
 
 import android.content.Intent;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;

@@ -3,7 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ViewSwitcher;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class RightLeftViewSwitcher extends ViewSwitcher
 {

@@ -3,7 +3,6 @@ package com.tradehero.common.billing;
 import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 abstract public class ProductPurchaseCache<
         ProductIdentifierType extends ProductIdentifier,

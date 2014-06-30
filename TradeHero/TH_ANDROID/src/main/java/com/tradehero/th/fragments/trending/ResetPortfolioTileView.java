@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;

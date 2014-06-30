@@ -1,7 +1,6 @@
 package com.tradehero.th.models.push.baidu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.TestConstants;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.api.discussion.DiscussionType;
 import java.io.IOException;

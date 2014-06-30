@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.security;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.models.security.WarrantDTOFormatter;

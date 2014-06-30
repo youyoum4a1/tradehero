@@ -3,7 +3,7 @@ package com.tradehero.th.models.push.baidu;
 import android.app.Notification;
 import android.content.Context;
 import com.baidu.android.pushservice.CustomPushNotificationBuilder;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.utils.ForBaiduPush;
 import dagger.Module;

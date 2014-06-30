@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.news;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import javax.inject.Inject;
 

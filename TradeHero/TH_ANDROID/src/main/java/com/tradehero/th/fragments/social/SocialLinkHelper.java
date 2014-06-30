@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.social;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;

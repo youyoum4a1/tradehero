@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.content.Context;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;

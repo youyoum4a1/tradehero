@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import java.util.Set;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PagedLeaderboardKeyPreference extends LeaderboardKeyPreference
 {

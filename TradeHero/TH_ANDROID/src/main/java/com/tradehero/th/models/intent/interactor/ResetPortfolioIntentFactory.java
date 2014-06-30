@@ -1,6 +1,6 @@
 package com.tradehero.th.models.intent.interactor;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import javax.inject.Inject;
 
 public class ResetPortfolioIntentFactory extends InteractorIntentFactory

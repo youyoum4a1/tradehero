@@ -4,7 +4,7 @@ import android.content.Context;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOFetchAssistantNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.utils.DaggerUtils;

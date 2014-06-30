@@ -1,11 +1,11 @@
 package com.tradehero.th.models.chart.yahoo;
 
-import org.jetbrains.annotations.NotNull;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class YahooChartDTOFactory implements ChartDTOFactory
 {

@@ -3,7 +3,7 @@ package com.tradehero.th.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class ActivityHelper
 {

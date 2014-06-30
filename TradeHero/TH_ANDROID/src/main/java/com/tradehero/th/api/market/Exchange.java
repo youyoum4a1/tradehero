@@ -1,6 +1,6 @@
 package com.tradehero.th.api.market;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public enum Exchange
 {

@@ -10,7 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import java.io.IOException;
 
 import static android.graphics.Bitmap.createBitmap;

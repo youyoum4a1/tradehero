@@ -2,7 +2,7 @@ package com.tradehero.th.models.intent.interactor;
 
 import android.content.Intent;
 import android.net.Uri;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.intent.THIntentFactory;
 
 public abstract class InteractorIntentFactory extends THIntentFactory<InteractorIntent>

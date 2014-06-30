@@ -2,7 +2,6 @@ package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
 import java.util.Set;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

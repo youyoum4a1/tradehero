@@ -1,6 +1,6 @@
 package com.tradehero.th.models.provider.etoro;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 
 public class EToroProviderSpecificResourcesDTO extends ProviderSpecificResourcesDTO

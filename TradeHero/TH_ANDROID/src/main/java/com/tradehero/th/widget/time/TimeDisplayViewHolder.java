@@ -9,7 +9,7 @@ import com.tradehero.common.time.TimeUnitHourInDay;
 import com.tradehero.common.time.TimeUnitMilliSecondInSecond;
 import com.tradehero.common.time.TimeUnitMinuteInHour;
 import com.tradehero.common.time.TimeUnitSecondInMinute;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import java.util.Date;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;

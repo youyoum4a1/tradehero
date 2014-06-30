@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.competition.zone;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;

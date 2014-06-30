@@ -1,6 +1,6 @@
 package com.tradehero.th.utils.metrics.tapstream;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 import org.jetbrains.annotations.NotNull;

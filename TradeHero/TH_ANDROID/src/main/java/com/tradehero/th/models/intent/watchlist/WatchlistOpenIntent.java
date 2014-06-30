@@ -1,6 +1,6 @@
 package com.tradehero.th.models.intent.watchlist;
 
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 
 public class WatchlistOpenIntent extends OneWatchlistIntent

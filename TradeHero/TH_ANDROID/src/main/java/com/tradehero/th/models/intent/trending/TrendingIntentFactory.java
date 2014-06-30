@@ -1,7 +1,7 @@
 package com.tradehero.th.models.intent.trending;
 
 import android.content.Intent;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import com.tradehero.th.models.intent.security.SecurityBuyIntent;
 import com.tradehero.th.models.intent.security.SecuritySellIntent;

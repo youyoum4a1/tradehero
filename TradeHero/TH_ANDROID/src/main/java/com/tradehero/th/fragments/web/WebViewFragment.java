@@ -7,7 +7,7 @@ import android.net.Uri;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import timber.log.Timber;
 
 public class WebViewFragment extends BaseWebViewFragment

@@ -1,7 +1,7 @@
 package com.tradehero.th.models.push.urbanairship;
 
 import com.tradehero.common.annotation.Temp;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.push.handlers.GcmDeletedHandler;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.models.push.handlers.PushNotificationHandler;

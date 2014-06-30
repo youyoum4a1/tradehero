@@ -6,11 +6,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.graphics.*;
-import com.tradehero.th.R;
+import com.tradehero.common.graphics.AbstractSequentialTransformation;
+import com.tradehero.common.graphics.AlphaTransformation;
+import com.tradehero.common.graphics.GradientTransformation;
+import com.tradehero.common.graphics.GrayscaleTransformation;
+import com.tradehero.common.graphics.RecyclerTransformation;
+import com.tradehero.common.graphics.RoundedCornerShaderTransformation;
+import com.tradehero.common.graphics.RoundedShapeTransformation;
+import com.tradehero.common.graphics.StackBlurTransformation;
+import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.thm.R;
 import dagger.Module;
 import dagger.Provides;
-
 import javax.inject.Singleton;
 
 @Module(

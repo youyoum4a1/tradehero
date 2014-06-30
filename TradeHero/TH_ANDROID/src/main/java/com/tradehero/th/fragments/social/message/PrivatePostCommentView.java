@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.social.message;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;

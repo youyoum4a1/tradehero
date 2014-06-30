@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import java.util.LinkedList;
 import java.util.List;
 

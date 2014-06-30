@@ -30,7 +30,7 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.share.SocialShareFormDTO;

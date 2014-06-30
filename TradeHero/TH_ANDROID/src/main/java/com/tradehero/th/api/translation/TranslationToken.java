@@ -3,7 +3,7 @@ package com.tradehero.th.api.translation;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 
 @JsonTypeInfo(

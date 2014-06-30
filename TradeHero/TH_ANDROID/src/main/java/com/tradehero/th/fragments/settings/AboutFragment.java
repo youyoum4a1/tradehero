@@ -13,7 +13,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.staff.StaffDTO;
 import com.tradehero.th.models.staff.StaffDTOFactory;

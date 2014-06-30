@@ -2,7 +2,7 @@ package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public enum MessageType
 {

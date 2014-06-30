@@ -1,7 +1,6 @@
 package com.tradehero.th.network.retrofit;
 
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
         includes = {

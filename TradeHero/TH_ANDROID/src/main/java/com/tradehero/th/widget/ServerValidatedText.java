@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class ServerValidatedText extends SelfValidatedText
 {

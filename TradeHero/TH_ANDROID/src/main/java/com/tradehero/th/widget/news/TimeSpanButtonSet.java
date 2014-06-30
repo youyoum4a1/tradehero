@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

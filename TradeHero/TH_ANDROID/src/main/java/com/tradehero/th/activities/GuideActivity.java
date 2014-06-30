@@ -17,7 +17,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;

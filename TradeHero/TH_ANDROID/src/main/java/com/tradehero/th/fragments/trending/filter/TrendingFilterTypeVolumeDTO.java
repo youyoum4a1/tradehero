@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.content.res.Resources;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;

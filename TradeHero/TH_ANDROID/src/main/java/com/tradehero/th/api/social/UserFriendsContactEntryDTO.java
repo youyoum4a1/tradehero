@@ -1,7 +1,7 @@
 package com.tradehero.th.api.social;
 
 import android.net.Uri;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.loaders.ContactEntry;
 import org.jetbrains.annotations.NotNull;
 

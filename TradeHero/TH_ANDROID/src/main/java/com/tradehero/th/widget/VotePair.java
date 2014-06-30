@@ -10,7 +10,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;

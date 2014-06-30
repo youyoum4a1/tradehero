@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.social.hero;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 

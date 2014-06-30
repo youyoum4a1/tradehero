@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Collection;
 

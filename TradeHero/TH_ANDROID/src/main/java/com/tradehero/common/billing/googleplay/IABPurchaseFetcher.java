@@ -14,9 +14,7 @@ import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedEx
 import com.tradehero.th.base.Application;
 import dagger.Lazy;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
 import timber.log.Timber;

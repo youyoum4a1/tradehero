@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.settings.photo;
 
 import android.content.res.Resources;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 
 public class ChooseImageFromDTO
 {
