@@ -109,6 +109,7 @@ public class TrendingFragment extends SecurityListFragment
         defaultFilterSelected = false;
 
         exchangeListTypeCacheListener = createExchangeListTypeFetchListener();
+        fetchExchangeList();
         userProfileCacheListener = createUserProfileFetchListener();
         providerListCallback = createProviderListFetchListener();
     }
@@ -131,7 +132,6 @@ public class TrendingFragment extends SecurityListFragment
         }
 
         thIntentPassedListener = createCompetitionTHIntentPassedListener();
-        fetchExchangeList();
     }
 
     @Override public void onResume()
@@ -492,7 +492,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             AppTiming.trendingFilled = System.currentTimeMillis();
         }
-
+        //Timber.d("handleSecurityItemReceived "+securityIds.toString());
         if (securityItemViewAdapter != null)
         {
             // It may have been nullified if coming out

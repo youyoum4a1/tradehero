@@ -20,8 +20,8 @@
   <string name="splash_copyright_3">专利申请中</string>
 
   <!-- Dashboard -->
-  <string name="dashboard_timeline">首页</string>
-
+  <string name="dashboard_timeline">我的档案</string>
+  <string name="dashboard_home">首页</string>
   <string name="dashboard_trending">交易中心</string>
   <string name="dashboard_community">社交中心</string>
   <string name="dashboard_message_center">消息中心</string>
