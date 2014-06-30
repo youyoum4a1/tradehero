@@ -409,6 +409,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
         startActivity(intent);
         overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+        finish();
     }
 
     private void setTwitterData(TwitterCredentialsDTO json)
