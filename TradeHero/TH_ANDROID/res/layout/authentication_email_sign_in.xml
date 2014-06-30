@@ -11,7 +11,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/common_margin_10"
-      android:src="@drawable/settings_back_light_default"/>
+      android:src="@drawable/settings_back_light_default"
+      android:background="@drawable/basic_transparent_selector"/>
 
   <ImageView
       android:id="@+id/authentication_logo"
@@ -80,6 +81,7 @@
       android:layout_below="@+id/btn_login"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="@dimen/common_margin_80"
+      android:background="@drawable/basic_transparent_selector"
       android:padding="15dip"
       android:text="@string/authentication_forgot_password"
       android:textColor="@color/white"
