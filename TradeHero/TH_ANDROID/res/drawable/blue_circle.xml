@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval"
     >
   <!--android:useLevel="false"-->
@@ -8,7 +9,8 @@
   <solid android:color="@android:color/holo_blue_light"
       />
 
-  <size android:height="10dp"
+  <size
+      android:height="10dp"
       android:width="10dp"/>
   <!--<padding android:top="3dp"-->
   <!--android:bottom="3dp"-->
