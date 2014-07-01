@@ -10,6 +10,7 @@ public class SystemStatusDTO implements DTO
      * When true, alerts are free and need no IAP
      */
     public boolean alertsAreFree = DEFAULT_ALERTS_ARE_FREE;
+    public String androidAppPackageNameInUse;
 
     //<editor-fold desc="Constructors">
     public SystemStatusDTO()

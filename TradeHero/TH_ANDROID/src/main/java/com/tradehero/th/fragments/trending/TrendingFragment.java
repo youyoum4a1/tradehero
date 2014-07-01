@@ -304,11 +304,14 @@ public class TrendingFragment extends SecurityListFragment
     private void setUpFilterSelectorView()
     {
         setDefaultExchange();
-        if (exchangeCompactSpinnerDTOs != null)
+        if (filterSelectorView != null)
         {
-            filterSelectorView.setUpExchangeSpinner(exchangeCompactSpinnerDTOs);
+            if (exchangeCompactSpinnerDTOs != null)
+            {
+                filterSelectorView.setUpExchangeSpinner(exchangeCompactSpinnerDTOs);
+            }
+            filterSelectorView.apply(trendingFilterTypeDTO);
         }
-        filterSelectorView.apply(trendingFilterTypeDTO);
     }
 
     private void setDefaultExchange()
@@ -492,7 +495,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             AppTiming.trendingFilled = System.currentTimeMillis();
         }
-
+        //Timber.d("handleSecurityItemReceived "+securityIds.toString());
         if (securityItemViewAdapter != null)
         {
             // It may have been nullified if coming out

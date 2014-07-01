@@ -43,7 +43,8 @@
         android:singleLine="false"
         android:lines="2"
         android:maxLines="2"
-        tools:text="Sergio Barca lorem ipsum dolor amet sit"
+        android:ellipsize="end"
+        tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor."
         android:gravity="center_vertical"/>
 
   </LinearLayout>
@@ -60,6 +61,7 @@
         android:id="@+id/header_portfolio_following_image"
         android:layout_width="match_parent"
         android:layout_height="34dp"
+        android:layout_centerVertical="true"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:src="@drawable/following_stamp"

@@ -12,7 +12,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TabHost;
 import com.actionbarsherlock.app.ActionBar;
@@ -125,7 +124,7 @@ public class UpdateCenterFragment extends BaseFragment
     {
         detachUserProfileCache();
         userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(),true);
     }
 
     private void detachUserProfileCache()
@@ -289,8 +288,10 @@ public class UpdateCenterFragment extends BaseFragment
             TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
             mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
         }
+
         return mTabHost;
     }
+
 
     private void clearTabs()
     {
@@ -335,11 +336,11 @@ public class UpdateCenterFragment extends BaseFragment
     private void changeTabTitleNumber(@NotNull UpdateCenterTabType tabType, int number)
     {
         @NotNull TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
-        if (tabType == UpdateCenterTabType.Notifications)
-        {
-            //Notifications' unread count does not show
-            return;
-        }
+        //if (tabType == UpdateCenterTabType.Notifications)
+        //{
+        //    //Notifications' unread count does not show
+        //    return;
+        //}
         tabView.setTitleNumber(number);
         //Timber.d("changeTabTitleNumber %s,number:%s",tabType,number);
     }
@@ -374,7 +375,7 @@ public class UpdateCenterFragment extends BaseFragment
         {
             changeTabTitleNumber(UpdateCenterTabType.Messages,
                     userProfileDTO.unreadMessageThreadsCount);
-            //changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
+            changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
         }
     }
 

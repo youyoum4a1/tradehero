@@ -11,9 +11,12 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 @Routable("notifications")
 public class NotificationsCenterFragment extends DashboardFragment
 {
+
+    View view;
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.notifications_center, container, false);
+        view = inflater.inflate(R.layout.notifications_center, container, false);
         return view;
     }
+
 }

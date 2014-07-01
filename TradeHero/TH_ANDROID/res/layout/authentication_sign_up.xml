@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,14 +10,14 @@
 
   <ScrollView
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:fillViewport="true"
-      android:layout_weight="1"
       android:background="@drawable/authentication_bg"
       android:scrollbarStyle="outsideOverlay"
       android:paddingLeft="@dimen/common_margin_60"
       android:paddingRight="@dimen/common_margin_60"
-      >
+      android:layout_alignParentTop="true"
+      android:layout_above="@+id/authentication_by_sign_in_button">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,6 +37,11 @@
           android:contentDescription="@null"
           android:adjustViewBounds="true"/>
 
+      <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"/>
+
       <include
           android:id="@+id/authentication_social_sign_up"
           android:layout_width="match_parent"
@@ -52,6 +57,11 @@
           layout="@layout/authentication_agreement"
           />
 
+      <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"/>
+
     </LinearLayout>
 
   </ScrollView>
@@ -65,6 +75,7 @@
       android:gravity="center"
       android:background="@drawable/basic_light_grey_selector"
       android:addStatesFromChildren="true"
+      android:layout_alignParentBottom="true"
       >
 
     <TextView
@@ -88,4 +99,4 @@
 
   </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.trade;
 import android.content.Context;
 import android.os.Bundle;
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.TestConstants;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -10,13 +11,13 @@ import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assume.assumeTrue;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class TradeListFragmentTest
@@ -43,11 +44,10 @@ public class TradeListFragmentTest
         tradeListFragment = dashboardNavigator.pushFragment(TradeListFragment.class, null);
     }
 
-    // TODO
-    @Ignore("This test will throw different exception on maven and on IntelliJ due to the jetbrain annotation")
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentOnInvalidArgsKey()
+    public void ifIntelliJShouldThrowIllegalArgumentOnInvalidArgsKey()
     {
+        assumeTrue(TestConstants.IS_INTELLIJ);
         Bundle args = new Bundle();
         tradeListFragment = dashboardNavigator.pushFragment(TradeListFragment.class, args);
     }

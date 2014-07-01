@@ -34,6 +34,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -69,6 +70,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     protected OnFollowRequestedListener followRequestedListener;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    protected FollowDialogCombo followDialogCombo;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
@@ -217,6 +219,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
 
         detachFreeFollowMiddleCallback();
+        detachFollowDialogCombo();
 
         super.onDetachedFromWindow();
     }
@@ -646,7 +649,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
             case R.id.leaderboard_user_item_follow:
                 localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
-                alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
+                detachFollowDialogCombo();
+                followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER,
                         new LeaderBoardFollowRequestedListener());
                 break;
@@ -800,7 +804,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
         freeFollowMiddleCallback = null;
     }
-//<<<<<<< HEAD
+
+    protected void detachFollowDialogCombo()
+    {
+        FollowDialogCombo followDialogComboCopy = followDialogCombo;
+        if (followDialogComboCopy != null)
+        {
+            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
+        }
+        followDialogCombo = null;
+    }
+
+    //<<<<<<< HEAD
 //
 //    private Double getAvgConsistency()
 //    {
