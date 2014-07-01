@@ -8,6 +8,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.Random;
 import javax.inject.Inject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,12 +22,20 @@ public class MeTimelineFragmentTest
     @Inject Context context;
     @Inject CurrentUserId currentUserId;
     private DashboardNavigator dashboardNavigator;
+    private MeTimelineFragment meTimelineFragment;
 
     @Before
     public void setUp()
     {
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
         dashboardNavigator = activity.getDashboardNavigator();
+    }
+
+    @After
+    public void tearDown()
+    {
+        dashboardNavigator.popFragment();
+        meTimelineFragment = null;
     }
 
     @Test(expected = RuntimeException.class)
@@ -40,7 +49,7 @@ public class MeTimelineFragmentTest
         int userId = (int) new Random().nextLong();
         currentUserId.set(userId);
         Robolectric.getBackgroundScheduler().pause();
-        MeTimelineFragment meTimelineFragment = dashboardNavigator.pushFragment(MeTimelineFragment.class, new Bundle());
+        meTimelineFragment = dashboardNavigator.pushFragment(MeTimelineFragment.class, new Bundle());
         assertThat(meTimelineFragment.shownUserBaseKey.key).isEqualTo(userId);
     }
 }
