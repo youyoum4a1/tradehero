@@ -35,6 +35,7 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        thRouter.save(getArguments(), currentUserId.toUserBaseKey());
         Timber.d("MeTimelineFragment onCreate");
     }
 
@@ -48,7 +49,6 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        thRouter.save(getArguments(), currentUserId.toUserBaseKey());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
