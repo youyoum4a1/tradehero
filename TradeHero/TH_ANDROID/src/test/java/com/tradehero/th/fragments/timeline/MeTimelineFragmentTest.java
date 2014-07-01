@@ -29,6 +29,12 @@ public class MeTimelineFragmentTest
         dashboardNavigator = activity.getDashboardNavigator();
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testOnCreateCrashOnNullArgs()
+    {
+        dashboardNavigator.pushFragment(MeTimelineFragment.class, null);
+    }
+
     @Test public void testOnCreatePutsCurrentUserId()
     {
         int userId = (int) new Random().nextLong();
