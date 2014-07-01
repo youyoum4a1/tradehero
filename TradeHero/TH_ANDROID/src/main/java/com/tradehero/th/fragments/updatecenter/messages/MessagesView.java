@@ -11,7 +11,6 @@ import butterknife.InjectView;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
 import com.tradehero.th.R;
-import timber.log.Timber;
 
 public class MessagesView extends RelativeLayout
 {
@@ -83,18 +82,6 @@ public class MessagesView extends RelativeLayout
         changeViewVisibility(errorView, view == errorView);
         changeViewVisibility(progressBar, view == progressBar);
         changeViewVisibility(emptyView, view == emptyView);
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        Timber.d("windy onAttachToWindow");
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-        Timber.d("windy onDetachedFromWindow");
     }
 
     private void changeViewVisibility(View view, boolean visible)
