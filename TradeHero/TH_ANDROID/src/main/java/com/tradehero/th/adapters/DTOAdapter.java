@@ -13,6 +13,7 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
     protected final Context context;
     protected int layoutResourceId;
 
+    //<editor-fold desc="Constructors">
     public DTOAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
         super(context, layoutResourceId);
@@ -20,13 +21,15 @@ public abstract class DTOAdapter<T, V extends DTOView<T>> extends ArrayAdapter
         this.inflater = inflater;
         this.layoutResourceId = layoutResourceId;
     }
+    //</editor-fold>
 
-    @SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         convertView = conditionalInflate(position, convertView, viewGroup);
 
+        @SuppressWarnings("unchecked")
         V dtoView = (V) convertView;
+        @SuppressWarnings("unchecked")
         T dto = (T) getItem(position);
         dtoView.display(dto);
         fineTune(position, dto, dtoView);
