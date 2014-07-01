@@ -206,5 +206,6 @@
   <string name="notification_new_activities">You have %d new activities</string>
   <string name="friend_link_social_network">Please Link Social Network.</string>
   <string name="exit_app">Exit app</string>
-
+  <string name="restore_original_app_title">Upgrade needed</string>
+  <string name="restore_original_app_description">This version of TradeHero is no longer being supported.\nTap on the "Update Now" button to download the latest version.</string>
 </resources>
