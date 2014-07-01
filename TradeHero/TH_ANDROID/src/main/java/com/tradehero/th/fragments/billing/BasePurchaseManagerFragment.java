@@ -29,9 +29,9 @@ import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
-import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -253,7 +253,11 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         //TODO alipay hardcode
         if (domain.equals(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS) && alertsAreFree())
         {
-            hackToAlipay(domain);
+            //hackToAlipay(domain);
+            //now alert is free
+            alertDialogUtil.popWithNegativeButton(getActivity(),
+                    R.string.store_alert_are_free_title, R.string.store_alert_are_free_description,
+                    R.string.ok);
         }
         else
         {
