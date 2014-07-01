@@ -113,6 +113,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
     protected MessageHeaderDTO messageThreadHeaderDTO;
     protected FollowDialogCombo followDialogCombo;
+    protected FollowerManagerInfoFetcher infoFetcher;
 
     private boolean cancelRefreshingOnResume;
     protected boolean mIsOtherProfile = false;
@@ -376,6 +377,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         detachFreeFollowMiddleCallback();
         detachMessageThreadHeaderFetchTask();
         detachFollowDialogCombo();
+        destroyInfoFetcher();
 
         displayablePortfolioFetchAssistant.setFetchedListener(null);
         super.onStop();
@@ -455,6 +457,16 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         followDialogCombo = null;
     }
 
+    protected void destroyInfoFetcher()
+    {
+        FollowerManagerInfoFetcher infoFetcherCopy = infoFetcher;
+        if (infoFetcherCopy != null)
+        {
+            infoFetcherCopy.onDestroyView();
+        }
+        infoFetcher = null;
+    }
+
     protected void fetchMessageThreadHeader()
     {
         detachMessageThreadHeaderFetchTask();
@@ -480,8 +492,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             portfolioCompactListRetrievedMilestone.setOnCompleteListener(
                     portfolioCompactListRetrievedMilestoneListener);
             portfolioCompactListRetrievedMilestone.launch();
-            FollowerManagerInfoFetcher infoFetcher =
-                    new FollowerManagerInfoFetcher(new FollowerSummaryListener());
+            destroyInfoFetcher();
+            infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
             infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
         }
 
