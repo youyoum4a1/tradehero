@@ -1,5 +1,9 @@
 package com.tradehero.th.activities;
 
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -12,7 +16,10 @@ import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.system.SystemStatusDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
@@ -23,6 +30,8 @@ import com.tradehero.th.network.retrofit.RequestHeaders;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
+import com.tradehero.th.persistence.system.SystemStatusCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
@@ -52,6 +61,9 @@ public class SplashActivity extends SherlockActivity
     @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DTOCacheUtil dtoCacheUtil;
+    @Inject SystemStatusCache systemStatusCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject AlertDialogUtil alertDialogUtil;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -91,6 +103,7 @@ public class SplashActivity extends SherlockActivity
             protected void onPostExecute(Void aVoid)
             {
                 super.onPostExecute(aVoid);
+                checkOriginalApp();
             }
         };
         initialAsyncTask.execute();
@@ -175,6 +188,52 @@ public class SplashActivity extends SherlockActivity
             }
         }
         return canLoad;
+    }
+
+    private void checkOriginalApp()
+    {
+        // at this point, if user is already logged in, currentUserId and SystemStatusDTO is set
+        SystemStatusDTO systemStatusDTO = systemStatusCache.get(currentUserId.toUserBaseKey());
+        if (systemStatusDTO != null)
+        {
+            String packageName = getPackageName();
+            if (systemStatusDTO.androidAppPackageNameInUse != null && !packageName.equalsIgnoreCase(systemStatusDTO.androidAppPackageNameInUse))
+            {
+                alertDialogUtil.popWithOkCancelButton(this, "Outdated app", "This app has been updated on GooglePlay",
+                        R.string.update_now, R.string.exit_app, new DialogInterface.OnClickListener()
+                        {
+                            @Override public void onClick(DialogInterface dialog, int which)
+                            {
+                                if (which == 0)
+                                {
+                                    try
+                                    {
+                                        THToast.show(R.string.update_guide);
+                                        startActivity(
+                                                new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                                        "market://details?id="
+                                                                + Constants.PLAYSTORE_APP_ID)));
+                                    }
+                                    catch (ActivityNotFoundException ex)
+                                    {
+                                        startActivity(
+                                                new Intent(Intent.ACTION_VIEW,
+                                                        Uri.parse(
+                                                                "https://play.google.com/store/apps/details?id="
+                                                                        + Constants.PLAYSTORE_APP_ID)));
+                                    }
+                                }
+                                else
+                                {
+                                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                                    intent.addCategory(Intent.CATEGORY_HOME);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    SplashActivity.this.startActivity(intent);
+                                }
+                            }
+                        });
+            }
+        }
     }
 
     @Override protected void onDestroy()
