@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class NotificationItemView
     @InjectView(R.id.discussion_content) TextView notificationContent;
     @InjectView(R.id.notification_user_picture) ImageView notificationPicture;
     @InjectView(R.id.discussion_time) TextView notificationTime;
+    @InjectView(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
 
     @Inject NotificationCache notificationCache;
     @Inject PrettyTime prettyTime;
@@ -119,7 +121,7 @@ public class NotificationItemView
         {
             notificationContent.setText(notificationDTO.text);
             notificationTime.setText(prettyTime.format(notificationDTO.createdAtUtc));
-
+            notificationUnreadFlag.setVisibility(notificationDTO.unread ? View.VISIBLE : View.INVISIBLE);
             if (notificationDTO.imageUrl != null)
             {
                 picasso.load(notificationDTO.imageUrl)
