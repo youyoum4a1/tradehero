@@ -299,7 +299,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
-            THToast.show(error.getMessage());
+            if (error != null)
+            {
+                THToast.show(error.getMessage());
+            }
         }
     }
 
