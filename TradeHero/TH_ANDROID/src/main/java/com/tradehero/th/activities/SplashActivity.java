@@ -1,9 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -16,10 +12,7 @@ import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
 import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.system.SystemStatusDTO;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
@@ -30,13 +23,10 @@ import com.tradehero.th.network.retrofit.RequestHeaders;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
-import com.tradehero.th.persistence.system.SystemStatusCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.UxModule;
-import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import dagger.Lazy;
 import java.util.Collections;
@@ -62,9 +52,6 @@ public class SplashActivity extends SherlockActivity
     @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DTOCacheUtil dtoCacheUtil;
-    @Inject SystemStatusCache systemStatusCache;
-    @Inject CurrentUserId currentUserId;
-    @Inject AlertDialogUtil alertDialogUtil;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -145,26 +132,23 @@ public class SplashActivity extends SherlockActivity
         else
         {
             boolean canLoad = canLoadApp();
-            if (checkOriginalApp())
+            if (canLoad)
             {
-                if (canLoad)
+                ActivityHelper.launchDashboard(SplashActivity.this);
+                finish();
+            }
+            else
+            {
+                timerToShiftActivity = new Timer();
+                timerToShiftActivity.schedule(new TimerTask()
                 {
-                    ActivityHelper.launchDashboard(SplashActivity.this);
-                    finish();
-                }
-                else
-                {
-                    timerToShiftActivity = new Timer();
-                    timerToShiftActivity.schedule(new TimerTask()
+                    public void run()
                     {
-                        public void run()
-                        {
-                            timerToShiftActivity.cancel();
-                            ActivityHelper.launchAuthentication(SplashActivity.this);
-                            finish();
-                        }
-                    }, 1500);
-                }
+                        timerToShiftActivity.cancel();
+                        ActivityHelper.launchAuthentication(SplashActivity.this);
+                        finish();
+                    }
+                }, 1500);
             }
         }
     }
@@ -192,62 +176,6 @@ public class SplashActivity extends SherlockActivity
             }
         }
         return canLoad;
-    }
-
-    private boolean checkOriginalApp()
-    {
-        if (Constants.TAP_STREAM_TYPE.marketSegment == MarketSegment.ROW)
-        {
-            // at this point, if user is already logged in, currentUserId and SystemStatusDTO is set
-            final SystemStatusDTO systemStatusDTO = systemStatusCache.get(currentUserId.toUserBaseKey());
-            if (systemStatusDTO != null)
-            {
-                String packageName = getPackageName();
-                if (systemStatusDTO.androidAppPackageNameInUse != null && !packageName.equalsIgnoreCase(systemStatusDTO.androidAppPackageNameInUse))
-                {
-                    runOnUiThread(new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            alertDialogUtil.popWithOkCancelButton(SplashActivity.this,
-                                    R.string.restore_original_app_title, R.string.restore_original_app_description,
-                                    R.string.update_now, R.string.exit_app,
-                                    new DialogInterface.OnClickListener()
-                                    {
-                                        @Override public void onClick(DialogInterface dialog, int which)
-                                        {
-                                            try
-                                            {
-                                                THToast.show(R.string.update_guide);
-                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
-                                                        "market://details?id=" + systemStatusDTO.androidAppPackageNameInUse)));
-                                            }
-                                            catch (ActivityNotFoundException ex)
-                                            {
-                                                startActivity(new Intent(Intent.ACTION_VIEW,
-                                                        Uri.parse("https://play.google.com/store/apps/details?id="
-                                                                + systemStatusDTO.androidAppPackageNameInUse)));
-                                            }
-                                        }
-                                    },
-                                    new DialogInterface.OnClickListener()
-                                    {
-                                        @Override public void onClick(DialogInterface dialog, int which)
-                                        {
-                                            Intent intent = new Intent(Intent.ACTION_MAIN);
-                                            intent.addCategory(Intent.CATEGORY_HOME);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            SplashActivity.this.startActivity(intent);
-                                        }
-                                    }
-                            );
-                        }
-                    });
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     @Override protected void onDestroy()
