@@ -146,7 +146,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         {
             if (!url.startsWith("http"))
             {
-                url = NetworkConstants.TRADEHERO_PROD_ENDPOINT + url;
+                url = NetworkConstants.TRADEHERO_PROD_API_ENDPOINT + url;
             }
 
             Timber.d("url: %s", url);

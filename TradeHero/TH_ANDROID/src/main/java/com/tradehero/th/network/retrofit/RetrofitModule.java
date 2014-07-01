@@ -26,6 +26,7 @@ import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
 import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.network.service.FollowerService;
+import com.tradehero.th.network.service.HomeService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
 import com.tradehero.th.network.service.MessageService;
@@ -199,6 +200,13 @@ public class RetrofitModule
     @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
     {
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
+    }
+    @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)
+    {
+        return builder.setServer(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
+                .setRequestInterceptor(requestHeaders)
+                .build()
+                .create(HomeService.class);
     }
     //</editor-fold>
 
