@@ -62,6 +62,8 @@
 
   <color name="grid_item_bg_border">#88000000</color>
 
+  <color name="loading_progress_background">#ea2c2c2c</color>
+
   <string-array name="rangeColors2" translatable="false">
     <item>#FF0C2B</item>
     <item>#FF1D0C</item>
