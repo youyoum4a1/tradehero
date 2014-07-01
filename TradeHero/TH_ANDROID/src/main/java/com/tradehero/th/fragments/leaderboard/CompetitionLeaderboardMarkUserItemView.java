@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
@@ -46,9 +48,10 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         return super.getLbmuPlCurrencyDisplay();
     }
 
-    @Override protected void pushLeaderboardPositionListFragment(Bundle bundle)
+    @Override protected void pushLeaderboardPositionListFragment(GetPositionsDTOKey getPositionsDTOKey, LeaderboardDefDTO leaderboardDefDTO)
     {
         // leaderboard mark user id, to get marking user information
+        Bundle bundle = new Bundle();
         CompetitionLeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, leaderboardItem.getLeaderboardMarkUserId());
         CompetitionLeaderboardPositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
         CompetitionLeaderboardPositionListFragment.putProviderId(bundle, providerDTO.getProviderId());

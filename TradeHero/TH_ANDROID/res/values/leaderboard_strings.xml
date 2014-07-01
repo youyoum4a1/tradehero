@@ -63,4 +63,6 @@
   <string name="follower_type_free">Free Follower(s)</string>
   <string name="follower_type_all">All Follower(s)</string>
 
+  <string name="leaderboard_friends_position_failed">Sorry, there\'s not enough information to show this user\'s positions.</string>
+
 </resources>
