@@ -19,13 +19,13 @@ public class ResponseErrorCodeTest
     {
         assertEquals(
                 ResponseErrorCode.OutDatedVersion,
-                ResponseErrorCode.getByCode(ResponseErrorCode.OutDatedVersion.toString()));
+                ResponseErrorCode.getByCode(ResponseErrorCode.OutDatedVersion.name()));
     }
 
     @Test public void canGetExpiredToken()
     {
         assertEquals(
                 ResponseErrorCode.ExpiredSocialToken,
-                ResponseErrorCode.getByCode(ResponseErrorCode.ExpiredSocialToken.toString()));
+                ResponseErrorCode.getByCode(ResponseErrorCode.ExpiredSocialToken.name()));
     }
 }
