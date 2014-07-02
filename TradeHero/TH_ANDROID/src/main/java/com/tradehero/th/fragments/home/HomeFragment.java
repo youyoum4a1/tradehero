@@ -8,6 +8,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -112,7 +113,7 @@ public class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    @Override public void onPrepareOptionsMenu(Menu menu)
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
@@ -121,7 +122,8 @@ public class HomeFragment extends BaseWebViewFragment
         actionBar.setTitle(R.string.dashboard_home);
         actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         actionBar.setHomeButtonEnabled(true);
-        super.onPrepareOptionsMenu(menu);
+
+        inflater.inflate(R.menu.menu_refresh_button, menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -130,6 +132,10 @@ public class HomeFragment extends BaseWebViewFragment
         {
             case android.R.id.home:
                 resideMenu.openMenu();
+                return true;
+            case R.id.btn_fresh:
+                homeContentCache.invalidate(currentUserId.toUserBaseKey());
+                reloadWebView();
                 return true;
         }
         return super.onOptionsItemSelected(item);
