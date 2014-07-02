@@ -84,6 +84,7 @@ public class THWebViewClient extends WebViewClient
             return true;
         }
 
+        view.loadUrl(url);
         Timber.d("shouldOverrideUrlLoading Simple passing of URL");
         return super.shouldOverrideUrlLoading(view, url);
     }
