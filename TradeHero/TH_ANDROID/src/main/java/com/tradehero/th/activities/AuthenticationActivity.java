@@ -1,11 +1,13 @@
 package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -173,6 +175,8 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                     || view.getId() == R.id.authentication_by_sign_up_back_button
                     || view.getId() == R.id.authentication_by_sign_in_button)
             {
+                InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 setCurrentFragmentByPopBack(fragmentClass);
             }
             else
