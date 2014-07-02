@@ -17,7 +17,6 @@ import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -76,7 +75,6 @@ public class LeaderboardFilterFragment extends DashboardFragment
         inflater.inflate(R.menu.leaderboard_filter_menu, menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setTitle(getString(R.string.leaderboard_filter_menu_title));
 
         super.onCreateOptionsMenu(menu, inflater);

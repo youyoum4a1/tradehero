@@ -34,12 +34,6 @@ public class PushableTimelineFragment extends TimelineFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
-        this.actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE);
-
-        //followingStamp = menu.findItem(R.id.ic_following);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

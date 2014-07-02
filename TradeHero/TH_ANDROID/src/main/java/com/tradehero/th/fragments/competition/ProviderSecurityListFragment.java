@@ -59,7 +59,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
 
-    ActionBar actionBar;
     private MenuItem wizardButton;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
@@ -101,8 +100,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.securityListFragmentTitleResId > 0)
         {
             actionBar.setTitle(providerSpecificResourcesDTO.securityListFragmentTitleResId);

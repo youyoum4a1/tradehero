@@ -45,7 +45,6 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @InjectView(R.id.help_videos_list) AbsListView videoListView;
     @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
-    private ActionBar actionBar;
     private HelpVideoIdList helpVideoIds;
     private DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList> helpVideoListCacheListener;
     private ProviderVideoAdapter providerVideoAdapter;
@@ -81,17 +80,8 @@ public class ProviderVideoListFragment extends CompetitionFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         displayActionBarTitle();
-
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-        actionBar = null;
     }
     //</editor-fold>
 
@@ -166,6 +156,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private void displayActionBarTitle()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoListFragmentTitleResId > 0)
