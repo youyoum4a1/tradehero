@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.settings;
 import android.content.Context;
 import android.view.LayoutInflater;
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.R;
+import com.tradehero.thm.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
