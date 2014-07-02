@@ -64,7 +64,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionRefreshListener;
     private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
 
-    //@InjectView(android.R.id.list) SwipeListView watchlistListView;
     @InjectView(R.id.watchlist_position_list_header) WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
     @InjectView(R.id.pull_to_refresh_watchlist_listview) PullToRefreshSwipeListView watchlistPositionListView;
 
@@ -184,10 +183,6 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     private void initPullToRefreshListView(View view)
     {
-        // wrong usage
-        //((ViewGroup) view).removeView(watchlistListView);
-        //watchlistPositionListView.setRefreshableView(watchlistListView);
-
         watchlistPositionListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<SwipeListView>()
         {
             @Override public void onRefresh(PullToRefreshBase<SwipeListView> refreshView)
@@ -216,7 +211,6 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         inflater.inflate(R.menu.position_watchlist_menu, menu);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         actionBar.setTitle(getString(R.string.watchlist_title));
         super.onCreateOptionsMenu(menu, inflater);
     }

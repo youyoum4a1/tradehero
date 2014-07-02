@@ -59,7 +59,7 @@ import timber.log.Timber;
 
 @Routable("providers")
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
-    implements WithTutorial,View.OnClickListener
+        implements WithTutorial, View.OnClickListener
 {
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject Lazy<ProviderListCache> providerListCache;
@@ -143,22 +143,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.menu_search_button, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.social_search_menu, menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.dashboard_community);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-
-        MenuItem item = menu.findItem(R.id.btn_add);
-        if (item != null)
-        {
-            item.setEnabled(true);
-            item.setVisible(true);
-        }
-
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -166,10 +155,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         // TODO switch sorting type for leaderboard
         switch (item.getItemId())
         {
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
-                return true;
-
             case R.id.btn_search:
                 pushSearchFragment();
                 return true;
@@ -456,9 +441,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void pushInvitationFragment()
     {
-        Bundle args = new Bundle();
-        FriendsInvitationFragment.putKeyShowHomeAsUp(args, true);
-        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class, args);
+        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
     }
 
     //</editor-fold>

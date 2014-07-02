@@ -55,7 +55,6 @@ import timber.log.Timber;
 )
 public class MainCompetitionFragment extends CompetitionFragment
 {
-    private ActionBar actionBar;
     private ProgressBar progressBar;
     AbsListView listView;
     private CompetitionZoneListItemAdapter competitionZoneListItemAdapter;
@@ -107,19 +106,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME);
         displayActionBarTitle();
-
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-        this.actionBar = null;
     }
     //</editor-fold>
 
@@ -251,22 +239,24 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void displayActionBarTitle()
     {
-        if (this.actionBar != null)
+
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (actionBar != null)
         {
             if (providerDTO != null
                     && providerDTO.specificResources != null
                     && providerDTO.specificResources.mainCompetitionFragmentTitleResId > 0)
             {
-                this.actionBar.setTitle(
+                actionBar.setTitle(
                         providerDTO.specificResources.mainCompetitionFragmentTitleResId);
             }
             else if (this.providerDTO == null || this.providerDTO.name == null)
             {
-                this.actionBar.setTitle("");
+                actionBar.setTitle("");
             }
             else
             {
-                this.actionBar.setTitle(this.providerDTO.name);
+                actionBar.setTitle(this.providerDTO.name);
             }
         }
     }

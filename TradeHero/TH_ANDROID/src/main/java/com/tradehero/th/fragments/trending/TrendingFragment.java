@@ -81,7 +81,6 @@ public class TrendingFragment extends SecurityListFragment
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject THLocalyticsSession localyticsSession;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
 
@@ -175,15 +174,9 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        //THLog.i(TAG, "onCreateOptionsMenu");
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.trending_header);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        actionBar.setHomeButtonEnabled(true);
-        inflater.inflate(R.menu.menu_search_button, menu);
+        inflater.inflate(R.menu.search_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -194,9 +187,6 @@ public class TrendingFragment extends SecurityListFragment
         {
             case R.id.btn_search:
                 pushSearchIn();
-                return true;
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
                 return true;
         }
         return super.onOptionsItemSelected(item);

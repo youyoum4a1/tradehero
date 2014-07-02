@@ -400,11 +400,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         inflater.inflate(R.menu.buy_sell_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        //inflater.inflate(R.menu.buy_sell_menu_toggle, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)

@@ -8,8 +8,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -36,7 +36,6 @@ public class HomeFragment extends BaseWebViewFragment
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject @LanguageCode String languageCode;
-    @Inject ResideMenu resideMenu;
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
     private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
@@ -112,24 +111,20 @@ public class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    @Override public void onPrepareOptionsMenu(Menu menu)
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.dashboard_home);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        actionBar.setHomeButtonEnabled(true);
-        super.onPrepareOptionsMenu(menu);
+        inflater.inflate(R.menu.menu_refresh_button, menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
         {
-            case android.R.id.home:
-                resideMenu.openMenu();
+            case R.id.btn_fresh:
+                homeContentCache.invalidate(currentUserId.toUserBaseKey());
+                reloadWebView();
                 return true;
         }
         return super.onOptionsItemSelected(item);
