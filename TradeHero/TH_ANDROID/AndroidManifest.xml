@@ -117,6 +117,7 @@
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_portfolio" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_user" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_providers" android:pathPattern=".*"/>
       </intent-filter>
     </activity>
 
