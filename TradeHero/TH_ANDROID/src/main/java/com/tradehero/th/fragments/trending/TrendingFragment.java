@@ -13,7 +13,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -36,6 +35,7 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -428,20 +428,12 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleResetPortfolioItemOnClick()
     {
-        if (userInteractor != null)
-        {
-            // TODO
-            //userInteractor.conditionalPopBuyResetPortfolio();
-        }
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
     }
 
     private void handleExtraCashItemOnClick()
     {
-        if (userInteractor != null)
-        {
-            // TODO
-            //userInteractor.conditionalPopBuyVirtualDollars();
-        }
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
     }
 
     private void handleEarnCreditItemOnClick()
