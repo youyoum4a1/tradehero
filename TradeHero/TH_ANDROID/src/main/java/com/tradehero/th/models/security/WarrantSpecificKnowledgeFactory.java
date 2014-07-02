@@ -28,7 +28,8 @@ import org.jetbrains.annotations.NotNull;
     public void add(ProviderId providerId, OwnedPortfolioId applicableOwnedPortfolioId)
     {
         ProviderSpecificKnowledgeDTO knowledgeDTO = providerSpecificKnowledgeFactory.createKnowledge(providerId);
-        if (knowledgeDTO != null && knowledgeDTO.includeProviderPortfolioOnWarrants)
+        if (knowledgeDTO != null && knowledgeDTO.includeProviderPortfolioOnWarrants != null &&
+                knowledgeDTO.includeProviderPortfolioOnWarrants)
         {
             warrantUsingProviders.put(providerId, applicableOwnedPortfolioId);
         }
