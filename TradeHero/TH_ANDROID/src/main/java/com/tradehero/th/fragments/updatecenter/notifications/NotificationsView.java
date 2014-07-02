@@ -182,7 +182,7 @@ public class NotificationsView extends BetterViewAnimator
         fetchNextPageIfNecessary(false);
     }
 
-    private void fetchNextPageIfNecessary(boolean force)
+    public void fetchNextPageIfNecessary(boolean force)
     {
         detachNotificationListFetchTask();
 
@@ -234,6 +234,7 @@ public class NotificationsView extends BetterViewAnimator
         PaginatedNotificationListKey firstPage = new PaginatedNotificationListKey(notificationListKey, 1);
         notificationListCache.get().register(firstPage, notificationListRefreshListener);
         notificationListCache.get().getOrFetchAsync(firstPage, true);
+        requestUpdateTabCounter();
     }
 
     private void detachNotificationListFetchTask()
@@ -263,27 +264,6 @@ public class NotificationsView extends BetterViewAnimator
                 loading = true;
 
                 fetchNextPageIfNecessary();
-            }
-
-            updateReadStatus(firstVisibleItem, visibleItemCount);
-        }
-    }
-
-    private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
-    {
-        int maxItemId = Math.min(firstVisibleItem + visibleItemCount, notificationListAdapter.getCount());
-        for (int i = firstVisibleItem; i < maxItemId; ++i)
-        {
-            Object o = notificationListAdapter.getItem(i);
-            if (o instanceof NotificationKey)
-            {
-                NotificationKey notificationKey = (NotificationKey) o;
-                NotificationDTO notificationDTO = notificationCache.get().get(notificationKey);
-
-                if (notificationDTO != null && notificationDTO.unread)
-                {
-                    reportNotificationRead(notificationDTO.pushId);
-                }
             }
         }
     }
@@ -412,6 +392,10 @@ public class NotificationsView extends BetterViewAnimator
             middleCallbackMap.remove(pushId);
             callbackMap.remove(pushId);
             requestUpdateTabCounter();
+            if(notificationListAdapter!=null)
+            {
+                notificationListAdapter.notifyDataSetChanged();
+            }
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -454,6 +438,7 @@ public class NotificationsView extends BetterViewAnimator
                 {
                     NotificationClickHandler notificationClickHandler = new NotificationClickHandler(getContext(), notificationDTO);
                     notificationClickHandler.handleNotificationItemClicked();
+                    reportNotificationRead(notificationDTO.pushId);
                 }
             }
         }

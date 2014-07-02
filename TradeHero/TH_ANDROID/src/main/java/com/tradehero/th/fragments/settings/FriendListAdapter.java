@@ -16,6 +16,7 @@ import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFriendDTOView>
@@ -52,11 +53,12 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
 
     private void filterOutInvitedFriends(List<UserFriendsDTO> items)
     {
-        for (UserFriendsDTO userFriendsDTO : items)
-        {
+        ListIterator<UserFriendsDTO> listIterator = items.listIterator();
+        while (listIterator.hasNext()){
+            UserFriendsDTO userFriendsDTO = listIterator.next();
             if (userFriendsDTO != null && userFriendsDTO.alreadyInvited)
             {
-                items.remove(userFriendsDTO);
+                listIterator.remove();
             }
         }
     }

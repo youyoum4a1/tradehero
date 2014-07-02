@@ -5,17 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardUserDTO extends UserBaseDTO
     implements ExpandableItem
 {
-    public static final String LEADERBOARD_PERIOD_START_STRING = "LEADERBOARD_PERIOD_START_STRING";
     private static final String LEADERBOARD_USER_POSITION = "LEADERBOARD_USER_POSITION";
     private static final String LEADERBOARD_ID = "LEADERBOARD_ID";
     private static final String LEADERBOARD_INCLUDE_FOF = "LEADERBOARD_INCLUDE_FOF";
@@ -67,9 +69,32 @@ public class LeaderboardUserDTO extends UserBaseDTO
         super();
     }
 
-    public LeaderboardMarkUserId getLeaderboardMarkUserId()
+    @Nullable public GetPositionsDTOKey getGetPositionsDTOKey()
     {
-        return new LeaderboardMarkUserId((int) lbmuId);
+        GetPositionsDTOKey key = getLeaderboardMarkUserId();
+        if (key != null)
+        {
+            return key;
+        }
+        return getOwnedPortfolioId();
+    }
+
+    @Nullable public LeaderboardMarkUserId getLeaderboardMarkUserId()
+    {
+        if (lbmuId > 0)
+        {
+            return new LeaderboardMarkUserId((int) lbmuId);
+        }
+        return null;
+    }
+
+    @Nullable public OwnedPortfolioId getOwnedPortfolioId()
+    {
+        if (id > 0 && portfolioId > 0)
+        {
+            return new OwnedPortfolioId(id, portfolioId);
+        }
+        return null;
     }
 
     public LeaderboardUserId getLeaderboardUserId()

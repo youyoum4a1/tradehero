@@ -67,7 +67,6 @@
       android:layout_centerInParent="true"
       android:visibility="gone"
       android:background="@drawable/round_square"
-      android:alpha="0.75"
       />
 
 </RelativeLayout>

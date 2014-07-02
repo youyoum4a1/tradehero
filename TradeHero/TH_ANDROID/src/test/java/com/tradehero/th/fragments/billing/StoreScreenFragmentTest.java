@@ -18,12 +18,14 @@ public class StoreScreenFragmentTest
 
     @Before public void setUp()
     {
+        ShadowToast.reset();
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
         dashboardNavigator = activity.getDashboardNavigator();
     }
 
     @Test public void shouldNotToastAnythingOnStartUp()
     {
+        ShadowToast.reset();
         StoreScreenFragment storeScreenFragment = dashboardNavigator.pushFragment(StoreScreenFragment.class);
         assertThat(storeScreenFragment).isNotNull();
 

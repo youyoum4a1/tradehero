@@ -78,8 +78,7 @@
       android:gravity="center"
       android:background="@drawable/basic_light_grey_selector"
       android:addStatesFromChildren="true"
-      android:layout_alignParentLeft="true"
-      android:layout_marginLeft="0dp">
+      android:layout_alignParentLeft="true">
 
     <TextView
         android:layout_width="wrap_content"

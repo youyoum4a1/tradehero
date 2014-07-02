@@ -39,13 +39,15 @@ public class BingTranslationTokenTest extends BaseApiTest
     @Test public void testExpiresCorrect() throws IOException
     {
         TranslationToken token = normalMapper.readValue(bingTranslationTokenBody1Stream, TranslationToken.class);
-        assertEquals(600, ((BingTranslationToken) token).getExpiresInSeconds());
+        assertThat(((BingTranslationToken) token).getExpiresInSeconds()).isLessThanOrEqualTo(600);
+        assertThat(((BingTranslationToken) token).getExpiresInSeconds()).isGreaterThanOrEqualTo(599);
     }
 
     @Test public void testExpiresCorrectAfter1Second() throws IOException, InterruptedException
     {
         TranslationToken token = normalMapper.readValue(bingTranslationTokenBody1Stream, TranslationToken.class);
-        Thread.sleep(800);
-        assertEquals(599, ((BingTranslationToken) token).getExpiresInSeconds());
+        Thread.sleep(1800);
+        assertThat(((BingTranslationToken) token).getExpiresInSeconds()).isLessThanOrEqualTo(598);
+        assertThat(((BingTranslationToken) token).getExpiresInSeconds()).isGreaterThanOrEqualTo(596);
     }
 }

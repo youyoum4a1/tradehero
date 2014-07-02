@@ -12,16 +12,19 @@ import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
+import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class HomeFragment extends BaseWebViewFragment
 {
@@ -32,6 +35,7 @@ public class HomeFragment extends BaseWebViewFragment
     @Inject @LanguageCode String languageCode;
     @Inject ResideMenu resideMenu;
     @Inject CurrentUserId currentUserId;
+    @Inject HomeContentCache homeContentCache;
 
     @Override protected int getLayoutResId()
     {
@@ -52,6 +56,7 @@ public class HomeFragment extends BaseWebViewFragment
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
+        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
         super.onDestroyView();
     }
 
@@ -66,9 +71,17 @@ public class HomeFragment extends BaseWebViewFragment
 
         String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
 
-        loadUrl(appHomeLink, additionalHeaders);
+        HomeContentDTO homeContentDTO = homeContentCache.get(currentUserId.toUserBaseKey());
+        if (homeContentDTO != null)
+        {
+            Timber.d("Getting home app data from cache!");
+            webView.loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
+        }
+        else
+        {
+            loadUrl(appHomeLink, additionalHeaders);
+        }
     }
-
 
     @Override public void onPrepareOptionsMenu(Menu menu)
     {

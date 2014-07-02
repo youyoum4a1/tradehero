@@ -17,6 +17,7 @@ import org.robolectric.Robolectric;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assume.assumeTrue;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class TradeListFragmentTest
@@ -44,12 +45,9 @@ public class TradeListFragmentTest
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldThrowIllegalArgumentOnInvalidArgsKey()
+    public void ifIntelliJShouldThrowIllegalArgumentOnInvalidArgsKey()
     {
-        if (!TestConstants.IS_INTELLIJ)
-        {
-            throw new IllegalArgumentException();
-        }
+        assumeTrue(TestConstants.IS_INTELLIJ);
         Bundle args = new Bundle();
         tradeListFragment = dashboardNavigator.pushFragment(TradeListFragment.class, args);
     }

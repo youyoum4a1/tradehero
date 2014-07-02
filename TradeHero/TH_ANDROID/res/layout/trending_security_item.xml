@@ -23,7 +23,7 @@
       app:corner_radius="@dimen/grid_item_bg_radius"
       android:scaleType="centerCrop"
       tools:background="@color/red"
-      android:visibility="visible"
+      android:visibility="gone"
       />
 
   <TextView
@@ -74,7 +74,7 @@
       android:layout_below="@id/exchange_symbol"
       android:layout_centerHorizontal="true"
       android:orientation="horizontal"
-      android:gravity="center_vertical"
+      android:gravity="center"
       >
 
     <TextView

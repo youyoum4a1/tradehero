@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import org.fest.util.VisibleForTesting;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,12 @@ public class DashboardNavigatorTest
     {
         DashboardActivity dashboardActivity = Robolectric.buildActivity(DashboardActivity.class).create().visible().get();
         dashboardNavigator = dashboardActivity.getDashboardNavigator();
+    }
+
+    @After public void tearDown()
+    {
+        dashboardNavigator.popFragment();
+        dashboardNavigator = null;
     }
 
     @Test public void shouldAbleToNavigateBetweenFragments()

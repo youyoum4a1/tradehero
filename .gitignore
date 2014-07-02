@@ -42,6 +42,7 @@ local.properties
 # PDT-specific
 .buildpath
 *.class
+**/classes
 
 # Package Files #
 *.war

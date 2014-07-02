@@ -35,6 +35,7 @@ public class PreferenceModule
     private static final String PREF_RESET_HELP_SCREENS = "PREF_RESET_HELP_SCREENS";
     private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_PUSH_IDENTIFIER_SENT_FLAG";
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
+    private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
 
     @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
@@ -92,5 +93,10 @@ public class PreferenceModule
     @Provides @Singleton @BaiduPushDeviceIdentifierSentFlag BooleanPreference providePushIdentifierSentFlag(SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_PUSH_IDENTIFIER_SENT_FLAG, false);
+    }
+
+    @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, false);
     }
 }

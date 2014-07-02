@@ -13,7 +13,6 @@ public class NotificationsCenterFragment extends DashboardFragment
 {
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.notifications_center, container, false);
-        return view;
+        return inflater.inflate(R.layout.notifications_center, container, false);
     }
 }

@@ -2,26 +2,15 @@ package com.tradehero.th.api.social;
 
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
-import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HeroDTOList extends ArrayList<HeroDTO>
 {
     //<editor-fold desc="Constructors">
-    public HeroDTOList(int initialCapacity)
-    {
-        super(initialCapacity);
-    }
-
     public HeroDTOList()
     {
         super();
-    }
-
-    public HeroDTOList(Collection<? extends HeroDTO> c)
-    {
-        super(c);
     }
     //</editor-fold>
 
