@@ -119,13 +119,16 @@
   <style name="TradeHero.SocialAuthenticationButton"
       parent="TradeHero.ButtonTextShadow">
     <item name="android:textColor">@color/white</item>
-    <item name="android:textSize">@dimen/common_text_size_30</item>
+    <item name="android:textSize">@dimen/authentication_button_text_size</item>
     <item name="android:textStyle">bold</item>
-    <item name="android:layout_marginTop">@dimen/common_margin_15</item>
+    <item name="android:layout_marginTop">@dimen/authentication_button_vertical_margin</item>
+    <item name="android:layout_marginBottom">@dimen/authentication_button_vertical_margin</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:gravity">left|center_vertical</item>
-    <item name="android:drawablePadding">@dimen/common_margin_10</item>
+    <item name="android:drawablePadding">@dimen/authentication_button_drawable_padding</item>
+    <item name="android:paddingLeft">@dimen/authentication_button_horizontal_padding</item>
+    <item name="android:paddingRight">@dimen/authentication_button_horizontal_padding</item>
   </style>
 
   <style name="TradeHero.Dashboard" parent="TradeHero">

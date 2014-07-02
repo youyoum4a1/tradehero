@@ -14,8 +14,8 @@
       android:fillViewport="true"
       android:background="@drawable/authentication_bg"
       android:scrollbarStyle="outsideOverlay"
-      android:paddingLeft="@dimen/common_margin_60"
-      android:paddingRight="@dimen/common_margin_60"
+      android:paddingLeft="@dimen/authentication_horizontal_padding"
+      android:paddingRight="@dimen/authentication_horizontal_padding"
       android:layout_alignParentLeft="true"
       android:layout_alignParentTop="true"
       android:layout_above="@+id/authentication_by_sign_up_button"
@@ -31,10 +31,10 @@
           android:id="@+id/authentication_logo"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/common_margin_20"
-          android:layout_marginBottom="@dimen/common_margin_20"
-          android:layout_marginLeft="@dimen/common_margin_50"
-          android:layout_marginRight="@dimen/common_margin_50"
+          android:layout_marginTop="@dimen/authentication_logo_vertical_padding"
+          android:layout_marginBottom="@dimen/authentication_logo_vertical_padding"
+          android:layout_marginLeft="@dimen/authentication_logo_horizontal_padding"
+          android:layout_marginRight="@dimen/authentication_logo_horizontal_padding"
           android:src="@drawable/logo_text"
           android:contentDescription="@null"
           android:adjustViewBounds="true"/>
@@ -56,7 +56,7 @@
           android:id="@+id/authentication_agreement"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/common_margin_10"
+          android:layout_marginTop="@dimen/authentication_agreement_vertical_padding"
           layout="@layout/authentication_agreement"
           />
 
@@ -86,7 +86,7 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:text="@string/new_to_tradehero"
-        android:textSize="@dimen/common_text_size_25"/>
+        android:textSize="@dimen/authentication_page_text_size"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
         android:text="@string/register_now"
         android:textColor="@color/timeline_action_button_text_color_pressed"
         android:textStyle="bold"
-        android:textSize="@dimen/common_text_size_25"/>
+        android:textSize="@dimen/authentication_page_text_size"/>
 
   </LinearLayout>
 
