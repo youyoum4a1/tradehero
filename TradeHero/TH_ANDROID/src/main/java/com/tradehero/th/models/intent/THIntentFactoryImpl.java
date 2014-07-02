@@ -49,34 +49,50 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
         THIntent thIntent = null;
         if (factoryMap.containsKey(host))
         {
-            thIntent = factoryMap.get(host).create(intent);
-        }
-        else
-        {
-            // open with thRouter when url is not handlable by THIntent
-
-            // remove the protocol
-            String url = intent.getDataString();
-            Timber.d("Handling: %s", url);
-            url = url.substring("tradehero://".length());
-
-            // ignore query for now, TODO handle deeplink query
-            int queryMark = url.indexOf('?');
-            if (queryMark > 0)
-            {
-                url = url.substring(0, queryMark);
-            }
-
             try
             {
-                thRouter.open(url, currentActivityHolder.getCurrentActivity());
+                thIntent = factoryMap.get(host).create(intent);
             }
             catch (Exception ex)
             {
-                Timber.e("%s host is unhandled %s", host, intent.getDataString(), new Exception());
+                Timber.d("Something wrong with old THIntent" + ex.getMessage());
             }
+            finally
+            {
+                handleUrlByRouter(intent, host);
+            }
+        }
+        else
+        {
+            handleUrlByRouter(intent, host);
         }
 
         return thIntent;
+    }
+
+    private void handleUrlByRouter(Intent intent, String host)
+    {
+        // open with thRouter when url is not handlable by THIntent
+
+        // remove the protocol
+        String url = intent.getDataString();
+        Timber.d("Handling: %s", url);
+        url = url.substring("tradehero://".length());
+
+        // ignore query for now, TODO handle deeplink query
+        int queryMark = url.indexOf('?');
+        if (queryMark > 0)
+        {
+            url = url.substring(0, queryMark);
+        }
+
+        try
+        {
+            thRouter.open(url, currentActivityHolder.getCurrentActivity());
+        }
+        catch (Exception ex)
+        {
+            Timber.e("%s host is unhandled %s", host, intent.getDataString(), new Exception());
+        }
     }
 }
