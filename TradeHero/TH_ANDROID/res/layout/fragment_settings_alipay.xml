@@ -39,7 +39,7 @@
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:validDrawableRight="@drawable/tick_green"
 
-        app:minSize="1"
+        app:minTextLength="1"
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="500"/>
@@ -65,7 +65,7 @@
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
         style="@style/TradeHero.Authentication.EditText"
-        app:minSize="1"
+        app:minTextLength="1"
         />
 
     <Button

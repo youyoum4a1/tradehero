@@ -175,19 +175,19 @@ public class ProfileInfoView extends LinearLayout
     {
         if (email != null)
         {
-            email.addListener(listener);
+            email.setListener(listener);
         }
         if (password != null)
         {
-            password.addListener(listener);
+            password.setListener(listener);
         }
         if (confirmPassword != null)
         {
-            confirmPassword.addListener(listener);
+            confirmPassword.setListener(listener);
         }
         if (displayName != null)
         {
-            displayName.addListener(listener);
+            displayName.setListener(listener);
         }
     }
 
@@ -195,19 +195,19 @@ public class ProfileInfoView extends LinearLayout
     {
         if (email != null)
         {
-            email.removeAllListeners();
+            email.setListener(null);
         }
         if (password != null)
         {
-            password.removeAllListeners();
+            password.setListener(null);
         }
         if (confirmPassword != null)
         {
-            confirmPassword.removeAllListeners();
+            confirmPassword.setListener(null);
         }
         if (displayName != null)
         {
-            displayName.removeAllListeners();
+            displayName.setListener(null);
         }
     }
 
