@@ -18,7 +18,6 @@ public class StoreScreenFragmentTest
 
     @Before public void setUp()
     {
-        ShadowToast.reset();
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
         dashboardNavigator = activity.getDashboardNavigator();
     }

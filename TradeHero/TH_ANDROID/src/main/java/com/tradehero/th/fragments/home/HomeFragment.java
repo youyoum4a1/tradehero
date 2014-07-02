@@ -8,12 +8,15 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
@@ -24,6 +27,7 @@ import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class HomeFragment extends BaseWebViewFragment
@@ -36,6 +40,7 @@ public class HomeFragment extends BaseWebViewFragment
     @Inject ResideMenu resideMenu;
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
+    private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
 
     @Override protected int getLayoutResId()
     {
@@ -50,7 +55,27 @@ public class HomeFragment extends BaseWebViewFragment
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setSupportZoom(false);
         webView.getSettings().setUseWideViewPort(false);
-        thWebViewClient.setClearCacheAfterFinishRequest(false);
+
+        detachHomeCacheListener();
+        homeContentCacheListener = createHomeContentCacheListener();
+        homeContentCache.register(currentUserId.toUserBaseKey(), homeContentCacheListener);
+        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+    }
+
+    @Override public void onStop()
+    {
+        detachHomeCacheListener();
+        super.onStop();
+    }
+
+    private void detachHomeCacheListener()
+    {
+        homeContentCache.unregister(currentUserId.toUserBaseKey(), homeContentCacheListener);
+    }
+
+    private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> createHomeContentCacheListener()
+    {
+        return new HomeContentCacheListener();
     }
 
     @Override public void onDestroyView()
@@ -64,6 +89,11 @@ public class HomeFragment extends BaseWebViewFragment
     {
         super.onActivityCreated(savedInstanceState);
 
+        reloadWebView();
+    }
+
+    private void reloadWebView()
+    {
         Map<String, String> additionalHeaders = new HashMap<>();
         additionalHeaders.put(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
         additionalHeaders.put(Constants.TH_CLIENT_VERSION, VersionUtils.getVersionId(getActivity()));
@@ -83,7 +113,7 @@ public class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    @Override public void onPrepareOptionsMenu(Menu menu)
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
@@ -92,7 +122,8 @@ public class HomeFragment extends BaseWebViewFragment
         actionBar.setTitle(R.string.dashboard_home);
         actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         actionBar.setHomeButtonEnabled(true);
-        super.onPrepareOptionsMenu(menu);
+
+        inflater.inflate(R.menu.menu_refresh_button, menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -101,6 +132,10 @@ public class HomeFragment extends BaseWebViewFragment
         {
             case android.R.id.home:
                 resideMenu.openMenu();
+                return true;
+            case R.id.btn_fresh:
+                homeContentCache.invalidate(currentUserId.toUserBaseKey());
+                reloadWebView();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -115,7 +150,7 @@ public class HomeFragment extends BaseWebViewFragment
             activity.setProgress(newProgress * 100);
         }
 
-        if (mainContentWrapper != null && newProgress > 90)
+        if (mainContentWrapper != null && newProgress > 50)
         {
             mainContentWrapper.setDisplayedChildByLayoutId(R.id.webview);
         }
@@ -124,5 +159,19 @@ public class HomeFragment extends BaseWebViewFragment
     public String createTypedAuthParameters(CredentialsDTO credentialsDTO)
     {
         return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
+    }
+
+
+    private class HomeContentCacheListener implements DTOCacheNew.Listener<UserBaseKey, HomeContentDTO>
+    {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
+        {
+            reloadWebView();
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            // do nothing
+        }
     }
 }
