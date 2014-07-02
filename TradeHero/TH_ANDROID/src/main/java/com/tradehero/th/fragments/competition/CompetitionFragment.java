@@ -41,7 +41,8 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
 
         thRouter.inject(this, getArguments());
-        if (this.providerId == null)
+        // TODO improve thRouter so that it leaves the field empty instead of filling it with empty data.
+        if (this.providerId == null || this.providerId.key == null)
         {
             this.providerId = getProviderId(getArguments());
         }
