@@ -201,6 +201,7 @@ public class RetrofitModule
     {
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
+
     @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)
     {
         return builder.setServer(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
