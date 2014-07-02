@@ -134,11 +134,7 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setOnRefreshListener(notificationPullToRefreshListener);
 
         fetchNextPageIfNecessary();
-
-        Timber.d("windy onAttach to Windows");
     }
-
-
 
     private void createOnRefreshListener()
     {
@@ -178,7 +174,6 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setOnItemClickListener(null);
 
         ButterKnife.reset(this);
-        Timber.d("windy Detached to Windows");
         super.onDetachedFromWindow();
     }
 
@@ -269,27 +264,6 @@ public class NotificationsView extends BetterViewAnimator
                 loading = true;
 
                 fetchNextPageIfNecessary();
-            }
-
-            updateReadStatus(firstVisibleItem, visibleItemCount);
-        }
-    }
-
-    private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
-    {
-        int maxItemId = Math.min(firstVisibleItem + visibleItemCount, notificationListAdapter.getCount());
-        for (int i = firstVisibleItem; i < maxItemId; ++i)
-        {
-            Object o = notificationListAdapter.getItem(i);
-            if (o instanceof NotificationKey)
-            {
-                NotificationKey notificationKey = (NotificationKey) o;
-                NotificationDTO notificationDTO = notificationCache.get().get(notificationKey);
-
-                if (notificationDTO != null && notificationDTO.unread)
-                {
-                    //reportNotificationRead(notificationDTO.pushId);
-                }
             }
         }
     }

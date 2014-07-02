@@ -54,15 +54,9 @@ public class MeTimelineFragment extends TimelineFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.timeline_menu, menu);
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(
-                (ActionBar.DISPLAY_USE_LOGO)
-                        | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setHomeButtonEnabled(true);
         displayActionBarTitle();
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        //super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -70,12 +64,7 @@ public class MeTimelineFragment extends TimelineFragment
         switch (item.getItemId())
         {
             case R.id.menu_edit:
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
-                getDashboardNavigator().pushFragment(SettingsProfileFragment.class, bundle);
-                return true;
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
+                getDashboardNavigator().pushFragment(SettingsProfileFragment.class);
                 return true;
         }
         return super.onOptionsItemSelected(item);

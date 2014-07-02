@@ -1,8 +1,11 @@
 package com.tradehero.th.models.provider;
 
+import org.jetbrains.annotations.Nullable;
+
 public class ProviderSpecificKnowledgeDTO
 {
-    public Boolean includeProviderPortfolioOnWarrants;
+    @Nullable public Boolean includeProviderPortfolioOnWarrants;
+    @Nullable public Boolean hasWizard;
 
     //<editor-fold desc="Constructors">
     public ProviderSpecificKnowledgeDTO()

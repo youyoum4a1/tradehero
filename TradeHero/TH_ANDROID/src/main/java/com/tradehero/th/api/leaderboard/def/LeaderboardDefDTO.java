@@ -17,8 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class LeaderboardDefDTO extends ExtendedDTO
 {
-    public static final String LEADERBOARD_DEF_TIME_RESTRICTED = "LEADERBOARD_DEF_TIME_RESTRICTED";
-
     public int id;
     public String name;
 

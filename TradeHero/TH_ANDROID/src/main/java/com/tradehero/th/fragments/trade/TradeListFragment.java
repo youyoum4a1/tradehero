@@ -10,8 +10,6 @@ import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.thoj.route.Routable;
 import com.thoj.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -65,8 +63,6 @@ public class TradeListFragment extends DashboardFragment
     @RouteProperty("userId") Integer routeUserId;
     @RouteProperty("portfolioId") Integer routePortfolioId;
     @RouteProperty("positionId") Integer routePositionId;
-
-    private ActionBar actionBar;
 
     protected PositionDTOKey positionDTOKey;
     protected PositionDTO positionDTO;
@@ -233,21 +229,13 @@ public class TradeListFragment extends DashboardFragment
         }
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        displayActionBarTitle();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             actionBar.setSubtitle(null);
         }
-        actionBar = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -340,7 +328,7 @@ public class TradeListFragment extends DashboardFragment
 
     public void displayActionBarTitle()
     {
-        ActionBar actionBarCopy = this.actionBar;
+        ActionBar actionBarCopy = getSherlockActivity().getSupportActionBar();
         if (actionBarCopy != null)
         {
             if (positionDTO == null || securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId)) == null)

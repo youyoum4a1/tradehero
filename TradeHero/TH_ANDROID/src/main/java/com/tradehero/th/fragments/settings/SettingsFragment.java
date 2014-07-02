@@ -20,7 +20,6 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
@@ -87,7 +86,6 @@ import timber.log.Timber;
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
-    public static final String KEY_SHOW_AS_HOME_UP = SettingsFragment.class.getName() + ".showAsHomeUp";
 
     @Inject THBillingInteractor billingInteractor;
     @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
@@ -281,43 +279,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
-        int flag = ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE;
-        if (!showHomeAsUp)
-        {
-            flag |= ActionBar.DISPLAY_USE_LOGO;
-            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        }
-        else
-        {
-            flag |= ActionBar.DISPLAY_HOME_AS_UP;
-        }
-        actionBar.setDisplayOptions(flag);
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle(getString(R.string.settings));
 
     }
     //</editor-fold>
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
-                if(showHomeAsUp)
-                {
-                    getNavigator().popFragment();
-                }
-                else
-                {
-                    resideMenuLazy.get().openMenu();
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override public void onDestroyView()
     {
@@ -985,9 +950,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleProfileClicked()
     {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
-        getNavigator().pushFragment(SettingsProfileFragment.class, bundle);
+        getNavigator().pushFragment(SettingsProfileFragment.class);
     }
 
     private void handlePaypalClicked()

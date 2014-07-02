@@ -4,6 +4,7 @@
   <string name="watchlist_not_enough_info">Not enough info yet</string>
 
   <string name="watchlist_title">Watchlist</string>
+  <string name="watchlist_add_new_title">Add New Watchlist</string>
   <string name="watchlist_add_title">Add to Watchlist</string>
   <string name="watchlist_edit_title">Edit in Watchlist</string>
 

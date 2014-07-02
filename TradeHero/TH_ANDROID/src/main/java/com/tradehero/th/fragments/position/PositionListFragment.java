@@ -33,7 +33,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
@@ -44,6 +43,7 @@ import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -344,26 +344,12 @@ public class PositionListFragment
 
     protected void pushSecurityFragment()
     {
-        getDashboardNavigator().goToTab(DashboardTabType.TRENDING);
-        // Need to handle the case when portfolio is for a competition
-        //if (shownPortfolio == null || shownPortfolio.providerId == null)
-        //{
-        //    getDashboardNavigator().goToTab(DashboardTabType.TRENDING);
-        //}
-        //else
-        //{
-        //    Bundle args = new Bundle();
-        //    ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        //    args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, shownPortfolio.getProviderIdKey().getArgs());
-        //    getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
-        //}
+        getDashboardNavigator().pushFragment(TrendingFragment.class);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.position_list_menu, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         super.onCreateOptionsMenu(menu, inflater);
         displayActionBarTitle();
     }

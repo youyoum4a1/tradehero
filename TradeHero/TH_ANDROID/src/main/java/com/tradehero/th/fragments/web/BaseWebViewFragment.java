@@ -22,7 +22,6 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     public static final String BUNDLE_KEY_URL = BaseWebViewFragment.class.getName() + ".url";
 
     protected WebView webView;
-    protected ActionBar actionBar;
 
     protected THIntentPassedListener parentTHIntentPassedListener;
     protected THIntentPassedListener thIntentPassedListener;
@@ -39,22 +38,6 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     }
 
     abstract protected int getLayoutResId();
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        this.actionBar = getSherlockActivity().getSupportActionBar();
-        this.actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        this.actionBar = null;
-        super.onDestroyOptionsMenu();
-    }
-
-    //</editor-fold>
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -145,7 +128,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         {
             if (!url.startsWith("http"))
             {
-                url = NetworkConstants.TRADEHERO_PROD_ENDPOINT + url;
+                url = NetworkConstants.TRADEHERO_PROD_API_ENDPOINT + url;
             }
 
             Timber.d("url: %s", url);

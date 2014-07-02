@@ -29,6 +29,8 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.provider.ProviderSpecificKnowledgeDTO;
+import com.tradehero.th.models.provider.ProviderSpecificKnowledgeFactory;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -45,9 +47,11 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @NotNull protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
+    protected ProviderSpecificKnowledgeDTO providerSpecificKnowledgeDTO;
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
     @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
+    @Inject ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
     private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
@@ -55,7 +59,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
 
-    ActionBar actionBar;
     private MenuItem wizardButton;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
@@ -80,6 +83,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             this.providerId = getProviderId(getArguments());
         }
         this.providerSpecificResourcesDTO = this.providerSpecificResourcesFactory.createResourcesDTO(providerId);
+        this.providerSpecificKnowledgeDTO = this.providerSpecificKnowledgeFactory.createKnowledge(providerId);
 
         this.providerCacheListener = createProviderCacheListener();
         this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
@@ -96,8 +100,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.securityListFragmentTitleResId > 0)
         {
             actionBar.setTitle(providerSpecificResourcesDTO.securityListFragmentTitleResId);
@@ -112,7 +115,16 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         wizardButton = menu.findItem(R.id.btn_wizard);
         if (wizardButton != null)
         {
-            wizardButton.setVisible(providerDTO != null && providerDTO.hasWizard());
+            boolean visible;
+            if (providerSpecificKnowledgeDTO != null && providerSpecificKnowledgeDTO.hasWizard != null)
+            {
+                visible = providerSpecificKnowledgeDTO.hasWizard;
+            }
+            else
+            {
+                visible = providerDTO != null && providerDTO.hasWizard();
+            }
+            wizardButton.setVisible(visible);
         }
     }
 

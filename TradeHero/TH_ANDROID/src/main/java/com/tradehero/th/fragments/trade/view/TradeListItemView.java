@@ -165,7 +165,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             int textResId = trade.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
             THSignedNumber tradeValue = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
-                    trade.unitPrice,
+                    trade.unitPrice * trade.exchangeRate,
                     THSignedNumber.WITHOUT_SIGN,
                     getCurrencyDisplay());
             return getContext().getString(
@@ -192,8 +192,8 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         if (trade != null)
         {
             return getContext().getString(
-                tradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
-                trade.quantityAfterTrade);
+                    tradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
+                    trade.quantityAfterTrade);
         }
         else
         {
@@ -335,10 +335,10 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         {
             THSignedNumber tradeValue = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
-                    trade.quantity * trade.unitPrice,
+                    trade.quantity * trade.unitPrice * trade.exchangeRate,
                     THSignedNumber.WITHOUT_SIGN,
                     getCurrencyDisplay());
-            return String.format("%s %s", getCurrencyDisplay(), tradeValue.toString());
+            return String.format("%s", tradeValue.toString());
         }
         else
         {
@@ -350,7 +350,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (this.commentSection != null && trade != null)
         {
-            this.commentSection.setVisibility( trade.commentText == null ? GONE : VISIBLE);
+            this.commentSection.setVisibility(trade.commentText == null ? GONE : VISIBLE);
         }
     }
 
@@ -380,7 +380,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         }
         else if (tradeItem.isLastTrade() && !position.isClosed())
         {
-           return position.unrealizedPLRefCcy;
+            return position.unrealizedPLRefCcy;
         }
         else
         {

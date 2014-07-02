@@ -14,12 +14,13 @@ public class StoreItemAdapter extends BaseAdapter
     public static final int POSITION_IN_APP_PURCHASES = 0;
     public static final int POSITION_BUY_VIRTUAL_DOLLARS = 1;
     public static final int POSITION_BUY_FOLLOW_CREDITS = 2;
-    public static final int POSITION_BUY_STOCK_ALERTS = 3;
-    public static final int POSITION_BUY_RESET_PORTFOLIO = 4;
-    public static final int POSITION_MANAGE_PURCHASES = 5;
-    public static final int POSITION_MANAGE_HEROES = 6;
-    public static final int POSITION_MANAGE_FOLLOWERS = 7;
-    public static final int POSITION_MANAGE_STOCK_ALERTS = 8;
+    //now alerts are free
+    public static final int POSITION_BUY_STOCK_ALERTS = 8;
+    public static final int POSITION_BUY_RESET_PORTFOLIO = 3;
+    public static final int POSITION_MANAGE_PURCHASES = 4;
+    public static final int POSITION_MANAGE_HEROES = 5;
+    public static final int POSITION_MANAGE_FOLLOWERS = 6;
+    public static final int POSITION_MANAGE_STOCK_ALERTS = 7;
     //</editor-fold>
 
     //<editor-fold desc="View Types">
@@ -48,7 +49,8 @@ public class StoreItemAdapter extends BaseAdapter
 
     @Override public int getCount()
     {
-        return 9;
+        //now alerts are free
+        return 8;
     }
 
     @Override public long getItemId(int i)

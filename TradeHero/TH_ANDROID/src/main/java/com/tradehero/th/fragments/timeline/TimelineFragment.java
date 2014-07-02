@@ -101,7 +101,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private UserProfileView userProfileView;
     private MainTimelineAdapter mainTimelineAdapter;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
-    protected ActionBar actionBar;
     @InjectRoute UserBaseKey shownUserBaseKey;
     protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
@@ -239,11 +238,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP
-                        | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setHomeButtonEnabled(true);
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -362,12 +356,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
         }
         super.onPause();
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        this.actionBar = null;
-        super.onDestroyOptionsMenu();
     }
 
     @Override public void onStop()
@@ -587,9 +575,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             userProfileView.display(shownProfile);
         }
-        if (this.actionBar != null)
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (actionBar != null)
         {
-            this.actionBar.setTitle(
+            actionBar.setTitle(
                     userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
         }
 
@@ -604,6 +593,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void displayActionBarTitle()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             if (shownProfile != null)
@@ -644,7 +634,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
                 shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item_2_0,
                 R.layout.user_profile_stat_view);
-        //shownUserBaseKey.key, R.layout.timeline_item_view);
         // TODO set the layouts
     }
 

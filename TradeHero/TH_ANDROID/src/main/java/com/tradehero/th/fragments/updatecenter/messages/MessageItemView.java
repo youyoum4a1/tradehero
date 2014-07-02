@@ -93,7 +93,7 @@ public class MessageItemView extends LinearLayout
             mMessageSubTitle.setText(messageHeaderDTO.subTitle);
             mMessageContent.setText(messageHeaderDTO.latestMessage);
             mMessageDate.setText(prettyTime.format(messageHeaderDTO.latestMessageAtUtc));
-            mUnreadFlag.setVisibility(messageHeaderDTO.unread ? View.VISIBLE : View.INVISIBLE);
+            mUnreadFlag.setVisibility(messageHeaderDTO.unread ? View.VISIBLE : View.GONE);
 
             resetMessageIcon();
             if (messageHeaderDTO.imageUrl != null && mMessageIcon != null)

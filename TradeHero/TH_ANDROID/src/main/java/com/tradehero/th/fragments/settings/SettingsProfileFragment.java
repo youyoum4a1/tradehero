@@ -10,10 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.thm.R;
@@ -23,7 +19,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -58,8 +53,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     //java.lang.IllegalArgumentException: Can only use lower 16 bits for requestCode
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
     private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
-
-    public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = SettingsProfileFragment.class.getName() + ".showButtonBack";
 
     protected Button updateButton;
     private ProfileInfoView profileView;
@@ -100,42 +93,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         updateButton.setOnClickListener(this);
 
         //signupButton.setOnTouchListener(this);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        Bundle args = getArguments();
-        boolean showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (showButtonBack)
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        }
-        else
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
-        }
-        actionBar.setDisplayHomeAsUpEnabled(showButtonBack);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                if (getActivity() instanceof DashboardNavigatorActivity)
-                {
-                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator().popFragment();
-                }
-                else
-                {
-                    Timber.e("Activity is not a DashboardNavigatorActivity", new Exception());
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onDestroyView()
@@ -364,7 +321,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     protected void askImageFromCamera()
     {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        //cameraIntent.setType("image/jpeg");
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 

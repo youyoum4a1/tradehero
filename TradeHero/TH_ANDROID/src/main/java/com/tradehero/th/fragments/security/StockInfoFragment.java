@@ -54,7 +54,6 @@ public class StockInfoFragment extends DashboardFragment
     private DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
 
-    private ActionBar actionBar;
     private MenuItem marketCloseIcon;
 
     private ViewPager topPager;
@@ -134,8 +133,6 @@ public class StockInfoFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.stock_info_menu, menu);
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         displayExchangeSymbol();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -296,6 +293,7 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayExchangeSymbol()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             if (securityId != null)

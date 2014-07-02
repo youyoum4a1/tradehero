@@ -24,6 +24,7 @@ public class StoreScreenFragmentTest
 
     @Test public void shouldNotToastAnythingOnStartUp()
     {
+        ShadowToast.reset();
         StoreScreenFragment storeScreenFragment = dashboardNavigator.pushFragment(StoreScreenFragment.class);
         assertThat(storeScreenFragment).isNotNull();
 

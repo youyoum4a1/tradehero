@@ -29,13 +29,14 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
     @InjectView(R.id.user_profile_trade_count_wrapper) @Optional protected View tradesCountWrapper;
     @InjectView(R.id.user_profile_trade_count) @Optional protected TextView tradesCount;
-    @InjectView(R.id.user_profile_exchanges_count_wrapper) @Optional protected View exchangesCountWrapper;
+    @InjectView(R.id.user_profile_exchanges_count_wrapper) @Optional protected View
+            exchangesCountWrapper;
     @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
 
-	@Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
-	private                                   Target         topBackgroundTarget;
-	private                                   Target         topDefaultBackgroundTarget;
-	protected                                 Runnable       displayTopViewBackgroundRunnable;
+    @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
+    private Target topBackgroundTarget;
+    private Target topDefaultBackgroundTarget;
+    protected Runnable displayTopViewBackgroundRunnable;
 
     public UserProfileDetailViewHolder(View view)
     {
@@ -46,14 +47,14 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
         super.initViews(view);
         topBackgroundTarget = new BackgroundTarget();
-		topDefaultBackgroundTarget = new DefaultBackgroundTarget();
+        topDefaultBackgroundTarget = new DefaultBackgroundTarget();
     }
 
     @Override public void detachViews()
     {
         super.detachViews();
         topBackgroundTarget = null;
-		topDefaultBackgroundTarget = null;
+        topDefaultBackgroundTarget = null;
         if (profileTop != null)
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
@@ -106,12 +107,16 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     public void loadDefaultBG()
     {
-        if (profileTop != null && topDefaultBackgroundTarget != null
-                && profileTop.getWidth() > 0 && profileTop.getHeight() > 0)
+        if (profileTop != null
+                && topDefaultBackgroundTarget != null
+                && profileTop.getWidth() > 0
+                && profileTop.getHeight() > 0)
         {
-            picasso.load(R.drawable.superman_facebook).transform(peopleBackgroundTransformation)
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(peopleBackgroundTransformation)
                     .resize(profileTop.getWidth(), profileTop.getHeight())
-                    .centerCrop().into(topDefaultBackgroundTarget);
+                    .centerCrop()
+                    .into(topDefaultBackgroundTarget);
         }
     }
 
@@ -121,8 +126,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null)
             {
-                firstLastName.setText(context.getString(
-                        R.string.user_profile_first_last_name_display,
+                firstLastName.setText(context.getString(R.string.user_profile_first_last_name_display,
                         userProfileDTO.firstName != null ? userProfileDTO.firstName : "",
                         userProfileDTO.lastName != null ? userProfileDTO.lastName : ""));
             }
@@ -160,20 +164,17 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 {
                     pl = 0.0;
                 }
-                THSignedNumber thPlSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_MONEY,
-                        pl,
-                        THSignedNumber.WITH_SIGN,
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
-                        THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
+                THSignedNumber thPlSinceInception =
+                        new THSignedNumber(THSignedNumber.TYPE_MONEY, pl, THSignedNumber.WITH_SIGN,
+                                SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
+                                THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
                 profitFromTrades.setText(thPlSinceInception.toString());
                 profitFromTrades.setTextColor(
                         context.getResources().getColor(thPlSinceInception.getColor()));
                 if (profitValue != null)
                 {
                     profitValue.setText(thPlSinceInception.toString());
-                    profitValue.setTextColor(
-                            context.getResources().getColor(thPlSinceInception.getColor()));
+                    profitValue.setTextColor(context.getResources().getColor(thPlSinceInception.getColor()));
                 }
             }
             else
@@ -195,8 +196,9 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thTotalWealth = new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                        userProfileDTO.portfolio.totalValue, THSignedNumber.WITHOUT_SIGN);
+                THSignedNumber thTotalWealth =
+                        new THSignedNumber(THSignedNumber.TYPE_MONEY, userProfileDTO.portfolio.totalValue,
+                                THSignedNumber.WITHOUT_SIGN);
                 totalWealth.setText(thTotalWealth.toString());
             }
             else
@@ -229,8 +231,9 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thCashOnHand = new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                        userProfileDTO.portfolio.cashBalance, THSignedNumber.WITHOUT_SIGN);
+                THSignedNumber thCashOnHand =
+                        new THSignedNumber(THSignedNumber.TYPE_MONEY, userProfileDTO.portfolio.cashBalance,
+                                THSignedNumber.WITHOUT_SIGN);
                 cashOnHand.setText(thCashOnHand.toString());
             }
             else
@@ -286,8 +289,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (profileTop != null)
             {
-                profileTop.setBackgroundDrawable(
-                        new BitmapDrawable(context.getResources(), bitmap));
+                profileTop.setBackgroundDrawable(new BitmapDrawable(context.getResources(), bitmap));
             }
         }
 
@@ -300,8 +302,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         }
     }
 
-    protected class DefaultBackgroundTarget
-			extends BackgroundTarget
+    protected class DefaultBackgroundTarget extends BackgroundTarget
     {
     }
 }

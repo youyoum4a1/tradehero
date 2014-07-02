@@ -6,20 +6,41 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.thm.R;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment
 {
     private static final String BUNDLE_KEY_TITLE = DashboardFragment.class.getName() + ".title";
+    private static final String BUNDLE_KEY_SHOW_HOME_AS_UP = DashboardFragment.class.getName() + ".show_home_as_up";
+
+    private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
     @Inject protected AlertDialogUtil alertDialogUtil;
+    @Inject Lazy<ResideMenu> resideMenuLazy;
+
+    public static void putKeyShowHomeAsUp(@NotNull Bundle args, @NotNull Boolean showAsUp)
+    {
+        args.putBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, showAsUp);
+    }
+
+    protected static boolean getKeyShowHomeAsUp(Bundle args)
+    {
+        if (args == null)
+        {
+            return DEFAULT_SHOW_HOME_AS_UP;
+        }
+        return args.getBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, DEFAULT_SHOW_HOME_AS_UP);
+    }
 
     public static void putActionBarTitle(Bundle args, String title)
     {
@@ -41,12 +62,11 @@ abstract public class DashboardFragment extends BaseFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
         if (this instanceof WithTutorial)
         {
             inflater.inflate(R.menu.menu_with_tutorial, menu);
         }
-        super.onCreateOptionsMenu(menu, inflater);
-
 
         Bundle argument = getArguments();
 
@@ -59,6 +79,22 @@ abstract public class DashboardFragment extends BaseFragment
                 setActionBarTitle(title);
             }
         }
+
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (shouldShowHomeAsUp())
+        {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                    | ActionBar.DISPLAY_SHOW_TITLE
+                    | ActionBar.DISPLAY_SHOW_HOME);
+        }
+        else
+        {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+                    | ActionBar.DISPLAY_SHOW_HOME
+                    | ActionBar.DISPLAY_USE_LOGO);
+            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+        }
+        actionBar.setHomeButtonEnabled(true);
     }
 
     protected void setActionBarTitle(String title)
@@ -72,7 +108,14 @@ abstract public class DashboardFragment extends BaseFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                getDashboardNavigator().popFragment();
+                if (shouldShowHomeAsUp())
+                {
+                    getDashboardNavigator().popFragment();
+                }
+                else
+                {
+                    resideMenuLazy.get().openMenu();
+                }
                 return true;
 
             case R.id.menu_info:
@@ -92,6 +135,11 @@ abstract public class DashboardFragment extends BaseFragment
         {
             Timber.d("%s is not implementing WithTutorial interface, but has info menu", getClass().getName());
         }
+    }
+
+    protected boolean shouldShowHomeAsUp()
+    {
+        return getKeyShowHomeAsUp(getArguments());
     }
 
     //suggest use DashboardNavigator

@@ -28,7 +28,6 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -43,7 +42,6 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject AlertDialogUtil alertDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -74,24 +72,9 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_USE_LOGO);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle(getString(R.string.admin_setting));
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void initPreferenceClickHandlers()
@@ -150,8 +133,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
                 try
                 {
                     notificationId = Integer.parseInt(value.toString());
-                }
-                catch (NumberFormatException ex)
+                } catch (NumberFormatException ex)
                 {
                     THToast.show("Not a number");
                 }

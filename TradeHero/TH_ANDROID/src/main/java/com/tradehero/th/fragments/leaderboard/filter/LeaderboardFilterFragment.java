@@ -75,7 +75,6 @@ public class LeaderboardFilterFragment extends DashboardFragment
         inflater.inflate(R.menu.leaderboard_filter_menu, menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setTitle(getString(R.string.leaderboard_filter_menu_title));
 
         super.onCreateOptionsMenu(menu, inflater);

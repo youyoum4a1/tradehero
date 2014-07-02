@@ -431,7 +431,6 @@ public class InviteFriendFragment extends DashboardFragment
                 inviteDTO.email = userFriendsDTO.email;
                 inviteFriendForm.users.add(inviteDTO);
             }
-            //getProgressDialog().setMessage(getString(R.string.sending_email_invitation));
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapper.get().inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm, inviteFriendCallback);
@@ -450,7 +449,6 @@ public class InviteFriendFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.invite_friends));
 
         super.onCreateOptionsMenu(menu, inflater);

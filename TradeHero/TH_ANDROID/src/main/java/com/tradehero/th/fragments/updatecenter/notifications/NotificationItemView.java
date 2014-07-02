@@ -167,12 +167,12 @@ public class NotificationItemView
         notificationCache.unregister(notificationFetchListener);
     }
 
-    protected DTOCacheNew.Listener<NotificationKey,NotificationDTO> createNotificationFetchListener()
+    protected DTOCacheNew.Listener<NotificationKey, NotificationDTO> createNotificationFetchListener()
     {
         return new NotificationFetchListener();
     }
 
-    protected class NotificationFetchListener implements DTOCacheNew.Listener<NotificationKey,NotificationDTO>
+    protected class NotificationFetchListener implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
     {
         @Override public void onDTOReceived(NotificationKey key, NotificationDTO value)
         {

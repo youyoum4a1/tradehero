@@ -19,6 +19,9 @@ import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator
 {
+    private static final boolean TAB_SHOULD_ADD_TO_BACKSTACK = false;
+    private static final boolean TAB_SHOW_HOME_AS_UP = false;
+
     private TabHost.OnTabChangeListener mOnTabChangedListener;
 
     @Inject ResideMenu resideMenu;
@@ -74,14 +77,22 @@ public class DashboardNavigator extends Navigator
 
     public void goToTab(@NotNull DashboardTabType tabType)
     {
-        this.goToTab(tabType, false);
+        this.goToTab(tabType, TAB_SHOULD_ADD_TO_BACKSTACK);
     }
 
     public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack)
     {
+        this.goToTab(tabType, shouldAddToBackStack, TAB_SHOW_HOME_AS_UP);
+    }
+
+    public void goToTab(@NotNull DashboardTabType tabType, Boolean shouldAddToBackStack, Boolean showHomeKeyAsUp)
+    {
+        Bundle args = new Bundle();
+
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
-        updateTabBarOnTabChanged(pushFragment(tabType.fragmentClass, new Bundle(), null, null, shouldAddToBackStack).getClass().getName());
+
+        updateTabBarOnTabChanged(pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp).getClass().getName());
     }
 
     private void postPushActionFragment(final THIntent thIntent)
@@ -103,17 +114,11 @@ public class DashboardNavigator extends Navigator
         });
     }
 
-    //public void clearBackStack()
-    //{
-    //    int rootFragment = manager.getBackStackEntryAt(0).getId();
-    //    manager.popBackStack(rootFragment, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-    //}
-
     @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
-            @Nullable String backStackName, Boolean shouldAddToBackStack)
+            @Nullable String backStackName, Boolean shouldAddToBackStack, Boolean showHomeAsUp)
     {
         resideMenu.closeMenu();
-        T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, shouldAddToBackStack);
+        T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, shouldAddToBackStack, showHomeAsUp);
         executePending(fragment);
         return fragment;
     }

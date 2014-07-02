@@ -6,24 +6,32 @@ import android.net.Uri;
 import com.tradehero.thm.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.push.NotificationGroupHolder;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class NotificationOpenedHandler extends PrecacheNotificationHandler
 {
     @NotNull private final Context context;
+    @NotNull private CurrentUserId currentUserId;
+    @NotNull private final UserProfileCache userProfileCache;
     private final NotificationGroupHolder notificationGroupHolder;
 
     @Inject public NotificationOpenedHandler(
             @NotNull Context context,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache,
             @NotNull NotificationCache notificationCache,
             NotificationGroupHolder notificationGroupHolder)
     {
         super(notificationCache);
         this.context = context;
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
         this.notificationGroupHolder = notificationGroupHolder;
     }
 
@@ -46,6 +54,8 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
 
         // remove the its group
         clearNotificationGroup(intent);
+
+        userProfileCache.invalidate(currentUserId.toUserBaseKey());
 
         context.startActivity(launchIntent);
         return true;

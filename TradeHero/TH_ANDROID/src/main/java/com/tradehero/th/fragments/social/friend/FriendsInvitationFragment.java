@@ -52,9 +52,6 @@ import timber.log.Timber;
 public class FriendsInvitationFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener, SocialFriendItemView.OnElementClickListener
 {
-    public static final String BUNDLE_KEY_SHOW_HOME_AS_UP =
-            FriendsInvitationFragment.class.getName() + ".show_home_as_up";
-
     @InjectView(R.id.search_social_friends) EditText searchTextView;
     @InjectView(R.id.social_friend_type_list) ListView socialListView;
     @InjectView(R.id.social_friends_list) ListView friendsListView;
@@ -85,10 +82,6 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private Bundle savedState;
 
-    public static void putKeyShowHomeAsUp(@NotNull Bundle args, @NotNull Boolean showAsUp)
-    {
-        args.putBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, showAsUp);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -103,20 +96,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (shouldShowHomeAsUp())
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                    | ActionBar.DISPLAY_SHOW_TITLE
-                    | ActionBar.DISPLAY_SHOW_HOME);
-        }
-        else
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                    | ActionBar.DISPLAY_SHOW_HOME
-                    | ActionBar.DISPLAY_USE_LOGO);
-        }
         actionBar.setTitle(getString(R.string.action_invite));
-        actionBar.setHomeButtonEnabled(true);
     }
 
     @Override
@@ -195,24 +175,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         socialListView.setAdapter(adapter);
         socialListView.setOnItemClickListener(this);
         showSocialTypeList();
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                if (shouldShowHomeAsUp())
-                {
-                    return super.onOptionsItemSelected(item);
-                }
-                else
-                {
-                    resideMenuLazy.get().openMenu();
-                    return true;
-                }
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void bindSearchData()
@@ -342,25 +304,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         getDashboardNavigator().pushFragment(target, bundle);
     }
 
-    private void pushSettingsFragment()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(SettingsFragment.KEY_SHOW_AS_HOME_UP, true);
-        getDashboardNavigator().pushFragment(SettingsFragment.class, bundle);
-    }
-
-    private boolean shouldShowHomeAsUp()
-    {
-        // Default to false
-        Bundle args = getArguments();
-        if (args == null)
-        {
-            return false;
-        }
-
-        return args.getBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, false);
-    }
-
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
     {
         detachSocialLinkHelper();
@@ -434,17 +377,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     private void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
         //Invite Success will not disappear the friend in Invite
-        //if (userFriendsDTOs != null && usersToInvite != null)
-        //{
-        //    for (UserFriendsDTO userFriendsDTO : usersToInvite)
-        //    {
-        //        userFriendsDTOs.remove(userFriendsDTO);
-        //    }
-        //}
-        //SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
-        //
-        //socialFriendsAdapter.clear();
-        //socialFriendsAdapter.addAll(userFriendsDTOs);
         THToast.show(R.string.invite_friend_request_sent);
     }
 
