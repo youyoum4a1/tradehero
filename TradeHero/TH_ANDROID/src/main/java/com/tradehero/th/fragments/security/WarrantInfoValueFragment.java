@@ -16,8 +16,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -43,9 +41,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     protected WarrantDTO warrantDTO;
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     @Inject protected ProviderCache providerCache;
-    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -125,7 +121,6 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     public void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
-        this.providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
         if (andDisplay)
         {
             displayLinkHelpVideoLink();
@@ -166,9 +161,11 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         if (!isDetached() && mHelpVideoLink != null)
         {
             mHelpVideoLink.setVisibility(hasHelpVideo() ? View.VISIBLE : View.GONE);
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoLinkBackgroundResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.helpVideoLinkBackgroundResId > 0)
             {
-                mHelpVideoLink.setBackgroundResource(providerSpecificResourcesDTO.helpVideoLinkBackgroundResId);
+                mHelpVideoLink.setBackgroundResource(providerDTO.specificResources.helpVideoLinkBackgroundResId);
             }
         }
     }
@@ -181,10 +178,12 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             {
                 mHelpVideoText.setText(providerDTO.helpVideoText);
             }
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoLinkTextColourResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.helpVideoLinkTextColourResId > 0)
             {
                 mHelpVideoText.setTextColor(getResources().getColor(
-                        providerSpecificResourcesDTO.helpVideoLinkTextColourResId));
+                        providerDTO.specificResources.helpVideoLinkTextColourResId));
            }
             else
             {

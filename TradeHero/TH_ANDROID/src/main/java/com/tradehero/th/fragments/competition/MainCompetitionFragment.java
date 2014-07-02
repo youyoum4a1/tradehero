@@ -253,11 +253,12 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         if (this.actionBar != null)
         {
-            if (providerSpecificResourcesDTO != null
-                    && providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.mainCompetitionFragmentTitleResId > 0)
             {
                 this.actionBar.setTitle(
-                        providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId);
+                        providerDTO.specificResources.mainCompetitionFragmentTitleResId);
             }
             else if (this.providerDTO == null || this.providerDTO.name == null)
             {

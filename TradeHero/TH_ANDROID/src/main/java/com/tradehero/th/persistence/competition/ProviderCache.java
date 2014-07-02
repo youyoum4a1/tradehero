@@ -5,7 +5,6 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import dagger.Lazy;
@@ -53,11 +52,7 @@ import org.jetbrains.annotations.Nullable;
 
     @Override @Nullable public ProviderDTO put(@NotNull ProviderId key, @NotNull ProviderDTO value)
     {
-        OwnedPortfolioId associatedPortfolioId = value.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey());
-        if (associatedPortfolioId != null)
-        {
-            warrantSpecificKnowledgeFactory.add(key, associatedPortfolioId);
-        }
+        warrantSpecificKnowledgeFactory.add(value);
         return super.put(key, value);
     }
 

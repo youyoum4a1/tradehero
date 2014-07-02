@@ -31,7 +31,7 @@ public class PortfolioDTOUtil
             }
             if (portfolioDTO.providerId != null)
             {
-                ProviderSpecificResourcesDTO resourcesDTO = providerSpecificResourcesFactory.get().createResourcesDTO(portfolioDTO.getProviderIdKey());
+                ProviderSpecificResourcesDTO resourcesDTO = providerSpecificResourcesFactory.get().createResources(portfolioDTO.getProviderIdKey());
                 if (resourcesDTO != null && resourcesDTO.competitionPortfolioTitleResId > 0)
                 {
                     return context.getString(resourcesDTO.competitionPortfolioTitleResId);
