@@ -23,7 +23,6 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(RobolectricMavenTestRunner.class)
 public class FriendListAdapterTest
 {
-
     @Inject Context context;
 
     private LayoutInflater layoutInflater;
