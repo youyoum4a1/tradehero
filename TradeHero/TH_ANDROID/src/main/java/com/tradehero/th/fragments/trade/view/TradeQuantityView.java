@@ -245,9 +245,9 @@ public class TradeQuantityView extends TableLayout
 
     public String getSecurityTypeText()
     {
-        if (securityCompactDTO != null)
+        if (securityCompactDTO != null && securityCompactDTO.getSecurityTypeStringResourceId() != null)
         {
-            return getContext().getString(securityCompactDTO.getSecurityType().stringResId).toUpperCase(); // HACK upperCase
+            return getContext().getString(securityCompactDTO.getSecurityTypeStringResourceId()).toUpperCase(); // HACK upperCase
         }
         else
         {

@@ -1,6 +1,8 @@
 package com.tradehero.th.api.security.compact;
 
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import org.jetbrains.annotations.NotNull;
 
 public class DepositoryReceiptDTO extends SecurityCompactDTO
 {
@@ -17,4 +19,9 @@ public class DepositoryReceiptDTO extends SecurityCompactDTO
         super(other);
     }
     //</editor-fold>
+
+    @NotNull @Override public Integer getSecurityTypeStringResourceId()
+    {
+        return R.string.security_type_depository_receipt;
+    }
 }
