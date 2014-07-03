@@ -83,7 +83,7 @@ public class AppRater
                     {
                         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri
                                 .parse("market://details?id="
-                                        + context.getPackageName().toString())));
+                                        + context.getPackageName())));
                         if (editor != null)
                         {
                             editor.putBoolean(DONT_SHOW_AGAIN, true);

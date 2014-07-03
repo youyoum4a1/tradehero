@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
@@ -20,12 +19,14 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
@@ -43,7 +44,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userCache;
     @Inject Picasso picasso;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
@@ -54,6 +55,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
     private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
+    protected FollowDialogCombo followDialogCombo;
 
     //<editor-fold desc="Constructors">
     public OtherUserPortfolioHeaderView(Context context)
@@ -115,7 +117,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     public void showFollowDialog()
     {
         localyticsSession.tagEvent(LocalyticsConstants.Positions_Follow);
-        alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
+        detachFollowDialogCombo();
+        followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
                 new OtherUserPortfolioFollowRequestedListener());
     }
@@ -159,6 +162,16 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         freeFollowMiddleCallback = null;
     }
 
+    protected void detachFollowDialogCombo()
+    {
+        FollowDialogCombo followDialogComboCopy = followDialogCombo;
+        if (followDialogComboCopy != null)
+        {
+            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
+        }
+        followDialogCombo = null;
+    }
+
     public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
@@ -188,6 +201,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         }
 
         detachFreeFollowMiddleCallback();
+        detachFollowDialogCombo();
 
         super.onDetachedFromWindow();
     }

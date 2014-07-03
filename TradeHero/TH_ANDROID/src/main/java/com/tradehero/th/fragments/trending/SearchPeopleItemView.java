@@ -21,6 +21,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBaseKey>
 {
@@ -33,10 +34,9 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
     private TextView profitIndicator;
     private TextView stockPercentage;
     private TextView date;
-    //private CircularImageView userImage;
     private ImageView userPhoto;
     private ImageView peopleBgImage;
-    private int defaultDrawable = R.drawable.superman_facebook;
+    private final int defaultDrawable = R.drawable.superman_facebook;
 
     private UserBaseKey userKey;
     private UserSearchResultDTO userDTO;
@@ -44,7 +44,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
     //<editor-fold desc="Constructors">
     public SearchPeopleItemView(Context context)
     {
-        super(context);    
+        super(context);
     }
 
     public SearchPeopleItemView(Context context, AttributeSet attrs)
@@ -71,7 +71,6 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         profitIndicator = (TextView) findViewById(R.id.profit_indicator);
         stockPercentage = (TextView) findViewById(R.id.stock_percentage);
         date = (TextView) findViewById(R.id.date);
-        //userImage = (CircularImageView) findViewById(R.id.user_image);
         userPhoto = (ImageView) findViewById(R.id.user_photo);
         if (userPhoto != null)
         {
@@ -111,7 +110,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         display(userSearchResultCache.get().get(this.userKey));
     }
 
-    public void display(UserSearchResultDTO userSearchResultDTO)
+    public void display(@Nullable UserSearchResultDTO userSearchResultDTO)
     {
         this.userDTO = userSearchResultDTO;
 
@@ -129,7 +128,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
         {
             if (userSearchResultDTO.userMarkingAsOfUtc != null)
             {
-                date.setText(DateUtils.getFormattedUtcDate(userSearchResultDTO.userMarkingAsOfUtc));
+                date.setText(DateUtils.getFormattedUtcDate(getResources(), userSearchResultDTO.userMarkingAsOfUtc));
                 date.setTextColor(Color.BLACK);
             }
             else

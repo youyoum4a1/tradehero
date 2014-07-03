@@ -12,17 +12,16 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.market.Country;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -32,10 +31,10 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -45,12 +44,15 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -62,12 +64,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
+    @Inject THRouter thRouter;
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    protected FollowDialogCombo followDialogCombo;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
@@ -216,6 +220,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
 
         detachFreeFollowMiddleCallback();
+        detachFollowDialogCombo();
 
         super.onDetachedFromWindow();
     }
@@ -278,12 +283,24 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private void displayTopSection()
     {
         lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
+        if (currentUserId.get() == leaderboardItem.id)
+        {
+            lbmuPosition.setTextColor(
+                    getContext().getResources().getColor(R.color.button_green));
+        }
+        else
+        {
+            lbmuPosition.setTextColor(
+                    getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+        }
+
         lbmuDisplayName.setText(leaderboardItem.displayName);
         lbmuHeroQuotient.setText(leaderboardItem.getHeroQuotientFormatted());
         if (lbmuFoF != null)
         {
             lbmuFoF.setVisibility(
-                    leaderboardItem.isIncludeFoF() && !StringUtils.isNullOrEmptyOrSpaces(
+                    leaderboardItem.isIncludeFoF() != null &&leaderboardItem.isIncludeFoF() &&
+                            !StringUtils.isNullOrEmptyOrSpaces(
                             leaderboardItem.friendOfMarkupString) ? VISIBLE : GONE);
             lbmuFoF.setText(leaderboardItem.friendOfMarkupString);
         }
@@ -426,135 +443,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // followers & comments count
         lbmuFollowersCount.setText("" + leaderboardItem.getTotalFollowersCount());
         lbmuCommentsCount.setText("" + leaderboardItem.getCommentsCount());
-
-//<<<<<<< HEAD
-//        //winRateGauge.setText(digitsWinRatio + "%");
-//        //winRateGauge.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
-//
-//        if (tradeCountTv != null)
-//        {
-//            tradeCountTv.setEndValue(leaderboardItem.avgNumberOfTradesPerMonth.floatValue());
-//            tradeCountTv.setFractionDigits(2);
-//        }
-//        if (daysHoldTv != null)
-//        {
-//            daysHoldTv.setEndValue(leaderboardItem.avgHoldingPeriodMins * 1.0f / (60 * 24));
-//            daysHoldTv.setFractionDigits(2);
-//        }
-//        if (positionsCountTv != null)
-//        {
-//            positionsCountTv.setEndValue(leaderboardItem.numberOfPositionsInPeriod);
-//            positionsCountTv.setFractionDigits(0);
-//        }
-//
-//        showValueWithoutAnimation();
-//    }
-//
-//    private void showValueWithoutAnimation()
-//    {
-//        String digitsWinRatio =
-//                NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
-//        if (winRateGauge != null)
-//        {
-//            winRateGauge.setContentText(digitsWinRatio + "%");
-//            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
-//            winRateGauge.setAnimiationFlag(false);
-//            winRateGauge.setCurrentValue((float) leaderboardItem.getWinRatio() * 100);
-//        }
-//
-//        if (performanceGauge != null)
-//        {
-//            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
-//            performanceGauge.setSubText(
-//                    getContext().getString(R.string.leaderboard_performance_title));
-//            performanceGauge.setAnimiationFlag(false);
-//            performanceGauge.setDrawStartValue(50f);
-//            performanceGauge.setCurrentValue((float) leaderboardItem.normalizePerformance());
-//        }
-//
-//        if (tradeConsistencyGauge != null)
-//        {
-//            tradeConsistencyGauge.setSubText(
-//                    getContext().getString(R.string.leaderboard_consistency_title));
-//            tradeConsistencyGauge.setAnimiationFlag(false);
-//            tradeConsistencyGauge.setCurrentValue((float) normalizeConsistency());
-//        }
-//        Timber.d("showValueWithoutAnimation normalizeConsistency %s", normalizeConsistency());
-//
-//        if (tradeCountTv != null)
-//        {
-//            tradeCountTv.showText();
-//        }
-//        if (daysHoldTv != null)
-//        {
-//            daysHoldTv.showText();
-//        }
-//        if (positionsCountTv != null)
-//        {
-//            positionsCountTv.showText();
-//        }
-//    }
-//
-//    private void showExpandAnimation()
-//    {
-//        String digitsWinRatio =
-//                NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
-//        if (winRateGauge != null)
-//        {
-//            winRateGauge.setContentText(digitsWinRatio + "%");
-//            winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
-//            winRateGauge.setAnimiationFlag(true);
-//            winRateGauge.setTargetValue((float) leaderboardItem.getWinRatio() * 100);
-//        }
-//
-//        if (performanceGauge != null)
-//        {
-//            performanceGauge.setTopText(getContext().getString(R.string.leaderboard_SP_500));
-//            performanceGauge.setSubText(
-//                    getContext().getString(R.string.leaderboard_performance_title));
-//            performanceGauge.setAnimiationFlag(true);
-//            performanceGauge.setDrawStartValue(50f);
-//            performanceGauge.setTargetValue((float) leaderboardItem.normalizePerformance());
-//        }
-//
-//        if (tradeConsistencyGauge != null)
-//        {
-//            tradeConsistencyGauge.setSubText(
-//                    getContext().getString(R.string.leaderboard_consistency_title));
-//            tradeConsistencyGauge.setAnimiationFlag(true);
-//            tradeConsistencyGauge.setTargetValue((float) normalizeConsistency());
-//        }
-//
-//        if (tradeCountTv != null)
-//        {
-//            tradeCountTv.startAnimation();
-//        }
-//        if (daysHoldTv != null)
-//        {
-//            daysHoldTv.startAnimation();
-//        }
-//        if (positionsCountTv != null)
-//        {
-//            positionsCountTv.startAnimation();
-//        }
-//    }
-//
-//    private void clearExpandAnimation()
-//    {
-//        if (winRateGauge != null)
-//        {
-//            winRateGauge.clear();
-//        }
-//        if (performanceGauge != null)
-//        {
-//            performanceGauge.clear();
-//        }
-//        if (tradeConsistencyGauge != null)
-//        {
-//            tradeConsistencyGauge.clear();
-//        }
-//=======
-//>>>>>>> origin/develop2.0
     }
 
     @Override public void onExpand(boolean expand)
@@ -633,7 +521,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
             case R.id.leaderboard_user_item_follow:
                 localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
-                alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
+                detachFollowDialogCombo();
+                followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER,
                         new LeaderBoardFollowRequestedListener());
                 break;
@@ -696,49 +585,54 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void handleOpenPositionListClicked()
     {
-        int userId = leaderboardItem.id;
-
-        // portfolio, to display position list
-        int portfolioId = leaderboardItem.portfolioId;
-        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(userId, portfolioId);
-
-        Bundle bundle = new Bundle();
-        // to display time of value on start investment
-        SimpleDateFormat sdf =
-                new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
-        String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
-        bundle.putString(LeaderboardUserDTO.LEADERBOARD_PERIOD_START_STRING,
-                formattedStartPeriodUtc);
+        @Nullable GetPositionsDTOKey getPositionsDTOKey = leaderboardItem.getGetPositionsDTOKey();
+        if (getPositionsDTOKey == null)
+        {
+            Timber.e(new NullPointerException(), "Unable to get positions %s", leaderboardItem);
+            THToast.show(R.string.leaderboard_friends_position_failed);
+            return;
+        }
 
         // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
-        LeaderboardDefDTO leaderboardDef = leaderboardDefCache.get()
-                .get(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
-        boolean isTimeRestrictedLeaderboard =
-                leaderboardDef != null && leaderboardDef.isTimeRestrictedLeaderboard();
-        bundle.putBoolean(LeaderboardDefDTO.LEADERBOARD_DEF_TIME_RESTRICTED,
-                isTimeRestrictedLeaderboard);
+        @Nullable LeaderboardDefDTO leaderboardDef = null;
+        Integer leaderboardId = leaderboardItem.getLeaderboardId();
+        if (leaderboardId != null)
+        {
+            leaderboardDef = leaderboardDefCache.get()
+                    .get(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
+        }
 
         if (leaderboardItem.lbmuId != -1)
         {
-            pushLeaderboardPositionListFragment(bundle);
+            pushLeaderboardPositionListFragment(getPositionsDTOKey, leaderboardDef);
         }
         else
         {
-            pushPositionListFragment(bundle, ownedPortfolioId);
+            pushPositionListFragment(getPositionsDTOKey);
         }
     }
 
-    protected void pushLeaderboardPositionListFragment(Bundle bundle)
+    protected void pushLeaderboardPositionListFragment(GetPositionsDTOKey getPositionsDTOKey, LeaderboardDefDTO leaderboardDefDTO)
     {
         // leaderboard mark user id, to get marking user information
-        LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, leaderboardItem.getLeaderboardMarkUserId());
+        Bundle bundle = new Bundle();
+        LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
         LeaderboardPositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
+        if(leaderboardDefDTO != null)
+        {
+            LeaderboardPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDefDTO.isTimeRestrictedLeaderboard());
+        }
+        SimpleDateFormat sdf =
+                new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
+        String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
+        LeaderboardPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
         getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
     }
 
-    protected void pushPositionListFragment(Bundle bundle, OwnedPortfolioId ownedPortfolioId)
+    protected void pushPositionListFragment(GetPositionsDTOKey getPositionsDTOKey)
     {
-        PositionListFragment.putGetPositionsDTOKey(bundle, ownedPortfolioId);
+        Bundle bundle = new Bundle();
+        PositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
         PositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
         getNavigator().pushFragment(PositionListFragment.class, bundle);
     }
@@ -755,7 +649,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (currentUserId != null && currentUserId.get() != userId)
         {
             Bundle bundle = new Bundle();
-            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
+            thRouter.save(bundle, new UserBaseKey(userId));
             getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
@@ -787,38 +681,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
         freeFollowMiddleCallback = null;
     }
-//<<<<<<< HEAD
-//
-//    private Double getAvgConsistency()
-//    {
-//        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-//        if (userProfileDTO != null)
-//        {
-//            return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
-//        }
-//        return LeaderboardUserDTO.MIN_CONSISTENCY;
-//    }
-//
-//    private double normalizeConsistency()
-//    {
-//        try
-//        {
-//            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
-//            Double maxConsistency = getAvgConsistency();
-//            Double minConsistency = leaderboardItem.getConsistency();
-//            minConsistency = (minConsistency < minConsistency) ? minConsistency : minConsistency;
-//            minConsistency = (minConsistency > maxConsistency) ? maxConsistency : minConsistency;
-//
-//            double result =
-//                    100 * (minConsistency - minConsistency) / (maxConsistency - minConsistency);
-//            return result;
-//        }
-//        catch (Exception e)
-//        {
-//            Timber.e("normalizeConsistency", e);
-//        }
-//        return getAvgConsistency();
-//    }
-//=======
-//>>>>>>> origin/develop2.0
+
+    protected void detachFollowDialogCombo()
+    {
+        FollowDialogCombo followDialogComboCopy = followDialogCombo;
+        if (followDialogComboCopy != null)
+        {
+            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
+        }
+        followDialogCombo = null;
+    }
 }

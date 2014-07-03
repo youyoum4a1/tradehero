@@ -8,7 +8,7 @@ public class BitmapTypedOutput extends TypedByteArray
 {
     public static final String TYPE_JPEG = "jpeg";
 
-    private String fileName;
+    private final String fileName;
 
     public BitmapTypedOutput(String type, Bitmap bitmap, String fileName, int compressQuality)
     {

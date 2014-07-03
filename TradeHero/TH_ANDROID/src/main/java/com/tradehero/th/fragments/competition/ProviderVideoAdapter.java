@@ -27,6 +27,6 @@ public class ProviderVideoAdapter extends ArrayDTOAdapter<HelpVideoId, ProviderV
     @Override public long getItemId(int position)
     {
         Object item = getItem(position);
-        return item == null ? 0 : ((HelpVideoId) item).hashCode();
+        return item == null ? 0 : item.hashCode();
     }
 }

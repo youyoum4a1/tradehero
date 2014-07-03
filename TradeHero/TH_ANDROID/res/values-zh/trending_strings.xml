@@ -5,6 +5,7 @@
   <string name="trending_header">股市趋势</string>
   <string name="trending_search_empty_result">请输入信息搜索</string>
   <string name="trending_search_empty_result_for_stock">请输入要查找股票的名称或代码</string>
+  <string name="security_search_action_bar_elements_title">搜索</string>
   <string name="trending_search_empty_result_for_people">请输入要查找人的姓名</string>
   <string name="trending_search_no_people_found">找不到相关用户</string>
   <string name="trending_search_no_stock_found">找不到相关股票</string>

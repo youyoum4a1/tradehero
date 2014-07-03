@@ -20,9 +20,8 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
@@ -52,6 +51,8 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -71,6 +72,7 @@ import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -80,10 +82,10 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
+@Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
-    public static final String KEY_SHOW_AS_HOME_UP = SettingsFragment.class.getName() + ".showAsHomeUp";
 
     @Inject THBillingInteractor billingInteractor;
     @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
@@ -108,10 +110,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
+    @Inject MainCredentialsPreference mainCredentialsPreference;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
@@ -276,43 +279,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
-        int flag = ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE;
-        if (!showHomeAsUp)
-        {
-            flag |= ActionBar.DISPLAY_USE_LOGO;
-            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        }
-        else
-        {
-            flag |= ActionBar.DISPLAY_HOME_AS_UP;
-        }
-        actionBar.setDisplayOptions(flag);
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle(getString(R.string.settings));
 
     }
     //</editor-fold>
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
-                if(showHomeAsUp)
-                {
-                    getNavigator().popFragment();
-                }
-                else
-                {
-                    resideMenuLazy.get().openMenu();
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override public void onDestroyView()
     {
@@ -713,12 +683,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
         PackageInfo packageInfo = null;
-        String timeStr = "";
+        String timeStr;
         try
         {
             packageInfo = getActivity().getPackageManager().getPackageInfo(
                     getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e)
+        }
+        catch (PackageManager.NameNotFoundException e)
         {
             e.printStackTrace();
         }
@@ -736,7 +707,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private void handleTopBannerClicked()
     {
         getNavigator().pushFragment(InviteFriendFragment.class, null,
-                Navigator.PUSH_UP_FROM_BOTTOM);
+                Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     private void updateNotificationStatus()
@@ -869,7 +840,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     new SocialNetworkFormDTO(socialNetwork),
                     createSocialDisconnectCallback());
 
-            if (socialNetwork.getAuthenticationHeader().equals(THUser.getCurrentCredentials().getAuthType()))
+            CredentialsDTO mainCredentials = mainCredentialsPreference.getCredentials();
+            if (mainCredentials != null && socialNetwork.getAuthenticationHeader().equals(mainCredentials.getAuthType()))
             {
                 effectSignOut();
             }
@@ -978,9 +950,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleProfileClicked()
     {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
-        getNavigator().pushFragment(SettingsProfileFragment.class, bundle);
+        getNavigator().pushFragment(SettingsProfileFragment.class);
     }
 
     private void handlePaypalClicked()

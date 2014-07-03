@@ -11,7 +11,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -29,11 +29,10 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
@@ -41,29 +40,25 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     public final static int SECURITY_ID_LIST_LOADER_ID = 2531;
 
     // TODO sort warrants
-    protected ProviderId providerId;
+    @NotNull protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
-    private DTOCache.Listener<ProviderId, ProviderDTO> providerCacheListener;
-    private DTOCache.GetOrFetchTask<ProviderId, ProviderDTO> providerCacheFetchTask;
+    private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
 
-    ActionBar actionBar;
     private MenuItem wizardButton;
 
-    public static void putProviderId(Bundle args, ProviderId providerId)
+    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    private static ProviderId getProviderId(Bundle args)
+    @NotNull private static ProviderId getProviderId(@NotNull Bundle args)
     {
         return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
     }
@@ -79,9 +74,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             this.providerId = getProviderId(getArguments());
         }
-        this.providerSpecificResourcesDTO = this.providerSpecificResourcesFactory.createResourcesDTO(providerId);
-
-        this.providerCacheListener = new ProviderSecurityListFragmentProviderCacheListener();
+        this.providerCacheListener = createProviderCacheListener();
         this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
     }
 
@@ -96,11 +89,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-        if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.securityListFragmentTitleResId > 0)
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (providerDTO != null
+                && providerDTO.specificResources != null
+                && providerDTO.specificResources.securityListFragmentTitleResId > 0)
         {
-            actionBar.setTitle(providerSpecificResourcesDTO.securityListFragmentTitleResId);
+            actionBar.setTitle(providerDTO.specificResources.securityListFragmentTitleResId);
         }
         else
         {
@@ -134,10 +128,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Override public void onStart()
     {
         super.onStart();
-        this.detachProviderFetchTask();
-        this.providerCacheFetchTask = providerCache.getOrFetch(this.providerId, this.providerCacheListener);
-        this.providerCacheFetchTask.execute();
-        //forceInitialLoad();
+        fetchProviderDTO();
     }
 
     @Override public void onResume()
@@ -173,11 +164,15 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected void detachProviderFetchTask()
     {
-        if (this.providerCacheFetchTask != null)
-        {
-            this.providerCacheFetchTask.setListener(null);
-        }
-        this.providerCacheFetchTask = null;
+        providerCache.unregister(providerCacheListener);
+    }
+
+    protected void fetchProviderDTO()
+    {
+        this.detachProviderFetchTask();
+        providerCache.register(this.providerId, providerCacheListener);
+        providerCache.getOrFetchAsync(this.providerId);
+        //forceInitialLoad();
     }
 
     protected void prepareSecurityLoader()
@@ -211,7 +206,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         return SECURITY_ID_LIST_LOADER_ID + providerId.key;
     }
 
-    @Override public ProviderSecurityListType getSecurityListType(int page)
+    @Override @NotNull public ProviderSecurityListType getSecurityListType(int page)
     {
         return new BasicProviderSecurityListType(providerId, page, perPage);
     }
@@ -221,7 +216,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
-        this.webViewFragment = (CompetitionWebViewFragment) getNavigator().pushFragment(
+        this.webViewFragment = getDashboardNavigator().pushFragment(
                 CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -231,17 +226,17 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
         SecuritySearchProviderFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        getNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
+        getDashboardNavigator().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
-    @Override public boolean isTabBarVisible()
+    protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
     {
-        return false;
+        return new ProviderSecurityListFragmentProviderCacheListener();
     }
 
-    protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCache.Listener<ProviderId, ProviderDTO>
+    protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCacheNew.Listener<ProviderId, ProviderDTO>
     {
-        @Override public void onDTOReceived(ProviderId key, ProviderDTO value, boolean fromCache)
+        @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
         {
             if (key.equals(ProviderSecurityListFragment.this.providerId))
             {
@@ -281,7 +276,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
-            getNavigator().pushFragment(BuySellFragment.class, args);
+            getDashboardNavigator().pushFragment(BuySellFragment.class, args);
         }
     }
 
@@ -309,7 +304,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
         @Override protected Navigator getNavigator()
         {
-            return ProviderSecurityListFragment.this.getNavigator();
+            return ProviderSecurityListFragment.this.getDashboardNavigator();
         }
 
         @Override protected Class<?> getClassToPop()

@@ -4,15 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import com.tradehero.th.adapters.AbstractArrayAdapter;
 import com.tradehero.th.api.social.UserFriendsDTO;
-
 import java.util.List;
 
-/**
- * Created by wangliang on 14-5-26.
- */
 public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
 
     private Context mContext;

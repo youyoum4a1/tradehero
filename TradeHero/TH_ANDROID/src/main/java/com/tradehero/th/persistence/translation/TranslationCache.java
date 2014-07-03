@@ -7,6 +7,8 @@ import com.tradehero.th.network.service.TranslationServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class TranslationCache extends StraightDTOCacheNew<TranslationKey, TranslationResult>
 {
@@ -20,12 +22,12 @@ import javax.inject.Singleton;
         this.translationServiceWrapper = translationServiceWrapper;
     }
 
-    @Override public TranslationResult fetch(TranslationKey key) throws Throwable
+    @Override @NotNull public TranslationResult fetch(@NotNull TranslationKey key) throws Throwable
     {
         return translationServiceWrapper.translate(key.from, key.to, key.translatableText);
     }
 
-    @Override public TranslationResult put(TranslationKey key, TranslationResult value)
+    @Override @Nullable public TranslationResult put(@NotNull TranslationKey key, @NotNull TranslationResult value)
     {
         TranslationResult previous = super.put(key, value);
         // HACK to limit RAM usage

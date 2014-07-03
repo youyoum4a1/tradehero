@@ -1,34 +1,37 @@
 package com.tradehero.th.api.security.key;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public class TrendingAllSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
-    public TrendingAllSecurityListType(TrendingSecurityListType other)
+    public TrendingAllSecurityListType(@NotNull TrendingSecurityListType other)
     {
         super(other);
     }
 
-    public TrendingAllSecurityListType(String exchange, Integer page, Integer perPage)
+    public TrendingAllSecurityListType(@Nullable String exchange, @Nullable Integer page, @Nullable Integer perPage)
     {
         super(exchange, page, perPage);
     }
 
-    public TrendingAllSecurityListType(String exchange, Integer page)
+    public TrendingAllSecurityListType(@Nullable String exchange, @Nullable Integer page)
     {
         super(exchange, page);
     }
 
-    public TrendingAllSecurityListType(String exchange)
+    public TrendingAllSecurityListType(@Nullable String exchange)
     {
         super(exchange);
     }
 
-    public TrendingAllSecurityListType(Integer page, Integer perPage)
+    public TrendingAllSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
     {
         super(page, perPage);
     }
 
-    public TrendingAllSecurityListType(Integer page)
+    public TrendingAllSecurityListType(@Nullable Integer page)
     {
         super(page);
     }

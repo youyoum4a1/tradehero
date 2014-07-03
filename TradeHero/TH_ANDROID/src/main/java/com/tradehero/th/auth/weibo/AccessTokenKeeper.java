@@ -19,12 +19,10 @@ package com.tradehero.th.auth.weibo;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 
 /**
- * 该类定义了微博授权时所需要的参数。
- * 
+ *
  * @author SINA
  * @since 2013-10-07
  */
@@ -39,8 +37,8 @@ public class AccessTokenKeeper {
     /**
      * 保存 Token 对象到 SharedPreferences。
      * Save token to SharedPreferences
-     * @param context 应用程序上下文环境
-     * @param token   Token 对象
+     * @param context
+     * @param token
      */
     public static void writeAccessToken(Context context, Oauth2AccessToken token) {
         if (null == context || null == token) {
@@ -56,29 +54,28 @@ public class AccessTokenKeeper {
     }
 
     /**
-     * 从 SharedPreferences 读取 Token 信息。
      * Read token from SharedPreferences
-     * @param context 应用程序上下文环境
+     * @param context
      * 
-     * @return 返回 Token 对象
+     * @return  Token
      */
-    public static Oauth2AccessToken readAccessToken(Context context) {
-        if (null == context) {
-            return null;
-        }
-        
-        Oauth2AccessToken token = new Oauth2AccessToken();
-        SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
-        token.setUid(pref.getString(KEY_UID, ""));
-        token.setToken(pref.getString(KEY_ACCESS_TOKEN, ""));
-        token.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, 0));
-        return token;
-    }
+    // HACK Commented out to be able to compile (65000 methods)
+    //public static Oauth2AccessToken readAccessToken(Context context) {
+    //    if (null == context) {
+    //        return null;
+    //    }
+    //
+    //    Oauth2AccessToken token = new Oauth2AccessToken();
+    //    SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
+    //    token.setUid(pref.getString(KEY_UID, ""));
+    //    token.setToken(pref.getString(KEY_ACCESS_TOKEN, ""));
+    //    token.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, 0));
+    //    return token;
+    //}
 
     /**
-     * 清空 SharedPreferences 中 Token信息。
-     * Clear token
-     * @param context 应用程序上下文环境
+     * Clear token in SharedPreferences
+     * @param context
      */
     public static void clear(Context context) {
         if (null == context) {

@@ -9,6 +9,7 @@ import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -139,9 +140,17 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     {
         if (watchlistIndicator != null)
         {
-            if (discussionDTO != null && watchlistPositionCache.get(discussionDTO.createFlavorSecurityIdForDisplay()) != null)
+            if (discussionDTO != null)
             {
-                watchlistIndicator.setVisibility(View.VISIBLE);
+                SecurityId securityIdForDisplay = discussionDTO.createFlavorSecurityIdForDisplay();
+                if (securityIdForDisplay != null && watchlistPositionCache.get(securityIdForDisplay) != null)
+                {
+                    watchlistIndicator.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    watchlistIndicator.setVisibility(View.INVISIBLE);
+                }
             }
             else
             {

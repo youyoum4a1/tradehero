@@ -14,8 +14,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.thoj.route.InjectRoute;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -46,6 +47,7 @@ import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -57,6 +59,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMiles
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +73,6 @@ import timber.log.Timber;
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
-    public static final String BUNDLE_KEY_SHOW_USER_ID = TimelineFragment.class.getName() + ".showUserId";
     private View loadingView;
     private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
 
@@ -79,6 +81,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         TIMELINE, PORTFOLIO_LIST, STATS
     }
 
+    @Inject protected THRouter thRouter;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -98,15 +101,18 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private UserProfileView userProfileView;
     private MainTimelineAdapter mainTimelineAdapter;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
-    protected ActionBar actionBar;
-    protected UserBaseKey shownUserBaseKey;
+    @InjectRoute UserBaseKey shownUserBaseKey;
     protected UserProfileDTO shownProfile;
     protected OwnedPortfolioIdList portfolioIdList;
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
+    private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener;
     protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
+    private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchTask;
+    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
     protected MessageHeaderDTO messageThreadHeaderDTO;
+    protected FollowDialogCombo followDialogCombo;
+    protected FollowerManagerInfoFetcher infoFetcher;
 
     private boolean cancelRefreshingOnResume;
     protected boolean mIsOtherProfile = false;
@@ -115,6 +121,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     private boolean mIsHero = false;//whether the showUser follow the user
     public TabType currentTab = TabType.TIMELINE;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        userProfileRetrievedMilestoneListener = createUserProfileRetrievedMilestoneListener();
+        portfolioCompactListRetrievedMilestoneListener = createPortfolioCompactListRetrievedMilestoneListener();
+        messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
+    }
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
@@ -205,7 +219,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getNavigator().pushFragment(HeroManagerFragment.class, bundle);
+        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
@@ -219,16 +233,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-        getNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(
-                (isTabBarVisible() ? 0 : ActionBar.DISPLAY_HOME_AS_UP)
-                        | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setHomeButtonEnabled(true);
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -275,17 +284,20 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         lastItemVisibleListener = new TimelineLastItemVisibleListener();
     }
 
-    private class FollowerSummaryListener implements DTOCache.Listener<UserBaseKey, FollowerSummaryDTO>
+    private class FollowerSummaryListener implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value, boolean fromCache)
+        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
         {
             updateHeroType(value);
         }
 
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
-            THToast.show(error.getMessage());
+            if (error != null)
+            {
+                THToast.show(error.getMessage());
+            }
         }
     }
 
@@ -308,10 +320,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        UserBaseKey newUserBaseKey =
-                new UserBaseKey(getArguments().getInt(BUNDLE_KEY_SHOW_USER_ID));
+        thRouter.inject(this, getArguments());
         //create adapter and so on
-        linkWith(newUserBaseKey, true);
+        linkWith(shownUserBaseKey, true);
 
         getActivity().getSupportLoaderManager().initLoader(
                 mainTimelineAdapter.getTimelineLoaderId(), null,
@@ -347,20 +358,21 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onPause();
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        this.actionBar = null;
-        super.onDestroyOptionsMenu();
-    }
-
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachTimelineAdapter();
         detachTimelineListView();
         detachFreeFollowMiddleCallback();
         detachMessageThreadHeaderFetchTask();
+        detachFollowDialogCombo();
+        destroyInfoFetcher();
 
         displayablePortfolioFetchAssistant.setFetchedListener(null);
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         displayablePortfolioFetchAssistant = null;
 
         if (userProfileRetrievedMilestone != null)
@@ -377,6 +389,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         this.loadingView = null;
 
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        messageThreadHeaderFetchListener = null;
+        portfolioCompactListRetrievedMilestoneListener = null;
+        userProfileRetrievedMilestoneListener = null;
+        super.onDestroy();
     }
 
     protected void detachTimelineAdapter()
@@ -412,18 +432,34 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void detachMessageThreadHeaderFetchTask()
     {
-        if (messageThreadHeaderFetchTask != null)
+        messageThreadHeaderCache.unregister(messageThreadHeaderFetchListener);
+    }
+
+    protected void detachFollowDialogCombo()
+    {
+        FollowDialogCombo followDialogComboCopy = followDialogCombo;
+        if (followDialogComboCopy != null)
         {
-            messageThreadHeaderFetchTask.setListener(null);
+            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
         }
-        messageThreadHeaderFetchTask = null;
+        followDialogCombo = null;
+    }
+
+    protected void destroyInfoFetcher()
+    {
+        FollowerManagerInfoFetcher infoFetcherCopy = infoFetcher;
+        if (infoFetcherCopy != null)
+        {
+            infoFetcherCopy.onDestroyView();
+        }
+        infoFetcher = null;
     }
 
     protected void fetchMessageThreadHeader()
     {
         detachMessageThreadHeaderFetchTask();
-        messageThreadHeaderFetchTask = messageThreadHeaderCache.getOrFetch(shownUserBaseKey, createMessageThreadHeaderCacheListener());
-        messageThreadHeaderFetchTask.execute();
+        messageThreadHeaderCache.register(shownUserBaseKey, messageThreadHeaderFetchListener);
+        messageThreadHeaderCache.getOrFetchAsync(shownUserBaseKey);
     }
 
     //<editor-fold desc="Display methods">
@@ -444,8 +480,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             portfolioCompactListRetrievedMilestone.setOnCompleteListener(
                     portfolioCompactListRetrievedMilestoneListener);
             portfolioCompactListRetrievedMilestone.launch();
-            FollowerManagerInfoFetcher infoFetcher =
-                    new FollowerManagerInfoFetcher(new FollowerSummaryListener());
+            destroyInfoFetcher();
+            infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
             infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
         }
 
@@ -481,9 +517,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void pushDiscussion(TimelineItemDTOKey timelineItemDTOKey)
     {
         Bundle bundle = new Bundle();
-        bundle.putBundle(TimelineDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
-                timelineItemDTOKey.getArgs());
-        getNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
+        TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
+        getDashboardNavigator().pushFragment(TimelineDiscussionFragment.class, bundle);
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -499,7 +534,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private void linkWith(OwnedPortfolioIdList ownedPortfolioIdList, boolean andDisplay)
     {
         this.portfolioIdList = ownedPortfolioIdList;
-        portfolioCache.get().autoFetch(ownedPortfolioIdList, (OwnedPortfolioId) null);
+        if (ownedPortfolioIdList != null)
+        {
+            for(OwnedPortfolioId ownedPortfolioId: ownedPortfolioIdList)
+            {
+                portfolioCache.get().getOrFetchAsync(ownedPortfolioId);
+            }
+        }
 
         if (andDisplay)
         {
@@ -534,9 +575,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             userProfileView.display(shownProfile);
         }
-        if (this.actionBar != null)
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (actionBar != null)
         {
-            this.actionBar.setTitle(
+            actionBar.setTitle(
                     userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
         }
 
@@ -551,6 +593,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void displayActionBarTitle()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             if (shownProfile != null)
@@ -591,7 +634,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
                 shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item_2_0,
                 R.layout.user_profile_stat_view);
-        //shownUserBaseKey.key, R.layout.timeline_item_view);
         // TODO set the layouts
     }
 
@@ -698,48 +740,52 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Milestone retrieved listeners">
-    private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener =
-            new Milestone.OnCompleteListener()
+    private Milestone.OnCompleteListener createUserProfileRetrievedMilestoneListener()
+    {
+        return new Milestone.OnCompleteListener()
+        {
+            @Override public void onComplete(Milestone milestone)
             {
-                @Override public void onComplete(Milestone milestone)
+                if (currentTab == TabType.STATS)
                 {
-                    if (currentTab == TabType.STATS)
-                    {
-                        onLoadFinished();
-                    }
-                    UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
-                    if (cachedUserProfile != null)
-                    {
-                        linkWith(cachedUserProfile, true);
-                    }
+                    onLoadFinished();
                 }
-
-                @Override public void onFailed(Milestone milestone, Throwable throwable)
+                UserProfileDTO cachedUserProfile = userProfileCache.get().get(shownUserBaseKey);
+                if (cachedUserProfile != null)
                 {
-                    THToast.show(getString(R.string.error_fetch_user_profile));
+                    linkWith(cachedUserProfile, true);
                 }
-            };
+            }
 
-    private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener =
-            new Milestone.OnCompleteListener()
+            @Override public void onFailed(Milestone milestone, Throwable throwable)
             {
-                @Override public void onComplete(Milestone milestone)
-                {
-                    OwnedPortfolioIdList cachedOwnedPortfolioIdList =
-                            portfolioCompactListCache.get().get(shownUserBaseKey);
-                    if (cachedOwnedPortfolioIdList != null)
-                    {
-                        linkWith(cachedOwnedPortfolioIdList, true);
-                    }
-                }
+                THToast.show(getString(R.string.error_fetch_user_profile));
+            }
+        };
+    }
 
-                @Override public void onFailed(Milestone milestone, Throwable throwable)
+    private Milestone.OnCompleteListener createPortfolioCompactListRetrievedMilestoneListener()
+    {
+        return new Milestone.OnCompleteListener()
+        {
+            @Override public void onComplete(Milestone milestone)
+            {
+                OwnedPortfolioIdList cachedOwnedPortfolioIdList =
+                        portfolioCompactListCache.get().get(shownUserBaseKey);
+                if (cachedOwnedPortfolioIdList != null)
                 {
-                    // We do not need to inform the player here
-                    Timber.e("Error fetching the list of portfolio for user: %d",
-                            shownUserBaseKey.key, throwable);
+                    linkWith(cachedOwnedPortfolioIdList, true);
                 }
-            };
+            }
+
+            @Override public void onFailed(Milestone milestone, Throwable throwable)
+            {
+                // We do not need to inform the player here
+                Timber.e("Error fetching the list of portfolio for user: %d",
+                        shownUserBaseKey.key, throwable);
+            }
+        };
+    }
     //</editor-fold>
 
     protected List<UserBaseKey> getUserBaseKeys()
@@ -783,7 +829,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                detachFollowDialogCombo();
+                followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                         mFollowType, createFollowRequestedListener());
             }
         });
@@ -795,7 +842,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
                         || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
                 {
-                    alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                    detachFollowDialogCombo();
+                    followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                             UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
                             createFollowForMessageRequestedListener());
                 }
@@ -814,13 +862,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             Bundle args = new Bundle();
             ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
             ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(messageThreadHeaderDTO));
-            getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+            getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
         }
         else
         {
             Bundle args = new Bundle();
             NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-            getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+            getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
         }
     }
 
@@ -849,13 +897,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         return 0;
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 
     protected void freeFollow(UserBaseKey heroId, Callback<UserProfileDTO> followCallback)
     {
@@ -951,14 +992,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
     {
         return new TimelineMessageThreadHeaderCacheListener();
     }
 
-    protected class TimelineMessageThreadHeaderCacheListener implements DTOCache.Listener<UserBaseKey, MessageHeaderDTO>
+    protected class TimelineMessageThreadHeaderCacheListener implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value, boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value)
         {
             linkWithMessageThread(value, true);
         }

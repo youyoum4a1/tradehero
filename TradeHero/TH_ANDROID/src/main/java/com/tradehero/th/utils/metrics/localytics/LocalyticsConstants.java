@@ -11,6 +11,8 @@ public class LocalyticsConstants
     public static final String TabBar_Store = "TabBar/Store";
     public static final String TabBar_Settings = "TabBar/Settings";
     public static final String SignUp = "SignUp"; //User tap sign up on the landing
+    public static final String SignUp_Tap = "SignUp/Tap"; //User tap sign up on the landing
+    public static final String SignUp_Success = "SignUp/Success"; //User tap sign up on the landing
     public static final String SignIn = "SignIn"; //User tap sign in on the landing
     public static final String SignUp_Email = "SignUp/Email"; //User tap on sign up via email on
     public static final String Authentication_Facebook = "SignUp/Facebook"; // User tap on sign up via Facebook on sign up screen
@@ -88,7 +90,28 @@ public class LocalyticsConstants
     public static final String PickChart = "PickChart/%s"; // Changing a chart
     public static final String Trade_Buy = "Trade/Buy";// on transaction screen symbol
     public static final String Trade_Sell = "Trade/Sell";//
+    public static final String Facebook = "Facebook";//
+    public static final String Twitter = "Twitter";//
+    public static final String Linkedin = "Linkedin";//
+    public static final String WeiBo = "WeiBo";//
+    public static final String QQ = "QQ";//
+    public static final String Email = "Email";//
+    public static final String InviteFriends = "InviteFriends";//
+    public static final String Loading = "Loading";//
+    public static final String LoadingScreen = "LoadingScreen";//
+    public static final String Splash = "Splash";//
+    public static final String SplashScreen = "SplashScreen";//
+    public static final String Screen = "Screen ";//
+    public static final String SplashScreenCancel = "SplashScreenCancel";//
+    public static final String Login_Register = "Login/Register";//
+    public static final String LoginRegisterScreen = "LoginRegisterScreen";//
+    public static final String Login_Form = "LoginForm";//
+    public static final String LoginFormScreen = "LoginFormScreen";//
+    public static final String Register_Form = "RegisterForm";//
+    public static final String RegisterFormScreen = "RegisterFormScreen";//
 
     public static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
     public static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
+    //public static final String CHANNEL_MAP_KEY = "channel";
+    public static final String METHOD_MAP_KEY = "method";
 }

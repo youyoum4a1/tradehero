@@ -9,6 +9,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.news.NewsViewLinear;
@@ -103,6 +104,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
         }
     }
 
+    @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
+    {
+        // Nothing to do
+    }
+
     private void setRandomBackground()
     {
         // TODO have to remove this hack, please!
@@ -116,10 +122,5 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     private void resetViews()
     {
         // TODO
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 }

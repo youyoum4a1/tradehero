@@ -23,6 +23,7 @@
       android:paddingTop="56dp"
       android:paddingBottom="@dimen/trending_padding_bottom"
       android:clipToPadding="false"
+      android:listSelector="@drawable/basic_transparent_selector"
       android:scrollbarStyle="outsideOverlay"
       >
   </com.tradehero.th.fragments.trending.TrendingSecurityGridView>
@@ -46,6 +47,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
+      android:background="@drawable/round_square"
       android:visibility="gone"/>
 
 </RelativeLayout>

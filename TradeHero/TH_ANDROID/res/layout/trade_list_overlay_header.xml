@@ -16,6 +16,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:addStatesFromChildren="true"
+        android:background="@drawable/basic_transparent_selector"
         android:layout_weight="1"
         >
 
@@ -33,6 +35,7 @@
                 android:layout_height="match_parent"
                 android:textColor="@color/portfolio_header_text_color"
                 android:textStyle="bold"
+                android:singleLine="false"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text="@null" android:gravity="center_vertical"/>
@@ -44,6 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
+        android:addStatesFromChildren="true"
+        android:background="@drawable/basic_transparent_selector"
         android:id="@+id/trade_history_header_right_section">
 
         <TextView

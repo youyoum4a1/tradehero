@@ -8,6 +8,8 @@ import com.tradehero.th.models.provider.macquarie.MacquarieProviderSpecificResou
 import com.tradehero.th.models.provider.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 @Singleton public class ProviderSpecificResourcesFactory
 {
@@ -18,17 +20,17 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    public ProviderSpecificResourcesDTO createResourcesDTO(ProviderDTO providerDTO)
+    public ProviderSpecificResourcesDTO createResources(@Nullable ProviderDTO providerDTO)
     {
         ProviderSpecificResourcesDTO created = null;
         if (providerDTO != null)
         {
-            created = createResourcesDTO(providerDTO.getProviderId());
+            created = createResources(providerDTO.getProviderId());
         }
         return created;
     }
 
-    public ProviderSpecificResourcesDTO createResourcesDTO(ProviderId providerId)
+    public ProviderSpecificResourcesDTO createResources(@Nullable ProviderId providerId)
     {
         ProviderSpecificResourcesDTO created = null;
         if (providerId != null)
@@ -44,6 +46,12 @@ import javax.inject.Singleton;
                 case ProviderIdConstants.PROVIDER_ID_E_TORO:
                     created = new EToroProviderSpecificResourcesDTO();
                     break;
+                case ProviderIdConstants.PROVIDER_ID_SGX_STOCKWHIZ:
+                    // Nothing to do for now
+                    break;
+
+                default:
+                    Timber.e(new IllegalArgumentException(), "Unhandled ProviderId.key == %d", providerId.key);
             }
         }
         return created;

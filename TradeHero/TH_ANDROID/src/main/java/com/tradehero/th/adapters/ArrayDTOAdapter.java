@@ -28,7 +28,7 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends DTOAdapte
         List<T> itemsCopy = items;
         if (itemsCopy == null)
         {
-            itemsCopy = new ArrayList<T>();
+            itemsCopy = new ArrayList<>();
         }
         itemsCopy.add(item);
         items = itemsCopy;

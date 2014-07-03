@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -14,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -24,8 +23,6 @@ import com.tradehero.th.api.notification.NotificationKeyList;
 import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -39,6 +36,7 @@ import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -60,11 +58,11 @@ public class NotificationsView extends BetterViewAnimator
     private boolean loading;
     private int nextPageDelta;
 
-    private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
-    private Map<Integer, Callback<Response>> callbackMap;
+    @NotNull private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
+    @NotNull private Map<Integer, Callback<Response>> callbackMap;
 
-    private DTOCache.Listener<NotificationListKey, NotificationKeyList> notificationFetchListener;
-    private DTOCache.GetOrFetchTask<NotificationListKey, NotificationKeyList> notificationFetchTask;
+    private DTOCacheNew.Listener<NotificationListKey, NotificationKeyList> notificationListFetchListener;
+    private DTOCacheNew.Listener<NotificationListKey, NotificationKeyList> notificationListRefreshListener;
     private NotificationListKey notificationListKey;
     private NotificationListAdapter notificationListAdapter;
     private PullToRefreshBase.OnRefreshListener<ListView> notificationPullToRefreshListener;
@@ -73,11 +71,19 @@ public class NotificationsView extends BetterViewAnimator
     public NotificationsView(Context context)
     {
         super(context);
+        init();
     }
 
     public NotificationsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init();
+    }
+
+    protected void init()
+    {
+        callbackMap = new HashMap<>();
+        middleCallbackMap = new HashMap<>();
     }
     //</editor-fold>
 
@@ -88,7 +94,8 @@ public class NotificationsView extends BetterViewAnimator
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
 
-        createNotificationFetchListener();
+        notificationListFetchListener = createNotificationFetchListener();
+        notificationListRefreshListener = createNotificationRefreshListener();
 
         notificationListAdapter = createNotificationListAdapter();
     }
@@ -100,18 +107,18 @@ public class NotificationsView extends BetterViewAnimator
                 R.layout.notification_item_view);
     }
 
-    private void createNotificationFetchListener()
-    {
-        notificationFetchListener = new NotificationFetchListener(true);
-    }
-
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
 
-        createNotificationFetchListener();
-
-        initCallbackMap();
+        if (notificationListFetchListener == null)
+        {
+            notificationListFetchListener = createNotificationFetchListener();
+        }
+        if (notificationListRefreshListener == null)
+        {
+            notificationListRefreshListener = createNotificationRefreshListener();
+        }
 
         // for now, we have only one type of notification list
         notificationListKey = new NotificationListKey();
@@ -134,12 +141,6 @@ public class NotificationsView extends BetterViewAnimator
         notificationPullToRefreshListener = new NotificationRefreshRequestListener();
     }
 
-    private void initCallbackMap()
-    {
-        callbackMap = new HashMap<>();
-        middleCallbackMap = new HashMap<>();
-    }
-
     private void unsetMiddleCallback()
     {
         if (middleCallbackMap != null)
@@ -159,11 +160,12 @@ public class NotificationsView extends BetterViewAnimator
 
     @Override protected void onDetachedFromWindow()
     {
-        detachNotificationFetchTask();
+        detachNotificationListFetchTask();
 
         unsetMiddleCallback();
 
-        notificationFetchListener = null;
+        notificationListFetchListener = null;
+        notificationListRefreshListener = null;
 
         notificationListAdapter = null;
         notificationList.setAdapter(null);
@@ -180,9 +182,9 @@ public class NotificationsView extends BetterViewAnimator
         fetchNextPageIfNecessary(false);
     }
 
-    private void fetchNextPageIfNecessary(boolean force)
+    public void fetchNextPageIfNecessary(boolean force)
     {
-        detachNotificationFetchTask();
+        detachNotificationListFetchTask();
 
         if (paginatedNotificationListKey == null)
         {
@@ -192,9 +194,8 @@ public class NotificationsView extends BetterViewAnimator
         if (nextPageDelta >= 0)
         {
             paginatedNotificationListKey = paginatedNotificationListKey.next(nextPageDelta);
-
-            notificationFetchTask = notificationListCache.get().getOrFetch(paginatedNotificationListKey, force, notificationFetchListener);
-            notificationFetchTask.execute();
+            notificationListCache.get().register(paginatedNotificationListKey, notificationListFetchListener);
+            notificationListCache.get().getOrFetchAsync(paginatedNotificationListKey, force);
         }
     }
 
@@ -224,26 +225,26 @@ public class NotificationsView extends BetterViewAnimator
     {
         notificationListCache.get().invalidateAll();
         PaginatedNotificationListKey firstPage = new PaginatedNotificationListKey(notificationListKey, 1);
-        notificationListCache.get().put(firstPage,notificationKeyList);
+        notificationListCache.get().put(firstPage, notificationKeyList);
     }
 
     private void refresh()
     {
-        detachNotificationFetchTask();
+        detachNotificationListRefreshTask();
         PaginatedNotificationListKey firstPage = new PaginatedNotificationListKey(notificationListKey, 1);
-        DTOCache.GetOrFetchTask<NotificationListKey, NotificationKeyList> task = notificationListCache.get().getOrFetch(firstPage, true, new NotificationRefreshListener());
-        task.execute();
-
+        notificationListCache.get().register(firstPage, notificationListRefreshListener);
+        notificationListCache.get().getOrFetchAsync(firstPage, true);
+        requestUpdateTabCounter();
     }
 
-
-   private void detachNotificationFetchTask()
+    private void detachNotificationListFetchTask()
     {
-        if (notificationFetchTask != null)
-        {
-            notificationFetchTask.setListener(null);
-        }
-        notificationFetchTask = null;
+        notificationListCache.get().unregister(notificationListFetchListener);
+    }
+
+    private void detachNotificationListRefreshTask()
+    {
+        notificationListCache.get().unregister(notificationListRefreshListener);
     }
 
     private class NotificationListOnScrollListener implements AbsListView.OnScrollListener
@@ -264,31 +265,10 @@ public class NotificationsView extends BetterViewAnimator
 
                 fetchNextPageIfNecessary();
             }
-
-            updateReadStatus(firstVisibleItem, visibleItemCount);
         }
     }
 
-    private void updateReadStatus(int firstVisibleItem, int visibleItemCount)
-    {
-        int maxItemId = Math.min(firstVisibleItem + visibleItemCount, notificationListAdapter.getCount());
-        for (int i = firstVisibleItem; i < maxItemId; ++i)
-        {
-            Object o = notificationListAdapter.getItem(i);
-            if (o instanceof NotificationKey)
-            {
-                NotificationKey notificationKey = (NotificationKey) o;
-                NotificationDTO notificationDTO = notificationCache.get().get(notificationKey);
-
-                if (notificationDTO != null && notificationDTO.unread)
-                {
-                    reportNotificationRead(notificationDTO.pushId);
-                }
-            }
-        }
-    }
-
-    private void reportNotificationRead(int pushId)
+    protected void reportNotificationRead(int pushId)
     {
         MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
         if (middleCallback == null)
@@ -308,7 +288,12 @@ public class NotificationsView extends BetterViewAnimator
         return callback;
     }
 
-    private class NotificationFetchListener implements DTOCache.Listener<NotificationListKey, NotificationKeyList>
+    private DTOCacheNew.Listener<NotificationListKey, NotificationKeyList> createNotificationFetchListener()
+    {
+        return new NotificationFetchListener(true);
+    }
+
+    private class NotificationFetchListener implements DTOCacheNew.Listener<NotificationListKey, NotificationKeyList>
     {
         private final boolean shouldAppend;
 
@@ -317,7 +302,7 @@ public class NotificationsView extends BetterViewAnimator
             this.shouldAppend = shouldAppend;
         }
 
-        @Override public void onDTOReceived(NotificationListKey key, NotificationKeyList notificationKeyList, boolean fromCache)
+        @Override public void onDTOReceived(NotificationListKey key, NotificationKeyList notificationKeyList)
         {
             onFinish();
 
@@ -359,24 +344,19 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-
-
-  private class NotificationRefreshListener implements DTOCache.Listener<NotificationListKey, NotificationKeyList>
+    private DTOCacheNew.Listener<NotificationListKey, NotificationKeyList> createNotificationRefreshListener()
     {
+        return new NotificationRefreshListener();
+    }
 
-
-        @Override public void onDTOReceived(NotificationListKey key, NotificationKeyList notificationKeyList, boolean fromCache)
+    private class NotificationRefreshListener implements DTOCacheNew.Listener<NotificationListKey, NotificationKeyList>
+    {
+        @Override public void onDTOReceived(NotificationListKey key, NotificationKeyList notificationKeyList)
         {
-            if (fromCache)
-            {
-                return;
-            }
-            Timber.d("NotificationRefreshListener onDTOReceived");
             resetPage();
             resetContent(notificationKeyList);
             refreshCache(notificationKeyList);
             onFinish();
-
         }
 
         @Override public void onErrorThrown(NotificationListKey key, Throwable error)
@@ -395,7 +375,6 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    // TODO rework this inner class to identify the null elements.
     private class NotificationMarkAsReadCallback implements Callback<Response>
     {
         private final int pushId;
@@ -407,22 +386,15 @@ public class NotificationsView extends BetterViewAnimator
 
         @Override public void success(Response response, Response response2)
         {
-            if (response.getStatus() == 200)
-            {
-                Timber.d("Notification %d is reported as read", pushId);
-                // TODO update title
+            Timber.d("Notification %d is reported as read", pushId);
+            // TODO update title
 
-                // mark it as read in the cache
-                NotificationKey notificationKey = new NotificationKey(pushId);
-                NotificationDTO notificationDTO = notificationCache.get().get(notificationKey);
-                if (notificationDTO != null && notificationDTO.unread)
-                {
-                    notificationDTO.unread = false;
-                    notificationCache.get().put(notificationKey, notificationDTO);
-                    updateUnreadStatusInUserProfileCache();
-                }
-                middleCallbackMap.remove(pushId);
-                callbackMap.remove(pushId);
+            middleCallbackMap.remove(pushId);
+            callbackMap.remove(pushId);
+            requestUpdateTabCounter();
+            if(notificationListAdapter!=null)
+            {
+                notificationListAdapter.notifyDataSetChanged();
             }
         }
 
@@ -430,20 +402,6 @@ public class NotificationsView extends BetterViewAnimator
         {
             Timber.d("Report failure for notification: %d", pushId);
         }
-    }
-
-    private void updateUnreadStatusInUserProfileCache()
-    {
-        // TODO synchronization problem
-        UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO.unreadNotificationsCount > 0)
-        {
-            --userProfileDTO.unreadNotificationsCount;
-        }
-        userProfileCache.put(userBaseKey, userProfileDTO);
-
-        requestUpdateTabCounter();
     }
 
     private void requestUpdateTabCounter()
@@ -480,6 +438,7 @@ public class NotificationsView extends BetterViewAnimator
                 {
                     NotificationClickHandler notificationClickHandler = new NotificationClickHandler(getContext(), notificationDTO);
                     notificationClickHandler.handleNotificationItemClicked();
+                    reportNotificationRead(notificationDTO.pushId);
                 }
             }
         }

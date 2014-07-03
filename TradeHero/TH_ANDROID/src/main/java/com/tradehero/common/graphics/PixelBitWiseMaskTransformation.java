@@ -8,7 +8,7 @@ public class PixelBitWiseMaskTransformation implements Transformation
     // The default mask negates the colors and leaves alpha unchanged
     public static final int DEFAULT_MASK = 0x00FFFFFF;
 
-    private int mask;
+    private final int mask;
 
     //<editor-fold desc="Constructors">
     public PixelBitWiseMaskTransformation()

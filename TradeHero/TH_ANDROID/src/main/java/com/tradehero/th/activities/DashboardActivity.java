@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.TabHost;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -19,7 +18,6 @@ import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -44,19 +42,21 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
-import com.tradehero.th.ui.AppContainerImpl;
 import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -65,9 +65,10 @@ import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity,
-        AppContainerImpl.OnResideMenuItemClickListener,
         ResideMenu.OnMenuListener
 {
+    private final DashboardTabType INITIAL_TAB = DashboardTabType.TRENDING;
+
     private DashboardNavigator navigator;
 
     // It is important to have Lazy here because we set the current Activity after the injection
@@ -95,15 +96,19 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
 
+    @Inject THRouter thRouter;
+
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
-    private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
+    private DTOCacheNew.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     private ProgressDialog progressDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
+        AppTiming.dashboardCreate = System.currentTimeMillis();
+
         // this need tobe early than super.onCreate or it will crash
         // when device scroll into landscape.
         // request the progress-bar feature for the activity
@@ -118,7 +123,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (Constants.RELEASE)
         {
             Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.VERSION));
+                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.TAP_STREAM_TYPE.type));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
@@ -141,7 +146,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchBilling();
 
         detachUserProfileCache();
-        userProfileCacheListener = new UserProfileFetchListener();
+        userProfileCacheListener = createUserProfileFetchListener();
+
+        detachNotificationFetchTask();
+        notificationFetchListener = createNotificationFetchListener();
+
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
@@ -149,30 +158,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         this.dtoCacheUtil.initialPrefetches();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
+        navigator.goToTab(INITIAL_TAB);
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
     }
-
-    //<editor-fold desc="Bad design, to be removed">
-    @Deprecated
-    public void addOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
-    {
-        if (navigator != null && onTabChangeListener != null)
-        {
-            navigator.addOnTabChangeListener(onTabChangeListener);
-        }
-    }
-
-    @Deprecated
-    public void removeOnTabChangeListener(TabHost.OnTabChangeListener onTabChangeListener)
-    {
-        if (navigator != null && onTabChangeListener != null)
-        {
-            navigator.removeOnTabChangeListener(onTabChangeListener);
-        }
-    }
-    //</editor-fold>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev)
@@ -182,11 +172,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void detachUserProfileCache()
     {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.get().unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
+        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     private void launchBilling()
@@ -207,13 +193,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         request.popRestorePurchaseOutcome = true;
         request.popRestorePurchaseOutcomeVerbose = false;
         request.purchaseRestorerListener = purchaseRestorerFinishedListener;
-        return request;
-    }
-
-    protected THUIBillingRequest createFetchInventoryRequest()
-    {
-        THUIBillingRequest request = emptyBillingRequestProvider.get();
-        request.fetchInventory = true;
         return request;
     }
 
@@ -303,7 +282,9 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onResume();
 
         launchActions();
-        localyticsSession.get().open();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().open(custom_dimensions);
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -316,25 +297,22 @@ public class DashboardActivity extends SherlockFragmentActivity
             progressDialog = progressDialogUtil.get().show(this, "", "");
 
             detachNotificationFetchTask();
-            notificationFetchTask = notificationCache.get()
-                    .getOrFetch(new NotificationKey(extras), false,
-                            new NotificationFetchListener());
-            notificationFetchTask.execute();
+            NotificationKey key = new NotificationKey(extras);
+            notificationCache.get().register(key, notificationFetchListener);
+            notificationCache.get().getOrFetchAsync(key, false);
         }
     }
 
     private void detachNotificationFetchTask()
     {
-        if (notificationFetchTask != null)
-        {
-            notificationFetchTask.setListener(null);
-        }
-        notificationFetchTask = null;
+        notificationCache.get().unregister(notificationFetchListener);
     }
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close();
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().close(custom_dimensions);
         localyticsSession.get().upload();
 
         super.onPause();
@@ -361,7 +339,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         purchaseRestorerFinishedListener = null;
 
         detachUserProfileCache();
+        userProfileCacheListener = null;
+
         detachNotificationFetchTask();
+        notificationFetchListener = null;
 
         super.onDestroy();
     }
@@ -371,6 +352,14 @@ public class DashboardActivity extends SherlockFragmentActivity
         Intent intent = getIntent();
         if (intent == null || intent.getAction() == null)
         {
+            return;
+        }
+
+        if (intent.getData() != null)
+        {
+            String url = intent.getData().toString();
+            url = url.replace("tradehero://", "");
+            thRouter.open(url, this);
             return;
         }
 
@@ -408,7 +397,12 @@ public class DashboardActivity extends SherlockFragmentActivity
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
-    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
+    {
+        return new UserProfileFetchListener();
+    }
+
+    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
         public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
@@ -419,32 +413,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         @Override public void onErrorThrown(UserBaseKey key, Throwable error)
         {
 
-        }
-    }
-
-    private DashboardTabType currentTab = DashboardTabType.TRENDING;
-
-    /**
-     * @deprecated
-     */
-    @Override public void onResideMenuItemClick(DashboardTabType tabType)
-    {
-        switch (tabType)
-        {
-            case TRENDING:
-                break;
-            case PORTFOLIO:
-                break;
-            case STORE:
-                break;
-            default:
-                break;
-        }
-
-        if (currentTab != tabType)
-        {
-            navigator.replaceTab(currentTab, tabType);
-            currentTab = tabType;
         }
     }
 
@@ -468,11 +436,16 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
-    private class NotificationFetchListener
-            implements DTOCache.Listener<NotificationKey, NotificationDTO>
+    protected DTOCacheNew.Listener<NotificationKey, NotificationDTO> createNotificationFetchListener()
+    {
+        return new NotificationFetchListener();
+    }
+
+    protected class NotificationFetchListener
+            implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
     {
         @Override
-        public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
+        public void onDTOReceived(NotificationKey key, NotificationDTO value)
         {
             onFinish();
 

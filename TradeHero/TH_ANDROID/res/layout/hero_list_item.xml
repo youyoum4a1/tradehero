@@ -14,26 +14,35 @@
 
   <ImageView
       android:id="@+id/follower_profile_picture"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
       android:src="@drawable/superman_facebook"
       android:contentDescription="@null"
       />
 
-  <ImageView
-      android:id="@+id/ic_status"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:layout_centerVertical="true"
-      android:src="@drawable/cross_red"
-      android:scaleType="fitCenter"
-      android:contentDescription="@null"
+  <LinearLayout
+      android:id="@+id/ic_status_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
-      android:visibility="visible"
-      android:padding="10dp"
-      />
+      android:layout_centerVertical="true"
+      >
+
+    <ImageView
+        android:id="@+id/ic_status"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
+        android:src="@drawable/cross_red"
+        android:background="@drawable/basic_transparent_selector"
+        android:scaleType="fitCenter"
+        android:contentDescription="@null"
+        android:visibility="visible"
+        android:padding="10dp"
+        />
+
+  </LinearLayout>
 
   <ImageView
       android:id="@+id/country_logo"
@@ -42,7 +51,7 @@
       android:src="@drawable/settings_forward_light"
       android:scaleType="centerInside"
       android:contentDescription="@null"
-      android:layout_toLeftOf="@+id/ic_status"
+      android:layout_toLeftOf="@+id/ic_status_container"
       android:layout_marginRight="10dp"
       android:layout_centerVertical="true"
       />
@@ -82,7 +91,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:text=""
-        android:textSize="10dp"
+        android:textSize="10sp"
         />
 
   </LinearLayout>

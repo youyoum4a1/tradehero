@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.portfolio;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -12,24 +12,34 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class PortfolioCompactListCache extends StraightDTOCache<UserBaseKey, OwnedPortfolioIdList>
+@Singleton public class PortfolioCompactListCache extends StraightDTOCacheNew<UserBaseKey, OwnedPortfolioIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected Lazy<PortfolioService> portfolioService;
-    @Inject protected Lazy<PortfolioCompactCache> portfolioCompactCache;
-    @Inject protected Lazy<PortfolioCache> portfolioCache;
-    @Inject protected CurrentUserId currentUserId;
+    @NotNull protected final Lazy<PortfolioService> portfolioService;
+    @NotNull protected final Lazy<PortfolioCompactCache> portfolioCompactCache;
+    @NotNull protected final Lazy<PortfolioCache> portfolioCache;
+    @NotNull protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    @Inject public PortfolioCompactListCache()
+    @Inject public PortfolioCompactListCache(
+            @NotNull Lazy<PortfolioService> portfolioService,
+            @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
+            @NotNull Lazy<PortfolioCache> portfolioCache,
+            @NotNull CurrentUserId currentUserId)
     {
         super(DEFAULT_MAX_SIZE);
+        this.portfolioService = portfolioService;
+        this.portfolioCompactCache = portfolioCompactCache;
+        this.portfolioCache = portfolioCache;
+        this.currentUserId = currentUserId;
     }
     //</editor-fold>
 
-    @Override protected OwnedPortfolioIdList fetch(UserBaseKey key) throws Throwable
+    @Override @NotNull public OwnedPortfolioIdList fetch(@NotNull UserBaseKey key) throws Throwable
     {
         return putInternal(key, portfolioService.get().getPortfolios(key.key, key.equals(currentUserId.toUserBaseKey())));
     }
@@ -43,7 +53,6 @@ import javax.inject.Singleton;
             OwnedPortfolioId ownedPortfolioId;
             for (PortfolioCompactDTO portfolioCompactDTO: fleshedValues)
             {
-                //THLog.d(TAG, portfolioCompactDTO.toString());
                 ownedPortfolioId = new OwnedPortfolioId(key, portfolioCompactDTO.getPortfolioId());
                 ownedPortfolioIds.add(ownedPortfolioId);
                 portfolioCompactCache.get().put(portfolioCompactDTO.getPortfolioId(), portfolioCompactDTO);
@@ -53,12 +62,12 @@ import javax.inject.Singleton;
         return ownedPortfolioIds;
     }
 
-    @Override public void invalidate(UserBaseKey key)
+    @Override public void invalidate(@NotNull UserBaseKey key)
     {
-        OwnedPortfolioIdList value = get(key);
+        @Nullable OwnedPortfolioIdList value = get(key);
         if (value != null)
         {
-            for (OwnedPortfolioId ownedPortfolioId : value)
+            for (@NotNull OwnedPortfolioId ownedPortfolioId : value)
             {
                 portfolioCompactCache.get().invalidate(ownedPortfolioId.getPortfolioIdKey());
                 portfolioCache.get().invalidate(ownedPortfolioId);
@@ -79,13 +88,10 @@ import javax.inject.Singleton;
         for (OwnedPortfolioId ownedPortfolioId : list)
         {
             portfolioId = ownedPortfolioId.getPortfolioIdKey();
-            if (portfolioId != null)
+            portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
+            if (portfolioCompactDTO != null && portfolioCompactDTO.isDefault())
             {
-                portfolioCompactDTO = portfolioCompactCache.get().get(portfolioId);
-                if (portfolioCompactDTO != null && portfolioCompactDTO.isDefault())
-                {
-                    return ownedPortfolioId;
-                }
+                return ownedPortfolioId;
             }
         }
         return null;

@@ -1,20 +1,19 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
+import java.util.List;
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
 
-import java.util.List;
-
 interface ProviderServiceAsync
 {
     //<editor-fold desc="Get Providers">
     @GET("/providers")
-    void getProviders(Callback<List<ProviderDTO>> callback);
+    void getProviders(Callback<ProviderDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
@@ -23,7 +22,7 @@ interface ProviderServiceAsync
             @Path("providerId") int providerId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<List<SecurityCompactDTO>> callback);
+            Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Warrant Underlyers">
@@ -32,7 +31,7 @@ interface ProviderServiceAsync
             @Path("providerId") int providerId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<List<SecurityCompactDTO>> callback);
+            Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Search Competition Securities">
@@ -42,7 +41,7 @@ interface ProviderServiceAsync
             @Query("q") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<List<SecurityCompactDTO>> callback);
+            Callback<SecurityCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">

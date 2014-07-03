@@ -17,15 +17,17 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>, View.OnClickListener
@@ -40,6 +42,7 @@ public class RelationsListItemView extends RelativeLayout
 
     @Inject protected Lazy<Picasso> picassoLazy;
     @Inject @ForUserPhoto protected Lazy<Transformation> peopleIconTransformationLazy;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
     public RelationsListItemView(Context context)
@@ -97,9 +100,8 @@ public class RelationsListItemView extends RelativeLayout
         int userId = allowableRecipientDTO.user.id;
 
         Bundle bundle = new Bundle();
-        bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userId);
-        DashboardNavigator navigator =
-                ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+        thRouter.save(bundle, new UserBaseKey(userId));
+        DashboardNavigator navigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
         navigator.pushFragment(PushableTimelineFragment.class, bundle);
     }
 
@@ -287,8 +289,9 @@ public class RelationsListItemView extends RelativeLayout
         }
         catch (IllegalArgumentException ex)
         {
-            return 0;
+            Timber.e(ex, "No country for %s", country);
         }
+        return R.drawable.default_image;
     }
 
     protected void notifyFollowRequested()

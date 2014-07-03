@@ -1,65 +1,74 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
-import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOFactory;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
+import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.provider.DTOProcessorReceivedProviderDTOList;
+import com.tradehero.th.models.provider.ProviderSpecificKnowledgeFactory;
+import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.security.DTOProcessorSecurityCompactListReceived;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class ProviderServiceWrapper
 {
-    private final ProviderService providerService;
-    private final ProviderServiceAsync providerServiceAsync;
-    private final SecurityCompactDTOFactory securityCompactDTOFactory;
+    @NotNull private final ProviderService providerService;
+    @NotNull private final ProviderServiceAsync providerServiceAsync;
+    @NotNull private final ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
+    @NotNull private final ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
+    //<editor-fold desc="Constructors">
     @Inject public ProviderServiceWrapper(
-            ProviderService providerService,
-            ProviderServiceAsync providerServiceAsync,
-            SecurityCompactDTOFactory securityCompactDTOFactory)
+            @NotNull ProviderService providerService,
+            @NotNull ProviderServiceAsync providerServiceAsync,
+            @NotNull ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory,
+            @NotNull ProviderSpecificResourcesFactory providerSpecificResourcesFactory)
     {
         super();
         this.providerService = providerService;
         this.providerServiceAsync = providerServiceAsync;
-        this.securityCompactDTOFactory = securityCompactDTOFactory;
+        this.providerSpecificKnowledgeFactory = providerSpecificKnowledgeFactory;
+        this.providerSpecificResourcesFactory = providerSpecificResourcesFactory;
     }
-
-    protected DTOProcessor<List<SecurityCompactDTO>> createSecurityCompactListReceivedDTOProcessor()
-    {
-        return new DTOProcessorSecurityCompactListReceived(securityCompactDTOFactory);
-    }
+    //</editor-fold>
 
     //<editor-fold desc="Get Providers">
-    public List<ProviderDTO> getProviders()
+    protected DTOProcessor<ProviderDTOList> createDTOProcessorReceivedProviderDTOList()
     {
-        return this.providerService.getProviders();
+        return new DTOProcessorReceivedProviderDTOList(
+                providerSpecificKnowledgeFactory,
+                providerSpecificResourcesFactory);
     }
 
-    public MiddleCallback<List<ProviderDTO>> getProviders(Callback<List<ProviderDTO>> callback)
+    public ProviderDTOList getProviders()
     {
-        MiddleCallback<List<ProviderDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        return createDTOProcessorReceivedProviderDTOList().process(this.providerService.getProviders());
+    }
+
+    @NotNull public MiddleCallback<ProviderDTOList> getProviders(@Nullable Callback<ProviderDTOList> callback)
+    {
+        MiddleCallback<ProviderDTOList> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorReceivedProviderDTOList());
         this.providerServiceAsync.getProviders(middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
-    public List<SecurityCompactDTO> getProviderSecurities(ProviderSecurityListType key)
+    public SecurityCompactDTOList getProviderSecurities(@NotNull ProviderSecurityListType key)
     {
-        List<SecurityCompactDTO> received;
+        SecurityCompactDTOList received;
         if (key instanceof SearchProviderSecurityListType)
         {
             SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
@@ -87,12 +96,14 @@ import retrofit.Callback;
         {
             throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
         }
-        return createSecurityCompactListReceivedDTOProcessor().process(received);
+        return received;
     }
 
-    public MiddleCallback<List<SecurityCompactDTO>> getProviderSecurities(ProviderSecurityListType key, Callback<List<SecurityCompactDTO>> callback)
+    @NotNull public MiddleCallback<SecurityCompactDTOList> getProviderSecurities(
+            @NotNull ProviderSecurityListType key,
+            @Nullable Callback<SecurityCompactDTOList> callback)
     {
-        MiddleCallback<List<SecurityCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback, createSecurityCompactListReceivedDTOProcessor());
+        MiddleCallback<SecurityCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         if (key instanceof SearchProviderSecurityListType)
         {
             SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
@@ -128,22 +139,26 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">
-    public List<HelpVideoDTO> getHelpVideos(HelpVideoListKey helpVideoListKey)
+    public List<HelpVideoDTO> getHelpVideos(@NotNull HelpVideoListKey helpVideoListKey)
     {
         return this.getHelpVideos(helpVideoListKey.getProviderId());
     }
 
-    public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(HelpVideoListKey helpVideoListKey, Callback<List<HelpVideoDTO>> callback)
+    @NotNull public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(
+            @NotNull HelpVideoListKey helpVideoListKey,
+            @Nullable Callback<List<HelpVideoDTO>> callback)
     {
         return this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
     }
 
-    public List<HelpVideoDTO> getHelpVideos(ProviderId providerId)
+    public List<HelpVideoDTO> getHelpVideos(@NotNull ProviderId providerId)
     {
         return this.providerService.getHelpVideos(providerId.key);
     }
 
-    public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(ProviderId providerId, Callback<List<HelpVideoDTO>> callback)
+    @NotNull public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(
+            @NotNull ProviderId providerId,
+            @Nullable Callback<List<HelpVideoDTO>> callback)
     {
         MiddleCallback<List<HelpVideoDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         this.providerServiceAsync.getHelpVideos(providerId.key, middleCallback);

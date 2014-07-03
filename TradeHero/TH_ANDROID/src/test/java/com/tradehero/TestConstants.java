@@ -2,10 +2,13 @@ package com.tradehero;
 
 public class TestConstants
 {
-    public static final String BASE_APP_FOLDER = "./TradeHero/TH_ANDROID/";
+    public static final String TEST_COMMAND = System.getProperties().getProperty("sun.java.command");
+    public static final boolean IS_INTELLIJ = TEST_COMMAND != null && TEST_COMMAND.toLowerCase().contains("intellij");
+
+    public static final String BASE_APP_FOLDER = IS_INTELLIJ ? "./TradeHero/TH_ANDROID/" : "./";
     public static final String JSON_MIME_UTF8 = "application/json; charset=utf-8";
 
-    public static final String LIBRARIES_GENERATED_FOLDER = "gen-external-apklibs";
+    public static final String LIBRARIES_GENERATED_FOLDER = IS_INTELLIJ ? "gen-external-apklibs" : "target/unpack/apklibs";
     public static final String MANIFEST_PATH = BASE_APP_FOLDER + "AndroidManifest.xml";
     public static final String RES_PATH = BASE_APP_FOLDER + "res";
     public static final String ASSETS_PATH = BASE_APP_FOLDER + "assets";

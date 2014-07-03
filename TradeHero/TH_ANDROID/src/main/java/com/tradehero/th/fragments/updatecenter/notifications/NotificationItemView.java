@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,20 +12,21 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -35,17 +37,18 @@ public class NotificationItemView
     @InjectView(R.id.discussion_content) TextView notificationContent;
     @InjectView(R.id.notification_user_picture) ImageView notificationPicture;
     @InjectView(R.id.discussion_time) TextView notificationTime;
+    @InjectView(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
 
     @Inject NotificationCache notificationCache;
     @Inject PrettyTime prettyTime;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
+    @Inject THRouter thRouter;
 
     private NotificationKey notificationKey;
     private NotificationDTO notificationDTO;
 
-    private DTOCache.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
-    private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
+    private DTOCacheNew.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
 
     //<editor-fold desc="Constructors">
     public NotificationItemView(Context context)
@@ -71,19 +74,22 @@ public class NotificationItemView
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
 
-        notificationFetchListener = new NotificationFetchListener();
+        notificationFetchListener = createNotificationFetchListener();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
 
-        notificationFetchListener = new NotificationFetchListener();
+        if (notificationFetchListener == null)
+        {
+            notificationFetchListener = createNotificationFetchListener();
+        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        detachNotificationFetchTask();
+        detachNotificationCache();
 
         resetView();
 
@@ -97,7 +103,7 @@ public class NotificationItemView
         Bundle bundle = new Bundle();
         if (notificationDTO != null && notificationDTO.referencedUserId != null)
         {
-            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, notificationDTO.referencedUserId);
+            thRouter.save(bundle, new UserBaseKey(notificationDTO.referencedUserId));
             getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
@@ -115,7 +121,7 @@ public class NotificationItemView
         {
             notificationContent.setText(notificationDTO.text);
             notificationTime.setText(prettyTime.format(notificationDTO.createdAtUtc));
-
+            notificationUnreadFlag.setVisibility(notificationDTO.unread ? View.VISIBLE : View.INVISIBLE);
             if (notificationDTO.imageUrl != null)
             {
                 picasso.load(notificationDTO.imageUrl)
@@ -151,24 +157,24 @@ public class NotificationItemView
 
     private void fetchNotification()
     {
-        detachNotificationFetchTask();
-
-        notificationFetchTask = notificationCache.getOrFetch(notificationKey, false, notificationFetchListener);
-        notificationFetchTask.execute();
+        detachNotificationCache();
+        notificationCache.register(notificationKey, notificationFetchListener);
+        notificationCache.getOrFetchAsync(notificationKey, false);
     }
 
-    private void detachNotificationFetchTask()
+    private void detachNotificationCache()
     {
-        if (notificationFetchTask != null)
-        {
-            notificationFetchTask.setListener(null);
-        }
-        notificationFetchTask = null;
+        notificationCache.unregister(notificationFetchListener);
     }
 
-    private class NotificationFetchListener implements DTOCache.Listener<NotificationKey,NotificationDTO>
+    protected DTOCacheNew.Listener<NotificationKey, NotificationDTO> createNotificationFetchListener()
     {
-        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
+        return new NotificationFetchListener();
+    }
+
+    protected class NotificationFetchListener implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
+    {
+        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value)
         {
             linkWith(value, true);
         }

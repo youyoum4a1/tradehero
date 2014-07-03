@@ -14,8 +14,8 @@
 
   <ImageView
       android:id="@+id/notification_user_picture"
-      android:layout_width="60dp"
-      android:layout_height="60dp"
+      android:layout_width="@dimen/big_avatar_w_h"
+      android:layout_height="@dimen/big_avatar_w_h"
       android:background="@drawable/layout_oval_gray"
       android:padding="1dp"
       android:src="@drawable/avatar"
@@ -28,7 +28,16 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       >
-
+    <ImageView
+        android:id="@+id/notification_unread_flag"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:visibility="gone"
+        android:background="@drawable/blue_circle"
+        android:contentDescription="@null"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        />
     <TextView
         android:id="@+id/discussion_content"
         android:layout_width="wrap_content"
@@ -39,6 +48,8 @@
         android:textColor="@color/timeline_item"
         android:textSize="12sp"
         android:textStyle="normal"
+        android:layout_toLeftOf="@id/notification_unread_flag"
+        android:layout_alignParentLeft="true"
         tools:text="Tho Nguyen has become the best trader of the world!"
         />
 

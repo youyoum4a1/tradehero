@@ -1,15 +1,19 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
-import java.util.ArrayList;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserIdList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class LeaderboardUserCache extends StraightDTOCache<LeaderboardUserId, LeaderboardUserDTO>
+@Singleton public class LeaderboardUserCache extends StraightDTOCacheNew<LeaderboardUserId, LeaderboardUserDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -18,12 +22,13 @@ import javax.inject.Singleton;
         super(DEFAULT_MAX_SIZE);
     }
 
-    @Override protected LeaderboardUserDTO fetch(LeaderboardUserId key) throws Throwable
+    @Override @NotNull public LeaderboardUserDTO fetch(@NotNull LeaderboardUserId key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch on LeaderboardUserCache");
     }
 
-    public void put(Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
+    @Contract("null -> null; !null -> !null")
+    public void put(@Nullable Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
     {
         if (leaderboardUserDTOs == null)
         {
@@ -36,18 +41,24 @@ import javax.inject.Singleton;
         }
     }
 
-    public List<LeaderboardUserDTO> get(List<LeaderboardUserId> leaderboardUserIds)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public LeaderboardUserDTOList get(@Nullable List<LeaderboardUserId> leaderboardUserIds)
     {
         if (leaderboardUserIds == null)
         {
             return null;
         }
 
-        List<LeaderboardUserDTO> returned = new ArrayList<>();
-        for (LeaderboardUserId leaderboardUserId: leaderboardUserIds)
+        LeaderboardUserDTOList  returned = new LeaderboardUserDTOList();
+        for (@NotNull LeaderboardUserId leaderboardUserId: leaderboardUserIds)
         {
             returned.add(get(leaderboardUserId));
         }
         return returned;
+    }
+
+    public LeaderboardUserIdList getAllKeys()
+    {
+        return new LeaderboardUserIdList(snapshot().keySet());
     }
 }

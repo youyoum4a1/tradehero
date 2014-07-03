@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<selector xmlns:android="http://schemas.android.com/apk/res/android">-->
+  <!--<item android:state_pressed="true" android:drawable="@drawable/btn_background_social_linkedin_pressed"/>-->
+  <!--<item android:drawable="@drawable/btn_background_social_linkedin_normal"/>-->
+<!--</selector>-->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:state_pressed="true">
+  <shape android:shape="rectangle">
+    <solid android:color="@color/invite_friend_background_color"/>
+    <corners android:radius="4dp"/>
+  </shape>
+</item>
+
+<item>
+  <shape android:shape="rectangle">
+    <solid android:color="@color/white"/>
+    <corners android:radius="4dp"/>
+  </shape>
+</item>
+
+</selector>

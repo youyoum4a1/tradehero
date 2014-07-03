@@ -83,6 +83,7 @@
 -keep class **$$ModuleAdapter
 -keep class **$$InjectAdapter
 -keep class **$$StaticInjection
+-keep class **$$Routable { *; }
 -keepnames class dagger.Lazy
 -dontwarn dagger.internal.codegen.**
 -dontwarn com.squareup.javawriter.**
@@ -111,6 +112,9 @@
 -assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
 -keep class !com.tradehero.** { *; }
+-dontwarn **.VisibleForTesting
+-dontwarn com.thoj.**
+-dontwarn com.handmark.**
 -dontwarn org.apache.**
 -dontwarn twitter4j.**
 -dontwarn retrofit.**

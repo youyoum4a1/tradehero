@@ -1,6 +1,7 @@
 package com.tradehero.th.api.security;
 
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;

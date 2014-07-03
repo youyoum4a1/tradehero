@@ -5,31 +5,30 @@ import android.content.SharedPreferences;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.util.Set;
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class LeaderboardKeyPreference extends StringSetPreference
 {
-    protected final Context context;
+    @NotNull protected final Context context;
 
     //<editor-fold desc="Constructor">
-    @Inject public LeaderboardKeyPreference(Context context, SharedPreferences preference, String key, Set<String> defaultValue)
+    public LeaderboardKeyPreference(
+            @NotNull Context context,
+            @NotNull SharedPreferences preference,
+            @NotNull String key,
+            @NotNull Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
         this.context = context;
     }
     //</editor-fold>
 
-    public LeaderboardKey getLeaderboardKey()
+    @NotNull public LeaderboardKey getLeaderboardKey()
     {
-        Set<String> set = get();
-        if (set == null)
-        {
-            return null;
-        }
-        return new LeaderboardKey(set, createDefaultValues());
+        return new LeaderboardKey(get(), createDefaultValues());
     }
 
-    public LeaderboardKey createDefaultValues()
+    @NotNull public LeaderboardKey createDefaultValues()
     {
         return new LeaderboardKey(Integer.MIN_VALUE);
     }

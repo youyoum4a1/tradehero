@@ -4,29 +4,43 @@ import android.os.Bundle;
 import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFragment
 {
-    public static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
+    private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
     @InjectView(R.id.discussion_view) protected DiscussionView discussionView;
 
-    @Inject protected DiscussionKeyFactory discussionKeyFactory;
+    @Inject @NotNull protected DiscussionKeyFactory discussionKeyFactory;
 
     private DiscussionKey discussionKey;
 
-    public static void putDiscussionKey(Bundle args, DiscussionKey discussionKey)
+    public static void putDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKey discussionKey)
     {
         args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
+    }
+
+    @Nullable private static DiscussionKey getDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKeyFactory discussionKeyFactory)
+    {
+        if (args.containsKey(DISCUSSION_KEY_BUNDLE_KEY))
+        {
+            return discussionKeyFactory.fromBundle(args.getBundle(DISCUSSION_KEY_BUNDLE_KEY));
+        }
+        return null;
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        this.discussionKey = getDiscussionKey(getArguments(), discussionKeyFactory);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -49,22 +63,10 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         super.onDestroyView();
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-    }
-
     @Override public void onResume()
     {
         super.onResume();
 
-        if (discussionKey == null && getArguments().containsKey(DISCUSSION_KEY_BUNDLE_KEY))
-        {
-            discussionKey = discussionKeyFactory.fromBundle(getArguments().getBundle(DISCUSSION_KEY_BUNDLE_KEY));
-        }
         if (discussionKey != null)
         {
             linkWith(discussionKey, true);
@@ -85,18 +87,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         }
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
-    protected void handleCommentPosted(DiscussionDTO discussionDTO)
-    {
-    }
-
-    protected void handleCommentPostFailed(Exception exception)
-    {
-    }
+    abstract protected void handleCommentPosted(DiscussionDTO discussionDTO);
 
     protected PostCommentView.CommentPostedListener createCommentPostedListener()
     {
@@ -112,7 +103,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
         @Override public void failure(Exception exception)
         {
-            handleCommentPostFailed(exception);
+            // Nothing to do
         }
     }
 }

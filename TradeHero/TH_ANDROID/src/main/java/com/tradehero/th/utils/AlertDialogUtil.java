@@ -18,6 +18,7 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
+import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -241,12 +242,12 @@ public class AlertDialogUtil
             return popWithNegativeButton(context,
                     context.getString(R.string.alert_dialog_market_close_title),
                     String.format(context.getString(R.string.alert_dialog_market_close_message),
-                            securityId.exchange, securityId.securitySymbol),
+                            securityId.getExchange(), securityId.getSecuritySymbol()),
                     context.getString(R.string.alert_dialog_market_close_cancel));
         }
     }
 
-    public void showFollowDialog(
+    public FollowDialogCombo showFollowDialog(
             @NotNull final Context context,
             @Nullable UserBaseDTO userBaseDTO,
             final int followType,
@@ -254,7 +255,7 @@ public class AlertDialogUtil
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
-            return;
+            return null;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -291,6 +292,8 @@ public class AlertDialogUtil
                 mFollowDialog.dismiss();
             }
         });
+
+        return new FollowDialogCombo(mFollowDialog, followDialogView);
     }
 
     public void showProgressDialog(@NotNull final Context context)

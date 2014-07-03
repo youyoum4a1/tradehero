@@ -8,9 +8,9 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import timber.log.Timber;
 
+// TODO remove?
 public class TabListener implements ActionBar.TabListener
 {
-
     protected Activity mActivity;
     protected Fragment mFragment;
     protected final String mTag;

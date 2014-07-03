@@ -1,63 +1,53 @@
 package com.tradehero.th.api.security.key;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public class TrendingSecurityListType extends SecurityListType
 {
-    public static final String ALL_EXCHANGES = "allExchanges";
+    // Null is for all exchanges
+    @Nullable public final String exchange;
 
-    public final String exchange;
-
-    //<editor-fold desc="Constructor">
-    protected TrendingSecurityListType(TrendingSecurityListType other)
+    //<editor-fold desc="Constructors">
+    protected TrendingSecurityListType(@NotNull TrendingSecurityListType other)
     {
         super(other);
         this.exchange = other.exchange;
-        validate();
     }
 
-    public TrendingSecurityListType(String exchange, Integer page, Integer perPage)
+    public TrendingSecurityListType(@Nullable String exchange, @Nullable Integer page, @Nullable Integer perPage)
     {
         super(page, perPage);
         this.exchange = exchange;
-        validate();
     }
 
-    public TrendingSecurityListType(String exchange, Integer page)
+    public TrendingSecurityListType(@Nullable String exchange, @Nullable Integer page)
     {
         super(page);
         this.exchange = exchange;
-        validate();
     }
 
-    public TrendingSecurityListType(String exchange)
+    public TrendingSecurityListType(@Nullable String exchange)
     {
         super();
         this.exchange = exchange;
-        validate();
     }
 
-    public TrendingSecurityListType(Integer page, Integer perPage)
+    public TrendingSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
     {
-        this(ALL_EXCHANGES, page, perPage);
+        this(null, page, perPage);
     }
 
-    public TrendingSecurityListType(Integer page)
+    public TrendingSecurityListType(@Nullable Integer page)
     {
-        this(ALL_EXCHANGES, page);
+        this((String) null, page);
     }
 
     public TrendingSecurityListType()
     {
-        this(ALL_EXCHANGES);
+        this((String) null);
     }
     //</editor-fold>
-
-    private void validate()
-    {
-        if (exchange == null)
-        {
-            throw new NullPointerException("Null is not a valid Exchange");
-        }
-    }
 
     @Override public int hashCode()
     {

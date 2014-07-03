@@ -11,7 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -28,6 +30,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class UserProfileResideMenuItem extends LinearLayout
@@ -110,20 +113,10 @@ public class UserProfileResideMenuItem extends LinearLayout
 
         if (andDisplay)
         {
+            displayAvatar();
+
             if (userProfileDTO != null)
             {
-                if (userProfileDTO.picture != null)
-                {
-                    picasso.get().load(userProfileDTO.picture)
-                            .error(getErrorDrawable())
-                            .transform(userPhotoTransformation)
-                            .into(userProfileAvatar);
-                }
-                else
-                {
-                    showDefaultUserPhoto();
-                }
-
                 userDisplayName.setText(userProfileDTO.displayName);
 
                 if (userProfileDTO.portfolio.roiSinceInception == null)
@@ -144,9 +137,41 @@ public class UserProfileResideMenuItem extends LinearLayout
         }
     }
 
-    private Drawable getErrorDrawable()
+    private void displayAvatar()
     {
-        Bitmap defaultUserPhotoBitmap = null;
+        if (userProfileAvatar != null)
+        {
+            if (userProfileDTO != null && userProfileDTO.picture != null)
+            {
+                RequestCreator requestCreator = picasso.get().load(userProfileDTO.picture);
+                Drawable errorDrawable = getErrorDrawable();
+                if (errorDrawable != null)
+                {
+                    requestCreator.error(errorDrawable);
+                }
+                requestCreator.transform(userPhotoTransformation)
+                        .into(userProfileAvatar, new Callback()
+                        {
+                            @Override public void onSuccess()
+                            {
+                            }
+
+                            @Override public void onError()
+                            {
+                                showDefaultUserPhoto();
+                            }
+                        });
+            }
+            else
+            {
+                showDefaultUserPhoto();
+            }
+        }
+    }
+
+    @Nullable private Drawable getErrorDrawable()
+    {
+        Bitmap defaultUserPhotoBitmap;
         try
         {
             defaultUserPhotoBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.superman_facebook);
@@ -167,9 +192,12 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     private void showDefaultUserPhoto()
     {
-        picasso.get().load(R.drawable.superman_facebook)
-                .transform(userPhotoTransformation)
-                .into(userProfileAvatar);
+        if (userProfileAvatar != null)
+        {
+            picasso.get().load(R.drawable.superman_facebook)
+                    .transform(userPhotoTransformation)
+                    .into(userProfileAvatar);
+        }
     }
 
     private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>

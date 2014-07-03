@@ -2,23 +2,26 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import retrofit.http.*;
-
-import java.util.List;
 import java.util.Map;
+import retrofit.http.Body;
+import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 public interface SecurityService
 {
     //<editor-fold desc="Get Multiple Securities">
     @GET("/securities/multi/")
     Map<Integer, SecurityCompactDTO> getMultipleSecurities(
-            @Query("securityIds") String ids);
+            @Query("securityIds") String commaSeparatedIntegerIds);
     //</editor-fold>
 
     //<editor-fold desc="Get Basic Trending">
     @GET("/securities/trending/")
-    List<SecurityCompactDTO> getTrendingSecurities(
+    SecurityCompactDTOList getTrendingSecurities(
             @Query("exchange") String exchange,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
@@ -26,7 +29,7 @@ public interface SecurityService
 
     //<editor-fold desc="Get Trending By Volume">
     @GET("/securities/trendingVol/")
-    List<SecurityCompactDTO> getTrendingSecuritiesByVolume(
+    SecurityCompactDTOList getTrendingSecuritiesByVolume(
             @Query("exchange") String exchange,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
@@ -34,7 +37,7 @@ public interface SecurityService
 
     //<editor-fold desc="Get Trending By Price">
     @GET("/securities/trendingPrice/")
-    List<SecurityCompactDTO> getTrendingSecuritiesByPrice(
+    SecurityCompactDTOList getTrendingSecuritiesByPrice(
             @Query("exchange") String exchange,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
@@ -42,7 +45,7 @@ public interface SecurityService
 
     //<editor-fold desc="Get Trending For All">
     @GET("/securities/trendingExchange/")
-    List<SecurityCompactDTO> getTrendingSecuritiesAllInExchange(
+    SecurityCompactDTOList getTrendingSecuritiesAllInExchange(
             @Query("exchange") String exchange,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
@@ -50,7 +53,7 @@ public interface SecurityService
 
     //<editor-fold desc="Search Securities">
     @GET("/securities/search")
-    List<SecurityCompactDTO> searchSecurities(
+    SecurityCompactDTOList searchSecurities(
             @Query("q") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);

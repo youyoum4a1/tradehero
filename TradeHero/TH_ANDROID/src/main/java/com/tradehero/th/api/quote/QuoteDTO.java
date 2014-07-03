@@ -3,12 +3,13 @@ package com.tradehero.th.api.quote;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import java.util.Date;
+import org.jetbrains.annotations.Nullable;
 
 public class QuoteDTO
 {
     public int securityId;
 
-    public Date asOfUtc;
+    @Nullable public Date asOfUtc;
     public Double bid;
     public Double ask;
 

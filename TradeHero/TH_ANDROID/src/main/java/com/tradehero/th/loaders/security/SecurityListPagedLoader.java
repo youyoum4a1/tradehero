@@ -1,17 +1,17 @@
 package com.tradehero.th.loaders.security;
 
 import android.content.Context;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.SecurityListTypeFactory;
-import com.tradehero.th.loaders.PagedDTOCacheLoader;
+import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class SecurityListPagedLoader extends PagedDTOCacheLoader<
+public class SecurityListPagedLoader extends PagedDTOCacheLoaderNew<
         SecurityListType,
         SecurityId,
         SecurityIdList>
@@ -29,7 +29,7 @@ public class SecurityListPagedLoader extends PagedDTOCacheLoader<
         super(context);
     }
 
-    @Override protected DTOCache<SecurityListType, SecurityIdList> getCache()
+    @Override protected DTOCacheNew<SecurityListType, SecurityIdList> getCache()
     {
         return securityCompactListCache.get();
     }

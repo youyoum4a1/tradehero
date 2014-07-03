@@ -39,7 +39,8 @@ public class TimelineItemShareFormDTOFactory
         if (abstractDiscussionCompactDTO instanceof DiscussionDTO)
         {
             timelineItemShareFormDTO.discussionListKey = new DiscussionListKey(
-                    ((DiscussionDTO) abstractDiscussionCompactDTO).inReplyToType,
+                    //((DiscussionDTO) abstractDiscussionCompactDTO).inReplyToType, //why .inReplyToType is null here ,then can not share success.
+                    DiscussionType.COMMENT,
                     abstractDiscussionCompactDTO.id);
         }
         else if ((abstractDiscussionCompactDTO instanceof NewsItemCompactDTO) ||

@@ -13,6 +13,8 @@ import android.widget.EditText;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -40,7 +42,6 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject Provider<NotificationOpenedHandler> notificationOpenedHandler;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-
     @Inject AlertDialogUtil alertDialogUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -71,9 +72,9 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.admin_setting));
+        super.onCreateOptionsMenu(menu, inflater);
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        actionBar.setTitle(getString(R.string.admin_setting));
     }
 
     private void initPreferenceClickHandlers()
@@ -132,8 +133,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
                 try
                 {
                     notificationId = Integer.parseInt(value.toString());
-                }
-                catch (NumberFormatException ex)
+                } catch (NumberFormatException ex)
                 {
                     THToast.show("Not a number");
                 }

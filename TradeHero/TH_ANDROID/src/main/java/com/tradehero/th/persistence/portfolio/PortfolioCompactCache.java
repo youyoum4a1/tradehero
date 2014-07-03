@@ -1,36 +1,29 @@
 package com.tradehero.th.persistence.portfolio;
 
-import com.tradehero.common.persistence.StraightDTOCache;
-import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.network.service.PortfolioService;
-import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-@Singleton public class PortfolioCompactCache extends StraightDTOCache<PortfolioId, PortfolioCompactDTO>
+@Singleton public class PortfolioCompactCache extends StraightDTOCacheNew<PortfolioId, PortfolioCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 200;
-
-    @Inject Lazy<PortfolioService> portfolioService;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactCache()
     {
-        super(200);
+        super(DEFAULT_MAX_SIZE);
     }
     //</editor-fold>
 
-    protected PortfolioCompactDTO fetch(PortfolioId key) throws Throwable
+    @Override @NotNull public PortfolioCompactDTO fetch(@NotNull PortfolioId key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch an individual PortfolioCompactDTO");
     }
 
-    @Override public PortfolioCompactDTO put(PortfolioId key, PortfolioCompactDTO value)
+    @Override public PortfolioCompactDTO put(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value)
     {
         // HACK We need to take care of the bug https://www.pivotaltracker.com/story/show/61190894
         {
@@ -41,33 +34,6 @@ import javax.inject.Singleton;
             }
         }
 
-        return super.put(key, value);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    public PortfolioCompactDTO getFirstByProvider(ProviderId providerId)
-    {
-        for (PortfolioCompactDTO portfolioCompactDTO : new ArrayList<>(snapshot().values()))
-        {
-            if (providerId.equals(portfolioCompactDTO.getProviderIdKey()))
-            {
-                return portfolioCompactDTO;
-            }
-        }
-        return null;
-    }
-
-    public PortfolioCompactDTOList get(Collection<PortfolioId> portfolioIds)
-    {
-        if (portfolioIds == null)
-        {
-            return null;
-        }
-
-        PortfolioCompactDTOList portfolioCompactDTOs = new PortfolioCompactDTOList();
-        for (PortfolioId portfolioId: portfolioIds)
-        {
-            portfolioCompactDTOs.add(get(portfolioId));
-        }
-        return portfolioCompactDTOs;
+        return super.put(key, value);
     }
 }

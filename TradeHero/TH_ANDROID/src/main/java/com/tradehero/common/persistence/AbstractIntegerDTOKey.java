@@ -9,6 +9,11 @@ import org.jetbrains.annotations.NotNull;
 abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Integer>
 {
     //<editor-fold desc="Constructors">
+    public AbstractIntegerDTOKey()
+    {
+        super();
+    }
+
     public AbstractIntegerDTOKey(Integer key)
     {
         super(key);
@@ -26,7 +31,7 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
      * If the key is null, it removes it from the bundle
      * @param args
      */
-    public void putParameters(Bundle args)
+    public void putParameters(@NotNull Bundle args)
     {
         if (key == null)
         {

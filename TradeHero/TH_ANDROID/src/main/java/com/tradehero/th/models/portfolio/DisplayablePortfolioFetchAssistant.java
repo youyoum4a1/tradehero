@@ -1,6 +1,5 @@
 package com.tradehero.th.models.portfolio;
 
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -18,21 +17,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class DisplayablePortfolioFetchAssistant
 {
-    private final PortfolioCompactListCache portfolioListCache;
-    private final PortfolioCache portfolioCache;
-    private final UserProfileCache userProfileCache;
+    @NotNull private final PortfolioCompactListCache portfolioListCache;
+    @NotNull private final PortfolioCache portfolioCache;
+    @NotNull private final UserProfileCache userProfileCache;
 
-    private final Map<UserBaseKey, FlaggedDisplayablePortfolioDTOList> displayPortfolios;
-    private OnFetchedListener fetchedListener;
+    @NotNull private final Map<UserBaseKey, FlaggedDisplayablePortfolioDTOList> displayPortfolios;
+    @Nullable private OnFetchedListener fetchedListener;
 
     @Inject public DisplayablePortfolioFetchAssistant(
-            PortfolioCompactListCache portfolioListCache,
-            PortfolioCache portfolioCache,
-            UserProfileCache userProfileCache)
+            @NotNull PortfolioCompactListCache portfolioListCache,
+            @NotNull PortfolioCache portfolioCache,
+            @NotNull UserProfileCache userProfileCache)
     {
         super();
         this.portfolioListCache = portfolioListCache;
@@ -45,15 +46,15 @@ public class DisplayablePortfolioFetchAssistant
     {
     }
 
-    public void setFetchedListener(OnFetchedListener fetchedListener)
+    public void setFetchedListener(@Nullable OnFetchedListener fetchedListener)
     {
         this.fetchedListener = fetchedListener;
     }
 
-    public void fetch(List<UserBaseKey> userBaseKeys)
+    public void fetch(@NotNull List<UserBaseKey> userBaseKeys)
     {
         displayPortfolios.clear();
-        for (UserBaseKey userBaseKey : userBaseKeys)
+        for (@NotNull UserBaseKey userBaseKey : userBaseKeys)
         {
             if (!displayPortfolios.containsKey(userBaseKey))
             {
@@ -70,11 +71,12 @@ public class DisplayablePortfolioFetchAssistant
             if (entry.getValue().size() == 0 && !entry.getValue().fetchingIds)
             {
                 entry.getValue().fetchingIds = true;
-                portfolioListCache.getOrFetch(entry.getKey(), createOwnedPortfolioIdListListener()).execute();
+                portfolioListCache.register(entry.getKey(), createOwnedPortfolioIdListListener());
+                portfolioListCache.getOrFetchAsync(entry.getKey());
             }
             else
             {
-                for (FlaggedDisplayablePortfolioDTO displayablePortfolioDTO : entry.getValue())
+                for (@NotNull FlaggedDisplayablePortfolioDTO displayablePortfolioDTO : entry.getValue())
                 {
                     if (displayablePortfolioDTO.userBaseDTO == null && !displayablePortfolioDTO.fetchingUser)
                     {
@@ -85,18 +87,19 @@ public class DisplayablePortfolioFetchAssistant
                     if (displayablePortfolioDTO.portfolioDTO == null && !displayablePortfolioDTO.fetchingPortfolio)
                     {
                         displayablePortfolioDTO.fetchingPortfolio = true;
-                        portfolioCache.getOrFetch(displayablePortfolioDTO.ownedPortfolioId, createPortfolioDTOListener()).execute();
+                        portfolioCache.register(displayablePortfolioDTO.ownedPortfolioId, createPortfolioDTOListener());
+                        portfolioCache.getOrFetchAsync(displayablePortfolioDTO.ownedPortfolioId);
                     }
                 }
             }
         }
     }
 
-    private DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList> createOwnedPortfolioIdListListener()
+    private DTOCacheNew.Listener<UserBaseKey, OwnedPortfolioIdList> createOwnedPortfolioIdListListener()
     {
-        return new DTOCache.Listener<UserBaseKey, OwnedPortfolioIdList>()
+        return new DTOCacheNew.Listener<UserBaseKey, OwnedPortfolioIdList>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value, boolean fromCache)
+            @Override public void onDTOReceived(UserBaseKey key, OwnedPortfolioIdList value)
             {
                 Timber.d("Received id list for %s: %s", key, value);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key);
@@ -145,11 +148,11 @@ public class DisplayablePortfolioFetchAssistant
         };
     }
 
-    private DTOCache.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioDTOListener()
+    private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioDTOListener()
     {
-        return new DTOCache.Listener<OwnedPortfolioId, PortfolioDTO>()
+        return new DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO>()
         {
-            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value, boolean fromCache)
+            @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value)
             {
                 Timber.d("Received PortfolioDTO for %s: %s", key, value);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key.getUserBaseKey());

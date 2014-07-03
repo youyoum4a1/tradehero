@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -29,6 +29,7 @@ import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class PrivateDiscussionView extends DiscussionView
@@ -38,14 +39,13 @@ public class PrivateDiscussionView extends DiscussionView
     @Inject protected MessageDiscussionListKeyFactory messageDiscussionListKeyFactory;
     private MessageHeaderDTO messageHeaderDTO;
 
-    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchTask;
+    private DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchListener;
     protected DiscussionDTO initiatingDiscussion;
 
     protected MessageType messageType;
     private UserBaseKey recipient;
     private boolean hasAddedHeader = false;
-    private DTOCache.Listener<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchListener;
-    private DTOCache.GetOrFetchTask<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchTask;
+    private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchListener;
 
     //<editor-fold desc="Constructors">
     public PrivateDiscussionView(Context context)
@@ -72,27 +72,37 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        setRecipientOnPostCommentView();
+        messageHeaderFetchListener = createMessageHeaderListener();
+        discussionFetchListener = createDiscussionCacheListener();
         setLoaded();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (messageHeaderFetchListener == null)
+        {
+            messageHeaderFetchListener = createMessageHeaderListener();
+        }
+        if (discussionFetchListener == null)
+        {
+            discussionFetchListener = createDiscussionCacheListener();
+        }
+        setRecipientOnPostCommentView();
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachDiscussionFetchTask();
-
         detachMessageHeaderFetchTask();
         messageHeaderFetchListener = null;
-
+        discussionFetchListener = null;
         super.onDetachedFromWindow();
     }
 
     private void detachDiscussionFetchTask()
     {
-        if (discussionFetchTask != null)
-        {
-            discussionFetchTask.setListener(null);
-        }
-        discussionFetchTask = null;
+        discussionCache.unregister(discussionFetchListener);
     }
 
     @Override protected void setLoading()
@@ -136,26 +146,21 @@ public class PrivateDiscussionView extends DiscussionView
         else
         {
             detachMessageHeaderFetchTask();
-            messageHeaderFetchListener = new MessageHeaderFetchListener();
-            messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false, messageHeaderFetchListener);
-            messageHeaderFetchTask.execute();
+            messageHeaderCache.register(messageHeaderId, messageHeaderFetchListener);
+            messageHeaderCache.getOrFetchAsync(messageHeaderId, false);
         }
     }
 
     private void detachMessageHeaderFetchTask()
     {
-        if (messageHeaderFetchTask != null)
-        {
-            messageHeaderFetchTask.setListener(null);
-        }
-        messageHeaderFetchTask = null;
+        messageHeaderCache.unregister(messageHeaderFetchListener);
     }
 
     private void fetchDiscussion(DiscussionKey discussionKey)
     {
         detachDiscussionFetchTask();
-        discussionFetchTask = discussionCache.getOrFetch(discussionKey, createDiscussionCacheListener());
-        discussionFetchTask.execute();
+        discussionCache.register(discussionKey, discussionFetchListener);
+        discussionCache.getOrFetchAsync(discussionKey);
     }
 
     @Override protected DiscussionListKey createStartingDiscussionListKey()
@@ -163,7 +168,7 @@ public class PrivateDiscussionView extends DiscussionView
         return discussionListKeyFactory.create(messageHeaderDTO);
     }
 
-    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionCacheListener()
+    protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionCacheListener()
     {
         return new PrivateDiscussionViewDiscussionCacheListener();
     }
@@ -207,7 +212,7 @@ public class PrivateDiscussionView extends DiscussionView
         return inflated;
     }
 
-    public void setRecipient(UserBaseKey recipient)
+    public void setRecipient(@NotNull UserBaseKey recipient)
     {
         this.recipient = recipient;
         setRecipientOnPostCommentView();
@@ -215,7 +220,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     private void setRecipientOnPostCommentView()
     {
-        if (postCommentView != null)
+        if (postCommentView != null && recipient != null)
         {
             ((PrivatePostCommentView) postCommentView).setRecipient(recipient);
         }
@@ -263,9 +268,9 @@ public class PrivateDiscussionView extends DiscussionView
         return new PrivateDiscussionViewCommentPostedListener();
     }
 
-    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
+    protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
-        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value, boolean fromCache)
+        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value)
         {
             linkWithInitiating((PrivateDiscussionDTO) value, true);
         }
@@ -305,9 +310,14 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    private class MessageHeaderFetchListener implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
+    protected DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> createMessageHeaderListener()
     {
-        @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
+        return new MessageHeaderFetchListener();
+    }
+
+    private class MessageHeaderFetchListener implements DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO>
+    {
+        @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value)
         {
             if (value == null)
             {

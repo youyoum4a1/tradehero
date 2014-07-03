@@ -36,7 +36,7 @@ public class ColorIndicator extends RelativeLayout
         else
         {
             setBackgroundColor(
-                    ColorUtils.getColorForPercentage((float) percentage.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
+                    ColorUtils.getProperColorForNumber((float) percentage.doubleValue() * PERCENT_STRETCHING_FOR_COLOR));
         }
     }
 }

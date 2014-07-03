@@ -1,14 +1,49 @@
-    package com.tradehero.th.api.security;
+package com.tradehero.th.api.security;
 
-    import com.tradehero.th.api.ExtendedDTO;
-    import com.tradehero.th.api.market.Exchange;
-    import com.tradehero.th.utils.SecurityUtils;
-    import java.util.ArrayList;
-    import java.util.Date;
-    import java.util.List;
-    import timber.log.Timber;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.api.market.Exchange;
+import com.tradehero.th.api.security.compact.BondCompactDTO;
+import com.tradehero.th.api.security.compact.CoveredWarrantDTO;
+import com.tradehero.th.api.security.compact.DepositoryReceiptDTO;
+import com.tradehero.th.api.security.compact.EquityCompactDTO;
+import com.tradehero.th.api.security.compact.FundCompactDTO;
+import com.tradehero.th.api.security.compact.LockedSecurityCompactDTO;
+import com.tradehero.th.api.security.compact.PreferenceShareDTO;
+import com.tradehero.th.api.security.compact.PreferredSecurityDTO;
+import com.tradehero.th.api.security.compact.StapledSecurityDTO;
+import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
+import com.tradehero.th.api.security.compact.UnitCompactDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.tradehero.th.utils.SecurityUtils;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
-    public class SecurityCompactDTO extends ExtendedDTO
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        defaultImpl = SecurityCompactDTO.class,
+        property = "securityType")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = LockedSecurityCompactDTO.class, name = LockedSecurityCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = EquityCompactDTO.class, name = EquityCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = FundCompactDTO.class, name = FundCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = WarrantDTO.class, name = WarrantDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = BondCompactDTO.class, name = BondCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = UnitCompactDTO.class, name = UnitCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = TradableRightsIssueDTO.class, name = TradableRightsIssueDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = PreferenceShareDTO.class, name = PreferenceShareDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = DepositoryReceiptDTO.class, name = DepositoryReceiptDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = CoveredWarrantDTO.class, name = CoveredWarrantDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = PreferredSecurityDTO.class, name = PreferredSecurityDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = StapledSecurityDTO.class, name = StapledSecurityDTO.DTO_DESERIALISING_TYPE),
+})
+public class SecurityCompactDTO extends ExtendedDTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
@@ -26,7 +61,7 @@
 
     private Date lastPriceDateEST;
     //// EDT/EST converted to UTC
-    public Date lastPriceDateAndTimeUtc;
+    @Nullable public Date lastPriceDateAndTimeUtc;
 
     public Double toUSDRate;
     public Date toUSDRateDate;
@@ -151,7 +186,7 @@
         return new SecurityIntegerId(id);
     }
 
-    public SecurityId getSecurityId()
+    @NotNull public SecurityId getSecurityId()
     {
         return new SecurityId(exchange, symbol);
     }

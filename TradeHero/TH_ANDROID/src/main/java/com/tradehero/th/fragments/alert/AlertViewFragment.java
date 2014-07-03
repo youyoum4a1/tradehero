@@ -17,7 +17,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -32,7 +32,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.alert.MiddleCallbackUpdateAlertCompact;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
@@ -63,8 +63,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     @Inject protected Lazy<AlertCompactCache> alertCompactCache;
     @Inject protected Lazy<AlertCache> alertCache;
-    protected DTOCache.Listener<AlertId, AlertDTO> alertCacheListener;
-    protected DTOCache.GetOrFetchTask<AlertId, AlertDTO> alertCacheFetchTask;
+    protected DTOCacheNew.Listener<AlertId, AlertDTO> alertCacheListener;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<PrettyTime> prettyTime;
@@ -77,12 +76,11 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private SecurityCompactDTO securityCompactDTO;
     private AlertEventAdapter alertEventAdapter;
     private AlertId alertId;
-    private ActionBar actionBar;
     private ProgressDialog progressDialog;
 
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
     private THCallback<AlertCompactDTO> alertUpdateCallback;
-    private MiddleCallbackUpdateAlertCompact alertUpdateMiddleCallback;
+    private MiddleCallback<AlertCompactDTO> alertUpdateMiddleCallback;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -111,29 +109,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                 handleAlertToggleChanged(isChecked);
             }
         };
-        alertCacheListener = new DTOCache.Listener<AlertId, AlertDTO>()
-        {
-            private void finish()
-            {
-                if (progressDialog != null)
-                {
-                    progressDialog.dismiss();
-                }
-            }
-
-            @Override public void onDTOReceived(AlertId key, AlertDTO value, boolean fromCache)
-            {
-                linkWith(value, true);
-                finish();
-            }
-
-            @Override public void onErrorThrown(AlertId key, Throwable error)
-            {
-                THToast.show(R.string.error_fetch_alert);
-                Timber.e(error, "Failed fetching alert " + key);
-                finish();
-            }
-        };
+        alertCacheListener = createAlertCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -173,8 +149,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-
-        actionBar = getSherlockActivity().getSupportActionBar();
         inflater.inflate(R.menu.alert_view_menu, menu);
     }
 
@@ -188,7 +162,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                     Bundle bundle = new Bundle();
                     AlertEditFragment.putApplicablePortfolioId(bundle, getApplicablePortfolioId());
                     bundle.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
-                    getNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM);
+                    getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
                 }
                 return true;
         }
@@ -216,11 +190,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     protected void detachAlertFetchTask()
     {
-        if (alertCacheFetchTask != null)
-        {
-            alertCacheFetchTask.setListener(null);
-        }
-        alertCacheFetchTask = null;
+        alertCache.get().unregister(alertCacheListener);
     }
 
     @Override public void onDestroy()
@@ -238,8 +208,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             detachAlertFetchTask();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
-            alertCacheFetchTask = alertCache.get().getOrFetch(alertId, alertCacheListener);
-            alertCacheFetchTask.execute();
+            alertCache.get().register(alertId, alertCacheListener);
+            alertCache.get().getOrFetchAsync(alertId);
         }
     }
 
@@ -310,7 +280,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         }
         else if (alertDTO.activeUntilDate != null)
         {
-            activeUntil.setText(DateUtils.getDisplayableDate(getActivity(), alertDTO.activeUntilDate));
+            activeUntil.setText(DateUtils.getDisplayableDate(getResources(), alertDTO.activeUntilDate));
         }
         else
         {
@@ -348,6 +318,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private void displayStockSymbol()
     {
         stockSymbol.setText(securityCompactDTO.getExchangeSymbol());
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null) actionBar.setTitle(securityCompactDTO.getExchangeSymbol());
     }
 
@@ -395,10 +366,32 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         }
     }
 
-    //region TabBarInformer
-    @Override public boolean isTabBarVisible()
+    protected DTOCacheNew.Listener<AlertId, AlertDTO> createAlertCacheListener()
     {
-        return false;
+        return new AlertViewFragmentAlertCacheListener();
     }
-    //endregion
+
+    protected class AlertViewFragmentAlertCacheListener implements DTOCacheNew.Listener<AlertId, AlertDTO>
+    {
+        private void finish()
+        {
+            if (progressDialog != null)
+            {
+                progressDialog.dismiss();
+            }
+        }
+
+        @Override public void onDTOReceived(AlertId key, AlertDTO value)
+        {
+            linkWith(value, true);
+            finish();
+        }
+
+        @Override public void onErrorThrown(AlertId key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_alert);
+            Timber.e(error, "Failed fetching alert " + key);
+            finish();
+        }
+    }
 }

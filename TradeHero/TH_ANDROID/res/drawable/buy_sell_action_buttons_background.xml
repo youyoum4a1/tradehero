@@ -6,7 +6,7 @@
       <gradient
           android:angle="90"
           android:endColor="@color/transparent"
-          android:startColor="@color/authentication_button_dark"/>
+          android:startColor="@color/buy_sell_button_background"/>
     </shape>
   </item>
 </layer-list>

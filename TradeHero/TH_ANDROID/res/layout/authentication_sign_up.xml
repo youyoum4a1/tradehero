@@ -1,67 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-  <RelativeLayout
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:descendantFocusability="afterDescendants"
+    >
+
+  <ScrollView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      style="@style/TradeHero.Authentication">
-
-    <TextView
-        android:id="@+id/authentication_sign_up_with"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/authentication_sign_up_with"
-        android:textColor="@color/text_gray_normal"
-        android:textSize="@dimen/authentication_head_text_size"/>
-
-    <include
-        android:layout_below="@id/authentication_sign_up_with"
-        android:id="@+id/authentication_social_sign_up"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        layout="@layout/authentication_social_auth"
-        />
+      android:fillViewport="true"
+      android:background="@drawable/authentication_bg"
+      android:scrollbarStyle="outsideOverlay"
+      android:paddingLeft="@dimen/authentication_horizontal_padding"
+      android:paddingRight="@dimen/authentication_horizontal_padding"
+      android:layout_alignParentTop="true"
+      android:layout_above="@+id/authentication_by_sign_in_button">
 
     <LinearLayout
-        android:layout_below="@id/authentication_social_sign_up"
-        android:id="@+id/authentication_email_sign_up_link"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dip"
-        android:paddingBottom="10dip"
-        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
         >
-      <TextView
-          android:layout_width="wrap_content"
+
+      <ImageView
+          android:id="@+id/authentication_logo"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/authentication_sign_up_with_email"
-          android:textColor="@color/text_gray_normal"
-          android:textSize="@dimen/authentication_head_text_size"
-          android:singleLine="true"
-          />
-      <TextView
-          android:layout_width="wrap_content"
+          android:layout_marginTop="@dimen/authentication_logo_vertical_padding"
+          android:layout_marginBottom="@dimen/authentication_logo_vertical_padding"
+          android:layout_marginLeft="@dimen/authentication_logo_horizontal_padding"
+          android:layout_marginRight="@dimen/authentication_logo_horizontal_padding"
+          android:src="@drawable/logo_text"
+          android:contentDescription="@null"
+          android:adjustViewBounds="true"/>
+
+      <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"/>
+
+      <include
+          android:id="@+id/authentication_social_sign_up"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/authentication_email_address"
-          android:textColor="@color/authentication_link_text"
-          android:textSize="@dimen/authentication_head_text_size"
-          android:singleLine="true"
+          layout="@layout/authentication_social_auth_sign_up"
           />
+
+      <include
+          android:id="@+id/authentication_agreement"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/authentication_agreement_vertical_padding"
+          layout="@layout/authentication_agreement"
+          />
+
+      <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"/>
 
     </LinearLayout>
 
-    <include
-        android:layout_width="match_parent"
+  </ScrollView>
+
+  <LinearLayout
+      android:id="@+id/authentication_by_sign_in_button"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/clickable_element_min_height"
+      android:layout_gravity="bottom"
+      android:orientation="horizontal"
+      android:gravity="center"
+      android:background="@drawable/basic_light_grey_selector"
+      android:addStatesFromChildren="true"
+      android:layout_alignParentBottom="true"
+      >
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        layout="@layout/authentication_agreement"
-        android:layout_below="@id/authentication_email_sign_up_link"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
-  </RelativeLayout>
-</ScrollView>
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:text="@string/already_registered"
+        android:textSize="@dimen/authentication_page_text_size"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/common_margin_4"
+        android:text="@string/log_in_now"
+        android:textColor="@color/timeline_action_button_text_color_pressed"
+        android:textStyle="bold"
+        android:textSize="@dimen/authentication_page_text_size"
+        android:gravity="center_vertical"/>
+
+  </LinearLayout>
+
+</RelativeLayout>

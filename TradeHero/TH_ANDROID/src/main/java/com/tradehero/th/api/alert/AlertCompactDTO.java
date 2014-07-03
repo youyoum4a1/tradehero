@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Date;
+import org.jetbrains.annotations.Nullable;
 
 public class AlertCompactDTO implements DTO
 {
@@ -12,9 +13,9 @@ public class AlertCompactDTO implements DTO
     public Boolean upOrDown;
     public Double priceMovement;
     public boolean active;
-    public Date activeUntilDate;
+    @Nullable public Date activeUntilDate;
 
-    public SecurityCompactDTO security;
+    @Nullable public SecurityCompactDTO security;
 
     public AlertCompactDTO()
     {

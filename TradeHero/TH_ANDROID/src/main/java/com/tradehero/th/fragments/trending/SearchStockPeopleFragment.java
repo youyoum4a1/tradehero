@@ -14,12 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
@@ -44,7 +42,9 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
+    @Inject THRouter thRouter;
 
     @InjectView(R.id.search_empty_container) RelativeLayout searchEmptyContainer;
     @InjectView(R.id.search_empty_textview) TextView searchEmptyTextView;
@@ -94,8 +95,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     private SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
     private PeopleItemViewAdapter peopleItemViewAdapter;
 
-    private DTOCache.GetOrFetchTask<SecurityListType, SecurityIdList> securitySearchTask;
-    private DTOCache.GetOrFetchTask<UserListType, UserBaseKeyList> peopleSearchTask;
+    private DTOCacheNew.Listener<SecurityListType, SecurityIdList> securitySearchFetchListener;
+    private DTOCacheNew.Listener<UserListType, UserBaseKeyList> peopleSearchListener;
 
     private List<SecurityId> securityIds;
     private List<UserBaseKey> userBaseKeys;
@@ -115,6 +116,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         collectParameters(savedInstanceState);
+        securitySearchFetchListener = createSecurityIdListCacheListener();
+        peopleSearchListener = createUserCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -167,8 +170,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             searchStock = menu.findItem(R.id.search_stock);
         }
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_stock_menu, menu);
     }
@@ -361,29 +362,28 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        peopleSearchListener = null;
+        securitySearchFetchListener = null;
+        super.onDestroy();
+    }
+
     private void cancelSearchTasks()
     {
-        detachSecuritySearchTask();
+        detachSecuritySearchCache();
         detachPeopleSearchTask();
         isQuerying = false;
     }
 
-    protected void detachSecuritySearchTask()
+    protected void detachSecuritySearchCache()
     {
-        if (securitySearchTask != null)
-        {
-            securitySearchTask.setListener(null);
-        }
-        securitySearchTask = null;
+        securityCompactListCache.get().unregister(securitySearchFetchListener);
     }
 
     protected void detachPeopleSearchTask()
     {
-        if (peopleSearchTask != null)
-        {
-            peopleSearchTask.setListener(null);
-        }
-        peopleSearchTask = null;
+        userBaseKeyListCache.get().unregister(peopleSearchListener);
     }
 
     protected void scheduleRequestData()
@@ -454,9 +454,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     makeSearchSecurityListType(lastLoadedPage + 1);
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
-            securitySearchTask = securityCompactListCache.get()
-                    .getOrFetch(searchSecurityListType, createSecurityIdListCacheListener());
-            securitySearchTask.execute();
+            securityCompactListCache.get().register(searchSecurityListType, securitySearchFetchListener);
+            securityCompactListCache.get().getOrFetchAsync(searchSecurityListType);
         }
     }
 
@@ -468,9 +467,8 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             UserListType searchUserListType = makeSearchUserListType(lastLoadedPage + 1);
             setQuerying(true);
             currentlyLoadingPage = lastLoadedPage + 1;
-            peopleSearchTask = userBaseKeyListCache.get()
-                    .getOrFetch(searchUserListType, createUserCacheListener());
-            peopleSearchTask.execute();
+            userBaseKeyListCache.get().register(searchUserListType, peopleSearchListener);
+            userBaseKeyListCache.get().getOrFetchAsync(searchUserListType);
         }
     }
 
@@ -559,7 +557,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     {
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        getNavigator().pushFragment(BuySellFragment.class, args);
+        getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     protected void pushUserFragmentIn(UserBaseKey userBaseKey)
@@ -574,9 +572,9 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         // TODO put back in
 
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
+        thRouter.save(args, userBaseKey);
 
-       getNavigator().pushFragment(PushableTimelineFragment.class, args);
+       getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 
     //<editor-fold desc="Accessors">
@@ -611,13 +609,6 @@ public final class SearchStockPeopleFragment extends DashboardFragment
     }
     //</editor-fold>
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Listeners">
     private FlagNearEdgeScrollListener createFlagNearEdgeScrollListener()
     {
@@ -642,7 +633,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
             if (getArguments() != null && getArguments().containsKey(
                     Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
             {
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
                 return;
             }
 
@@ -659,7 +650,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                     WatchlistEditFragment.putSecurityId(args, clickedItem.getSecurityId());
                     args.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT,
                             WatchlistPositionFragment.class.getName());
-                    getNavigator().pushFragment(WatchlistEditFragment.class, args);
+                    getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
                 }
                 else
                 {
@@ -700,16 +691,16 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private DTOCache.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
+    private DTOCacheNew.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
     {
         return new SecurityIdListCacheListener();
     }
 
     private class SecurityIdListCacheListener
-            implements DTOCache.Listener<SecurityListType, SecurityIdList>
+            implements DTOCacheNew.Listener<SecurityListType, SecurityIdList>
     {
         @Override
-        public void onDTOReceived(SecurityListType key, SecurityIdList value, boolean fromCache)
+        public void onDTOReceived(SecurityListType key, SecurityIdList value)
         {
             if (lastLoadedPage + 1 != key.getPage())
             {
@@ -753,16 +744,16 @@ public final class SearchStockPeopleFragment extends DashboardFragment
         }
     }
 
-    private DTOCache.Listener<UserListType, UserBaseKeyList> createUserCacheListener()
+    private DTOCacheNew.Listener<UserListType, UserBaseKeyList> createUserCacheListener()
     {
         return new PeopleListCacheListener();
     }
 
     private class PeopleListCacheListener
-            implements DTOCache.Listener<UserListType, UserBaseKeyList>
+            implements DTOCacheNew.Listener<UserListType, UserBaseKeyList>
     {
         @Override
-        public void onDTOReceived(UserListType key, UserBaseKeyList value, boolean fromCache)
+        public void onDTOReceived(UserListType key, UserBaseKeyList value)
         {
             SearchUserListType castedKey = (SearchUserListType) key;
             if (lastLoadedPage + 1 != castedKey.page)
@@ -791,8 +782,7 @@ public final class SearchStockPeopleFragment extends DashboardFragment
                 {
                     userBaseKeys.addAll(value);
                 }
-                peopleItemViewAdapter.clear();
-                peopleItemViewAdapter.addAll(userBaseKeys);
+                peopleItemViewAdapter.addAll(value);
             }
             setQuerying(false);
             peopleItemViewAdapter.notifyDataSetChanged();

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 
 public class SecurityDiscussionCommentFragment extends AbstractDiscussionFragment
@@ -20,8 +21,8 @@ public class SecurityDiscussionCommentFragment extends AbstractDiscussionFragmen
         super.onDestroyView();
     }
 
-    @Override public boolean isTabBarVisible()
+    @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
-        return false;
+        // Nothing to do
     }
 }

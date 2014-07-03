@@ -1,22 +1,26 @@
 package com.tradehero.th.api.translation;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.th.R;
+import com.tradehero.th.api.translation.bing.BingTranslationToken;
 
-public class TranslationToken extends ExtendedDTO implements DTO
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        defaultImpl = TranslationToken.class,
+        property = "type"
+)
+@JsonSubTypes(
+        @JsonSubTypes.Type(value = BingTranslationToken.class, name = BingTranslationToken.TOKEN_TYPE)
+)
+public class TranslationToken implements DTO
 {
-    public String type;
-
     //<editor-fold desc="Constructors">
     public TranslationToken()
     {
         super();
-    }
-
-    public <ExtendedDTOType extends ExtendedDTO> TranslationToken(ExtendedDTOType other,
-            Class<? extends ExtendedDTO> myClass)
-    {
-        super(other, myClass);
     }
     //</editor-fold>
 
@@ -27,6 +31,6 @@ public class TranslationToken extends ExtendedDTO implements DTO
 
     public int logoResId()
     {
-        return 0;
+        return R.drawable.default_image;
     }
 }

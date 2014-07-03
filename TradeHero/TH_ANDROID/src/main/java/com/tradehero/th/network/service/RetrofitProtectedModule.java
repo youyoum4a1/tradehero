@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.th.network.NetworkConstants;
+import com.tradehero.th.network.retrofit.RequestHeaders;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -16,6 +17,11 @@ import retrofit.RestAdapter;
 public class RetrofitProtectedModule
 {
     //<editor-fold desc="API Services">
+    @Provides @Singleton AlertPlanServiceAsync provideAlertPlanServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(AlertPlanServiceAsync.class);
+    }
+
     @Provides @Singleton AlertServiceAsync provideAlertService(RestAdapter adapter)
     {
         return adapter.create(AlertServiceAsync.class);
@@ -39,6 +45,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton LeaderboardServiceAsync provideLeaderboardService(RestAdapter adapter)
     {
         return adapter.create(LeaderboardServiceAsync.class);
+    }
+
+    @Provides @Singleton MarketServiceAsync provideMarketServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(MarketServiceAsync.class);
     }
 
     @Provides @Singleton MessageServiceAsync provideMessageServiceAsync(RestAdapter adapter)
@@ -131,6 +142,14 @@ public class RetrofitProtectedModule
     @Provides @Singleton YahooNewsServiceAsync provideYahooServiceAsync(RestAdapter.Builder builder)
     {
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceAsync.class);
+    }
+
+    @Provides @Singleton HomeServiceAsync provideHomeServiceAsync(RestAdapter.Builder builder, RequestHeaders requestHeaders)
+    {
+        return builder.setServer(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
+                .setRequestInterceptor(requestHeaders)
+                .build()
+                .create(HomeServiceAsync.class);
     }
     //</editor-fold>
 }

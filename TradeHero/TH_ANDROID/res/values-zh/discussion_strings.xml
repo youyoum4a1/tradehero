@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="discussion_translate_button">翻译</string>
+  <string name="discussion_translating_button">翻译中</string>
+  <string name="discussion_show_original_button">显示原文</string>
+
+  <string name="discussion_translate_button_with_powered"><b>( %1$s )</b> 提供自 </string>
+
+  <string name="discussion_error_setting_recipient">设置收件人错误，请重试</string>
+
+</resources>

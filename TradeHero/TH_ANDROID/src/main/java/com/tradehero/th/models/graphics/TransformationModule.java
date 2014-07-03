@@ -63,7 +63,7 @@ public class TransformationModule
             }
         };
         transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new FastBlurTransformation(30));
+		transformation.add(new StackBlurTransformation(30));
         transformation.add(new GradientTransformation(
                 context.getResources().getColor(R.color.profile_view_gradient_top),
                 context.getResources().getColor(R.color.black)));
@@ -81,9 +81,9 @@ public class TransformationModule
             }
         };
         transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new FastBlurTransformation(10));
-        transformation.add(new RoundedCornerTransformation(
-                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
+		transformation.add(new StackBlurTransformation(10));
+        transformation.add(new GradientTransformation(
+                context.getResources().getColor(R.color.profile_view_gradient_top),
                 context.getResources().getColor(R.color.black)));
         return transformation;
     }
@@ -95,14 +95,11 @@ public class TransformationModule
         {
             @Override public String key()
             {
-                return "toFastBlurGrayScale";
+                return "toFastBlurGrayScale2";
             }
         };
         transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new FastBlurTransformation(10));
-        transformation.add(new RoundedCornerTransformation(
-                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                context.getResources().getColor(R.color.black)));
+		transformation.add(new StackBlurTransformation(10));
         transformation.add(new AlphaTransformation(0.2f));
         return transformation;
     }
@@ -116,6 +113,7 @@ public class TransformationModule
     @Provides @ForSearchPeopleItemBackground
     public Transformation provideSearchPeopleItemBackgroundTransformation(Context context, Picasso picasso)
     {
+
         AbstractSequentialTransformation backgroundTransformation = new AbstractSequentialTransformation()
         {
             @Override public String key()
@@ -124,17 +122,14 @@ public class TransformationModule
             }
         };
         backgroundTransformation.add(new GrayscaleTransformation(picasso));
-        backgroundTransformation.add(new GaussianTransformation());
-        backgroundTransformation.add(new RoundedCornerTransformation(
-                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                context.getResources().getColor(R.color.black)));
+        backgroundTransformation.add(new StackBlurTransformation(10));
+		backgroundTransformation.add(new AlphaTransformation(0.2f));
         return backgroundTransformation;
     }
 
     @Provides @ForExtraTileBackground Transformation provideExtraTileBackgroundTransformation(Context context)
     {
-        return new RoundedCornerTransformation(
-                context.getResources().getDimensionPixelSize(R.dimen.trending_grid_item_corner_radius),
-                context.getResources().getColor(R.color.black));
+		int rad = context.getResources().getDimensionPixelSize(R.dimen.grid_item_bg_radius);
+        return new RoundedCornerShaderTransformation(rad);
     }
 }

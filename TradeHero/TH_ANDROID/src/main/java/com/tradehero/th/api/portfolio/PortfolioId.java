@@ -1,6 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
+import com.thoj.route.RouteProperty;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
 public class PortfolioId extends AbstractIntegerDTOKey
@@ -8,6 +9,10 @@ public class PortfolioId extends AbstractIntegerDTOKey
     public static final String BUNDLE_KEY_KEY = PortfolioId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
+    public PortfolioId()
+    {
+    }
+
     public PortfolioId(Bundle args)
     {
         super(args);
@@ -18,6 +23,12 @@ public class PortfolioId extends AbstractIntegerDTOKey
         super(key);
     }
     //</editor-fold>
+
+    @RouteProperty
+    public void setPortfolioId(int portfolioId)
+    {
+        this.key = portfolioId;
+    }
 
     @Override public String getBundleKey()
     {

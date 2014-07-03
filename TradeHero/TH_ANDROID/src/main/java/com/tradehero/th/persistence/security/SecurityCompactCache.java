@@ -1,35 +1,43 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOFactory;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class SecurityCompactCache extends StraightDTOCache<SecurityId, SecurityCompactDTO>
+@Singleton public class SecurityCompactCache extends StraightDTOCacheNew<SecurityId, SecurityCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
-    @Inject protected Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
-    @Inject protected SecurityIdCache securityIdCache;
-    @Inject protected SecurityCompactDTOFactory securityCompactDTOFactory;
+    @NotNull protected final Lazy<SecurityServiceWrapper> securityServiceWrapper;
+    @NotNull protected final Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
+    @NotNull protected final SecurityIdCache securityIdCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public SecurityCompactCache()
+    @Inject public SecurityCompactCache(
+            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
+            @NotNull Lazy<SecurityPositionDetailCache> securityPositionDetailCache,
+            @NotNull SecurityIdCache securityIdCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.securityServiceWrapper = securityServiceWrapper;
+        this.securityPositionDetailCache = securityPositionDetailCache;
+        this.securityIdCache = securityIdCache;
     }
     //</editor-fold>
 
-    @Override protected SecurityCompactDTO fetch(SecurityId key) throws Throwable
+    @Override @NotNull public SecurityCompactDTO fetch(@NotNull SecurityId key) throws Throwable
     {
         SecurityCompactDTO securityCompactDTO = null;
         SecurityPositionDetailDTO securityPositionDetailDTO = securityServiceWrapper.get().getSecurity(key);
@@ -37,52 +45,32 @@ import javax.inject.Singleton;
         if (securityPositionDetailDTO != null)
         {
             securityPositionDetailCache.get().put(key, securityPositionDetailDTO);
-
-            // We do a get again here because the put may have cloned into subclasses.
-            // And we want the subclass
-            securityCompactDTO = get(key);
+            securityCompactDTO = securityPositionDetailDTO.security;
         }
 
+        if (securityCompactDTO == null)
+        {
+            throw new NullPointerException("SecurityCompact was null for " + key);
+        }
         return securityCompactDTO;
     }
 
-    public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds) throws Throwable
-    {
-        return getOrFetch(securityIds, false);
-    }
-
-    public List<SecurityCompactDTO> getOrFetch(List<SecurityId> securityIds, boolean force) throws Throwable
-    {
-        if (securityIds == null)
-        {
-            return null;
-        }
-
-        List<SecurityCompactDTO> securityCompactDTOList = new ArrayList<>();
-        for (SecurityId securityId: securityIds)
-        {
-            securityCompactDTOList.add(getOrFetch(securityId, force));
-        }
-        return securityCompactDTOList;
-    }
-
-    @Override public SecurityCompactDTO put(SecurityId key, SecurityCompactDTO value)
+    @Override public SecurityCompactDTO put(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
     {
         // We save the correspondence between int id and exchange/symbol for future reference
         securityIdCache.put(value.getSecurityIntegerId(), key);
-
-        // We make sure the proper type is recreated on the fly.
-        return super.put(key, securityCompactDTOFactory.clonePerType(value));
+        return super.put(key, value);
     }
 
-    public List<SecurityCompactDTO> put(List<SecurityCompactDTO> values)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public SecurityCompactDTOList put(@Nullable List<SecurityCompactDTO> values)
     {
         if (values == null)
         {
             return null;
         }
 
-        List<SecurityCompactDTO> previousValues = new ArrayList<>();
+        SecurityCompactDTOList previousValues = new SecurityCompactDTOList();
 
         for (SecurityCompactDTO securityCompactDTO: values)
         {
@@ -92,14 +80,15 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public ArrayList<SecurityCompactDTO> get(List<SecurityId> keys)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public SecurityCompactDTOList get(@Nullable List<SecurityId> keys)
     {
         if (keys == null)
         {
             return null;
         }
 
-        ArrayList<SecurityCompactDTO> values = new ArrayList<>();
+        SecurityCompactDTOList values = new SecurityCompactDTOList();
 
         for (SecurityId securityId: keys)
         {
@@ -107,5 +96,15 @@ import javax.inject.Singleton;
         }
 
         return values;
+    }
+
+    @Nullable public SecurityCompactDTO get(@NotNull SecurityIntegerId id)
+    {
+        @Nullable SecurityId securityId = securityIdCache.get(id);
+        if (securityId == null)
+        {
+            return null;
+        }
+        return get(securityId);
     }
 }

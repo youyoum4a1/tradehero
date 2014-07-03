@@ -1,41 +1,44 @@
 package com.tradehero.th.models.security;
 
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.models.provider.ProviderSpecificKnowledgeDTO;
-import com.tradehero.th.models.provider.ProviderSpecificKnowledgeFactory;
+import com.tradehero.th.api.users.CurrentUserId;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class WarrantSpecificKnowledgeFactory
 {
-    private Map<ProviderId, OwnedPortfolioId> warrantUsingProviders;
-    @Inject protected ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
+    @NotNull private final Map<ProviderId, OwnedPortfolioId> warrantUsingProviders;
+    @NotNull protected final CurrentUserId currentUserId;
 
-    @Inject public WarrantSpecificKnowledgeFactory()
+    //<editor-fold desc="Constructors">
+    @Inject public WarrantSpecificKnowledgeFactory(
+            @NotNull CurrentUserId currentUserId)
     {
         super();
+        this.currentUserId = currentUserId;
         warrantUsingProviders = new HashMap<>();
     }
+    //</editor-fold>
 
-    public void add(ProviderId providerId, OwnedPortfolioId applicableOwnedPortfolioId)
+    public void add(@NotNull ProviderDTO providerDTO)
     {
-        ProviderSpecificKnowledgeDTO knowledgeDTO = providerSpecificKnowledgeFactory.createKnowledge(providerId);
-        if (knowledgeDTO != null && knowledgeDTO.includeProviderPortfolioOnWarrants)
+        if (providerDTO.specificKnowledge != null &&
+                providerDTO.specificKnowledge.includeProviderPortfolioOnWarrants != null &&
+                providerDTO.specificKnowledge.includeProviderPortfolioOnWarrants)
         {
-            warrantUsingProviders.put(providerId, applicableOwnedPortfolioId);
+            warrantUsingProviders.put(
+                    providerDTO.getProviderId(),
+                    providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
         }
     }
 
     public void clear()
     {
         warrantUsingProviders.clear();
-    }
-
-    public Map<ProviderId, OwnedPortfolioId> getWarrantApplicablePortfolios()
-    {
-        return new HashMap<>(warrantUsingProviders);
     }
 }

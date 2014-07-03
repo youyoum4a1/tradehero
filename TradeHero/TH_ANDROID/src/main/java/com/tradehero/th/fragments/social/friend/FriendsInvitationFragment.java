@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,32 +18,37 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
+import com.thoj.route.Routable;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.social.UserFriendsFacebookDTO;
+import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
+import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
+import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by wanglinag on 14-5-26.
- */
+@Routable("refer-friends")
 public class FriendsInvitationFragment extends DashboardFragment
         implements AdapterView.OnItemClickListener, SocialFriendItemView.OnElementClickListener
 {
@@ -54,17 +58,22 @@ public class FriendsInvitationFragment extends DashboardFragment
     @InjectView(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
     @InjectView(R.id.social_search_friends_none) TextView friendsListEmptyView;
 
+    @Inject SocialTypeItemFactory socialTypeItemFactory;
     @Inject SocialNetworkFactory socialNetworkFactory;
+    @Inject SocialLinkHelperFactory socialLinkHelperFactory;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
     FacebookSocialFriendHandler facebookSocialFriendHandler;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
+    @Inject Provider<FacebookSocialFriendHandler> facebookSocialFriendHandlerProvider;
 
-    private List<UserFriendsDTO> userFriendsDTOs;
+    private UserFriendsDTOList userFriendsDTOs;
     private Runnable searchTask;
     private MiddleCallback searchCallback;
+    private SocialLinkHelper socialLinkHelper;
 
     private static final String KEY_BUNDLE = "key_bundle";
     private static final String KEY_LIST_TYPE = "key_list_type";
@@ -73,12 +82,13 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private Bundle savedState;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        socialFriendHandler = new SocialFriendHandler();
-        facebookSocialFriendHandler = new FacebookSocialFriendHandler(getActivity());
+        socialFriendHandler = socialFriendHandlerProvider.get();
+        facebookSocialFriendHandler = facebookSocialFriendHandlerProvider.get();
     }
 
     @Override
@@ -86,11 +96,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(getString(R.string.action_invite));
-        actionBar.setHomeButtonEnabled(true);
     }
 
     @Override
@@ -120,6 +126,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     public void onDestroyView()
     {
         savedState = saveState();
+        detachSocialLinkHelper();
 
         super.onDestroyView();
     }
@@ -149,7 +156,10 @@ public class FriendsInvitationFragment extends DashboardFragment
     private Bundle saveState()
     {
         Bundle state = new Bundle();
-        state.putInt(KEY_LIST_TYPE, (friendsListView.getVisibility() == View.VISIBLE) ? LIST_TYPE_FRIEND_LIST : LIST_TYPE_SOCIAL_LIST);
+        if (friendsListView != null)
+        {
+            state.putInt(KEY_LIST_TYPE, (friendsListView.getVisibility() == View.VISIBLE) ? LIST_TYPE_FRIEND_LIST : LIST_TYPE_SOCIAL_LIST);
+        }
         return state;
     }
 
@@ -160,27 +170,12 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void bindSocialTypeData()
     {
-        List<SocalTypeItem> socalTypeItemList = socialNetworkFactory.getSocialTypeList();
-        SocalTypeListAdapter adapter = new SocalTypeListAdapter(getActivity(), 0, socalTypeItemList);
+        List<SocialTypeItem> socialTypeItemList = socialTypeItemFactory.getSocialTypeList();
+        SocialTypeListAdapter adapter = new SocialTypeListAdapter(getActivity(), 0, socialTypeItemList);
         socialListView.setAdapter(adapter);
         socialListView.setOnItemClickListener(this);
         showSocialTypeList();
     }
-
-
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
 
     private void bindSearchData()
     {
@@ -207,7 +202,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        SocalTypeItem item = (SocalTypeItem) parent.getItemAtPosition(position);
+        SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
         boolean linked = checkLinkedStatus(item.socialNetwork);
         if (linked)
         {
@@ -236,6 +231,15 @@ public class FriendsInvitationFragment extends DashboardFragment
         {
             searchCallback.setPrimaryCallback(null);
         }
+    }
+
+    protected void detachSocialLinkHelper()
+    {
+        if (socialLinkHelper != null)
+        {
+            socialLinkHelper.setSocialLinkingCallback(null);
+        }
+        socialLinkHelper = null;
     }
 
     private void scheduleSearch()
@@ -297,19 +301,14 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         Class<? extends SocialFriendsFragment> target = socialNetworkFactory.findProperTargetFragment(socialNetwork);
         Bundle bundle = new Bundle();
-        getNavigator().pushFragment(target, bundle);
-    }
-
-    private void pushSettingsFragment()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(SettingsFragment.KEY_SHOW_AS_HOME_UP, true);
-        getNavigator().pushFragment(SettingsFragment.class, bundle);
+        getDashboardNavigator().pushFragment(target, bundle);
     }
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
     {
-        SocialLinkHelper socialLinkHelper = socialNetworkFactory.buildSocialLinkerHelper(getActivity(), socialNetworkEnum);
+        detachSocialLinkHelper();
+        socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
+        // TODO Pass a callback to be able to move to the social fragment
         socialLinkHelper.link();
     }
 
@@ -360,11 +359,11 @@ public class FriendsInvitationFragment extends DashboardFragment
     protected void handleInviteUsers(UserFriendsDTO userToInvite)
     {
         List<UserFriendsDTO> usersToInvite = Arrays.asList(userToInvite);
-        if (!TextUtils.isEmpty(userToInvite.liId) || !TextUtils.isEmpty(userToInvite.twId))
+        if (userToInvite instanceof UserFriendsLinkedinDTO || userToInvite instanceof UserFriendsTwitterDTO)
         {
             socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
         }
-        else if (!TextUtils.isEmpty(userToInvite.fbId))
+        else if (userToInvite instanceof UserFriendsFacebookDTO)
         {
             //TODO do invite on the client side.
             facebookSocialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
@@ -378,17 +377,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     private void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
         //Invite Success will not disappear the friend in Invite
-        //if (userFriendsDTOs != null && usersToInvite != null)
-        //{
-        //    for (UserFriendsDTO userFriendsDTO : usersToInvite)
-        //    {
-        //        userFriendsDTOs.remove(userFriendsDTO);
-        //    }
-        //}
-        //SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
-        //
-        //socialFriendsAdapter.clear();
-        //socialFriendsAdapter.addAll(userFriendsDTOs);
         THToast.show(R.string.invite_friend_request_sent);
     }
 
@@ -409,14 +397,15 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
     {
+        final List<UserFriendsDTO> usersToFollow;
 
-        List<UserFriendsDTO> usersToFollow;
-
+        //<editor-fold desc="Constructors">
         private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
         {
             super(getActivity());
             this.usersToFollow = usersToFollow;
         }
+        //</editor-fold>
 
         @Override
         public void success(UserProfileDTO userProfileDTO, Response response)
@@ -440,18 +429,17 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    ;
-
     class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
     {
+        final List<UserFriendsDTO> usersToInvite;
 
-        List<UserFriendsDTO> usersToInvite;
-
+        //<editor-fold desc="Constructors">
         private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
         {
             super(getActivity());
             this.usersToInvite = usersToInvite;
         }
+        //</editor-fold>
 
         @Override
         public void success(Response data, Response response)
@@ -468,6 +456,12 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
 
         @Override
+        public void success()
+        {
+            handleInviteSuccess(usersToInvite);
+        }
+
+        @Override
         public void failure(RetrofitError retrofitError)
         {
             super.failure(retrofitError);
@@ -476,24 +470,19 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    ;
-
-    private List<UserFriendsDTO> filterTheDublicated(List<UserFriendsDTO> friendDTOList)
+    private UserFriendsDTOList filterTheDuplicated(List<UserFriendsDTO> friendDTOList)
     {
         TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
         hashSet.addAll(friendDTOList);
-        ArrayList list = new ArrayList();
-        list.addAll(hashSet);
-        return list;
+        return new UserFriendsDTOList(hashSet);
     }
 
-    class SearchFriendsCallback implements Callback<List<UserFriendsDTO>>
+    class SearchFriendsCallback implements Callback<UserFriendsDTOList>
     {
-
         @Override
-        public void success(List<UserFriendsDTO> userFriendsDTOs, Response response)
+        public void success(UserFriendsDTOList userFriendsDTOs, Response response)
         {
-            FriendsInvitationFragment.this.userFriendsDTOs = filterTheDublicated(userFriendsDTOs);
+            FriendsInvitationFragment.this.userFriendsDTOs = filterTheDuplicated(userFriendsDTOs);
             bindSearchData();
         }
 
@@ -508,17 +497,14 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     class SearchTextWatcher implements TextWatcher
     {
-
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after)
         {
-
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count)
         {
-
         }
 
         @Override
@@ -534,11 +520,5 @@ public class FriendsInvitationFragment extends DashboardFragment
                 showSocialTypeList();
             }
         }
-    }
-
-    @Override
-    public boolean isTabBarVisible()
-    {
-        return false;
     }
 }

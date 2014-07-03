@@ -1,5 +1,6 @@
 package com.tradehero.th.api.position;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.th.api.UniqueFieldDTODeserialiser;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.HashMap;
@@ -11,7 +12,8 @@ public class PositionDTODeserialiser extends UniqueFieldDTODeserialiser<Position
     //<editor-fold desc="Constructors">
     @Inject public PositionDTODeserialiser()
     {
-        super(createUniqueAttributes(), PositionDTO.class);
+        // We provide a new ObjectMapper to avoid infinite loop.
+        super(new ObjectMapper(), createUniqueAttributes(), PositionDTO.class);
 
     }
     //</editor-fold>

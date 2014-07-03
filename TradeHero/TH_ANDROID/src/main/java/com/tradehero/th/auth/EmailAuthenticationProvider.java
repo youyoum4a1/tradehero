@@ -40,7 +40,7 @@ public class EmailAuthenticationProvider implements THAuthenticationProvider
         {
             throw new IllegalArgumentException("Credentials or Email or Password is null");
         }
-        String authHeaderParameter = null;
+        String authHeaderParameter;
         try
         {
             authHeaderParameter = Base64.encodeToString(

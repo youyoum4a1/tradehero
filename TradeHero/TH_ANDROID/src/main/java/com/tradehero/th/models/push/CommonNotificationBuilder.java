@@ -7,9 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -31,8 +31,6 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     private final NotificationCache notificationCache;
     private final NotificationGroupHolder notificationGroupHolder;
 
-    private AsyncTask<Void, Void, NotificationDTO> notificationFetchTask;
-
     @Inject public CommonNotificationBuilder(
             Context context,
             NotificationCache notificationCache,
@@ -50,8 +48,9 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         NotificationDTO notificationDTO = notificationCache.get(new NotificationKey(notificationId));
         if (notificationDTO == null)
         {
-            notificationFetchTask = notificationCache.getOrFetch(new NotificationKey(notificationId), false, new NotificationFetchTaskListener());
-            notificationFetchTask.execute();
+            NotificationKey key = new NotificationKey(notificationId);
+            notificationCache.register(key, new NotificationFetchTaskListener());
+            notificationCache.getOrFetchAsync(key, false);
 
             return null;
         }
@@ -73,7 +72,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         NotificationCompat.Builder notificationBuilder = getCommonNotificationBuilder();
         notificationBuilder.setContentTitle(title);
 
-        Notification notification = null;
+        Notification notification;
         if (firstMessageOfTheGroup)
         {
             notificationDTOs = new ArrayList<>();
@@ -223,9 +222,9 @@ public class CommonNotificationBuilder implements THNotificationBuilder
                         .setAutoCancel(true);
     }
 
-    private class NotificationFetchTaskListener implements com.tradehero.common.persistence.DTOCache.Listener<NotificationKey,NotificationDTO>
+    private class NotificationFetchTaskListener implements DTOCacheNew.Listener<NotificationKey,NotificationDTO>
     {
-        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
+        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value)
         {
             Notification notification = buildNotification(value);
 

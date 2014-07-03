@@ -132,27 +132,12 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getTitle());
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                //localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void handleBuyMoreClicked()
     {
-        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
     }
 
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
@@ -219,11 +204,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     private void handleFollowSuccess(UserProfileDTO currentUserProfileDTO)
     {
         // TODO
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 
     protected class HeroManagerOnTabChangeListener implements TabHost.OnTabChangeListener

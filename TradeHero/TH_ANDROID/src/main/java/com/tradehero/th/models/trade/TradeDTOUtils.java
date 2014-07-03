@@ -18,7 +18,7 @@ public class TradeDTOUtils
     public void setRealizedPLLook(TextView textView, TradeDTO tradeDTO, String refCurrency)
     {
         textView.setText(getRealizedPL(textView.getResources(), tradeDTO, refCurrency));
-        textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(tradeDTO.realizedPLAfterTradeRefCcy)));
+        textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceIdForNumber(tradeDTO.realizedPLAfterTradeRefCcy)));
     }
 
     private String getRealizedPL(Resources resources, TradeDTO tradeDTO, String refCurrency)
@@ -41,7 +41,7 @@ public class TradeDTOUtils
     public void setUnrealizedPLLook(TextView textView, TradeDTO tradeDTO, String refCurrency)
     {
         textView.setText(getUnrealizedPL(textView.getResources(), tradeDTO, refCurrency));
-        textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceForNumber(tradeDTO.realizedPLAfterTradeRefCcy)));
+        textView.setTextColor(textView.getResources().getColor(ColorUtils.getColorResourceIdForNumber(tradeDTO.realizedPLAfterTradeRefCcy)));
     }
 
     private String getUnrealizedPL(Resources resources, TradeDTO tradeDTO, String refCurrency)

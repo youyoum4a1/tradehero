@@ -50,10 +50,8 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
             this.listener = listener;
         }
 
-        /**
-         * The listener should be strongly referenced elsewhere.
-         * @param listener
-         */
+        abstract protected Class<?> getContainerCacheClass();
+
         public void setListener(Listener<DTOKeyType, DTOType> listener)
         {
             this.listener = listener;
@@ -68,9 +66,19 @@ public interface DTOCache<DTOKeyType extends DTOKey, DTOType extends DTO>
          * TODO make it better
          * @return
          */
-        public final AsyncTask<Void, Void, DTOType> execute() {
-           //Timber.d("execute on my method");
+        public final AsyncTask<Void, Void, DTOType> execute()
+        {
+            return executePool();
+        }
+
+        protected final AsyncTask<Void, Void, DTOType> executePool()
+        {
            return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+        protected final AsyncTask<Void, Void, DTOType> executeSerial()
+        {
+           return executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
     }
 }

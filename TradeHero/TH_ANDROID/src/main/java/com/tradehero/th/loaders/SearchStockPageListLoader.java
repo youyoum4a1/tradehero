@@ -54,7 +54,7 @@ public class SearchStockPageListLoader extends PaginationListLoader<ListedSecuri
 
     @Override public List<ListedSecurityCompact> loadInBackground()
     {
-        List<ListedSecurityCompact> listed = null;
+        List<ListedSecurityCompact> listed;
         try
         {
             listed = ListedSecurityCompactFactory.createList(

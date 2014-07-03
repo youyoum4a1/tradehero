@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
-import com.tradehero.th.api.security.WarrantDTO;
-import com.tradehero.th.api.security.WarrantDTOUtil;
+import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTOUtil;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.models.security.WarrantDTOUnderlyerTypeComparator;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -19,7 +19,7 @@ public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<War
     @Inject SecurityCompactCache securityCompactCache;
     @Inject WarrantDTOUnderlyerTypeComparator warrantDTOComparator;
     @Inject WarrantDTOUtil warrantDTOUtil;
-    protected Filter filterToUse;
+    protected final Filter filterToUse;
     @Inject ListCharSequencePredicateFilter<WarrantDTO> warrantPredicateFilter;
 
     //<editor-fold desc="Constructors">

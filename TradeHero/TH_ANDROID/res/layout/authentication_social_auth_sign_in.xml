@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+  <Button
+      android:id="@+id/btn_facebook_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:drawableLeft="@drawable/settings_fb_normal"
+      android:background="@drawable/btn_background_social_facebook"
+      android:text="@string/facebook_login_in"
+      />
+
+  <Button
+      android:id="@+id/btn_twitter_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:drawableLeft="@drawable/settings_twitter_normal"
+      android:background="@drawable/btn_background_social_twitter"
+      android:text="@string/twitter_login_in"
+      />
+
+  <Button
+      android:id="@+id/btn_weibo_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:drawableLeft="@drawable/settings_weibo_normal"
+      android:background="@drawable/btn_background_social_weibo"
+      android:text="@string/weibo_login_in"/>
+
+  <Button
+      android:id="@+id/btn_qq_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:drawableLeft="@drawable/settings_qq_normal"
+      android:background="@drawable/btn_background_social_qq"
+      android:text="@string/qq_login_in"/>
+
+  <Button
+      android:id="@+id/btn_linkedin_signin"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:drawableLeft="@drawable/settings_linkedin_normal"
+      android:background="@drawable/btn_background_social_linkedin"
+      android:text="@string/linkedin_login_in"
+      />
+
+  <Button
+      android:id="@+id/authentication_email_sign_in_link"
+      style="@style/TradeHero.SocialAuthenticationButton"
+      android:drawableLeft="@drawable/settings_email_noti"
+      android:background="@drawable/btn_background_email"
+      android:text="@string/email_login_in"
+      android:textColor="@color/black"
+      android:shadowColor="@color/white"
+      />
+
+</merge>

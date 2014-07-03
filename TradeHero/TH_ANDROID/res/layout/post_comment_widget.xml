@@ -10,6 +10,7 @@
       android:id="@+id/discussion_comment_widget"
       android:layout_alignParentBottom="true"
       android:layout_gravity="bottom"
+      android:padding="6dp"
       android:background="@drawable/timeline_discussion_edit_widget_background"
       >
 
@@ -19,8 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
+        android:layout_alignBottom="@+id/post_comment_text"
+        android:layout_alignTop="@+id/post_comment_text"
+        android:addStatesFromChildren="true"
+        android:background="@drawable/basic_transparent_selector"
         >
 
       <TextView
@@ -28,6 +31,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
+          android:padding="@dimen/discussion_action_buttons_drawable_padding"
           android:text="@string/timeline_discussion_post"
           />
 
@@ -47,14 +51,15 @@
         android:orientation="horizontal">
 
       <!--<include-->
-          <!--layout="@layout/discussion_edit_post_mention_buttons"-->
-          <!--/>-->
+      <!--layout="@layout/discussion_edit_post_mention_buttons"-->
+      <!--/>-->
       <EditText
           android:id="@+id/post_comment_text"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
           android:hint="@string/timeline_discussion_comment_box_hint"
+          style="@style/TH.DiscussionTextBox"
+
           />
 
     </LinearLayout>

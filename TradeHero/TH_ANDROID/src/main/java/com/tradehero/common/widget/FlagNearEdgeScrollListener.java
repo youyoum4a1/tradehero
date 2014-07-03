@@ -10,7 +10,7 @@ abstract public class FlagNearEdgeScrollListener implements AbsListView.OnScroll
 {
     public static final int DEFAULT_VISIBLE_THRESHOLD = 5;
 
-    private int visibleThreshold;
+    private final int visibleThreshold;
     private boolean nearStart = false;
     private boolean nearStartActive = false;
     private boolean mFirstItemVisible = false;

@@ -20,7 +20,8 @@
     <include
         layout="@layout/trade_list_overlay_header"
         android:id="@+id/trade_list_header"
-        android:layout_height="50dp"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
   <ProgressBar
       android:id="@android:id/empty"

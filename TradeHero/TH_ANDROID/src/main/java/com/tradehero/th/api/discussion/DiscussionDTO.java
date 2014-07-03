@@ -20,6 +20,7 @@ public class DiscussionDTO extends AbstractDiscussionDTO
     public Boolean publishToFb;
     public Boolean publishToLi;
     public Boolean publishToTw;
+    public Boolean publishToWb;
     public String geo_alt;
     public String geo_lat;
     public String geo_long;
@@ -76,6 +77,7 @@ public class DiscussionDTO extends AbstractDiscussionDTO
                 ", publishToFb=" + publishToFb +
                 ", publishToLi=" + publishToLi +
                 ", publishToTw=" + publishToTw +
+                ", publishToWb=" + publishToWb +
                 ", geo_alt='" + geo_alt + '\'' +
                 ", geo_lat='" + geo_lat + '\'' +
                 ", geo_long='" + geo_long + '\'' +

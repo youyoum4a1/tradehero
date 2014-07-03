@@ -1,47 +1,49 @@
 package com.tradehero.common.persistence;
 
 import java.util.Map;
-import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends PartialDTOCacheNew<DTOKeyType, DTOType>
 {
-    private THLruCache<DTOKeyType, CacheValue<DTOKeyType, DTOType>> lruCache;
+    @NotNull final private THLruCache<DTOKeyType, CacheValue<DTOKeyType, DTOType>> lruCache;
 
+    //<editor-fold desc="Constructors">
     public StraightDTOCacheNew(int maxSize)
     {
         super();
         this.lruCache = new THLruCache<>(maxSize);
     }
+    //</editor-fold>
 
-    @Contract("null -> null")
-    @Nullable
-    @Override public DTOType get(@Nullable DTOKeyType key)
+    @Override @Nullable public DTOType get(@NotNull DTOKeyType key)
     {
-        if (key == null)
-        {
-            return null;
-        }
-        CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
+        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (cacheValue == null)
         {
             return null;
         }
-        return cacheValue.getValue();
+        @Nullable DTOType value = cacheValue.getValue();
+        if (value != null && !isValid(value))
+        {
+            invalidate(key);
+            return null;
+        }
+        return value;
     }
 
-    @Override protected CacheValue<DTOKeyType, DTOType> getCacheValue(DTOKeyType key)
+    @Override @Nullable protected CacheValue<DTOKeyType, DTOType> getCacheValue(@NotNull DTOKeyType key)
     {
         return lruCache.get(key);
     }
 
-    @Override protected void putCacheValue(DTOKeyType key, CacheValue<DTOKeyType, DTOType> cacheValue)
+    @Override protected void putCacheValue(@NotNull DTOKeyType key, @NotNull CacheValue<DTOKeyType, DTOType> cacheValue)
     {
         lruCache.put(key, cacheValue);
     }
 
-    @Override public void invalidate(DTOKeyType key)
+    @Override public void invalidate(@NotNull DTOKeyType key)
     {
         lruCache.remove(key);
     }
@@ -51,18 +53,18 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
         lruCache.evictAll();
     }
 
-    @Override public void unregister(Listener<DTOKeyType, DTOType> callback)
+    @Override public void unregister(@Nullable Listener<DTOKeyType, DTOType> callback)
     {
-        for (CacheValue<DTOKeyType, DTOType> value : lruCache.snapshot().values())
+        if (callback != null)
         {
-            if (value != null)
+            for (@NotNull CacheValue<DTOKeyType, DTOType> value : lruCache.snapshot().values())
             {
                 value.unregisterListener(callback);
             }
         }
     }
 
-    protected Map<DTOKeyType, CacheValue<DTOKeyType, DTOType>> snapshot()
+    @NotNull protected Map<DTOKeyType, CacheValue<DTOKeyType, DTOType>> snapshot()
     {
         return lruCache.snapshot();
     }

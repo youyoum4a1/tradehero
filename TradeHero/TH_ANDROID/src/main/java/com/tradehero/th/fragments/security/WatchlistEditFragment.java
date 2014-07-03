@@ -8,13 +8,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.localytics.android.LocalyticsSession;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -37,8 +33,10 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import timber.log.Timber;
 
@@ -51,12 +49,12 @@ public class WatchlistEditFragment extends DashboardFragment
     private TextView securityDesc;
     private EditText watchPrice;
     private EditText watchQuantity;
-    private SecurityId securityKeyId;
+    @Nullable private SecurityId securityKeyId;
     private TextView watchAction;
     private TextView deleteButton;
     private ProgressDialog progressBar;
 
-    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
+    private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
 
     private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
     private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
@@ -67,13 +65,19 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
 
     public static void putSecurityId(Bundle args, SecurityId securityId)
     {
         args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        securityCompactCacheFetchListener = createSecurityCompactCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -108,11 +112,10 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void checkDeleteButtonEnable()
     {
-        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
-        if (watchlistPositionDTO == null)
+        if (securityKeyId != null)
         {
-            //deleteButton.setEnabled(false);
-            Timber.d("checkDeleteButtonEnable watchlistPositionDTO:%s ",watchlistPositionDTO);
+            WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().get(securityKeyId);
+            deleteButton.setEnabled(watchlistPositionDTO != null);
         }
     }
 
@@ -220,13 +223,6 @@ public class WatchlistEditFragment extends DashboardFragment
 
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-    }
 
     @Override public void onResume()
     {
@@ -249,11 +245,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
     protected void detachSecurityCompactFetchTask()
     {
-        if (securityCompactCacheFetchTask != null)
-        {
-            securityCompactCacheFetchTask.setListener(null);
-        }
-        securityCompactCacheFetchTask = null;
+        securityCompactCache.unregister(securityCompactCacheFetchListener);
     }
 
     protected void detachMiddleCallbackUpdate()
@@ -276,6 +268,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
+        securityCompactCacheFetchListener = null;
         progressBar = null;
         super.onDestroy();
     }
@@ -300,6 +293,7 @@ public class WatchlistEditFragment extends DashboardFragment
         if (andDisplay)
         {
             displaySecurityTitle();
+            checkDeleteButtonEnable();
         }
     }
 
@@ -332,8 +326,8 @@ public class WatchlistEditFragment extends DashboardFragment
         }
 
         detachSecurityCompactFetchTask();
-        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, createSecurityCompactCacheListener(andDisplay));
-        securityCompactCacheFetchTask.execute();
+        securityCompactCache.register(securityId, securityCompactCacheFetchListener);
+        securityCompactCache.getOrFetchAsync(securityId);
     }
 
     private void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -385,13 +379,6 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    //<editor-fold desc="TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
-
     protected Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
     {
         return new WatchlistEditTHCallback();
@@ -400,11 +387,6 @@ public class WatchlistEditFragment extends DashboardFragment
     protected Callback<WatchlistPositionDTO> createWatchlistDeleteCallback()
     {
         return new WatchlistDeletedTHCallback();
-    }
-
-    protected DTOCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener(boolean andDisplay)
-    {
-        return new WatchlistEditSecurityCompactCacheListener(andDisplay);
     }
 
     //TODO this extends is better? maybe not alex
@@ -424,7 +406,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 {
                     currentUserWatchlistSecurities.remove(securityKeyId);
                 }
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
             }
             else
             {
@@ -454,7 +436,7 @@ public class WatchlistEditFragment extends DashboardFragment
                     currentUserWatchlistSecurities.add(securityKeyId);
                 }
 
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
             }
             else
             {
@@ -470,23 +452,25 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    protected class WatchlistEditSecurityCompactCacheListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
-        private final boolean andDisplay;
+        return new WatchlistEditSecurityCompactCacheListener();
+    }
 
-        public WatchlistEditSecurityCompactCacheListener(boolean andDisplay)
+    protected class WatchlistEditSecurityCompactCacheListener implements DTOCacheNew.HurriedListener<SecurityId, SecurityCompactDTO>
+    {
+        @Override public void onPreCachedDTOReceived(SecurityId key, SecurityCompactDTO value)
         {
-            super();
-            this.andDisplay = andDisplay;
+            onDTOReceived(key, value);
         }
 
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
         {
             if (progressBar != null)
             {
                 progressBar.dismiss();
             }
-            linkWith(value, andDisplay);
+            linkWith(value, true);
         }
 
         @Override public void onErrorThrown(SecurityId key, Throwable error)

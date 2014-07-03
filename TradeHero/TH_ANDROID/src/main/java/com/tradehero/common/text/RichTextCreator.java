@@ -11,15 +11,14 @@ import javax.inject.Inject;
 
 public class RichTextCreator
 {
-    private static Map<String, Spanned> cachedTexts = new HashMap<>();
+    private static final Map<String, Spanned> cachedTexts = new HashMap<>();
     private String originalText;
     private SpannableStringBuilder richText;
     private List<RichTextProcessor> processors;
-    private boolean useBuiltInTextProcessors;
+    private final boolean useBuiltInTextProcessors;
 
     //<editor-fold desc="Constructors">
-    @Inject
-    public RichTextCreator()
+    @Inject public RichTextCreator()
     {
         this(true);
     }

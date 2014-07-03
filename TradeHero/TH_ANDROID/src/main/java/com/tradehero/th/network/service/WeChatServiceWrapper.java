@@ -4,17 +4,18 @@ import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.client.Response;
 
 @Singleton public class WeChatServiceWrapper
 {
-    private final WeChatService weChatService;
-    private final WeChatServiceAsync weChatServiceAsync;
+    @NotNull private final WeChatService weChatService;
+    @NotNull private final WeChatServiceAsync weChatServiceAsync;
 
     @Inject public WeChatServiceWrapper(
-            WeChatService weChatService,
-            WeChatServiceAsync weChatServiceAsync)
+            @NotNull WeChatService weChatService,
+            @NotNull WeChatServiceAsync weChatServiceAsync)
     {
         super();
         this.weChatService = weChatService;

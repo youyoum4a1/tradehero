@@ -7,11 +7,13 @@ public class CompetitionZoneDTO implements DTO
     public final String title;
     public final String description;
 
+    //<editor-fold desc="Constructors">
     public CompetitionZoneDTO(String title, String description)
     {
         this.title = title;
         this.description = description;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {

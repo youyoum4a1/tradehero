@@ -32,10 +32,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_exchanges_count_wrapper) @Optional protected View exchangesCountWrapper;
     @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
 
-    @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
-    private Target topBackgroundTarget;
-    private Target topBackgroundTarget2;//for default bg
-    protected Runnable displayTopViewBackgroundRunnable;
+	@Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
+	private                                   Target         topBackgroundTarget;
+	private                                   Target         topDefaultBackgroundTarget;
+	protected                                 Runnable       displayTopViewBackgroundRunnable;
 
     public UserProfileDetailViewHolder(View view)
     {
@@ -46,14 +46,14 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
         super.initViews(view);
         topBackgroundTarget = new BackgroundTarget();
-        topBackgroundTarget2 = new BackgroundTarget2();
+		topDefaultBackgroundTarget = new DefaultBackgroundTarget();
     }
 
     @Override public void detachViews()
     {
         super.detachViews();
         topBackgroundTarget = null;
-        topBackgroundTarget2 = null;
+		topDefaultBackgroundTarget = null;
         if (profileTop != null)
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
@@ -91,11 +91,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                     {
                         picasso.load(userProfileDTO.picture)
                                 .transform(peopleBackgroundTransformation)
-                                        //.transform(new GrayscaleTransformation())
-                                        //.transform(new FastBlurTransformation(30))
-                                        //.transform(new GradientTransformation(
-                                        //        context.getResources().getColor(R.color.profile_view_gradient_top),
-                                        //        context.getResources().getColor(R.color.profile_view_gradient_bottom)))
                                 .resize(profileTop.getWidth(), profileTop.getHeight())
                                 .centerCrop()
                                 .into(topBackgroundTarget);
@@ -111,12 +106,12 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     public void loadDefaultBG()
     {
-        if (profileTop != null && topBackgroundTarget2 != null
+        if (profileTop != null && topDefaultBackgroundTarget != null
                 && profileTop.getWidth() > 0 && profileTop.getHeight() > 0)
         {
             picasso.load(R.drawable.superman_facebook).transform(peopleBackgroundTransformation)
                     .resize(profileTop.getWidth(), profileTop.getHeight())
-                    .centerCrop().into(topBackgroundTarget2);
+                    .centerCrop().into(topDefaultBackgroundTarget);
         }
     }
 
@@ -292,9 +287,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             if (profileTop != null)
             {
                 profileTop.setBackgroundDrawable(
-                        new BitmapDrawable(context.getResources(), bitmap));
-                // only available since API level 16
-                // profileTop.setBackground(new BitmapDrawable(getResources(), bitmap));
+							new BitmapDrawable(context.getResources(), bitmap));
             }
         }
 
@@ -307,7 +300,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         }
     }
 
-    protected class BackgroundTarget2 extends BackgroundTarget
+    protected class DefaultBackgroundTarget
+			extends BackgroundTarget
     {
     }
 }

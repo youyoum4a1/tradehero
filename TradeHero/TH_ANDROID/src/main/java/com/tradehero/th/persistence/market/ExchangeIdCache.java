@@ -1,12 +1,14 @@
 package com.tradehero.th.persistence.market;
 
 import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.market.ExchangeDTO;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeStringId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton public class ExchangeIdCache extends StraightDTOCacheNew<ExchangeStringId, ExchangeIntegerId>
 {
@@ -19,21 +21,21 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override public ExchangeIntegerId fetch(ExchangeStringId key) throws Throwable
+    @Override @NotNull public ExchangeIntegerId fetch(@NotNull ExchangeStringId key) throws Throwable
     {
         throw new IllegalArgumentException("Cannot fetch here");
     }
 
-    public void put(List<ExchangeDTO> exchangeDTOs)
+    public void put(@Nullable List<ExchangeCompactDTO> exchangeCompactDTOs)
     {
-        if (exchangeDTOs == null)
+        if (exchangeCompactDTOs == null)
         {
             return;
         }
 
-        for (ExchangeDTO exchangeDTO: exchangeDTOs)
+        for (@NotNull ExchangeCompactDTO exchangeCompactDTO: exchangeCompactDTOs)
         {
-            put(exchangeDTO.getExchangeStringId(), exchangeDTO.getExchangeIntegerId());
+            put(exchangeCompactDTO.getExchangeStringId(), exchangeCompactDTO.getExchangeIntegerId());
         }
     }
 }

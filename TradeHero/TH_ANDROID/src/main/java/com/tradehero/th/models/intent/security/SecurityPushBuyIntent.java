@@ -45,8 +45,8 @@ public class SecurityPushBuyIntent extends THIntent
                 getString(R.string.intent_scheme),
                 getString(R.string.intent_host_security),
                 securityIntegerId.key,
-                securityId.exchange,
-                securityId.securitySymbol);
+                securityId.getExchange(),
+                securityId.getSecuritySymbol());
     }
 
     public SecurityIntegerId getSecurityIntegerId()

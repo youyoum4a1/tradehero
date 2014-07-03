@@ -25,12 +25,18 @@ public class THWebViewClient extends WebViewClient
     private THIntentPassedListener thIntentPassedListener;
 
     @Inject Lazy<ProviderListCache> providerListCache;
+    private boolean clearCacheAfterFinishRequest = true;
 
     public THWebViewClient(Context context)
     {
         super();
         this.context = context;
         DaggerUtils.inject(this);
+    }
+
+    public void setClearCacheAfterFinishRequest(boolean should)
+    {
+        clearCacheAfterFinishRequest = should;
     }
 
     @Override public boolean shouldOverrideUrlLoading(WebView view, String url)
@@ -78,9 +84,9 @@ public class THWebViewClient extends WebViewClient
             return true;
         }
 
-        Timber.d("shouldOverrideUrlLoading Simple passing of URL");
         view.loadUrl(url);
-        return false;
+        Timber.d("shouldOverrideUrlLoading Simple passing of URL");
+        return super.shouldOverrideUrlLoading(view, url);
     }
 
     @Override public void onPageFinished(WebView view, String url)
@@ -91,7 +97,10 @@ public class THWebViewClient extends WebViewClient
         //        "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
 
         // TODO remove this no caching thing
-        view.clearCache(true);
+        if (clearCacheAfterFinishRequest)
+        {
+            view.clearCache(true);
+        }
     }
 
     @Override

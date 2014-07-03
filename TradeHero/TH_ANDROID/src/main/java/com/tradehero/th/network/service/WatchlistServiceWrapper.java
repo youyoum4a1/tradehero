@@ -22,24 +22,26 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class WatchlistServiceWrapper
 {
-    private final CurrentUserId currentUserId;
-    private final WatchlistService watchlistService;
-    private final WatchlistServiceAsync watchlistServiceAsync;
-    private final Lazy<WatchlistPositionCache> watchlistPositionCache;
-    private final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
-    private final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final WatchlistService watchlistService;
+    @NotNull private final WatchlistServiceAsync watchlistServiceAsync;
+    @NotNull private final Lazy<WatchlistPositionCache> watchlistPositionCache;
+    @NotNull private final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
+    @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
 
     @Inject public WatchlistServiceWrapper(
-            CurrentUserId currentUserId,
-            WatchlistService watchlistService,
-            WatchlistServiceAsync watchlistServiceAsync,
-            Lazy<WatchlistPositionCache> watchlistPositionCache,
-            Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
-            PortfolioCompactListCache portfolioCompactListCache)
+            @NotNull CurrentUserId currentUserId,
+            @NotNull WatchlistService watchlistService,
+            @NotNull WatchlistServiceAsync watchlistServiceAsync,
+            @NotNull Lazy<WatchlistPositionCache> watchlistPositionCache,
+            @NotNull Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache)
     {
         super();
         this.currentUserId = currentUserId;
@@ -51,36 +53,45 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="DTO Processors">
-    protected DTOProcessor<WatchlistPositionDTO> createWatchlistUpdateProcessor()
+    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistUpdateProcessor()
     {
         return new DTOProcessorWatchlistUpdate(watchlistPositionCache.get());
     }
 
-    protected DTOProcessor<WatchlistPositionDTO> createWatchlistCreateProcessor(UserBaseKey concernedUser)
+    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistCreateProcessor(@NotNull UserBaseKey concernedUser)
     {
-        return new DTOProcessorWatchlistCreate(watchlistPositionCache.get(), concernedUser,
-                portfolioCompactListCache, userWatchlistPositionCache.get());
+        return new DTOProcessorWatchlistCreate(
+                watchlistPositionCache.get(),
+                concernedUser,
+                portfolioCompactListCache,
+                userWatchlistPositionCache.get());
     }
 
-    protected DTOProcessor<WatchlistPositionDTO> createWatchlistDeleteProcessor(UserBaseKey concernedUser)
+    @NotNull protected DTOProcessor<WatchlistPositionDTO> createWatchlistDeleteProcessor(@NotNull UserBaseKey concernedUser)
     {
-        return new DTOProcessorWatchlistDelete(watchlistPositionCache.get(), concernedUser,
-                portfolioCompactListCache, userWatchlistPositionCache.get());
+        return new DTOProcessorWatchlistDelete(
+                watchlistPositionCache.get(),
+                concernedUser,
+                portfolioCompactListCache,
+                userWatchlistPositionCache.get());
     }
     //</editor-fold>
 
     //<editor-fold desc="Add a watch item">
-    public WatchlistPositionDTO createWatchlistEntry(WatchlistPositionFormDTO watchlistPositionFormDTO)
+    @Nullable public WatchlistPositionDTO createWatchlistEntry(@NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
-        return createWatchlistCreateProcessor(currentUserId.toUserBaseKey()).process(
-                watchlistService.createWatchlistEntry(
+        return createWatchlistCreateProcessor(
+                currentUserId.toUserBaseKey()).process(
+                    watchlistService.createWatchlistEntry(
                         watchlistPositionFormDTO)
         );
     }
 
-    public MiddleCallback<WatchlistPositionDTO> createWatchlistEntry(WatchlistPositionFormDTO watchlistPositionFormDTO, Callback<WatchlistPositionDTO> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTO> createWatchlistEntry(
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO,
+            @Nullable Callback<WatchlistPositionDTO> callback)
     {
-        MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(
+        @NotNull MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createWatchlistCreateProcessor(currentUserId.toUserBaseKey()));
         watchlistServiceAsync.createWatchlistEntry(watchlistPositionFormDTO, middleCallback);
@@ -89,31 +100,41 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Edit a watch item">
-    public WatchlistPositionDTO updateWatchlistEntry(WatchlistPositionDTO watchlistPositionDTO, WatchlistPositionFormDTO watchlistPositionFormDTO)
+    @Nullable public WatchlistPositionDTO updateWatchlistEntry(
+            @NotNull WatchlistPositionDTO watchlistPositionDTO,
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return updateWatchlistEntry(watchlistPositionDTO.getPositionCompactId(), watchlistPositionFormDTO);
     }
 
-    public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(WatchlistPositionDTO watchlistPositionDTO, WatchlistPositionFormDTO watchlistPositionFormDTO, Callback<WatchlistPositionDTO> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(
+            @NotNull WatchlistPositionDTO watchlistPositionDTO,
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO,
+            @Nullable Callback<WatchlistPositionDTO> callback)
     {
         return updateWatchlistEntry(watchlistPositionDTO.getPositionCompactId(), watchlistPositionFormDTO, callback);
     }
 
-    public WatchlistPositionDTO updateWatchlistEntry(PositionCompactId positionId, WatchlistPositionFormDTO watchlistPositionFormDTO)
+    @Nullable public WatchlistPositionDTO updateWatchlistEntry(
+            @NotNull PositionCompactId positionId,
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return createWatchlistUpdateProcessor().process(watchlistService.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO));
     }
 
-    public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(PositionCompactId positionId, WatchlistPositionFormDTO watchlistPositionFormDTO, Callback<WatchlistPositionDTO> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTO> updateWatchlistEntry(
+            @NotNull PositionCompactId positionId,
+            @NotNull WatchlistPositionFormDTO watchlistPositionFormDTO,
+            @Nullable Callback<WatchlistPositionDTO> callback)
     {
-        MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<WatchlistPositionDTO>(callback, createWatchlistUpdateProcessor());
+        MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(callback, createWatchlistUpdateProcessor());
         watchlistServiceAsync.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Query for watchlist">
-    public WatchlistPositionDTOList getAllByUser(PagedWatchlistKey pagedWatchlistKey)
+    @NotNull public WatchlistPositionDTOList getAllByUser(@NotNull PagedWatchlistKey pagedWatchlistKey)
     {
         if (pagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
         {
@@ -145,8 +166,9 @@ import retrofit.Callback;
         return watchlistService.getAllByUser(pagedWatchlistKey.page, null, null, null);
     }
 
-    public MiddleCallback<WatchlistPositionDTOList> getAllByUser(PagedWatchlistKey pagedWatchlistKey,
-            Callback<WatchlistPositionDTOList> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTOList> getAllByUser(
+            @NotNull PagedWatchlistKey pagedWatchlistKey,
+            @Nullable Callback<WatchlistPositionDTOList> callback)
     {
         MiddleCallback<WatchlistPositionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         if (pagedWatchlistKey instanceof SkipCacheSecurityPerPagedWatchlistKey)
@@ -188,23 +210,24 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Delete Watchlist">
-    public WatchlistPositionDTO deleteWatchlist(WatchlistPositionDTO watchlistPositionDTO)
+    @Nullable public WatchlistPositionDTO deleteWatchlist(@NotNull WatchlistPositionDTO watchlistPositionDTO)
     {
         return deleteWatchlist(watchlistPositionDTO.getPositionCompactId());
     }
 
-    public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(WatchlistPositionDTO watchlistPositionDTO, Callback<WatchlistPositionDTO> callback)
+    @NotNull public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(@NotNull WatchlistPositionDTO watchlistPositionDTO, @Nullable Callback<WatchlistPositionDTO> callback)
     {
         return deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), callback);
     }
 
-    public WatchlistPositionDTO deleteWatchlist(PositionCompactId positionCompactId)
+    @Nullable public WatchlistPositionDTO deleteWatchlist(@NotNull PositionCompactId positionCompactId)
     {
         return createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()).process(
                 watchlistService.deleteWatchlist(positionCompactId.key));
     }
 
-    public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(PositionCompactId positionCompactId, Callback<WatchlistPositionDTO> callback)
+    @NotNull
+    public MiddleCallback<WatchlistPositionDTO> deleteWatchlist(@NotNull PositionCompactId positionCompactId, @Nullable Callback<WatchlistPositionDTO> callback)
     {
         MiddleCallback<WatchlistPositionDTO> middleCallback = new BaseMiddleCallback<>(
                 callback, createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()));

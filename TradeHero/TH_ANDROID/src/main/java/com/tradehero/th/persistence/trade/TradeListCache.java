@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.trade;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
@@ -9,43 +9,48 @@ import com.tradehero.th.network.service.TradeServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-@Singleton public class TradeListCache extends StraightDTOCache<OwnedPositionId, OwnedTradeIdList>
+@Singleton public class TradeListCache extends StraightDTOCacheNew<OwnedPositionId, OwnedTradeIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    @Inject protected TradeServiceWrapper tradeServiceWrapper;
-    @Inject protected TradeCache tradeCache;
-    @Inject protected TradeIdCache tradeIdCache;
+    @NotNull private final TradeServiceWrapper tradeServiceWrapper;
+    @NotNull private final TradeCache tradeCache;
+    @NotNull private final TradeIdCache tradeIdCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public TradeListCache()
+    @Inject public TradeListCache(
+            @NotNull TradeServiceWrapper tradeServiceWrapper,
+            @NotNull TradeCache tradeCache,
+            @NotNull TradeIdCache tradeIdCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.tradeServiceWrapper = tradeServiceWrapper;
+        this.tradeCache = tradeCache;
+        this.tradeIdCache = tradeIdCache;
     }
+    //</editor-fold>
 
-    @Override protected OwnedTradeIdList fetch(OwnedPositionId key) throws Throwable
+    @Override @NotNull public OwnedTradeIdList fetch(@NotNull OwnedPositionId key) throws Throwable
     {
         return putInternal(key, tradeServiceWrapper.getTrades(key));
     }
 
-    protected OwnedTradeIdList putInternal(OwnedPositionId key, List<TradeDTO> fleshedValues)
+    @NotNull protected OwnedTradeIdList putInternal(
+            @NotNull OwnedPositionId key,
+            @NotNull List<TradeDTO> fleshedValues)
     {
-        OwnedTradeIdList tradeIds = null;
-        if (fleshedValues != null)
+        OwnedTradeIdList tradeIds = new OwnedTradeIdList();
+        OwnedTradeId ownedTradeId;
+        for (@NotNull TradeDTO trade: fleshedValues)
         {
-            tradeIds = new OwnedTradeIdList();
-            OwnedTradeId ownedTradeId;
-            int i = 0;
-            for (TradeDTO trade: fleshedValues)
-            {
-                ownedTradeId = new OwnedTradeId(key, trade.id);
-                tradeIds.add(ownedTradeId);
-                tradeCache.put(ownedTradeId, trade);
-                tradeIdCache.put(trade.getTradeId(), ownedTradeId);
-            }
-            put(key, tradeIds);
+            ownedTradeId = new OwnedTradeId(key, trade.id);
+            tradeIds.add(ownedTradeId);
+            tradeCache.put(ownedTradeId, trade);
+            tradeIdCache.put(trade.getTradeId(), ownedTradeId);
         }
+        put(key, tradeIds);
         return tradeIds;
     }
 }

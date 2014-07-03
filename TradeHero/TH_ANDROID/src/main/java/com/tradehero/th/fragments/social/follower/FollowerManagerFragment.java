@@ -78,11 +78,9 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME);
+        super.onCreateOptionsMenu(menu, inflater);
 
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setTitle(getString(R.string.social_followers));
 
         Fragment f = getCurrentFragment();
@@ -90,8 +88,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             ((SherlockFragment)getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
         }
-
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -125,7 +121,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Fragment f = getCurrentFragment();
         if (f != null)
         {
-            ((SherlockFragment) getCurrentFragment()).onOptionsMenuClosed(menu);
+            getCurrentFragment().onOptionsMenuClosed(menu);
         }
 
         super.onOptionsMenuClosed(menu);
@@ -355,7 +351,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Bundle args = new Bundle();
 
         args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE, discussionType.value);
-        MessageType messageType = null;
+        MessageType messageType;
         switch (followerType)
         {
             case ALL:
@@ -376,10 +372,5 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
                 page, followerType, discussionType);
         ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
                 SendMessageFragment.class, args);
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 }

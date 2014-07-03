@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -67,14 +67,13 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
         if (discussionKey != null)
         {
             Bundle args = new Bundle();
-            args.putBundle(NewsDiscussionFragment.DISCUSSION_KEY_BUNDLE_KEY,
-                    discussionKey.getArgs());
+            NewsDiscussionFragment.putDiscussionKey(args, discussionKey);
             getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }
 
     @Override
-    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
+    protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
     {
         // We are ok with the NewsItemDTO being saved in cache, but we do not want
         // to get it here...

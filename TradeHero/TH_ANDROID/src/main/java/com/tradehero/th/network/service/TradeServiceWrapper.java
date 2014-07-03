@@ -9,16 +9,17 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class TradeServiceWrapper
 {
-    private final TradeService tradeService;
-    private final TradeServiceAsync tradeServiceAsync;
+    @NotNull private final TradeService tradeService;
+    @NotNull private final TradeServiceAsync tradeServiceAsync;
 
     @Inject public TradeServiceWrapper(
-            TradeService tradeService,
-            TradeServiceAsync tradeServiceAsync)
+            @NotNull TradeService tradeService,
+            @NotNull TradeServiceAsync tradeServiceAsync)
     {
         super();
         this.tradeService = tradeService;

@@ -6,6 +6,7 @@ import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.baidu.BaiduPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.tradehero.th.utils.Constants;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Provider;
@@ -31,16 +32,18 @@ public class PushModule
             Provider<BaiduPushManager> baiduPushManager,
             Provider<UrbanAirshipPushNotificationManager> urbanAirshipPushNotificationManager)
     {
-        boolean isChineseVersion = DeviceTokenHelper.isChineseVersion();
-        if (isChineseVersion)
+        switch (Constants.TAP_STREAM_TYPE.pushProvider)
         {
-            Timber.d("Using Baidu Push");
-            return baiduPushManager.get();
-        }
-        else
-        {
-            Timber.d("Using UrbanAirship Push");
-            return urbanAirshipPushNotificationManager.get();
+            case URBAN_AIRSHIP:
+                Timber.d("Using UrbanAirship Push");
+                return urbanAirshipPushNotificationManager.get();
+
+            case BAIDU:
+                Timber.d("Using Baidu Push");
+                return baiduPushManager.get();
+
+            default:
+                throw new IllegalArgumentException("Unhandled PushProvider." + Constants.TAP_STREAM_TYPE.pushProvider.name());
         }
     }
 

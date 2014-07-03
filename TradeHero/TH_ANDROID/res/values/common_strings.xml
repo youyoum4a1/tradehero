@@ -6,7 +6,6 @@
   <string name="na">N/A</string>
   <string name="empty"/>
   <string name="cancel">Cancel</string>
-  <string name="action_menu_settings">Settings</string>
 
   <string name="network_error">Please check your network connection!</string>
   <!-- data format-->
@@ -19,23 +18,23 @@
   <string name="data_format_dd_mmm_yyyy_hh_mm">dd MMM HH:mm</string>
 
   <!-- TEMP stuff -->
-  <string name="test_email">dev@tradehero.mobi</string>
-  <string name="test_password">asd123</string>
+  <string name="test_email" translatable="false">dev@tradehero.mobi</string>
+  <string name="test_password" translatable="false">asd123</string>
 
   <!-- Splash screen -->
   <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
   <string name="splash_copyright_3">Patents Pending</string>
 
   <!-- Dashboard -->
+  <string name="dashboard_timeline">Timeline</string>
+  <string name="dashboard_home">Home</string>
   <string name="dashboard_trending">Trade</string>
   <string name="dashboard_community">Social</string>
-  <string name="dashboard_home">Home</string>
-  <string name="dashboard_portfolio">Portfolio</string>
+  <string name="dashboard_message_center">Message</string>
   <string name="dashboard_referral">Refer Friends</string>
   <string name="dashboard_store">Store</string>
-  <string name="dashboard_headline">Headline</string>
-  <string name="message_center">Message</string>
-  <string name="dashboard_admin_settings">Admin Settings</string>
+  <string name="dashboard_menu_settings">Settings</string>
+  <string name="dashboard_admin_settings" translatable="false">Admin Settings</string>
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>

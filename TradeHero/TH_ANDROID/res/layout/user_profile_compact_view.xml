@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/user_profile_avatar"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="@dimen/big_avatar_w_h"
+        android:layout_height="@dimen/big_avatar_w_h"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_margin="@dimen/user_profile_compact_avatar_margin"
@@ -28,8 +28,8 @@
 
     <ImageView
         android:id="@+id/btn_user_profile_default_portfolio"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:gravity="center"
         android:src="@drawable/icn_info_normal"
         android:contentDescription="@null"

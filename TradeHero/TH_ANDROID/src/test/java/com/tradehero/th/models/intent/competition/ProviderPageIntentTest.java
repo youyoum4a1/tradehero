@@ -194,7 +194,7 @@ public class ProviderPageIntentTest
         ProviderPageIntent intent = new ProviderPageIntent(providerId, usedUri);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(123, bundle.getInt(CompetitionFragment.BUNDLE_KEY_PROVIDER_ID));
+        assertEquals(123, (int) CompetitionFragment.getProviderId(bundle).key);
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -207,6 +207,6 @@ public class ProviderPageIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(123, bundle.getInt(CompetitionFragment.BUNDLE_KEY_PROVIDER_ID));
+        assertEquals(123, (int) CompetitionFragment.getProviderId(bundle).key);
     }
 }

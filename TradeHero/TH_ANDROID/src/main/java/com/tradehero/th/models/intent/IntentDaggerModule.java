@@ -59,7 +59,10 @@ public class IntentDaggerModule
     {
         for (THIntentFactory subFactory: subFactories)
         {
-            factory.addSubFactory(subFactory);
+            if (subFactory != null)
+            {
+                factory.addSubFactory(subFactory);
+            }
         }
         return factory;
     }

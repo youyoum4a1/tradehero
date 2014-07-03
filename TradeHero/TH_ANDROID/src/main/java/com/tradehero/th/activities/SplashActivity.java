@@ -1,7 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -9,49 +7,55 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
+import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Event;
 import com.tapstream.sdk.Tapstream;
+import com.tendcloud.tenddata.TCAgent;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.market.ExchangeListType;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.LoginFormDTO;
+import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.operator.FacebookAppId;
-import com.tradehero.th.base.Application;
+import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.competition.ProviderListCache;
-import com.tradehero.th.persistence.market.ExchangeListCache;
+import com.tradehero.th.network.retrofit.RequestHeaders;
+import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 import dagger.Lazy;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import retrofit.RetrofitError;
 
 public class SplashActivity extends SherlockActivity
 {
-    public static final String KEY_PREFS = SplashActivity.class.getName();
-    private static final String KEY_FIRST_BOOT = "key_first_boot";
-
     private Timer timerToShiftActivity;
     private AsyncTask<Void, Void, Void> initialAsyncTask;
-    @Inject UserServiceWrapper userServiceWrapper;
-    @Inject CurrentUserId currentUserId;
-    @Inject ExchangeListCache exchangeListCache;
-    @Inject ProviderListCache providerListCache;
+    @Inject SessionServiceWrapper sessionServiceWrapper;
+    @Inject RequestHeaders requestHeaders;
+    @Inject Provider<LoginFormDTO> loginFormDTOProvider;
     @Inject @FacebookAppId String facebookAppId;
+    @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<Tapstream> tapStream;
+    @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
+    @Inject CurrentActivityHolder currentActivityHolder;
+    @Inject DTOCacheUtil dtoCacheUtil;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
+        AppTiming.splashCreate = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
 
         if (Constants.RELEASE)
@@ -67,14 +71,14 @@ public class SplashActivity extends SherlockActivity
         }
 
         DaggerUtils.inject(this);
+        currentActivityHolder.setCurrentActivity(this);
+        dtoCacheUtil.anonymousPrefetches();
     }
 
     @Override protected void onResume()
     {
         super.onResume();
 
-        // TODO HAcK to load provider early
-        providerListCache.autoFetch(new ProviderListKey());
         initialAsyncTask = new AsyncTask<Void, Void, Void>()
         {
             @Override protected Void doInBackground(Void... params)
@@ -91,9 +95,15 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-        localyticsSession.get().open();
+        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
         AppEventsLogger.activateApp(this, facebookAppId);
-        tapStream.get().fireEvent(new Event(getString(TapStreamType.fromType(Constants.VERSION).getOpenResId()), false));
+        tapStream.get().fireEvent(
+                new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
+        mobileAppTrackerLazy.get().setReferralSources(this);
+        //mobileAppTrackerLazy.get().setDebugMode(true);//no debug, no log by alex
+        mobileAppTrackerLazy.get().measureSession();
+        TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
 
         if (!Constants.RELEASE)
         {
@@ -103,7 +113,7 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close();
+        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().upload();
 
         super.onPause();
@@ -112,17 +122,17 @@ public class SplashActivity extends SherlockActivity
     protected void initialisation()
     {
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
-        // TODO use Dagger to inject pref?
-        SharedPreferences preferences = Application.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
+        localyticsSession.get().tagEvent(LocalyticsConstants.LoadingScreen);
 
-        if (preferences.getBoolean(KEY_FIRST_BOOT, true))
+        if (firstLaunchPreference.get())
         {
             ActivityHelper.launchGuide(SplashActivity.this);
-            preferences.edit().putBoolean(KEY_FIRST_BOOT, false).apply();
+            firstLaunchPreference.set(false);
         }
         else
         {
-            if (canLoadApp())
+            boolean canLoad = canLoadApp();
+            if (canLoad)
             {
                 ActivityHelper.launchDashboard(SplashActivity.this);
                 finish();
@@ -145,27 +155,24 @@ public class SplashActivity extends SherlockActivity
 
     public boolean canLoadApp()
     {
-        // TODO HACK to ensure DashboardActivity has exchange list
-        boolean canLoad = mainCredentialsPreference.getCredentials() != null && currentUserId.toUserBaseKey().key != 0;
-        try
+        CredentialsDTO credentialsDTO = mainCredentialsPreference.getCredentials();
+        boolean canLoad = credentialsDTO != null;
+        if (canLoad)
         {
-            UserProfileDTO profileDTO = userServiceWrapper.getUser(currentUserId.toUserBaseKey());
-            canLoad &= profileDTO != null && profileDTO.id == currentUserId.get();
             try
             {
-                exchangeListCache.getOrFetchAsync(new ExchangeListType());
+                UserLoginDTO userLoginDTO = sessionServiceWrapper.login(
+                        requestHeaders.createTypedAuthParameters(credentialsDTO),
+                        loginFormDTOProvider.get());
+                canLoad = userLoginDTO != null && userLoginDTO.profileDTO != null;
             }
-            catch (Throwable throwable)
+            catch (RetrofitError retrofitError)
             {
-                throwable.printStackTrace();
-            }
-        }
-        catch (RetrofitError retrofitError)
-        {
-            canLoad = false;
-            if (retrofitError.isNetworkError())
-            {
-                //THToast.show(R.string.network_error);
+                canLoad = false;
+                if (retrofitError.isNetworkError())
+                {
+                    //THToast.show(R.string.network_error);
+                }
             }
         }
         return canLoad;

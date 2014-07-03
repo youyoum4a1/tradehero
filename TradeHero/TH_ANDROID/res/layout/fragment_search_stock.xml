@@ -15,7 +15,8 @@
       android:cacheColorHint="@android:color/transparent"
       android:divider="@null"
       android:dividerHeight="5dp"
-      android:paddingTop="@dimen/search_stock_people_padding"
+      android:padding="@dimen/search_stock_people_padding"
+      android:scrollbarStyle="outsideOverlay"
       android:clipToPadding="false"
       >
 
@@ -37,19 +38,21 @@
 
     <RelativeLayout
         android:id="@+id/search_empty_textview_wrapper"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:padding="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:background="#88ffffff"
         >
 
       <TextView
           android:id="@+id/search_empty_textview"
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
-          android:textSize="@dimen/text_header"
+          android:textSize="30sp"
           android:text="@string/trending_search_no_stock_found"
           />
 
@@ -64,7 +67,6 @@
       android:layout_centerInParent="true"
       android:visibility="gone"
       android:background="@drawable/round_square"
-      android:alpha="0.75"
       />
 
 </RelativeLayout>

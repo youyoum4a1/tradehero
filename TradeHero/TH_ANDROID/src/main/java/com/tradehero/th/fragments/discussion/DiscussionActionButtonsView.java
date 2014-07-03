@@ -15,7 +15,7 @@ import com.tradehero.th.widget.VotePair;
 
 public class DiscussionActionButtonsView extends LinearLayout
 {
-    public static boolean HAS_DOWN_VOTE = true;
+    public static final boolean HAS_DOWN_VOTE = true;
     private static final boolean DEFAULT_SHOW_MORE = false;
 
     @InjectView(R.id.vote_pair) @Optional protected VotePair votePair;

@@ -2,20 +2,21 @@
 <com.tradehero.th.fragments.trending.SearchPeopleItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     android:layout_width="match_parent"
-    android:layout_height="90dp"
-    android:background="@drawable/search_item_bg"
-    android:paddingRight="@dimen/search_stock_people_padding"
-    android:paddingLeft="@dimen/search_stock_people_padding"
+    android:layout_height="@dimen/grid_item_height"
+    android:background="@drawable/grid_item_bg"
+    android:padding="@dimen/grid_item_bg_border_width"
     >
 
-  <ImageView
+  <com.makeramen.RoundedImageView
       android:id="@+id/people_bg_image"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      app:corner_radius="@dimen/grid_item_bg_radius"
+      app:oval="false"
       android:scaleType="centerCrop"
-      android:src="@drawable/default_image"
-      android:alpha="0.2"
+      android:src="@null"
       />
 
   <RelativeLayout
@@ -37,8 +38,8 @@
 
     <ImageView
         android:id="@+id/user_photo"
-        android:layout_width="@dimen/trending_people_search_image_size"
-        android:layout_height="@dimen/trending_people_search_image_size"
+        android:layout_width="@dimen/big_avatar_w_h"
+        android:layout_height="@dimen/big_avatar_w_h"
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"

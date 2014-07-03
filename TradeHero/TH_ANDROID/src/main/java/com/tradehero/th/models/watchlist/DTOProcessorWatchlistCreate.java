@@ -6,33 +6,36 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistChange
 {
-    private final UserBaseKey concernedUser;
-    private final UserWatchlistPositionCache userWatchlistPositionCache;
+    @NotNull private final UserBaseKey concernedUser;
+    @NotNull private final UserWatchlistPositionCache userWatchlistPositionCache;
 
     public DTOProcessorWatchlistCreate(
-            WatchlistPositionCache watchlistPositionCache,
-            UserBaseKey concernedUser,
-            PortfolioCompactListCache portfolioCompactListCache,
-            UserWatchlistPositionCache userWatchlistPositionCache)
+            @NotNull WatchlistPositionCache watchlistPositionCache,
+            @NotNull UserBaseKey concernedUser,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
         super(watchlistPositionCache, concernedUser, portfolioCompactListCache);
         this.concernedUser = concernedUser;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
     }
 
-    @Override public WatchlistPositionDTO process(WatchlistPositionDTO watchlistPositionDTO)
+    @Nullable
+    @Override public WatchlistPositionDTO process(@Nullable WatchlistPositionDTO watchlistPositionDTO)
     {
-        WatchlistPositionDTO processed = super.process(watchlistPositionDTO);
-        SecurityIdList currentIds = userWatchlistPositionCache.get(concernedUser);
+        @Nullable WatchlistPositionDTO processed = super.process(watchlistPositionDTO);
+        @Nullable SecurityIdList currentIds = userWatchlistPositionCache.get(concernedUser);
         if (currentIds != null)
         {
             // Remove this test when #70827276 is fixed
-            if (watchlistPositionDTO.securityDTO != null)
+            if (processed != null && processed.securityDTO != null)
             {
-                currentIds.add(0, watchlistPositionDTO.securityDTO.getSecurityId());
+                currentIds.add(0, processed.securityDTO.getSecurityId());
             }
         }
         return processed;

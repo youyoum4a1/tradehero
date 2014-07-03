@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
@@ -10,42 +10,44 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
-@Singleton public class SecurityCompactListCache extends StraightDTOCache<SecurityListType, SecurityIdList>
+@Singleton public class SecurityCompactListCache extends StraightDTOCacheNew<SecurityListType, SecurityIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @Inject protected Lazy<SecurityServiceWrapper> securityServiceWrapper;
-    @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
+    @NotNull private final Lazy<SecurityServiceWrapper> securityServiceWrapper;
+    @NotNull private final Lazy<SecurityCompactCache> securityCompactCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public SecurityCompactListCache()
+    @Inject public SecurityCompactListCache(
+            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
+            @NotNull Lazy<SecurityCompactCache> securityCompactCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.securityServiceWrapper = securityServiceWrapper;
+        this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>
 
-    @Override protected SecurityIdList fetch(SecurityListType key) throws Throwable
+    @Override @NotNull public SecurityIdList fetch(@NotNull SecurityListType key) throws Throwable
     {
-        //THLog.d(TAG, "fetch " + key);
         return putInternal(key, securityServiceWrapper.get().getSecurities(key));
     }
 
-    protected SecurityIdList putInternal(SecurityListType key, List<SecurityCompactDTO> fleshedValues)
+    @NotNull protected SecurityIdList putInternal(
+            @NotNull SecurityListType key,
+            @NotNull  List<SecurityCompactDTO> fleshedValues)
     {
-        SecurityIdList securityIds = null;
-        if (fleshedValues != null)
+        SecurityIdList securityIds = new SecurityIdList();
+        @NotNull SecurityId securityId;
+        for (@NotNull SecurityCompactDTO securityCompactDTO: fleshedValues)
         {
-            securityIds = new SecurityIdList();
-            SecurityId securityId;
-            for (SecurityCompactDTO securityCompactDTO: fleshedValues)
-            {
-                securityId = securityCompactDTO.getSecurityId();
-                securityIds.add(securityId);
-                securityCompactCache.get().put(securityId, securityCompactDTO);
-            }
-            put(key, securityIds);
+            securityId = securityCompactDTO.getSecurityId();
+            securityIds.add(securityId);
+            securityCompactCache.get().put(securityId, securityCompactDTO);
         }
+        put(key, securityIds);
         return securityIds;
     }
 }

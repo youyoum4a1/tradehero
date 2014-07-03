@@ -18,6 +18,6 @@ public class SecurityUtils
 
     public static String getDisplayableSecurityName(SecurityId securityId)
     {
-        return String.format("%s:%s", securityId.exchange, securityId.securitySymbol);
+        return String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol());
     }
 }

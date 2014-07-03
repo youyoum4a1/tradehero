@@ -31,6 +31,7 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -98,7 +99,6 @@ public class PostCommentView extends RelativeLayout
         {
             commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
             commentText.requestFocus();
-            //DeviceUtil.showKeyboard(getContext(), commentText);
         }
     }
 
@@ -218,7 +218,7 @@ public class PostCommentView extends RelativeLayout
                 createCommentSubmitCallback()));
     }
 
-    protected MessageCreateFormDTO buildMessageCreateFormDTO()
+    @NotNull protected MessageCreateFormDTO buildMessageCreateFormDTO()
     {
         MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
         messageCreateFormDTO.message = commentText.getText().toString();

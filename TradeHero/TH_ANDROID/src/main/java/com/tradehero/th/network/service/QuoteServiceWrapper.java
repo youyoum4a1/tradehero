@@ -9,17 +9,18 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.client.Response;
 
 @Singleton public class QuoteServiceWrapper
 {
-    private final QuoteService quoteService;
-    private final QuoteServiceAsync quoteServiceAsync;
+    @NotNull private final QuoteService quoteService;
+    @NotNull private final QuoteServiceAsync quoteServiceAsync;
 
     @Inject public QuoteServiceWrapper(
-            QuoteService quoteService,
-            QuoteServiceAsync quoteServiceAsync)
+            @NotNull QuoteService quoteService,
+            @NotNull QuoteServiceAsync quoteServiceAsync)
     {
         super();
         this.quoteService = quoteService;
@@ -32,13 +33,13 @@ import retrofit.client.Response;
         {
             throw new NullPointerException("securityId cannot be null");
         }
-        if (securityId.exchange == null)
+        if (securityId.getExchange() == null)
         {
-            throw new NullPointerException("securityId.exchange cannot be null");
+            throw new NullPointerException("securityId.getExchange() cannot be null");
         }
-        if (securityId.securitySymbol == null)
+        if (securityId.getSecuritySymbol() == null)
         {
-            throw new NullPointerException("securityId.securitySymbol cannot be null");
+            throw new NullPointerException("securityId.getSecuritySymbol() cannot be null");
         }
     }
 
@@ -46,8 +47,8 @@ import retrofit.client.Response;
     public SignatureContainer<QuoteDTO> getQuote(SecurityId securityId)
     {
         basicCheck(securityId);
-        return this.quoteService.getQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
-                securityId.securitySymbol));
+        return this.quoteService.getQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
+                securityId.getSecuritySymbol()));
     }
 
     public MiddleCallback<SignatureContainer<QuoteDTO>> getQuote(SecurityId securityId, Callback<SignatureContainer<QuoteDTO>> callback)
@@ -55,7 +56,7 @@ import retrofit.client.Response;
         MiddleCallback<SignatureContainer<QuoteDTO>> middleCallback = new BaseMiddleCallback<>(callback);
         basicCheck(securityId);
         this.quoteServiceAsync.getQuote(UrlEncoderHelper.transform(
-                securityId.exchange), UrlEncoderHelper.transform(securityId.securitySymbol), middleCallback);
+                securityId.getExchange()), UrlEncoderHelper.transform(securityId.getSecuritySymbol()), middleCallback);
         return middleCallback;
     }
     //</editor-fold>
@@ -64,16 +65,16 @@ import retrofit.client.Response;
     public Response getRawQuote(SecurityId securityId)
     {
         basicCheck(securityId);
-        return this.quoteService.getRawQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
-                securityId.securitySymbol));
+        return this.quoteService.getRawQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
+                securityId.getSecuritySymbol()));
     }
 
     public BaseMiddleCallback<Response> getRawQuote(SecurityId securityId, Callback<Response> callback)
     {
         BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         basicCheck(securityId);
-        this.quoteServiceAsync.getRawQuote(UrlEncoderHelper.transform(securityId.exchange), UrlEncoderHelper.transform(
-                securityId.securitySymbol), middleCallback);
+        this.quoteServiceAsync.getRawQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
+                securityId.getSecuritySymbol()), middleCallback);
         return middleCallback;
     }
     //</editor-fold>

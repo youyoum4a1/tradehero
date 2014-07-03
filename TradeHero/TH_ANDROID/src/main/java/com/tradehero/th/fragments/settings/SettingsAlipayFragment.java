@@ -9,7 +9,6 @@ import android.widget.Button;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -29,6 +28,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 
@@ -47,7 +47,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -70,8 +70,6 @@ public class SettingsAlipayFragment extends DashboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_alipay_header));
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -208,11 +206,4 @@ public class SettingsAlipayFragment extends DashboardFragment
             }
         };
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

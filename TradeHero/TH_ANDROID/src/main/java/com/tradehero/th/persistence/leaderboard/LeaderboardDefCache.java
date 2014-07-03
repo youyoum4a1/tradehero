@@ -1,28 +1,27 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class LeaderboardDefCache extends StraightDTOCache<LeaderboardDefKey, LeaderboardDefDTO>
+@Singleton public class LeaderboardDefCache extends StraightDTOCacheNew<LeaderboardDefKey, LeaderboardDefDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-
+    //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefCache()
     {
         super(DEFAULT_MAX_SIZE);
     }
+    //</editor-fold>
 
-    @Override protected LeaderboardDefDTO fetch(LeaderboardDefKey key) throws Throwable
+    @Override @NotNull public LeaderboardDefDTO fetch(@NotNull LeaderboardDefKey key) throws Throwable
     {
         throw new IllegalStateException("Cannot fetch on this cache");
     }
@@ -36,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
         }
 
         LeaderboardDefDTOList ret = new LeaderboardDefDTOList();
-        for (LeaderboardDefKey key: keys)
+        for (@NotNull LeaderboardDefKey key: keys)
         {
             ret.add(get(key));
         }

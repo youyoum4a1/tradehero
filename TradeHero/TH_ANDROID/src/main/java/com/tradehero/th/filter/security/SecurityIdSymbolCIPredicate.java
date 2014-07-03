@@ -37,6 +37,6 @@ import javax.inject.Singleton;
 
     @Override public boolean apply(SecurityId subject)
     {
-        return subject != null && this.caseInsensitiveMatches(subject.securitySymbol, pattern);
+        return subject != null && this.caseInsensitiveMatches(subject.getSecuritySymbol(), pattern);
     }
 }

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,33 +9,35 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeDTO;
-import com.tradehero.th.models.market.ExchangeSpinnerDTO;
-import com.tradehero.th.models.market.ExchangeSpinnerDTOUtil;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class TrendingFilterSelectorView extends RelativeLayout
 {
-    public ImageButton mPrevious;
-    public ImageButton mNext;
-    public TextView mTitle;
-    public ImageView mTitleIcon;
-    public TextView mDescription;
-    public Spinner mExchangeSelection;
-    private SpinnerIconAdapter mExchangeSelectionAdapter;
+    @InjectView(R.id.previous_filter) public ImageButton mPrevious;
+    @InjectView(R.id.next_filter) public ImageButton mNext;
+    @InjectView(R.id.title) public TextView mTitle;
+    @InjectView(R.id.trending_filter_title_icon) public ImageView mTitleIcon;
+    @InjectView(R.id.description) public TextView mDescription;
+    @InjectView(R.id.exchange_selection) public Spinner mExchangeSelection;
+    private TrendingFilterSpinnerIconAdapterNew mExchangeSelectionAdapter;
 
-    private TrendingFilterTypeDTO trendingFilterTypeDTO;
-    private ExchangeSpinnerDTO[] exchangeSpinnerDTOs;
+    @NotNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
     private OnFilterTypeChangedListener changedListener;
-    //@Inject TrendingFilterTypeDTOUtil trendingFilterTypeDTOUtil;
-    @Inject ExchangeSpinnerDTOUtil exchangeSpinnerDTOUtil;
     @Inject THLocalyticsSession localyticsSession;
 
     //<editor-fold desc="Constructors">
@@ -62,64 +63,29 @@ public class TrendingFilterSelectorView extends RelativeLayout
     protected void init()
     {
         DaggerUtils.inject(this);
-        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
+        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
     }
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
-        mPrevious = (ImageButton) findViewById(R.id.previous_filter);
-        mNext = (ImageButton) findViewById(R.id.next_filter);
-        mTitle = (TextView) findViewById(R.id.title);
-        mTitleIcon = (ImageView) findViewById(R.id.trending_filter_title_icon);
-        mDescription = (TextView) findViewById(R.id.description);
-        mExchangeSelection = (Spinner) findViewById(R.id.exchange_selection);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (mPrevious != null)
-        {
-            mPrevious.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handlePreviousClicked();
-                }
-            });
-        }
-        if (mNext != null)
-        {
-            mNext.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleNextClicked();
-                }
-            });
-        }
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        if (mPrevious != null)
-        {
-            mPrevious.setOnClickListener(null);
-        }
-        if (mNext != null)
-        {
-            mNext.setOnClickListener(null);
-        }
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
     public void onDestroy()
     {
-        mPrevious = null;
-        mNext = null;
-
         if (mExchangeSelection != null)
         {
             mExchangeSelection.setOnItemSelectedListener(null);
@@ -128,72 +94,54 @@ public class TrendingFilterSelectorView extends RelativeLayout
         mExchangeSelection = null;
     }
 
-    public void setUpExchangeSpinner(List<ExchangeDTO> exchangeDTOs)
+    public void setUpExchangeSpinner(@NotNull ExchangeCompactSpinnerDTOList items)
     {
-        Timber.d("Filter setUpExchangeSpinner");
-        this.exchangeSpinnerDTOs = exchangeSpinnerDTOUtil.getSpinnerDTOs(getContext(), exchangeDTOs);
-        int[] spinnerIcons = exchangeSpinnerDTOUtil.getSpinnerIcons(getContext(), exchangeDTOs);
         Spinner exchangeSelection = mExchangeSelection;
         if (exchangeSelection != null)
         {
-            //trendingFilterTypeDTOUtil.createDropDownTextsAndIcons(getContext(), exchangeDTOs);
-            mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapter(
+            mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapterNew(
                     getContext(),
-                    this.exchangeSpinnerDTOs,
-                    spinnerIcons,
-                    spinnerIcons);
+                    R.layout.trending_filter_spinner_item);
             mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
+            mExchangeSelectionAdapter.addAll(items);
             exchangeSelection.setAdapter(mExchangeSelectionAdapter);
-            if (this.exchangeSpinnerDTOs == null)
-            {
-                Timber.e(new IllegalArgumentException("exchangeSpinnerDTOs null"), "exchangeSpinnerDTOs null");
-            }
-            if (trendingFilterTypeDTO == null)
-            {
-                Timber.e(new IllegalArgumentException("trendingFilterTypeDTO null"), "trendingFilterTypeDTO null");
-                trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
-            }
-            exchangeSelection.setSelection(exchangeSpinnerDTOUtil.indexOf(this.exchangeSpinnerDTOs, trendingFilterTypeDTO.exchange));
-            exchangeSelection.setOnItemSelectedListener(new TrendingFilterSelectorViewSpinnerListener());
+            exchangeSelection.setSelection(items.indexOf(
+                    new ExchangeCompactSpinnerDTO(
+                            getResources(),
+                            trendingFilterTypeDTO.exchange)));
+            exchangeSelection.setOnItemSelectedListener(createTrendingFilterSelectorViewSpinnerListener());
         }
     }
 
-    public void apply(TrendingFilterTypeDTO typeDTO)
+    public void apply(@NotNull TrendingFilterTypeDTO typeDTO)
     {
-        if (typeDTO == null)
-        {
-            Timber.e(new IllegalArgumentException("Cannot apply typeDTO null"), "");
-        }
         this.trendingFilterTypeDTO = typeDTO;
-        if (typeDTO != null)
+        if (mTitle != null)
         {
-            if (mTitle != null)
-            {
-                mTitle.setText(typeDTO.titleResId);
-            }
+            mTitle.setText(typeDTO.titleResId);
+        }
 
-            if (mTitleIcon != null)
-            {
-                mTitleIcon.setImageResource(typeDTO.titleIconResId);
-            }
+        if (mTitleIcon != null)
+        {
+            mTitleIcon.setImageResource(typeDTO.titleIconResId);
+        }
 
-            if (mDescription != null)
-            {
-                mDescription.setText(typeDTO.descriptionResId);
-            }
+        if (mDescription != null)
+        {
+            mDescription.setText(typeDTO.descriptionResId);
         }
     }
 
-    private void handlePreviousClicked()
+    @OnClick(R.id.previous_filter)
+    protected void handlePreviousClicked(View view)
     {
-        Timber.d("Wangliang TrendingFilterSelectorViewSpinnerListener handlePreviousClicked");
         apply(trendingFilterTypeDTO.getPrevious());
         notifyListenerChanged();
     }
 
-    private void handleNextClicked()
+    @OnClick(R.id.next_filter)
+    protected void handleNextClicked(View view)
     {
-        Timber.d("Wangliang TrendingFilterSelectorViewSpinnerListener handleNextClicked");
         apply(trendingFilterTypeDTO.getNext());
         notifyListenerChanged();
     }
@@ -217,19 +165,16 @@ public class TrendingFilterSelectorView extends RelativeLayout
         localyticsSession.tagEvent(LocalyticsConstants.TabBar_Trending, trendingFilterTypeDTO);
     }
 
-    private class TrendingFilterSelectorViewSpinnerListener implements AdapterView.OnItemSelectedListener
+    protected AdapterView.OnItemSelectedListener createTrendingFilterSelectorViewSpinnerListener()
+    {
+        return new TrendingFilterSelectorViewSpinnerListener();
+    }
+
+    protected class TrendingFilterSelectorViewSpinnerListener implements AdapterView.OnItemSelectedListener
     {
         @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
         {
-            Timber.d("Wangliang TrendingFilterSelectorViewSpinnerListener onItemSelected");
-            if (trendingFilterTypeDTO == null)
-            {
-                trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO();
-            }
-            if (exchangeSpinnerDTOs != null && exchangeSpinnerDTOs.length > i)
-            {
-                trendingFilterTypeDTO.exchange = exchangeSpinnerDTOs[i];
-            }
+            trendingFilterTypeDTO.exchange = (ExchangeCompactSpinnerDTO) adapterView.getItemAtPosition(i);
             notifyListenerChanged();
         }
 

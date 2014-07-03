@@ -15,12 +15,14 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.common.persistence.DTOCache;
+import com.thoj.route.InjectRoute;
+import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
@@ -30,9 +32,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
@@ -43,12 +43,14 @@ import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -57,10 +59,10 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends BasePurchaseManagerFragment
-        implements BaseFragment.TabBarVisibilityInformer,
-        PositionListener<PositionDTO>,
+        implements PositionListener<PositionDTO>,
         PortfolioHeaderView.OnFollowRequestedListener,
         PortfolioHeaderView.OnTimelineRequestedListener,
         WithTutorial
@@ -84,7 +86,10 @@ public class PositionListFragment
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView ;
     @InjectView(android.R.id.progress) ProgressBar progressBar ;
-    @InjectView(R.id.error) View errorView ;
+    @InjectView(R.id.error) View errorView;
+
+    @InjectRoute UserBaseKey injectedUserBaseKey;
+    @InjectRoute PortfolioId injectedPortfolioId;
 
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
@@ -96,8 +101,10 @@ public class PositionListFragment
     private int firstPositionVisible = 0;
     private boolean[] expandedPositions;
 
-    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOTask;
+    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
+    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> refreshGetPositionsDTOListener;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(Bundle args, GetPositionsDTOKey getPositionsDTOKey)
@@ -124,9 +131,27 @@ public class PositionListFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        thRouter.inject(this);
         Bundle args = getArguments();
-        getPositionsDTOKey = getGetPositionsDTOKey(getPositionsDTOKeyFactory, args);
-        shownUser = getUserBaseKey(args);
+        if (args.containsKey(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE))
+        {
+            shownUser = getUserBaseKey(args);
+        }
+        else
+        {
+            shownUser = injectedUserBaseKey;
+        }
+        if (args.containsKey(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE))
+        {
+            getPositionsDTOKey = getGetPositionsDTOKey(getPositionsDTOKeyFactory, args);
+        }
+        else
+        {
+            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey, injectedPortfolioId);
+        }
+
+        fetchGetPositionsDTOListener = createGetPositionsCacheListener();
+        refreshGetPositionsDTOListener = createGetPositionsRefreshCacheListener();
     }
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -226,7 +251,7 @@ public class PositionListFragment
     {
         if (progressBar != null)
         {
-            progressBar.setVisibility( View.GONE);
+            progressBar.setVisibility(View.GONE);
         }
         if (pullToRefreshListView != null)
         {
@@ -288,7 +313,6 @@ public class PositionListFragment
         }
         positionItemAdapter = new AbstractPositionItemAdapter(
                 getActivity(),
-                getActivity().getLayoutInflater(),
                 getLayoutResIds());
         positionItemAdapter.setCellListener(this);
     }
@@ -320,26 +344,12 @@ public class PositionListFragment
 
     protected void pushSecurityFragment()
     {
-        getDashboardNavigator().goToTab(DashboardTabType.TRENDING);
-        // Need to handle the case when portfolio is for a competition
-        //if (shownPortfolio == null || shownPortfolio.providerId == null)
-        //{
-        //    getDashboardNavigator().goToTab(DashboardTabType.TRENDING);
-        //}
-        //else
-        //{
-        //    Bundle args = new Bundle();
-        //    ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        //    args.putBundle(ProviderSecurityListFragment.BUNDLE_KEY_PROVIDER_ID, shownPortfolio.getProviderIdKey().getArgs());
-        //    getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
-        //}
+        getDashboardNavigator().pushFragment(TrendingFragment.class);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.position_list_menu, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         super.onCreateOptionsMenu(menu, inflater);
         displayActionBarTitle();
     }
@@ -402,6 +412,7 @@ public class PositionListFragment
     @Override public void onStop()
     {
         detachGetPositionsTask();
+        detachRefreshGetPositionsTask();
         detachUserProfileCache();
 
         super.onStop();
@@ -427,6 +438,13 @@ public class PositionListFragment
         }
 
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        fetchGetPositionsDTOListener = null;
+        refreshGetPositionsDTOListener = null;
+        super.onDestroy();
     }
 
     /**
@@ -473,35 +491,26 @@ public class PositionListFragment
         if (getPositionsDTOKey != null && getPositionsDTOKey.isValid())
         {
             detachGetPositionsTask();
-            fetchGetPositionsDTOTask = createGetPositionsCacheFetchTask(force);
-            fetchGetPositionsDTOTask.execute();
+            getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
+            getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
     }
 
     protected void refreshSimplePage()
     {
-        detachGetPositionsTask();
-        fetchGetPositionsDTOTask = createRefreshPositionsCacheFetchTask();
-        fetchGetPositionsDTOTask.execute();
-    }
-
-    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheFetchTask(boolean force)
-    {
-        return getPositionsCache.get().getOrFetch(getPositionsDTOKey, force, createGetPositionsCacheListener());
-    }
-
-    protected DTOCache.GetOrFetchTask<GetPositionsDTOKey, GetPositionsDTO> createRefreshPositionsCacheFetchTask()
-    {
-        return getPositionsCache.get().getOrFetch(getPositionsDTOKey, true, createGetPositionsRefreshCacheListener());
+        detachRefreshGetPositionsTask();
+        getPositionsCache.get().register(getPositionsDTOKey, refreshGetPositionsDTOListener);
+        getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
     }
 
     protected void detachGetPositionsTask()
     {
-        if (fetchGetPositionsDTOTask != null)
-        {
-            fetchGetPositionsDTOTask.setListener(null);
-        }
-        fetchGetPositionsDTOTask = null;
+        getPositionsCache.get().unregister(fetchGetPositionsDTOListener);
+    }
+
+    protected void detachRefreshGetPositionsTask()
+    {
+        getPositionsCache.get().unregister(refreshGetPositionsDTOListener);
     }
 
     protected void detachUserProfileCache()
@@ -633,7 +642,7 @@ public class PositionListFragment
                     BuySellFragment.putApplicablePortfolioId(args, clickedPositionDTO.getOwnedPortfolioId());
                 }
                 args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
-                getNavigator().pushFragment(BuySellFragment.class, args);
+                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
         else
@@ -641,13 +650,6 @@ public class PositionListFragment
             Timber.e("Was passed a null clickedPositionDTO", new IllegalArgumentException());
         }
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
@@ -687,9 +689,9 @@ public class PositionListFragment
     @Override public void onTimelineRequested(UserBaseKey userBaseKey)
     {
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
-        ((DashboardActivity) getActivity()).getDashboardNavigator().pushFragment(
-                PushableTimelineFragment.class, args);
+        thRouter.save(args, userBaseKey);
+        ((DashboardActivity) getActivity())
+                .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
     //</editor-fold>
 
@@ -720,7 +722,7 @@ public class PositionListFragment
             Bundle args = new Bundle();
             AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getNavigator().pushFragment(AlertCreateFragment.class, args);
+            getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else
         {
@@ -741,20 +743,26 @@ public class PositionListFragment
         {
             Bundle args = new Bundle();
             args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getNavigator().pushFragment(StockInfoFragment.class, args);
+            getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
         }
     }
     //</editor-fold>
 
-    protected DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
+    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
     {
         return new GetPositionsListener();
     }
 
     protected class GetPositionsListener
-            implements DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO>
+            implements DTOCacheNew.HurriedListener<GetPositionsDTOKey, GetPositionsDTO>
     {
-        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value, boolean fromCache)
+        @Override public void onPreCachedDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
+        {
+            linkWith(value, true);
+            showResultIfNecessary();
+        }
+
+        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
         {
             linkWith(value, true);
             showResultIfNecessary();
@@ -769,19 +777,16 @@ public class PositionListFragment
         }
     }
 
-    protected DTOCache.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener()
+    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener()
     {
         return new RefreshPositionsListener();
     }
 
     protected class RefreshPositionsListener extends GetPositionsListener
     {
-        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value, boolean fromCache)
+        @Override public void onPreCachedDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
         {
-            if (!fromCache)
-            {
-                super.onDTOReceived(key, value, fromCache);
-            }
+            // Do nothing
         }
 
         @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)

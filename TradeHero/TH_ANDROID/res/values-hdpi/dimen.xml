@@ -1,7 +1,6 @@
 <resources>
     <dimen name="security_logo_height">38dp</dimen>
-    <dimen name="security_item_height">105dp</dimen>
-    <dimen name="todo_trending_security_item_height">@dimen/security_item_height</dimen>
+    <dimen name="todo_trending_security_item_height">@dimen/grid_item_height</dimen>
     <dimen name="security_tile_bg_padding_r_b">6px</dimen>
     <dimen name="security_tile_bg_padding_t_l">3px</dimen>
 </resources>

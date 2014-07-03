@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import timber.log.Timber;
 

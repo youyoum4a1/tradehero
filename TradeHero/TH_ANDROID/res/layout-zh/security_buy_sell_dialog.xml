@@ -51,8 +51,8 @@
 
     <ImageButton
         android:id="@+id/dialog_btn_add_cash"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:src="@drawable/buy_vd"
         android:scaleType="fitCenter"
         android:background="@null"
@@ -247,6 +247,19 @@
         />
 
     <ToggleButton
+        android:id="@+id/btn_share_wb"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginLeft="8dp"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:background="@drawable/ic_share_wb"
+        android:checked="false"
+        android:textOff=""
+        android:textOn=""
+        />
+
+    <ToggleButton
         android:id="@+id/btn_location"
         android:layout_width="28dp"
         android:layout_height="28dp"
@@ -257,6 +270,7 @@
         android:checked="false"
         android:textOff=""
         android:textOn=""
+        android:visibility="gone"
         />
 
     <View
@@ -274,6 +288,7 @@
         android:textOn="@string/buy_sell_confirm_share_public"
         android:textOff="@string/buy_sell_confirm_share_private"
         android:textColor="@color/authentication_button_light"
+        android:visibility="gone"
         />
 
   </LinearLayout>

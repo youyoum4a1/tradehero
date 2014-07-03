@@ -40,8 +40,13 @@ public class TestApplication extends Application
 
     @Override public void prepareTest(Object test)
     {
-        // this is not very nice, since we will inject everytime a test is call
-        // it should be done before every setup instead
+        injectIfNecessary(test);
+    }
+
+    // Work perfectly, since jUnit does not perform in testObject context
+    // instead it create a new object for each test (method block)
+    private void injectIfNecessary(Object test)
+    {
         try
         {
             Class.forName(test.getClass().getName() + DAGGER_INJECT_ADAPTER_CLASS_SUFFIX);
@@ -49,7 +54,7 @@ public class TestApplication extends Application
         }
         catch (ClassNotFoundException e)
         {
-            //my class isn't there!
+            // not a subject for injection
         }
     }
 

@@ -4,7 +4,6 @@ import com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardLis
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemTradeNowView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioView;
-import com.tradehero.th.persistence.competition.ProviderListRetrievedMilestone;
 import dagger.Module;
 
 @Module(
@@ -19,10 +18,10 @@ import dagger.Module;
                         CompetitionZoneListItemTradeNowView.class,
                         CompetitionZonePortfolioView.class,
                         MainCompetitionFragment.class,
-                        ProviderListRetrievedMilestone.class,
                         ProviderVideoListFragment.class,
                         ProviderVideoListItem.class,
                         ProviderSecurityListFragment.class,
+                        CompetitionWebViewFragment.class
                 },
         complete = false,
         library = true

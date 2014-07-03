@@ -11,13 +11,14 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class UserProfileFetchAssistant extends DTOFetchAssistantNew<UserBaseKey, UserProfileDTO>
 {
-    private final Context context;
+    @NotNull private final Context context;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
 
-    public UserProfileFetchAssistant(final Context context, List<UserBaseKey> keysToFetch)
+    public UserProfileFetchAssistant(@NotNull final Context context, List<UserBaseKey> keysToFetch)
     {
         super(keysToFetch);
         this.context = context;

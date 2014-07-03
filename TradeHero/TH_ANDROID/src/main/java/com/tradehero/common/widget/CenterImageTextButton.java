@@ -47,7 +47,7 @@ public class CenterImageTextButton extends Button
 
         // get left top
         Drawable drawable = getCompoundDrawables()[0];
-        Drawable curDrawable = null;
+        Drawable curDrawable;
         if (drawable instanceof StateListDrawable)
         {
             curDrawable = ((StateListDrawable) drawable).getCurrent();

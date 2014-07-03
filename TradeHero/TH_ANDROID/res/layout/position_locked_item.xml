@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="wrap_content"
+    android:background="@drawable/basic_white_selector">
 
   <com.tradehero.common.widget.ColorIndicator
       android:id="@+id/color_indicator"
@@ -31,11 +31,12 @@
         >
 
       <ImageView
-          android:layout_width="48dp"
+          android:layout_width="@dimen/medium_logo_w_h"
           android:layout_weight="1"
-          android:layout_height="48dp"
+          android:layout_height="@dimen/medium_logo_w_h"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
+          android:layout_gravity="center_vertical"
           android:src="@drawable/lock"
           />
 

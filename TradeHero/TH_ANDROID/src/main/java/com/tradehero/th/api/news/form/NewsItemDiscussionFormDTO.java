@@ -5,7 +5,7 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 
 public class NewsItemDiscussionFormDTO extends DiscussionFormDTO
 {
-    public static DiscussionType TYPE = DiscussionType.NEWS;
+    public static final DiscussionType TYPE = DiscussionType.NEWS;
 
     public NewsItemDiscussionFormDTO()
     {

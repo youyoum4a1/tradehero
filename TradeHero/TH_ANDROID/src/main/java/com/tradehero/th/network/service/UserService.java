@@ -6,8 +6,13 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.*;
+import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -15,12 +20,21 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
-import retrofit.Callback;
-import retrofit.client.Response;
-import retrofit.http.*;
-import retrofit.mime.TypedOutput;
-
 import java.util.List;
+import retrofit.client.Response;
+import retrofit.http.Body;
+import retrofit.http.DELETE;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
+import retrofit.http.Header;
+import retrofit.http.Multipart;
+import retrofit.http.POST;
+import retrofit.http.PUT;
+import retrofit.http.Part;
+import retrofit.http.Path;
+import retrofit.http.Query;
+import retrofit.mime.TypedOutput;
 
 public interface UserService
 {
@@ -173,16 +187,19 @@ public interface UserService
 
     //<editor-fold desc="Get Friends">
     @GET("/users/{userId}/getFriends")
-    List<UserFriendsDTO> getFriends(
+    UserFriendsDTOList getFriends(
             @Path("userId") int userId);
 
     @GET("/users/{userId}/GetNewFriends")
-    List<UserFriendsDTO> getSocialFriends(
-            @Path("userId") int userId, @Query("socialNetwork") SocialNetworkEnum socialNetwork);
+    UserFriendsDTOList getSocialFriends(
+            @Path("userId") int userId,
+            @Query("socialNetwork") SocialNetworkEnum socialNetwork);
 
     @GET("/users/{userId}/SearchFriends")
-    List<UserFriendsDTO> searchSocialFriends(@Path("userId") int userId, @Query("socialNetwork") SocialNetworkEnum socialNetwork, @Query("q")String query);
-
+    UserFriendsDTOList searchSocialFriends(
+            @Path("userId") int userId,
+            @Query("socialNetwork") SocialNetworkEnum socialNetwork,
+            @Query("q")String query);
 
     @POST("/users/BatchFollow/free")
     Response followBatchFree(@Body FollowFriendsForm followFriendsForm);

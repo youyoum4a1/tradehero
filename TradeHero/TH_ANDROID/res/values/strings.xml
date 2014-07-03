@@ -12,19 +12,24 @@
   </string>
   <string name="action_search">Search</string>
   <string name="action_invite">Invite Friends</string>
-    <string name="update">Update</string>
+  <string name="update">Update</string>
   <string name="empty_video_list">There is no learning video at the moment.</string>
   <string name="loading_required_information">Loading Required Information</string>
   <string name="server_response">"Server response: "</string>
   <string name="link">Link %1$s</string>
   <string name="link_description">You need to link your %1$s account before sharing…</string>
   <string name="link_now">Link now!</string>
+
   <string name="later">Later</string>
   <string name="please_update">This version is outdated, please update to continue using TradeHero</string>
   <string name="upgrade_needed">Upgrade needed</string>
   <string name="update_now">Update now</string>
   <string name="update_guide">Please reinstall TradeHero</string>
   <string name="suggest_to_upgrade">A new version is available, it is strongly recommended that you upgrade. Would you like to upgrade now?</string>
+
+  <string name="please_update_token_title">Social authentication expired</string>
+  <string name="please_update_token_description">Please reauthenticate with your preferred social network</string>
+
   <string name="press_back_again_to_exit">Press back again to exit</string>
   <string name="discussion">Discussion</string>
   <string name="more_character">…</string>
@@ -73,13 +78,15 @@
   <string name="about_screen_secure_by">Secure by:</string>
   <string name="about_screen_text_processing_by">Text processing by:</string>
   <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
-  <string name="send_fake_push">Send a fake PushNotification</string>
+  <string name="send_fake_push" translatable="false">Send a fake PushNotification</string>
 
   <string name="buy_sell_loading_ask_price">Loading ask price…</string>
   <string name="buy_sell_loading_bid_price">Loading bid price…</string>
   <string name="sell">Sell</string>
   <string name="buy">Buy</string>
   <string name="chart_loading_image">Loading chart image…</string>
+
+  <string name="plus_symbol">+</string>
 
   <!--do not translate begin-->
   <string name="tap_stream_type_google_install" translatable="false">android-tradehero-google-install</string>
@@ -178,20 +185,26 @@
   <string name="invite_social_friend">Invite %s Friend</string>
   <string name="search_social_friend_hint">Search your friend</string>
 
-    <string name="social_friend_empty">Sorry,no friends</string>
-    <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
-    <string name="inivte_from_weibo">Invite from Weibo</string>
-    <string name="inivte_from_linkedIn">Invite from LinkedIn</string>
-    <string name="inivte_from_twitter">Invite from Twitter</string>
-    <string name="inivte_from_facebook">Invite from Facebook</string>
-    <string name="invite">Invite</string>
+  <string name="social_friend_empty">Sorry,no friends</string>
+  <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
+  <string name="invite_from_weibo">Invite from Weibo</string>
+  <string name="invite_from_linkedIn">Invite from LinkedIn</string>
+  <string name="invite_from_twitter">Invite from Twitter</string>
+  <string name="invite_from_facebook">Invite from Facebook</string>
+  <string name="invite">Invite</string>
+
+  <string name="social_no_friend_to_invite">No user to Invite</string>
+  <string name="social_no_friend_to_follow">No user to follow</string>
 
   <plurals name="inbox_notification_title">
     <item quantity="one">1 New Message</item>
     <item quantity="other">%d <b>New</b> Messages</item>
   </plurals>
+
   <string name="inbox_summary">+%d more</string>
   <string name="notification_unread_messages">You have %d unread messages</string>
   <string name="notification_new_activities">You have %d new activities</string>
   <string name="friend_link_social_network">Please Link Social Network.</string>
+  <string name="exit_app">Exit app</string>
+
 </resources>
