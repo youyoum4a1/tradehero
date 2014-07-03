@@ -218,8 +218,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private void postDiscussion()
     {
-        // TODO ensure securityId is not null
-        SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
+        // TODO a subclass that has a @NotNull SecurityId
+        SecurityCompactDTO securityCompactDTO = null;
+        if (securityId != null)
+        {
+            securityCompactDTO = securityCompactCache.get(securityId);
+        }
         if (validate())
         {
             DiscussionType discussionType = null;
