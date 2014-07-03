@@ -4,7 +4,7 @@ import dagger.Module;
 
 @Module(
         injects = {
-                SecurityCompactDTODeserialiserTest.class
+                SecurityCompactDTODeserialiserTest.class,
         },
         complete = false,
         library = true

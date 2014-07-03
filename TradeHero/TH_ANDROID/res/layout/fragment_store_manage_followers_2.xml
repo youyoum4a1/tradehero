@@ -38,7 +38,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/message_center_broadcast_message_menu"
-        android:drawableLeft="@drawable/icn_message_white"
+        android:drawableLeft="@drawable/icn_message"
         android:layout_weight="1"
         android:paddingTop="5dp"
         android:textSize="15sp"

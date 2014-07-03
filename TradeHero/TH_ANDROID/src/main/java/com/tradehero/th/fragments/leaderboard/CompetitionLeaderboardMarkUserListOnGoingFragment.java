@@ -17,7 +17,6 @@ public class CompetitionLeaderboardMarkUserListOnGoingFragment extends Competiti
         super.initHeaderView(headerView);
         this.headerView = (CompetitionLeaderboardTimedHeader) headerView;
         this.headerView.setCompetitionDTO(competitionDTO);
-        this.headerView.setProviderSpecificResourcesDTO(providerSpecificResourcesDTO);
         this.headerView.linkWith(providerDTO, true);
     }
 

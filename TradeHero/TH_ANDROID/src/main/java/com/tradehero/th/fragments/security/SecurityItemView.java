@@ -362,7 +362,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         if (securityType != null)
         {
-            if (this.securityCompactDTO != null && this.securityCompactDTO.getSecurityType() != null)
+            if (this.securityCompactDTO != null && this.securityCompactDTO.getSecurityTypeStringResourceId() != null)
             {
                 securityType.setText(securityCompactDTO.getSecurityTypeStringResourceId());
             }

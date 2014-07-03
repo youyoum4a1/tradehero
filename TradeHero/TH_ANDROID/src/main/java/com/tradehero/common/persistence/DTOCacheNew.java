@@ -43,7 +43,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     public static interface HurriedListener<DTOKeyType, DTOType>
             extends Listener<DTOKeyType, DTOType>
     {
-        void onPreCachedDTOReceived(DTOKeyType key, DTOType value);
+        void onPreCachedDTOReceived(@NotNull DTOKeyType key, @NotNull DTOType value);
     }
 
     abstract public static class CacheValue<DTOKeyType extends DTOKey, DTOType extends DTO>

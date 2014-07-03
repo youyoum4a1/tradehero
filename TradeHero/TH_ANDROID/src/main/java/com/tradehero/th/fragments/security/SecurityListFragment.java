@@ -91,14 +91,11 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>) adapter;
         }
 
-        if (securityListView != null)
-        {
-            securityListView.setOnItemClickListener(createOnItemClickListener());
-            securityListView.setOnScrollListener(listViewScrollListener);
-            securityListView.setAdapter(adapter);
-            listViewGesture = new GestureDetector(getActivity(), new SecurityListOnGestureListener());
-            securityListView.setOnTouchListener(new SecurityListOnTouchListener());
-        }
+        securityListView.setOnItemClickListener(createOnItemClickListener());
+        securityListView.setOnScrollListener(listViewScrollListener);
+        securityListView.setAdapter(adapter);
+        listViewGesture = new GestureDetector(getActivity(), new SecurityListOnGestureListener());
+        securityListView.setOnTouchListener(new SecurityListOnTouchListener());
 
         if (this.filterText != null)
         {
@@ -156,13 +153,10 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        if (securityListView != null)
-        {
-            securityListView.setOnItemClickListener(null);
-            securityListView.setOnScrollListener(null);
-            securityListView.setOnTouchListener(null);
-        }
-        securityListView = null;
+        securityListView.setOnItemClickListener(null);
+        securityListView.setOnScrollListener(null);
+        securityListView.setOnTouchListener(null);
+
         securityItemViewAdapter = null;
         listViewScrollListener = null;
         queryingChangedListener = null;
@@ -172,8 +166,8 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         {
             this.filterText.removeTextChangedListener(this.filterTextWatcher);
         }
-        this.filterText = null;
 
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 

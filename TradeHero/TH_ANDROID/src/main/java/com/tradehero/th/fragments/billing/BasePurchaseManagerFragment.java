@@ -227,6 +227,14 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return purchaseApplicableOwnedPortfolioId;
     }
 
+    protected void passApplicablePortfolioId(@NotNull Bundle args)
+    {
+        if(getApplicablePortfolioId() != null)
+        {
+            BasePurchaseManagerFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+        }
+    }
+
     protected boolean alertsAreFree()
     {
         return systemStatusDTO != null && systemStatusDTO.alertsAreFree;

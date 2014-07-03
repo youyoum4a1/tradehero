@@ -38,54 +38,40 @@ public class ServerValidatedText extends SelfValidatedText
         a.recycle();
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        progressIndicator = getRootView().findViewById(progressIndicatorId);
+        if (progressIndicator != null)
+        {
+            progressIndicator.setVisibility(INVISIBLE);
+        }
+    }
+
     public void handleServerRequest(boolean requesting)
     {
         this.requesting = requesting;
-        if (progressIndicatorId != 0)
-        {
-            View progressIndicator = getProgressIndicator();
-            if (progressIndicator != null)
-            {
-                hintValidStatusRight();
-                progressIndicator.setVisibility(requesting ? View.VISIBLE : View.GONE);
-            }
-        }
+        hintValidStatusRight();
     }
 
     @Override protected void hintValidStatusRight()
     {
-        if (requesting && getDefaultDrawableRight() != null)
+        View progressIndicatorCopy = progressIndicator;
+        if (requesting && progressIndicatorCopy != null)
         {
-            replaceCompoundDrawable(2, getDefaultDrawableRight());
+            progressIndicatorCopy.setVisibility(VISIBLE);
+            if (getDefaultDrawableRight() != null)
+            {
+                replaceCompoundDrawable(INDEX_RIGHT, getDefaultDrawableRight());
+            }
         }
         else
         {
+            if (!requesting && progressIndicatorCopy != null)
+            {
+                progressIndicatorCopy.setVisibility(INVISIBLE);
+            }
             super.hintValidStatusRight();
         }
     }
-
-    //<editor-fold desc="Accessors">
-    public void setProgressIndicatorId(int progressIndicatorId)
-    {
-        if (this.progressIndicator == null || this.progressIndicator.getId() != progressIndicatorId)
-        {
-            setProgressIndicator(getRootView().findViewById(progressIndicatorId));
-        }
-    }
-
-    public View getProgressIndicator()
-    {
-        if (progressIndicatorId != 0)
-        {
-            setProgressIndicatorId(progressIndicatorId);
-        }
-        return progressIndicator;
-    }
-
-    public void setProgressIndicator(View progressIndicator)
-    {
-        this.progressIndicator = progressIndicator;
-        this.progressIndicatorId = progressIndicator == null ? 0 : progressIndicator.getId();
-    }
-    //</editor-fold>
 }

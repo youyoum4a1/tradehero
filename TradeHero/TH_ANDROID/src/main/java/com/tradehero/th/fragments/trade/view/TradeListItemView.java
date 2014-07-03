@@ -13,6 +13,8 @@ import com.tradehero.common.widget.ColorIndicator;
 import com.tradehero.thm.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
 import com.tradehero.th.models.position.PositionDTOUtils;
@@ -28,14 +30,16 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class TradeListItemView extends LinearLayout implements DTOView<TradeListItemAdapter.ExpandableTradeItem>
 {
     private TradeListItemAdapter.ExpandableTradeItem tradeItem;
-    private TradeDTO trade;
-    private PositionDTO position;
+    @Nullable private TradeDTO trade;
+    @Nullable private PositionDTO position;
     private boolean prettyDate = true;
+    @Nullable private String strDisplay;
 
     @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
@@ -114,6 +118,18 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         {
             this.position = positionCache.get().get(tradeItem.getModel().positionDTOKey);
             this.trade = tradeCache.get().get(tradeItem.getModel().ownedTradeId);
+            if (position != null)
+            {
+                SecurityId securityId = securityIdCache.get().get(position.getSecurityIntegerId());
+                if (securityId != null)
+                {
+                    SecurityCompactDTO cachedSecurity = securityCache.get().get(securityId);
+                    if (cachedSecurity != null)
+                    {
+                        this.strDisplay = cachedSecurity.currencyDisplay;
+                    }
+                }
+            }
         }
         else
         {
@@ -163,14 +179,19 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         if (trade != null && position != null)
         {
             int textResId = trade.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
+            THSignedNumber tradeQuantity = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    (double) Math.abs(trade.quantity),
+                    THSignedNumber.WITHOUT_SIGN,
+                    "");
             THSignedNumber tradeValue = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
-                    trade.unitPrice * trade.exchangeRate,
+                    trade.unitPriceRefCcy,
                     THSignedNumber.WITHOUT_SIGN,
                     getCurrencyDisplay());
             return getContext().getString(
                     textResId,
-                    Math.abs(trade.quantity),
+                    tradeQuantity.toString(),
                     tradeValue.toString());
         }
         else
@@ -191,9 +212,14 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (trade != null)
         {
+            THSignedNumber tradeQuantityAfterTrade = new THSignedNumber(
+                    THSignedNumber.TYPE_MONEY,
+                    (double) Math.abs(trade.quantityAfterTrade),
+                    THSignedNumber.WITHOUT_SIGN,
+                    "");
             return getContext().getString(
                     tradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
-                    trade.quantityAfterTrade);
+                    tradeQuantityAfterTrade.toString());
         }
         else
         {
@@ -335,10 +361,10 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         {
             THSignedNumber tradeValue = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
-                    trade.quantity * trade.unitPrice * trade.exchangeRate,
+                    trade.quantity * trade.unitPriceRefCcy,
                     THSignedNumber.WITHOUT_SIGN,
                     getCurrencyDisplay());
-            return String.format("%s", tradeValue.toString());
+            return tradeValue.toString();
         }
         else
         {
@@ -365,6 +391,10 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     @NotNull
     private String getCurrencyDisplay()
     {
+        if (strDisplay != null)
+        {
+            return strDisplay;
+        }
         if (position == null)
         {
             return "null";
@@ -372,19 +402,20 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         return position.getNiceCurrency();
     }
 
-    private double getNumberToDisplay()
+    @Nullable private Double getNumberToDisplay()
     {
         if (tradeItem == null || position == null)
         {
-            return 0;
+            return null;
         }
         else if (tradeItem.isLastTrade() && !position.isClosed())
         {
             return position.unrealizedPLRefCcy;
         }
-        else
+        else if (trade != null)
         {
             return trade.realizedPLAfterTradeRefCcy;
         }
+        return null;
     }
 }

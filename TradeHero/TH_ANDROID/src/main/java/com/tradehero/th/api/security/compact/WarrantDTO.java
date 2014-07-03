@@ -1,8 +1,10 @@
 package com.tradehero.th.api.security.compact;
 
+import com.tradehero.thm.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantType;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 
 public class WarrantDTO extends SecurityCompactDTO
 {
@@ -46,10 +48,9 @@ public class WarrantDTO extends SecurityCompactDTO
     }
     //</editor-fold>
 
-    public boolean isMacquarieWarrant()
+    @NotNull @Override public Integer getSecurityTypeStringResourceId()
     {
-        return this.issuerName != null &&
-                (this.issuerName.toLowerCase().contains("mb") || this.issuerName.toLowerCase().contains("mbl"));
+        return R.string.security_type_warrant;
     }
 
     public WarrantType getWarrantType()
@@ -62,7 +63,6 @@ public class WarrantDTO extends SecurityCompactDTO
         return "WarrantDTO{" +
                 "id=" + id +
                 ", symbol='" + symbol + '\'' +
-                ", securityType=" + securityType +
                 ", name='" + name + '\'' +
                 ", exchange='" + exchange + '\'' +
                 ", yahooSymbol='" + yahooSymbol + '\'' +

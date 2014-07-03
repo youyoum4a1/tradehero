@@ -8,6 +8,7 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.thm.R;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -42,7 +43,8 @@ public class THWebViewClient extends WebViewClient
     @Override public boolean shouldOverrideUrlLoading(WebView view, String url)
     {
         Timber.d("shouldOverrideUrlLoading url %s webView %s", url, view);
-        if (thIntentFactory.isHandlableScheme(Uri.parse(url).getScheme()))
+        Uri uri = Uri.parse(url);
+        if (thIntentFactory.isHandlableScheme(uri.getScheme()))
         {
             // This is a tradehero:// scheme. Is it a ProviderPageIntent?
             THIntent thIntent = null;
@@ -62,12 +64,19 @@ public class THWebViewClient extends WebViewClient
                 url = ((ProviderPageIntent) thIntent).getCompleteForwardUriPath();
                 Timber.d("shouldOverrideUrlLoading Changed page url to %s", url);
             }
-            else
+            else if (thIntent != null)
             {
                 Timber.d("shouldOverrideUrlLoading Notifying parent with intent");
                 notifyThIntentPassed(thIntent);
-                return true;
             }
+            else
+            {
+                if (uri.getHost().equalsIgnoreCase(context.getString(R.string.intent_host_home)))
+                {
+                    view.reload();
+                }
+            }
+            return true;
         }
 
         if (Uri.parse(url).getScheme().equals("market"))

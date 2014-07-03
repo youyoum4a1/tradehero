@@ -11,29 +11,8 @@ import com.tradehero.thm.R;
 public class MatchingPasswordText extends ValidatedPasswordText
 {
     private int targetId;
-    ValidatedPasswordText target;
-    // TODO handle memory leak
-    private TextWatcher targetWatcher = new TextWatcher()
-    {
-        @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-        {
-            //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
-        {
-            //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        @Override public void afterTextChanged(Editable editable)
-        {
-            if (validateRunnable != null)
-            {
-                MatchingPasswordText.this.removeCallbacks(validateRunnable);
-                MatchingPasswordText.this.postDelayed(validateRunnable, getValidateDelay());
-            }
-        }
-    };
+    private ValidatedPasswordText target;
+    private TextWatcher targetWatcher;
 
     //<editor-fold desc="Constructors">
     public MatchingPasswordText(Context context)
@@ -60,25 +39,38 @@ public class MatchingPasswordText extends ValidatedPasswordText
         a.recycle();
     }
 
-    @Override protected boolean validate()
+    @Override protected void onFinishInflate()
     {
-        return super.validate() && matchesWithTarget ();
+        super.onFinishInflate();
+        targetWatcher = createTargetPasswordWatcher();
     }
 
-    protected boolean matchesWithTarget ()
+    @Override protected void onAttachedToWindow()
     {
-        associateTargetIfNone();
-
-        if (target == null)
+        super.onAttachedToWindow();
+        if (targetWatcher == null)
         {
-            return false;
+            targetWatcher = createTargetPasswordWatcher();
         }
-        String targetPassword = target.getText().toString();
-
-        return target.validate() && getText().toString().equals(targetPassword);
+        findTargetIfNone();
+        if (target != null)
+        {
+            target.addTextChangedListener(targetWatcher);
+        }
     }
 
-    private void associateTargetIfNone()
+    @Override protected void onDetachedFromWindow()
+    {
+        if (target != null)
+        {
+            target.removeTextChangedListener(targetWatcher);
+        }
+        targetWatcher = null;
+        target = null;
+        super.onDetachedFromWindow();
+    }
+
+    private void findTargetIfNone()
     {
         if (target != null)
         {
@@ -91,20 +83,27 @@ public class MatchingPasswordText extends ValidatedPasswordText
         }
 
         target = (ValidatedPasswordText) getRootView().findViewById(targetId);
-        if (target == null)
-        {
-            return;
-            //throw new IllegalArgumentException("TargetId was not found. MatchWith attribute needs to be set.");
-        }
-
-        // We want to know when the original password no longer matches the confirmation one.
-        target.addTextChangedListener(targetWatcher);
     }
 
-    @Override public boolean needsToNotifyListeners()
+    @Override protected boolean validate()
     {
-        associateTargetIfNone();
-        return target != null && super.needsToNotifyListeners() && target.validate() && !validate();
+        return super.validate() && matchesWithTarget ();
+    }
+
+    protected boolean matchesWithTarget ()
+    {
+        if (target == null)
+        {
+            return false;
+        }
+        String targetPassword = target.getText().toString();
+
+        return target.validate() && getText().toString().equals(targetPassword);
+    }
+
+    @Override public boolean needsToNotifyListener()
+    {
+        return target != null && super.needsToNotifyListener() && target.validate() && !validate();
     }
 
     @Override public ValidationMessage getCurrentValidationMessage()
@@ -119,34 +118,24 @@ public class MatchingPasswordText extends ValidatedPasswordText
         super.forceValidate();
     }
 
-    //<editor-fold desc="Accessors">
-    public void setTargetId(int targetId)
+    protected TextWatcher createTargetPasswordWatcher()
     {
-        if (this.target == null || this.target.getId() != targetId)
+        return new TargetPasswordWatcher();
+    }
+
+    protected class TargetPasswordWatcher implements TextWatcher
+    {
+        @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
         {
-            View view = getRootView().findViewById(targetId);
-            if (!(view instanceof ValidatedPasswordText))
-            {
-                throw new IllegalArgumentException("Target view has to be a ValidatedPasswordText");
-            }
-            setTarget((ValidatedPasswordText) view);
+        }
+
+        @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+        {
+        }
+
+        @Override public void afterTextChanged(Editable editable)
+        {
+            launchDelayedValidation();
         }
     }
-
-    public ValidatedPasswordText getTarget()
-    {
-        if (targetId != 0)
-        {
-            setTargetId(targetId);
-        }
-        return target;
-    }
-
-    public void setTarget(ValidatedPasswordText target)
-    {
-        this.target = target;
-        this.targetId = target == null ? 0 : target.getId();
-    }
-    //</editor-fold>
-
 }

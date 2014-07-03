@@ -347,11 +347,6 @@ public class StockInfoFragment extends DashboardFragment
         }
     }
 
-    protected void handleMarketCloseClicked()
-    {
-        alertDialogUtil.popMarketClosed(getActivity(), securityId);
-    }
-
     protected void handleNewsClicked(int position, NewsItemDTOKey newsItemDTOKey)
     {
         Navigator navigator = ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();

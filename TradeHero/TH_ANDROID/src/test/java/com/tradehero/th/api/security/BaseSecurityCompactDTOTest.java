@@ -6,7 +6,6 @@ abstract public class BaseSecurityCompactDTOTest
     {
         boolean have = left.id == null ? right.id == null : left.id.equals(right.id);
         have &= left.symbol == null ? right.symbol == null : left.symbol.equals(right.symbol);
-        have &= left.securityType == right.securityType;
         have &= left.name == null ? right.name == null : left.name.equals(right.name);
         have &= left.exchange == null ? right.exchange == null : left.exchange.equals(right.exchange);
         have &= left.yahooSymbol == null ? right.yahooSymbol == null : left.yahooSymbol.equals(right.yahooSymbol);

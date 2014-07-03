@@ -45,6 +45,10 @@ public class Constants
     public static final String PLAYSTORE_APP_ID = "com.tradehero.thm";
     public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
 
+    // Localytics
+    public static final String LOCALYTICS_APP_KEY_RELEASE = "f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207";
+    public static final String LOCALYTICS_APP_KEY_DEBUG = "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";
+
     // TODO remove when automated build.
     // 0 for international, 1 baidu, 2 tencent. It is here to help with build multiple version
     private static final int VERSION = 0;

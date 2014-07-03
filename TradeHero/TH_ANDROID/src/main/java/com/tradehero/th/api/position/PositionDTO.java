@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PositionDTO extends PositionDTOCompact
@@ -90,7 +91,7 @@ public class PositionDTO extends PositionDTOCompact
         return positionIds;
     }
 
-    public SecurityIntegerId getSecurityIntegerId()
+    @NotNull public SecurityIntegerId getSecurityIntegerId()
     {
         return new SecurityIntegerId(securityId);
     }

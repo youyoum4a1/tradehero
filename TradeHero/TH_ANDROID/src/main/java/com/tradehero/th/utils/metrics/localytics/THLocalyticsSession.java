@@ -22,22 +22,14 @@ import org.jetbrains.annotations.NotNull;
     //<editor-fold desc="Constructors">
     @Inject public THLocalyticsSession(
             @NotNull Context context,
+            @NotNull @LocalyticAppKey String appKey,
             @NotNull ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
     {
-        super(context);
+        super(context, appKey);
         this.context = context;
         this.chartTimeSpanMetricsCodeFactory = chartTimeSpanMetricsCodeFactory;
     }
 
-    public THLocalyticsSession(
-            @NotNull Context context,
-            String key,
-            @NotNull ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
-    {
-        super(context, key);
-        this.context = context;
-        this.chartTimeSpanMetricsCodeFactory = chartTimeSpanMetricsCodeFactory;
-    }
     //</editor-fold>
 
     public void tagEvent(String event)

@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -82,7 +83,7 @@ import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.SocialServiceWrapper;
@@ -122,7 +123,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.stock_logo) protected ImageView mStockLogo;
     @InjectView(R.id.portfolio_selector_container) protected View mSelectedPortfolioContainer;
     @InjectView(R.id.portfolio_selected) protected TextView mSelectedPortfolio;
-    @InjectView(R.id.market_icon) protected ImageView mMarketIcon;
+    @InjectView(R.id.market_closed_icon) protected ImageView mMarketClosedIcon;
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
     @InjectView(R.id.vprice_as_of) protected TextView mVpriceAsOf;
@@ -178,7 +179,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject Picasso picasso;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
@@ -252,17 +252,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
         }
 
-        if (mSelectedPortfolioContainer != null)
-        {
-            mSelectedPortfolioContainer.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    showPortfolioSelector();
-                }
-            });
-        }
-
         if (mSelectedPortfolio != null)
         {
             mPortfolioSelectorMenu = new PopupMenu(getActivity(), mSelectedPortfolio);
@@ -274,57 +263,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                             return selectDifferentPortfolio(menuItem);
                         }
                     });
-        }
-
-        if (mBtnAddWatchlist != null)
-        {
-            mBtnAddWatchlist.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleBtnWatchlistClicked();
-                }
-            });
-        }
-
-        if (mBtnAddTrigger != null)
-        {
-            mBtnAddTrigger.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleBtnAddTriggerClicked();
-                }
-            });
-        }
-
-        if (mBuyBtn != null)
-        {
-            mBuyBtn.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    trackBuyClickEvent();
-                    //pushBuySellConfirmFragmentIn();
-                    isTransactionTypeBuy = true;
-                    showBuySellDialog();
-                }
-            });
-        }
-        if (mSellBtn != null)
-        {
-            mSellBtn.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    trackBuyClickEvent();
-                    //pushBuySellConfirmFragmentIn();
-                    isTransactionTypeBuy = false;
-                    showBuySellDialog();
-                }
-            });
         }
 
         if (bottomViewPagerAdapter == null)
@@ -339,46 +277,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
 
         selectPage(selectedPageIndex);
-
-        if (mInfoTextView != null)
-        {
-            mInfoTextView.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if (mBottomViewPager != null)
-                    {
-                        mBottomViewPager.setCurrentItem(0, true);
-                    }
-                }
-            });
-        }
-        if (mDiscussTextView != null)
-        {
-            mDiscussTextView.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if (mBottomViewPager != null)
-                    {
-                        mBottomViewPager.setCurrentItem(1, true);
-                    }
-                }
-            });
-        }
-        if (mNewsTextView != null)
-        {
-            mNewsTextView.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if (mBottomViewPager != null)
-                    {
-                        mBottomViewPager.setCurrentItem(2, true);
-                    }
-                }
-            });
-        }
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -459,11 +357,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         securityAlertAssistant.setOnPopulatedListener(null);
 
-        if (mSelectedPortfolioContainer != null)
-        {
-            mSelectedPortfolioContainer.setOnClickListener(null);
-        }
-        mSelectedPortfolioContainer = null;
         mSelectedPortfolio = null;
 
         if (mPortfolioSelectorMenu != null)
@@ -471,26 +364,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             mPortfolioSelectorMenu.setOnMenuItemClickListener(null);
         }
         mPortfolioSelectorMenu = null;
-
-        if (mBtnAddTrigger != null)
-        {
-            mBtnAddTrigger.setEnabled(false);
-            mBtnAddTrigger.setOnClickListener(null);
-        }
-        mBtnAddTrigger = null;
-
-        if (mBtnAddWatchlist != null)
-        {
-            mBtnAddWatchlist.setEnabled(false);
-            mBtnAddWatchlist.setOnClickListener(null);
-        }
-        mBtnAddWatchlist = null;
-
-        if (mBuyBtn != null)
-        {
-            mBuyBtn.setOnClickListener(null);
-        }
-        mBuyBtn = null;
 
         bottomViewPagerAdapter = null;
         mBottomViewPager = null;
@@ -558,6 +431,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         mConfirmButton = null;
 
         resideMenu.removeIgnoredView(mBottomViewPager);
+        ButterKnife.reset(this);
 
         super.onDestroyView();
     }
@@ -610,7 +484,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (andDisplay)
         {
-            //displayMarketClose();
             displaySelectedPortfolioContainer();
             displayPortfolioSelectorMenu();
             displaySelectedPortfolio();
@@ -684,6 +557,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()),
                     andDisplay);
+            purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
         }
         else
         {
@@ -715,16 +589,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             displayWatchlistButton();
         }
-    }
-
-    @Override protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
-    {
-        super.linkWithBuyQuantity(buyQuantity, andDisplay);
-    }
-
-    @Override protected void linkWithSellQuantity(Integer sellQuantity, boolean andDisplay)
-    {
-        super.linkWithSellQuantity(sellQuantity, andDisplay);
     }
 
     protected void setInitialBuyQuantityIfCan()
@@ -760,9 +624,11 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
-        newMenus.addAll(menuOwnedPortfolioIdFactory.createPortfolioMenus(
+        MenuOwnedPortfolioIdList menus = menuOwnedPortfolioIdFactory.createPortfolioMenus(
                 currentUserId.toUserBaseKey(),
-                securityPositionDetailDTO));
+                securityPositionDetailDTO);
+
+        newMenus.addAll(menus);
         usedMenuOwnedPortfolioIds = newMenus;
     }
 
@@ -878,19 +744,12 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         updateStockAndSymbol();
 
-        boolean marketIsOpen = securityCompactDTO == null
-                || securityCompactDTO.marketOpen == null
-                || securityCompactDTO.marketOpen;
-        if (mMarketIcon != null)
+        if (mMarketClosedIcon != null)
         {
-            mMarketIcon.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    handleMarketCloseClicked();
-                }
-            });
-            mMarketIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+            boolean marketIsOpen = securityCompactDTO == null
+                    || securityCompactDTO.marketOpen == null
+                    || securityCompactDTO.marketOpen;
+            mMarketClosedIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -1179,7 +1038,10 @@ public class BuySellFragment extends AbstractBuySellFragment
                 {
                     @Override public void onSuccess()
                     {
-                        mStockBgLogo.setVisibility(View.VISIBLE);
+                        if (mStockBgLogo != null)
+                        {
+                            mStockBgLogo.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override public void onError()
@@ -1284,7 +1146,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         return billingRequest;
     }
 
-    private void handleBtnAddTriggerClicked()
+    @OnClick(R.id.btn_add_trigger)
+    protected void handleBtnAddTriggerClicked()
     {
         if (securityAlertAssistant.isPopulated())
         {
@@ -1313,7 +1176,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private void handleBtnWatchlistClicked()
+    @OnClick(R.id.btn_add_watch_list)
+    protected void handleBtnWatchlistClicked()
     {
         if (securityId != null)
         {
@@ -1327,7 +1191,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private void showPortfolioSelector()
+    @OnClick(R.id.portfolio_selector_container)
+    protected void showPortfolioSelector()
     {
         if (mPortfolioSelectorMenu != null)
         {
@@ -1344,6 +1209,58 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         linkWithApplicable((MenuOwnedPortfolioId) menuItem.getTitle(), true);
         return true;
+    }
+
+    @OnClick({R.id.btn_buy, R.id.btn_sell})
+    protected void handleBuySellButtonsClicked(View view)
+    {
+        trackBuyClickEvent();
+        switch (view.getId())
+        {
+            case R.id.btn_buy:
+                isTransactionTypeBuy = true;
+                break;
+            case R.id.btn_sell:
+                isTransactionTypeBuy = false;
+                break;
+            default:
+                throw new IllegalArgumentException("Unhandled button " + view.getId());
+        }
+        showBuySellDialog();
+
+    }
+
+    @OnClick(R.id.market_closed_icon)
+    protected void handleMarketClosedIconClicked()
+    {
+        notifyMarketClosed();
+    }
+
+    @OnClick(R.id.info)
+    public void handleTabInfoClicked()
+    {
+        if (mBottomViewPager != null)
+        {
+            mBottomViewPager.setCurrentItem(0, true);
+        }
+    }
+
+    @OnClick(R.id.discussions)
+    public void handleDiscussionsTabClicked()
+    {
+        if (mBottomViewPager != null)
+        {
+            mBottomViewPager.setCurrentItem(1, true);
+        }
+    }
+
+    @OnClick(R.id.news)
+    public void handleNewsTabClicked()
+    {
+        if (mBottomViewPager != null)
+        {
+            mBottomViewPager.setCurrentItem(2, true);
+        }
     }
 
     //<editor-fold desc="Interface Creators">

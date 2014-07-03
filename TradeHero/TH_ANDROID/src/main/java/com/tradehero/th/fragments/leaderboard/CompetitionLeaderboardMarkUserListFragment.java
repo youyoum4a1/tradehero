@@ -18,8 +18,6 @@ import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPass
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import java.util.List;
@@ -32,13 +30,11 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     public static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
 
     @Inject ProviderCache providerCache;
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject CompetitionCache competitionCache;
     @Inject ProviderUtil providerUtil;
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
 
     protected CompetitionDTO competitionDTO;
     protected THIntentPassedListener webViewTHIntentPassedListener;
@@ -51,8 +47,6 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
         providerDTO = providerCache.get(providerId);
         Timber.d("providerDTO %s", providerDTO);
-        providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
-        Timber.d("providerSpecificResourcesDTO %s", providerSpecificResourcesDTO);
 
         CompetitionId competitionId = new CompetitionId(getArguments().getBundle(BUNDLE_KEY_COMPETITION_ID));
         competitionDTO = competitionCache.get(competitionId);

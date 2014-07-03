@@ -159,9 +159,11 @@ public class ProviderVideoListFragment extends CompetitionFragment
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoListFragmentTitleResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.helpVideoListFragmentTitleResId > 0)
             {
-                actionBar.setTitle(providerSpecificResourcesDTO.helpVideoListFragmentTitleResId);
+                actionBar.setTitle(providerDTO.specificResources.helpVideoListFragmentTitleResId);
             }
             else if (providerDTO == null || providerDTO.name == null)
             {

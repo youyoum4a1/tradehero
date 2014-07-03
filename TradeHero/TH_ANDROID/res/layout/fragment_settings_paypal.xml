@@ -40,7 +40,7 @@
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
-        app:minSize="1"
+        app:minTextLength="1"
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="500" />

@@ -33,16 +33,15 @@ public class NotificationDTO implements DTO, KeyGenerator
 
     @Override public String toString()
     {
-        return new StringBuilder().append("NotificationDTO text=")
-                .append(text)
-                .append(" pushId=")
-                .append(pushId)
-                .append(" replyableId=")
-                .append(replyableId)
-                .append(" threadId=")
-                .append(threadId)
-                .append(" referencedUserId=")
-                .append(referencedUserId)
+        return new StringBuilder()
+                .append("[NotificationDTO")
+                .append(" pushType=").append(pushTypeId)
+                .append(" text=").append(text)
+                .append(" pushId=").append(pushId)
+                .append(" replyableId=").append(replyableId)
+                .append(" threadId=").append(threadId)
+                .append(" referencedUserId=").append(referencedUserId)
+                .append("]")
                 .toString();
     }
 }

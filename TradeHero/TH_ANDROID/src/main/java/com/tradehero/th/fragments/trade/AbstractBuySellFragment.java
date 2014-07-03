@@ -159,14 +159,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     //<editor-fold desc="ActionBar">
     protected void displayMarketClose()
     {
+        boolean marketIsOpen = securityCompactDTO == null || securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen;
+        if (!marketIsOpen)
+        {
+            notifyOnceMarketClosed();
+        }
         if (marketCloseIcon != null)
         {
-            boolean marketIsOpen = securityCompactDTO == null || securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen;
             marketCloseIcon.setVisible(!marketIsOpen);
-            if (!marketIsOpen)
-            {
-                notifyOnceMarketClosed();
-            }
         }
     }
     //</editor-fold>
@@ -439,11 +439,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             alreadyNotifiedMarketClosed = true;
             notifyMarketClosed();
         }
-    }
-
-    protected void handleMarketCloseClicked()
-    {
-        notifyMarketClosed();
     }
 
     protected void notifyMarketClosed()

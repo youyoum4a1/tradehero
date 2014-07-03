@@ -2,8 +2,8 @@ package com.tradehero.th.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.View;
 import com.tradehero.thm.R;
 import java.util.regex.Pattern;
 
@@ -12,15 +12,15 @@ public class SelfValidatedText extends ValidatedText
     private final int DEFAULT_VALIDATE_DELAY = 200;
 
     // Inclusive boundaries
-    private int minSize;
-    private int maxSize;
+    private int minTextLength;
+    private int maxTextLength;
     private long validateDelay;
     protected Runnable validateRunnable;
     protected Pattern validatePattern;
     protected boolean hasHadInteraction = false;
-    private String invalidMinSizeMessage;
-    private String invalidMaxSizeMessage;
-    private String invalidBetweenSizeMessage;
+    private String invalidMinTextLengthMessage;
+    private String invalidMaxTextLengthMessage;
+    private String invalidBetweenTextLengthMessage;
     private String invalidPatternMessage;
 
     //<editor-fold desc="Constructors">
@@ -44,22 +44,22 @@ public class SelfValidatedText extends ValidatedText
     {
         super.init(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SelfValidatedText);
-        minSize = a.getInt(R.styleable.SelfValidatedText_minSize, 0);
-        maxSize = a.getInt(R.styleable.SelfValidatedText_maxSize, Integer.MAX_VALUE);
-        String validatePatternString = a.getString(R.styleable.SelfValidatedText_validatePattern);
+        minTextLength = a.getInt(R.styleable.SelfValidatedText_minTextLength, 0);
+        maxTextLength = a.getInt(R.styleable.SelfValidatedText_maxTextLength, Integer.MAX_VALUE);
         validateDelay = a.getInt(R.styleable.SelfValidatedText_delayValidationByMilliSec, DEFAULT_VALIDATE_DELAY);
+        String validatePatternString = a.getString(R.styleable.SelfValidatedText_validatePattern);
         if (validatePatternString != null)
         {
             validatePattern = Pattern.compile(validatePatternString);
         }
-        invalidMinSizeMessage = a.getString(R.styleable.SelfValidatedText_invalidMinSizeMessage);
-        invalidMinSizeMessage = invalidMinSizeMessage != null ? invalidMinSizeMessage : context.getString(R.string.validation_size_too_short);
+        invalidMinTextLengthMessage = a.getString(R.styleable.SelfValidatedText_invalidMinTextLengthMessage);
+        invalidMinTextLengthMessage = invalidMinTextLengthMessage != null ? invalidMinTextLengthMessage : context.getString(R.string.validation_size_too_short);
 
-        invalidMaxSizeMessage = a.getString(R.styleable.SelfValidatedText_invalidMaxSizeMessage);
-        invalidMaxSizeMessage = invalidMaxSizeMessage != null ? invalidMaxSizeMessage : context.getString(R.string.validation_size_too_long);
+        invalidMaxTextLengthMessage = a.getString(R.styleable.SelfValidatedText_invalidMaxTextLengthMessage);
+        invalidMaxTextLengthMessage = invalidMaxTextLengthMessage != null ? invalidMaxTextLengthMessage : context.getString(R.string.validation_size_too_long);
 
-        invalidBetweenSizeMessage = a.getString(R.styleable.SelfValidatedText_invalidBetweenSizeMessage);
-        invalidBetweenSizeMessage = invalidBetweenSizeMessage != null ? invalidBetweenSizeMessage : context.getString(R.string.validation_size_in_between);
+        invalidBetweenTextLengthMessage = a.getString(R.styleable.SelfValidatedText_invalidBetweenTextLengthMessage);
+        invalidBetweenTextLengthMessage = invalidBetweenTextLengthMessage != null ? invalidBetweenTextLengthMessage : context.getString(R.string.validation_size_in_between);
 
         invalidPatternMessage = a.getString(R.styleable.SelfValidatedText_invalidPatternMessage);
         invalidPatternMessage = invalidPatternMessage != null ? invalidPatternMessage : context.getString(R.string.validation_incorrect_pattern);
@@ -82,24 +82,20 @@ public class SelfValidatedText extends ValidatedText
 
     @Override protected void onDetachedFromWindow()
     {
+        removeCallbacks(validateRunnable);
         validateRunnable = null;
         super.onDetachedFromWindow();
     }
 
-    public long getValidateDelay()
+    @Override protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect)
     {
-        return validateDelay;
-    }
-
-    @Override public void onFocusChange(View view, boolean hasFocus)
-    {
-        if (!hasFocus)
+        if (!focused)
         {
             // This means the player has moved away
             // It assumes that this method is not called as part of the constructor.
             hasHadInteraction = true;
         }
-        super.onFocusChange(view, hasFocus);
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
         conditionalValidation();
     }
 
@@ -119,8 +115,8 @@ public class SelfValidatedText extends ValidatedText
     {
         if (validateRunnable != null)
         {
-            this.removeCallbacks(validateRunnable);
-            this.postDelayed(validateRunnable, validateDelay);
+            removeCallbacks(validateRunnable);
+            postDelayed(validateRunnable, validateDelay);
         }
     }
 
@@ -154,21 +150,17 @@ public class SelfValidatedText extends ValidatedText
 
     protected boolean validateMinSize()
     {
-        return minSize <= getText().length();
+        return minTextLength <= getText().length();
     }
 
     protected boolean validateMaxSize()
     {
-        return getText().length() <= maxSize;
+        return getText().length() <= maxTextLength;
     }
 
     protected boolean validatePattern ()
     {
-        if (validatePattern == null)
-        {
-            return true;
-        }
-        return validatePattern.matcher(getText()).matches();
+        return validatePattern == null || validatePattern.matcher(getText()).matches();
     }
 
     @Override public void forceValidate()
@@ -180,17 +172,17 @@ public class SelfValidatedText extends ValidatedText
 
     @Override public ValidationMessage getCurrentValidationMessage()
     {
-        if (0 < minSize && maxSize < Integer.MAX_VALUE && !validateSize())
+        if (0 < minTextLength && maxTextLength < Integer.MAX_VALUE && !validateSize())
         {
-            return new ValidationMessage(this, false, String.format(invalidBetweenSizeMessage, minSize, maxSize));
+            return new ValidationMessage(this, false, String.format(invalidBetweenTextLengthMessage, minTextLength, maxTextLength));
         }
-        if (0 < minSize  && !validateMinSize())
+        if (0 < minTextLength && !validateMinSize())
         {
-            return new ValidationMessage(this, false, String.format(invalidMinSizeMessage, minSize));
+            return new ValidationMessage(this, false, String.format(invalidMinTextLengthMessage, minTextLength));
         }
-        if (maxSize < Integer.MAX_VALUE && !validateMaxSize())
+        if (maxTextLength < Integer.MAX_VALUE && !validateMaxSize())
         {
-            return new ValidationMessage(this, false, String.format(invalidMaxSizeMessage, maxSize));
+            return new ValidationMessage(this, false, String.format(invalidMaxTextLengthMessage, maxTextLength));
         }
         if (!validatePattern())
         {
@@ -198,71 +190,4 @@ public class SelfValidatedText extends ValidatedText
         }
         return super.getCurrentValidationMessage();
     }
-
-    //<editor-fold desc="Accessors">
-    public int getMinSize()
-    {
-        return minSize;
-    }
-
-    public void setMinSize(int minSize)
-    {
-        this.minSize = minSize;
-    }
-
-    public int getMaxSize()
-    {
-        return maxSize;
-    }
-
-    public void setMaxSize(int maxSize)
-    {
-        this.maxSize = maxSize;
-    }
-
-    public void setValidateDelay(long validateDelay)
-    {
-        this.validateDelay = validateDelay;
-    }
-
-    public String getInvalidMinSizeMessage()
-    {
-        return invalidMinSizeMessage;
-    }
-
-    public void setInvalidMinSizeMessage(String invalidMinSizeMessage)
-    {
-        this.invalidMinSizeMessage = invalidMinSizeMessage;
-    }
-
-    public String getInvalidMaxSizeMessage()
-    {
-        return invalidMaxSizeMessage;
-    }
-
-    public void setInvalidMaxSizeMessage(String invalidMaxSizeMessage)
-    {
-        this.invalidMaxSizeMessage = invalidMaxSizeMessage;
-    }
-
-    public String getInvalidBetweenSizeMessage()
-    {
-        return invalidBetweenSizeMessage;
-    }
-
-    public void setInvalidBetweenSizeMessage(String invalidBetweenSizeMessage)
-    {
-        this.invalidBetweenSizeMessage = invalidBetweenSizeMessage;
-    }
-
-    public String getInvalidPatternMessage()
-    {
-        return invalidPatternMessage;
-    }
-
-    public void setInvalidPatternMessage(String invalidPatternMessage)
-    {
-        this.invalidPatternMessage = invalidPatternMessage;
-    }
-    //</editor-fold>
 }

@@ -9,8 +9,6 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
@@ -24,10 +22,8 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     @InjectRoute protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
-    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
 
     @Inject ProviderCache providerCache;
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject THRouter thRouter;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
@@ -45,6 +41,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
 
         thRouter.inject(this, getArguments());
+        // TODO improve thRouter so that it leaves the field empty instead of filling it with empty data.
         if (this.providerId == null || this.providerId.key == null)
         {
             this.providerId = getProviderId(getArguments());
@@ -85,7 +82,6 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
-        providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
 
         OwnedPortfolioId associatedPortfolioId =
                 new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);

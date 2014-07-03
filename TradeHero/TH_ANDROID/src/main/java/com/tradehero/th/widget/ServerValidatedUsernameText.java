@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.thm.R;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.users.DisplayNameDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.persistence.user.UserAvailabilityCache;
@@ -11,9 +12,9 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 
 public class ServerValidatedUsernameText extends ServerValidatedText
-        implements UserAvailabilityCache.UserAvailabilityListener
 {
     @Inject UserAvailabilityCache userAvailabilityCache;
+    private DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> userAvailabilityListener;
     private boolean isValidInServer = true;
     private String originalUsernameValue;
 
@@ -38,17 +39,28 @@ public class ServerValidatedUsernameText extends ServerValidatedText
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
+        userAvailabilityListener = createValidatedUserNameListener();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        if (userAvailabilityListener == null)
+        {
+            userAvailabilityListener = createValidatedUserNameListener();
+        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        userAvailabilityCache.unregister(this);
+        detachUserAvailabilityCache();
+        userAvailabilityListener = null;
         super.onDetachedFromWindow();
     }
 
-    public String getOriginalUsernameValue()
+    private void detachUserAvailabilityCache()
     {
-        return originalUsernameValue;
+        userAvailabilityCache.unregister(userAvailabilityListener);
     }
 
     public void setOriginalUsernameValue(String originalUsernameValue)
@@ -100,7 +112,7 @@ public class ServerValidatedUsernameText extends ServerValidatedText
             return new ValidationMessage(this, false,
                     getContext().getString(R.string.validation_server_username_not_available));
         }
-        return super.getCurrentValidationMessage();// new ValidationMessage(this, isValid(), null);
+        return super.getCurrentValidationMessage();
     }
 
     protected void queryCache(String displayName)
@@ -109,29 +121,9 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         {
             handleServerRequest(true);
             DisplayNameDTO key = new DisplayNameDTO(displayName);
-            userAvailabilityCache.register(key, this);
+            detachUserAvailabilityCache();
+            userAvailabilityCache.register(key, userAvailabilityListener);
             userAvailabilityCache.getOrFetchAsync(key, true);
-        }
-    }
-
-    @Override public void onDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value)
-    {
-        if (key.isSameName(getText().toString()))
-        {
-            handleServerRequest(false);
-            handleReturnFromServer(value.available);
-        }
-    }
-
-    @Override public void onErrorThrown(DisplayNameDTO key, Throwable error)
-    {
-        if (key.isSameName(getText().toString()))
-        {
-            handleServerRequest(false);
-            if (error instanceof RetrofitError && ((RetrofitError) error).isNetworkError())
-            {
-                handleNetworkError((RetrofitError) error);
-            }
         }
     }
 
@@ -142,18 +134,49 @@ public class ServerValidatedUsernameText extends ServerValidatedText
 
         if (hasChanged)
         {
-            this.post(new Runnable()
-            {
-                @Override public void run()
-                {
-                    setValid(validate());
-                }
-            });
+            setValid(validate());
         }
     }
 
     public void handleNetworkError(RetrofitError retrofitError)
     {
         hintDefaultStatus();
+    }
+
+    protected DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> createValidatedUserNameListener()
+    {
+        return new ValidatedUserNameAvailabilityListener();
+    }
+
+    protected class ValidatedUserNameAvailabilityListener implements DTOCacheNew.HurriedListener<DisplayNameDTO, UserAvailabilityDTO>
+    {
+        @Override public void onPreCachedDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value)
+        {
+            if (key.isSameName(getText().toString()))
+            {
+                handleReturnFromServer(value.available);
+            }
+        }
+
+        @Override public void onDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value)
+        {
+            if (key.isSameName(getText().toString()))
+            {
+                handleServerRequest(false);
+                handleReturnFromServer(value.available);
+            }
+        }
+
+        @Override public void onErrorThrown(DisplayNameDTO key, Throwable error)
+        {
+            if (key.isSameName(getText().toString()))
+            {
+                handleServerRequest(false);
+                if (error instanceof RetrofitError && ((RetrofitError) error).isNetworkError())
+                {
+                    handleNetworkError((RetrofitError) error);
+                }
+            }
+        }
     }
 }

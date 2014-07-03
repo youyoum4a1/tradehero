@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.List;
 import retrofit.Callback;
@@ -13,7 +13,7 @@ interface ProviderServiceAsync
 {
     //<editor-fold desc="Get Providers">
     @GET("/providers")
-    void getProviders(Callback<List<ProviderDTO>> callback);
+    void getProviders(Callback<ProviderDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
