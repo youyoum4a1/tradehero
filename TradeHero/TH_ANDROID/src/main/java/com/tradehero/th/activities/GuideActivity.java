@@ -70,6 +70,7 @@ public class GuideActivity extends Activity
         custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
         localyticsSession.get().open(custom_dimensions);
         localyticsSession.get().tagScreen(LocalyticsConstants.Splash);
+        localyticsSession.get().upload();
     }
 
     @Override protected void onPause()
