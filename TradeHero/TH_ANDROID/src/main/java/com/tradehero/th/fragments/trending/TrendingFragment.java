@@ -27,6 +27,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
@@ -70,7 +71,7 @@ import timber.log.Timber;
 
 @Routable("trending-securities")
 public class TrendingFragment extends SecurityListFragment
-    implements WithTutorial
+        implements WithTutorial
 {
     public final static int SECURITY_ID_LIST_LOADER_ID = 2532;
 
@@ -447,6 +448,7 @@ public class TrendingFragment extends SecurityListFragment
                 securityCompactDTO.getSecurityId());
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        passApplicablePortfolioId(args);
         getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
@@ -462,7 +464,8 @@ public class TrendingFragment extends SecurityListFragment
             Timber.d("Filter onFilterTypeChanged");
             if (trendingFilterTypeDTO == null)
             {
-                Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"), "onFilterTypeChanged trendingFilterTypeDTO cannot be null");
+                Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"),
+                        "onFilterTypeChanged trendingFilterTypeDTO cannot be null");
             }
             TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
             // TODO
@@ -530,12 +533,12 @@ public class TrendingFragment extends SecurityListFragment
     //</editor-fold>
 
     //<editor-fold desc="User Profile Listener">
-    protected DTOCacheNew.Listener<UserBaseKey,UserProfileDTO> createUserProfileFetchListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
     {
         return new TrendingUserProfileFetchListener();
     }
 
-    protected class TrendingUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
+    protected class TrendingUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
@@ -556,12 +559,12 @@ public class TrendingFragment extends SecurityListFragment
     }
 
     //<editor-fold desc="Provider List Listener">
-    protected DTOCacheNew.Listener<ProviderListKey,ProviderIdList> createProviderListFetchListener()
+    protected DTOCacheNew.Listener<ProviderListKey, ProviderIdList> createProviderListFetchListener()
     {
         return new TrendingProviderListFetchListener();
     }
 
-    protected class TrendingProviderListFetchListener implements DTOCacheNew.Listener<ProviderListKey,ProviderIdList>
+    protected class TrendingProviderListFetchListener implements DTOCacheNew.Listener<ProviderListKey, ProviderIdList>
     {
         @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value)
         {
@@ -578,10 +581,11 @@ public class TrendingFragment extends SecurityListFragment
 
     private void openEnrollmentPageIfNecessary(ProviderIdList providerIds)
     {
-        for (ProviderId providerId: providerIds)
+        for (ProviderId providerId : providerIds)
         {
             final ProviderDTO providerDTO = providerCache.get().get(providerId);
-            if (providerDTO != null && enrollmentScreenOpened != null && !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerId.key))
+            if (providerDTO != null && enrollmentScreenOpened != null && !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(
+                    providerId.key))
             {
                 enrollmentScreenOpened.add(providerId.key);
 

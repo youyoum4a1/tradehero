@@ -82,6 +82,7 @@ import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.SocialServiceWrapper;
@@ -682,6 +683,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             linkWith(portfolioCompactCache.get(purchaseApplicablePortfolioId.getPortfolioIdKey()),
                     andDisplay);
+            purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
         }
         else
         {
@@ -758,9 +760,11 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         Set<MenuOwnedPortfolioId> newMenus = new TreeSet<>();
 
-        newMenus.addAll(menuOwnedPortfolioIdFactory.createPortfolioMenus(
+        MenuOwnedPortfolioIdList menus = menuOwnedPortfolioIdFactory.createPortfolioMenus(
                 currentUserId.toUserBaseKey(),
-                securityPositionDetailDTO));
+                securityPositionDetailDTO);
+
+        newMenus.addAll(menus);
         usedMenuOwnedPortfolioIds = newMenus;
     }
 
