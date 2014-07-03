@@ -55,11 +55,8 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
             }
             catch (Exception ex)
             {
-                Timber.d("Something wrong with old THIntent" + ex.getMessage());
-            }
-            finally
-            {
                 handleUrlByRouter(intent, host);
+                Timber.d("Something wrong with old THIntent" + ex.getMessage());
             }
         }
         else
