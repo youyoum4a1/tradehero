@@ -14,7 +14,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
@@ -61,7 +60,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
         Bundle args = getArguments();
         if (args != null)
@@ -124,8 +122,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         switch (dto.id)
         {
             case LeaderboardDefKeyKnowledge.FRIEND_ID:
-                FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, bundle);
+                pushFriendsFragment(dto);
                 break;
             case LeaderboardDefKeyKnowledge.HERO_ID:
                 pushHeroFragment();
@@ -139,6 +136,17 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
                 getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
+    }
+
+    protected void pushFriendsFragment(LeaderboardDefDTO dto)
+    {
+        Bundle args = new Bundle();
+        args.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
+        args.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
+
+        FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
+
+        getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
     }
 
     protected void pushHeroFragment()

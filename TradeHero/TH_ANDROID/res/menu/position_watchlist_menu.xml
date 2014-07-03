@@ -5,7 +5,8 @@
   <item
       android:id="@+id/position_watchlist_add"
       android:showAsAction="always"
-      android:title="@string/plus_symbol"
+      android:title="@string/watchlist_add_new_title"
+      android:icon="@drawable/btn_friends_add"
       />
 
 </menu>

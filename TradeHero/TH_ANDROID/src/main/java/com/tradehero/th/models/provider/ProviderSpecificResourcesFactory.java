@@ -20,17 +20,17 @@ import timber.log.Timber;
     }
     //</editor-fold>
 
-    public ProviderSpecificResourcesDTO createResourcesDTO(@Nullable ProviderDTO providerDTO)
+    public ProviderSpecificResourcesDTO createResources(@Nullable ProviderDTO providerDTO)
     {
         ProviderSpecificResourcesDTO created = null;
         if (providerDTO != null)
         {
-            created = createResourcesDTO(providerDTO.getProviderId());
+            created = createResources(providerDTO.getProviderId());
         }
         return created;
     }
 
-    public ProviderSpecificResourcesDTO createResourcesDTO(@Nullable ProviderId providerId)
+    public ProviderSpecificResourcesDTO createResources(@Nullable ProviderId providerId)
     {
         ProviderSpecificResourcesDTO created = null;
         if (providerId != null)

@@ -188,9 +188,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     }
 
     private void pushInvitationFragment(){
-        Bundle args = new Bundle();
-        FriendsInvitationFragment.putKeyShowHomeAsUp(args, true);
-        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class, args);
+        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
     }
 
     @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)

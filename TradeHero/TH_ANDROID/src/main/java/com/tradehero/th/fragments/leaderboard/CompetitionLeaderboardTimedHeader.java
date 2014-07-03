@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.time.TimeDisplayViewHolder;
 import javax.inject.Inject;
@@ -21,7 +20,6 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
     protected TextView ruleDescription;
     protected ProviderDTO providerDTO;
     protected CompetitionDTO competitionDTO;
-    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     protected Runnable viewUpdater;
 
     //<editor-fold desc="Constructors">
@@ -63,7 +61,7 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
         {
             @Override public void run()
             {
-                if (competitionDTO != null)
+                if (competitionDTO != null && competitionDTO.leaderboard != null)
                 {
                     timeDisplayViewHolder.showDuration(competitionDTO.leaderboard.toUtcRestricted);
                 }
@@ -100,18 +98,15 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
         this.competitionDTO = competitionDTO;
     }
 
-    public void setProviderSpecificResourcesDTO(ProviderSpecificResourcesDTO providerSpecificResourcesDTO)
-    {
-        this.providerSpecificResourcesDTO = providerSpecificResourcesDTO;
-    }
-
     public void displayProviderTitle()
     {
         if (providerTitle != null)
         {
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.timedHeaderLeaderboardTitleResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.timedHeaderLeaderboardTitleResId > 0)
             {
-                providerTitle.setText(providerSpecificResourcesDTO.timedHeaderLeaderboardTitleResId);
+                providerTitle.setText(providerDTO.specificResources.timedHeaderLeaderboardTitleResId);
             }
             else if (providerDTO != null)
             {

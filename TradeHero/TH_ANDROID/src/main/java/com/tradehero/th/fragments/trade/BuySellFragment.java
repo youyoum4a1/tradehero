@@ -82,7 +82,6 @@ import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.service.SocialServiceWrapper;
@@ -178,7 +177,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject WatchlistPositionCache watchlistPositionCache;
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject Picasso picasso;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
@@ -402,11 +400,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         inflater.inflate(R.menu.buy_sell_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        //inflater.inflate(R.menu.buy_sell_menu_toggle, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)

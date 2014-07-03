@@ -1,5 +1,6 @@
 package com.tradehero.th.models.provider;
 
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.models.provider.macquarie.MacquarieProviderSpecificKnowledgeDTO;
@@ -10,9 +11,21 @@ import javax.inject.Singleton;
 
 @Singleton public class ProviderSpecificKnowledgeFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public ProviderSpecificKnowledgeFactory()
     {
         super();
+    }
+    //</editor-fold>
+
+    public ProviderSpecificKnowledgeDTO createKnowledge(ProviderDTO providerDTO)
+    {
+        ProviderSpecificKnowledgeDTO created = null;
+        if (providerDTO != null)
+        {
+            created = createKnowledge(providerDTO.getProviderId());
+        }
+        return created;
     }
 
     public ProviderSpecificKnowledgeDTO createKnowledge(ProviderId providerId)

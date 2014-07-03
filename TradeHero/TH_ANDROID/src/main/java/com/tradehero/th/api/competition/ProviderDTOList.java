@@ -1,27 +1,18 @@
 package com.tradehero.th.api.competition;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class ProviderDTOList extends ArrayList<ProviderDTO>
+    implements DTO
 {
     //<editor-fold desc="Constructors">
-    public ProviderDTOList(int initialCapacity)
-    {
-        super(initialCapacity);
-    }
-
     public ProviderDTOList()
     {
         super();
-    }
-
-    public ProviderDTOList(Collection<? extends ProviderDTO> c)
-    {
-        super(c);
     }
     //</editor-fold>
 

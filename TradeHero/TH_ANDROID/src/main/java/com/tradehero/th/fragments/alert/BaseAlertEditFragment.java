@@ -176,10 +176,13 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.alert_edit_menu, menu);
-        getSherlockActivity().getActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP
-                        | ActionBar.DISPLAY_SHOW_HOME
-                        | ActionBar.DISPLAY_SHOW_TITLE);
+//<<<<<<< HEAD
+//        getSherlockActivity().getActionBar().setDisplayOptions(
+//                ActionBar.DISPLAY_HOME_AS_UP
+//                        | ActionBar.DISPLAY_SHOW_HOME
+//                        | ActionBar.DISPLAY_SHOW_TITLE);
+//=======
+//>>>>>>> origin/develop2.0
         displayActionBarTitle();
     }
 

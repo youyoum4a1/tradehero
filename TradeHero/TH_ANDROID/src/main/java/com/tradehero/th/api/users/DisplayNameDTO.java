@@ -1,18 +1,32 @@
 package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTOKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DisplayNameDTO implements DTOKey
 {
-    public final String displayName;
+    @NotNull public final String displayName;
 
-    public DisplayNameDTO(String displayName)
+    //<editor-fold desc="Constructors">
+    public DisplayNameDTO(@NotNull String displayName)
     {
         this.displayName = displayName;
     }
+    //</editor-fold>
 
-    public boolean isSameName(String otherName)
+    @Override public int hashCode()
     {
-        return displayName == null ? otherName == null : displayName.equals(otherName);
+        return displayName.hashCode();
+    }
+
+    @Override public boolean equals(@Nullable Object other)
+    {
+        return other instanceof DisplayNameDTO && isSameName(((DisplayNameDTO) other).displayName);
+    }
+
+    public boolean isSameName(@Nullable String otherName)
+    {
+        return otherName != null && displayName.equals(otherName);
     }
 }

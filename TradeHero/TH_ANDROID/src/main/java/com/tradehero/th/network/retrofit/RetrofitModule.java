@@ -198,14 +198,14 @@ public class RetrofitModule
         return adapter.create(WeChatService.class);
     }
 
-    @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
-    {
-        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
-    }
-
     @Provides @Singleton AlipayService provideAlipayService(RestAdapter adapter)
     {
         return adapter.create(AlipayService.class);
+    }
+
+    @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
+    {
+        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 
     @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)

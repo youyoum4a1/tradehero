@@ -10,7 +10,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -37,10 +36,15 @@ public class HomeFragment extends BaseWebViewFragment
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject @LanguageCode String languageCode;
-    @Inject ResideMenu resideMenu;
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
     private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        homeContentCacheListener = createHomeContentCacheListener();
+    }
 
     @Override protected int getLayoutResId()
     {
@@ -55,34 +59,13 @@ public class HomeFragment extends BaseWebViewFragment
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setSupportZoom(false);
         webView.getSettings().setUseWideViewPort(false);
+    }
 
-        detachHomeCacheListener();
-        homeContentCacheListener = createHomeContentCacheListener();
+    @Override public void onStart()
+    {
+        super.onStart();
         homeContentCache.register(currentUserId.toUserBaseKey(), homeContentCacheListener);
         homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
-    }
-
-    @Override public void onStop()
-    {
-        detachHomeCacheListener();
-        super.onStop();
-    }
-
-    private void detachHomeCacheListener()
-    {
-        homeContentCache.unregister(currentUserId.toUserBaseKey(), homeContentCacheListener);
-    }
-
-    private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> createHomeContentCacheListener()
-    {
-        return new HomeContentCacheListener();
-    }
-
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
-        super.onDestroyView();
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
@@ -92,37 +75,10 @@ public class HomeFragment extends BaseWebViewFragment
         reloadWebView();
     }
 
-    private void reloadWebView()
-    {
-        Map<String, String> additionalHeaders = new HashMap<>();
-        additionalHeaders.put(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
-        additionalHeaders.put(Constants.TH_CLIENT_VERSION, VersionUtils.getVersionId(getActivity()));
-        additionalHeaders.put(Constants.TH_LANGUAGE_CODE, languageCode);
-
-        String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
-
-        HomeContentDTO homeContentDTO = homeContentCache.get(currentUserId.toUserBaseKey());
-        if (homeContentDTO != null)
-        {
-            Timber.d("Getting home app data from cache!");
-            webView.loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
-        }
-        else
-        {
-            loadUrl(appHomeLink, additionalHeaders);
-        }
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.dashboard_home);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        actionBar.setHomeButtonEnabled(true);
-
         inflater.inflate(R.menu.menu_refresh_button, menu);
     }
 
@@ -130,15 +86,66 @@ public class HomeFragment extends BaseWebViewFragment
     {
         switch (item.getItemId())
         {
-            case android.R.id.home:
-                resideMenu.openMenu();
-                return true;
             case R.id.btn_fresh:
                 homeContentCache.invalidate(currentUserId.toUserBaseKey());
                 reloadWebView();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onStop()
+    {
+        detachHomeCacheListener();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        homeContentCacheListener = null;
+        super.onDestroy();
+    }
+
+    private void detachHomeCacheListener()
+    {
+        homeContentCache.unregister(currentUserId.toUserBaseKey(), homeContentCacheListener);
+    }
+
+    private void reloadWebView()
+    {
+        reloadWebView(homeContentCache.get(currentUserId.toUserBaseKey()));
+    }
+
+    private void reloadWebView(HomeContentDTO homeContentDTO)
+    {
+        String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
+
+        if (homeContentDTO != null)
+        {
+            Timber.d("Getting home app data from cache!");
+            webView.loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
+        }
+        else
+        {
+            Map<String, String> additionalHeaders = new HashMap<>();
+            additionalHeaders.put(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
+            additionalHeaders.put(Constants.TH_CLIENT_VERSION, VersionUtils.getVersionId(getActivity()));
+            additionalHeaders.put(Constants.TH_LANGUAGE_CODE, languageCode);
+
+            loadUrl(appHomeLink, additionalHeaders);
+        }
+    }
+
+    public String createTypedAuthParameters(CredentialsDTO credentialsDTO)
+    {
+        return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
     }
 
     @Override protected void onProgressChanged(WebView view, int newProgress)
@@ -156,17 +163,22 @@ public class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    public String createTypedAuthParameters(CredentialsDTO credentialsDTO)
+    //<editor-fold desc="Listeners">
+    private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> createHomeContentCacheListener()
     {
-        return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
+        return new HomeContentCacheListener();
     }
 
-
-    private class HomeContentCacheListener implements DTOCacheNew.Listener<UserBaseKey, HomeContentDTO>
+    private class HomeContentCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, HomeContentDTO>
     {
+        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
+        {
+            reloadWebView(value);
+        }
+
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
         {
-            reloadWebView();
+            reloadWebView(value);
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -174,4 +186,5 @@ public class HomeFragment extends BaseWebViewFragment
             // do nothing
         }
     }
+    //</editor-fold>
 }

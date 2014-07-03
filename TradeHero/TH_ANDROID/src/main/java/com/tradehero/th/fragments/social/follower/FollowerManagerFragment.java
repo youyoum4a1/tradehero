@@ -78,11 +78,9 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME);
+        super.onCreateOptionsMenu(menu, inflater);
 
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setTitle(getString(R.string.social_followers));
 
         Fragment f = getCurrentFragment();
@@ -90,8 +88,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             ((SherlockFragment)getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
         }
-
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
