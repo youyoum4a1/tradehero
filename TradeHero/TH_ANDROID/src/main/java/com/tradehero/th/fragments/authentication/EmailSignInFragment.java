@@ -59,7 +59,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         localyticsSession.get().open(custom_dimensions);
         localyticsSession.get().tagScreen(LocalyticsConstants.Login_Form);
         localyticsSession.get().tagEvent(LocalyticsConstants.LoginFormScreen);
-        localyticsSession.get().upload();
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

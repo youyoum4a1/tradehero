@@ -285,7 +285,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         List custom_dimensions = new ArrayList();
         custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
         localyticsSession.get().open(custom_dimensions);
-        localyticsSession.get().upload();
     }
 
     @Override protected void onNewIntent(Intent intent)

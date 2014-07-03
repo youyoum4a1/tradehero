@@ -97,7 +97,6 @@ public class SplashActivity extends SherlockActivity
 
         localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
-        localyticsSession.get().upload();
         AppEventsLogger.activateApp(this, facebookAppId);
         tapStream.get().fireEvent(
                 new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
