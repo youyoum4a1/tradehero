@@ -182,6 +182,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             leaderboardMarkUserListAdapter = createLeaderboardMarkUserAdapter();
             leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+            leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
             leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
             leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
             leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
@@ -218,6 +219,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         else
         {
             Timber.d("onResume filterFragment is null");
+        }
+
+        if (leaderboardMarkUserListAdapter != null && getApplicablePortfolioId() != null)
+        {
+            leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
+            leaderboardMarkUserListAdapter.notifyDataSetChanged();
         }
     }
 
@@ -275,8 +282,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
      */
 
     /**
-     * Update 22 Feb 2014: We are not using different mode for leaderboard item type anymore,
-     * Instead, filter mode feature is implemented, therefore, no need to clear listview's recycle!!!
+     * Update 22 Feb 2014: We are not using different mode for leaderboard item type anymore, Instead, filter mode feature is implemented, therefore,
+     * no need to clear listview's recycle!!!
      */
     @Deprecated
     protected void invalidateCachedItemView()
@@ -301,9 +308,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                         getResources(),
                         (PerPagedFilteredLeaderboardKey) currentLeaderboardKey);
                 filterIcon.setIcon(
-                         areEqual ?
-                            R.drawable.filter :
-                            R.drawable.filter_active
+                        areEqual ?
+                                R.drawable.filter :
+                                R.drawable.filter_active
                 );
             }
             else

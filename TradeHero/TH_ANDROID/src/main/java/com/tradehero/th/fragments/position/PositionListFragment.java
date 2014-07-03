@@ -345,7 +345,14 @@ public class PositionListFragment
     protected void pushSecurityFragment()
     {
         Bundle args = new Bundle();
-        passApplicablePortfolioId(args);
+
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+
+        if (ownedPortfolioId != null)
+        {
+            TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+
         getDashboardNavigator().pushFragment(TrendingFragment.class, args);
     }
 
@@ -644,6 +651,13 @@ public class PositionListFragment
                     BuySellFragment.putApplicablePortfolioId(args, clickedPositionDTO.getOwnedPortfolioId());
                 }
                 args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
+
+                OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+                if (ownedPortfolioId != null)
+                {
+                    BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                }
+
                 getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }

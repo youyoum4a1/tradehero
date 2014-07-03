@@ -52,10 +52,16 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     {
         // leaderboard mark user id, to get marking user information
         Bundle bundle = new Bundle();
+
         CompetitionLeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, leaderboardItem.getLeaderboardMarkUserId());
         CompetitionLeaderboardPositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
         CompetitionLeaderboardPositionListFragment.putProviderId(bundle, providerDTO.getProviderId());
-        getNavigator().pushFragment(CompetitionLeaderboardPositionListFragment.class, bundle);
 
+        if (applicablePortfolioId != null)
+        {
+            CompetitionLeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+        }
+
+        getNavigator().pushFragment(CompetitionLeaderboardPositionListFragment.class, bundle);
     }
 }

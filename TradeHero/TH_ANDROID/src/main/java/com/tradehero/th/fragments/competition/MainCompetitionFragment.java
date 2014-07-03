@@ -368,7 +368,13 @@ public class MainCompetitionFragment extends CompetitionFragment
                 competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,
                 leaderboardDefDTO.desc);
-        CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        if(ownedPortfolioId != null)
+        {
+            CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
             getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,

@@ -448,7 +448,14 @@ public class TrendingFragment extends SecurityListFragment
                 securityCompactDTO.getSecurityId());
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
-        passApplicablePortfolioId(args);
+
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+
+        if (ownedPortfolioId != null)
+        {
+            BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+
         getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 

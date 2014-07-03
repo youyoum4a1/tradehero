@@ -21,6 +21,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -69,6 +70,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
+    protected OwnedPortfolioId applicablePortfolioId;
+
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     protected FollowDialogCombo followDialogCombo;
@@ -235,6 +238,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
+    public void linkWith(OwnedPortfolioId applicablePortfolioId)
+    {
+        this.applicablePortfolioId = applicablePortfolioId;
+    }
+
     public Boolean isCurrentUserFollowing()
     {
         if (currentUserProfileDTO == null || leaderboardItem == null)
@@ -299,9 +307,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (lbmuFoF != null)
         {
             lbmuFoF.setVisibility(
-                    leaderboardItem.isIncludeFoF() != null &&leaderboardItem.isIncludeFoF() &&
+                    leaderboardItem.isIncludeFoF() != null && leaderboardItem.isIncludeFoF() &&
                             !StringUtils.isNullOrEmptyOrSpaces(
-                            leaderboardItem.friendOfMarkupString) ? VISIBLE : GONE);
+                                    leaderboardItem.friendOfMarkupString) ? VISIBLE : GONE);
             lbmuFoF.setText(leaderboardItem.friendOfMarkupString);
         }
 
@@ -338,8 +346,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 {
                     countryLogo.setImageResource(R.drawable.default_image);
                 }
-            }
-            catch (OutOfMemoryError e)
+            } catch (OutOfMemoryError e)
             {
                 Timber.e(e, null);
             }
@@ -356,8 +363,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         try
         {
             return Country.valueOf(country).logoId;
-        }
-        catch (IllegalArgumentException ex)
+        } catch (IllegalArgumentException ex)
         {
             return defaultResId;
         }
@@ -618,7 +624,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         Bundle bundle = new Bundle();
         LeaderboardPositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
         LeaderboardPositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
-        if(leaderboardDefDTO != null)
+        if (leaderboardDefDTO != null)
         {
             LeaderboardPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDefDTO.isTimeRestrictedLeaderboard());
         }
@@ -626,6 +632,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
         String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
         LeaderboardPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
+
+        if (applicablePortfolioId != null)
+        {
+            LeaderboardPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+        }
+
         getNavigator().pushFragment(LeaderboardPositionListFragment.class, bundle);
     }
 
@@ -634,6 +646,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         Bundle bundle = new Bundle();
         PositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
         PositionListFragment.putShownUser(bundle, leaderboardItem.getBaseKey());
+
+        if (applicablePortfolioId != null)
+        {
+            PositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+        }
+
         getNavigator().pushFragment(PositionListFragment.class, bundle);
     }
 
