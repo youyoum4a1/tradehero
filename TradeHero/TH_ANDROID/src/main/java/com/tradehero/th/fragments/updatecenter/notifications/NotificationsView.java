@@ -25,7 +25,7 @@ import com.tradehero.th.api.notification.PaginatedNotificationListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.notification.NotificationListCache;
@@ -33,8 +33,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import dagger.Lazy;
-import java.util.HashMap;
-import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
@@ -58,9 +56,7 @@ public class NotificationsView extends BetterViewAnimator
     private boolean loading;
     private int nextPageDelta;
 
-    @NotNull private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
-    @NotNull private Map<Integer, Callback<Response>> callbackMap;
-
+    @NotNull private MiddleCallbackWeakList<Response> middleCallbacks;
     private DTOCacheNew.Listener<NotificationListKey, NotificationKeyList> notificationListFetchListener;
     private DTOCacheNew.Listener<NotificationListKey, NotificationKeyList> notificationListRefreshListener;
     private NotificationListKey notificationListKey;
@@ -82,8 +78,7 @@ public class NotificationsView extends BetterViewAnimator
 
     protected void init()
     {
-        callbackMap = new HashMap<>();
-        middleCallbackMap = new HashMap<>();
+        middleCallbacks = new MiddleCallbackWeakList<>();
     }
     //</editor-fold>
 
@@ -143,19 +138,7 @@ public class NotificationsView extends BetterViewAnimator
 
     private void unsetMiddleCallback()
     {
-        if (middleCallbackMap != null)
-        {
-            for (MiddleCallback<Response> middleCallback: middleCallbackMap.values())
-            {
-                middleCallback.setPrimaryCallback(null);
-            }
-            middleCallbackMap.clear();
-        }
-
-        if (callbackMap != null)
-        {
-            callbackMap.clear();
-        }
+        middleCallbacks.detach();
     }
 
     @Override protected void onDetachedFromWindow()
@@ -270,22 +253,10 @@ public class NotificationsView extends BetterViewAnimator
 
     protected void reportNotificationRead(int pushId)
     {
-        MiddleCallback<Response> middleCallback = middleCallbackMap.get(pushId);
-        if (middleCallback == null)
-        {
-            middleCallback = notificationServiceWrapper.markAsRead(new NotificationKey(pushId), getCallback(pushId));
-            middleCallbackMap.put(pushId, middleCallback);
-        }
-    }
-
-    private Callback<Response> getCallback(int pushId)
-    {
-        Callback<Response> callback = callbackMap.get(pushId);
-        if (callback == null)
-        {
-            callback = new NotificationMarkAsReadCallback(pushId);
-        }
-        return callback;
+        middleCallbacks.add(
+                notificationServiceWrapper.markAsRead(
+                        new NotificationKey(pushId),
+                        createMarkNotificationAsReadCallback()));
     }
 
     private DTOCacheNew.Listener<NotificationListKey, NotificationKeyList> createNotificationFetchListener()
@@ -375,23 +346,15 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    private class NotificationMarkAsReadCallback implements Callback<Response>
+    protected Callback<Response> createMarkNotificationAsReadCallback()
     {
-        private final int pushId;
+        return new NotificationMarkAsReadCallback();
+    }
 
-        public NotificationMarkAsReadCallback(int pushId)
-        {
-            this.pushId = pushId;
-        }
-
+    protected class NotificationMarkAsReadCallback implements Callback<Response>
+    {
         @Override public void success(Response response, Response response2)
         {
-            Timber.d("Notification %d is reported as read", pushId);
-            // TODO update title
-
-            middleCallbackMap.remove(pushId);
-            callbackMap.remove(pushId);
-            requestUpdateTabCounter();
             if(notificationListAdapter!=null)
             {
                 notificationListAdapter.notifyDataSetChanged();
@@ -400,7 +363,6 @@ public class NotificationsView extends BetterViewAnimator
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            Timber.d("Report failure for notification: %d", pushId);
         }
     }
 
