@@ -49,6 +49,8 @@ import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -75,7 +77,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
 
-    private SecurityId securityId;
+    @Nullable private SecurityId securityId;
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
     private ProgressDialog progressDialog;
@@ -86,12 +88,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private DiscussionKey discussionKey;
     private boolean isPosted;
 
-    public static void putSecurityId(Bundle args, SecurityId securityId)
+    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
         args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
     }
 
-    public static SecurityId getSecurityId(Bundle args)
+    @Nullable public static SecurityId getSecurityId(@Nullable Bundle args)
     {
         SecurityId extracted = null;
         if (args != null && args.containsKey(BUNDLE_KEY_SECURITY_ID))
@@ -216,6 +218,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     private void postDiscussion()
     {
+        // TODO ensure securityId is not null
         SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
         if (validate())
         {
