@@ -36,6 +36,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     private TradeDTO trade;
     private PositionDTO position;
     private boolean prettyDate = true;
+    private String strDispaly;
 
     @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
@@ -107,6 +108,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         linkWith(expandableItem, true);
     }
 
+
     public void linkWith(TradeListItemAdapter.ExpandableTradeItem item, boolean andDisplay)
     {
         this.tradeItem = item;
@@ -114,6 +116,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         {
             this.position = positionCache.get().get(tradeItem.getModel().positionDTOKey);
             this.trade = tradeCache.get().get(tradeItem.getModel().ownedTradeId);
+            this.strDispaly = securityCache.get().get(securityIdCache.get().get(position.getSecurityIntegerId())).currencyDisplay;
         }
         else
         {
@@ -165,7 +168,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
             int textResId = trade.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
             THSignedNumber tradeValue = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
-                    trade.unitPrice * trade.exchangeRate,
+                    trade.unitPrice, //* trade.exchangeRate,
                     THSignedNumber.WITHOUT_SIGN,
                     getCurrencyDisplay());
             return getContext().getString(
@@ -335,7 +338,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         {
             THSignedNumber tradeValue = new THSignedNumber(
                     THSignedNumber.TYPE_MONEY,
-                    trade.quantity * trade.unitPrice * trade.exchangeRate,
+                    trade.quantity * trade.unitPrice ,//* trade.exchangeRate,
                     THSignedNumber.WITHOUT_SIGN,
                     getCurrencyDisplay());
             return String.format("%s", tradeValue.toString());
@@ -365,6 +368,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     @NotNull
     private String getCurrencyDisplay()
     {
+        if(strDispaly!=null)return strDispaly;
         if (position == null)
         {
             return "null";
