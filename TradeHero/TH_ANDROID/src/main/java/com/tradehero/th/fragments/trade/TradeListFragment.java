@@ -15,6 +15,7 @@ import com.thoj.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOKey;
@@ -208,7 +209,13 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             {
                 Bundle args = new Bundle();
                 populateBuySellArgs(args, isBuy, securityId);
-                passApplicablePortfolioId(args);
+                OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+
+                if (ownedPortfolioId != null)
+                {
+                    BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                }
+
                 getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
