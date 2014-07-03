@@ -19,6 +19,7 @@
 
   <string name="intent_host_providers" translatable="false">providers</string>
   <string name="intent_host_security" translatable="false">security</string>
+  <string name="intent_host_home" translatable="false">home</string>
 
   <!-- Building tradehero://trending/buy/OTCBB/MJNA -->
   <string name="intent_uri_action_trade_security" translatable="false">%1$s://%2$s/%3$s/%4$s/%5$s</string>
