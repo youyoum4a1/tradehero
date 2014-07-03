@@ -28,18 +28,41 @@
       >
   </com.tradehero.th.fragments.trending.TrendingSecurityGridView>
 
-  <EditText
-      android:id="@+id/filter_text"
+  <LinearLayout
+      android:id="@+id/filter_text_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignParentTop="true"
-      android:paddingLeft="8dp"
-      android:background="#f7ffffff"
-      android:maxLines="1"
-      android:drawableRight="@android:drawable/ic_search_category_default"
-      android:hint="@string/provider_security_list_search_hint"
+      android:orientation="horizontal"
+      >
+
+    <EditText
+        android:id="@+id/filter_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:background="#f7ffffff"
+        android:maxLines="1"
+        android:drawableRight="@android:drawable/ic_search_category_default"
+        android:hint="@string/provider_security_list_search_hint"
+        android:textSize="16sp"
+        android:visibility="gone"
+        />
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/provider_securities_tradable"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/price_bar_text_default"
+      android:paddingTop="8dp"
+      android:paddingBottom="8dp"
+      android:gravity="center"
+      android:text="@string/provider_security_list_tradable"
       android:textSize="16sp"
-      android:visibility="gone"
+      android:textColor="@color/white"
+      android:textStyle="bold"
       />
 
   <ProgressBar
