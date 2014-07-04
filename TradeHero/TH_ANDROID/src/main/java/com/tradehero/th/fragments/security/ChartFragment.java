@@ -34,6 +34,7 @@ import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
@@ -47,7 +48,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private ChartDTO chartDTO;
-    private WarrantDTO warrantDTO;
+    @Nullable private WarrantDTO warrantDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
     @InjectView(R.id.close) @Optional protected Button mCloseButton;
 
@@ -286,7 +287,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
     }
 
-    public void linkWith(WarrantDTO warrantDTO, boolean andDisplay)
+    public void linkWith(@Nullable WarrantDTO warrantDTO, boolean andDisplay)
     {
         this.warrantDTO = warrantDTO;
         if (andDisplay)
