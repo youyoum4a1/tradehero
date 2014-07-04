@@ -6,6 +6,7 @@ import com.tradehero.th.fragments.discussion.DiscussionView;
 import com.tradehero.th.fragments.discussion.MentionActionButtonsView;
 import com.tradehero.th.fragments.discussion.NewsDiscussionView;
 import com.tradehero.th.fragments.discussion.PostCommentView;
+import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
@@ -62,6 +63,7 @@ import org.ocpsoft.prettytime.PrettyTime;
                 NewsDiscussionView.class,
 
                 DiscussionEditPostFragment.class,
+                SecurityDiscussionEditPostFragment.class,
                 DiscussionPostActionButtonsView.class,
                 MentionActionButtonsView.class,
 

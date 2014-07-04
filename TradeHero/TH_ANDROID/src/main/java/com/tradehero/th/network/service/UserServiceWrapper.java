@@ -7,6 +7,7 @@ import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
@@ -559,37 +560,57 @@ import retrofit.client.Response;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Get Friends">
-    public UserFriendsDTOList getFriends(@NotNull UserBaseKey userKey)
+    //<editor-fold desc="Get Social Friends">
+    public UserFriendsDTOList getFriends(@NotNull FriendsListKey friendsListKey)
     {
-        return userService.getFriends(userKey.key);
+        UserFriendsDTOList received;
+        if (friendsListKey.searchQuery != null)
+        {
+            received = userService.searchSocialFriends(
+                    friendsListKey.userBaseKey.key,
+                    friendsListKey.socialNetworkEnum,
+                    friendsListKey.searchQuery);
+        }
+        else if (friendsListKey.socialNetworkEnum != null)
+        {
+            received = userService.getSocialFriends(
+                    friendsListKey.userBaseKey.key,
+                    friendsListKey.socialNetworkEnum);
+        }
+        else
+        {
+            received = userService.getFriends(
+                    friendsListKey.userBaseKey.key);
+        }
+        return received;
     }
 
     public MiddleCallback<UserFriendsDTOList> getFriends(
-            @NotNull UserBaseKey userKey,
+            @NotNull FriendsListKey friendsListKey,
             @Nullable Callback<UserFriendsDTOList> callback)
     {
         MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getFriends(userKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get Social Friends">
-    public UserFriendsDTOList getSocialFriends(
-            @NotNull UserBaseKey userKey,
-            @NotNull SocialNetworkEnum socialNetworkEnum)
-    {
-        return userService.getSocialFriends(userKey.key, socialNetworkEnum);
-    }
-
-    public MiddleCallback<UserFriendsDTOList> getSocialFriends(
-            @NotNull UserBaseKey userKey,
-            @NotNull SocialNetworkEnum socialNetworkEnum,
-            @Nullable Callback<UserFriendsDTOList> callback)
-    {
-        MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getSocialFriends(userKey.key,socialNetworkEnum,middleCallback);
+        if (friendsListKey.searchQuery != null)
+        {
+            userServiceAsync.searchSocialFriends(
+                    friendsListKey.userBaseKey.key,
+                    friendsListKey.socialNetworkEnum,
+                    friendsListKey.searchQuery,
+                    middleCallback);
+        }
+        else if (friendsListKey.socialNetworkEnum != null)
+        {
+            userServiceAsync.getSocialFriends(
+                    friendsListKey.userBaseKey.key,
+                    friendsListKey.socialNetworkEnum,
+                    middleCallback);
+        }
+        else
+        {
+            userServiceAsync.getFriends(
+                    friendsListKey.userBaseKey.key,
+                    middleCallback);
+        }
         return middleCallback;
     }
     //</editor-fold>

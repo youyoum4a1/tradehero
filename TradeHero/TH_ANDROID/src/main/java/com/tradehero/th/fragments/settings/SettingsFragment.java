@@ -45,6 +45,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -706,7 +707,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleTopBannerClicked()
     {
-        getNavigator().pushFragment(InviteFriendFragment.class, null,
+        getNavigator().pushFragment(FriendsInvitationFragment.class, null,
                 Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
@@ -1111,7 +1112,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
-                progressDialog.hide();
+                progressDialog.dismiss();
                 // TODO move these lines into MiddleCallbackLogout?
                 ActivityHelper.launchAuthentication(activity);
                 Timber.d("After successful signout current user base key %s",
@@ -1126,7 +1127,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 {
                     @Override public void run()
                     {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                     }
                 }, 3000);
             }

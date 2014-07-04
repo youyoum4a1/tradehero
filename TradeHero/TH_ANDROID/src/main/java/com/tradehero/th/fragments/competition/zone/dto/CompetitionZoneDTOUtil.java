@@ -29,6 +29,9 @@ public class CompetitionZoneDTOUtil
     {
         if (providerDTO != null)
         {
+            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
+            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
+
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_TRADE_NOW);
 
             if (providerDTO.specificResources != null

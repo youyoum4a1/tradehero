@@ -58,7 +58,6 @@ public class HomeFragment extends BaseWebViewFragment
 
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setSupportZoom(false);
-        webView.getSettings().setUseWideViewPort(false);
     }
 
     @Override public void onStart()
