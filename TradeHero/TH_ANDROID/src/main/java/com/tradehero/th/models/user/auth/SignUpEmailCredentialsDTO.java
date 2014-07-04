@@ -2,14 +2,17 @@ package com.tradehero.th.models.user.auth;
 
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.base.JSONCredentials;
 import org.json.JSONException;
 import org.json.JSONObject;
+import retrofit.mime.TypedOutput;
 
 public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
 {
     public final String displayName;
     public String firstName;
     public String lastName;
+    public TypedOutput profilePicture;
 
     public SignUpEmailCredentialsDTO(JSONObject object) throws JSONException
     {
@@ -21,7 +24,11 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
         }
         if (object.has(UserFormFactory.KEY_LAST_NAME))
         {
-            firstName = object.getString(UserFormFactory.KEY_LAST_NAME);
+            lastName = object.getString(UserFormFactory.KEY_LAST_NAME);
+        }
+        if (object instanceof JSONCredentials)
+        {
+            profilePicture = ((JSONCredentials)object).profilePicture;
         }
     }
 
@@ -45,6 +52,7 @@ public class SignUpEmailCredentialsDTO extends EmailCredentialsDTO
         userFormDTO.displayName = displayName;
         userFormDTO.firstName = firstName;
         userFormDTO.lastName = lastName;
+        userFormDTO.profilePicture = profilePicture;
         return userFormDTO;
     }
 }

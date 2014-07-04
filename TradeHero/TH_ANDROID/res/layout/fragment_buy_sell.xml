@@ -76,14 +76,15 @@
         />
 
     <ImageView
-        android:id="@+id/market_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/market_closed_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@drawable/basic_transparent_selector"
         android:src="@drawable/market_sleep_grey"
         />
@@ -104,7 +105,9 @@
           android:adjustViewBounds="true"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
-          android:visibility="visible"/>
+          android:visibility="visible"
+          tools:src="@drawable/flag_country_round_canada"
+          />
 
     </RelativeLayout>
 

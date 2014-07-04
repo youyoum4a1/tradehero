@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th"
     android:versionName="2.2.5"
-    android:versionCode="110"
+    android:versionCode="112"
     android:installLocation="auto">
 
   <uses-sdk
@@ -118,6 +118,7 @@
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_user" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_providers" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_home" android:pathPattern=".*"/>
       </intent-filter>
     </activity>
 
@@ -266,7 +267,6 @@
     </receiver>
 
     <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
-    <meta-data android:name="LOCALYTICS_APP_KEY" android:value="f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207"/>
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="431745923529834"/>
   </application>
 </manifest>

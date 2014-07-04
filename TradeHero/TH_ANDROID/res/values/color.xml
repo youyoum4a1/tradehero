@@ -16,7 +16,8 @@
   <color name="round_rectangle5">#009CDA</color>
   <color name="round_rectangle6">#0167A3</color>
   <color name="black">@android:color/black</color>
-  <color name="light_grey">#D6D6D6</color>
+  <color name="light_grey">#D0D0D0</color>
+  <color name="lighter_grey">#E6E6E6</color>
   <color name="light_grey_transparent">#99BFBFBF</color>
   <color name="white">@android:color/white</color>
   <color name="textbox_light_background_color">#fafafa</color>

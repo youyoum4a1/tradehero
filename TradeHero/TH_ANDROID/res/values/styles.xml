@@ -137,9 +137,9 @@
     <item name="android:actionButtonStyle">@style/TradeHero.Dashboard.ActionBarButton</item>
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
     <item name="android:actionBarItemBackground">@drawable/basic_transparent_selector</item>
+    <item name="android:actionMenuTextColor">@color/tradehero_blue</item>
     <item name="android:popupMenuStyle">@style/TradeHero.Dashboard.ActionBar.PopupMenu</item>
     <item name="android:dropDownListViewStyle">@style/TradeHero.Dashboard.ActionBar.DropDownListView</item>
-    <!--<item name="actionBarItemBackground">@drawable/actionbar_item_bg</item>-->
   </style>
 
   <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">
@@ -155,8 +155,7 @@
 
   <style name="TradeHero.Dashboard.ActionBar" parent="Widget.Sherlock.ActionBar">
     <item name="android:titleTextStyle">@style/TradeHero.Dashboard.ActionBar.TitleTextStyle</item>
-    <item name="android:actionMenuTextColor">@style/TradeHero.Dashboard.ActionBar.MenuTextColor
-    </item>
+    <item name="android:actionMenuTextColor">@color/tradehero_blue</item>
   </style>
 
     <style name="TradeHero.Dashboard.ActionBarButton" parent="Widget.Sherlock.Light.ActionButton">
@@ -172,7 +171,7 @@
       parent="TextAppearance.Sherlock.Widget.ActionBar.Menu">
     <item name="android:textSize">16sp</item>
     <item name="android:textStyle">bold</item>
-    <item name="android:textColor">@color/white</item>
+    <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:textAllCaps">false</item>
   </style>
 
@@ -182,10 +181,6 @@
 
   <style name="TradeHero.Dashboard.ActionBar.PopupMenu" parent="Widget.Sherlock.Light.PopupMenu">
     <item name="android:listSelector">@drawable/basic_transparent_selector</item>
-  </style>
-
-  <style name="TradeHero.Dashboard.ActionBar.MenuTextColor">
-    <item name="android:color">@color/white</item>
   </style>
 
   <style name="TH.ListItem">

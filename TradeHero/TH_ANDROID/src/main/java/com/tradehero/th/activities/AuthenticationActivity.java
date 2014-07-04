@@ -113,6 +113,10 @@ public class AuthenticationActivity extends SherlockFragmentActivity
 
     @Override protected void onPause()
     {
+        if (progressDialog != null)
+        {
+            progressDialog.dismiss();
+        }
         List custom_dimensions = new ArrayList();
         custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
         localyticsSession.get().close(custom_dimensions);

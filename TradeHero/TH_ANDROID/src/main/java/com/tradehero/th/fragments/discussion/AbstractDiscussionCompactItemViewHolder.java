@@ -117,7 +117,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             display();
         }
 
-        if (isAutoTranslate())
+        if (isAutoTranslate() && socialShareHelper.canTranslate(discussionDTO))
         {
             handleTranslationRequested();
         }

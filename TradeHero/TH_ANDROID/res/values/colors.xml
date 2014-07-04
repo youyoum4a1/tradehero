@@ -12,7 +12,7 @@
   <color name="timeline_background_color">#E3E8EE</color>
   <color name="timeline_action_button_text_color">#80929292</color>
   <color name="timeline_action_button_text_color_shadow">#000000</color>
-  <color name="timeline_action_button_text_color_pressed">#1376FB</color>
+  <color name="timeline_action_button_text_color_pressed">@color/tradehero_blue</color>
   <color name="notification_background_color">#181818</color>
   <color name="dashboard_background_color">#E3E8EE</color>
   <color name="profile_view_gradient_top">#80ffffff</color>
@@ -27,14 +27,16 @@
   <color name="orange">@android:color/holo_orange_light</color>
   <!--<color name="splash_background_solid">#4699c4</color>-->
   <color name="splash_background_solid">#58b0dd</color>
-  <color name="follow_button_background">#1376FB</color>
-  <color name="follow_button_background_pressed">#58b0dd</color>
+  <color name="follow_button_background">@color/tradehero_blue</color>
+  <color name="follow_button_background_pressed">@color/tradehero_blue</color>
   <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
   <color name="connect_accounts">#1376FB</color>
 
+  <color name="tradehero_blue">#1376FB</color>
+
   <color name="actionbar_menu_text_color">@android:color/darker_gray</color>
   <color name="leaderboard_user_item_text_color">#4C566B</color>
-  <color name="invite_friend_button_color">#1376FB</color>
+  <color name="invite_friend_button_color">@color/tradehero_blue</color>
   <drawable name="share_item_pressed_bg_grey">#ddd</drawable>
 
   <color name="follow_button_green">@color/light_green_selector</color>

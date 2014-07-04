@@ -39,6 +39,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -324,7 +325,9 @@ public class MainCompetitionFragment extends CompetitionFragment
             Bundle args = new Bundle();
             PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
             PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            getDashboardNavigator().pushFragment(PositionListFragment.class, args);
+            PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
+            getDashboardNavigator().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
         }
     }
 
@@ -365,7 +368,13 @@ public class MainCompetitionFragment extends CompetitionFragment
                 competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,
                 leaderboardDefDTO.desc);
-        CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        if(ownedPortfolioId != null)
+        {
+            CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
             getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,

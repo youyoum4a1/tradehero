@@ -40,8 +40,8 @@ public class SecurityCompactDTODeserialiserTest extends BaseApiTest
     @Test
     public void testNormalDeserialiseWarrantBody1() throws IOException
     {
-        WarrantDTO converted = normalMapper.readValue(warrantDTOBody1Stream, WarrantDTO.class);
+        SecurityCompactDTO converted = normalMapper.readValue(warrantDTOBody1Stream, SecurityCompactDTO.class);
         assertEquals(WarrantDTO.class, converted.getClass());
-        assertEquals(4.5d, converted.strikePrice, 0.0001d);
+        assertEquals(4.5d, ((WarrantDTO) converted).strikePrice, 0.0001d);
     }
 }
