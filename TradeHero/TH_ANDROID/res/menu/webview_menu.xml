@@ -15,6 +15,6 @@
       android:id="@+id/webview_view_in_browser"
       android:title="@string/webview_open_browser"
       android:showAsAction="ifRoom"
-      android:icon="@android:drawable/ic_menu_set_as"
+      android:icon="@drawable/ic_action_location_web_site"
       />
 </menu>
