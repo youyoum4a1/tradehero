@@ -138,6 +138,7 @@
     <item name="android:actionMenuTextAppearance">@style/TradeHero.Dashboard.ActionBar.Menu</item>
     <item name="android:actionBarItemBackground">@drawable/basic_transparent_selector</item>
     <item name="android:actionMenuTextColor">@color/tradehero_blue</item>
+    <item name="android:actionOverflowButtonStyle">@style/TradeHero.Dashboard.ActionBar.OverflowButtonStyle</item>
     <item name="android:popupMenuStyle">@style/TradeHero.Dashboard.ActionBar.PopupMenu</item>
     <item name="android:dropDownListViewStyle">@style/TradeHero.Dashboard.ActionBar.DropDownListView</item>
   </style>
@@ -150,7 +151,6 @@
     <item name="android:paddingLeft">@dimen/common_margin_4</item>
     <item name="android:drawablePadding">@dimen/common_margin_2</item>
     <item name="android:textColor">@color/black</item>
-    <!--<item name="android:background">@drawable/textbox_light_background</item>-->
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar" parent="Widget.Sherlock.ActionBar">
@@ -181,6 +181,10 @@
 
   <style name="TradeHero.Dashboard.ActionBar.PopupMenu" parent="Widget.Sherlock.Light.PopupMenu">
     <item name="android:listSelector">@drawable/basic_transparent_selector</item>
+  </style>
+
+  <style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle" parent="Widget.Sherlock.Light.ActionButton.Overflow">
+    <item name="android:src">@drawable/ic_action_core_overflow</item>
   </style>
 
   <style name="TH.ListItem">
@@ -325,6 +329,14 @@
     <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>
     <item name="android:textSize">14sp</item>
     <item name="android:inputType">text|textMultiLine|textImeMultiLine|textCapSentences|textAutoCorrect|textAutoComplete</item>
+  </style>
+
+  <style name="TH.DiscussionPostButtons">
+    <item name="android:gravity">center</item>
+    <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/tradehero_blue</item>
   </style>
 
 
