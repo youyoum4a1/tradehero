@@ -82,7 +82,6 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private Bundle savedState;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
