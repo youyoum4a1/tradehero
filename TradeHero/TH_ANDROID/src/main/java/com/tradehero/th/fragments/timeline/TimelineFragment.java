@@ -68,6 +68,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -467,27 +468,24 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Display methods">
-    protected void linkWith(UserBaseKey userBaseKey, final boolean andDisplay)
+    protected void linkWith(@NotNull UserBaseKey userBaseKey, final boolean andDisplay)
     {
         this.shownUserBaseKey = userBaseKey;
 
-        prepareTimelineAdapter();
+        prepareTimelineAdapter(userBaseKey);
 
-        if (userBaseKey != null)
-        {
-            createUserProfileRetrievedMilestone();
-            userProfileRetrievedMilestone.setOnCompleteListener(
-                    userProfileRetrievedMilestoneListener);
-            userProfileRetrievedMilestone.launch();
+        createUserProfileRetrievedMilestone();
+        userProfileRetrievedMilestone.setOnCompleteListener(
+                userProfileRetrievedMilestoneListener);
+        userProfileRetrievedMilestone.launch();
 
-            createPortfolioCompactListRetrievedMilestone();
-            portfolioCompactListRetrievedMilestone.setOnCompleteListener(
-                    portfolioCompactListRetrievedMilestoneListener);
-            portfolioCompactListRetrievedMilestone.launch();
-            destroyInfoFetcher();
-            infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
-            infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
-        }
+        createPortfolioCompactListRetrievedMilestone();
+        portfolioCompactListRetrievedMilestone.setOnCompleteListener(
+                portfolioCompactListRetrievedMilestoneListener);
+        portfolioCompactListRetrievedMilestone.launch();
+        destroyInfoFetcher();
+        infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
+        infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
 
         if (andDisplay)
         {
@@ -633,7 +631,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //</editor-fold>
 
     //<editor-fold desc="Initial methods">
-    private MainTimelineAdapter createTimelineAdapter()
+    private MainTimelineAdapter createTimelineAdapter(@NotNull UserBaseKey shownUserBaseKey)
     {
         return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
                 shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item_2_0,
@@ -641,9 +639,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         // TODO set the layouts
     }
 
-    private void prepareTimelineAdapter()
+    private void prepareTimelineAdapter(@NotNull final UserBaseKey shownUserBaseKey)
     {
-        mainTimelineAdapter = createTimelineAdapter();
+        mainTimelineAdapter = createTimelineAdapter(shownUserBaseKey);
         mainTimelineAdapter.setProfileClickListener(createTimelineProfileClickListener());
         mainTimelineAdapter.setOnLoadFinishedListener(
                 new MainTimelineAdapter.OnLoadFinishedListener()

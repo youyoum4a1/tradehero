@@ -24,6 +24,7 @@ import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -49,7 +50,7 @@ public class MainTimelineAdapter extends ArrayAdapter
 
     public MainTimelineAdapter(Activity context,
             LayoutInflater inflater,
-            UserBaseKey shownUserBaseKey,
+            @NotNull UserBaseKey shownUserBaseKey,
             int timelineItemViewResId,
             int portfolioItemViewResId,
             int statResId)
