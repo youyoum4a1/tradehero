@@ -232,7 +232,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle();
         thRouter.save(bundle, userId);
 
-        if (!currentUserId.toUserBaseKey().equals(userId.key))
+        if (!currentUserId.toUserBaseKey().equals(userId))
         {
             getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
