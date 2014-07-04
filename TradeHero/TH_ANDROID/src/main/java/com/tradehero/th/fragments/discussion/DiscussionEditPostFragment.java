@@ -31,7 +31,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
@@ -49,8 +48,6 @@ import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -58,7 +55,6 @@ import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
 {
-    private static final String BUNDLE_KEY_SECURITY_ID = DiscussionEditPostFragment.class.getName() + ".securityId";
     private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
     private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
@@ -77,7 +73,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
 
-    @Nullable private SecurityId securityId;
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
     private ProgressDialog progressDialog;
@@ -87,21 +82,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private SearchStockPeopleFragment searchStockPeopleFragment;
     private DiscussionKey discussionKey;
     private boolean isPosted;
-
-    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
-    {
-        args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
-    }
-
-    @Nullable public static SecurityId getSecurityId(@Nullable Bundle args)
-    {
-        SecurityId extracted = null;
-        if (args != null && args.containsKey(BUNDLE_KEY_SECURITY_ID))
-        {
-            extracted = new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
-        }
-        return extracted;
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -216,42 +196,45 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return notEmptyText;
     }
 
-    private void postDiscussion()
+    protected void postDiscussion()
     {
-        // TODO a subclass that has a @NotNull SecurityId
-        SecurityCompactDTO securityCompactDTO = null;
-        if (securityId != null)
-        {
-            securityCompactDTO = securityCompactCache.get(securityId);
-        }
         if (validate())
         {
-            DiscussionType discussionType = null;
-            int discussionId = 0;
-            if (securityCompactDTO != null)
-            {
-                discussionType = DiscussionType.SECURITY;
-                discussionId = securityCompactDTO.id;
-            }
-            else if (discussionKey != null)
-            {
-                discussionType = discussionKey.getType();
-                discussionId = discussionKey.id;
-            }
-            else
-            {
-                return;
-            }
+            DiscussionFormDTO discussionFormDTO = buildDiscussionFormDTO();
+            if (discussionFormDTO == null) return;
 
-            DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
-            discussionFormDTO.inReplyToId = discussionId;
-            discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
             discussionPostActionButtonsView.populate(discussionFormDTO);
 
             unsetDiscussionEditMiddleCallback();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
             discussionEditMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new SecurityDiscussionEditCallback());
         }
+    }
+
+    protected DiscussionFormDTO buildDiscussionFormDTO()
+    {
+        DiscussionType discussionType = getDiscussionType();
+        if (discussionType != null)
+        {
+            DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
+            if (discussionKey != null)
+            {
+                discussionFormDTO.inReplyToId = discussionKey.id;
+            }
+            discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
+            return discussionFormDTO;
+        }
+
+        return null;
+    }
+
+    protected DiscussionType getDiscussionType()
+    {
+        if (discussionKey != null)
+        {
+            return discussionKey.getType();
+        }
+        return null;
     }
 
     private void unsetDiscussionEditMiddleCallback()
@@ -274,12 +257,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         super.onResume();
 
         isPosted = false;
-
-        SecurityId fromArgs = getSecurityId(getArguments());
-        if (fromArgs != null)
-        {
-            linkWith(fromArgs, true);
-        }
 
         Bundle args = getArguments();
         if (args != null)
@@ -348,24 +325,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
             editableCopy = editableCopy.replace(spanStart, spanEnd, span.getOriginalText());
         }
         return editableCopy;
-    }
-
-    private void linkWith(SecurityId securityId, boolean andDisplay)
-    {
-        this.securityId = securityId;
-
-        if (andDisplay && securityId != null)
-        {
-            String securityName = String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol());
-            discussionPostContent.setHint(getString(R.string.discussion_new_post_hint, securityName));
-        }
-
-        SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
-        if (andDisplay && securityCompactDTO != null)
-        {
-            getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_edit_post_subtitle, securityCompactDTO.name));
-            getSherlockActivity().invalidateOptionsMenu();
-        }
     }
 
     private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
