@@ -24,6 +24,7 @@ public class ProviderDTO implements DTO
     public List<AdDTO> advertisements;
     public String competitionScreenTitle;
     public String competitionScreenSubtitle;
+    public String textHexColor;
     public String joinedLogoUrl;
     public String secondaryHexColor;
     public String providerSubtitle;
