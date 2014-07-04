@@ -140,6 +140,7 @@
     <item name="android:actionMenuTextColor">@color/tradehero_blue</item>
     <item name="android:actionOverflowButtonStyle">@style/TradeHero.Dashboard.ActionBar.OverflowButtonStyle</item>
     <item name="android:popupMenuStyle">@style/TradeHero.Dashboard.ActionBar.PopupMenu</item>
+    <item name="android:actionBarWidgetTheme">@style/TradeHero.Dashboard.ActionBar.WidgetStyle</item>
     <item name="android:dropDownListViewStyle">@style/TradeHero.Dashboard.ActionBar.DropDownListView</item>
   </style>
 
@@ -170,7 +171,7 @@
   <style name="TradeHero.Dashboard.ActionBar.Menu"
       parent="TextAppearance.Sherlock.Widget.ActionBar.Menu">
     <item name="android:textSize">16sp</item>
-    <item name="android:textStyle">bold</item>
+    <!--<item name="android:textStyle">bold</item>-->
     <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:textAllCaps">false</item>
   </style>
@@ -185,6 +186,10 @@
 
   <style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle" parent="Widget.Sherlock.Light.ActionButton.Overflow">
     <item name="android:src">@drawable/ic_action_core_overflow</item>
+  </style>
+
+  <style name="TradeHero.Dashboard.ActionBar.WidgetStyle" parent="Widget">
+    <item name="android:textColor">@color/tradehero_blue</item>
   </style>
 
   <style name="TH.ListItem">
