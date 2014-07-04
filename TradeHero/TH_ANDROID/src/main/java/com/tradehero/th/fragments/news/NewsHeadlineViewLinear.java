@@ -71,9 +71,9 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     {
         this.backgroundResourceId = resId;
 
-        if (viewHolder != null && viewHolder instanceof NewsItemCompactViewHolder)
+        if (viewHolder != null)
         {
-            ((NewsItemCompactViewHolder) viewHolder).setBackroundResource(resId);
+            viewHolder.setBackroundResource(resId);
         }
     }
 
