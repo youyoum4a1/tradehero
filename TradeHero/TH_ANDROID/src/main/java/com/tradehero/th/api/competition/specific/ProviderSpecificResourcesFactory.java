@@ -7,11 +7,11 @@ import com.tradehero.th.api.competition.specific.etoro.EToroProviderSpecificReso
 import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpecificResourcesDTO;
 import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-@Singleton public class ProviderSpecificResourcesFactory
+public class ProviderSpecificResourcesFactory
 {
     //<editor-fold desc="Constructors">
     @Inject public ProviderSpecificResourcesFactory()
@@ -20,6 +20,7 @@ import timber.log.Timber;
     }
     //</editor-fold>
 
+    @Contract("null -> null; !null -> !null") @Nullable
     public ProviderSpecificResourcesDTO createResources(@Nullable ProviderDTO providerDTO)
     {
         ProviderSpecificResourcesDTO created = null;
@@ -30,6 +31,7 @@ import timber.log.Timber;
         return created;
     }
 
+    @Contract("null -> null; !null -> _") @Nullable
     public ProviderSpecificResourcesDTO createResources(@Nullable ProviderId providerId)
     {
         ProviderSpecificResourcesDTO created = null;
