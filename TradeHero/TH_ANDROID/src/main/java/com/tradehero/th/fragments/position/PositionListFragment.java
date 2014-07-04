@@ -84,8 +84,8 @@ public class PositionListFragment
     private PortfolioHeaderView portfolioHeaderView;
     @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
-    @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView ;
-    @InjectView(android.R.id.progress) ProgressBar progressBar ;
+    @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.error) View errorView;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
@@ -219,7 +219,7 @@ public class PositionListFragment
     protected void showResultIfNecessary()
     {
         boolean loaded = checkLoadingSuccess();
-        Timber.d("checkLoadingSuccess %b",loaded);
+        Timber.d("checkLoadingSuccess %b", loaded);
         showLoadingView(!loaded);
         if (loaded && pullToRefreshListView != null)
         {
@@ -241,7 +241,7 @@ public class PositionListFragment
         {
             errorView.setVisibility(View.GONE);
         }
-        if (portfolioHeaderView != null && portfolioHeaderView instanceof  View)
+        if (portfolioHeaderView != null && portfolioHeaderView instanceof View)
         {
             ((View) portfolioHeaderView).setVisibility(shown ? View.GONE : View.VISIBLE);
         }
@@ -261,7 +261,7 @@ public class PositionListFragment
         {
             errorView.setVisibility(View.VISIBLE);
         }
-        if (portfolioHeaderView != null && portfolioHeaderView instanceof  View)
+        if (portfolioHeaderView != null && portfolioHeaderView instanceof View)
         {
             ((View) portfolioHeaderView).setVisibility(View.GONE);
         }
@@ -344,7 +344,16 @@ public class PositionListFragment
 
     protected void pushSecurityFragment()
     {
-        getDashboardNavigator().pushFragment(TrendingFragment.class);
+        Bundle args = new Bundle();
+
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+
+        if (ownedPortfolioId != null)
+        {
+            TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+
+        getDashboardNavigator().pushFragment(TrendingFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -595,12 +604,12 @@ public class PositionListFragment
     {
         if (portfolioHeaderView != null && userProfileDTO != null)
         {
-            Timber.d("displayHeaderView %s",portfolioHeaderView.getClass().getSimpleName());
+            Timber.d("displayHeaderView %s", portfolioHeaderView.getClass().getSimpleName());
             portfolioHeaderView.linkWith(userProfileDTO);
         }
         if (getPositionsDTOKey instanceof OwnedPortfolioId)
         {
-            portfolioHeaderView.linkWith(portfolioCache.get((OwnedPortfolioId)getPositionsDTOKey));
+            portfolioHeaderView.linkWith(portfolioCache.get((OwnedPortfolioId) getPositionsDTOKey));
         }
     }
 
@@ -642,6 +651,13 @@ public class PositionListFragment
                     BuySellFragment.putApplicablePortfolioId(args, clickedPositionDTO.getOwnedPortfolioId());
                 }
                 args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
+
+                OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+                if (ownedPortfolioId != null)
+                {
+                    BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                }
+
                 getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
@@ -672,7 +688,7 @@ public class PositionListFragment
         //TODO need to improve
         if (portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
         {
-            ((OtherUserPortfolioHeaderView)portfolioHeaderView).showFollowDialog();
+            ((OtherUserPortfolioHeaderView) portfolioHeaderView).showFollowDialog();
         }
         //else do nothing
 
@@ -701,6 +717,11 @@ public class PositionListFragment
         Bundle args = new Bundle();
         // By default tries
         TradeListFragment.putPositionDTOKey(args, clickedPositionDTO.getPositionDTOKey());
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        if (ownedPortfolioId != null)
+        {
+            TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
         getDashboardNavigator().pushFragment(TradeListFragment.class, args);
     }
 

@@ -16,6 +16,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment
@@ -28,12 +29,12 @@ abstract public class DashboardFragment extends BaseFragment
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
-    public static void putKeyShowHomeAsUp(@NotNull Bundle args, @NotNull Boolean showAsUp)
+    public static void putKeyShowHomeAsUp(@NotNull Bundle args, boolean showAsUp)
     {
         args.putBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, showAsUp);
     }
 
-    protected static boolean getKeyShowHomeAsUp(Bundle args)
+    protected static boolean getKeyShowHomeAsUp(@Nullable Bundle args)
     {
         if (args == null)
         {

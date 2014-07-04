@@ -238,7 +238,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListRetrievedMilestone.launch();
     }
 
-    public OwnedPortfolioId getApplicablePortfolioId()
+    @Nullable public OwnedPortfolioId getApplicablePortfolioId()
     {
         return purchaseApplicableOwnedPortfolioId;
     }

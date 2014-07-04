@@ -11,6 +11,7 @@ import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.metrics.localytics.LocalyticAppKey;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Module;
 import dagger.Provides;
@@ -33,6 +34,11 @@ public class UxModule
     private static final String MAT_APP_ID = "19686";
     private static final String MAT_APP_KEY = "c65b99d5b751944e3637593edd04ce01";
     public static final String TD_APP_ID_KEY = "5991FF8EFB8EFF717C206FCCF9C969A8";
+
+    @Provides @LocalyticAppKey String provideLocalyticsAppKey()
+    {
+        return Constants.RELEASE ? Constants.LOCALYTICS_APP_KEY_RELEASE : Constants.LOCALYTICS_APP_KEY_DEBUG;
+    }
 
     // localytics
     @Provides @Singleton LocalyticsSession provideLocalyticsSession(THLocalyticsSession localyticsSession)

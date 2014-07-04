@@ -9,9 +9,9 @@
     android:descendantFocusability="afterDescendants"
     >
 
-  <TextView
+  <Space
       android:id="@+id/middle_aligner"
-      android:layout_width="24dp"
+      android:layout_width="@dimen/provider_legal_mid_spacing"
       android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
       />
@@ -22,12 +22,13 @@
       android:layout_height="wrap_content"
       android:layout_toLeftOf="@id/middle_aligner"
       android:maxLines="1"
-      android:textSize="10sp"
+      android:textSize="@dimen/provider_legal_text_size"
+      android:background="@drawable/basic_transparent_selector"
       android:text="@string/provider_competition_rules_title"
-      android:paddingBottom="24dp"
-      android:paddingTop="8dp"
-      android:paddingLeft="8dp"
-      android:paddingRight="8dp"
+      android:paddingBottom="@dimen/provider_legal_vertical_padding"
+      android:paddingTop="@dimen/provider_legal_vertical_padding"
+      android:paddingLeft="@dimen/provider_legal_horizontal_padding"
+      android:paddingRight="@dimen/provider_legal_horizontal_padding"
       />
 
   <TextView
@@ -36,11 +37,12 @@
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/middle_aligner"
       android:text="@string/provider_competition_terms_title"
-      android:textSize="10sp"
-      android:paddingBottom="24dp"
-      android:paddingTop="8dp"
-      android:paddingLeft="8dp"
-      android:paddingRight="8dp"
+      android:textSize="@dimen/provider_legal_text_size"
+      android:background="@drawable/basic_transparent_selector"
+      android:paddingBottom="@dimen/provider_legal_vertical_padding"
+      android:paddingTop="@dimen/provider_legal_vertical_padding"
+      android:paddingLeft="@dimen/provider_legal_horizontal_padding"
+      android:paddingRight="@dimen/provider_legal_horizontal_padding"
       />
 
 </com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView>

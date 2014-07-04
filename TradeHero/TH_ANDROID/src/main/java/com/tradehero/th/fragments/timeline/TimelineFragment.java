@@ -20,11 +20,13 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
@@ -38,6 +40,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
@@ -65,6 +68,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -463,27 +468,24 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Display methods">
-    protected void linkWith(UserBaseKey userBaseKey, final boolean andDisplay)
+    protected void linkWith(@NotNull UserBaseKey userBaseKey, final boolean andDisplay)
     {
         this.shownUserBaseKey = userBaseKey;
 
-        prepareTimelineAdapter();
+        prepareTimelineAdapter(userBaseKey);
 
-        if (userBaseKey != null)
-        {
-            createUserProfileRetrievedMilestone();
-            userProfileRetrievedMilestone.setOnCompleteListener(
-                    userProfileRetrievedMilestoneListener);
-            userProfileRetrievedMilestone.launch();
+        createUserProfileRetrievedMilestone();
+        userProfileRetrievedMilestone.setOnCompleteListener(
+                userProfileRetrievedMilestoneListener);
+        userProfileRetrievedMilestone.launch();
 
-            createPortfolioCompactListRetrievedMilestone();
-            portfolioCompactListRetrievedMilestone.setOnCompleteListener(
-                    portfolioCompactListRetrievedMilestoneListener);
-            portfolioCompactListRetrievedMilestone.launch();
-            destroyInfoFetcher();
-            infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
-            infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
-        }
+        createPortfolioCompactListRetrievedMilestone();
+        portfolioCompactListRetrievedMilestone.setOnCompleteListener(
+                portfolioCompactListRetrievedMilestoneListener);
+        portfolioCompactListRetrievedMilestone.launch();
+        destroyInfoFetcher();
+        infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
+        infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
 
         if (andDisplay)
         {
@@ -629,7 +631,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     //</editor-fold>
 
     //<editor-fold desc="Initial methods">
-    private MainTimelineAdapter createTimelineAdapter()
+    private MainTimelineAdapter createTimelineAdapter(@NotNull UserBaseKey shownUserBaseKey)
     {
         return new MainTimelineAdapter(getActivity(), getActivity().getLayoutInflater(),
                 shownUserBaseKey, R.layout.timeline_item_view, R.layout.portfolio_list_item_2_0,
@@ -637,9 +639,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         // TODO set the layouts
     }
 
-    private void prepareTimelineAdapter()
+    private void prepareTimelineAdapter(@NotNull final UserBaseKey shownUserBaseKey)
     {
-        mainTimelineAdapter = createTimelineAdapter();
+        mainTimelineAdapter = createTimelineAdapter(shownUserBaseKey);
         mainTimelineAdapter.setProfileClickListener(createTimelineProfileClickListener());
         mainTimelineAdapter.setOnLoadFinishedListener(
                 new MainTimelineAdapter.OnLoadFinishedListener()
@@ -690,7 +692,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 }
                 else
                 {
-                    pushPositionListFragment(displayablePortfolioDTO.ownedPortfolioId);
+                    pushPositionListFragment(displayablePortfolioDTO.ownedPortfolioId, displayablePortfolioDTO.portfolioDTO);
                 }
             }
         }
@@ -700,11 +702,17 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
+    private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
+    {
+        pushPositionListFragment(ownedPortfolioId, null);
+    }
+
     /**
      *
      * @param ownedPortfolioId
+     * @param portfolioDTO
      */
-    private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId)
+    private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioDTO portfolioDTO)
     {
         Bundle args = new Bundle();
 
@@ -713,7 +721,16 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
         DashboardNavigator navigator =
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-        navigator.pushFragment(PositionListFragment.class, args);
+
+        if (portfolioDTO != null && portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
+        {
+            CompetitionLeaderboardPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
+            navigator.pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+        }
+        else
+        {
+            navigator.pushFragment(PositionListFragment.class, args);
+        }
     }
 
     /**

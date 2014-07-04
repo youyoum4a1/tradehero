@@ -89,18 +89,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (providerDTO != null
-                && providerDTO.specificResources != null
-                && providerDTO.specificResources.securityListFragmentTitleResId > 0)
-        {
-            actionBar.setTitle(providerDTO.specificResources.securityListFragmentTitleResId);
-        }
-        else
-        {
-            actionBar.setTitle(R.string.provider_security_list_title);
-        }
-
+        displayTitle();
         inflater.inflate(R.menu.provider_security_list_menu, menu);
 
         wizardButton = menu.findItem(R.id.btn_wizard);
@@ -188,6 +177,29 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
         if (andDisplay)
         {
+            displayTitle();
+        }
+    }
+
+    protected void displayTitle()
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (actionBar != null)
+        {
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.securityListFragmentTitleResId > 0)
+            {
+                actionBar.setTitle(providerDTO.specificResources.securityListFragmentTitleResId);
+            }
+            else if (providerDTO != null)
+            {
+                actionBar.setTitle(providerDTO.name);
+            }
+            else
+            {
+                actionBar.setTitle(R.string.provider_security_list_title);
+            }
         }
     }
 
