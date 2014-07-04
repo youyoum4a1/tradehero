@@ -1111,7 +1111,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
-                progressDialog.hide();
+                progressDialog.dismiss();
                 // TODO move these lines into MiddleCallbackLogout?
                 ActivityHelper.launchAuthentication(activity);
                 Timber.d("After successful signout current user base key %s",
@@ -1126,7 +1126,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 {
                     @Override public void run()
                     {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                     }
                 }, 3000);
             }
