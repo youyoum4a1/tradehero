@@ -48,6 +48,7 @@
         android:id="@+id/leaderboard_filter_reset_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/basic_white_selector"
         android:padding="16dp"
         android:gravity="center"
         android:text="@string/leaderboard_filter_reset_filter"
