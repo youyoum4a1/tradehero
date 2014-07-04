@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -244,8 +245,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private void displayContentView(UserFriendsDTOList value)
     {
-
-        this.friendDTOList = filterTheDublicated(value);
+        this.friendDTOList = filterTheDuplicated(value);
         checkUserType();
         if (value == null || value.size() == 0)
         {
@@ -258,7 +258,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    private UserFriendsDTOList filterTheDublicated(UserFriendsDTOList friendDTOList)
+    private UserFriendsDTOList filterTheDuplicated(UserFriendsDTOList friendDTOList)
     {
         TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
         hashSet.addAll(friendDTOList);
@@ -500,10 +500,15 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    class FriendFetchListener implements DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList>
+    class FriendFetchListener implements DTOCacheNew.HurriedListener<FriendsListKey, UserFriendsDTOList>
     {
+        @Override public void onPreCachedDTOReceived(@NotNull FriendsListKey key, @NotNull UserFriendsDTOList value)
+        {
+            onDTOReceived(key, value);
+        }
+
         @Override
-        public void onDTOReceived(FriendsListKey key, UserFriendsDTOList value)
+        public void onDTOReceived(@NotNull FriendsListKey key, @NotNull UserFriendsDTOList value)
         {
             if (!hasView())
             {
@@ -512,7 +517,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             displayContentView(value);
         }
 
-        @Override public void onErrorThrown(FriendsListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull FriendsListKey key, @NotNull Throwable error)
         {
             if (!hasView())
             {

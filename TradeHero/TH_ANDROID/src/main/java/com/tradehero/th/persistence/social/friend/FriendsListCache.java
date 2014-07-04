@@ -27,6 +27,6 @@ public class FriendsListCache extends StraightDTOCacheNew<FriendsListKey, UserFr
 
     @Override @NotNull public UserFriendsDTOList fetch(@NotNull FriendsListKey key) throws Throwable
     {
-        return userServiceWrapper.getSocialFriends(key.userBaseKey, key.socialNetworkEnum);
+        return userServiceWrapper.getFriends(key);
     }
 }
