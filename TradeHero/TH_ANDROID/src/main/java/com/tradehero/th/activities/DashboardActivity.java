@@ -18,7 +18,6 @@ import com.crashlytics.android.Crashlytics;
 import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -101,7 +100,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
-    private DTOCache.GetOrFetchTask<NotificationKey, NotificationDTO> notificationFetchTask;
+    private DTOCacheNew.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     private ProgressDialog progressDialog;
@@ -147,7 +146,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchBilling();
 
         detachUserProfileCache();
-        userProfileCacheListener = new UserProfileFetchListener();
+        userProfileCacheListener = createUserProfileFetchListener();
+
+        detachNotificationFetchTask();
+        notificationFetchListener = createNotificationFetchListener();
+
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
@@ -169,11 +172,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private void detachUserProfileCache()
     {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.get().unregister(userProfileCacheListener);
-        }
-        userProfileCacheListener = null;
+        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     private void launchBilling()
@@ -298,20 +297,15 @@ public class DashboardActivity extends SherlockFragmentActivity
             progressDialog = progressDialogUtil.get().show(this, "", "");
 
             detachNotificationFetchTask();
-            notificationFetchTask = notificationCache.get()
-                    .getOrFetch(new NotificationKey(extras), false,
-                            new NotificationFetchListener());
-            notificationFetchTask.execute();
+            NotificationKey key = new NotificationKey(extras);
+            notificationCache.get().register(key, notificationFetchListener);
+            notificationCache.get().getOrFetchAsync(key, false);
         }
     }
 
     private void detachNotificationFetchTask()
     {
-        if (notificationFetchTask != null)
-        {
-            notificationFetchTask.setListener(null);
-        }
-        notificationFetchTask = null;
+        notificationCache.get().unregister(notificationFetchListener);
     }
 
     @Override protected void onPause()
@@ -345,7 +339,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         purchaseRestorerFinishedListener = null;
 
         detachUserProfileCache();
+        userProfileCacheListener = null;
+
         detachNotificationFetchTask();
+        notificationFetchListener = null;
 
         super.onDestroy();
     }
@@ -400,7 +397,12 @@ public class DashboardActivity extends SherlockFragmentActivity
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
-    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
+    {
+        return new UserProfileFetchListener();
+    }
+
+    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
         public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
@@ -434,11 +436,16 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
-    private class NotificationFetchListener
-            implements DTOCache.Listener<NotificationKey, NotificationDTO>
+    protected DTOCacheNew.Listener<NotificationKey, NotificationDTO> createNotificationFetchListener()
+    {
+        return new NotificationFetchListener();
+    }
+
+    protected class NotificationFetchListener
+            implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
     {
         @Override
-        public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
+        public void onDTOReceived(NotificationKey key, NotificationDTO value)
         {
             onFinish();
 
