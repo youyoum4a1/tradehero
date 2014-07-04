@@ -13,14 +13,15 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.news.NewsViewLinear;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
 {
-    public static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
+    private static final String BUNDLE_KEY_TITLE_BACKGROUND_RES =
             NewsDiscussionFragment.class.getName() + ".title_bg";
 
-    public static final String BUNDLE_KEY_SECURITY_SYMBOL =
+    private static final String BUNDLE_KEY_SECURITY_SYMBOL =
             NewsDiscussionFragment.class.getName() + ".security_symbol";
 
     private static final String BUNDLE_KEY_IS_RETURNING = NewsDiscussionFragment.class.getName() + ".isReturning";
@@ -29,6 +30,16 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
     @InjectView(R.id.news_view_linear) NewsViewLinear newsView;
 
     private NewsItemDTOKey newsItemDTOKey;
+
+    public static void putBackgroundResId(@NotNull Bundle args, int resId)
+    {
+        args.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+    }
+
+    public static void putSecuritySymbol(@NotNull Bundle args, @NotNull String symbol)
+    {
+        args.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL, symbol);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)

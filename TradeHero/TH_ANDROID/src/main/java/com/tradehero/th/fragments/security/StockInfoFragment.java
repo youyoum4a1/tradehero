@@ -343,7 +343,10 @@ public class StockInfoFragment extends DashboardFragment
                     newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
                 }
             }
+
+            newsHeadlineAdapter.setSecurityId(securityId);
             newsHeadlineAdapter.setItems(newsItemDTOKeyList);
+            newsHeadlineAdapter.notifyDataSetChanged();
         }
     }
 
@@ -353,7 +356,7 @@ public class StockInfoFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
         int resId = newsHeadlineAdapter.getBackgroundRes(position);
-        bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+        NewsDiscussionFragment.putBackgroundResId(bundle, resId);
         navigator.pushFragment(NewsDiscussionFragment.class, bundle);
     }
 

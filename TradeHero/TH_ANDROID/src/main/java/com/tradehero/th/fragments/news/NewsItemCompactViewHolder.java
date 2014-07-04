@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.news;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -15,6 +16,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
     @InjectView(R.id.news_title_description) @Optional protected TextView newsDescription;
     @InjectView(R.id.news_title_title) @Optional protected TextView newsTitle;
     @InjectView(R.id.news_source) @Optional protected TextView newsSource;
+    @InjectView(R.id.news_item_placeholder) @Optional ImageView newsItemPlaceholder;
 
     //<editor-fold desc="Constructors">
     public NewsItemCompactViewHolder()
@@ -140,6 +142,15 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         }
         throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
+
+    public void setBackroundResource(int resId)
+    {
+        if (this.newsItemPlaceholder != null)
+        {
+            this.newsItemPlaceholder.setBackgroundResource(resId);
+        }
+    }
+
     //</editor-fold>
 
     public static interface OnMenuClickedListener extends AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener

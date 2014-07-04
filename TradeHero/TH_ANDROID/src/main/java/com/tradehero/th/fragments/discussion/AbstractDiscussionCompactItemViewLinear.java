@@ -54,10 +54,13 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        discussionFetchListener = createDiscussionFetchListener();
-        viewHolder = createViewHolder();
-        viewHolder.onFinishInflate(this);
-        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        if (!isInEditMode())
+        {
+            discussionFetchListener = createDiscussionFetchListener();
+            viewHolder = createViewHolder();
+            viewHolder.onFinishInflate(this);
+            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        }
     }
 
     @Override protected void onAttachedToWindow()
@@ -67,10 +70,13 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         {
             discussionFetchListener = createDiscussionFetchListener();
         }
-        viewHolder.onAttachedToWindow(this);
-        viewHolder.linkWith(abstractDiscussionCompactDTO, true);
-        viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
-        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        if (!isInEditMode())
+        {
+            viewHolder.onAttachedToWindow(this);
+            viewHolder.linkWith(abstractDiscussionCompactDTO, true);
+            viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
+            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        }
     }
 
     @Override protected void onDetachedFromWindow()

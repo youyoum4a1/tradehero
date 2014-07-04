@@ -136,7 +136,6 @@ public class NewsHeadlineFragment
     @Override public void linkWith(SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
-
         fetchSecurity(securityId);
     }
 
@@ -210,7 +209,7 @@ public class NewsHeadlineFragment
                     newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
                 }
             }
-
+            adapter.setSecurityId(securityId);
             adapter.setItems(newsItemDTOKeyList);
             adapter.notifyDataSetChanged();
         }
@@ -222,9 +221,8 @@ public class NewsHeadlineFragment
         {
             int resId = adapter.getBackgroundRes(position);
             Bundle bundle = new Bundle();
-            bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
-            bundle.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL,
-                    securityId.getSecuritySymbol());
+            NewsDiscussionFragment.putBackgroundResId(bundle, resId);
+            NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
             NewsDiscussionFragment.putDiscussionKey(bundle, news);
             getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
 
