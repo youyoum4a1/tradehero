@@ -34,6 +34,7 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -52,7 +53,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private FriendsListKey friendsListKey;
     private UserFriendsDTOList friendDTOList;
-    private DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> friendsListCacheListener;
+    @Nullable private DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> friendsListCacheListener;
     private SocialFriendsAdapter socialFriendsListAdapter;
 
     @Override
@@ -71,7 +72,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.fragment_social_friends, container, false);
         ButterKnife.inject(this, v);
@@ -145,7 +146,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public void onClick(View v)
+    public void onClick(@NotNull View v)
     {
         if (v.getId() == R.id.social_invite_all)
         {
@@ -169,7 +170,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    private List<UserFriendsDTO> findAllUsersUnfollowed()
+    @Nullable private List<UserFriendsDTO> findAllUsersUnfollowed()
     {
         if (friendDTOList != null)
         {
@@ -186,7 +187,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return null;
     }
 
-    private List<UserFriendsDTO> findAllUsersUnInvited()
+    @Nullable private List<UserFriendsDTO> findAllUsersUnInvited()
     {
         if (friendDTOList != null)
         {
@@ -243,7 +244,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    private void displayContentView(UserFriendsDTOList value)
+    private void displayContentView(@Nullable UserFriendsDTOList value)
     {
         this.friendDTOList = filterTheDuplicated(value);
         checkUserType();
@@ -258,7 +259,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    private UserFriendsDTOList filterTheDuplicated(UserFriendsDTOList friendDTOList)
+    @NotNull private UserFriendsDTOList filterTheDuplicated(UserFriendsDTOList friendDTOList)
     {
         TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
         hashSet.addAll(friendDTOList);
@@ -327,7 +328,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private void bindData()
     {
-        List friendsDTOsCopy = new ArrayList<>(friendDTOList);
+        List<UserFriendsDTO> friendsDTOsCopy = new ArrayList<>(friendDTOList);
         socialFriendsListAdapter =
                 new SocialFriendsAdapter(
                         getActivity(),
@@ -353,14 +354,13 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return listView.getAdapter() != null && listView.getAdapter().getCount() > 0;
     }
 
-    protected DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> createFriendsFetchListener()
+    @NotNull protected DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> createFriendsFetchListener()
     {
         return new FriendFetchListener();
     }
 
     class SearchChangeListener implements TextWatcher
     {
-
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count)
         {
@@ -372,7 +372,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
 
         @Override
-        public void afterTextChanged(Editable s)
+        public void afterTextChanged(@Nullable Editable s)
         {
             if (socialFriendsListAdapter != null)
             {
@@ -408,7 +408,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         checkUserType();
     }
 
-    private void handleFollowSuccess(List<UserFriendsDTO> usersToFollow)
+    private void handleFollowSuccess(@Nullable List<UserFriendsDTO> usersToFollow)
     {
         if (friendDTOList != null && usersToFollow != null)
         {
@@ -449,7 +449,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
 
         @Override
-        public void success(UserProfileDTO userProfileDTO, Response response)
+        public void success(@NotNull UserProfileDTO userProfileDTO, @NotNull Response response)
         {
             super.success(userProfileDTO, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)
@@ -481,7 +481,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
 
         @Override
-        public void success(Response data, Response response)
+        public void success(Response data, @NotNull Response response)
         {
             super.success(data, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)
@@ -492,8 +492,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             handleInviteError();
         }
 
-        @Override
-        public void failure(RetrofitError retrofitError)
+        @Override public void failure(RetrofitError retrofitError)
         {
             super.failure(retrofitError);
             handleInviteError();
@@ -502,13 +501,16 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     class FriendFetchListener implements DTOCacheNew.HurriedListener<FriendsListKey, UserFriendsDTOList>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull FriendsListKey key, @NotNull UserFriendsDTOList value)
+        @Override public void onPreCachedDTOReceived(
+                @NotNull FriendsListKey key,
+                @NotNull UserFriendsDTOList value)
         {
             onDTOReceived(key, value);
         }
 
-        @Override
-        public void onDTOReceived(@NotNull FriendsListKey key, @NotNull UserFriendsDTOList value)
+        @Override public void onDTOReceived(
+                @NotNull FriendsListKey key,
+                @NotNull UserFriendsDTOList value)
         {
             if (!hasView())
             {
@@ -517,7 +519,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             displayContentView(value);
         }
 
-        @Override public void onErrorThrown(@NotNull FriendsListKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(
+                @NotNull FriendsListKey key,
+                @NotNull Throwable error)
         {
             if (!hasView())
             {

@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class HomeFragment extends BaseWebViewFragment
@@ -38,7 +39,7 @@ public class HomeFragment extends BaseWebViewFragment
     @Inject @LanguageCode String languageCode;
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
-    private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -74,14 +75,14 @@ public class HomeFragment extends BaseWebViewFragment
         reloadWebView();
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setTitle(R.string.dashboard_home);
         inflater.inflate(R.menu.menu_refresh_button, menu);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
+    @Override public boolean onOptionsItemSelected(@NotNull MenuItem item)
     {
         switch (item.getItemId())
         {
@@ -122,7 +123,7 @@ public class HomeFragment extends BaseWebViewFragment
         reloadWebView(homeContentCache.get(currentUserId.toUserBaseKey()));
     }
 
-    private void reloadWebView(HomeContentDTO homeContentDTO)
+    private void reloadWebView(@Nullable HomeContentDTO homeContentDTO)
     {
         String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
 
@@ -142,7 +143,7 @@ public class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    public String createTypedAuthParameters(CredentialsDTO credentialsDTO)
+    public String createTypedAuthParameters(@NotNull CredentialsDTO credentialsDTO)
     {
         return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
     }
@@ -163,7 +164,7 @@ public class HomeFragment extends BaseWebViewFragment
     }
 
     //<editor-fold desc="Listeners">
-    private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> createHomeContentCacheListener()
+    @NotNull private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> createHomeContentCacheListener()
     {
         return new HomeContentCacheListener();
     }

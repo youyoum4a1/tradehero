@@ -1152,7 +1152,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (securityAlertAssistant.isPopulated())
         {
             Bundle args = new Bundle();
-            BaseAlertEditFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null)
+            {
+                BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            }
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
             if (alertId != null)
             {
