@@ -1,11 +1,11 @@
-package com.tradehero.th.models.provider;
+package com.tradehero.th.api.competition.specific;
 
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
-import com.tradehero.th.models.provider.etoro.EToroProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.macquarie.MacquarieProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.etoro.EToroProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.Nullable;

@@ -1,11 +1,11 @@
-package com.tradehero.th.models.provider;
+package com.tradehero.th.api.competition.specific;
 
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
-import com.tradehero.th.models.provider.macquarie.MacquarieProviderSpecificKnowledgeDTO;
-import com.tradehero.th.models.provider.macquarie.PhillipMacquarieProviderSpecificKnowledgeDTO;
-import com.tradehero.th.models.provider.sgxtockwhiz.SgxStockWhizProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.sgxtockwhiz.SgxStockWhizProviderSpecificKnowledgeDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

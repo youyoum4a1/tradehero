@@ -2,6 +2,8 @@ package com.tradehero.th.models.provider;
 
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeFactory;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesFactory;
 import com.tradehero.th.models.DTOProcessor;
 import java.util.ListIterator;
 import org.jetbrains.annotations.NotNull;

@@ -1,7 +1,7 @@
-package com.tradehero.th.models.provider.etoro;
+package com.tradehero.th.api.competition.specific.etoro;
 
 import com.tradehero.th.R;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
 
 public class EToroProviderSpecificResourcesDTO extends ProviderSpecificResourcesDTO
 {
