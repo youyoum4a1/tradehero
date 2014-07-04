@@ -1,26 +1,23 @@
 package com.tradehero.th.api.social;
 
+import com.tradehero.common.persistence.BaseArrayListHasExpiration;
 import com.tradehero.common.persistence.DTO;
-import java.util.ArrayList;
 import java.util.Collection;
 
-public class UserFriendsDTOList extends ArrayList<UserFriendsDTO>
+public class UserFriendsDTOList extends BaseArrayListHasExpiration<UserFriendsDTO>
         implements DTO
 {
-    //<editor-fold desc="Constructors">
-    public UserFriendsDTOList(int initialCapacity)
-    {
-        super(initialCapacity);
-    }
+    public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 20;
 
+    //<editor-fold desc="Constructors">
     public UserFriendsDTOList()
     {
-        super();
+        super(DEFAULT_LIFE_EXPECTANCY_SECONDS);
     }
 
     public UserFriendsDTOList(Collection<? extends UserFriendsDTO> c)
     {
-        super(c);
+        super(c, DEFAULT_LIFE_EXPECTANCY_SECONDS);
     }
     //</editor-fold>
 }

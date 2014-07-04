@@ -221,7 +221,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
         detachFriendsListCache();
         friendsListCache.register(friendsListKey, friendsListCacheListener);
-        friendsListCache.getOrFetchAsync(friendsListKey, true);
+        friendsListCache.getOrFetchAsync(friendsListKey);
         //fetchTask.getStatus();
     }
 
