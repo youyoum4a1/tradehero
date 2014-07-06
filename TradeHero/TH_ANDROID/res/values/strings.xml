@@ -191,7 +191,6 @@
   <string name="invite_from_linkedIn">Invite from LinkedIn</string>
   <string name="invite_from_twitter">Invite from Twitter</string>
   <string name="invite_from_facebook">Invite from Facebook</string>
-  <string name="invite">Invite</string>
 
   <string name="social_no_friend_to_invite">No user to Invite</string>
   <string name="social_no_friend_to_follow">No user to follow</string>
