@@ -1,1 +1,1 @@
-include ':TradeHero/TH_ANDROID'
+include ':TradeHero:TH_ANDROID'
