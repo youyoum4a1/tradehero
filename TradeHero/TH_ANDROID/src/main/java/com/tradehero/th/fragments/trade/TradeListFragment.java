@@ -10,13 +10,12 @@ import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.thoj.route.Routable;
 import com.thoj.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOKey;
@@ -28,7 +27,7 @@ import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
@@ -45,7 +44,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
-public class TradeListFragment extends DashboardFragment
+public class TradeListFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = TradeListFragment.class.getName() + ".positionDTOKey";
 
@@ -65,8 +64,6 @@ public class TradeListFragment extends DashboardFragment
     @RouteProperty("userId") Integer routeUserId;
     @RouteProperty("portfolioId") Integer routePortfolioId;
     @RouteProperty("positionId") Integer routePositionId;
-
-    private ActionBar actionBar;
 
     protected PositionDTOKey positionDTOKey;
     protected PositionDTO positionDTO;
@@ -116,13 +113,14 @@ public class TradeListFragment extends DashboardFragment
         super.onCreateView(inflater, container, savedInstanceState);
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_trade_list, container, false);
 
-        ButterKnife.inject(this, view);
-        initViews(view, inflater);
+        initViews(view);
         return view;
     }
 
-    private void initViews(View view, LayoutInflater inflater)
+    @Override protected void initViews(View view)
     {
+        ButterKnife.inject(this, view);
+
         if (view != null)
         {
             createAdapter();
@@ -211,6 +209,13 @@ public class TradeListFragment extends DashboardFragment
             {
                 Bundle args = new Bundle();
                 populateBuySellArgs(args, isBuy, securityId);
+                OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+
+                if (ownedPortfolioId != null)
+                {
+                    BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                }
+
                 getDashboardNavigator().pushFragment(BuySellFragment.class, args);
             }
         }
@@ -227,27 +232,19 @@ public class TradeListFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         thRouter.save(bundle, userId);
 
-        if (!currentUserId.toUserBaseKey().equals(userId.key))
+        if (!currentUserId.toUserBaseKey().equals(userId))
         {
             getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        displayActionBarTitle();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             actionBar.setSubtitle(null);
         }
-        actionBar = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -340,7 +337,7 @@ public class TradeListFragment extends DashboardFragment
 
     public void displayActionBarTitle()
     {
-        ActionBar actionBarCopy = this.actionBar;
+        ActionBar actionBarCopy = getSherlockActivity().getSupportActionBar();
         if (actionBarCopy != null)
         {
             if (positionDTO == null || securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId)) == null)

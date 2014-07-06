@@ -25,7 +25,7 @@
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
-        app:minSize="1"
+        app:minTextLength="1"
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="500"
@@ -50,7 +50,7 @@
         app:invalidDrawableRight="@drawable/warning_red"
         app:validDrawableRight="@drawable/tick_green"
 
-        app:minSize="6"
+        app:minTextLength="6"
         app:delayValidationByMilliSec="1000"
         android:textSize="@dimen/common_text_size_30"
         android:background="@drawable/authentication_edit_text"
@@ -99,17 +99,13 @@
           app:invalidDrawableRight="@drawable/warning_red"
           app:validDrawableRight="@drawable/tick_green"
 
-          app:minSize="1"
-          app:indicator="@+id/authentication_sign_up_username_validator"
+          app:minTextLength="1"
           app:delayValidationByMilliSec="500"
           app:progressIndicator="@+id/authentication_sign_up_username_validator"
           android:textSize="@dimen/common_text_size_30"
           android:background="@drawable/authentication_edit_text"
           >
       </com.tradehero.th.widget.ServerValidatedUsernameText>
-      <!--android:drawableLeft="@drawable/accounts_glyph_username_default"-->
-      <!--app:invalidDrawable="@drawable/accounts_glyph_username_error"-->
-      <!--app:validDrawable="@drawable/accounts_glyph_username_ok"-->
 
       <ProgressBar
           android:id="@+id/authentication_sign_up_username_validator"
@@ -117,7 +113,7 @@
           android:layout_height="32dip"
           android:layout_gravity="right|center"
           android:layout_marginRight="5dip"
-          android:visibility="gone"
+          android:visibility="invisible"
           />
 
     </FrameLayout>

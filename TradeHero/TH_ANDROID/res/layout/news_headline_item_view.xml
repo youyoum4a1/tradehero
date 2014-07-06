@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:alpha="0.2"
-        android:background="@drawable/img_placeholder_news_2"
+        android:background="@null"
         android:contentDescription="@null"/>
 
     <LinearLayout

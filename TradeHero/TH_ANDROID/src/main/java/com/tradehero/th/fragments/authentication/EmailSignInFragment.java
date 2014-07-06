@@ -75,10 +75,10 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override protected void initSetup(View view)
     {
         email = (SelfValidatedText) view.findViewById(R.id.authentication_sign_in_email);
-        email.addListener(this);
+        email.setListener(this);
 
         password = (ValidatedPasswordText) view.findViewById(R.id.et_pwd_login);
-        password.addListener(this);
+        password.setListener(this);
 
         // HACK
         if (!Constants.RELEASE)
@@ -102,13 +102,13 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         detachMiddleCallbackForgotPassword();
         if (this.email != null)
         {
-            this.email.removeAllListeners();
+            this.email.setListener(null);
         }
         this.email = null;
 
         if (this.password != null)
         {
-            this.password.removeAllListeners();
+            this.password.setListener(null);
         }
         this.password = null;
 

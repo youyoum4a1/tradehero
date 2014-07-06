@@ -9,8 +9,6 @@ import com.squareup.widgets.AspectRatioImageView;
 import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -22,7 +20,6 @@ public class LeaderboardCompetitionView extends AspectRatioImageView
 {
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<ProviderCache> providerCache;
-    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     private CommunityPageDTO communityPageDTO;
     private ProviderDTO providerDTO;
 
@@ -86,8 +83,7 @@ public class LeaderboardCompetitionView extends AspectRatioImageView
         {
             setVisibility(View.VISIBLE);
 
-            ProviderSpecificResourcesDTO providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
-            int joinBannerResId = providerSpecificResourcesDTO == null ? 0 : providerSpecificResourcesDTO.getJoinBannerResId(providerDTO.isUserEnrolled);
+            int joinBannerResId = providerDTO.specificResources == null ? 0 : providerDTO.specificResources.getJoinBannerResId(providerDTO.isUserEnrolled);
             if (joinBannerResId != 0)
             {
                 try

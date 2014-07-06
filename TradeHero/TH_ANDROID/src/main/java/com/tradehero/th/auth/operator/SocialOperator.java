@@ -1,16 +1,17 @@
 package com.tradehero.th.auth.operator;
 
 import android.app.ProgressDialog;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class SocialOperator
 {
     private ProgressDialog progressDialog;
-    private final String consumerKey;
-    private final String consumerSecret;
+    @NotNull private final String consumerKey;
+    @NotNull private final String consumerSecret;
     private String authToken;
     private String authTokenSecret;
 
-    public SocialOperator(String consumerKey, String consumerSecret)
+    public SocialOperator(@NotNull String consumerKey, @NotNull String consumerSecret)
     {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
@@ -39,12 +40,12 @@ public abstract class SocialOperator
         }
     }
 
-    public String getConsumerKey()
+    @NotNull public String getConsumerKey()
     {
         return this.consumerKey;
     }
 
-    public String getConsumerSecret()
+    @NotNull public String getConsumerSecret()
     {
         return this.consumerSecret;
     }

@@ -20,7 +20,6 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
@@ -46,6 +45,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -87,7 +87,6 @@ import timber.log.Timber;
 public final class SettingsFragment extends DashboardPreferenceFragment
 {
     private static final String KEY_SOCIAL_NETWORK_TO_CONNECT = SettingsFragment.class.getName() + ".socialNetworkToConnectKey";
-    public static final String KEY_SHOW_AS_HOME_UP = SettingsFragment.class.getName() + ".showAsHomeUp";
 
     @Inject THBillingInteractor billingInteractor;
     @Inject protected Provider<THUIBillingRequest> billingRequestProvider;
@@ -281,43 +280,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
-        int flag = ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE;
-        if (!showHomeAsUp)
-        {
-            flag |= ActionBar.DISPLAY_USE_LOGO;
-            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        }
-        else
-        {
-            flag |= ActionBar.DISPLAY_HOME_AS_UP;
-        }
-        actionBar.setDisplayOptions(flag);
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle(getString(R.string.settings));
 
     }
     //</editor-fold>
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                boolean showHomeAsUp = getArguments() != null ? getArguments().getBoolean(KEY_SHOW_AS_HOME_UP) : false;
-                if(showHomeAsUp)
-                {
-                    getNavigator().popFragment();
-                }
-                else
-                {
-                    resideMenuLazy.get().openMenu();
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override public void onDestroyView()
     {
@@ -741,7 +707,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleTopBannerClicked()
     {
-        getNavigator().pushFragment(InviteFriendFragment.class, null,
+        getNavigator().pushFragment(FriendsInvitationFragment.class, null,
                 Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
@@ -985,9 +951,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleProfileClicked()
     {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(SettingsProfileFragment.BUNDLE_KEY_SHOW_BUTTON_BACK, true);
-        getNavigator().pushFragment(SettingsProfileFragment.class, bundle);
+        getNavigator().pushFragment(SettingsProfileFragment.class);
     }
 
     private void handlePaypalClicked()
@@ -1148,7 +1112,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             public void success(UserProfileDTO o, Response response)
             {
                 THUser.clearCurrentUser();
-                progressDialog.hide();
+                progressDialog.dismiss();
                 // TODO move these lines into MiddleCallbackLogout?
                 ActivityHelper.launchAuthentication(activity);
                 Timber.d("After successful signout current user base key %s",
@@ -1163,7 +1127,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 {
                     @Override public void run()
                     {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                     }
                 }, 3000);
             }

@@ -8,10 +8,12 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractor;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardMarkUserListAdapter extends
         LoaderDTOAdapter<
@@ -20,6 +22,7 @@ public class LeaderboardMarkUserListAdapter extends
 {
     @Inject protected THBillingInteractor userInteractor;
     protected UserProfileDTO currentUserProfileDTO;
+    @Nullable protected OwnedPortfolioId applicablePortfolioId;
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
     public LeaderboardMarkUserListAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
@@ -30,7 +33,11 @@ public class LeaderboardMarkUserListAdapter extends
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
-        notifyDataSetChanged();
+    }
+
+    public void setApplicablePortfolioId(@Nullable OwnedPortfolioId ownedPortfolioId)
+    {
+        this.applicablePortfolioId = ownedPortfolioId;
     }
 
     public void setFollowRequestedListener(LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
@@ -51,6 +58,7 @@ public class LeaderboardMarkUserListAdapter extends
     @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardMarkUserItemView dtoView)
     {
         dtoView.linkWith(currentUserProfileDTO, true);
+        dtoView.linkWith(applicablePortfolioId);
         dtoView.setFollowRequestedListener(createChildFollowRequestedListener());
 
         final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);

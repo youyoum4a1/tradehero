@@ -76,7 +76,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private SecurityCompactDTO securityCompactDTO;
     private AlertEventAdapter alertEventAdapter;
     private AlertId alertId;
-    private ActionBar actionBar;
     private ProgressDialog progressDialog;
 
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
@@ -150,8 +149,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-
-        actionBar = getSherlockActivity().getSupportActionBar();
         inflater.inflate(R.menu.alert_view_menu, menu);
     }
 
@@ -321,6 +318,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private void displayStockSymbol()
     {
         stockSymbol.setText(securityCompactDTO.getExchangeSymbol());
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null) actionBar.setTitle(securityCompactDTO.getExchangeSymbol());
     }
 

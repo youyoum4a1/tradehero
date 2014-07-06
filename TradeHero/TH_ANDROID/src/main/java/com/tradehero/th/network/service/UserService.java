@@ -199,12 +199,11 @@ public interface UserService
     UserFriendsDTOList searchSocialFriends(
             @Path("userId") int userId,
             @Query("socialNetwork") SocialNetworkEnum socialNetwork,
-            @Query("q")String query);
+            @Query("q") String query);
+    //</editor-fold>
 
     @POST("/users/BatchFollow/free")
     Response followBatchFree(@Body FollowFriendsForm followFriendsForm);
-
-    //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends")

@@ -13,8 +13,8 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     public Date creationDate;
     public String description;
 
-    public Double roiSinceInception;
     public Double roiSinceInceptionAnnualized;
+
     public double plSinceInception;
 
     public Double roiM2D;
@@ -53,6 +53,7 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
                 ", totalValue=" + totalValue +
                 ", totalExtraCashPurchased=" + totalExtraCashPurchased +
                 ", totalExtraCashGiven=" + totalExtraCashGiven +
+                ", plSinceInception=" + plSinceInception +
                 ", isWatchlist=" + isWatchlist +
                 ", openPositionsCount=" + openPositionsCount +
                 ", closedPositionsCount=" + closedPositionsCount +
@@ -65,7 +66,6 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
                 ", description='" + description + '\'' +
                 ", roiSinceInception=" + roiSinceInception +
                 ", roiSinceInceptionAnnualized=" + roiSinceInceptionAnnualized +
-                ", plSinceInception=" + plSinceInception +
                 ", roiM2D=" + roiM2D +
                 ", roiM2DAnnualized=" + roiM2DAnnualized +
                 ", plM2D=" + plM2D +

@@ -6,7 +6,7 @@
   <item
       android:id="@+id/btn_new_message"
       android:title="@string/message_center_new_message_title"
-      android:icon="@drawable/icn_message_white"
+      android:icon="@drawable/icn_message"
       android:showAsAction="always"
       android:visible="true">
     <menu>

@@ -6,5 +6,10 @@
 
   <color name="provider_22_colour_main">#0C2962</color>
   <color name="provider_22_colour_gradient">#2C55A6</color>
+
+  <dimen name="provider_legal_vertical_padding">12dp</dimen>
+  <dimen name="provider_legal_horizontal_padding">8dp</dimen>
+  <dimen name="provider_legal_text_size">12sp</dimen>
+  <dimen name="provider_legal_mid_spacing">24dp</dimen>
   
 </resources>

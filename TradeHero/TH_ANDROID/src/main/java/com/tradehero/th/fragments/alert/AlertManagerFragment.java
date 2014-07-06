@@ -97,8 +97,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setTitle(getString(R.string.stock_alerts));
-
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

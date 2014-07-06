@@ -1,6 +1,8 @@
 package com.tradehero.th.api.security.compact;
 
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import org.jetbrains.annotations.NotNull;
 
 public class BondCompactDTO extends SecurityCompactDTO
 {
@@ -17,4 +19,9 @@ public class BondCompactDTO extends SecurityCompactDTO
         super(other);
     }
     //</editor-fold>
+
+    @NotNull @Override public Integer getSecurityTypeStringResourceId()
+    {
+        return R.string.security_type_bond;
+    }
 }

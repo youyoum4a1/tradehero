@@ -4,6 +4,7 @@ import dagger.Module;
 
 @Module(
         injects = {
+                TimelineFragmentTest.class,
                 MeTimelineFragmentTest.class
         },
         complete = false,

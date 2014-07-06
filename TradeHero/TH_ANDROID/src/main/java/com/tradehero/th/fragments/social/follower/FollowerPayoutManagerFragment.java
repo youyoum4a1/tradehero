@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -35,7 +33,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     private ImageView followerPicture;
     private TextView followerName;
     private TextView totalRevenue;
-    private ActionBar actionBar;
     private FollowerPaymentListView followerPaymentListView;
     private View errorView;
 
@@ -94,16 +91,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         {
             followerPaymentListView.setAdapter(followerPaymentListAdapter);
         }
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_HOME_AS_UP);
-        displayActionBarTitle();
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onResume()
@@ -238,6 +225,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     public void displayActionBarTitle()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             actionBar.setTitle(getDisplayName());

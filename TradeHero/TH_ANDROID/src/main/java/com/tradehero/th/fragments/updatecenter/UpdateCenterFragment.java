@@ -12,7 +12,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
 import android.widget.TabHost;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -32,7 +31,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -49,9 +48,8 @@ import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 @Routable("updatecenter/:pageIndex")
-public class UpdateCenterFragment extends BaseFragment
-        implements PopupMenu.OnMenuItemClickListener,
-        OnTitleNumberChangeListener,
+public class UpdateCenterFragment extends DashboardFragment
+        implements OnTitleNumberChangeListener,
         ResideMenu.OnMenuListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
@@ -61,7 +59,6 @@ public class UpdateCenterFragment extends BaseFragment
     @Inject CurrentUserId currentUserId;
     @Inject THLocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
-
     @Inject MessageHeaderListCache messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
     @Inject THRouter thRouter;
@@ -124,7 +121,7 @@ public class UpdateCenterFragment extends BaseFragment
     {
         detachUserProfileCache();
         userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(),true);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     private void detachUserProfileCache()
@@ -141,12 +138,7 @@ public class UpdateCenterFragment extends BaseFragment
         }
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.message_center_title);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -156,9 +148,6 @@ public class UpdateCenterFragment extends BaseFragment
     {
         switch (item.getItemId())
         {
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
-                return true;
             case R.id.menu_private:
                 localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
@@ -210,25 +199,6 @@ public class UpdateCenterFragment extends BaseFragment
         Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
-    }
-
-
-    @Override
-    public boolean onMenuItemClick(android.view.MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.menu_private:
-                localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
-                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
-                        .pushFragment(AllRelationsFragment.class);
-                return true;
-            case R.id.menu_broadcast:
-                jumpToSendBroadcastMessage();
-                return true;
-            default:
-                return false;
-        }
     }
 
     private void jumpToSendBroadcastMessage()
@@ -292,7 +262,6 @@ public class UpdateCenterFragment extends BaseFragment
         return mTabHost;
     }
 
-
     private void clearTabs()
     {
         if (mTabHost != null)
@@ -336,13 +305,7 @@ public class UpdateCenterFragment extends BaseFragment
     private void changeTabTitleNumber(@NotNull UpdateCenterTabType tabType, int number)
     {
         @NotNull TitleTabView tabView = (TitleTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
-        //if (tabType == UpdateCenterTabType.Notifications)
-        //{
-        //    //Notifications' unread count does not show
-        //    return;
-        //}
         tabView.setTitleNumber(number);
-        //Timber.d("changeTabTitleNumber %s,number:%s",tabType,number);
     }
 
     @Override public void onTitleNumberChanged(@NotNull UpdateCenterTabType tabType, int number)
@@ -373,9 +336,12 @@ public class UpdateCenterFragment extends BaseFragment
     {
         if (andDisplay)
         {
-            changeTabTitleNumber(UpdateCenterTabType.Messages,
+            changeTabTitleNumber(
+                    UpdateCenterTabType.Messages,
                     userProfileDTO.unreadMessageThreadsCount);
-            changeTabTitleNumber(UpdateCenterTabType.Notifications, userProfileDTO.unreadNotificationsCount);
+            changeTabTitleNumber(
+                    UpdateCenterTabType.Notifications,
+                    userProfileDTO.unreadNotificationsCount);
         }
     }
 

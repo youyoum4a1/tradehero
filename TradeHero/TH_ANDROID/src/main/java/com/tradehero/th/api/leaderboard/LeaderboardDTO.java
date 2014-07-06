@@ -2,16 +2,16 @@ package com.tradehero.th.api.leaderboard;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tradehero.common.persistence.BaseHasExpiration;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.persistence.HasExpiration;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 
-public class LeaderboardDTO implements DTO, HasExpiration
+public class LeaderboardDTO extends BaseHasExpiration
+        implements DTO
 {
     public static final String INCLUDE_FOF = "INCLUDE_FOF";
     public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 300;
@@ -30,20 +30,25 @@ public class LeaderboardDTO implements DTO, HasExpiration
     @JsonProperty("avg_stddev_positionRoiInPeriod")
     public double avgStdDevPositionRoiInPeriod;
 
-    @NotNull public Date expirationDate;
-
     //<editor-fold desc="Constructors">
     public LeaderboardDTO()
     {
-        super();
-        setExpirationDateSecondsInFuture(DEFAULT_LIFE_EXPECTANCY_SECONDS);
+        super(DEFAULT_LIFE_EXPECTANCY_SECONDS);
     }
 
-    public LeaderboardDTO(int id, String name, LeaderboardUserDTOList users, int userIsAtPositionZeroBased, Date markUtc,
-            int minPositionCount, double maxSharpeRatioInPeriodVsSP500,
-            double maxStdDevPositionRoiInPeriod, double avgStdDevPositionRoiInPeriod,
+    public LeaderboardDTO(
+            int id,
+            String name,
+            LeaderboardUserDTOList users,
+            int userIsAtPositionZeroBased,
+            Date markUtc,
+            int minPositionCount,
+            double maxSharpeRatioInPeriodVsSP500,
+            double maxStdDevPositionRoiInPeriod,
+            double avgStdDevPositionRoiInPeriod,
             @NotNull Date expirationDate)
     {
+        super(expirationDate);
         this.id = id;
         this.name = name;
         this.users = users;
@@ -53,14 +58,6 @@ public class LeaderboardDTO implements DTO, HasExpiration
         this.maxSharpeRatioInPeriodVsSP500 = maxSharpeRatioInPeriodVsSP500;
         this.maxStdDevPositionRoiInPeriod = maxStdDevPositionRoiInPeriod;
         this.avgStdDevPositionRoiInPeriod = avgStdDevPositionRoiInPeriod;
-        this.expirationDate = expirationDate;
-    }
-
-    protected void setExpirationDateSecondsInFuture(int seconds)
-    {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, seconds);
-        this.expirationDate = calendar.getTime();
     }
     //</editor-fold>
 
@@ -99,12 +96,5 @@ public class LeaderboardDTO implements DTO, HasExpiration
             return 1/v;
         }
         return (double)2;
-    }
-
-    @Override public long getExpiresInSeconds()
-    {
-        return Math.max(
-                0,
-                expirationDate.getTime() - Calendar.getInstance().getTime().getTime());
     }
 }

@@ -13,7 +13,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
 import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -28,6 +27,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
@@ -36,12 +36,13 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
+import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
-import com.tradehero.th.fragments.settings.InviteFriendFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
@@ -70,7 +71,7 @@ import timber.log.Timber;
 
 @Routable("trending-securities")
 public class TrendingFragment extends SecurityListFragment
-    implements WithTutorial
+        implements WithTutorial
 {
     public final static int SECURITY_ID_LIST_LOADER_ID = 2532;
 
@@ -81,7 +82,6 @@ public class TrendingFragment extends SecurityListFragment
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject THLocalyticsSession localyticsSession;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
 
@@ -175,15 +175,9 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        //THLog.i(TAG, "onCreateOptionsMenu");
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.trending_header);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        actionBar.setHomeButtonEnabled(true);
-        inflater.inflate(R.menu.menu_search_button, menu);
+        inflater.inflate(R.menu.search_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -194,9 +188,6 @@ public class TrendingFragment extends SecurityListFragment
         {
             case R.id.btn_search:
                 pushSearchIn();
-                return true;
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -409,9 +400,9 @@ public class TrendingFragment extends SecurityListFragment
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();
-            ProviderSecurityListFragment.putProviderId(args, providerDTO.getProviderId());
-            ProviderSecurityListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
-            getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
+            MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
+            MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
+            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -438,25 +429,17 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleResetPortfolioItemOnClick()
     {
-        if (userInteractor != null)
-        {
-            // TODO
-            //userInteractor.conditionalPopBuyResetPortfolio();
-        }
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
     }
 
     private void handleExtraCashItemOnClick()
     {
-        if (userInteractor != null)
-        {
-            // TODO
-            //userInteractor.conditionalPopBuyVirtualDollars();
-        }
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
     }
 
     private void handleEarnCreditItemOnClick()
     {
-        getDashboardNavigator().pushFragment(InviteFriendFragment.class);
+        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
     }
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
@@ -465,6 +448,14 @@ public class TrendingFragment extends SecurityListFragment
                 securityCompactDTO.getSecurityId());
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+
+        if (ownedPortfolioId != null)
+        {
+            BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+
         getDashboardNavigator().pushFragment(BuySellFragment.class, args);
     }
 
@@ -480,7 +471,8 @@ public class TrendingFragment extends SecurityListFragment
             Timber.d("Filter onFilterTypeChanged");
             if (trendingFilterTypeDTO == null)
             {
-                Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"), "onFilterTypeChanged trendingFilterTypeDTO cannot be null");
+                Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"),
+                        "onFilterTypeChanged trendingFilterTypeDTO cannot be null");
             }
             TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
             // TODO
@@ -548,12 +540,12 @@ public class TrendingFragment extends SecurityListFragment
     //</editor-fold>
 
     //<editor-fold desc="User Profile Listener">
-    protected DTOCacheNew.Listener<UserBaseKey,UserProfileDTO> createUserProfileFetchListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
     {
         return new TrendingUserProfileFetchListener();
     }
 
-    protected class TrendingUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
+    protected class TrendingUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
         {
@@ -574,12 +566,12 @@ public class TrendingFragment extends SecurityListFragment
     }
 
     //<editor-fold desc="Provider List Listener">
-    protected DTOCacheNew.Listener<ProviderListKey,ProviderIdList> createProviderListFetchListener()
+    protected DTOCacheNew.Listener<ProviderListKey, ProviderIdList> createProviderListFetchListener()
     {
         return new TrendingProviderListFetchListener();
     }
 
-    protected class TrendingProviderListFetchListener implements DTOCacheNew.Listener<ProviderListKey,ProviderIdList>
+    protected class TrendingProviderListFetchListener implements DTOCacheNew.Listener<ProviderListKey, ProviderIdList>
     {
         @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value)
         {
@@ -596,10 +588,11 @@ public class TrendingFragment extends SecurityListFragment
 
     private void openEnrollmentPageIfNecessary(ProviderIdList providerIds)
     {
-        for (ProviderId providerId: providerIds)
+        for (ProviderId providerId : providerIds)
         {
             final ProviderDTO providerDTO = providerCache.get().get(providerId);
-            if (providerDTO != null && enrollmentScreenOpened != null && !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerId.key))
+            if (providerDTO != null && enrollmentScreenOpened != null && !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(
+                    providerId.key))
             {
                 enrollmentScreenOpened.add(providerId.key);
 

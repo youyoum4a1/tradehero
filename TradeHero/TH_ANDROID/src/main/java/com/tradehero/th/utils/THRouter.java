@@ -11,6 +11,7 @@ import com.thoj.route.internal.RouterOptions;
 import com.thoj.route.internal.RouterParams;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.home.HomeFragment;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -115,7 +116,13 @@ public class THRouter extends Router
                     args.putString(param.getKey(), param.getValue());
                 }
             }
-            navigator.pushFragment(options.getOpenFragmentClass(), args);
+            if(options.getOpenFragmentClass().equals(HomeFragment.class)&&navigator.getCurrentFragment()!=null && navigator.getCurrentFragment() instanceof HomeFragment)
+            {
+                ((HomeFragment)navigator.getCurrentFragment()).createInviteInHomePage(args.getString("SocialID"),args.getString("UserID"));
+            }else
+            {
+                navigator.pushFragment(options.getOpenFragmentClass(), args);
+            }
         }
     }
 

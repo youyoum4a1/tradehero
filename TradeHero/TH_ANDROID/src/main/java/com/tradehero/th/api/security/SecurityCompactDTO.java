@@ -49,7 +49,6 @@ public class SecurityCompactDTO extends ExtendedDTO
 
     public Integer id;
     public String symbol;
-    public int securityType;
     public String name;
     public String exchange;
     public String yahooSymbol;
@@ -103,7 +102,6 @@ public class SecurityCompactDTO extends ExtendedDTO
         super();
         this.id = other.id;
         this.symbol = other.symbol;
-        this.securityType = other.securityType;
         this.name = other.name;
         this.exchange = other.exchange;
         this.yahooSymbol = other.yahooSymbol;
@@ -139,14 +137,9 @@ public class SecurityCompactDTO extends ExtendedDTO
     }
     //</editor-fold>
 
-    public SecurityType getSecurityType()
+    @Nullable public Integer getSecurityTypeStringResourceId()
     {
-        return SecurityType.getByValue(securityType);
-    }
-
-    public int getSecurityTypeStringResourceId()
-    {
-        return getSecurityType().stringResId;
+        return null;
     }
 
     public String getExchangeSymbol()
@@ -226,7 +219,6 @@ public class SecurityCompactDTO extends ExtendedDTO
         return "SecurityCompactDTO{" +
                 "id=" + id +
                 ", symbol='" + symbol + '\'' +
-                ", securityType=" + securityType +
                 ", name='" + name + '\'' +
                 ", exchange='" + exchange + '\'' +
                 ", yahooSymbol='" + yahooSymbol + '\'' +

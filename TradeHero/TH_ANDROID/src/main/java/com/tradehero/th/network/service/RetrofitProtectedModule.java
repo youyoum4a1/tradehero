@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.th.network.NetworkConstants;
+import com.tradehero.th.network.retrofit.RequestHeaders;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -141,6 +142,14 @@ public class RetrofitProtectedModule
     @Provides @Singleton YahooNewsServiceAsync provideYahooServiceAsync(RestAdapter.Builder builder)
     {
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsServiceAsync.class);
+    }
+
+    @Provides @Singleton HomeServiceAsync provideHomeServiceAsync(RestAdapter.Builder builder, RequestHeaders requestHeaders)
+    {
+        return builder.setServer(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
+                .setRequestInterceptor(requestHeaders)
+                .build()
+                .create(HomeServiceAsync.class);
     }
     //</editor-fold>
 }

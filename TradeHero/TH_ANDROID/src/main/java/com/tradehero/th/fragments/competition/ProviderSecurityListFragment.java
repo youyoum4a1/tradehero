@@ -29,8 +29,6 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
@@ -44,10 +42,8 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     // TODO sort warrants
     @NotNull protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     @Inject ProviderCache providerCache;
     @Inject ProviderUtil providerUtil;
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
     @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
     private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
@@ -55,7 +51,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
 
-    ActionBar actionBar;
     private MenuItem wizardButton;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
@@ -79,8 +74,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             this.providerId = getProviderId(getArguments());
         }
-        this.providerSpecificResourcesDTO = this.providerSpecificResourcesFactory.createResourcesDTO(providerId);
-
         this.providerCacheListener = createProviderCacheListener();
         this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
     }
@@ -96,17 +89,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-        if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.securityListFragmentTitleResId > 0)
-        {
-            actionBar.setTitle(providerSpecificResourcesDTO.securityListFragmentTitleResId);
-        }
-        else
-        {
-            actionBar.setTitle(R.string.provider_security_list_title);
-        }
-
+        displayTitle();
         inflater.inflate(R.menu.provider_security_list_menu, menu);
 
         wizardButton = menu.findItem(R.id.btn_wizard);
@@ -194,6 +177,29 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
         if (andDisplay)
         {
+            displayTitle();
+        }
+    }
+
+    protected void displayTitle()
+    {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (actionBar != null)
+        {
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.securityListFragmentTitleResId > 0)
+            {
+                actionBar.setTitle(providerDTO.specificResources.securityListFragmentTitleResId);
+            }
+            else if (providerDTO != null)
+            {
+                actionBar.setTitle(providerDTO.name);
+            }
+            else
+            {
+                actionBar.setTitle(R.string.provider_security_list_title);
+            }
         }
     }
 

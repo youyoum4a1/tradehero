@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +20,9 @@ import timber.log.Timber;
 public class Navigator
 {
     public static final String BUNDLE_KEY_RETURN_FRAGMENT = Navigator.class.getName() + ".returnFragment";
+
+    private static final boolean DEFAULT_ADD_TO_BACK_STACK = true;
+    private static final boolean DEFAULT_SHOW_HOME_KEY_AS_UP = true;
 
     public static final int[] TUTORIAL_ANIMATION = new int[] {
             R.anim.card_flip_right_in, R.anim.card_flip_right_out,
@@ -59,7 +64,7 @@ public class Navigator
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass)
     {
-        return pushFragment(fragmentClass, null);
+        return pushFragment(fragmentClass, new Bundle());
     }
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args)
@@ -74,16 +79,23 @@ public class Navigator
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName)
     {
-        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, true);
+        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, DEFAULT_ADD_TO_BACK_STACK);
     }
 
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName,
             Boolean shouldAddToBackStack)
     {
+        return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, shouldAddToBackStack, DEFAULT_SHOW_HOME_KEY_AS_UP);
+    }
+    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName,
+            Boolean shouldAddToBackStack, Boolean showHomeAsUp)
+    {
         resetBackPressCount();
 
         Timber.d("Push Keyboard visible %s", DeviceUtil.isKeyboardVisible(context));
         Timber.d("Pushing fragment %s", fragmentClass.getSimpleName());
+
+        setupHomeAsUp(fragmentClass, args, showHomeAsUp);
 
         Fragment fragment = Fragment.instantiate(context, fragmentClass.getName(), args);
         fragment.setArguments(args);
@@ -109,6 +121,21 @@ public class Navigator
         @SuppressWarnings("unchecked")
         T returnFragment = (T) fragment;
         return returnFragment;
+    }
+
+    private void setupHomeAsUp(Class<? extends Fragment> fragmentClass, Bundle args, boolean showHomeAsUp)
+    {
+        if (args != null)
+        {
+            if (DashboardFragment.class.isAssignableFrom(fragmentClass))
+            {
+                DashboardFragment.putKeyShowHomeAsUp(args, showHomeAsUp);
+            }
+            else if (DashboardPreferenceFragment.class.isAssignableFrom(fragmentClass))
+            {
+                DashboardPreferenceFragment.putKeyShowHomeAsUp(args, showHomeAsUp);
+            }
+        }
     }
 
     public void popFragment(String backStackName)

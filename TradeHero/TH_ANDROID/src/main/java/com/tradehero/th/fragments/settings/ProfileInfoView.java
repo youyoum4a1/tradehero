@@ -25,6 +25,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
@@ -69,7 +70,7 @@ public class ProfileInfoView extends LinearLayout
     @Inject @AuthHeader Lazy<String> authenticationHeader;
 
     ProgressDialog progressDialog;
-    private UserBaseDTO userBaseDTO;
+    private UserProfileDTO userProfileDTO;
     private String newImagePath;
     private Listener listener;
 
@@ -175,19 +176,19 @@ public class ProfileInfoView extends LinearLayout
     {
         if (email != null)
         {
-            email.addListener(listener);
+            email.setListener(listener);
         }
         if (password != null)
         {
-            password.addListener(listener);
+            password.setListener(listener);
         }
         if (confirmPassword != null)
         {
-            confirmPassword.addListener(listener);
+            confirmPassword.setListener(listener);
         }
         if (displayName != null)
         {
-            displayName.addListener(listener);
+            displayName.setListener(listener);
         }
     }
 
@@ -195,19 +196,19 @@ public class ProfileInfoView extends LinearLayout
     {
         if (email != null)
         {
-            email.removeAllListeners();
+            email.setListener(null);
         }
         if (password != null)
         {
-            password.removeAllListeners();
+            password.setListener(null);
         }
         if (confirmPassword != null)
         {
-            confirmPassword.removeAllListeners();
+            confirmPassword.setListener(null);
         }
         if (displayName != null)
         {
-            displayName.removeAllListeners();
+            displayName.setListener(null);
         }
     }
 
@@ -310,13 +311,18 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
-    public void populate(UserBaseDTO userBaseDTO)
+    public void populate(UserProfileDTO userProfileDTO)
     {
-        this.userBaseDTO = userBaseDTO;
-        this.firstName.setText(userBaseDTO.firstName);
-        this.lastName.setText(userBaseDTO.lastName);
-        this.displayName.setText(userBaseDTO.displayName);
-        this.displayName.setOriginalUsernameValue(userBaseDTO.displayName);
+        this.userProfileDTO = userProfileDTO;
+        this.firstName.setText(userProfileDTO.firstName);
+        this.lastName.setText(userProfileDTO.lastName);
+        this.displayName.setText(userProfileDTO.displayName);
+        this.displayName.setOriginalUsernameValue(userProfileDTO.displayName);
+        String currentEmail = this.email.getText().toString();
+        if (currentEmail == null || currentEmail.isEmpty())
+        {
+            this.email.setText(userProfileDTO.email);
+        }
         displayProfileImage();
     }
 
@@ -334,9 +340,9 @@ public class ProfileInfoView extends LinearLayout
                 displayDefaultProfileImage();
             }
         }
-        else if (userBaseDTO != null)
+        else if (userProfileDTO != null)
         {
-            displayProfileImage(userBaseDTO);
+            displayProfileImage(userProfileDTO);
         }
         else
         {
@@ -406,6 +412,7 @@ public class ProfileInfoView extends LinearLayout
                 if (credentials.has("email"))
                 {
                     emailValue = credentials.getString("email");
+                    this.email.setText(emailValue);
                 }
                 if (credentials.has("password"))
                 {
@@ -416,19 +423,11 @@ public class ProfileInfoView extends LinearLayout
             {
                 Timber.e(e, "populateCredentials");
             }
-            this.email.setText(emailValue);
             this.password.setText(passwordValue);
             this.confirmPassword.setText(passwordValue);
 
-            if (emailValue == null)
-            {
-                this.email.setVisibility(GONE);
-            }
-            if (passwordValue == null)
-            {
-                this.password.setVisibility(GONE);
-                this.confirmPassword.setVisibility(GONE);
-            }
+            this.password.setValidateOnlyIfNotEmpty(passwordValue == null);
+            this.confirmPassword.setValidateOnlyIfNotEmpty(passwordValue == null);
         }
     }
 

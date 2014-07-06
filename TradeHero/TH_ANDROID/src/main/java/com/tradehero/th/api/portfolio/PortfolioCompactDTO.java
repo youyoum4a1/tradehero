@@ -13,17 +13,20 @@ public class PortfolioCompactDTO implements DTO
     public int id;
     public Integer providerId;
     public String title;
+
     public double cashBalance;
     public double totalValue;
     public double totalExtraCashPurchased;
     public double totalExtraCashGiven;
+
+    public Double roiSinceInception;
     public boolean isWatchlist;
     public int openPositionsCount;
     public int closedPositionsCount;
     public int watchlistPositionsCount;
     public Date markingAsOfUtc;
-    public String currencyISO;
     public String currencyDisplay;
+    public String currencyISO;
     public Double refCcyToUsdRate;
 
     //<editor-fold desc="Constructors">
@@ -105,6 +108,7 @@ public class PortfolioCompactDTO implements DTO
                 ", totalValue=" + totalValue +
                 ", totalExtraCashPurchased=" + totalExtraCashPurchased +
                 ", totalExtraCashGiven=" + totalExtraCashGiven +
+                ", roiSinceInception" + roiSinceInception +
                 ", isWatchlist=" + isWatchlist +
                 ", openPositionsCount=" + openPositionsCount +
                 ", closedPositionsCount=" + closedPositionsCount +

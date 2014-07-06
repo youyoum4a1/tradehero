@@ -54,7 +54,6 @@ public class StockInfoFragment extends DashboardFragment
     private DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
 
-    private ActionBar actionBar;
     private MenuItem marketCloseIcon;
 
     private ViewPager topPager;
@@ -134,8 +133,6 @@ public class StockInfoFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.stock_info_menu, menu);
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         displayExchangeSymbol();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -296,6 +293,7 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayExchangeSymbol()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             if (securityId != null)
@@ -345,13 +343,11 @@ public class StockInfoFragment extends DashboardFragment
                     newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
                 }
             }
-            newsHeadlineAdapter.setItems(newsItemDTOKeyList);
-        }
-    }
 
-    protected void handleMarketCloseClicked()
-    {
-        alertDialogUtil.popMarketClosed(getActivity(), securityId);
+            newsHeadlineAdapter.setSecurityId(securityId);
+            newsHeadlineAdapter.setItems(newsItemDTOKeyList);
+            newsHeadlineAdapter.notifyDataSetChanged();
+        }
     }
 
     protected void handleNewsClicked(int position, NewsItemDTOKey newsItemDTOKey)
@@ -360,7 +356,7 @@ public class StockInfoFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
         int resId = newsHeadlineAdapter.getBackgroundRes(position);
-        bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+        NewsDiscussionFragment.putBackgroundResId(bundle, resId);
         navigator.pushFragment(NewsDiscussionFragment.class, bundle);
     }
 

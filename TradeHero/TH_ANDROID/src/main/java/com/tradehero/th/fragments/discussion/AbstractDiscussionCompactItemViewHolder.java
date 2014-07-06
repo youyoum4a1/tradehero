@@ -96,6 +96,11 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         ButterKnife.reset(this);
     }
 
+    public void setBackroundResource(int resId)
+    {
+        //Do nothing
+    }
+
     public void setMenuClickedListener(OnMenuClickedListener menuClickedListener)
     {
         this.menuClickedListener = menuClickedListener;
@@ -117,7 +122,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             display();
         }
 
-        if (isAutoTranslate())
+        if (isAutoTranslate() && socialShareHelper.canTranslate(discussionDTO))
         {
             handleTranslationRequested();
         }

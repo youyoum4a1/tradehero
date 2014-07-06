@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -39,6 +36,7 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import timber.log.Timber;
@@ -55,12 +53,12 @@ public class WatchlistEditFragment extends DashboardFragment
     @Nullable private SecurityId securityKeyId;
     private TextView watchAction;
     private TextView deleteButton;
-    private ProgressDialog progressBar;
+    @Nullable private ProgressDialog progressBar;
 
-    private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
+    @Nullable private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
 
-    private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
-    private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
+    @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
+    @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
 
     @Inject SecurityCompactCache securityCompactCache;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
@@ -72,7 +70,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
 
-    public static void putSecurityId(Bundle args, SecurityId securityId)
+    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
         args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
     }
@@ -83,14 +81,14 @@ public class WatchlistEditFragment extends DashboardFragment
         securityCompactCacheFetchListener = createSecurityCompactCacheListener();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.edit_watchlist_item_layout, container, false);
         initViews(view);
         return view;
     }
 
-    private void initViews(View view)
+    private void initViews(@NotNull View view)
     {
         securityLogo = (ImageView) view.findViewById(R.id.edit_watchlist_item_security_logo);
         securityTitle = (TextView) view.findViewById(R.id.edit_watchlist_item_security_name);
@@ -122,7 +120,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    private View.OnClickListener createOnWatchButtonClickedListener()
+    @NotNull private View.OnClickListener createOnWatchButtonClickedListener()
     {
         return new View.OnClickListener()
         {
@@ -198,7 +196,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    private View.OnClickListener createOnDeleteButtonClickedListener()
+    @NotNull private View.OnClickListener createOnDeleteButtonClickedListener()
     {
         return new View.OnClickListener()
         {
@@ -226,13 +224,6 @@ public class WatchlistEditFragment extends DashboardFragment
 
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-    }
 
     @Override public void onResume()
     {
@@ -283,7 +274,7 @@ public class WatchlistEditFragment extends DashboardFragment
         super.onDestroy();
     }
 
-    private void linkWith(SecurityId securityId, boolean andDisplay)
+    private void linkWith(@NotNull SecurityId securityId, boolean andDisplay)
     {
         this.securityKeyId = securityId;
 
@@ -324,7 +315,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    private void querySecurity(SecurityId securityId, final boolean andDisplay)
+    private void querySecurity(@NotNull SecurityId securityId, final boolean andDisplay)
     {
         if (progressBar != null)
         {
@@ -340,7 +331,7 @@ public class WatchlistEditFragment extends DashboardFragment
         securityCompactCache.getOrFetchAsync(securityId);
     }
 
-    private void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    private void linkWith(@NotNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         if (andDisplay)
         {
@@ -389,12 +380,12 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    protected Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
+    @NotNull protected Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
     {
         return new WatchlistEditTHCallback();
     }
 
-    protected Callback<WatchlistPositionDTO> createWatchlistDeleteCallback()
+    @NotNull protected Callback<WatchlistPositionDTO> createWatchlistDeleteCallback()
     {
         return new WatchlistDeletedTHCallback();
     }
@@ -402,7 +393,7 @@ public class WatchlistEditFragment extends DashboardFragment
     //TODO this extends is better? maybe not alex
     protected class WatchlistDeletedTHCallback extends WatchlistEditTHCallback
     {
-        @Override protected void success(WatchlistPositionDTO watchlistPositionDTO,
+        @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO,
                 THResponse response)
         {
             watchlistPositionCache.get().invalidate(watchlistPositionDTO.securityDTO.getSecurityId());
@@ -432,7 +423,7 @@ public class WatchlistEditFragment extends DashboardFragment
             dismissProgress();
         }
 
-        @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse response)
+        @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO, THResponse response)
         {
             //TODO we need a cacheUtil control cache invalidate
             watchlistPositionCache.get().put(securityKeyId, watchlistPositionDTO);
@@ -462,19 +453,19 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    @NotNull protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
         return new WatchlistEditSecurityCompactCacheListener();
     }
 
     protected class WatchlistEditSecurityCompactCacheListener implements DTOCacheNew.HurriedListener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onPreCachedDTOReceived(SecurityId key, SecurityCompactDTO value)
+        @Override public void onPreCachedDTOReceived(SecurityId key, @NotNull SecurityCompactDTO value)
         {
             onDTOReceived(key, value);
         }
 
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+        @Override public void onDTOReceived(SecurityId key, @NotNull SecurityCompactDTO value)
         {
             if (progressBar != null)
             {

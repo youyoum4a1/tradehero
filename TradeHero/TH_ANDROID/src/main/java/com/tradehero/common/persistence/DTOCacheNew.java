@@ -43,7 +43,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     public static interface HurriedListener<DTOKeyType, DTOType>
             extends Listener<DTOKeyType, DTOType>
     {
-        void onPreCachedDTOReceived(DTOKeyType key, DTOType value);
+        void onPreCachedDTOReceived(@NotNull DTOKeyType key, @NotNull DTOType value);
     }
 
     abstract public static class CacheValue<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -65,9 +65,14 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             return value;
         }
 
-        public void setValue(@NotNull DTOType value)
+        public void setValue(@SuppressWarnings("NullableProblems") @NotNull DTOType value)
         {
             this.value = value;
+        }
+
+        public int getListenersCount()
+        {
+            return listeners.size();
         }
 
         public void registerListener(@NotNull Listener<DTOKeyType, DTOType> listener)

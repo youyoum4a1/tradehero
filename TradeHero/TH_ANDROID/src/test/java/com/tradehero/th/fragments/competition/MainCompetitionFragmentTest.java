@@ -14,6 +14,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import java.util.ArrayList;
 import javax.inject.Inject;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricMavenTestRunner.class)
-@Config( shadows = ShadowWebViewNew.class )
+@Config(shadows = ShadowWebViewNew.class)
 public class MainCompetitionFragmentTest
 {
     private static final String TEST_ADS_WEB_URL = "http://www.google.com";
@@ -146,6 +147,46 @@ public class MainCompetitionFragmentTest
         ShadowWebView shadowWebView = shadowOf(webView);
         assertThat(webView).isNotNull();
         assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&', currentUserId.toUserBaseKey()));
+    }
+
+    @Test public void shouldGoToCompetitionPortfolioAfterClickOnCompetitionPortfolio()
+    {
+        Bundle args = new Bundle();
+        MainCompetitionFragment.putProviderId(args, providerId);
+
+        MainCompetitionFragment mainCompetitionFragment = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
+
+        AbsListView competitionListView = mainCompetitionFragment.listView;
+        assertThat(competitionListView).isNotNull();
+
+        CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
+        assertThat(competitionListAdapter).isNotNull();
+
+        int firstPortfolioButtonPosition = -1;
+
+        for (int i = 0; i < competitionListAdapter.getCount(); ++i)
+        {
+            if (competitionListAdapter.getItemViewType(i) == CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO)
+            {
+                firstPortfolioButtonPosition = i;
+                break;
+            }
+        }
+
+        assertThat(firstPortfolioButtonPosition).isGreaterThan(-1);
+
+        competitionListView.performItemClick(
+                competitionListAdapter.getView(firstPortfolioButtonPosition, null, null),
+                firstPortfolioButtonPosition,
+                competitionListAdapter.getItemId(firstPortfolioButtonPosition));
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(CompetitionLeaderboardPositionListFragment.class);
+
+        CompetitionLeaderboardPositionListFragment competitionLeaderboardPositionListFragment =
+                (CompetitionLeaderboardPositionListFragment) dashboardNavigator.getCurrentFragment();
+
+        assertThat(competitionLeaderboardPositionListFragment.getProviderId()).isEqualTo(providerId);
+
+
     }
 
     @Test public void shouldGoToTradeQuestPageAfterClickOnWizardCellWhenWizardUrlIsSetToTradeQuestUrl()

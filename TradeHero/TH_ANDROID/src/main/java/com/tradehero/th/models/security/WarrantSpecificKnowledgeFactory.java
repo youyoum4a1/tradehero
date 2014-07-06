@@ -1,9 +1,9 @@
 package com.tradehero.th.models.security;
 
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.models.provider.ProviderSpecificKnowledgeDTO;
-import com.tradehero.th.models.provider.ProviderSpecificKnowledgeFactory;
+import com.tradehero.th.api.users.CurrentUserId;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -13,24 +13,27 @@ import org.jetbrains.annotations.NotNull;
 @Singleton public class WarrantSpecificKnowledgeFactory
 {
     @NotNull private final Map<ProviderId, OwnedPortfolioId> warrantUsingProviders;
-    @NotNull protected final ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
+    @NotNull protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public WarrantSpecificKnowledgeFactory(
-            @NotNull ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory)
+            @NotNull CurrentUserId currentUserId)
     {
         super();
-        this.providerSpecificKnowledgeFactory = providerSpecificKnowledgeFactory;
+        this.currentUserId = currentUserId;
         warrantUsingProviders = new HashMap<>();
     }
     //</editor-fold>
 
-    public void add(ProviderId providerId, OwnedPortfolioId applicableOwnedPortfolioId)
+    public void add(@NotNull ProviderDTO providerDTO)
     {
-        ProviderSpecificKnowledgeDTO knowledgeDTO = providerSpecificKnowledgeFactory.createKnowledge(providerId);
-        if (knowledgeDTO != null && knowledgeDTO.includeProviderPortfolioOnWarrants)
+        if (providerDTO.specificKnowledge != null &&
+                providerDTO.specificKnowledge.includeProviderPortfolioOnWarrants != null &&
+                providerDTO.specificKnowledge.includeProviderPortfolioOnWarrants)
         {
-            warrantUsingProviders.put(providerId, applicableOwnedPortfolioId);
+            warrantUsingProviders.put(
+                    providerDTO.getProviderId(),
+                    providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
         }
     }
 

@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
@@ -23,6 +23,7 @@ import retrofit.Callback;
     @NotNull private final ProviderService providerService;
     @NotNull private final ProviderServiceAsync providerServiceAsync;
 
+    //<editor-fold desc="Constructors">
     @Inject public ProviderServiceWrapper(
             @NotNull ProviderService providerService,
             @NotNull ProviderServiceAsync providerServiceAsync)
@@ -31,16 +32,17 @@ import retrofit.Callback;
         this.providerService = providerService;
         this.providerServiceAsync = providerServiceAsync;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Get Providers">
-    public List<ProviderDTO> getProviders()
+    public ProviderDTOList getProviders()
     {
         return this.providerService.getProviders();
     }
 
-    @NotNull public MiddleCallback<List<ProviderDTO>> getProviders(@Nullable Callback<List<ProviderDTO>> callback)
+    @NotNull public MiddleCallback<ProviderDTOList> getProviders(@Nullable Callback<ProviderDTOList> callback)
     {
-        MiddleCallback<List<ProviderDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<ProviderDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         this.providerServiceAsync.getProviders(middleCallback);
         return middleCallback;
     }

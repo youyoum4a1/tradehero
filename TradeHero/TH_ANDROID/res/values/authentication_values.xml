@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="authentication_horizontal_padding">30dp</dimen>
+  <dimen name="authentication_logo_vertical_padding">20dp</dimen>
+  <dimen name="authentication_logo_horizontal_padding">50dp</dimen>
+  <dimen name="authentication_agreement_vertical_padding">10dp</dimen>
+  <dimen name="authentication_button_horizontal_padding">5dp</dimen>
+  <dimen name="authentication_button_drawable_padding">10dp</dimen>
+  <dimen name="authentication_button_text_size">18sp</dimen>
+  <dimen name="authentication_button_vertical_margin">8dp</dimen>
+  <dimen name="authentication_page_text_size">14sp</dimen>
+</resources>

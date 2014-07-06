@@ -26,10 +26,10 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.InviteContactEntryDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -169,7 +169,7 @@ public class InviteFriendFragment extends DashboardFragment
                             R.string.authentication_connecting_tradehero,
                             currentSocialNetworkConnect.getName()));
                 }
-                return false;
+                return true;
             }
 
             @Override public void onStart()
@@ -431,7 +431,6 @@ public class InviteFriendFragment extends DashboardFragment
                 inviteDTO.email = userFriendsDTO.email;
                 inviteFriendForm.users.add(inviteDTO);
             }
-            //getProgressDialog().setMessage(getString(R.string.sending_email_invitation));
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapper.get().inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm, inviteFriendCallback);
@@ -450,7 +449,6 @@ public class InviteFriendFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.invite_friends));
 
         super.onCreateOptionsMenu(menu, inflater);

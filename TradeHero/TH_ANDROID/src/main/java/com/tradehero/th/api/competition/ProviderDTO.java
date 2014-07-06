@@ -5,10 +5,13 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public class ProviderDTO implements DTO
 {
@@ -21,6 +24,7 @@ public class ProviderDTO implements DTO
     public List<AdDTO> advertisements;
     public String competitionScreenTitle;
     public String competitionScreenSubtitle;
+    public String textHexColor;
     public String joinedLogoUrl;
     public String secondaryHexColor;
     public String providerSubtitle;
@@ -57,6 +61,10 @@ public class ProviderDTO implements DTO
 
     public PortfolioCompactDTO associatedPortfolio;
 
+    // These 2 fields are populated exclusively on the client
+    @JsonIgnore @Nullable public ProviderSpecificKnowledgeDTO specificKnowledge;
+    @JsonIgnore @Nullable public ProviderSpecificResourcesDTO specificResources;
+
     /**
      * Creates the id that identifies this DTO.
      * @return
@@ -70,6 +78,10 @@ public class ProviderDTO implements DTO
     @JsonIgnore
     public boolean hasWizard()
     {
+        if (specificKnowledge != null && specificKnowledge.hasWizard != null)
+        {
+            return specificKnowledge.hasWizard;
+        }
         return wizardUrl != null && wizardUrl.length() > 0;
     }
 

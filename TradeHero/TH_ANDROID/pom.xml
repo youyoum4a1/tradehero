@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.localytics.android</groupId>
       <artifactId>library</artifactId>
-      <version>2.17.0</version>
+      <version>2.19.0</version>
       <!--actionbarsherlock use suppport library but the lastes version of suppport library in maven center is support-v4-r7.jar
      we can use local version support-v4-r19.jar-->
       <exclusions>

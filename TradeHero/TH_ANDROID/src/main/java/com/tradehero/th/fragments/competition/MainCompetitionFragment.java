@@ -39,6 +39,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -55,7 +56,6 @@ import timber.log.Timber;
 )
 public class MainCompetitionFragment extends CompetitionFragment
 {
-    private ActionBar actionBar;
     private ProgressBar progressBar;
     AbsListView listView;
     private CompetitionZoneListItemAdapter competitionZoneListItemAdapter;
@@ -107,19 +107,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME);
         displayActionBarTitle();
-
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-        this.actionBar = null;
     }
     //</editor-fold>
 
@@ -251,21 +240,24 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void displayActionBarTitle()
     {
-        if (this.actionBar != null)
+
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+        if (actionBar != null)
         {
-            if (providerSpecificResourcesDTO != null
-                    && providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.mainCompetitionFragmentTitleResId > 0)
             {
-                this.actionBar.setTitle(
-                        providerSpecificResourcesDTO.mainCompetitionFragmentTitleResId);
+                actionBar.setTitle(
+                        providerDTO.specificResources.mainCompetitionFragmentTitleResId);
             }
             else if (this.providerDTO == null || this.providerDTO.name == null)
             {
-                this.actionBar.setTitle("");
+                actionBar.setTitle("");
             }
             else
             {
-                this.actionBar.setTitle(this.providerDTO.name);
+                actionBar.setTitle(this.providerDTO.name);
             }
         }
     }
@@ -333,7 +325,9 @@ public class MainCompetitionFragment extends CompetitionFragment
             Bundle args = new Bundle();
             PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
             PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            getDashboardNavigator().pushFragment(PositionListFragment.class, args);
+            PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
+            getDashboardNavigator().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
         }
     }
 
@@ -374,7 +368,13 @@ public class MainCompetitionFragment extends CompetitionFragment
                 competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,
                 leaderboardDefDTO.desc);
-        CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        if(ownedPortfolioId != null)
+        {
+            CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
             getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,

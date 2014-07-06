@@ -17,7 +17,7 @@
       android:padding="5dp"
       android:text="@string/authentication_sign_in_pp"
       android:textColor="@color/white"
-      android:textSize="@dimen/authentication_text_size"
+      android:textSize="@dimen/authentication_page_text_size"
       android:background="@drawable/basic_transparent_selector"
       android:minHeight="@dimen/clickable_element_min_height"/>
 
@@ -30,7 +30,7 @@
       android:padding="5dp"
       android:text="@string/authentication_sign_in_tos"
       android:textColor="@color/white"
-      android:textSize="@dimen/authentication_text_size"
+      android:textSize="@dimen/authentication_page_text_size"
       android:background="@drawable/basic_transparent_selector"
       android:minHeight="@dimen/clickable_element_min_height"/>
 </LinearLayout>

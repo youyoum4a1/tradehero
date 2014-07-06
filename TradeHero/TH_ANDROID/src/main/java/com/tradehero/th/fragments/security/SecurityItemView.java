@@ -25,9 +25,9 @@ import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
-import javax.inject.Inject;
 
 public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         extends RelativeLayout
@@ -362,7 +362,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         if (securityType != null)
         {
-            if (this.securityCompactDTO != null && this.securityCompactDTO.getSecurityType() != null)
+            if (this.securityCompactDTO != null && this.securityCompactDTO.getSecurityTypeStringResourceId() != null)
             {
                 securityType.setText(securityCompactDTO.getSecurityTypeStringResourceId());
             }
