@@ -205,7 +205,6 @@ interface UserServiceAsync
     void getFriends(
             @Path("userId") int userId,
             Callback<UserFriendsDTOList> callback);
-    //</editor-fold>
 
     @GET("/users/{userId}/GetNewFriends")
     void getSocialFriends(
@@ -219,6 +218,7 @@ interface UserServiceAsync
             @Query("socialNetwork") SocialNetworkEnum socialNetwork,
             @Query("q")String query,
             Callback<UserFriendsDTOList> callback);
+    //</editor-fold>
 
     @POST("/users/BatchFollow/free")
     void followBatchFree(@Body FollowFriendsForm followFriendsForm, Callback<UserProfileDTO> callback);

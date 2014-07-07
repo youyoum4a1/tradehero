@@ -5,8 +5,8 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.provider.ProviderSpecificKnowledgeDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +24,7 @@ public class ProviderDTO implements DTO
     public List<AdDTO> advertisements;
     public String competitionScreenTitle;
     public String competitionScreenSubtitle;
+    public String textHexColor;
     public String joinedLogoUrl;
     public String secondaryHexColor;
     public String providerSubtitle;

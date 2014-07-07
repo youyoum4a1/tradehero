@@ -8,16 +8,21 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.persistence.news.NewsItemCompactCacheNew;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 
 public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
 {
     @Inject NewsItemCompactCacheNew newsItemCompactCache;
+
+    @Nullable private SecurityId securityId;
+    private int backgroundResourceId = -1;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineViewLinear(Context context)
@@ -62,12 +67,38 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
         linkWith(newsItemCompactCache.get(discussionKey), true);
     }
 
+    public void setNewsBackgroundResource(int resId)
+    {
+        this.backgroundResourceId = resId;
+
+        if (viewHolder != null)
+        {
+            viewHolder.setBackroundResource(resId);
+        }
+    }
+
+    public void linkWithSecurityId(SecurityId securityId)
+    {
+        this.securityId = securityId;
+    }
+
     protected void pushDiscussionFragment()
     {
         if (discussionKey != null)
         {
+
             Bundle args = new Bundle();
             NewsDiscussionFragment.putDiscussionKey(args, discussionKey);
+            if(backgroundResourceId > 0)
+            {
+                NewsDiscussionFragment.putBackgroundResId(args, backgroundResourceId);
+            }
+
+            if(securityId != null)
+            {
+                NewsDiscussionFragment.putSecuritySymbol(args, securityId.getSecuritySymbol());
+            }
+
             getNavigator().pushFragment(NewsDiscussionFragment.class, args);
         }
     }

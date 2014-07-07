@@ -13,6 +13,7 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
@@ -21,7 +22,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
     @InjectRoute protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
+    @Nullable private DTOCacheNew.Listener<ProviderId, ProviderDTO> providerCacheListener;
 
     @Inject ProviderCache providerCache;
     @Inject THRouter thRouter;
@@ -31,7 +32,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    public static ProviderId getProviderId(@NotNull Bundle args)
+    @NotNull public static ProviderId getProviderId(@NotNull Bundle args)
     {
         return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
     }
@@ -94,14 +95,16 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
+    @NotNull protected DTOCacheNew.Listener<ProviderId, ProviderDTO> createProviderCacheListener()
     {
         return new CompetitionFragmentProviderCacheListener();
     }
 
     protected class CompetitionFragmentProviderCacheListener implements DTOCacheNew.HurriedListener<ProviderId, ProviderDTO>
     {
-        @Override public void onPreCachedDTOReceived(ProviderId key, ProviderDTO value)
+        @Override public void onPreCachedDTOReceived(
+                @NotNull ProviderId key,
+                @NotNull ProviderDTO value)
         {
             onDTOReceived(key, value);
         }

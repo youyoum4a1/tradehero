@@ -65,9 +65,14 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             return value;
         }
 
-        public void setValue(@NotNull DTOType value)
+        public void setValue(@SuppressWarnings("NullableProblems") @NotNull DTOType value)
         {
             this.value = value;
+        }
+
+        public int getListenersCount()
+        {
+            return listeners.size();
         }
 
         public void registerListener(@NotNull Listener<DTOKeyType, DTOType> listener)

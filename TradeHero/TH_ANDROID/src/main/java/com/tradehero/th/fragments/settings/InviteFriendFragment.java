@@ -26,10 +26,10 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.InviteContactEntryDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -169,7 +169,7 @@ public class InviteFriendFragment extends DashboardFragment
                             R.string.authentication_connecting_tradehero,
                             currentSocialNetworkConnect.getName()));
                 }
-                return false;
+                return true;
             }
 
             @Override public void onStart()

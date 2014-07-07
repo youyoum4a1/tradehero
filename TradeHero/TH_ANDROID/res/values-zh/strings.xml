@@ -84,7 +84,6 @@
     <string name="invite_from_linkedIn">邀请LinkedIn好友</string>
     <string name="invite_from_facebook">邀请Facebook好友</string>
     <string name="invite_from_twitter">邀请Twitter好友</string>
-    <string name="invite">邀请</string>
   <plurals name="inbox_notification_title">
     <item quantity="one">1 条新消息</item>
     <item quantity="other">%d 条<b>新</b>消息</item>

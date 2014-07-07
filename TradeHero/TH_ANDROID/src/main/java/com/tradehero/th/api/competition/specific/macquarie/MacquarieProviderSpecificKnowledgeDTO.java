@@ -1,6 +1,6 @@
-package com.tradehero.th.models.provider.macquarie;
+package com.tradehero.th.api.competition.specific.macquarie;
 
-import com.tradehero.th.models.provider.ProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
 
 public class MacquarieProviderSpecificKnowledgeDTO extends ProviderSpecificKnowledgeDTO
 {
