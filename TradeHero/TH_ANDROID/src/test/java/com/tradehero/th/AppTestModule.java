@@ -6,6 +6,7 @@ import com.tradehero.th.auth.AuthenticationTestModule;
 import com.tradehero.th.fragments.FragmentTestModule;
 import com.tradehero.th.models.ModelsTestModule;
 import com.tradehero.th.persistence.PersistenceTestModule;
+import com.tradehero.th.ui.UxTestModule;
 import com.tradehero.th.utils.AppUtilsTestModule;
 import dagger.Module;
 
@@ -18,6 +19,7 @@ import dagger.Module;
                 PersistenceTestModule.class,
                 AppUtilsTestModule.class,
                 AuthenticationTestModule.class,
+                UxTestModule.class
         },
         complete = false,
         library = true
