@@ -61,6 +61,7 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
@@ -100,7 +101,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
-    private DTOCacheNew.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
+    private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     private ProgressDialog progressDialog;
@@ -436,21 +437,25 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
-    protected DTOCacheNew.Listener<NotificationKey, NotificationDTO> createNotificationFetchListener()
+    protected DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> createNotificationFetchListener()
     {
         return new NotificationFetchListener();
     }
 
     protected class NotificationFetchListener
-            implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
+            implements DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO>
     {
+        @Override public void onPreCachedDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
+        {
+            onDTOReceived(key, value);
+        }
+
         @Override
         public void onDTOReceived(NotificationKey key, NotificationDTO value)
         {
             onFinish();
 
-            NotificationClickHandler notificationClickHandler =
-                    new NotificationClickHandler(DashboardActivity.this, value);
+            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, value);
             notificationClickHandler.handleNotificationItemClicked();
         }
 

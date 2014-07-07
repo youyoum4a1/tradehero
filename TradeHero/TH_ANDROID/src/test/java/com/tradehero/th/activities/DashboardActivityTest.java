@@ -1,10 +1,20 @@
 package com.tradehero.th.activities;
 
+import android.content.Intent;
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.notification.NotificationDTO;
+import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.notification.NotificationType;
+import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
+import com.tradehero.th.persistence.notification.NotificationCache;
+import javax.inject.Inject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.shadows.ShadowProgressDialog;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -12,6 +22,8 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class DashboardActivityTest
 {
     private DashboardActivity activity;
+
+    @Inject NotificationCache notificationCache;
 
     @Before public void setUp()
     {
@@ -25,5 +37,24 @@ public class DashboardActivityTest
 
         activity.onBackPressed();
         assertThat(activity.isFinishing()).isTrue();
+    }
+
+    @Ignore
+    @Test public void onNewIntentTest()
+    {
+        ShadowProgressDialog.reset();
+        NotificationKey mockNotificationKey = new NotificationKey(123);
+        NotificationDTO mockNotificationDTO = new NotificationDTO();
+        mockNotificationDTO.pushTypeId = NotificationType.PrivateMessage.getTypeId();
+        mockNotificationDTO.replyableTypeId = DiscussionType.PRIVATE_MESSAGE.value;
+        mockNotificationDTO.referencedUserId = 108805;
+        notificationCache.put(mockNotificationKey, mockNotificationDTO);
+
+        Intent intent = new Intent();
+        intent.putExtras(mockNotificationKey.getArgs());
+        activity.onNewIntent(intent);
+
+        assertThat(activity.getDashboardNavigator().getCurrentFragment())
+                .isInstanceOf(ReplyPrivateMessageFragment.class);
     }
 }
