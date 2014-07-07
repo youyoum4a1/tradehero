@@ -39,12 +39,12 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.route.Routable;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
@@ -336,9 +336,14 @@ public class BuySellFragment extends AbstractBuySellFragment
                         new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
 
         mBottomViewPager.setCurrentItem(selectedPageIndex);
-
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
+    }
+
+    public boolean isNewsSubFragment(){
+        if(mBottomViewPager.getCurrentItem() == BuySellBottomStockPagerAdapter.FRAGMENT_ID_News)
+            return true;
+        else return false;
     }
 
     @Override public void onPause()
