@@ -125,6 +125,7 @@ public class HomeFragment extends BaseWebViewFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         actionBar.setTitle(R.string.dashboard_home);
         inflater.inflate(R.menu.menu_refresh_button, menu);
