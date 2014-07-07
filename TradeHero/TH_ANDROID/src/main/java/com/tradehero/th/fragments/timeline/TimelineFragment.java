@@ -394,6 +394,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         this.loadingView = null;
         timelineListView = null;
         lastItemVisibleListener = null;
+        mainTimelineAdapter = null;
 
         super.onDestroyView();
     }
@@ -413,7 +414,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             mainTimelineAdapter.setProfileClickListener(null);
             mainTimelineAdapter.setOnLoadFinishedListener(null);
         }
-        mainTimelineAdapter = null;
     }
 
     protected void detachTimelineListView()
