@@ -392,6 +392,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         this.userProfileView = null;
         this.loadingView = null;
+        timelineListView = null;
+        lastItemVisibleListener = null;
 
         super.onDestroyView();
     }
@@ -422,8 +424,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.setOnScrollListener(null);
             timelineListView.setOnLastItemVisibleListener(null);
         }
-        timelineListView = null;
-        lastItemVisibleListener = null;
     }
 
     private void detachFreeFollowMiddleCallback()
