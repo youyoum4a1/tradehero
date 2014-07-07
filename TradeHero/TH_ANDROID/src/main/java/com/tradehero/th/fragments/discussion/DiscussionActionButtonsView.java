@@ -55,14 +55,12 @@ public class DiscussionActionButtonsView extends LinearLayout
         ButterKnife.inject(this);
     }
 
-
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
         display();
     }
-
 
     @Override protected void onDetachedFromWindow()
     {
@@ -125,10 +123,12 @@ public class DiscussionActionButtonsView extends LinearLayout
             commentCount.setChecked(discussionDTO.commentCount > 0);
         }
 
-        if(isCommentShow()){
+        if (isCommentShow())
+        {
             setCommentCountVisble(View.VISIBLE);
         }
-        else{
+        else
+        {
             setCommentCountVisble(View.GONE);
         }
     }
@@ -198,7 +198,8 @@ public class DiscussionActionButtonsView extends LinearLayout
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 
-    protected boolean isCommentShow(){
+    protected boolean isCommentShow()
+    {
         Fragment fragment = getNavigator().getCurrentFragment();
         if (fragment instanceof BuySellFragment)
         {
@@ -210,12 +211,11 @@ public class DiscussionActionButtonsView extends LinearLayout
         return true;
     }
 
-
-    public void setCommentCountVisble(int visble){
-        if(commentCount!=null)
+    public void setCommentCountVisble(int visble)
+    {
+        if (commentCount != null)
         {
             commentCount.setVisibility(visble);
         }
     }
-
 }

@@ -70,6 +70,7 @@ public class NewsHeadlineFragment
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
         newsCacheListener = createNewsCacheListener();
+        discussionFetchListener = createDiscussionFetchListener();
         start = System.currentTimeMillis();
     }
 
@@ -80,7 +81,6 @@ public class NewsHeadlineFragment
 
         ButterKnife.inject(this, view);
         initViews(view);
-        discussionFetchListener = createDiscussionFetchListener();
         return view;
     }
 
@@ -93,12 +93,12 @@ public class NewsHeadlineFragment
             implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
         @Override
-        public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value)
+        public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(DiscussionKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull DiscussionKey key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }
@@ -108,7 +108,7 @@ public class NewsHeadlineFragment
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         Bundle bundle = new Bundle();
-        if(abstractDiscussionCompactDTO!=null)
+        if (abstractDiscussionCompactDTO != null)
         {
             bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
         }
@@ -149,9 +149,15 @@ public class NewsHeadlineFragment
         listViewWrapper.setDisplayedChildByLayoutId(progressBar.getId());
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachSecurityCache();
+        detachFetchDiscussionTask();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         newsTitleCache.unregister(newsCacheListener);
 
         if (listView != null)
@@ -166,6 +172,7 @@ public class NewsHeadlineFragment
 
     @Override public void onDestroy()
     {
+        discussionFetchListener = null;
         newsCacheListener = null;
         super.onDestroy();
     }
@@ -205,7 +212,7 @@ public class NewsHeadlineFragment
 
     private void fetchSecurityNews()
     {
-        Timber.d("%s fetchSecurityNews,consume: %s",TEST_KEY,(System.currentTimeMillis() - start));
+        Timber.d("%s fetchSecurityNews,consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
         detachSecurityCache();
 
         NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
@@ -272,11 +279,11 @@ public class NewsHeadlineFragment
 
         if (news != null)
         {
-            fetchDiscussionDetail(true,news);
+            fetchDiscussionDetail(true, news);
         }
     }
 
-    private void fetchDiscussionDetail(boolean force,NewsItemDTOKey discussionKey)
+    private void fetchDiscussionDetail(boolean force, NewsItemDTOKey discussionKey)
     {
         detachFetchDiscussionTask();
 
