@@ -18,7 +18,6 @@ import javax.inject.Singleton;
 
     public PositionDTO clonePerType(PositionDTO positionDTO)
     {
-        PositionDTO returned = positionDTO;
         if (positionDTO == null)
         {
             // Nothing to do

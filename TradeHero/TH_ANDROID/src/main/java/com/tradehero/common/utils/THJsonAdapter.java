@@ -15,7 +15,7 @@ import timber.log.Timber;
 
 public class THJsonAdapter implements Converter
 {
-    private static ConverterType CONVERTER_TYPE = ConverterType.JACKSON;
+    private static final ConverterType CONVERTER_TYPE = ConverterType.JACKSON;
     private static THJsonAdapter instance = null;
     private Converter converter;
 

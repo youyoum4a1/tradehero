@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.message;
 
-import com.tradehero.common.persistence.DTOCache;
+import android.os.Bundle;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -16,7 +17,13 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     protected boolean isFresh = true;
 
     @Inject protected MessageThreadHeaderCache messageThreadHeaderCache;
-    protected DTOCache.GetOrFetchTask<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchTask;
+    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
+    }
 
     @Override public void onResume()
     {
@@ -30,21 +37,22 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        messageThreadHeaderFetchListener = null;
+        super.onDestroy();
+    }
+
     protected void detachMessageThreadHeaderFetchTask()
     {
-        if (messageThreadHeaderFetchTask != null)
-        {
-            messageThreadHeaderFetchTask.setListener(null);
-        }
-        messageThreadHeaderFetchTask = null;
+        messageThreadHeaderCache.unregister(messageThreadHeaderFetchListener);
     }
 
     protected void fetchMessageThreadHeader()
     {
         detachMessageThreadHeaderFetchTask();
-        messageThreadHeaderFetchTask = messageThreadHeaderCache.getOrFetch(correspondentId,
-                createMessageThreadHeaderCacheListener());
-        messageThreadHeaderFetchTask.execute();
+        messageThreadHeaderCache.register(correspondentId, messageThreadHeaderFetchListener);
+        messageThreadHeaderCache.getOrFetchAsync(correspondentId);
     }
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
@@ -58,23 +66,18 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         }
     }
 
-    protected DTOCache.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
     {
         return new NewPrivateMessageFragmentThreadHeaderCacheListener();
     }
 
     protected class NewPrivateMessageFragmentThreadHeaderCacheListener
-            implements DTOCache.Listener<UserBaseKey, MessageHeaderDTO>
+            implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value)
         {
             if (getDiscussionKey() == null)
             {
-                if (discussionKeyFactory == null)
-                {
-                    Timber.e(new NullPointerException("DiscussionKeyFactory null"), null);
-                }
                 linkWith(discussionKeyFactory.create(value), true);
             }
         }

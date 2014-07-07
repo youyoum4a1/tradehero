@@ -9,13 +9,15 @@ import javax.inject.Inject;
 
 public class DiscussionListKeyFactory
 {
-    private CurrentUserId currentUserId;
+    private final CurrentUserId currentUserId;
 
+    //<editor-fold desc="Constructors">
     @Inject public DiscussionListKeyFactory(CurrentUserId currentUserId)
     {
         super();
         this.currentUserId = currentUserId;
     }
+    //</editor-fold>
 
     public DiscussionListKey create(Bundle args)
     {

@@ -5,8 +5,9 @@ import com.tradehero.th.api.discussion.DiscussionType;
 
 public class PrivateMessageKey extends DiscussionKey
 {
-    private static DiscussionType TYPE = DiscussionType.PRIVATE_MESSAGE;
+    private static final DiscussionType TYPE = DiscussionType.PRIVATE_MESSAGE;
 
+    //<editor-fold desc="Constructors">
     public PrivateMessageKey(Integer id)
     {
         super(id);
@@ -16,6 +17,7 @@ public class PrivateMessageKey extends DiscussionKey
     {
         super(args);
     }
+    //</editor-fold>
 
     @Override public DiscussionType getType()
     {

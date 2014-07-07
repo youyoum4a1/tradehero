@@ -6,7 +6,6 @@
   <string name="na">N/A</string>
   <string name="empty"/>
   <string name="cancel">취소</string>
-  <string name="action_menu_settings">설정</string>
 
   <string name="network_error">네트워크 상태를 확인하세요!</string>
   <!-- data format-->
@@ -23,14 +22,14 @@
   <string name="splash_copyright_3">Patents Pending</string>
 
   <!-- Dashboard -->
+  <string name="dashboard_timeline">홈</string>
+
   <string name="dashboard_trending">주식거래</string>
   <string name="dashboard_community">소셜</string>
-  <string name="dashboard_home">홈</string>
-  <string name="dashboard_portfolio">포트폴리오</string>
-  <string name="dashboard_referral">Refer Friends</string>
+  <string name="dashboard_message_center">메세지</string>
+
   <string name="dashboard_store">스토어</string>
-  <string name="dashboard_headline">헤드라인</string>
-  <string name="message_center">메세지</string>
+  <string name="dashboard_menu_settings">설정</string>
   <string name="dashboard_admin_settings">어드민 설정</string>
 
   <!-- To get rid of? -->

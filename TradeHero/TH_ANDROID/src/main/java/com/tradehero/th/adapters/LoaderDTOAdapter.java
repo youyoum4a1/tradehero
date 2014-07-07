@@ -16,14 +16,16 @@ public abstract class LoaderDTOAdapter<
             LoaderType extends ListLoader<DTOType>>
         extends DTOAdapter<DTOType, DTOViewType>
 {
-    private int loaderId;
+    private final int loaderId;
     private ListLoaderCallback<DTOType> callback;
 
+    //<editor-fold desc="Constructors">
     public LoaderDTOAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
     {
         super(context, inflater, layoutResourceId);
         this.loaderId = loaderId;
     }
+    //</editor-fold>
 
     @Override public int getCount()
     {

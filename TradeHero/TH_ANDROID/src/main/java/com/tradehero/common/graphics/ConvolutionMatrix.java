@@ -90,7 +90,7 @@ public class ConvolutionMatrix
 	}*/
 
     public static final int SIZE = 3;
-    public double[][] Matrix;
+    public final double[][] Matrix;
     public double Factor = 1;
     public double Offset = 1;
 

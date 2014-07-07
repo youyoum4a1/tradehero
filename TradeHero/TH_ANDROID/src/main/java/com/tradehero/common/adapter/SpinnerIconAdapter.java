@@ -12,9 +12,9 @@ import timber.log.Timber;
 
 public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
 {
-    private int textViewResourceId;
-    private int iconViewResourceId;
-    private int iconDropDownResourceId;
+    private final int textViewResourceId;
+    private final int iconViewResourceId;
+    private final int iconDropDownResourceId;
     private int[] icons;
     private int[] dropDownIcons;
 
@@ -35,7 +35,6 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
         this.iconViewResourceId = iconViewResourceId;
         this.iconDropDownResourceId = iconDropDownResourceId;
         this.icons = icons;
-        this.dropDownIcons = dropDownIcons;
     }
 
     public SpinnerIconAdapter(Context context, int resource, int textViewResourceId, int iconViewResourceId, int iconDropDownResourceId, CharSequence[] objects, int[] icons, int[] dropDownIcons)

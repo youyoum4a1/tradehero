@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TimeSpanButtonSet extends LinearLayout
 {
-    private List<TimeSpanButton> buttons;
+    private final List<TimeSpanButton> buttons;
     private WeakReference<OnTimeSpanButtonSelectedListener> listener = new WeakReference<>(null);
     private boolean enabled = true;
     private TimeSpanButton currentSelected;
@@ -66,6 +66,7 @@ public class TimeSpanButtonSet extends LinearLayout
         if (quickPriceButton != null)
         {
             quickPriceButton.setOnClickListener(createButtonOnClickListener());
+            quickPriceButton.setBackgroundResource(R.drawable.basic_transparent_selector);
             buttons.add(quickPriceButton);
         }
     }

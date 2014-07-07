@@ -4,13 +4,15 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 
 public class CompetitionZonePortfolioDTO extends CompetitionZoneDTO
 {
-    public UserProfileCompactDTO userProfileCompactDTO;
+    public final UserProfileCompactDTO userProfileCompactDTO;
 
+    //<editor-fold desc="Constructors">
     public CompetitionZonePortfolioDTO(String title, String description, UserProfileCompactDTO userProfileCompactDTO)
     {
         super(title, description);
         this.userProfileCompactDTO = userProfileCompactDTO;
     }
+    //</editor-fold>
 
     @Override public String toString()
     {

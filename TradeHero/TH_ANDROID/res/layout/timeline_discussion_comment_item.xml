@@ -24,8 +24,8 @@
 
     <ImageView
         android:id="@+id/discussion_user_picture"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/big_avatar_w_h"
+        android:layout_height="@dimen/big_avatar_w_h"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/layout_oval_gray"

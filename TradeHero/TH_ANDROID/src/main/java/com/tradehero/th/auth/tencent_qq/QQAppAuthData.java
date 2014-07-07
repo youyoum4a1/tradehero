@@ -4,9 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
 
-/**
- * Created by huhaiping on 14-5-26.
- */
 public class QQAppAuthData
 {
     public String openid;

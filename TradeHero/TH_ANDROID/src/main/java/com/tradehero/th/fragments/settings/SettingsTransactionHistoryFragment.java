@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.localytics.android.LocalyticsSession;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -19,8 +17,9 @@ import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryCache;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
@@ -32,36 +31,20 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     @Inject UserTransactionHistoryListCache userTransactionHistoryListCache;
     @Inject UserTransactionHistoryCache userTransactionHistoryCache;
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
 
-    protected DTOCache.GetOrFetchTask<UserTransactionHistoryListType, UserTransactionHistoryIdList> transactionHistoryListFetchTask;
-    protected DTOCache.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList> transactionListCacheListener;
+    protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList> transactionListCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        transactionListCacheListener = new DTOCache.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList>()
-        {
-            @Override public void onDTOReceived(UserTransactionHistoryListType key, UserTransactionHistoryIdList value, boolean fromCache)
-            {
-                transactionListViewAdapter.setItems(userTransactionHistoryCache.get(value));
-                transactionListViewAdapter.notifyDataSetChanged();
-                progressDialog.hide();
-            }
-
-            @Override public void onErrorThrown(UserTransactionHistoryListType key, Throwable error)
-            {
-                THToast.show("Unable to fetch transaction history. Please try again later.");
-                progressDialog.hide();
-            }
-        };
+        transactionListCacheListener = createTransactionHistoryListener();
     }
 
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_transaction_header));
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -88,16 +71,12 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
         localyticsSession.tagEvent(LocalyticsConstants.Settings_TransactionHistory);
 
-        detachTransactionFetchTask();
-        transactionHistoryListFetchTask = userTransactionHistoryListCache.getOrFetch(
-                new UserTransactionHistoryListType(currentUserId.toUserBaseKey()),
-                transactionListCacheListener);
-        transactionHistoryListFetchTask.execute();
+        fetchTransactionList();
     }
 
     @Override public void onDestroyView()
     {
-        detachTransactionFetchTask();
+        detachTransactionListFetchTask();
         if (transactionListViewAdapter != null)
         {
             transactionListViewAdapter.setItems(null);
@@ -114,15 +93,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected void detachTransactionFetchTask()
-    {
-        if (transactionHistoryListFetchTask != null)
-        {
-            transactionHistoryListFetchTask.setListener(null);
-        }
-        transactionHistoryListFetchTask = null;
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
         super.onDestroyOptionsMenu();
@@ -134,11 +104,38 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         super.onDestroy();
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
+    protected void detachTransactionListFetchTask()
     {
-        return false;
+        userTransactionHistoryListCache.unregister(transactionListCacheListener);
     }
-    //</editor-fold>
+
+    protected void fetchTransactionList()
+    {
+        detachTransactionListFetchTask();
+        UserTransactionHistoryListType key = new UserTransactionHistoryListType(currentUserId.toUserBaseKey());
+        userTransactionHistoryListCache.register(key, transactionListCacheListener);
+        userTransactionHistoryListCache.getOrFetchAsync(key);
+    }
+
+    protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList> createTransactionHistoryListener()
+    {
+        return new SettingsTransactionHistoryListListener();
+    }
+
+    protected class SettingsTransactionHistoryListListener implements DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList>
+    {
+        @Override public void onDTOReceived(UserTransactionHistoryListType key, UserTransactionHistoryIdList value)
+        {
+            transactionListViewAdapter.setItems(userTransactionHistoryCache.get(value));
+            transactionListViewAdapter.notifyDataSetChanged();
+            progressDialog.hide();
+        }
+
+        @Override public void onErrorThrown(UserTransactionHistoryListType key, Throwable error)
+        {
+            THToast.show("Unable to fetch transaction history. Please try again later.");
+            progressDialog.hide();
+        }
+    }
 }
 

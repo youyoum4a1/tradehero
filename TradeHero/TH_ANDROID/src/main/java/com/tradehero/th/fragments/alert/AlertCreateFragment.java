@@ -21,9 +21,14 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         linkWith(getDummyInitialAlertDTO(), true);
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachMiddleCallbackCreate();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         super.onDestroyView();
     }
 

@@ -1,5 +1,7 @@
 package com.tradehero.th.network.share;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -18,6 +20,7 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -156,14 +159,18 @@ public class SocialSharerImpl implements SocialSharer
                 createDiscussionCallback(timelineItemShareFormDTO));
     }
 
-    public void share(WeChatDTO weChatDTO)
+    public void share(@NotNull WeChatDTO weChatDTO)
     {
-        currentActivityHolder.getCurrentActivity().startActivity(createWeChatIntent(weChatDTO));
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity != null)
+        {
+            currentActivity.startActivity(createWeChatIntent(currentActivity, weChatDTO));
+        }
     }
 
-    public Intent createWeChatIntent(WeChatDTO weChatDTO)
+    public Intent createWeChatIntent(@NotNull Context activityContext, @NotNull WeChatDTO weChatDTO)
     {
-        Intent intent = new Intent(currentActivityHolder.getCurrentContext(), WXEntryActivity.class);
+        Intent intent = new Intent(activityContext, WXEntryActivity.class);
         WXEntryActivity.putWeChatDTO(intent, weChatDTO);
         return intent;
     }

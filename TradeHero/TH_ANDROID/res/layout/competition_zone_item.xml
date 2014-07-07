@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="5dp"
-    android:background="@color/white"
+    android:background="@drawable/basic_white_selector"
     android:paddingRight="@dimen/position_padding_right"
     >
 
@@ -23,8 +23,9 @@
 
   <ImageView
       android:id="@+id/icn_competition_zone"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
+      android:padding="3dp"
       android:layout_alignParentLeft="true"
       tools:src="@drawable/icn_info_blue"
       android:contentDescription="@null"

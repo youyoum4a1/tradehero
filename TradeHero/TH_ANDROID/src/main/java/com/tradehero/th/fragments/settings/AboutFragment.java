@@ -13,12 +13,12 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.staff.StaffDTO;
 import com.tradehero.th.models.staff.StaffDTOFactory;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
 public class AboutFragment extends DashboardFragment
@@ -26,7 +26,7 @@ public class AboutFragment extends DashboardFragment
     @InjectView(R.id.main_content_wrapper) View mainContentWrapper;
     @InjectView(R.id.staff_list_holder) LinearLayout staffList;
 
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject StaffDTOFactory staffDTOFactory;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -54,7 +54,6 @@ public class AboutFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        getSherlockActivity().getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
         getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_about_title));
         getSherlockActivity().getSupportActionBar().hide();
     }
@@ -95,7 +94,7 @@ public class AboutFragment extends DashboardFragment
 
             @Override public void onAnimationEnd(Animation animation)
             {
-                getNavigator().popFragment();
+                getDashboardNavigator().popFragment();
             }
 
             @Override public void onAnimationRepeat(Animation animation)
@@ -112,11 +111,4 @@ public class AboutFragment extends DashboardFragment
         mainContentWrapper.setAnimation(null);
         super.onDestroyView();
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

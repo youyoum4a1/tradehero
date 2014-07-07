@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -47,14 +48,12 @@ public class StockInfoFragment extends DashboardFragment
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
-    private DTOCache.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> compactCacheFetchTask;
+    private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
 
     protected PaginatedDTO<NewsItemDTO> newsHeadlineList;
     private DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
 
-    private ActionBar actionBar;
     private MenuItem marketCloseIcon;
 
     private ViewPager topPager;
@@ -62,6 +61,12 @@ public class StockInfoFragment extends DashboardFragment
     private PageIndicator topPagerIndicator;
     private NewsHeadlineAdapter newsHeadlineAdapter;
     private ListView yahooNewsListView;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        compactCacheListener = createSecurityCompactCacheListener();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -128,8 +133,6 @@ public class StockInfoFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.stock_info_menu, menu);
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         displayExchangeSymbol();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -150,12 +153,7 @@ public class StockInfoFragment extends DashboardFragment
 
     @Override public void onPause()
     {
-        if (compactCacheFetchTask != null)
-        {
-            compactCacheFetchTask.setListener(null);
-            compactCacheFetchTask.cancel(false);
-        }
-        compactCacheFetchTask = null;
+        detachSecurityCompactCache();
 
         if (yahooNewsCacheFetchTask != null)
         {
@@ -178,6 +176,17 @@ public class StockInfoFragment extends DashboardFragment
         topPager = null;
         topPagerIndicator = null;
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        compactCacheListener = null;
+        super.onDestroy();
+    }
+
+    protected void detachSecurityCompactCache()
+    {
+        securityCompactCache.get().unregister(compactCacheListener);
     }
 
     private void linkWith(final ProviderId providerId, final boolean andDisplay)
@@ -215,26 +224,9 @@ public class StockInfoFragment extends DashboardFragment
         }
         else
         {
-            compactCacheListener = new DTOCache.Listener<SecurityId, SecurityCompactDTO>()
-            {
-                @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value, boolean fromCache)
-                {
-                    linkWith(value, andDisplay);
-                }
-
-                @Override public void onErrorThrown(SecurityId key, Throwable error)
-                {
-                    THToast.show(R.string.error_fetch_security_info);
-                    Timber.e(error, "Failed to fetch SecurityCompact %s", securityId);
-                }
-            };
-
-            if (compactCacheFetchTask != null)
-            {
-                compactCacheFetchTask.cancel(true);
-            }
-            compactCacheFetchTask = securityCompactCache.get().getOrFetch(securityId, compactCacheListener);
-            compactCacheFetchTask.execute();
+            detachSecurityCompactCache();
+            securityCompactCache.get().register(securityId, compactCacheListener);
+            securityCompactCache.get().getOrFetchAsync(securityId);
         }
     }
 
@@ -301,11 +293,12 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayExchangeSymbol()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
             if (securityId != null)
             {
-                actionBar.setTitle(String.format("%s:%s", securityId.exchange, securityId.securitySymbol));
+                actionBar.setTitle(String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol()));
             }
             else
             {
@@ -350,13 +343,11 @@ public class StockInfoFragment extends DashboardFragment
                     newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
                 }
             }
-            newsHeadlineAdapter.setItems(newsItemDTOKeyList);
-        }
-    }
 
-    protected void handleMarketCloseClicked()
-    {
-        alertDialogUtil.popMarketClosed(getActivity(), securityId);
+            newsHeadlineAdapter.setSecurityId(securityId);
+            newsHeadlineAdapter.setItems(newsItemDTOKeyList);
+            newsHeadlineAdapter.notifyDataSetChanged();
+        }
     }
 
     protected void handleNewsClicked(int position, NewsItemDTOKey newsItemDTOKey)
@@ -365,14 +356,26 @@ public class StockInfoFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
         int resId = newsHeadlineAdapter.getBackgroundRes(position);
-        bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
+        NewsDiscussionFragment.putBackgroundResId(bundle, resId);
         navigator.pushFragment(NewsDiscussionFragment.class, bundle);
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
+    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
-        return false;
+        return new StockInfoFragmentSecurityCompactCacheListener();
     }
-    //</editor-fold>
+
+    protected class StockInfoFragmentSecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
+    {
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        {
+            THToast.show(R.string.error_fetch_security_info);
+            Timber.e(error, "Failed to fetch SecurityCompact %s", securityId);
+        }
+    }
 }

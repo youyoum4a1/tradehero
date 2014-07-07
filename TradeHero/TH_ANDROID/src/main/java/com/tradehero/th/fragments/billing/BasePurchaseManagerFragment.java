@@ -5,9 +5,11 @@ import android.view.View;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -20,8 +22,11 @@ import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -34,6 +39,9 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Inject protected THBillingInteractor userInteractor;
     @Inject protected CurrentUserId currentUserId;
+    @Inject protected SystemStatusCache systemStatusCache;
+    private DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> systemStatusCacheListener;
+    protected SystemStatusDTO systemStatusDTO;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
     private Milestone.OnCompleteListener portfolioCompactListRetrievedListener;
@@ -45,12 +53,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected PremiumFollowUserAssistant premiumFollowUserAssistant;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
 
-    public static void putApplicablePortfolioId(Bundle args, OwnedPortfolioId ownedPortfolioId)
+    public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
         args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
     }
 
-    public static OwnedPortfolioId getApplicablePortfolioId(Bundle args)
+    public static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
     {
         if (args != null)
         {
@@ -68,6 +76,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         portfolioCompactListRetrievedListener = createPortfolioCompactListRetrievedListener();
+        systemStatusCacheListener = createSystemStatusCacheListener();
     }
 
     protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
@@ -83,6 +92,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
     {
         return new BasePurchaseManagerFreeUserFollowedCallback();
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        systemStatusCache.register(currentUserId.toUserBaseKey(), systemStatusCacheListener);
+        systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override public void onResume()
@@ -108,6 +124,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Override public void onStop()
     {
+        detachSystemStatusCache();
         detachPortfolioRetrievedMilestone();
         detachPremiumFollowUserAssistant();
         detachRequestCode();
@@ -124,8 +141,14 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
+        systemStatusCacheListener = null;
         portfolioCompactListRetrievedListener = null;
         super.onDestroy();
+    }
+
+    protected void detachSystemStatusCache()
+    {
+        systemStatusCache.unregister(systemStatusCacheListener);
     }
 
     protected void prepareApplicableOwnedPortolioId()
@@ -199,15 +222,31 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListRetrievedMilestone.launch();
     }
 
-    public OwnedPortfolioId getApplicablePortfolioId()
+    @Nullable public OwnedPortfolioId getApplicablePortfolioId()
     {
         return purchaseApplicableOwnedPortfolioId;
     }
 
+    protected boolean alertsAreFree()
+    {
+        return systemStatusDTO != null && systemStatusDTO.alertsAreFree;
+    }
+
     public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
     {
-        detachRequestCode();
-        showProductDetailRequestCode = showProductDetailListForPurchase(domain);
+        if (domain.equals(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS) && alertsAreFree())
+        {
+            alertDialogUtil.popWithNegativeButton(
+                    getActivity(),
+                    R.string.store_alert_are_free_title,
+                    R.string.store_alert_are_free_description,
+                    R.string.ok);
+        }
+        else
+        {
+            detachRequestCode();
+            showProductDetailRequestCode = showProductDetailListForPurchase(domain);
+        }
     }
 
     public int showProductDetailListForPurchase(ProductIdentifierDomain domain)
@@ -255,6 +294,23 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         premiumFollowUserAssistant = new PremiumFollowUserAssistant(
                 createPremiumUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
         premiumFollowUserAssistant.launchUnFollow();
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> createSystemStatusCacheListener()
+    {
+        return new BasePurchaseManagementSystemStatusCacheListener();
+    }
+
+    protected class BasePurchaseManagementSystemStatusCacheListener implements DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO>
+    {
+        @Override public void onDTOReceived(UserBaseKey key, SystemStatusDTO value)
+        {
+            BasePurchaseManagerFragment.this.systemStatusDTO = value;
+        }
+
+        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        {
+        }
     }
 
     protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener

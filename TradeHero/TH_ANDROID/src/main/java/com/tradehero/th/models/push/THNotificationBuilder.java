@@ -4,7 +4,7 @@ import android.app.Notification;
 
 public interface THNotificationBuilder
 {
-    Notification buildNotification(String message, int notificationId);
+    Notification buildNotification(int notificationId);
 
     int getNotifyId(int notificationId);
 }

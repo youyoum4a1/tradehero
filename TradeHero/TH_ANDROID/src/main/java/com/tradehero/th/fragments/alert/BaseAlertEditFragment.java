@@ -14,7 +14,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -23,7 +22,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -88,12 +87,13 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
     protected SecurityCompactDTO securityCompactDTO;
-    protected DTOCache.GetOrFetchTask<SecurityId, SecurityCompactDTO> securityCompactCacheFetchTask;
+    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> securityCompactCacheFetchListener;
     protected ProgressDialog progressDialog;
 
-    protected Callback<AlertCompactDTO> createAlertUpdateCallback()
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        return new AlertCreateCallback();
+        super.onCreate(savedInstanceState);
+        securityCompactCacheFetchListener = createSecurityCompactCacheListener();
     }
 
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
@@ -174,8 +174,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.alert_edit_menu, menu);
-        getSherlockActivity().getActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
         displayActionBarTitle();
     }
 
@@ -210,13 +208,15 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        securityCompactCacheFetchListener = null;
+        super.onDestroy();
+    }
+
     protected void detachSecurityCompactCacheFetchTask()
     {
-        if (securityCompactCacheFetchTask != null)
-        {
-            securityCompactCacheFetchTask.setListener(null);
-        }
-        securityCompactCacheFetchTask = null;
+        securityCompactCache.unregister(securityCompactCacheFetchListener);
     }
 
     protected void linkWith(SecurityId securityId, boolean andDisplay)
@@ -225,8 +225,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         detachSecurityCompactCacheFetchTask();
-        securityCompactCacheFetchTask = securityCompactCache.getOrFetch(securityId, true, createSecurityCompactCacheListener());
-        securityCompactCacheFetchTask.execute();
+        securityCompactCache.register(securityId, securityCompactCacheFetchListener);
+        securityCompactCache.getOrFetchAsync(securityId, true);
     }
 
     protected AlertFormDTO getFormDTO()
@@ -260,6 +260,10 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THToast.show(R.string.error_alert_insufficient_info);
         }
+        else if (alertsAreFree())
+        {
+            saveAlert();
+        }
         else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
         {
             popPurchase();
@@ -272,7 +276,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void popPurchase()
     {
-        showProductDetailListForPurchase(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
     }
 
     @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
@@ -637,6 +641,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     }
     //endregion
 
+    protected Callback<AlertCompactDTO> createAlertUpdateCallback()
+    {
+        return new AlertCreateCallback();
+    }
+
     protected class AlertCreateCallback extends THCallback<AlertCompactDTO>
     {
         @Override protected void finish()
@@ -646,7 +655,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
         @Override protected void success(AlertCompactDTO alertCompactDTO, THResponse thResponse)
         {
-            getNavigator().popFragment();
+            getDashboardNavigator().popFragment();
         }
 
         @Override protected void failure(THException ex)
@@ -655,20 +664,14 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
-    protected DTOCache.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
+    protected DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> createSecurityCompactCacheListener()
     {
         return new BaseAlertEditSecurityCompactCacheListener();
     }
 
-    protected class BaseAlertEditSecurityCompactCacheListener implements DTOCache.Listener<SecurityId, SecurityCompactDTO>
+    protected class BaseAlertEditSecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value,
-                boolean fromCache)
+        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
         {
             hideDialog();
             linkWith(value, true);

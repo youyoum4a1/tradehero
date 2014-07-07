@@ -1,11 +1,13 @@
 package com.tradehero.th.api.translation.bing;
 
+import com.tradehero.common.persistence.HasExpiration;
 import com.tradehero.th.R;
 import com.tradehero.th.api.translation.TranslationToken;
 import java.util.Calendar;
 import java.util.Date;
 
 public class BingTranslationToken extends TranslationToken
+    implements HasExpiration
 {
     public static final String TOKEN_TYPE = "MicrosoftTranslator";
     public static final String ACCESS_TOKEN_PREFIX = "Bearer %s";
@@ -13,33 +15,27 @@ public class BingTranslationToken extends TranslationToken
     private Date expirationDate;
     public String tokenType;
     public String accessToken;
-    public String expiresIn;
+    private String expiresIn;
     public String scope;
 
     //<editor-fold desc="Constructors">
     public BingTranslationToken()
     {
         super();
-        type = TOKEN_TYPE;
         setExpirationDateSecondsInFuture(0);
     }
 
-    public BingTranslationToken(String tokenType, String accessToken, String expiresIn,
+    public BingTranslationToken(
+            String tokenType,
+            String accessToken,
+            String expiresIn,
             String scope)
     {
         super();
-        type = TOKEN_TYPE;
         this.tokenType = tokenType;
         this.accessToken = accessToken;
         setExpiresIn(expiresIn);
         this.scope = scope;
-    }
-
-    public BingTranslationToken(TranslationToken other, Class<? extends BingTranslationToken> myClass)
-    {
-        super(other, myClass);
-        type = TOKEN_TYPE;
-        setExpiresIn(expiresIn);
     }
     //</editor-fold>
 
@@ -96,9 +92,16 @@ public class BingTranslationToken extends TranslationToken
         this.expirationDate = calendar.getTime();
     }
 
+    @Override public long getExpiresInSeconds()
+    {
+        return Math.max(
+                0,
+                Math.round((expirationDate.getTime() - Calendar.getInstance().getTime().getTime()) / 1000));
+    }
+
     @Override public boolean isValid()
     {
-        return Calendar.getInstance().getTime().getTime() < expirationDate.getTime();
+        return getExpiresInSeconds() > 0;
     }
 
     @Override public int logoResId()

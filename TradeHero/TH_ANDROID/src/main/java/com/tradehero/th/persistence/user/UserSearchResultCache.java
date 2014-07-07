@@ -1,14 +1,17 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserSearchResultCache extends StraightDTOCache<UserBaseKey, UserSearchResultDTO>
+@Singleton public class UserSearchResultCache extends StraightDTOCacheNew<UserBaseKey, UserSearchResultDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 5000;
 
@@ -19,12 +22,13 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @Override protected UserSearchResultDTO fetch(UserBaseKey key) throws Throwable
+    @Override @NotNull public UserSearchResultDTO fetch(@NotNull UserBaseKey key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch mechanism on this cache");
     }
 
-    public List<UserSearchResultDTO> put(List<UserSearchResultDTO> values)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<UserSearchResultDTO> put(@Nullable List<UserSearchResultDTO> values)
     {
         if (values == null)
         {
@@ -48,7 +52,8 @@ import javax.inject.Singleton;
         return previousValues;
     }
 
-    public List<UserSearchResultDTO> get(List<UserBaseKey> keys)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public List<UserSearchResultDTO> get(@Nullable List<UserBaseKey> keys)
     {
         if (keys == null)
         {

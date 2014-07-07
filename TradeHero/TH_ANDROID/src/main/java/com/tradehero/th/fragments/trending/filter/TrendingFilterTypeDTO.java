@@ -1,8 +1,11 @@
 package com.tradehero.th.fragments.trending.filter;
 
+import android.content.res.Resources;
 import android.os.Bundle;
-import com.tradehero.th.api.market.ExchangeDTO;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class TrendingFilterTypeDTO
 {
@@ -16,52 +19,37 @@ abstract public class TrendingFilterTypeDTO
     public final int titleIconResId;
     public final int descriptionResId;
 
-    public ExchangeDTO exchange;
+    @NotNull public ExchangeCompactSpinnerDTO exchange;
 
     //<editor-fold desc="Constructors">
-    public TrendingFilterTypeDTO(int titleResId, int titleIconResId, int descriptionResId)
+    public TrendingFilterTypeDTO(@NotNull Resources resources, int titleResId, int titleIconResId, int descriptionResId)
     {
         this.titleResId = titleResId;
         this.titleIconResId = titleIconResId;
         this.descriptionResId = descriptionResId;
-        this.exchange = new ExchangeDTO();
+        this.exchange = new ExchangeCompactSpinnerDTO(resources);
     }
 
     public TrendingFilterTypeDTO(int titleResId, int titleIconResId, int descriptionResId,
-            ExchangeDTO exchangeDTO)
+            @NotNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
     {
         this.titleResId = titleResId;
         this.titleIconResId = titleIconResId;
         this.descriptionResId = descriptionResId;
-        this.exchange = exchangeDTO;
+        this.exchange = exchangeCompactSpinnerDTO;
     }
 
-    public TrendingFilterTypeDTO(Bundle bundle)
+    public TrendingFilterTypeDTO(@NotNull Resources resources, @NotNull Bundle bundle)
     {
         this.titleResId = bundle.getInt(BUNDLE_KEY_TITLE_RES_ID);
         this.titleIconResId = bundle.getInt(BUNDLE_KEY_TITLE_ICON_RES_ID);
         this.descriptionResId = bundle.getInt(BUNDLE_KEY_DESCRIPTION_RES_ID);
-        this.exchange = new ExchangeDTO(bundle.getBundle(BUNDLE_KEY_EXCHANGE));
+        this.exchange = new ExchangeCompactSpinnerDTO(resources, bundle.getBundle(BUNDLE_KEY_EXCHANGE));
     }
     //</editor-fold>
 
-    abstract public TrendingFilterTypeDTO getPrevious();
-    abstract public TrendingFilterTypeDTO getNext();
-    abstract public TrendingSecurityListType getSecurityListType(String usableExchangeName, Integer page, Integer perPage);
-    abstract public String getTrackEventCategory();
-
-    protected void putParameters(Bundle args)
-    {
-        args.putInt(BUNDLE_KEY_TITLE_RES_ID, this.titleResId);
-        args.putInt(BUNDLE_KEY_TITLE_ICON_RES_ID, this.titleIconResId);
-        args.putInt(BUNDLE_KEY_DESCRIPTION_RES_ID, this.descriptionResId);
-        args.putBundle(BUNDLE_KEY_EXCHANGE, this.exchange.getArgs());
-    }
-
-    public Bundle getArgs()
-    {
-        Bundle args = new Bundle();
-        putParameters(args);
-        return args;
-    }
+    @NotNull abstract public TrendingFilterTypeDTO getPrevious();
+    @NotNull abstract public TrendingFilterTypeDTO getNext();
+    @NotNull abstract public TrendingSecurityListType getSecurityListType(@Nullable String usableExchangeName, @Nullable Integer page, @Nullable Integer perPage);
+    @NotNull abstract public String getTrackEventCategory();
 }

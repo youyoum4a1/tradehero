@@ -11,7 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
+import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import javax.inject.Inject;
 
@@ -61,8 +61,8 @@ public class SecurityDiscussionFragment extends DashboardFragment
         if (securityId != null)
         {
             Bundle bundle = new Bundle();
-            DiscussionEditPostFragment.putSecurityId(bundle, securityId);
-            getDashboardNavigator().pushFragment(DiscussionEditPostFragment.class, bundle);
+            SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
+            getDashboardNavigator().pushFragment(SecurityDiscussionEditPostFragment.class, bundle);
         }
     }
 
@@ -84,10 +84,5 @@ public class SecurityDiscussionFragment extends DashboardFragment
             discussionListCache.invalidateAllForDiscussionType(DiscussionType.SECURITY);
         }
         super.onDestroy();
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 }

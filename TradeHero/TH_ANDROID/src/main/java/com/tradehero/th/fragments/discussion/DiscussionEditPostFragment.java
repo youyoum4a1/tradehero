@@ -31,7 +31,6 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
@@ -56,7 +55,6 @@ import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
 {
-    private static final String BUNDLE_KEY_SECURITY_ID = DiscussionEditPostFragment.class.getName() + ".securityId";
     private static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
     private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
@@ -75,7 +73,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionCache discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
 
-    private SecurityId securityId;
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
     private ProgressDialog progressDialog;
@@ -85,21 +82,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private SearchStockPeopleFragment searchStockPeopleFragment;
     private DiscussionKey discussionKey;
     private boolean isPosted;
-
-    public static void putSecurityId(Bundle args, SecurityId securityId)
-    {
-        args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
-    }
-
-    public static SecurityId getSecurityId(Bundle args)
-    {
-        SecurityId extracted = null;
-        if (args != null && args.containsKey(BUNDLE_KEY_SECURITY_ID))
-        {
-            extracted = new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
-        }
-        return extracted;
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -194,7 +176,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         if (searchType != null)
         {
             bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, searchType.name());
-            searchStockPeopleFragment = (SearchStockPeopleFragment) getNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
+            searchStockPeopleFragment = getDashboardNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
         }
     }
     //</editor-fold>
@@ -214,37 +196,45 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return notEmptyText;
     }
 
-    private void postDiscussion()
+    protected void postDiscussion()
     {
-        SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
         if (validate())
         {
-            DiscussionType discussionType = null;
-            int discussionId = 0;
-            if (securityCompactDTO != null)
-            {
-                discussionType = DiscussionType.SECURITY;
-                discussionId = securityCompactDTO.id;
-            }
-            else if (discussionKey != null)
-            {
-                discussionType = discussionKey.getType();
-                discussionId = discussionKey.id;
-            }
-            else
-            {
-                return;
-            }
+            DiscussionFormDTO discussionFormDTO = buildDiscussionFormDTO();
+            if (discussionFormDTO == null) return;
 
-            DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
-            discussionFormDTO.inReplyToId = discussionId;
-            discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
             discussionPostActionButtonsView.populate(discussionFormDTO);
 
             unsetDiscussionEditMiddleCallback();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
             discussionEditMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new SecurityDiscussionEditCallback());
         }
+    }
+
+    protected DiscussionFormDTO buildDiscussionFormDTO()
+    {
+        DiscussionType discussionType = getDiscussionType();
+        if (discussionType != null)
+        {
+            DiscussionFormDTO discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
+            if (discussionKey != null)
+            {
+                discussionFormDTO.inReplyToId = discussionKey.id;
+            }
+            discussionFormDTO.text = unSpanText(discussionPostContent.getText()).toString();
+            return discussionFormDTO;
+        }
+
+        return null;
+    }
+
+    protected DiscussionType getDiscussionType()
+    {
+        if (discussionKey != null)
+        {
+            return discussionKey.getType();
+        }
+        return null;
     }
 
     private void unsetDiscussionEditMiddleCallback()
@@ -267,12 +257,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         super.onResume();
 
         isPosted = false;
-
-        SecurityId fromArgs = getSecurityId(getArguments());
-        if (fromArgs != null)
-        {
-            linkWith(fromArgs, true);
-        }
 
         Bundle args = getArguments();
         if (args != null)
@@ -343,24 +327,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return editableCopy;
     }
 
-    private void linkWith(SecurityId securityId, boolean andDisplay)
-    {
-        this.securityId = securityId;
-
-        if (andDisplay && securityId != null)
-        {
-            String securityName = String.format("%s:%s", securityId.exchange, securityId.securitySymbol);
-            discussionPostContent.setHint(getString(R.string.discussion_new_post_hint, securityName));
-        }
-
-        SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
-        if (andDisplay && securityCompactDTO != null)
-        {
-            getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_edit_post_subtitle, securityCompactDTO.name));
-            getSherlockActivity().invalidateOptionsMenu();
-        }
-    }
-
     private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
@@ -386,11 +352,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
     public boolean isPosted()
     {
         return isPosted;
@@ -412,7 +373,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             isPosted = true;
 
             DeviceUtil.dismissKeyboard(getActivity());
-            getNavigator().popFragment();
+            getDashboardNavigator().popFragment();
         }
 
         @Override public void failure(RetrofitError error)

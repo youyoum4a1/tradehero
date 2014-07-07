@@ -8,4 +8,15 @@
   <color name="button_green_light">#a7fb9c</color>
   <color name="button_yellow">#F0E68C</color>
 
+  <!-- Dashboard keys -->
+  <string name="dashboard_timeline_key" translatable="false">key_timeline</string>
+  <string name="dashboard_home_key" translatable="false">key_home</string>
+  <string name="dashboard_trending_key" translatable="false">key_trade</string>
+  <string name="dashboard_community_key" translatable="false">key_social</string>
+  <string name="dashboard_message_center_key" translatable="false">key_message</string>
+  <string name="dashboard_referral_key" translatable="false">key_refer_friends</string>
+  <string name="dashboard_store_key" translatable="false">key_store</string>
+  <string name="dashboard_menu_settings_key" translatable="false">key_settings</string>
+  <string name="dashboard_admin_settings_key" translatable="false">key_admin_settings</string>
+
 </resources>

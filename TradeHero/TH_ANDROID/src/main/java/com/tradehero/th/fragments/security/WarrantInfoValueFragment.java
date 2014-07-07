@@ -8,17 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.LiveDTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -44,9 +41,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     protected WarrantDTO warrantDTO;
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
-    protected ProviderSpecificResourcesDTO providerSpecificResourcesDTO;
     @Inject protected ProviderCache providerCache;
-    @Inject protected ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -56,8 +51,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = null;
-        view = inflater.inflate(R.layout.fragment_warrantinfo_value, container, false);
+        View view = inflater.inflate(R.layout.fragment_warrantinfo_value, container, false);
         initViews(view);
         return view;
     }
@@ -103,7 +97,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         super.onDestroyView();
     }
 
-    @Override protected LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    @Override protected SecurityCompactCache getInfoCache()
     {
         return securityCompactCache;
     }
@@ -127,7 +121,6 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
     public void linkWith(ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
-        this.providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
         if (andDisplay)
         {
             displayLinkHelpVideoLink();
@@ -168,9 +161,11 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         if (!isDetached() && mHelpVideoLink != null)
         {
             mHelpVideoLink.setVisibility(hasHelpVideo() ? View.VISIBLE : View.GONE);
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoLinkBackgroundResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.helpVideoLinkBackgroundResId > 0)
             {
-                mHelpVideoLink.setBackgroundResource(providerSpecificResourcesDTO.helpVideoLinkBackgroundResId);
+                mHelpVideoLink.setBackgroundResource(providerDTO.specificResources.helpVideoLinkBackgroundResId);
             }
         }
     }
@@ -183,10 +178,12 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             {
                 mHelpVideoText.setText(providerDTO.helpVideoText);
             }
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoLinkTextColourResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.helpVideoLinkTextColourResId > 0)
             {
                 mHelpVideoText.setTextColor(getResources().getColor(
-                        providerSpecificResourcesDTO.helpVideoLinkTextColourResId));
+                        providerDTO.specificResources.helpVideoLinkTextColourResId));
            }
             else
             {
@@ -313,7 +310,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         if (activity instanceof DashboardNavigatorActivity)
         {
             Bundle args = new Bundle();
-            args.putBundle(ProviderVideoListFragment.BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+            ProviderVideoListFragment.putProviderId(args, providerId);
             ((DashboardNavigatorActivity) activity).getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
         }
     }

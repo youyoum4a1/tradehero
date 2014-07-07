@@ -14,6 +14,7 @@ import com.tradehero.th.billing.googleplay.exception.IABUnhandledSKUDomainExcept
 import com.tradehero.th.billing.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertPlanService;
+import com.tradehero.th.network.service.AlertPlanServiceAsync;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserService;
@@ -40,6 +41,7 @@ public class THBaseIABPurchaseReporter
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<AlertPlanService> alertPlanService;
+    @Inject Lazy<AlertPlanServiceAsync> alertPlanServiceAsync;
     @Inject Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject Lazy<UserService> userService;
@@ -123,7 +125,7 @@ public class THBaseIABPurchaseReporter
                 break;
 
             case DOMAIN_STOCK_ALERTS:
-                alertPlanService.get().subscribeToAlertPlan(
+                alertPlanServiceAsync.get().subscribeToAlertPlan(
                         portfolioId.userId,
                         purchase.getGooglePlayPurchaseDTO(),
                         new THIABPurchaseReporterAlertPlanPurchaseCallback());
@@ -212,7 +214,7 @@ public class THBaseIABPurchaseReporter
         }
         else
         {
-            alertPlanService.get().checkAlertPlanSubscription(portfolioId.userId, new THIABPurchaseReporterPurchaseCallback());
+            alertPlanServiceAsync.get().checkAlertPlanSubscription(portfolioId.userId, new THIABPurchaseReporterPurchaseCallback());
         }
     }
 

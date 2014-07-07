@@ -10,9 +10,9 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
@@ -26,11 +26,16 @@ import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable({
+        "store", "store/:action"
+})
 public class StoreScreenFragment extends BasePurchaseManagerFragment
     implements WithTutorial
 {
@@ -38,11 +43,20 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected Integer showBillingAvailableRequestCode;
 
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
+    @Inject THRouter thRouter;
+
+    @RouteProperty("action") Integer routeClickedPosition;
 
     private ListView listView;
     private StoreItemAdapter storeItemAdapter;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        thRouter.inject(this);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -54,7 +68,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override protected void initViews(View view)
     {
         listView = (ListView) view.findViewById(R.id.store_option_list);
-        storeItemAdapter = new StoreItemAdapter(getActivity(), getActivity().getLayoutInflater());
+        storeItemAdapter = new StoreItemAdapter(getActivity());
         if (listView != null)
         {
             listView.setAdapter(storeItemAdapter);
@@ -71,23 +85,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_USE_LOGO);
         actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
         actionBar.setSubtitle(userInteractor.getName());
         actionBar.setHomeButtonEnabled(true);
         actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()
@@ -98,6 +100,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         storeItemAdapter.notifyDataSetChanged();
         cancelOthersAndShowBillingAvailable();
+
+        if (routeClickedPosition != null)
+        {
+            handlePositionClicked(routeClickedPosition);
+        }
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -119,11 +126,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         listView = null;
         storeItemAdapter = null;
         super.onDestroyView();
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
     }
 
     public void cancelOthersAndShowBillingAvailable()
@@ -165,7 +167,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     private void handlePositionClicked(int position)
     {
-        Bundle bundle;
         switch (position)
         {
             case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:

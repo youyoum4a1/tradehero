@@ -2,9 +2,7 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,10 +12,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.squareup.picasso.CallbackExt;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.utils.MetaHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Exchange;
@@ -28,12 +26,14 @@ import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         extends RelativeLayout
         implements DTOView<SecurityCompactDTOType>
 {
+
     public static final float DIVISOR_PC_50_COLOR = 5f;
 
     @Inject @ForSecurityItemForeground Transformation foregroundTransformation;
@@ -54,6 +54,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     @InjectView(R.id.sec_type) @Optional TextView securityType;
 
     protected SecurityCompactDTOType securityCompactDTO;
+    private Target myLogoImageTarget;
+    private Target myBgImageTarget;
 
     //<editor-fold desc="Constructors">
     public SecurityItemView(Context context)
@@ -77,6 +79,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         super.onFinishInflate();
         init();
+        myLogoImageTarget = createLogoImageTarget();
+        myBgImageTarget = createBGImageTarget();
     }
 
     protected void init()
@@ -89,10 +93,21 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+
+        if (getMyLogoImageTarget() == null)
+        {
+            myLogoImageTarget = createLogoImageTarget();
+        }
+        if (getMyBgImageTarget() == null)
+        {
+            myBgImageTarget = createBGImageTarget();
+        }
+
         if (stockBgLogo != null)
         {
-            stockBgLogo.setVisibility(View.INVISIBLE);
+            stockBgLogo.setVisibility(View.GONE);
         }
+
         if (mPicasso != null)
         {
             loadImage();
@@ -101,6 +116,12 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     @Override protected void onDetachedFromWindow()
     {
+        mPicasso.cancelRequest(myLogoImageTarget);
+        mPicasso.cancelRequest(myBgImageTarget);
+
+        myLogoImageTarget = null;
+        myBgImageTarget = null;
+
         if (mPicasso != null)
         {
             clearHandler();
@@ -147,12 +168,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void linkWith(SecurityCompactDTOType securityCompactDTO, boolean andDisplay)
     {
-        //if (this.securityCompactDTO != null && securityCompactDTO != null && securityCompactDTO.name.equals(this.securityCompactDTO.name))
-        //{
-        //    return;
-        //    // Note that this prevents updating values inside the securityCompactDTO
-        //}
-
         this.securityCompactDTO = securityCompactDTO;
 
         if (andDisplay)
@@ -166,6 +181,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             displayMarketClose();
             displaySecurityType();
             displayCountryLogo();
+            Timber.d("onLinkWith");
             loadImage();
         }
     }
@@ -182,6 +198,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         displayMarketClose();
         displaySecurityType();
         displayCountryLogo();
+        Timber.d("onDisplay");
         loadImage();
     }
 
@@ -239,11 +256,13 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             {
                 if (securityCompactDTO.lastPriceDateAndTimeUtc != null)
                 {
-                    date.setText(DateUtils.getFormattedUtcDate(securityCompactDTO.lastPriceDateAndTimeUtc));
+                    date.setText(DateUtils.getFormattedUtcDate(getResources(),
+                            securityCompactDTO.lastPriceDateAndTimeUtc));
                 }
                 if (securityCompactDTO.marketOpen != null)
                 {
-                    date.setTextColor(getResources().getColor(securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
+                    date.setTextColor(getResources().getColor(
+                            securityCompactDTO.marketOpen ? R.color.black : R.color.text_gray_normal));
                 }
             }
             else
@@ -257,7 +276,8 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         if (lastPrice != null)
         {
-            if (securityCompactDTO != null && securityCompactDTO.lastPrice != null && !Double.isNaN(securityCompactDTO.lastPrice))
+            if (securityCompactDTO != null && securityCompactDTO.lastPrice != null && !Double.isNaN(
+                    securityCompactDTO.lastPrice))
             {
                 lastPrice.setText(String.format("%.2f", securityCompactDTO.lastPrice));
             }
@@ -290,7 +310,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                         //profitIndicator.setText(getContext().getString(R.string.negative_prefix));
                         profitIndicator.setText(R.string.arrow_prefix_negative);
                     }
-                    profitIndicator.setTextColor(ColorUtils.getColorForPercentage(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
+                    profitIndicator.setTextColor(ColorUtils.getProperColorForNumber(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
                 }
             }
         }
@@ -342,7 +362,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     {
         if (securityType != null)
         {
-            if (this.securityCompactDTO != null && this.securityCompactDTO.getSecurityType() != null)
+            if (this.securityCompactDTO != null && this.securityCompactDTO.getSecurityTypeStringResourceId() != null)
             {
                 securityType.setText(securityCompactDTO.getSecurityTypeStringResourceId());
             }
@@ -367,8 +387,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 {
                     countryLogo.setImageResource(R.drawable.default_image);
                 }
-            }
-            catch (OutOfMemoryError e)
+            } catch (OutOfMemoryError e)
             {
                 Timber.e(e, "");
             }
@@ -376,52 +395,58 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     }
     //</editor-fold>
 
-    public void loadImage()
+    private void resetImage()
     {
+        if (stockLogo != null)
+        {
+            stockLogo.setImageBitmap(null);
+        }
+
         if (stockBgLogo != null)
         {
-            stockBgLogo.setVisibility(View.INVISIBLE);
-            if (isMyUrlOk())
-            {
-                mPicasso.load(securityCompactDTO.imageBlobUrl)
-                        //don't have use transform
-                        .withMerge()
-                        .placeholder(R.drawable.trending_grid_item_bg2)
-                        .into(stockBgLogo, createBgImageCallback());
-            }
-            else
-            {
-                loadExchangeImage();
-            }
+            stockBgLogo.setImageBitmap(null);
+        }
+    }
+
+    public Target getMyBgImageTarget()
+    {
+        return this.myBgImageTarget;
+    }
+
+    public Target getMyLogoImageTarget()
+    {
+        return this.myLogoImageTarget;
+    }
+
+    public void loadImage()
+    {
+
+        resetImage();
+
+        if (isMyUrlOk())
+        {
+            picassoSetupLogoParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyLogoImageTarget());
+            picassoSetupBGParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyBgImageTarget());
         }
         else
         {
-            //if stockBgLogo is null,we don't have to load image.
+            loadExchangeImage();
         }
     }
 
     public void loadExchangeImage()
     {
-        if (stockBgLogo != null)
+        if (securityCompactDTO != null && securityCompactDTO.exchange != null)
         {
-            if (securityCompactDTO != null && securityCompactDTO.exchange != null)
+            try
             {
-                try
-                {
-                    Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
-                    mPicasso.load(exchange.logoId)
-                            .withMerge()
-                            .placeholder(R.drawable.trending_grid_item_bg2)
-                            .into(stockBgLogo, createExchangeImageCallback());
-                }
-                catch (IllegalArgumentException e)
-                {
-                    Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
-                    loadDefaultImage();
-                }
-            }
-            else
+                Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
+
+                mPicasso.load(exchange.logoId).into(getMyLogoImageTarget());
+                picassoSetupBGParam(mPicasso.load(exchange.logoId)).into(getMyBgImageTarget());
+            } catch (IllegalArgumentException e)
             {
+                Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
                 loadDefaultImage();
             }
         }
@@ -440,229 +465,81 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
         if (stockBgLogo != null)
         {
-            stockBgLogo.setVisibility(View.INVISIBLE);
+            stockBgLogo.setVisibility(View.GONE);
         }
     }
 
-    private Bitmap resizeForegroundBitmap(
-            float pw, float ph,
-            Bitmap in, boolean recycle)
+    private RequestCreator picassoSetupLogoParam(@NotNull RequestCreator creator)
     {
-
-        if (ph <= 0 || ph <= 0)
-        {
-            ph = getResources().getDimension(R.dimen.security_logo_height);
-            pw = getResources().getDimension(R.dimen.security_logo_width);
-        }
-
-        int inWidth = in.getWidth();
-        int inHeight = in.getHeight();
-        float scaleY = ph / inHeight;
-        float scaleX = pw / inWidth;
-        float scale = Math.min(scaleX, scaleY);
-        if (scale >= 1)
-        {
-            //Log.d(TAG, "scaleLogo bitmap"+inWidth+","+inHeight+" parent "+getWidth()+" "+getHeight());
-            return in;
-        }
-
-        int dstWidth = (int) (inWidth * scale);
-        int dstHeight = (int) (inHeight * scale);
-        //Log.d(TAG, "scaleLogo scaleX "+scaleX+" scaleY "+scaleY+" scale "+scale+" dstWidth "+dstWidth+" dstHeight "+dstHeight+" parent "+getWidth()+" "+getHeight());
-        Bitmap rt = Bitmap.createScaledBitmap(in, dstWidth, dstHeight, false);
-        if (recycle)
-        {
-            in.recycle();
-        }
-        return rt;
+        return creator.transform(foregroundTransformation)
+                .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
+                .centerInside();
     }
 
-    /**
-     * merge two bitmaps into single one.
-     */
-    private Bitmap mergeBitmaps(Bitmap background, Bitmap logo, boolean recycle, int w, int h)
+    private RequestCreator picassoSetupBGParam(@NotNull RequestCreator creator)
     {
-        if (background == null || logo == null || background.isRecycled() || logo.isRecycled())
-        {
-            return null;
-        }
-        Paint paint = new Paint();
-
-        int bgW = background.getWidth();
-        int bgH = background.getHeight();
-
-        int top = (int) getResources().getDimension(R.dimen.security_logo_offset);
-        int offX = (bgW - logo.getWidth()) / 2;
-        int offY = (bgH - logo.getHeight()) / 2 - top;
-
-        Canvas canvas = new Canvas(background);
-
-        //draw icon
-        canvas.drawBitmap(logo, offX, offY, paint);
-
-        //Log.d(TAG, "bg:"+bgW+","+bgH+" target:"+w+","+h +" logo "+logo.getWidth()+","+logo.getHeight());
-        //Bitmap retVal = Bitmap.createBitmap(background, offX, offY, w, h, null, false);
-        if (recycle)
-        {
-            logo.recycle();
-        }
-        return background;
+        return creator.transform(backgroundTransformation)
+                .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
+                .centerCrop();
     }
 
-    /**
-     * resize background bitmap.
-     */
-    Bitmap resizeBackgroundBitmap(int targetWidth, int targetHeight,
-            Bitmap result, int exifRotation, boolean recycle)
+    protected Target createBGImageTarget()
+
     {
-        boolean swapDimens = exifRotation == 90 || exifRotation == 270;
-        int inWidth = swapDimens ? result.getHeight() : result.getWidth();
-        int inHeight = swapDimens ? result.getWidth() : result.getHeight();
+        return new SecurityItemViewBgImageTarget();
+    }
 
-        int drawX = 0;
-        int drawY = 0;
-        int drawWidth = inWidth;
-        int drawHeight = inHeight;
+    protected Target createLogoImageTarget()
+    {
+        return new SecurityItemViewExchangeImageTarget();
+    }
 
-        Matrix matrix = new Matrix();
+    protected class SecurityItemViewExchangeImageTarget
+            implements Target
+    {
 
-        float widthRatio = targetWidth / (float) inWidth;
-        float heightRatio = targetHeight / (float) inHeight;
-        float scale;
-        if (widthRatio > heightRatio)
+        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
         {
-            scale = widthRatio;
-            int newSize = (int) Math
-                    .floor(inHeight * (heightRatio / widthRatio));
-            drawY = (inHeight - newSize) / 2;
-            drawHeight = newSize;
-        }
-        else
-        {
-            scale = heightRatio;
-            int newSize = (int) Math.floor(inWidth * (widthRatio / heightRatio));
-            drawX = (inWidth - newSize) / 2;
-            drawWidth = newSize;
-        }
-        matrix.preScale(scale, scale);
-
-        Bitmap newResult = Bitmap.createBitmap(result, drawX, drawY, drawWidth,
-                drawHeight, matrix, true);
-        if (newResult != result)
-        {
-            if (recycle)
+            if (stockLogo != null)
             {
-                result.recycle();
-            }
-            result = null;
-            result = newResult;
-        }
-
-        return result;
-    }
-
-    protected CallbackExt createBgImageCallback()
-    {
-        return new SecurityItemViewBgImageCallback();
-    }
-
-    protected class SecurityItemViewBgImageCallback extends CallbackExt.EmptyCallbackExt
-    {
-        @Override public void onSuccess()
-        {
-            if (stockBgLogo != null)
-            {
-                stockBgLogo.setVisibility(View.VISIBLE);
+                stockLogo.setImageBitmap(bitmap);
             }
         }
 
-        @Override public void onError()
+        @Override public void onBitmapFailed(Drawable errorDrawable)
         {
-            loadExchangeImage();
-        }
-
-        @Override public Bitmap onOriginalBitmapLoaded(ImageView target, Bitmap bmp)
-        {
-            return processTransformation(target, bmp);
-        }
-    }
-
-    protected CallbackExt createExchangeImageCallback()
-    {
-        return new SecurityItemViewExchangeImageCallback();
-    }
-
-    /**
-     * Callback for loading exchange image
-     */
-    protected class SecurityItemViewExchangeImageCallback extends CallbackExt.EmptyCallbackExt
-    {
-        @Override public void onSuccess()
-        {
-            if (stockBgLogo != null)
-            {
-                stockBgLogo.setVisibility(View.VISIBLE);
-            }
-        }
-
-        @Override public void onError()
-        {
-            //load default image if failed to load exchange image
             loadDefaultImage();
         }
 
-        @Override public Bitmap onOriginalBitmapLoaded(ImageView target, Bitmap bmp)
+        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
         {
-            return processTransformation(target, bmp);
+
         }
     }
 
-    private Bitmap processTransformation(ImageView target, Bitmap bmp)
+    protected class SecurityItemViewBgImageTarget
+            implements Target
     {
-        if (bmp == null || bmp.isRecycled())
-        {
-            return null;
-        }
-        try
-        {
-            System.gc();
 
-            int originalWidth = bmp.getWidth();
-            int originalHeight = bmp.getHeight();
-            View parent = (View) target.getParent();
-            int parentWidth = 0;
-            int parentHeight = 0;
-            //parentWidth may be 0?
-            if ((parentWidth = parent.getWidth()) <= 0 || (parentHeight = parent.getHeight()) <= 0)
+        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
+        {
+            if (stockBgLogo != null)
             {
-                parentWidth = MetaHelper.getScreensize(getContext())[0];
-                parentHeight =
-                        Math.round(getResources().getDimension(R.dimen.security_item_height));
+                stockBgLogo.setImageBitmap(bitmap);
+                stockBgLogo.setVisibility(View.VISIBLE);
             }
-            float scaleX = parentWidth / (float) originalWidth;
-            float scaleY = parentHeight / (float) originalHeight;
-            float scale = Math.max(scaleX, scaleY);
-
-            Bitmap transformResult =
-                    resizeBackgroundBitmap(parent.getWidth(), parent.getHeight(), bmp, 0, false);
-
-            float ph = getResources().getDimension(R.dimen.security_logo_height);
-            float pw = getWidth()
-                    - getResources().getDimension(R.dimen.security_logo_margin_vertical) * 2;
-
-            Bitmap logo =
-                    foregroundTransformation.transform(resizeForegroundBitmap(pw, ph, bmp, false));
-            Bitmap background = backgroundTransformation.transform(transformResult);
-
-            Bitmap retVal =
-                    mergeBitmaps(background, logo, false, parent.getWidth(), parent.getHeight());
-
-            return retVal;
+            else
+            {
+            }
         }
-        catch (OutOfMemoryError e)
+
+        @Override public void onBitmapFailed(Drawable errorDrawable)
         {
-            Timber.e(e, "OutOfMemoryError");
-            return null;
+        }
+
+        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
+        {
+
         }
     }
 }

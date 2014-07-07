@@ -24,15 +24,16 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
 {
-    public static boolean IS_AUTO_TRANSLATE = false;
+    public static final boolean IS_AUTO_TRANSLATE = false;
 
     public static enum TranslationStatus
     {
         ORIGINAL(R.string.discussion_translate_button),
         TRANSLATING(R.string.discussion_translating_button),
-        TRANSLATED(R.string.discussion_show_original_button);
+        TRANSLATED(R.string.discussion_show_original_button),
+        FAILED(R.string.discussion_translation_failed_button);
 
-        public int actionTextResId;
+        public final int actionTextResId;
 
         TranslationStatus(int actionTextResId)
         {
@@ -95,6 +96,11 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         ButterKnife.reset(this);
     }
 
+    public void setBackroundResource(int resId)
+    {
+        //Do nothing
+    }
+
     public void setMenuClickedListener(OnMenuClickedListener menuClickedListener)
     {
         this.menuClickedListener = menuClickedListener;
@@ -116,7 +122,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             display();
         }
 
-        if (isAutoTranslate())
+        if (isAutoTranslate() && socialShareHelper.canTranslate(discussionDTO))
         {
             handleTranslationRequested();
         }
@@ -189,7 +195,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     {
         if (discussionDTO != null && discussionDTO.createdAtUtc != null)
         {
-            prettyTime.formatUnrounded(discussionDTO.createdAtUtc);
+            return prettyTime.formatUnrounded(discussionDTO.createdAtUtc);
         }
         return null;
     }
@@ -253,6 +259,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         switch (currentTranslationStatus)
         {
             case ORIGINAL:
+            case FAILED:
                 handleTranslationRequested();
                 break;
 
@@ -325,7 +332,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             @Override public void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate,
                     Throwable error)
             {
-                // Nothing to do
+                currentTranslationStatus = TranslationStatus.FAILED;
             }
 
             @Override public void onCancelClicked()

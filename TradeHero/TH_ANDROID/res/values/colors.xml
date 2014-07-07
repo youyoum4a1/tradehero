@@ -12,10 +12,11 @@
   <color name="timeline_background_color">#E3E8EE</color>
   <color name="timeline_action_button_text_color">#80929292</color>
   <color name="timeline_action_button_text_color_shadow">#000000</color>
-  <color name="timeline_action_button_text_color_pressed">#1376FB</color>
+  <color name="timeline_action_button_text_color_pressed">@color/tradehero_blue</color>
   <color name="notification_background_color">#181818</color>
   <color name="dashboard_background_color">#E3E8EE</color>
   <color name="profile_view_gradient_top">#80ffffff</color>
+  <color name="authentication_edit_text_bg">#D0ffffff</color>
   <color name="profile_view_gradient_bottom">#ffffff</color>
   <color name="invite_friend_header_background_color">@color/invite_friend_background_color</color>
   <color name="invite_friend_background_color">#e3e4e6</color>
@@ -26,20 +27,31 @@
   <color name="orange">@android:color/holo_orange_light</color>
   <!--<color name="splash_background_solid">#4699c4</color>-->
   <color name="splash_background_solid">#58b0dd</color>
-  <color name="follow_button_background">#1376FB</color>
-  <color name="follow_button_background_pressed">#ff0d6cfb</color>
+  <color name="follow_button_background">@color/tradehero_blue</color>
+  <color name="follow_button_background_pressed">#58b0dd</color>
   <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
   <color name="connect_accounts">#1376FB</color>
 
+  <color name="tradehero_blue">#1376FB</color>
+
   <color name="actionbar_menu_text_color">@android:color/darker_gray</color>
   <color name="leaderboard_user_item_text_color">#4C566B</color>
-  <color name="invite_friend_button_color">#1376FB</color>
-  <color name="button_yellow">#72ffd36b</color>
+  <color name="invite_friend_button_color">@color/tradehero_blue</color>
   <drawable name="share_item_pressed_bg_grey">#ddd</drawable>
 
-  <color name="follow_button_green">#a0dc50</color>
-  <color name="follow_button_green_overlay">#eea0dc50</color>
+  <color name="follow_button_green">@color/light_green_selector</color>
+  <color name="follow_button_green_pressed">@color/light_green_selector_pressed</color>
+  <color name="follow_button_green_overlay">@color/light_green_selector_overlay</color>
+
   <color name="notification_text_color">@color/white</color>
+
+  <color name="message_button_blue">#6e96fa</color>
+  <color name="message_button_blue_pressed">#ffa6befa</color>
+  <color name="message_button_blue_overlay">#0d6cfb</color>
+
+  <color name="light_green_selector">#a0dc50</color>
+  <color name="light_green_selector_pressed">#ffc7ff8b</color>
+  <color name="light_green_selector_overlay">#54A700</color>
 
   <color name="broadcast_message_item_bg">#dfefff</color>
   <color name="private_message_item_bg">@color/white</color>
@@ -49,6 +61,10 @@
   <color name="light_yellow">#FFD000</color>
   <color name="dark_dark_yellow">#FAB000</color>
   <color name="discussion_action_buttons_border_top_color">#fafafa</color>
+
+  <color name="grid_item_bg_border">#88000000</color>
+
+  <color name="loading_progress_background">#ea2c2c2c</color>
 
   <string-array name="rangeColors2" translatable="false">
     <item>#FF0C2B</item>

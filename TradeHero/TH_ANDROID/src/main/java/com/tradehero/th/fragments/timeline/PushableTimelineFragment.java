@@ -5,21 +5,25 @@ import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.localytics.android.LocalyticsSession;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
 /**
  * This fragment will not be the main, but one that is pushed from elsewhere
  */
+@Routable({
+        "user/:userId"
+})
 public class PushableTimelineFragment extends TimelineFragment
 {
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     @Override protected void initViews(View view)
     {
@@ -30,12 +34,6 @@ public class PushableTimelineFragment extends TimelineFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
-        this.actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE);
-
-        //followingStamp = menu.findItem(R.id.ic_following);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -97,11 +95,4 @@ public class PushableTimelineFragment extends TimelineFragment
             }
         });
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 }

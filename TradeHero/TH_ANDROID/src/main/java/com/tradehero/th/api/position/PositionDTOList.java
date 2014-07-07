@@ -1,29 +1,19 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 
 public class PositionDTOList<PositionDTOType extends PositionDTO>
-        extends ArrayList<PositionDTOType>
+        extends BaseArrayList<PositionDTOType>
     implements DTO
 {
     //<editor-fold desc="Constructors">
-    public PositionDTOList(int capacity)
-    {
-        super(capacity);
-    }
-
     public PositionDTOList()
     {
         super();
-    }
-
-    public PositionDTOList(Collection<? extends PositionDTOType> collection)
-    {
-        super(collection);
     }
     //</editor-fold>
 
@@ -63,7 +53,7 @@ public class PositionDTOList<PositionDTOType extends PositionDTO>
         return latest;
     }
 
-    public void setOnInPeriod(LeaderboardMarkUserId leaderboardMarkUserId)
+    public void setOnInPeriod(@NotNull LeaderboardMarkUserId leaderboardMarkUserId)
     {
         for (PositionDTOType positionDTO : this)
         {

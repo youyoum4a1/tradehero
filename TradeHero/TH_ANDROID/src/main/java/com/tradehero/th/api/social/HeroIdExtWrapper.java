@@ -2,6 +2,7 @@ package com.tradehero.th.api.social;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.NotNull;
 
 public class HeroIdExtWrapper implements DTO
 {
@@ -15,7 +16,7 @@ public class HeroIdExtWrapper implements DTO
         super();
     }
 
-    public HeroIdExtWrapper(UserBaseKey followerId, HeroDTOList heroDTOs)
+    public HeroIdExtWrapper(@NotNull UserBaseKey followerId, @NotNull HeroDTOList heroDTOs)
     {
         activeFreeHeroes = heroDTOs.getFreeActiveHeroIds(followerId);
         activePremiumHeroes = heroDTOs.getPremiumActiveHeroIds(followerId);

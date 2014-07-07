@@ -1,322 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipToPadding="false"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/common_margin_50"
+        android:paddingBottom="@dimen/common_margin_50"
+        android:orientation="horizontal"
+        >
+
+      <com.tradehero.th.widget.news.TimeSpanButtonSet
+          android:id="@+id/chart_time_span_button_set"
+          android:layout_width="50dp"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          android:background="@drawable/trend_price_bar"
+          tools:visibility="visible"
+          android:layout_marginLeft="@dimen/common_margin_10"
+          android:layout_marginBottom="@dimen/common_margin_20"
+          >
+
+        <include layout="@layout/yahoo_chart_buttons_merge"/>
+
+      </com.tradehero.th.widget.news.TimeSpanButtonSet>
+
+      <com.tradehero.common.widget.BetterViewAnimator
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/chart_image_wrapper"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:minHeight="@dimen/discussion_list_padding"
+            android:gravity="center"
+            android:text="@string/chart_loading_image"
+            />
+
+        <com.tradehero.th.fragments.security.ChartImageView
+            android:id="@+id/chart_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:contentDescription="@null"
+            app:includeVolume="true"
+            app:aspectRatioEnabled="false"
+            app:dominantMeasurement="width"
+            />
+
+      </com.tradehero.common.widget.BetterViewAnimator>
+
+    </LinearLayout>
+
+  </ScrollView>
 
   <Button
       android:id="@+id/close"
       android:layout_width="100dp"
       android:layout_height="30dp"
+      android:layout_marginTop="@dimen/common_margin_10"
+      android:layout_marginRight="@dimen/common_margin_10"
       android:textSize="14sp"
       android:text="@string/security_close"
       android:textColor="@color/tab_scroll_color"
       android:textStyle="bold"
-      android:background="#72ffd36b"
+      android:background="@drawable/basic_yellow_selector"
       android:layout_gravity="top|right"
-      android:layout_marginTop="@dimen/common_margin_10"
-      android:layout_marginRight="@dimen/common_margin_10"
       />
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="horizontal"
-      >
-
-    <com.tradehero.th.widget.news.TimeSpanButtonSet
-        android:id="@+id/chart_time_span_button_set"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/trend_price_bar"
-        tools:visibility="visible"
-        android:layout_marginLeft="@dimen/common_margin_10"
-        android:layout_marginBottom="20dp"
-        >
-
-      <include layout="@layout/yahoo_chart_buttons_merge"/>
-
-    </com.tradehero.th.widget.news.TimeSpanButtonSet>
-
-    <com.tradehero.common.widget.BetterViewAnimator
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/chart_image_wrapper"
-        >
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:text="@string/chart_loading_image"
-          />
-
-      <com.tradehero.th.fragments.security.ChartImageView
-          android:id="@+id/chart_imageView"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_marginRight="20dp"
-          android:layout_marginLeft="20dp"
-          android:scaleType="fitXY"
-          android:adjustViewBounds="true"
-          android:contentDescription="@null"
-          app:includeVolume="true"
-          />
-
-    </com.tradehero.common.widget.BetterViewAnimator>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="4dp"
-        android:background="@color/white"
-        android:baselineAligned="false"
-        android:visibility="gone"
-        >
-
-      <TableLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="1">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            >
-
-          <TextView
-              style="@style/TH.Title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/security_previous_close"
-              android:textSize="13sp"
-              android:gravity="left"
-              />
-
-          <TextView
-              android:id="@+id/vprevious_close"
-              style="@style/TH.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="left"
-              android:text=""
-              android:textSize="13sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
-
-          <TextView
-              style="@style/TH.Title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/security_open"
-              android:textSize="13sp"
-              android:gravity="left"
-              />
-
-          <TextView
-              android:id="@+id/vopen"
-              style="@style/TH.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="left"
-              android:text=""
-              android:textSize="13sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
-
-          <TextView
-              style="@style/TH.Title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/security_days_high"
-              android:textSize="13sp"
-              android:gravity="left"
-              />
-
-          <TextView
-              android:id="@+id/vdays_high"
-              style="@style/TH.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="left"
-              android:text=""
-              android:textSize="13sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
-
-          <TextView
-              style="@style/TH.Title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/security_days_low"
-              android:textSize="13sp"
-              android:gravity="left"
-              />
-
-          <TextView
-              android:id="@+id/vdays_low"
-              style="@style/TH.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="left"
-              android:text=""
-              android:textSize="13sp" />
-
-        </TableRow>
-
-      </TableLayout>
-
-      <TableLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          >
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            >
-
-          <TextView
-              style="@style/TH.Title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/security_pe_ratio"
-              android:textSize="13sp"
-              android:gravity="left"
-              />
-
-          <TextView
-              android:id="@+id/vpe_ratio"
-              style="@style/TH.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="right"
-              android:text=""
-              android:textSize="13sp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
-
-          <TextView
-              style="@style/TH.Title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/security_eps"
-              android:textSize="13sp"
-              android:gravity="left"
-              />
-
-          <TextView
-              android:id="@+id/veps"
-              style="@style/TH.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="right"
-              android:text=""
-              android:textSize="13sp"
-              />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
-
-          <TextView
-              style="@style/TH.Title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/security_volume"
-              android:textSize="13sp"
-              android:gravity="left"
-              />
-
-          <TextView
-              android:id="@+id/vvolume"
-              style="@style/TH.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="right"
-              android:text="@string/na"
-              android:textSize="13sp"
-              />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
-
-          <TextView
-              style="@style/TH.Title"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:text="@string/security_avg_volume"
-              android:textSize="13sp"
-              android:gravity="left"
-              />
-
-          <TextView
-              android:id="@+id/vavg_volume"
-              style="@style/TH.Value"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:gravity="right"
-              android:text="@string/na"
-              android:textSize="13sp"
-              />
-
-        </TableRow>
-
-      </TableLayout>
-
-    </LinearLayout>
-
-  </LinearLayout>
-
-</LinearLayout>
+</FrameLayout>

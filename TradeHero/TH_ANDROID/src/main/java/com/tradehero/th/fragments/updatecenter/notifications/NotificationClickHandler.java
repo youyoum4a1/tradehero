@@ -23,6 +23,7 @@ import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -33,22 +34,19 @@ public class NotificationClickHandler
     private final Context context;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject THRouter thRouter;
 
     public NotificationClickHandler(
             Context context,
             NotificationDTO notificationDTO)
     {
-        this.context = context;
-        this.notificationDTO = notificationDTO;
-
-        if (context instanceof NavigatorActivity)
-        {
-            this.navigator = ((NavigatorActivity) context).getNavigator();
-        }
-        else
+        if (!(context instanceof NavigatorActivity))
         {
             throw new IllegalArgumentException("Context needed to be NavigatorActivity");
         }
+        this.context = context;
+        this.notificationDTO = notificationDTO;
+        this.navigator = ((NavigatorActivity) context).getNavigator();
 
         DaggerUtils.inject(this);
     }
@@ -106,7 +104,6 @@ public class NotificationClickHandler
             case NotifyContributors:
                 handleContributorsNotification();
                 return true;
-
         }
 
         return false;
@@ -117,15 +114,15 @@ public class NotificationClickHandler
         Integer replyTypeId = notificationDTO.replyableTypeId;
         if (replyTypeId != null)
         {
+            Timber.e(new Exception("Just reporting"), "notification %s", notificationDTO);
             DiscussionType discussionType = DiscussionType.fromValue(replyTypeId);
+            Bundle bundle = new Bundle();
 
             switch (discussionType)
             {
                 case NEWS:
                 {
                     NewsItemDTOKey newsItemDTOKey = new NewsItemDTOKey(notificationDTO.replyableId);
-
-                    Bundle bundle = new Bundle();
                     NewsDiscussionFragment.putDiscussionKey(bundle, newsItemDTOKey);
                     navigator.pushFragment(NewsDiscussionFragment.class, bundle);
                 }
@@ -134,8 +131,6 @@ public class NotificationClickHandler
                 case SECURITY:
                 {
                     SecurityDiscussionKey securityDiscussionKey = new SecurityDiscussionKey(notificationDTO.replyableId);
-
-                    Bundle bundle = new Bundle();
                     SecurityDiscussionCommentFragment.putDiscussionKey(bundle, securityDiscussionKey);
                     navigator.pushFragment(SecurityDiscussionCommentFragment.class, bundle);
                 }
@@ -143,41 +138,24 @@ public class NotificationClickHandler
 
                 case PRIVATE_MESSAGE:
                 {
-                    Bundle args = new Bundle();
-                    if (notificationDTO.referencedUserId != null)
-                    {
-                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
-                    }
-
-                    if (notificationDTO.threadId != null)
-                    {
-                        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
-                    }
-                    navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+                    // Both are needed in ReplyPrivateMessageFragment
+                    ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
+                    ReplyPrivateMessageFragment.putDiscussionKey(bundle, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                    navigator.pushFragment(ReplyPrivateMessageFragment.class, bundle);
                 }
                 break;
 
                 case BROADCAST_MESSAGE:
                 {
-                    Bundle args = new Bundle();
-                    if (notificationDTO.referencedUserId != null)
-                    {
-                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, new UserBaseKey(notificationDTO.referencedUserId));
-                    }
-
-                    if (notificationDTO.replyableId != null)
-                    {
-                        ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(discussionType, notificationDTO.replyableId));
-                    }
-                    navigator.pushFragment(ReplyPrivateMessageFragment.class, args);
+                    ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
+                    ReplyPrivateMessageFragment.putDiscussionKey(bundle, discussionKeyFactory.create(discussionType, notificationDTO.replyableId));
+                    navigator.pushFragment(ReplyPrivateMessageFragment.class, bundle);
                 }
                 break;
 
                 case TIMELINE_ITEM:
                 {
                     TimelineItemDTOKey timelineItemDTOKey = new TimelineItemDTOKey(notificationDTO.replyableId);
-
-                    Bundle bundle = new Bundle();
                     TimelineDiscussionFragment.putDiscussionKey(bundle, timelineItemDTOKey);
                     navigator.pushFragment(TimelineDiscussionFragment.class, bundle);
                 }
@@ -211,7 +189,7 @@ public class NotificationClickHandler
         if (notificationDTO != null && notificationDTO.referencedUserId != null)
         {
             Bundle bundle = new Bundle();
-            bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, notificationDTO.referencedUserId);
+            thRouter.save(bundle, new UserBaseKey(notificationDTO.referencedUserId));
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }

@@ -9,19 +9,21 @@ import javax.inject.Inject;
 
 public class RichNotificationBuilder implements PushNotificationBuilder
 {
-    private THNotificationBuilder notificationBuilder;
+    private final THNotificationBuilder notificationBuilder;
 
+    //<editor-fold desc="Constructors">
     @Inject RichNotificationBuilder(THNotificationBuilder notificationBuilder)
     {
         this.notificationBuilder = notificationBuilder;
     }
+    //</editor-fold>
 
     @Override
     public Notification buildNotification(String alert, Map<String, String> extras)
     {
         int pushId = getNotificationIdFromBundle(extras);
 
-        return pushId > 0 ? notificationBuilder.buildNotification(alert, pushId) : null;
+        return pushId > 0 ? notificationBuilder.buildNotification(pushId) : null;
     }
 
     @Override

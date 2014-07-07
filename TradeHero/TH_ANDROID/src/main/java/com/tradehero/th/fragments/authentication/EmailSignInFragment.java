@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -23,9 +25,13 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -36,9 +42,11 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     private TextView forgotPasswordLink;
     private ProgressDialog mProgressDialog;
     private View forgotDialogView;
+    private ImageView backButton;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject Lazy<LocalyticsSession> localyticsSession;
 
     protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
 
@@ -46,6 +54,11 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().open(custom_dimensions);
+        localyticsSession.get().tagScreen(LocalyticsConstants.Login_Form);
+        localyticsSession.get().tagEvent(LocalyticsConstants.LoginFormScreen);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -62,10 +75,10 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     @Override protected void initSetup(View view)
     {
         email = (SelfValidatedText) view.findViewById(R.id.authentication_sign_in_email);
-        email.addListener(this);
+        email.setListener(this);
 
         password = (ValidatedPasswordText) view.findViewById(R.id.et_pwd_login);
-        password.addListener(this);
+        password.setListener(this);
 
         // HACK
         if (!Constants.RELEASE)
@@ -79,6 +92,9 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
         forgotPasswordLink = (TextView) view.findViewById(R.id.authentication_sign_in_forgot_password);
         forgotPasswordLink.setOnClickListener(this);
+
+        backButton = (ImageView) view.findViewById(R.id.authentication_by_sign_in_back_button);
+        backButton.setOnClickListener(onClickListener);
     }
 
     @Override public void onDestroyView()
@@ -86,13 +102,13 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         detachMiddleCallbackForgotPassword();
         if (this.email != null)
         {
-            this.email.removeAllListeners();
+            this.email.setListener(null);
         }
         this.email = null;
 
         if (this.password != null)
         {
-            this.password.removeAllListeners();
+            this.password.setListener(null);
         }
         this.password = null;
 
@@ -107,7 +123,15 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
             this.forgotPasswordLink.setOnClickListener(null);
         }
         this.forgotPasswordLink = null;
-
+        if (backButton != null)
+        {
+            backButton.setOnClickListener(null);
+            backButton = null;
+        }
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().close(custom_dimensions);
+        localyticsSession.get().upload();
         super.onDestroyView();
     }
 

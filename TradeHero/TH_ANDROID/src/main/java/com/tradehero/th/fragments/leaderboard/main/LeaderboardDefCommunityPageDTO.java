@@ -5,13 +5,14 @@ import org.jetbrains.annotations.NotNull;
 
 class LeaderboardDefCommunityPageDTO implements CommunityPageDTO
 {
-    @NotNull
-    public final LeaderboardDefDTO leaderboardDefDTO;
+    @NotNull public final LeaderboardDefDTO leaderboardDefDTO;
 
+    //<editor-fold desc="Constructors">
     public LeaderboardDefCommunityPageDTO(@NotNull LeaderboardDefDTO leaderboardDefDTO)
     {
         this.leaderboardDefDTO = leaderboardDefDTO;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {

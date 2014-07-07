@@ -14,6 +14,7 @@ import com.tradehero.th.billing.samsung.exception.SamsungPurchaseReportRetrofitE
 import com.tradehero.th.billing.samsung.exception.SamsungUnhandledSKUDomainException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertPlanService;
+import com.tradehero.th.network.service.AlertPlanServiceAsync;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserService;
@@ -42,6 +43,7 @@ public class THBaseSamsungPurchaseReporter
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @Inject Lazy<AlertPlanService> alertPlanService;
+    @Inject Lazy<AlertPlanServiceAsync> alertPlanServiceAsync;
     @Inject Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject Lazy<UserService> userService;
@@ -125,7 +127,7 @@ public class THBaseSamsungPurchaseReporter
                 break;
 
             case DOMAIN_STOCK_ALERTS:
-                alertPlanService.get().subscribeToAlertPlan(
+                alertPlanServiceAsync.get().subscribeToAlertPlan(
                         portfolioId.userId,
                         purchase.getPurchaseDTO(),
                         new THSamsungPurchaseReporterAlertPlanPurchaseCallback());
@@ -224,7 +226,7 @@ public class THBaseSamsungPurchaseReporter
         }
         else
         {
-            alertPlanService.get().checkAlertPlanSubscription(portfolioId.userId, new THSamsungPurchaseReporterPurchaseCallback());
+            alertPlanServiceAsync.get().checkAlertPlanSubscription(portfolioId.userId, new THSamsungPurchaseReporterPurchaseCallback());
         }
     }
 

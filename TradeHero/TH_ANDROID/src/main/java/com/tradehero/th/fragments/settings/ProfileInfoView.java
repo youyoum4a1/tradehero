@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +25,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.base.THUser;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromAdapter;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromCameraDTO;
 import com.tradehero.th.fragments.settings.photo.ChooseImageFromDTO;
@@ -36,6 +35,7 @@ import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
@@ -44,6 +44,7 @@ import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
 import com.tradehero.th.widget.ValidationListener;
+import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 import org.json.JSONException;
@@ -59,14 +60,17 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.et_firstname) EditText firstName;
     @InjectView(R.id.et_lastname) EditText lastName;
     @InjectView(R.id.image_optional) @Optional ImageView profileImage;
+
     @Inject ChooseImageFromDTOFactory chooseImageFromDTOFactory;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject BitmapForProfileFactory bitmapForProfileFactory;
     @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
+    @Inject @AuthHeader Lazy<String> authenticationHeader;
+
     ProgressDialog progressDialog;
-    private UserBaseDTO userBaseDTO;
+    private UserProfileDTO userProfileDTO;
     private String newImagePath;
     private Listener listener;
 
@@ -90,7 +94,6 @@ public class ProfileInfoView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
     }
@@ -115,15 +118,15 @@ public class ProfileInfoView extends LinearLayout
 
     public void forceValidateFields()
     {
-        if (email != null)
+        if (email != null && email.getVisibility() == VISIBLE)
         {
             email.forceValidate();
         }
-        if (password != null)
+        if (password != null && password.getVisibility() == VISIBLE)
         {
             password.forceValidate();
         }
-        if (confirmPassword != null)
+        if (confirmPassword != null && confirmPassword.getVisibility() == VISIBLE)
         {
             confirmPassword.forceValidate();
         }
@@ -135,9 +138,9 @@ public class ProfileInfoView extends LinearLayout
 
     public boolean areFieldsValid()
     {
-        return (email == null || email.isValid()) &&
-                (password == null || password.isValid()) &&
-                (confirmPassword == null || confirmPassword.isValid()) &&
+        return (email == null || email.getVisibility() == GONE || email.isValid()) &&
+                (password == null || password.getVisibility() == GONE || password.isValid()) &&
+                (confirmPassword == null || confirmPassword.getVisibility() == GONE || confirmPassword.isValid()) &&
                 (displayName == null || displayName.isValid());
     }
 
@@ -173,19 +176,19 @@ public class ProfileInfoView extends LinearLayout
     {
         if (email != null)
         {
-            email.addListener(listener);
+            email.setListener(listener);
         }
         if (password != null)
         {
-            password.addListener(listener);
+            password.setListener(listener);
         }
         if (confirmPassword != null)
         {
-            confirmPassword.addListener(listener);
+            confirmPassword.setListener(listener);
         }
         if (displayName != null)
         {
-            displayName.addListener(listener);
+            displayName.setListener(listener);
         }
     }
 
@@ -193,19 +196,19 @@ public class ProfileInfoView extends LinearLayout
     {
         if (email != null)
         {
-            email.removeAllListeners();
+            email.setListener(null);
         }
         if (password != null)
         {
-            password.removeAllListeners();
+            password.setListener(null);
         }
         if (confirmPassword != null)
         {
-            confirmPassword.removeAllListeners();
+            confirmPassword.setListener(null);
         }
         if (displayName != null)
         {
-            displayName.removeAllListeners();
+            displayName.setListener(null);
         }
     }
 
@@ -308,13 +311,18 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
-    public void populate(UserBaseDTO userBaseDTO)
+    public void populate(UserProfileDTO userProfileDTO)
     {
-        this.userBaseDTO = userBaseDTO;
-        this.firstName.setText(userBaseDTO.firstName);
-        this.lastName.setText(userBaseDTO.lastName);
-        this.displayName.setText(userBaseDTO.displayName);
-        this.displayName.setOriginalUsernameValue(userBaseDTO.displayName);
+        this.userProfileDTO = userProfileDTO;
+        this.firstName.setText(userProfileDTO.firstName);
+        this.lastName.setText(userProfileDTO.lastName);
+        this.displayName.setText(userProfileDTO.displayName);
+        this.displayName.setOriginalUsernameValue(userProfileDTO.displayName);
+        String currentEmail = this.email.getText().toString();
+        if (currentEmail == null || currentEmail.isEmpty())
+        {
+            this.email.setText(userProfileDTO.email);
+        }
         displayProfileImage();
     }
 
@@ -332,9 +340,9 @@ public class ProfileInfoView extends LinearLayout
                 displayDefaultProfileImage();
             }
         }
-        else if (userBaseDTO != null)
+        else if (userProfileDTO != null)
         {
-            displayProfileImage(userBaseDTO);
+            displayProfileImage(userProfileDTO);
         }
         else
         {
@@ -379,7 +387,7 @@ public class ProfileInfoView extends LinearLayout
 
     public void displayDefaultProfileImage()
     {
-        if (this.profileImage != null)
+        if (this.profileImage != null && picasso != null)
         {
             picasso.load(R.drawable.superman_facebook)
                     .transform(userPhotoTransformation)
@@ -392,7 +400,7 @@ public class ProfileInfoView extends LinearLayout
     {
         if (credentials == null)
         {
-            Timber.e(new NullPointerException("credentials were null current auth type " +  THUser.getAuthHeader()), "");
+            Timber.e(new NullPointerException("credentials were null current auth type " +  authenticationHeader.get()), "");
             THToast.show(R.string.error_fetch_your_user_profile);
         }
         else
@@ -404,6 +412,7 @@ public class ProfileInfoView extends LinearLayout
                 if (credentials.has("email"))
                 {
                     emailValue = credentials.getString("email");
+                    this.email.setText(emailValue);
                 }
                 if (credentials.has("password"))
                 {
@@ -414,9 +423,11 @@ public class ProfileInfoView extends LinearLayout
             {
                 Timber.e(e, "populateCredentials");
             }
-            this.email.setText(emailValue);
             this.password.setText(passwordValue);
             this.confirmPassword.setText(passwordValue);
+
+            this.password.setValidateOnlyIfNotEmpty(passwordValue == null);
+            this.confirmPassword.setValidateOnlyIfNotEmpty(passwordValue == null);
         }
     }
 

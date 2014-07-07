@@ -11,7 +11,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.pagination.PaginatedDTO;
@@ -35,15 +35,21 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         implements AdapterView.OnItemClickListener
 {
     List<AllowableRecipientDTO> mRelationsList;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject UserProfileCompactCache userProfileCompactCache;
     @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
     private
-    DTOCache.GetOrFetchTask<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
-            allowableRecipientCacheTask;
+    DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
+            allowableRecipientCacheListener;
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        allowableRecipientCacheListener = createAllowableRecipientListener();
+    }
 
     @Override
     protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -73,9 +79,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setTitle(R.string.message_center_new_message_title);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -107,12 +110,11 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
+    @Override public void onDestroy()
     {
-        return false;
+        allowableRecipientCacheListener = null;
+        super.onDestroy();
     }
-    //</editor-fold>
 
     public void downloadRelations()
     {
@@ -120,19 +122,13 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                 .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
         detachAllowableRecipientTask();
 
-        allowableRecipientCacheTask = allowableRecipientPaginatedCache
-                .getOrFetch(new SearchAllowableRecipientListType(null, null, null),
-                        new AllRelationAllowableRecipientCacheListener());
-        allowableRecipientCacheTask.execute();
+        allowableRecipientPaginatedCache.register(new SearchAllowableRecipientListType(null, null, null), allowableRecipientCacheListener);
+        allowableRecipientPaginatedCache.getOrFetchAsync(new SearchAllowableRecipientListType(null, null, null));
     }
 
     private void detachAllowableRecipientTask()
     {
-        if (allowableRecipientCacheTask != null)
-        {
-            allowableRecipientCacheTask.setListener(null);
-        }
-        allowableRecipientCacheTask = null;
+        allowableRecipientPaginatedCache.unregister(allowableRecipientCacheListener);
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -145,7 +141,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         Bundle args = new Bundle();
         NewPrivateMessageFragment.putCorrespondentUserBaseKey(args,
                 mRelationsList.get(position).user.getBaseKey());
-        getNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+        getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
     protected void handleFollowRequested(UserBaseKey userBaseKey)
@@ -153,13 +149,19 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         premiumFollowUser(userBaseKey);
     }
 
+    protected DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
+        createAllowableRecipientListener()
+    {
+        return new AllRelationAllowableRecipientCacheListener();
+    }
+
     protected class AllRelationAllowableRecipientCacheListener
-            implements DTOCache.Listener<
+            implements DTOCacheNew.Listener<
             SearchAllowableRecipientListType,
             PaginatedDTO<AllowableRecipientDTO>>
     {
         @Override public void onDTOReceived(SearchAllowableRecipientListType key,
-                PaginatedDTO<AllowableRecipientDTO> value, boolean fromCache)
+                PaginatedDTO<AllowableRecipientDTO> value)
         {
             //mRelationsList = userProfileCompactCache.get(value.getData());
             mRelationsList = value.getData();

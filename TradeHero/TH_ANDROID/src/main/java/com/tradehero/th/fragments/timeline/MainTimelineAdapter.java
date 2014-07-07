@@ -24,6 +24,7 @@ import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -41,15 +42,15 @@ public class MainTimelineAdapter extends ArrayAdapter
     private OnLoadFinishedListener onLoadFinishedListener;
     private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
 
-    private SubTimelineAdapter subTimelineAdapter;
+    private final SubTimelineAdapter subTimelineAdapter;
 
-    private SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
+    private final SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
     private final int statResId;
     private UserProfileDTO userProfileDTO;
 
     public MainTimelineAdapter(Activity context,
             LayoutInflater inflater,
-            UserBaseKey shownUserBaseKey,
+            @NotNull UserBaseKey shownUserBaseKey,
             int timelineItemViewResId,
             int portfolioItemViewResId,
             int statResId)

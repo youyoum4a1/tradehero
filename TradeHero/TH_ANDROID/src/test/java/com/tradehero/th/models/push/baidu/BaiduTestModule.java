@@ -4,7 +4,8 @@ import dagger.Module;
 
 @Module(
         injects = {
-                BaiduPushMessageDTOTest.class
+                BaiduPushMessageDTOTest.class,
+                BaiduPushMessageReceiverTest.class
         },
         complete = false,
         library = true

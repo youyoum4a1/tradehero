@@ -16,13 +16,14 @@ public class THSignedNumber
 
     private final boolean withSign;
     private final int signType;
-    private int type;
+    private final int type;
     private String sign;
-    private String currency;
-    private Double number;
+    private final String currency;
+    private final Double number;
     private String formattedNumber;
     private int color;
 
+    //<editor-fold desc="Constructors">
     public THSignedNumber(int type, Double number)
     {
         this(type, number, null);
@@ -59,6 +60,7 @@ public class THSignedNumber
             this.currency = currency;
         }
     }
+    //</editor-fold>
 
     public int getColor()
     {
@@ -126,7 +128,7 @@ public class THSignedNumber
             precision = precisionFromNumber();
         }
 
-        color = ColorUtils.getColorResourceForNumber(number);
+        color = ColorUtils.getColorResourceIdForNumber(number);
         String numberFormat = "%s%." + precision + "f";
 
         String trailingZeroRemovedNumber = String.format(numberFormat, sign, Math.abs(number));
@@ -175,7 +177,7 @@ public class THSignedNumber
         }
         DecimalFormat df = new DecimalFormat(sb.toString());
 
-        color = ColorUtils.getColorResourceForNumber(number);
+        color = ColorUtils.getColorResourceIdForNumber(number);
         String numberFormat = "%s%s %s";
 
         String trailingZeroRemovedNumber = df.format(Math.abs(number));

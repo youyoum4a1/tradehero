@@ -9,7 +9,7 @@ public class ArrayUtils
 {
     public static <T> List<T> filter(Collection<T> target, Predicate<T> predicate)
     {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (T element: target)
         {
             if (predicate.apply(element))

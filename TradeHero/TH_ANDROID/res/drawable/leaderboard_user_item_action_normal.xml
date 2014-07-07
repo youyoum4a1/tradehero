@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape>
+      <corners android:radius="@dimen/leaderboard_user_item_action_button_corner_radius"/>
+      <stroke android:width="@dimen/leaderboard_user_item_action_button_border_width" android:color="@color/textbox_border_color_light"/>
+      <solid android:color="@android:color/transparent"/>
+    </shape>
+  </item>
+</selector>

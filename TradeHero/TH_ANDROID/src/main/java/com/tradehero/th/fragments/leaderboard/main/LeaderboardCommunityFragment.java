@@ -11,9 +11,8 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -31,15 +30,14 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -52,21 +50,23 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
+@Routable("providers")
 public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
-    implements WithTutorial,View.OnClickListener
+        implements WithTutorial, View.OnClickListener
 {
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject Lazy<ProviderListCache> providerListCache;
     @Inject Lazy<ProviderCache> providerCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
 
@@ -78,13 +78,15 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
     private ProviderIdList providerIds;
-    protected DTOCache.GetOrFetchTask<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchTask;
-    private DTOCache.GetOrFetchTask<ProviderListKey, ProviderIdList> providerListFetchTask;
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchListener;
+    private DTOCacheNew.Listener<ProviderListKey, ProviderIdList> providerListFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
+        leaderboardDefListFetchListener = createDefKeyListListener();
+        providerListFetchListener = createProviderIdListListener();
     }
 
     @Override
@@ -98,6 +100,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override protected void initViews(View view)
     {
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
         leaderboardDefListView.setOnItemClickListener(createItemClickListener());
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
@@ -126,6 +133,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
+        providerListFetchListener = null;
+        leaderboardDefListFetchListener = null;
         this.thIntentPassedListener = null;
         detachWebFragment();
         super.onDestroy();
@@ -134,22 +143,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.menu_search_button, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.social_search_menu, menu);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_USE_LOGO);
-        actionBar.setTitle(getString(R.string.dashboard_community));
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-
-        MenuItem item = menu.findItem(R.id.btn_add);
-        if (item != null)
-        {
-            item.setEnabled(true);
-            item.setVisible(true);
-        }
-
+        actionBar.setTitle(R.string.dashboard_community);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -157,10 +155,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         // TODO switch sorting type for leaderboard
         switch (item.getItemId())
         {
-            case android.R.id.home:
-                resideMenuLazy.get().openMenu();
-                return true;
-
             case R.id.btn_search:
                 pushSearchFragment();
                 return true;
@@ -199,20 +193,12 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void detachLeaderboardDefListCacheFetchTask()
     {
-        if (leaderboardDefListFetchTask != null)
-        {
-            leaderboardDefListFetchTask.setListener(null);
-        }
-        leaderboardDefListFetchTask = null;
+        leaderboardDefListCache.get().unregister(leaderboardDefListFetchListener);
     }
 
     private void detachProviderListFetchTask()
     {
-        if (providerListFetchTask != null)
-        {
-            providerListFetchTask.setListener(null);
-        }
-        providerListFetchTask = null;
+        providerListCache.get().unregister(providerListFetchListener);
     }
 
     private void loadLeaderboardData()
@@ -225,19 +211,18 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void fetchLeaderboardDefList()
     {
         detachLeaderboardDefListCacheFetchTask();
-        leaderboardDefListFetchTask = leaderboardDefListCache.get().getOrFetch(
-                new LeaderboardDefListKey(), createDefKeyListListener());
-        leaderboardDefListFetchTask.execute();
+        leaderboardDefListCache.get().register(new LeaderboardDefListKey(), leaderboardDefListFetchListener);
+        leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
     }
 
-    protected DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
     {
         return new LeaderboardCommunityLeaderboardDefKeyListListener();
     }
 
-    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCache.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
     {
-        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value, boolean fromCache)
+        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
         {
             recreateAdapter();
         }
@@ -252,18 +237,18 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private void fetchProviderIdList()
     {
         detachProviderListFetchTask();
-        providerListFetchTask = providerListCache.get().getOrFetch(new ProviderListKey(), createProviderIdListListener());
-        providerListFetchTask.execute();
+        providerListCache.get().register(new ProviderListKey(), providerListFetchListener);
+        providerListCache.get().getOrFetchAsync(new ProviderListKey());
     }
 
-    protected DTOCache.Listener<ProviderListKey, ProviderIdList> createProviderIdListListener()
+    protected DTOCacheNew.Listener<ProviderListKey, ProviderIdList> createProviderIdListListener()
     {
         return new LeaderboardCommunityProviderListListener();
     }
 
-    protected class LeaderboardCommunityProviderListListener implements DTOCache.Listener<ProviderListKey, ProviderIdList>
+    protected class LeaderboardCommunityProviderListListener implements DTOCacheNew.Listener<ProviderListKey, ProviderIdList>
     {
-        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value, boolean fromCache)
+        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value)
         {
             providerIds = value;
             recreateAdapter();
@@ -414,10 +399,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();
-            args.putBundle(MainCompetitionFragment.BUNDLE_KEY_PROVIDER_ID, providerDTO.getProviderId().getArgs());
-            OwnedPortfolioId associatedPortfolioId =
-                    new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
-            MainCompetitionFragment.putApplicablePortfolioId(args, associatedPortfolioId);
+            MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
             getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
@@ -459,15 +441,8 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void pushInvitationFragment()
     {
-        getDashboardNavigator().goToTab(DashboardTabType.REFERRAL);
+        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
     }
 
-    //</editor-fold>
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
-    }
     //</editor-fold>
 }

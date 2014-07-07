@@ -7,8 +7,9 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import java.util.ArrayList;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
-public class UserProfileDTOUtil
+public class UserProfileDTOUtil extends UserBaseDTOUtil
 {
     public final static int IS_NOT_FOLLOWER_WANT_MSG = -1;
     public final static int IS_NOT_FOLLOWER = 0;
@@ -18,9 +19,16 @@ public class UserProfileDTOUtil
     @Inject protected THIABSecurityAlertKnowledge THIABSecurityAlertKnowledge;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
-    @Inject public UserProfileDTOUtil()
+    //<editor-fold desc="Constructors">
+    @Inject public UserProfileDTOUtil(
+            @NotNull THIABSecurityAlertKnowledge securityAlertKnowledge,
+            @NotNull PortfolioCompactDTOUtil portfolioCompactDTOUtil)
     {
+        super();
+        this.THIABSecurityAlertKnowledge = securityAlertKnowledge;
+        this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
     }
+    //</editor-fold>
 
     public Integer getMaxPurchasableShares(UserProfileDTO userProfileDTO, QuoteDTO quoteDTO)
     {

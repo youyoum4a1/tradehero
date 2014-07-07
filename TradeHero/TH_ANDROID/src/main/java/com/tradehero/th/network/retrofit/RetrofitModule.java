@@ -7,9 +7,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTODeserialiser;
+import com.tradehero.th.api.competition.ProviderDTOJacksonModule;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTODeserialiser;
 import com.tradehero.th.api.position.PositionDTOJacksonModule;
+import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTODeserialiser;
+import com.tradehero.th.api.social.UserFriendsDTOJacksonModule;
 import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
 import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.settings.SettingsTransactionHistoryFragment;
@@ -23,6 +29,7 @@ import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
 import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.network.service.FollowerService;
+import com.tradehero.th.network.service.HomeService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
 import com.tradehero.th.network.service.MessageService;
@@ -197,6 +204,14 @@ public class RetrofitModule
     {
         return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
+
+    @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)
+    {
+        return builder.setServer(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
+                .setRequestInterceptor(requestHeaders)
+                .build()
+                .create(HomeService.class);
+    }
     //</editor-fold>
 
     @Provides JsonDeserializer<PositionDTO> providesPositionDTODeserialiser(PositionDTODeserialiser deserialiser)
@@ -204,19 +219,33 @@ public class RetrofitModule
         return deserialiser;
     }
 
+    @Provides JsonDeserializer<ProviderDTO> providesProviderDTODeserialiser(ProviderDTODeserialiser deserialiser)
+    {
+        return deserialiser;
+    }
+
+    @Provides JsonDeserializer<UserFriendsDTO> providersUserFriendsDTODeserialiser(UserFriendsDTODeserialiser deserialiser)
+    {
+        return deserialiser;
+    }
+
     @Provides @Singleton ObjectMapper provideObjectMapper(
-            PositionDTOJacksonModule positionDTOModule)
+            UserFriendsDTOJacksonModule userFriendsDTOModule,
+            PositionDTOJacksonModule positionDTOModule,
+            ProviderDTOJacksonModule providerDTOModule)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
+        objectMapper.registerModule(providerDTOModule);
 
         // TODO confirm this is correct here
         objectMapper.setVisibilityChecker(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE)
-                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
+                .withSetterVisibility(JsonAutoDetect.Visibility.DEFAULT)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.ANY));
         return objectMapper;
     }

@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/clickable_element_min_height"
         >
 
       <TextView
@@ -32,7 +32,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/clickable_element_min_height"
         android:layout_marginLeft="8dp"
         >
 
@@ -52,7 +52,7 @@
         android:id="@+id/leaderboard_user_item_follow"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/clickable_element_min_height"
         android:layout_marginLeft="8dp"
         >
 
@@ -71,7 +71,7 @@
         android:id="@+id/leaderboard_user_item_following"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/clickable_element_min_height"
         android:layout_marginLeft="8dp"
         android:visibility="gone"
         >

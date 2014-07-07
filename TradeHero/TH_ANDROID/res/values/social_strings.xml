@@ -23,6 +23,7 @@
     <item>@integer/social_destination_id_linkedin</item>
     <item>@integer/social_destination_id_twitter</item>
     <item>@integer/social_destination_id_wechat</item>
+    <item>@integer/social_destination_id_weibo</item>
   </integer-array>
 
 </resources>

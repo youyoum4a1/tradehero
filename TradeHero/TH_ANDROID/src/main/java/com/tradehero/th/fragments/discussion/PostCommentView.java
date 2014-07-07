@@ -99,7 +99,6 @@ public class PostCommentView extends RelativeLayout
         {
             commentText.setOnFocusChangeListener(createEditTextFocusChangeListener());
             commentText.requestFocus();
-            //DeviceUtil.showKeyboard(getContext(), commentText);
         }
     }
 

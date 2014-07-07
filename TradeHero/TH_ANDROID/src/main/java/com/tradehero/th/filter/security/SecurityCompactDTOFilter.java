@@ -8,13 +8,15 @@ import timber.log.Timber;
 
 abstract public class SecurityCompactDTOFilter<SecurityCompactDTOType extends SecurityCompactDTO> extends Filter
 {
-    protected ListCharSequencePredicateFilter<SecurityCompactDTOType> securityCompactDTOPredicateFilter;
+    protected final ListCharSequencePredicateFilter<SecurityCompactDTOType> securityCompactDTOPredicateFilter;
 
+    //<editor-fold desc="Constructors">
     public SecurityCompactDTOFilter(ListCharSequencePredicateFilter<SecurityCompactDTOType> predicateFilter)
     {
         super();
         this.securityCompactDTOPredicateFilter = predicateFilter;
     }
+    //</editor-fold>
 
     protected FilterResults performFiltering(CharSequence charSequence, List<SecurityCompactDTOType> items)
     {

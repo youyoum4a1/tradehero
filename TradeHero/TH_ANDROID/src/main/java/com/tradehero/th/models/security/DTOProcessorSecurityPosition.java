@@ -8,19 +8,20 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorSecurityPosition implements DTOProcessor<SecurityPositionDetailDTO>
 {
-    private final SecurityId securityId;
-    private final CurrentUserId currentUserId;
-    private final UserProfileCache userProfileCache;
-    private final SecurityPositionDetailCache securityPositionDetailCache;
+    @NotNull private final SecurityId securityId;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final UserProfileCache userProfileCache;
+    @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
 
     public DTOProcessorSecurityPosition(
-            SecurityPositionDetailCache securityPositionDetailCache,
-            UserProfileCache userProfileCache,
-            CurrentUserId currentUserId,
-            SecurityId securityId)
+            @NotNull SecurityPositionDetailCache securityPositionDetailCache,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull SecurityId securityId)
     {
         this.securityId = securityId;
         this.currentUserId = currentUserId;

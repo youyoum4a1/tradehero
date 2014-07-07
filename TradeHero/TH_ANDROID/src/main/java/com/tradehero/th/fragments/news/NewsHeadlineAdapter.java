@@ -3,27 +3,23 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.view.LayoutInflater;
-import android.view.View;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.security.SecurityId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineViewLinear>
 {
-    //    public int[] backgrounds = {
-    //            R.drawable.img_placeholder_news_1,
-    //            R.drawable.img_placeholder_news_2,
-    //            R.drawable.img_placeholder_news_3,
-    //            R.drawable.img_placeholder_news_4,
-    //            R.drawable.img_placeholder_news_5,
-    //    };
 
     public Integer[] backgrounds = null;
     private Integer[] backgroundsArr = null;
+
+    @Nullable private SecurityId securityId = null;
 
     public NewsHeadlineAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
     {
@@ -127,19 +123,31 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
         setBackgroundsArray();
     }
 
+    public void setSecurityId(SecurityId securityId)
+    {
+        this.securityId = securityId;
+    }
+
     @Override
     protected void fineTune(final int position, NewsItemDTOKey dto, final NewsHeadlineViewLinear dtoView)
     {
-        View wrapperView = dtoView.findViewById(R.id.news_item_placeholder);
-        if (backgroundsArr[position] != null)
+        dtoView.linkWithSecurityId(securityId);
+        try
         {
-            wrapperView.setBackgroundResource(backgroundsArr[position]);
+            if (backgroundsArr[position] != null)
+            {
+                dtoView.setNewsBackgroundResource(backgroundsArr[position]);
+            }
+            else
+            {
+                int index = dto.id % backgrounds.length;
+                backgroundsArr[position] = backgrounds[index];
+                dtoView.setNewsBackgroundResource(backgrounds[index]);
+            }
         }
-        else
+        catch (OutOfMemoryError e)
         {
-            int index = dto.id % backgrounds.length;
-            wrapperView.setBackgroundResource(backgrounds[index]);
-            backgroundsArr[position] = backgrounds[index];
+            Timber.e(e, null);
         }
     }
 }

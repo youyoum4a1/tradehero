@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:gravity="center_vertical"
-    android:background="@color/white"
+    android:background="@drawable/basic_white_selector"
     >
 
   <include layout="@layout/leaderboard_definition_item_view_inner"/>

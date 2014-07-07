@@ -83,6 +83,7 @@
 -keep class **$$ModuleAdapter
 -keep class **$$InjectAdapter
 -keep class **$$StaticInjection
+-keep class **$$Routable { *; }
 -keepnames class dagger.Lazy
 -dontwarn dagger.internal.codegen.**
 -dontwarn com.squareup.javawriter.**
@@ -111,6 +112,9 @@
 -assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
 -keep class !com.tradehero.** { *; }
+-dontwarn **.VisibleForTesting
+-dontwarn com.tradehero.route.**
+-dontwarn com.handmark.**
 -dontwarn org.apache.**
 -dontwarn twitter4j.**
 -dontwarn retrofit.**
@@ -136,7 +140,6 @@
 -keep public class com.tradehero.th.billing.** { *; }
 -keep public class com.tradehero.th.fragments.social.friend.** { *; }
 -keep public class com.tradehero.common.billing.** { *; }
-
 -keep public class com.tradehero.th.api.discussion.** { *; }
 -keep public class com.tradehero.th.api.pagination.** { *; }
 -keep public class com.tradehero.th.api.timeline.** { *; }

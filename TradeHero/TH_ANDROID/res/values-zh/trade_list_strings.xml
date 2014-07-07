@@ -14,6 +14,11 @@
   <string name="trade_list_button_sell">卖出</string>
   <string name="trade_list_header_open_summary">持仓概要</string>
   <string name="trade_list_header_closed_summary">平仓概要</string>
+  <string name="trade_trade_value_header">交易价值</string>
+  <string name="trade_sold_quantity_verbose">卖出 %1$s 股 @ %2$s</string>
+  <string name="trade_bought_quantity_verbose">买入 %1$s 股 @ %2$s</string>
+  <string name="trade_holding_quantity_verbose">持有 %1$s 股</string>
+  <string name="trade_held_quantity_verbose">持有 %1$s 股</string>
   <string name="error_fetch_trade_list_info">获取交易列表出现错误</string>
 
 </resources>

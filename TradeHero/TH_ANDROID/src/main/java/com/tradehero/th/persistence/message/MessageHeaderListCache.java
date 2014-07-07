@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.message;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.MessageHeaderIdList;
@@ -20,18 +20,24 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton
-public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, MessageHeaderIdList>
+public class MessageHeaderListCache extends StraightDTOCacheNew<MessageListKey, MessageHeaderIdList>
 {
-    private MessageHeaderCache messageHeaderCache;
-    private MessageServiceWrapper messageServiceWrapper;
-    private UserProfileCache userProfileCache;
-    private CurrentUserId currentUserId;
+    @NotNull final private MessageHeaderCache messageHeaderCache;
+    @NotNull final private MessageServiceWrapper messageServiceWrapper;
+    @NotNull final private UserProfileCache userProfileCache;
+    @NotNull final private CurrentUserId currentUserId;
 
-    @Inject
-    public MessageHeaderListCache(@ListCacheMaxSize IntPreference maxSize, MessageHeaderCache messageHeaderCache,
-            MessageServiceWrapper messageServiceWrapper,UserProfileCache userProfileCache,CurrentUserId currentUserId)
+    //<editor-fold desc="Constructors">
+    @Inject public MessageHeaderListCache(
+            @ListCacheMaxSize IntPreference maxSize,
+            @NotNull MessageHeaderCache messageHeaderCache,
+            @NotNull MessageServiceWrapper messageServiceWrapper,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull CurrentUserId currentUserId)
     {
         super(maxSize.get());
         this.messageHeaderCache = messageHeaderCache;
@@ -39,14 +45,14 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
         this.userProfileCache = userProfileCache;
         this.currentUserId = currentUserId;
     }
+    //</editor-fold>
 
-    @Override protected MessageHeaderIdList fetch(MessageListKey key) throws Throwable
+    @Override @NotNull public MessageHeaderIdList fetch(@NotNull MessageListKey key) throws Throwable
     {
-        ReadablePaginatedDTO<MessageHeaderDTO> data = messageServiceWrapper.getMessageHeaders(key);
-        return putInternal(data);
+        return putInternal(messageServiceWrapper.getMessageHeaders(key));
     }
 
-    private MessageHeaderIdList putInternal(ReadablePaginatedDTO<MessageHeaderDTO> data)
+    private MessageHeaderIdList putInternal(@Nullable ReadablePaginatedDTO<MessageHeaderDTO> data)
     {
         // update user profile cache
         updateUnreadMessageThreadCount(data);
@@ -75,17 +81,14 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
      */
     private void updateUnreadMessageThreadCount(ReadablePaginatedDTO<MessageHeaderDTO> data)
     {
-        if (userProfileCache != null && currentUserId != null)
+        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
         {
-            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-            if (userProfileDTO != null)
-            {
-                userProfileDTO.unreadMessageThreadsCount =  data.unread;
-            }
+            userProfileDTO.unreadMessageThreadsCount =  data.unread;
         }
     }
 
-    public void invalidateWithRecipient(UserBaseKey userBaseKey)
+    public void invalidateWithRecipient(@Nullable UserBaseKey userBaseKey)
     {
         for (MessageListKey messageListKey : new ArrayList<>(snapshot().keySet()))
         {
@@ -101,11 +104,11 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
      * Invalidate the keys where the parameter is listed in the value.
      * @param messageHeaderId
      */
-    public void invalidateKeysThatList(MessageHeaderId messageHeaderId)
+    public void invalidateKeysThatList(@NotNull MessageHeaderId messageHeaderId)
     {
-        for (Map.Entry<MessageListKey, MessageHeaderIdList> entry : new HashMap<>(snapshot()).entrySet())
+        for (Map.Entry<MessageListKey, CacheValue<MessageListKey, MessageHeaderIdList>> entry : new HashMap<>(snapshot()).entrySet())
         {
-            if (entry.getValue().contains(messageHeaderId))
+            if (entry.getValue().getValue() != null && entry.getValue().getValue().contains(messageHeaderId))
             {
                 invalidateSameListing(entry.getKey());
             }
@@ -116,9 +119,9 @@ public class MessageHeaderListCache extends StraightDTOCache<MessageListKey, Mes
      * Invalidates the keys that are part of the same listing as the key.
      * @param key
      */
-    public void invalidateSameListing(MessageListKey key)
+    public void invalidateSameListing(@NotNull MessageListKey key)
     {
-        for (MessageListKey entry : new ArrayList<MessageListKey>(snapshot().keySet()))
+        for (MessageListKey entry : new ArrayList<>(snapshot().keySet()))
         {
             if (key.equalListing(entry))
             {

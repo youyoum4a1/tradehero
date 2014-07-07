@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.social;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.jetbrains.annotations.NotNull;
 
 public enum HeroType
 {
@@ -9,9 +10,9 @@ public enum HeroType
     ALL(2, "All");
 
     public final int typeId;
-    public final String description;
+    @NotNull public final String description;
 
-    private HeroType(int id, String description)
+    private HeroType(int id, @NotNull String description)
     {
         this.typeId = id;
         this.description = description;
@@ -42,7 +43,7 @@ public enum HeroType
         HeroType[] arr = HeroType.values();
         for (HeroType type : arr)
         {
-            if (type.description == description)
+            if (type.description.equals(description))
             {
                 return type;
             }

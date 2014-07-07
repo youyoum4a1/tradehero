@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.web;
 
+import android.app.ActionBar;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -34,9 +35,10 @@ public class THWebChromeClient extends WebChromeClient
     {
         super.onReceivedTitle(view, title);
         BaseWebViewFragment fragmentCopy = baseWebViewFragment;
-        if (fragmentCopy != null && fragmentCopy.actionBar != null)
+        if (fragmentCopy != null && fragmentCopy.getSherlockActivity().getActionBar() != null)
         {
-            fragmentCopy.actionBar.setTitle(view.getTitle());
+            ActionBar actionBar = fragmentCopy.getSherlockActivity().getActionBar();
+            actionBar.setTitle(view.getTitle());
         }
     }
 

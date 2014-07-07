@@ -14,13 +14,13 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.persistence.LiveDTOCache;
+import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.WarrantDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
@@ -34,6 +34,7 @@ import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
@@ -47,7 +48,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private ChartDTO chartDTO;
-    private WarrantDTO warrantDTO;
+    @Nullable private WarrantDTO warrantDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
     @InjectView(R.id.close) @Optional protected Button mCloseButton;
 
@@ -131,7 +132,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             chartImage.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             {
-                chartImage.setOnClickListener(chartImageClickListener);
+                chartImage.setOnClickListener(createChartImageClickListener());
             }
         }
 
@@ -164,10 +165,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             });
         }
 
-        chartImageCallback = new Callback()
+        chartImageCallback = new AspectRatioImageViewCallback(chartImage)
         {
             @Override public void onSuccess()
             {
+                super.onSuccess();
                 if (chartImageWrapper != null)
                 {
                     chartImageWrapper.setDisplayedChildByLayoutId(chartImage.getId());
@@ -176,6 +178,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
             @Override public void onError()
             {
+                super.onError();
                 Timber.d("Load chartImage error");
             }
         };
@@ -221,7 +224,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.onDestroyView();
     }
 
-    @Override protected LiveDTOCache<SecurityId, SecurityCompactDTO> getInfoCache()
+    @Override protected SecurityCompactCache getInfoCache()
     {
         return securityCompactCache;
     }
@@ -284,7 +287,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
     }
 
-    public void linkWith(WarrantDTO warrantDTO, boolean andDisplay)
+    public void linkWith(@Nullable WarrantDTO warrantDTO, boolean andDisplay)
     {
         this.warrantDTO = warrantDTO;
         if (andDisplay)
@@ -321,7 +324,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory
-            this.picasso.load(imageURL).skipMemoryCache()
+            this.picasso
+                    .load(imageURL)
+                    .skipMemoryCache()
                     .into(image, chartImageCallback);
 
             if (getActivity().getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
@@ -371,19 +376,22 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
     }
 
-    private View.OnClickListener chartImageClickListener = new View.OnClickListener()
+    private View.OnClickListener createChartImageClickListener()
     {
-        @Override public void onClick(View v)
+        return new View.OnClickListener()
         {
-            //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
-            //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-            Intent intent = new Intent(getActivity().getApplicationContext(), StockChartActivity.class);
-            Bundle args = new Bundle();
-            args.putBundle(BUNDLE_KEY_ARGUMENTS, getArguments());
-            intent.putExtras(args);
-            getActivity().startActivity(intent);
-        }
-    };
+            @Override public void onClick(View v)
+            {
+                //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
+                //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+                Intent intent = new Intent(getActivity().getApplicationContext(), StockChartActivity.class);
+                Bundle args = new Bundle();
+                args.putBundle(BUNDLE_KEY_ARGUMENTS, getArguments());
+                intent.putExtras(args);
+                getActivity().startActivity(intent);
+            }
+        };
+    }
 
     public void displayWarrantRows()
     {

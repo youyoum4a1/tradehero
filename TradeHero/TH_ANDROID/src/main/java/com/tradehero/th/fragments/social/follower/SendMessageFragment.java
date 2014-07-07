@@ -106,13 +106,8 @@ public class SendMessageFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
 
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME);
         actionBar.setTitle(getString(R.string.broadcast_message_title));
-        // better use android.R.drawable.ic_menu_send;
-        MenuItem menuItem = menu.add(0, 100, 0, getString(R.string.broadcast_message_action_send));
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        inflater.inflate(R.menu.send_message_menu, menu);
         Timber.d("onCreateOptionsMenu");
     }
 
@@ -124,7 +119,19 @@ public class SendMessageFragment extends DashboardFragment
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (item.getItemId() == 100)
+        switch (item.getItemId())
+        {
+            case R.id.menu_send_message:
+                fetchFollowerForBroadcast();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void fetchFollowerForBroadcast()
+    {
+        if (!TextUtils.isEmpty(inputText.getText()))
         {
             progressDialogUtilLazy.get().show(getActivity(), null, getString(R.string.loading_loading));
             detachUserProfileCache();
@@ -133,10 +140,11 @@ public class SendMessageFragment extends DashboardFragment
             userProfileCacheListener = createUserProfileCacheListener();
             userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
             userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), true);
-            return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        else
+        {
+            THToast.show(R.string.broadcast_message_content_length_hint);
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -234,7 +242,8 @@ public class SendMessageFragment extends DashboardFragment
                 getActivity(),
                 R.layout.common_dialog_item_layout,
                 R.id.popup_text,
-                MessageType.getShowingTypes()) {
+                MessageType.getShowingTypes())
+        {
 
             @Override public View getView(int position, View convertView, ViewGroup parent)
             {
@@ -315,7 +324,7 @@ public class SendMessageFragment extends DashboardFragment
         int followerCountPaid = userProfileDTO.paidFollowerCount;
         Timber.d("allFollowerCount:%d,followerCountFree:%d,followerCountPaid:%d", allFollowerCount,
                 followerCountFree, followerCountPaid);
-        int result = 0;
+        int result;
         switch (messageType)
         {
             case BROADCAST_FREE_FOLLOWERS:
@@ -339,7 +348,7 @@ public class SendMessageFragment extends DashboardFragment
                 followerSummaryCache.get().get(currentUserId.toUserBaseKey());
         if (followerSummaryDTO != null)
         {
-            int result = 0;
+            int result;
             switch (messageType)
             {
                 case BROADCAST_FREE_FOLLOWERS:
@@ -395,7 +404,6 @@ public class SendMessageFragment extends DashboardFragment
             if (dialog != null && dialog.isShowing())
             {
                 dialog.dismiss();
-                dialog = null;
             }
         } catch (Exception e)
         {
@@ -450,10 +458,5 @@ public class SendMessageFragment extends DashboardFragment
             //TODO close me?
             closeMe();
         }
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 }

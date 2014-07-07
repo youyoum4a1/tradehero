@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -15,9 +14,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -31,7 +28,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
@@ -66,12 +62,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
-    protected ImageView correspondentImage;
     @InjectView(R.id.private_message_empty) protected TextView emptyHint;
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
 
-    private DTOCache.GetOrFetchTask<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchTask;
+    private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchListener;
     private MessageHeaderId messageHeaderId;
 
     public static void putCorrespondentUserBaseKey(@NotNull Bundle args, @NotNull UserBaseKey correspondentBaseKey)
@@ -87,6 +82,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        messageHeaderFetchListener = createMessageHeaderCacheListener();
         correspondentId = collectCorrespondentId(getArguments());
     }
 
@@ -113,7 +109,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
-        display();
         if (discussionView != null)
         {
             ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
@@ -124,15 +119,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.private_message_menu, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                | ActionBar.DISPLAY_SHOW_TITLE
-                | ActionBar.DISPLAY_SHOW_HOME);
-        //actionBar.setSubtitle(R.string.private_message_subtitle);
-
-        correspondentImage = (ImageView) menu.findItem(R.id.correspondent_picture);
-        //displayTitle();
-        displayCorrespondentImage();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -142,9 +128,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         {
             case R.id.private_message_refresh_btn:
                 refresh();
-                return true;
-            case android.R.id.home:
-                getDashboardNavigator().goToTab(DashboardTabType.UPDATE_CENTER);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -186,6 +169,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDestroy()
     {
+        messageHeaderFetchListener = null;
         super.onDestroy();
     }
 
@@ -200,23 +184,13 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         this.messageHeaderId = messageHeaderId;
         detachMessageHeaderFetchTask();
-        messageHeaderFetchTask = messageHeaderCache.getOrFetch(messageHeaderId, false,
-                createMessageHeaderCacheListener());
-        messageHeaderFetchTask.execute();
+        messageHeaderCache.register(messageHeaderId, messageHeaderFetchListener);
+        messageHeaderCache.getOrFetchAsync(messageHeaderId, false);
     }
 
     private void detachMessageHeaderFetchTask()
     {
-        if (messageHeaderFetchTask != null)
-        {
-            messageHeaderFetchTask.setListener(null);
-        }
-        messageHeaderFetchTask = null;
-    }
-
-    private DTOCache.Listener<MessageHeaderId, MessageHeaderDTO> createMessageHeaderCacheListener()
-    {
-        return new MessageHeaderFetchListener();
+        messageHeaderCache.unregister(messageHeaderFetchListener);
     }
 
     protected void refresh()
@@ -251,62 +225,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         correspondentProfile = userProfileDTO;
         if (andDisplay)
         {
-            displayCorrespondentImage();
-            //displayTitle();
             getSherlockActivity().invalidateOptionsMenu();
         }
     }
 
-    public void display()
-    {
-        displayCorrespondentImage();
-        //displayTitle();
-    }
-
-    protected void displayCorrespondentImage()
-    {
-        if (correspondentImage != null)
-        {
-            RequestCreator picassoRequestCreator;
-            if (correspondentProfile != null
-                    && correspondentProfile.picture != null
-                    && !correspondentProfile.picture.isEmpty())
-            {
-                picassoRequestCreator = picasso.load(correspondentProfile.picture);
-            }
-            else
-            {
-                picassoRequestCreator = picasso.load(R.drawable.superman_facebook);
-            }
-            picassoRequestCreator.transform(userPhotoTransformation)
-                    .into(correspondentImage);
-        }
-    }
-
     //TODO set actionBar with MessageHeaderDTO by alex
-    //protected void displayTitle()
-    //{
-    //    ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-    //    if (correspondentProfile != null)
-    //    {
-    //        String title = userBaseDTOUtil.getLongDisplayName(getSherlockActivity(), correspondentProfile);
-    //        Timber.d("Display title " + title);
-    //        actionBar.setTitle(title);
-    //    }
-    //    else
-    //    {
-    //        actionBar.setTitle(R.string.loading_loading);
-    //    }
-    //}
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
-        super.handleCommentPosted(discussionDTO);
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 
@@ -377,11 +304,16 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
+    private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> createMessageHeaderCacheListener()
+    {
+        return new MessageHeaderFetchListener();
+    }
+
     private class MessageHeaderFetchListener
-            implements DTOCache.Listener<MessageHeaderId, MessageHeaderDTO>
+            implements DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO>
     {
         @Override
-        public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value, boolean fromCache)
+        public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value)
         {
             Timber.d("MessageHeaderDTO=%s", value);
             ActionBar actionBar = getSherlockActivity().getSupportActionBar();

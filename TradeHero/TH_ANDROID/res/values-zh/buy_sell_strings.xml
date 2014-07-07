@@ -13,14 +13,8 @@
   <string name="buy_sell_ask_with_bracket">(卖出)</string>
   <string name="buy_sell_bid_price_not_available">无 买入</string>
   <string name="buy_sell_ask_price_not_available">无 卖出</string>
-  <string name="buy_sell_p5k">$5K</string>
-  <string name="buy_sell_p10k">$10K</string>
-  <string name="buy_sell_p25k">$25K</string>
-  <string name="buy_sell_p50k">$50K</string>
   <string name="buy_sell_button_buy">买入 @ %1$s %2$s</string>
   <string name="buy_sell_button_sell">卖出 @ %1$s %2$s</string>
-  <string name="buy_sell_button_cannot_buy">-</string>
-  <string name="buy_sell_button_cannot_sell">-</string>
   <string name="buy_sell_confirm_share_public">公开</string>
   <string name="buy_sell_confirm_share_private">私人</string>
   <string name="buy_sell_confirm_buy_comment">发表评论...</string>

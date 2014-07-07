@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
   <com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView
       android:id="@+id/stock_discussion_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
+
     <ProgressBar
         android:id="@android:id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:paddingTop="@dimen/discussion_list_padding"
         />
 
     <ListView
@@ -19,7 +23,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:listSelector="@color/transparent"
-        android:layout_marginBottom="50dp"
+        android:paddingTop="@dimen/discussion_list_padding"
+        android:paddingBottom="@dimen/buy_sell_button_container_height"
+        android:clipToPadding="false"
         android:divider="@color/transparent"
         android:dividerHeight="5dp"
         />
@@ -29,6 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:paddingTop="@dimen/discussion_list_padding"
         />
+
   </com.tradehero.th.fragments.discussion.stock.SecurityDiscussionView>
+
 </merge>

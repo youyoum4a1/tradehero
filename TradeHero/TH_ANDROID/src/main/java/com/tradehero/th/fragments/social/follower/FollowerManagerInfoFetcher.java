@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.social.follower;
 
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
@@ -10,10 +10,9 @@ import javax.inject.Inject;
 public class FollowerManagerInfoFetcher
 {
     @Inject protected FollowerSummaryCache followerSummaryCache;
-    private DTOCache.GetOrFetchTask<UserBaseKey, FollowerSummaryDTO> followerSummaryFetchTask;
-    private final DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener;
+    private final DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener;
 
-    public FollowerManagerInfoFetcher(final DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
+    public FollowerManagerInfoFetcher(final DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
     {
         super();
         this.followerSummaryListener = followerSummaryListener;
@@ -27,18 +26,14 @@ public class FollowerManagerInfoFetcher
 
     protected void detachFetchTask()
     {
-        if (this.followerSummaryFetchTask != null)
-        {
-            this.followerSummaryFetchTask.setListener(null);
-        }
-        this.followerSummaryFetchTask = null;
+        followerSummaryCache.unregister(followerSummaryListener);
     }
 
     public void fetch(final UserBaseKey heroId)
     {
         detachFetchTask();
-        this.followerSummaryFetchTask = this.followerSummaryCache.getOrFetch(heroId, this.followerSummaryListener);
-        this.followerSummaryFetchTask.execute();
+        this.followerSummaryCache.register(heroId, this.followerSummaryListener);
+        this.followerSummaryCache.getOrFetchAsync(heroId);
     }
 
     /**
@@ -46,10 +41,10 @@ public class FollowerManagerInfoFetcher
      * @param heroId
      * @param followerSummaryListener
      */
-    public void fetch(final UserBaseKey heroId,DTOCache.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
+    public void fetch(final UserBaseKey heroId,DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
     {
-        detachFetchTask();
-        this.followerSummaryFetchTask = this.followerSummaryCache.getOrFetch(heroId, true, followerSummaryListener);
-        this.followerSummaryFetchTask.execute();
+        followerSummaryCache.unregister(followerSummaryListener);
+        followerSummaryCache.register(heroId, followerSummaryListener);
+        this.followerSummaryCache.getOrFetchAsync(heroId, true);
     }
 }

@@ -2,8 +2,8 @@ package com.tradehero.th.models.chart;
 
 public class ChartSize
 {
-    public int width;
-    public int height;
+    public final int width;
+    public final int height;
 
     //<editor-fold desc="Constructors">
     public ChartSize(int width, int height)

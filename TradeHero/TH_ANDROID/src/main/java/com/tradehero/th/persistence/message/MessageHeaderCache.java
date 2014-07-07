@@ -1,45 +1,31 @@
 package com.tradehero.th.persistence.message;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.MessageHeaderDTOList;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
-import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
-public class MessageHeaderCache extends StraightDTOCache<MessageHeaderId, MessageHeaderDTO>
+public class MessageHeaderCache extends StraightDTOCacheNew<MessageHeaderId, MessageHeaderDTO>
 {
-    MessageServiceWrapper messageServiceWrapper;
+    @NotNull private final MessageServiceWrapper messageServiceWrapper;
 
     @Inject
-    public MessageHeaderCache(@SingleCacheMaxSize IntPreference maxSize, MessageServiceWrapper messageServiceWrapper)
+    public MessageHeaderCache(
+            @SingleCacheMaxSize IntPreference maxSize,
+            @NotNull MessageServiceWrapper messageServiceWrapper)
     {
         super(maxSize.get());
         this.messageServiceWrapper = messageServiceWrapper;
     }
 
-    @Override protected MessageHeaderDTO fetch(MessageHeaderId key) throws Throwable
+    @Override @NotNull public MessageHeaderDTO fetch(@NotNull MessageHeaderId key) throws Throwable
     {
         return messageServiceWrapper.getMessageHeader(key);
-    }
-
-    public MessageHeaderDTOList getMessages(Collection<MessageHeaderId> list)
-    {
-        if (list != null)
-        {
-            MessageHeaderDTOList result = new MessageHeaderDTOList(list.size());
-            for (MessageHeaderId key : list)
-            {
-                MessageHeaderDTO messageHeaderDTO = get(key);
-                result.add(messageHeaderDTO);
-            }
-            return result;
-        }
-        return null;
     }
 }

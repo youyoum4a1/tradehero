@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="chart_horizontal_padding">20dp</dimen>
+  <dimen name="chart_vertical_padding">10dp</dimen>
+  <dimen name="timespan_vertical_margin">4dp</dimen>
+  <dimen name="timespan_horizontal_margin">10dp</dimen>
+</resources>

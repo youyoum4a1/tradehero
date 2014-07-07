@@ -1,19 +1,19 @@
 package com.tradehero.th.fragments.web;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
+import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
+import java.util.Map;
 import timber.log.Timber;
 
 abstract public class BaseWebViewFragment extends DashboardFragment
@@ -21,7 +21,6 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     public static final String BUNDLE_KEY_URL = BaseWebViewFragment.class.getName() + ".url";
 
     protected WebView webView;
-    protected ActionBar actionBar;
 
     protected THIntentPassedListener parentTHIntentPassedListener;
     protected THIntentPassedListener thIntentPassedListener;
@@ -32,39 +31,34 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     {
         View view = inflater.inflate(getLayoutResId(), container, false);
         setHasOptionsMenu(true);
+        webView = (WebView) view.findViewById(R.id.webview);
         initViews(view);
         return view;
     }
 
     abstract protected int getLayoutResId();
 
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        this.actionBar = getSherlockActivity().getSupportActionBar();
-        this.actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        this.actionBar = null;
-        super.onDestroyOptionsMenu();
-    }
-
-    //</editor-fold>
-
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
 
-        loadUrl(getArguments().getString(BUNDLE_KEY_URL));
+        loadUrl(getLoadingUrl());
+    }
+
+    protected String getLoadingUrl()
+    {
+        if (getArguments() != null)
+        {
+            return getArguments().getString(BUNDLE_KEY_URL);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     protected void initViews(View v)
     {
-        webView = (WebView) v.findViewById(R.id.webview);
-
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
@@ -73,6 +67,16 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+        {
+            //To fix animation on Pre Chromium WebViews such as one on ResideMenu opening animation
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+        else
+        {
+            webView.setLayerType(View.LAYER_TYPE_NONE, null);
+        }
 
         webChromeClient = new THWebChromeClient(this);
         webView.setWebChromeClient(webChromeClient);
@@ -124,15 +128,20 @@ abstract public class BaseWebViewFragment extends DashboardFragment
 
     public void loadUrl(String url)
     {
+        loadUrl(url, null);
+    }
+
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders)
+    {
         if (url != null)
         {
             if (!url.startsWith("http"))
             {
-                url = NetworkConstants.TRADEHERO_PROD_ENDPOINT + url;
+                url = NetworkConstants.TRADEHERO_PROD_API_ENDPOINT + url;
             }
 
             Timber.d("url: %s", url);
-            webView.loadUrl(url);
+            webView.loadUrl(url, additionalHttpHeaders);
         }
     }
 
@@ -155,10 +164,9 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         }
     }
 
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
+    @VisibleForTesting
+    public WebView getWebView()
     {
-        return false;
+        return webView;
     }
-    //</editor-fold>
 }

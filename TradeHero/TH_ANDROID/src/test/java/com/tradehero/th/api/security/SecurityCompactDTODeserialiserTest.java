@@ -3,6 +3,8 @@ package com.tradehero.th.api.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.BaseApiTest;
+import com.tradehero.th.api.security.compact.EquityCompactDTO;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
@@ -31,15 +33,15 @@ public class SecurityCompactDTODeserialiserTest extends BaseApiTest
     public void testNormalDeserialiseBody1() throws IOException
     {
         SecurityCompactDTO converted = normalMapper.readValue(securityCompactDTOBody1Stream, SecurityCompactDTO.class);
-        assertEquals(SecurityCompactDTO.class, converted.getClass());
+        assertEquals(EquityCompactDTO.class, converted.getClass());
         assertEquals("GOOG", converted.symbol);
     }
 
     @Test
     public void testNormalDeserialiseWarrantBody1() throws IOException
     {
-        WarrantDTO converted = normalMapper.readValue(warrantDTOBody1Stream, WarrantDTO.class);
+        SecurityCompactDTO converted = normalMapper.readValue(warrantDTOBody1Stream, SecurityCompactDTO.class);
         assertEquals(WarrantDTO.class, converted.getClass());
-        assertEquals(4.5d, converted.strikePrice, 0.0001d);
+        assertEquals(4.5d, ((WarrantDTO) converted).strikePrice, 0.0001d);
     }
 }

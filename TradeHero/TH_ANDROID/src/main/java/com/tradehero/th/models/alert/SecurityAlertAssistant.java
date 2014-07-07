@@ -27,16 +27,18 @@ public class SecurityAlertAssistant
     private boolean populated;
     private boolean failed;
     private UserBaseKey userBaseKey;
-    private Map<SecurityId, AlertId> securitiesWithAlerts;
+    private final Map<SecurityId, AlertId> securitiesWithAlerts;
     private WeakReference<OnPopulatedListener> onPopulatedListener = new WeakReference<>(null);
     private AsyncTask<Void, Void, Void> populateTask;
 
+    //<editor-fold desc="Constructors">
     public SecurityAlertAssistant()
     {
         super();
         securitiesWithAlerts = new HashMap<>();
         DaggerUtils.inject(this);
     }
+    //</editor-fold>
 
     public void onDestroy()
     {
@@ -146,7 +148,7 @@ public class SecurityAlertAssistant
 
     protected void requestAlertListFromCache() throws Throwable
     {
-        populate(alertCompactListCache.getOrFetch(userBaseKey));
+        populate(alertCompactListCache.getOrFetchSync(userBaseKey));
     }
 
     protected void populate(AlertIdList alertIds)

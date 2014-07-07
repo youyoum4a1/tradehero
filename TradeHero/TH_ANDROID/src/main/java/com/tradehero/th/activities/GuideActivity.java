@@ -18,8 +18,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
+import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class GuideActivity extends Activity
@@ -27,11 +33,13 @@ public class GuideActivity extends Activity
         ViewPager.OnPageChangeListener,
         View.OnClickListener
 {
-
     private static final int CLOSE_IMAGE_ID = 0x88888;
+    @Inject Lazy<THLocalyticsSession> localyticsSession;
+
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        DaggerUtils.inject(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_guide);
         ViewPager viewpager = (ViewPager) findViewById(R.id.viewpager);
@@ -39,17 +47,38 @@ public class GuideActivity extends Activity
         list.add(R.drawable.guide1);
         list.add(R.drawable.guide2);
         list.add(R.drawable.guide3);
-        list.add(R.drawable.guide4);
-        list.add(R.drawable.guide5);
+        //list.add(R.drawable.guide4);
+        //list.add(R.drawable.guide5);
 
         viewpager.setAdapter(new ListViewPagerAdapter(list));
         viewpager.setOnPageChangeListener(this);
 
-        if (isInstallShortcut())
+        try
         {
-            removeShortcut();
+            if (isInstallShortcut())
+            {
+                removeShortcut();
+            }
+            createShortcut();
         }
-        createShortcut();
+        catch (SecurityException e)
+        {
+            Timber.e(e, null);
+        }
+
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().open(custom_dimensions);
+        localyticsSession.get().tagScreen(LocalyticsConstants.Splash);
+    }
+
+    @Override protected void onPause()
+    {
+        List custom_dimensions = new ArrayList();
+        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
+        localyticsSession.get().close(custom_dimensions);
+        localyticsSession.get().upload();
+        super.onPause();
     }
 
     private void createShortcut()
@@ -71,7 +100,6 @@ public class GuideActivity extends Activity
         launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         return launchIntent;
     }
-
 
     private void printShortcutName(Cursor c)
     {
@@ -100,39 +128,37 @@ public class GuideActivity extends Activity
         }
     }
 
-    private boolean isInstallShortcut() {
-
+    private boolean isInstallShortcut()
+    {
         String name = getString(R.string.app_name);
         boolean  isInstallShortcut = false;
         final ContentResolver cr = getContentResolver();
         String AUTHORITY = "com.android.launcher.settings";
-        Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
-                + "/favorites?notify=true");
+        Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/favorites?notify=true");
 
-        Cursor c = cr.query(CONTENT_URI,
-                new String[] { "title", "iconResource" },
-                "title=?", new String[]{name}, null
-        );
+        Cursor c = cr.query(CONTENT_URI, new String[] { "title", "iconResource" },
+                "title=?", new String[]{name}, null);
 
-        if (c != null && c.getCount() > 0) {
+        if (c != null && c.getCount() > 0)
+        {
             isInstallShortcut = true;
         }
         printShortcutName(c);
 
-        if (c != null) {
+        if (c != null)
+        {
             c.close();
         }
 
-        if (isInstallShortcut) {
+        if (isInstallShortcut)
+        {
             return isInstallShortcut;
         }
 
         AUTHORITY = "com.android.launcher2.settings";
-        CONTENT_URI = Uri.parse("content://" + AUTHORITY
-                + "/favorites?notify=true");
+        CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/favorites?notify=true");
         c = cr.query(CONTENT_URI, new String[] { "title", "iconResource" },
-                "title=?", new String[]{name}, null
-        );
+                "title=?", new String[]{name}, null);
 
         if (c != null && c.getCount() > 0) {
             isInstallShortcut = true;
@@ -142,15 +168,14 @@ public class GuideActivity extends Activity
         return isInstallShortcut;
     }
 
-    private void removeShortcut() {
+    private void removeShortcut()
+    {
 
-        Intent shortcutIntent = new Intent(getApplicationContext(),
-                SplashActivity.class);
+        Intent shortcutIntent = new Intent(getApplicationContext(), SplashActivity.class);
         shortcutIntent.setAction(Intent.ACTION_MAIN);
 
         Intent addIntent = new Intent();
-        addIntent
-                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.app_name));
 
         addIntent.setAction("com.android.launcher.action.UNINSTALL_SHORTCUT");
@@ -159,6 +184,7 @@ public class GuideActivity extends Activity
 
     @Override public void onClick(View v)
     {
+        localyticsSession.get().tagEvent(LocalyticsConstants.SplashScreenCancel);
         ActivityHelper.launchAuthentication(this);
     }
 
@@ -188,8 +214,7 @@ public class GuideActivity extends Activity
 
         @Override public Object instantiateItem(ViewGroup container, int position)
         {
-
-            View view = null;
+            View view;
             ImageView imageView = (ImageView) LayoutInflater.from(GuideActivity.this).inflate(R.layout.guide_layout, null);
             if (position == getCount() - 1) {
                 RelativeLayout rl = new RelativeLayout(GuideActivity.this);
@@ -229,6 +254,8 @@ public class GuideActivity extends Activity
                 imageView.setOnClickListener(null);
             }
             container.addView(view);
+            localyticsSession.get().tagEventMethod(LocalyticsConstants.SplashScreen,
+                    LocalyticsConstants.Screen + String.valueOf(position));
             return view;
         }
 

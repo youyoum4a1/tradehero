@@ -7,9 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -19,6 +19,7 @@ import com.tradehero.th.persistence.notification.NotificationCache;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 /**
@@ -30,8 +31,6 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     private final IntPreference maxGroupNotifications;
     private final NotificationCache notificationCache;
     private final NotificationGroupHolder notificationGroupHolder;
-
-    private AsyncTask<Void, Void, NotificationDTO> notificationFetchTask;
 
     @Inject public CommonNotificationBuilder(
             Context context,
@@ -45,13 +44,21 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         this.notificationGroupHolder = notificationGroupHolder;
     }
 
-    @Override public Notification buildNotification(String message, int notificationId)
+    /**
+     * Launch necessary action to have notificationDTO available in the cache, give notificationId. If notificationDTO is already available in the
+     * cache, will start build notification UI.
+     *
+     * @param notificationId
+     * @return
+     */
+    @Override public Notification buildNotification(int notificationId)
     {
         NotificationDTO notificationDTO = notificationCache.get(new NotificationKey(notificationId));
         if (notificationDTO == null)
         {
-            notificationFetchTask = notificationCache.getOrFetch(new NotificationKey(notificationId), false, new NotificationFetchTaskListener());
-            notificationFetchTask.execute();
+            NotificationKey key = new NotificationKey(notificationId);
+            notificationCache.register(key, new NotificationFetchTaskListener());
+            notificationCache.getOrFetchAsync(key, false);
 
             return null;
         }
@@ -61,6 +68,12 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         }
     }
 
+    /**
+     * Build notificationUI of the notificationDTO. If this incoming notification belongs to any group, it will be added to that group,
+     * and that group UI will be updated to reflect the changes that notificationDTO has made.
+     * @param notificationDTO NotificationDTO, which assumed to be available in the cache
+     * @return Notification that will be shown on notificationCenter
+     */
     private Notification buildNotification(NotificationDTO notificationDTO)
     {
         int groupId = uniquifyNotificationId(notificationDTO);
@@ -73,7 +86,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         NotificationCompat.Builder notificationBuilder = getCommonNotificationBuilder();
         notificationBuilder.setContentTitle(title);
 
-        Notification notification = null;
+        Notification notification;
         if (firstMessageOfTheGroup)
         {
             notificationDTOs = new ArrayList<>();
@@ -170,6 +183,13 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         return message;
     }
 
+    /**
+     * Since there are more than one type of notifications, the type is likely to be corresponding to the table on the server. Therefore,
+     * we cannot use notificationId to be a unique key for notification, indeed, the unique key should be generated from the
+     *
+     * @param notificationDTO NotificationDTO that already in the cache
+     * @return
+     */
     private int uniquifyNotificationId(NotificationDTO notificationDTO)
     {
         Integer characteristicId = notificationDTO.replyableTypeId;
@@ -223,9 +243,14 @@ public class CommonNotificationBuilder implements THNotificationBuilder
                         .setAutoCancel(true);
     }
 
-    private class NotificationFetchTaskListener implements com.tradehero.common.persistence.DTOCache.Listener<NotificationKey,NotificationDTO>
+    private class NotificationFetchTaskListener implements DTOCacheNew.HurriedListener<NotificationKey,NotificationDTO>
     {
-        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value, boolean fromCache)
+        @Override public void onPreCachedDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
+        {
+            onDTOReceived(key, value);
+        }
+
+        @Override public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
         {
             Notification notification = buildNotification(value);
 
@@ -233,7 +258,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             manager.notify(getNotifyId(value.pushId), notification);
         }
 
-        @Override public void onErrorThrown(NotificationKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
         {
             Timber.d("There is a problem fetching notification: id=%d", key.key);
         }

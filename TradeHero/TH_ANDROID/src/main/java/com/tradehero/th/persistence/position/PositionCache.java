@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.position;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
@@ -18,14 +18,14 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class PositionCache extends StraightDTOCache<PositionDTOKey, PositionDTO>
+@Singleton public class PositionCache extends StraightDTOCacheNew<PositionDTOKey, PositionDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 5000;
 
-    @NotNull protected Lazy<PositionCompactIdCache> positionCompactIdCache;
-    @NotNull protected Lazy<LeaderboardPositionIdCache> positionIdCache;
-    @NotNull protected Lazy<TradeListCache> tradeListCache;
-    @NotNull protected PositionDTOFactory positionDTOFactory;
+    @NotNull protected final Lazy<PositionCompactIdCache> positionCompactIdCache;
+    @NotNull protected final Lazy<LeaderboardPositionIdCache> positionIdCache;
+    @NotNull protected final Lazy<TradeListCache> tradeListCache;
+    @NotNull protected final PositionDTOFactory positionDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCache(
@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override protected PositionDTO fetch(@NotNull PositionDTOKey key)
+    @Override @NotNull public PositionDTO fetch(@NotNull PositionDTOKey key)
     {
         throw new IllegalStateException("You should not fetch PositionDTO individually");
     }
@@ -112,7 +112,7 @@ import org.jetbrains.annotations.Nullable;
         return previousValues;
     }
 
-    @Contract("null -> null")
+    @Contract("null -> null; !null -> !null")
     @Nullable
     public PositionDTOList<PositionDTO> get(@Nullable List<PositionDTOKey> keys)
     {

@@ -17,13 +17,17 @@
       android:orientation="horizontal"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:background="@drawable/basic_transparent_selector"
+      android:addStatesFromChildren="true"
+      android:layout_alignParentLeft="true"
+      android:layout_toLeftOf="@+id/header_portfolio_following_container"
       android:clickable="true"
       >
 
     <ImageView
         android:id="@+id/portfolio_header_avatar"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="@dimen/medium_logo_w_h"
+        android:layout_height="@dimen/medium_logo_w_h"
         android:background="@drawable/layout_oval"
         android:src="@drawable/default_image"
         android:contentDescription="@null"/>
@@ -36,12 +40,17 @@
         android:textStyle="bold"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        tools:text="Sergio Barca"
+        android:singleLine="false"
+        android:lines="2"
+        android:maxLines="2"
+        android:ellipsize="end"
+        tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor."
         android:gravity="center_vertical"/>
 
   </LinearLayout>
 
   <RelativeLayout
+      android:id="@+id/header_portfolio_following_container"
       android:layout_width="121dp"
       android:layout_height="wrap_content"
       android:gravity="right"
@@ -52,6 +61,7 @@
         android:id="@+id/header_portfolio_following_image"
         android:layout_width="match_parent"
         android:layout_height="34dp"
+        android:layout_centerVertical="true"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:src="@drawable/following_stamp"

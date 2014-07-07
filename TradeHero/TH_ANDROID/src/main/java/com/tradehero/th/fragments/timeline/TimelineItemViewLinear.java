@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -26,7 +25,9 @@ import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -34,7 +35,8 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
+    @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
     public TimelineItemViewLinear(Context context)
@@ -171,7 +173,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 if (currentUserId.get() != user.id)
                 {
                     Bundle bundle = new Bundle();
-                    bundle.putInt(TimelineFragment.BUNDLE_KEY_SHOW_USER_ID, user.id);
+                    thRouter.save(bundle, new UserBaseKey(user.id));
                     getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
                 }
             }
@@ -225,7 +227,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }
-        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM);
+        getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 
     @Override

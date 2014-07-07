@@ -33,12 +33,12 @@
         android:padding="8dp"
         android:background="@drawable/other_bubble">
       <!--android:background="@color/gray_3"-->
-      <TextView
+      <com.tradehero.th.widget.MarkdownTextView
           android:id="@+id/discussion_content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/black"
-          android:autoLink="all"
+          android:autoLink="web"
           android:textIsSelectable="true"
           tools:text="How can I help you How can I help you How can I help you How can I help you How can I help you How can I help you How can I help you"/>
 

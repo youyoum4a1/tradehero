@@ -10,7 +10,7 @@ public class HelpVideoListKeyTest
 {
     @Test public void notEqualsWhenNotType()
     {
-        assertFalse(new HelpVideoListKey(new ProviderId(3)).equals(new Integer(4)));
+        assertFalse(new HelpVideoListKey(new ProviderId(3)).getProviderId().key.equals(new Integer(4)));
     }
 
     @Test public void notEqualsWhenNull()

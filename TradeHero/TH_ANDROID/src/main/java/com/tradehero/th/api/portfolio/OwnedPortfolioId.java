@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
 {
@@ -25,38 +27,44 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
         this.portfolioId = portfolioId;
     }
 
-    public OwnedPortfolioId(UserBaseKey userBaseKey, PortfolioId portfolioId)
+    public OwnedPortfolioId(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull PortfolioId portfolioId)
     {
         this.userId = userBaseKey.key;
         this.portfolioId = portfolioId.key;
     }
 
-    public OwnedPortfolioId(OwnedPortfolioId ownedPortfolioId)
+    public OwnedPortfolioId(@NotNull OwnedPortfolioId ownedPortfolioId)
     {
         this.userId = ownedPortfolioId.userId;
         this.portfolioId = ownedPortfolioId.portfolioId;
     }
 
-    public OwnedPortfolioId(UserBaseKey userBaseKey, PortfolioCompactDTO portfolioCompactDTO)
+    public OwnedPortfolioId(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull PortfolioCompactDTO portfolioCompactDTO)
     {
         this.userId = userBaseKey.key;
         this.portfolioId = portfolioCompactDTO.id;
     }
 
-    public OwnedPortfolioId(UserBaseDTO userBaseDTO, PortfolioCompactDTO portfolioCompactDTO)
+    public OwnedPortfolioId(
+            @NotNull UserBaseDTO userBaseDTO,
+            @NotNull PortfolioCompactDTO portfolioCompactDTO)
     {
         this.userId = userBaseDTO.id;
         this.portfolioId = portfolioCompactDTO.id;
     }
 
-    public OwnedPortfolioId(Bundle args)
+    public OwnedPortfolioId(@NotNull Bundle args)
     {
         this.userId = args.containsKey(BUNDLE_KEY_USER_ID) ? args.getInt(BUNDLE_KEY_USER_ID) : null;
         this.portfolioId = args.containsKey(BUNDLE_KEY_PORTFOLIO_ID) ? args.getInt(BUNDLE_KEY_PORTFOLIO_ID) : null;
     }
     //</editor-fold>
 
-    public static boolean isOwnedPortfolioId(Bundle args)
+    public static boolean isOwnedPortfolioId(@Nullable Bundle args)
     {
         return args != null &&
                 args.containsKey(BUNDLE_KEY_USER_ID) &&
@@ -145,7 +153,7 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
         return new UserBaseKey(userId);
     }
 
-    @JsonIgnore public PortfolioId getPortfolioIdKey()
+    @JsonIgnore @NotNull public PortfolioId getPortfolioIdKey()
     {
         return new PortfolioId(portfolioId);
     }

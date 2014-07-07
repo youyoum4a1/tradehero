@@ -4,6 +4,8 @@ import android.os.Bundle;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GetPositionsDTOKeyFactory
 {
@@ -14,7 +16,7 @@ public class GetPositionsDTOKeyFactory
     }
     //</editor-fold>
 
-    public GetPositionsDTOKey createFrom(Bundle args)
+    @Nullable public GetPositionsDTOKey createFrom(@NotNull Bundle args)
     {
         // TODO think about creating child classes of OwnedPortfolioId?
         if (OwnedPortfolioId.isOwnedPortfolioId(args))

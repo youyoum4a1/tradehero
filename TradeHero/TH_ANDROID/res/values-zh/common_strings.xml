@@ -5,7 +5,6 @@
   <string name="na">无</string>
   <string name="empty"/>
   <string name="cancel">取消</string>
-  <string name="action_menu_settings">设置</string>
   <string name="network_error">@string/error_network_connection</string>
   <!-- data format-->
   <string name="data_format_d_mmm_yyyy">yyyy年 MM月 d日</string>
@@ -21,15 +20,15 @@
   <string name="splash_copyright_3">专利申请中</string>
 
   <!-- Dashboard -->
+  <string name="dashboard_timeline">我的档案</string>
+  <string name="dashboard_home">首页</string>
   <string name="dashboard_trending">交易中心</string>
   <string name="dashboard_community">社交中心</string>
-  <string name="dashboard_home">首页</string>
-  <string name="dashboard_portfolio">投资组合</string>
+  <string name="dashboard_message_center">消息中心</string>
   <string name="dashboard_referral">邀请好友</string>
   <string name="dashboard_store">商店</string>
-  <string name="dashboard_headline">头条</string>
-  <string name="message_center">消息中心</string>
-  <string name="dashboard_admin_settings">Admin Settings</string>
+  <string name="dashboard_menu_settings">设置</string>
+
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>

@@ -3,6 +3,7 @@ package com.tradehero.th.api.discussion;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.jetbrains.annotations.NotNull;
 
 public enum DiscussionType
 {
@@ -15,9 +16,9 @@ public enum DiscussionType
     BROADCAST_MESSAGE(6, "broadcast-message");
 
     public final int value;
-    public final String description;
+    @NotNull public final String description;
 
-    DiscussionType(int value, String description)
+    DiscussionType(int value, @NotNull String description)
     {
         this.value = value;
         this.description = description;
@@ -50,7 +51,7 @@ public enum DiscussionType
     }
 
     //@JsonCreator
-    public static DiscussionType fromValue(int value)
+    @NotNull public static DiscussionType fromValue(int value)
     {
         for (DiscussionType discussionType : values())
         {
@@ -62,7 +63,7 @@ public enum DiscussionType
         return UNKNOWN;
     }
 
-    @JsonValue final String value()
+    @JsonValue @NotNull final String value()
     {
         return description;
     }

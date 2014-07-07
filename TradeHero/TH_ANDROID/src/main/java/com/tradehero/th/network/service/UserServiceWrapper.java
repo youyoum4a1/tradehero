@@ -6,8 +6,18 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.*;
+import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.social.key.FriendsListKey;
+import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.SearchAllowableRecipientListType;
+import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UserAvailabilityDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserListType;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -16,53 +26,75 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
+import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.List;
-
 @Singleton public class UserServiceWrapper
 {
     @NotNull private final UserService userService;
     @NotNull private final UserServiceAsync userServiceAsync;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final DTOCacheUtil dtoCacheUtil;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
     @NotNull private final Lazy<HeroListCache> heroListCache;
     @NotNull private final GetPositionsCache getPositionsCache;
+    @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
 
+    //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
             @NotNull UserService userService,
             @NotNull UserServiceAsync userServiceAsync,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull DTOCacheUtil dtoCacheUtil,
             @NotNull UserProfileCache userProfileCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
-            @NotNull GetPositionsCache getPositionsCache)
+            @NotNull GetPositionsCache getPositionsCache,
+            @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
+        this.currentUserId = currentUserId;
+        this.dtoCacheUtil = dtoCacheUtil;
         this.userProfileCache = userProfileCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
+        this.leaderboardFriendsCache = leaderboardFriendsCache;
     }
+    //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
+    @NotNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
+    {
+        return new DTOProcessorSignInUpUserProfile(
+                userProfileCache,
+                currentUserId,
+                dtoCacheUtil);
+    }
+
     @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
         return new DTOProcessorUpdateUserProfile(userProfileCache);
@@ -137,7 +169,7 @@ import java.util.List;
                     userFormDTO.website,
                     userFormDTO.profilePicture);
         }
-        return createUpdateProfileProcessor().process(created);
+        return createSignInUpProfileProcessor().process(created);
     }
 
     public MiddleCallback<UserProfileDTO> signUpWithEmail(
@@ -145,7 +177,7 @@ import java.util.List;
             UserFormDTO userFormDTO,
             Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createSignInUpProfileProcessor());
         if (userFormDTO.profilePicture == null)
         {
             userServiceAsync.signUpWithEmail(
@@ -194,7 +226,7 @@ import java.util.List;
             String authorization,
             UserFormDTO userFormDTO)
     {
-        return createUpdateProfileProcessor().process(userService.signUp(authorization, userFormDTO));
+        return createSignInUpProfileProcessor().process(userService.signUp(authorization, userFormDTO));
     }
 
     public MiddleCallback<UserProfileDTO> signUp(
@@ -202,7 +234,7 @@ import java.util.List;
             UserFormDTO userFormDTO,
             Callback<UserProfileDTO> callback)
     {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createSignInUpProfileProcessor());
         userServiceAsync.signUp(authorization, userFormDTO, middleCallback);
         return middleCallback;
     }
@@ -380,7 +412,7 @@ import java.util.List;
         {
             return searchUsers((SearchUserListType) key);
         }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+        throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
     protected List<UserSearchResultDTO> searchUsers(SearchUserListType key)
@@ -398,7 +430,7 @@ import java.util.List;
         {
             return searchUsers((SearchUserListType) key, callback);
         }
-        throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+        throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
     protected MiddleCallback<List<UserSearchResultDTO>> searchUsers(SearchUserListType key, Callback<List<UserSearchResultDTO>> callback)
@@ -528,45 +560,76 @@ import java.util.List;
     }
     //</editor-fold>
 
-    //<editor-fold desc="Get Friends">
-    public List<UserFriendsDTO> getFriends(UserBaseKey userKey)
-    {
-        return userService.getFriends(userKey.key);
-    }
-
-    public MiddleCallback<List<UserFriendsDTO>> getFriends(UserBaseKey userKey, Callback<List<UserFriendsDTO>> callback)
-    {
-        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getFriends(userKey.key, middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Get Social Friends">
-    public List<UserFriendsDTO> getSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum)
+    public UserFriendsDTOList getFriends(@NotNull FriendsListKey friendsListKey)
     {
-        return userService.getSocialFriends(userKey.key,socialNetworkEnum);
+        UserFriendsDTOList received;
+        if (friendsListKey.searchQuery != null)
+        {
+            received = userService.searchSocialFriends(
+                    friendsListKey.userBaseKey.key,
+                    friendsListKey.socialNetworkEnum,
+                    friendsListKey.searchQuery);
+        }
+        else if (friendsListKey.socialNetworkEnum != null)
+        {
+            received = userService.getSocialFriends(
+                    friendsListKey.userBaseKey.key,
+                    friendsListKey.socialNetworkEnum);
+        }
+        else
+        {
+            received = userService.getFriends(
+                    friendsListKey.userBaseKey.key);
+        }
+        return received;
     }
 
-    public MiddleCallback<List<UserFriendsDTO>> getSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,Callback<List<UserFriendsDTO>> callback)
+    public MiddleCallback<UserFriendsDTOList> getFriends(
+            @NotNull FriendsListKey friendsListKey,
+            @Nullable Callback<UserFriendsDTOList> callback)
     {
-        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.getSocialFriends(userKey.key,socialNetworkEnum,middleCallback);
+        MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        if (friendsListKey.searchQuery != null)
+        {
+            userServiceAsync.searchSocialFriends(
+                    friendsListKey.userBaseKey.key,
+                    friendsListKey.socialNetworkEnum,
+                    friendsListKey.searchQuery,
+                    middleCallback);
+        }
+        else if (friendsListKey.socialNetworkEnum != null)
+        {
+            userServiceAsync.getSocialFriends(
+                    friendsListKey.userBaseKey.key,
+                    friendsListKey.socialNetworkEnum,
+                    middleCallback);
+        }
+        else
+        {
+            userServiceAsync.getFriends(
+                    friendsListKey.userBaseKey.key,
+                    middleCallback);
+        }
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Search Social Friends">
-    public MiddleCallback<List<UserFriendsDTO>> searchSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,String query, Callback<List<UserFriendsDTO>> callback)
+    public MiddleCallback<UserFriendsDTOList> searchSocialFriends(
+            @NotNull UserBaseKey userKey,
+            @Nullable SocialNetworkEnum socialNetworkEnum,
+            @NotNull String query,
+            @Nullable Callback<UserFriendsDTOList> callback)
     {
-        MiddleCallback<List<UserFriendsDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.searchSocialFriends(userKey.key, socialNetworkEnum, query, middleCallback);
         return middleCallback;
     }
 
-    public List<UserFriendsDTO> searchSocialFriends(UserBaseKey userKey, SocialNetworkEnum socialNetworkEnum,String query)
+    public UserFriendsDTOList searchSocialFriends(@NotNull UserBaseKey userKey, @NotNull SocialNetworkEnum socialNetworkEnum, @NotNull String query)
     {
-        return userService.searchSocialFriends(userKey.key,socialNetworkEnum,query);
+        return userService.searchSocialFriends(userKey.key, socialNetworkEnum, query);
     }
     //</editor-fold>
 
@@ -585,14 +648,20 @@ import java.util.List;
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
+
+    protected DTOProcessor<Response> createDTOProcessorFriendInvited()
+    {
+        return new DTOProcessorFriendInvited(this.leaderboardFriendsCache.get());
+    }
+
     public Response inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO)
     {
-        return userService.inviteFriends(userKey.key, inviteFormDTO);
+        return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
     }
 
     public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, Callback<Response> callback)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorFriendInvited());
         userServiceAsync.inviteFriends(userKey.key, inviteFormDTO, middleCallback);
         return middleCallback;
     }

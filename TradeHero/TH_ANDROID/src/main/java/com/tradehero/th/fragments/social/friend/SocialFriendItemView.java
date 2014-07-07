@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,16 +17,11 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
-import org.w3c.dom.Text;
-
 import javax.inject.Inject;
 import timber.log.Timber;
 
-/**
- * Created by tradehero on 14-5-26.
- */
-public class SocialFriendItemView extends LinearLayout implements DTOView<UserFriendsDTO> {
-
+public class SocialFriendItemView extends LinearLayout implements DTOView<UserFriendsDTO>
+{
     @InjectView(R.id.social_item_logo) ImageView friendLogo;
     @InjectView(R.id.social_item_title) TextView friendTitle;
     @InjectView(R.id.social_item_action_btn) TextView actionBtn;
@@ -37,26 +31,26 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     private UserFriendsDTO userFriendsDTO;
     private OnElementClickListener onElementClickListener;
 
-    public static interface OnElementClickListener {
-        void onFollowButtonClick(UserFriendsDTO userFriendsDTO);
-        void onInviteButtonClick(UserFriendsDTO userFriendsDTO);
-    }
-
-    public SocialFriendItemView(Context context) {
+    //<editor-fold desc="Constructors">
+    public SocialFriendItemView(Context context)
+    {
         super(context);
     }
 
-    public SocialFriendItemView(Context context, AttributeSet attrs) {
+    public SocialFriendItemView(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
-
     }
 
-    public SocialFriendItemView(Context context, AttributeSet attrs, int defStyle) {
+    public SocialFriendItemView(Context context, AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override
-    protected void onFinishInflate() {
+    protected void onFinishInflate()
+    {
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
@@ -84,7 +78,8 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     }
 
     @Override
-    public void display(UserFriendsDTO dto) {
+    public void display(UserFriendsDTO dto)
+    {
         this.userFriendsDTO = dto;
         displayUserIcon();
         displayTitle();
@@ -150,8 +145,12 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
             actionBtn.setBackgroundResource(R.drawable.green_rounded_button_selector);
             actionBtn.setEnabled(!userFriendsDTO.alreadyInvited);
         }
-        actionBtn.setPadding(pL,pT,pR,pB);
+        actionBtn.setPadding(pL, pT, pR, pB);
     }
 
-
+    public static interface OnElementClickListener
+    {
+        void onFollowButtonClick(UserFriendsDTO userFriendsDTO);
+        void onInviteButtonClick(UserFriendsDTO userFriendsDTO);
+    }
 }

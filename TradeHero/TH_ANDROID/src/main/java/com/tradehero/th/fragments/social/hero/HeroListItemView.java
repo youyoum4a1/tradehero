@@ -25,11 +25,11 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroDTO>
@@ -51,6 +51,7 @@ public class HeroListItemView extends RelativeLayout
     @Inject Lazy<Picasso> picasso;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject CurrentUserId currentUserId;
+    @Inject THRouter thRouter;
 
     private OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
 
@@ -81,10 +82,6 @@ public class HeroListItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        picasso.get().load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformation)
-                .into(userIcon);
     }
 
     @OnClick(R.id.ic_status) void onStatusIconClicked()
@@ -130,9 +127,8 @@ public class HeroListItemView extends RelativeLayout
         if (heroDTO != null)
         {
             Bundle bundle = new Bundle();
-            DashboardNavigator navigator =
-                    ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-            bundle.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, heroDTO.id);
+            DashboardNavigator navigator = ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
+            thRouter.save(bundle, new UserBaseKey(heroDTO.id));
             navigator.pushFragment(PushableTimelineFragment.class, bundle);
         }
     }
@@ -158,12 +154,7 @@ public class HeroListItemView extends RelativeLayout
         this.heroDTO = heroDTO;
         if (andDisplay)
         {
-            displayUserIcon();
-            displayTitle();
-            displayDateInfo();
-            displayStatus();
-            displayRevenue();
-            displayCountryLogo();
+            display();
         }
     }
 
@@ -180,30 +171,15 @@ public class HeroListItemView extends RelativeLayout
 
     public void displayUserIcon()
     {
+        displayDefaultUserIcon();
+
         if (heroDTO != null)
         {
-            //resetUserIcon();
-            displayDefaultUserIcon();
             picasso.get().load(heroDTO.picture)
                     .placeholder(userIcon.getDrawable())
                     .transform(peopleIconTransformation)
                     .error(R.drawable.superman_facebook)
-                    .into(userIcon, new Callback()
-                    {
-                        @Override public void onSuccess()
-                        {
-
-                        }
-
-                        @Override public void onError()
-                        {
-                            displayDefaultUserIcon();
-                        }
-                    });
-        }
-        else
-        {
-            displayDefaultUserIcon();
+                    .into(userIcon);
         }
     }
 

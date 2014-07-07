@@ -7,20 +7,18 @@ import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import timber.log.Timber;
 
-@Singleton public class CompetitionZoneDTOUtil
+public class CompetitionZoneDTOUtil
 {
-    @Inject ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
-
+    //<editor-fold desc="Constructors">
     @Inject public CompetitionZoneDTOUtil()
     {
+        super();
     }
+    //</editor-fold>
 
     public void populateLists(Context context,
             UserProfileCompactDTO portfolioUserProfileCompact,
@@ -31,12 +29,15 @@ import timber.log.Timber;
     {
         if (providerDTO != null)
         {
+            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
+            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
+
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_TRADE_NOW);
 
-            ProviderSpecificResourcesDTO providerSpecificResourcesDTO = providerSpecificResourcesFactory.createResourcesDTO(providerDTO);
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.tradeNowBtnImageResId > 0)
+            if (providerDTO.specificResources != null
+                    && providerDTO.specificResources.tradeNowBtnImageResId > 0)
             {
-                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, providerSpecificResourcesDTO.tradeNowBtnImageResId, providerDTO.tradeButtonImageUrl));
+                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, providerDTO.specificResources.tradeNowBtnImageResId, providerDTO.tradeButtonImageUrl));
             }
             else
             {
@@ -46,9 +47,9 @@ import timber.log.Timber;
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
             if (providerDTO.hasAdvertisement())
             {
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
                 int randomAds = (int) (Math.random() * providerDTO.advertisements.size());
                 AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
                 preparedOrderedItems.add(new CompetitionZoneAdvertisementDTO(null, null, 0, pickedAdDTO));
@@ -72,7 +73,11 @@ import timber.log.Timber;
             if (providerDTO.hasWizard())
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
-                preparedOrderedItems.add(new CompetitionZoneWizardDTO(context.getString(R.string.provider_competition_wizard_title), null));
+
+                String wizardTitle = providerDTO.wizardTitle != null && !providerDTO.wizardTitle.isEmpty() ?
+                        providerDTO.wizardTitle : context.getString(R.string.provider_competition_wizard_title);
+                preparedOrderedItems.add(new CompetitionZoneWizardDTO(
+                        wizardTitle, null, providerDTO.wizardImageUrl, providerDTO.wizardUrl));
             }
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);

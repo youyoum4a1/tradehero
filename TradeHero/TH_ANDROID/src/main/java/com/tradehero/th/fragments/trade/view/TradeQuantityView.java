@@ -245,9 +245,9 @@ public class TradeQuantityView extends TableLayout
 
     public String getSecurityTypeText()
     {
-        if (securityCompactDTO != null)
+        if (securityCompactDTO != null && securityCompactDTO.getSecurityTypeStringResourceId() != null)
         {
-            return getContext().getString(securityCompactDTO.getSecurityType().stringResId).toUpperCase(); // HACK upperCase
+            return getContext().getString(securityCompactDTO.getSecurityTypeStringResourceId()).toUpperCase(); // HACK upperCase
         }
         else
         {
@@ -267,11 +267,11 @@ public class TradeQuantityView extends TableLayout
     {
         if (quoteDTO != null && quoteDTO.asOfUtc != null)
         {
-            return DateUtils.getFormattedDate(quoteDTO.asOfUtc);
+            return DateUtils.getFormattedDate(getResources(), quoteDTO.asOfUtc);
         }
         else if (securityCompactDTO != null && securityCompactDTO.lastPriceDateAndTimeUtc != null)
         {
-            return DateUtils.getFormattedDate(securityCompactDTO.lastPriceDateAndTimeUtc);
+            return DateUtils.getFormattedDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc);
         }
         else
         {

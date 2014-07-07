@@ -494,7 +494,7 @@ public class DiscussionView extends FrameLayout
 
     protected void handleNextDTOReceived(DiscussionListKey key, DiscussionKeyList value)
     {
-        if (discussionList.getLastVisiblePosition() == discussionListAdapter.getCount() - 1)
+        if (discussionList != null && discussionList.getLastVisiblePosition() == discussionListAdapter.getCount() - 1)
         {
             fetchDiscussionListNextIfValid(value);
         }

@@ -91,10 +91,7 @@ public class UpdateCenterResideMenuItem extends LinearLayout
     {
         if (userProfileDTO != null && andDisplay)
         {
-            int totalUnreadItem = /*userProfileDTO.unreadNotificationsCount +*/
-                    userProfileDTO.unreadMessageThreadsCount;
-            Timber.d("UpdateCenterResideMenuItem totalUnread count %d,allFollowerCount:%d",
-                    totalUnreadItem, userProfileDTO.allFollowerCount);
+            int totalUnreadItem = userProfileDTO.unreadMessageThreadsCount;
             unreadMessageCount.setText("" + totalUnreadItem);
             unreadMessageCount.setVisibility(totalUnreadItem == 0 ? GONE : VISIBLE);
         }

@@ -18,17 +18,18 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton
 public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKey, DiscussionKeyList>
 {
-    private final DiscussionCache discussionCache;
-    private final DiscussionServiceWrapper discussionServiceWrapper;
+    @NotNull private final DiscussionCache discussionCache;
+    @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
 
     @Inject public DiscussionListCacheNew(
             @ListCacheMaxSize IntPreference maxSize,
-            DiscussionServiceWrapper discussionServiceWrapper,
-            DiscussionCache discussionCache)
+            @NotNull DiscussionServiceWrapper discussionServiceWrapper,
+            @NotNull DiscussionCache discussionCache)
     {
         super(maxSize.get());
 
@@ -36,7 +37,7 @@ public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKe
         this.discussionCache = discussionCache;
     }
 
-    @Override public DiscussionKeyList fetch(@NotNull DiscussionListKey discussionListKey) throws Throwable
+    @Override @NotNull public DiscussionKeyList fetch(@NotNull DiscussionListKey discussionListKey) throws Throwable
     {
         if (discussionListKey instanceof MessageDiscussionListKey)
         {
@@ -49,14 +50,14 @@ public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKe
         throw new IllegalStateException("Unhandled key " + discussionListKey);
     }
 
-    private DiscussionKeyList putInternal(PaginatedDTO<DiscussionDTO> paginatedDTO)
+    @NotNull private DiscussionKeyList putInternal(@NotNull PaginatedDTO<DiscussionDTO> paginatedDTO)
     {
         List<DiscussionDTO> data = paginatedDTO.getData();
 
         discussionCache.put(data);
 
         DiscussionKeyList discussionKeyList = new DiscussionKeyList();
-        for (AbstractDiscussionDTO abstractDiscussionDTO: data)
+        for (@NotNull AbstractDiscussionDTO abstractDiscussionDTO: data)
         {
             discussionKeyList.add(abstractDiscussionDTO.getDiscussionKey());
         }
@@ -64,7 +65,7 @@ public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKe
         return discussionKeyList;
     }
 
-    public void invalidateAllPagesFor(DiscussionKey discussionKey)
+    public void invalidateAllPagesFor(@Nullable DiscussionKey discussionKey)
     {
         for (DiscussionListKey discussionListKey : new ArrayList<>(snapshot().keySet()))
         {

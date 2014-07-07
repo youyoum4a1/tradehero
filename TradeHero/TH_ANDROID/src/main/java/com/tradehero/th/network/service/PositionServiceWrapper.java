@@ -9,16 +9,17 @@ import javax.inject.Singleton;
 
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 
 @Singleton public class PositionServiceWrapper
 {
-    private final PositionService positionService;
-    private final PositionServiceAsync positionServiceAsync;
+    @NotNull private final PositionService positionService;
+    @NotNull private final PositionServiceAsync positionServiceAsync;
 
     @Inject public PositionServiceWrapper(
-            PositionService positionService,
-            PositionServiceAsync positionServiceAsync)
+            @NotNull PositionService positionService,
+            @NotNull PositionServiceAsync positionServiceAsync)
     {
         super();
         this.positionService = positionService;
@@ -45,10 +46,11 @@ import retrofit.Callback;
     public GetPositionsDTO getPositions(OwnedPortfolioId ownedPortfolioId)
     {
         basicCheck(ownedPortfolioId);
+        GetPositionsDTO returned;
         if (ownedPortfolioId instanceof PerPagedOwnedPortfolioId)
         {
             PerPagedOwnedPortfolioId perPagedOwnedPortfolioId = (PerPagedOwnedPortfolioId) ownedPortfolioId;
-            return this.positionService.getPositions(
+            returned = this.positionService.getPositions(
                     perPagedOwnedPortfolioId.userId,
                     perPagedOwnedPortfolioId.portfolioId,
                     perPagedOwnedPortfolioId.page,
@@ -57,7 +59,7 @@ import retrofit.Callback;
         else if (ownedPortfolioId instanceof PagedOwnedPortfolioId)
         {
             PagedOwnedPortfolioId pagedOwnedPortfolioId = (PagedOwnedPortfolioId) ownedPortfolioId;
-            return this.positionService.getPositions(
+            returned = this.positionService.getPositions(
                     pagedOwnedPortfolioId.userId,
                     pagedOwnedPortfolioId.portfolioId,
                     pagedOwnedPortfolioId.page,
@@ -66,12 +68,13 @@ import retrofit.Callback;
         }
         else
         {
-            return this.positionService.getPositions(
+            returned = this.positionService.getPositions(
                     ownedPortfolioId.userId,
                     ownedPortfolioId.portfolioId,
                     null,
                     null);
         }
+        return returned;
     }
 
     public MiddleCallback<GetPositionsDTO> getPositions(OwnedPortfolioId ownedPortfolioId, Callback<GetPositionsDTO> callback)

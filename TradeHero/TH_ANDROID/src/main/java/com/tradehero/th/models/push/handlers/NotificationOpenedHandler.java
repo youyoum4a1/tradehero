@@ -6,23 +6,32 @@ import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.push.NotificationGroupHolder;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class NotificationOpenedHandler extends PrecacheNotificationHandler
 {
-    private final Context context;
-    private NotificationGroupHolder notificationGroupHolder;
+    @NotNull private final Context context;
+    @NotNull private CurrentUserId currentUserId;
+    @NotNull private final UserProfileCache userProfileCache;
+    private final NotificationGroupHolder notificationGroupHolder;
 
     @Inject public NotificationOpenedHandler(
-            Context context,
-            NotificationCache notificationCache,
+            @NotNull Context context,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull NotificationCache notificationCache,
             NotificationGroupHolder notificationGroupHolder)
     {
         super(notificationCache);
         this.context = context;
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
         this.notificationGroupHolder = notificationGroupHolder;
     }
 
@@ -31,7 +40,7 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         return PushConstants.THAction.Opened;
     }
 
-    @Override public boolean handle(Intent intent)
+    @Override public boolean handle(@NotNull Intent intent)
     {
         super.handle(intent);
 
@@ -46,11 +55,13 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         // remove the its group
         clearNotificationGroup(intent);
 
+        userProfileCache.invalidate(currentUserId.toUserBaseKey());
+
         context.startActivity(launchIntent);
         return true;
     }
 
-    private void clearNotificationGroup(Intent intent)
+    private void clearNotificationGroup(@NotNull Intent intent)
     {
         int groupId = intent.getIntExtra(PushConstants.KEY_PUSH_GROUP_ID, -1);
 
@@ -60,7 +71,7 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         }
     }
 
-    private Intent createLaunchIntent(Intent intent)
+    @NotNull private Intent createLaunchIntent(@NotNull Intent intent)
     {
         Intent launch = new Intent(Intent.ACTION_MAIN);
         launch.setClass(context, DashboardActivity.class);

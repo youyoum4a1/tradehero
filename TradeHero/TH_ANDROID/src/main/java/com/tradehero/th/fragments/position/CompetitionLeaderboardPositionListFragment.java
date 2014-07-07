@@ -1,12 +1,13 @@
 package com.tradehero.th.fragments.position;
 
 import android.os.Bundle;
+import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 
 public class CompetitionLeaderboardPositionListFragment extends LeaderboardPositionListFragment
 {
-    private static String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
+    private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
 
     protected ProviderId providerId;
 
@@ -32,5 +33,10 @@ public class CompetitionLeaderboardPositionListFragment extends LeaderboardPosit
         ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
         ProviderSecurityListFragment.putProviderId(args, providerId);
         getDashboardNavigator().pushFragment(ProviderSecurityListFragment.class, args);
+    }
+
+    @VisibleForTesting public ProviderId getProviderId()
+    {
+        return providerId;
     }
 }

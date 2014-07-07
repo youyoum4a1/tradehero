@@ -10,10 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -23,7 +19,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -32,9 +27,12 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.NetworkUtils;
@@ -56,8 +54,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private static final int REQUEST_GALLERY = new Random(new Date().getTime()).nextInt(Short.MAX_VALUE);
     private static final int REQUEST_CAMERA = new Random(new Date().getTime() + 1).nextInt(Short.MAX_VALUE);
 
-    public static final String BUNDLE_KEY_SHOW_BUTTON_BACK = SettingsProfileFragment.class.getName() + ".showButtonBack";
-
     protected Button updateButton;
     private ProfileInfoView profileView;
 
@@ -65,12 +61,15 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
+    @Inject @AuthHeader String authenticationHeader;
+    @Inject MainCredentialsPreference mainCredentialsPreference;
+
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.authentication_email_sign_up, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings_profile, container, false);
 
         initSetup(view);
         setHasOptionsMenu(true);
@@ -94,42 +93,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         updateButton.setOnClickListener(this);
 
         //signupButton.setOnTouchListener(this);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        Bundle args = getArguments();
-        boolean showButtonBack = args != null && args.containsKey(BUNDLE_KEY_SHOW_BUTTON_BACK) && args.getBoolean(BUNDLE_KEY_SHOW_BUTTON_BACK);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (showButtonBack)
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        }
-        else
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
-        }
-        actionBar.setDisplayHomeAsUpEnabled(showButtonBack);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                if (getActivity() instanceof DashboardNavigatorActivity)
-                {
-                    ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator().popFragment();
-                }
-                else
-                {
-                    Timber.e("Activity is not a DashboardNavigatorActivity", new Exception());
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onDestroyView()
@@ -250,11 +213,15 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
         try
         {
-            this.profileView.populateCredentials(THUser.getCurrentCredentials().createJSON());
+            CredentialsDTO credentials = mainCredentialsPreference.getCredentials();
+            if (credentials != null)
+            {
+                this.profileView.populateCredentials(credentials.createJSON());
+            }
         }
         catch (JSONException e)
         {
-            Timber.e(e, "Failed to populate current user %s", THUser.getCurrentCredentials());
+            Timber.e(e, "Failed to populate current user %s", authenticationHeader);
         }
     }
 
@@ -321,7 +288,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 THToast.show(R.string.settings_update_profile_successful);
                 Navigator navigator = ((NavigatorActivity) getActivity()).getNavigator();
                 navigator.popFragment();
-                if (emailCredentialsDTO != null && THUser.getCurrentCredentials() instanceof EmailCredentialsDTO)
+                if (emailCredentialsDTO != null && mainCredentialsPreference.getCredentials() instanceof EmailCredentialsDTO)
                 {
                     THUser.saveCredentialsToUserDefaults(emailCredentialsDTO);
                 }
@@ -354,13 +321,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     protected void askImageFromCamera()
     {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        //cameraIntent.setType("image/jpeg");
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
-    }
-
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
     }
 
     @Override public void notifyValidation(ValidationMessage message)

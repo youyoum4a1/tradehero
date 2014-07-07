@@ -53,7 +53,7 @@
   </style>
 
   <style name="LeaderboardFilter.Button">
-    <item name="android:textColor">#0000ff</item>
+    <item name="android:textColor">@color/tradehero_blue</item>
   </style>
 
 </resources>

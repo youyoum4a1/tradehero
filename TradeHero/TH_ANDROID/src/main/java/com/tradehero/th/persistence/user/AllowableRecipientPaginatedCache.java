@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
@@ -10,36 +10,42 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton
-public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
+public class AllowableRecipientPaginatedCache extends StraightDTOCacheNew<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
 {
     public static final int DEFAULT_MAX_SIZE = 20;
 
-    @Inject UserServiceWrapper userServiceWrapper;
-    @Inject UserMessagingRelationshipCache userRelationCache;
-    @Inject UserProfileCompactCache userProfileCompactCache;
+    @NotNull private final UserServiceWrapper userServiceWrapper;
+    @NotNull private final UserMessagingRelationshipCache userRelationCache;
+    @NotNull private final UserProfileCompactCache userProfileCompactCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public AllowableRecipientPaginatedCache()
+    @Inject public AllowableRecipientPaginatedCache(
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull UserMessagingRelationshipCache userRelationCache,
+            @NotNull UserProfileCompactCache userProfileCompactCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.userServiceWrapper = userServiceWrapper;
+        this.userRelationCache = userRelationCache;
+        this.userProfileCompactCache = userProfileCompactCache;
     }
     //</editor-fold>
 
-    @Override protected PaginatedDTO<AllowableRecipientDTO> fetch(SearchAllowableRecipientListType key)
+    @Override @NotNull public PaginatedDTO<AllowableRecipientDTO> fetch(@NotNull SearchAllowableRecipientListType key)
             throws Throwable
     {
         return putInternal(key, userServiceWrapper.searchAllowableRecipients(key));
     }
 
-    private PaginatedDTO<AllowableRecipientDTO> putInternal(SearchAllowableRecipientListType key, PaginatedDTO<AllowableRecipientDTO> value)
+    @NotNull private PaginatedDTO<AllowableRecipientDTO> putInternal(
+            @NotNull SearchAllowableRecipientListType key,
+            @NotNull PaginatedDTO<AllowableRecipientDTO> value)
     {
-        if (value == null)
-        {
-            return null;
-        }
-
         PaginatedDTO<AllowableRecipientDTO> reprocessed = new PaginatedDTO<>();
         reprocessed.setPagination(value.getPagination());
         if (value.getData() != null)
@@ -56,19 +62,8 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCache<SearchAll
         return reprocessed;
     }
 
-    private AllowableRecipientDTO get(UserBaseKey userBaseKey)
-    {
-        if (userBaseKey == null)
-        {
-            return null;
-        }
-        AllowableRecipientDTO allowableRecipientDTO = new AllowableRecipientDTO();
-        allowableRecipientDTO.user = userProfileCompactCache.get(userBaseKey);
-        allowableRecipientDTO.relationship = userRelationCache.get(userBaseKey);
-        return allowableRecipientDTO;
-    }
-
-    private AllowableRecipientDTO put(AllowableRecipientDTO value)
+    @Contract("null -> null; !null -> !null") @Nullable
+    private AllowableRecipientDTO put(@Nullable AllowableRecipientDTO value)
     {
         if (value == null || value.user == null)
         {

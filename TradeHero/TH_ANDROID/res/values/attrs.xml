@@ -2,7 +2,6 @@
 <resources>
 
     <declare-styleable name="ValidatedText">
-        <attr name="indicator" format="reference"/>
         <attr name="invalidDrawable" format="reference"/>
         <attr name="validDrawable" format="reference"/>
         <attr name="invalidDrawableRight" format="reference"/>
@@ -10,15 +9,19 @@
     </declare-styleable>
 
     <declare-styleable name="SelfValidatedText">
-        <attr name="minSize" format="integer"/>
-        <attr name="maxSize" format="integer"/>
+        <attr name="minTextLength" format="integer"/>
+        <attr name="maxTextLength" format="integer"/>
         <attr name="validatePattern" format="string"/>
         <attr name="delayValidationByMilliSec" format="integer"/>
-        <attr name="invalidMinSizeMessage" format="string"/>
-        <attr name="invalidMaxSizeMessage" format="string"/>
-        <attr name="invalidBetweenSizeMessage" format="string"/>
+        <attr name="invalidMinTextLengthMessage" format="string"/>
+        <attr name="invalidMaxTextLengthMessage" format="string"/>
+        <attr name="invalidBetweenTextLengthMessage" format="string"/>
         <attr name="invalidPatternMessage" format="string"/>
     </declare-styleable>
+
+  <declare-styleable name="ValidatedPasswordText">
+    <attr name="validateOnlyIfNotEmpty" format="boolean"/>
+  </declare-styleable>
 
     <declare-styleable name="MatchingPasswordText">
         <attr name="matchWith" format="reference"/>

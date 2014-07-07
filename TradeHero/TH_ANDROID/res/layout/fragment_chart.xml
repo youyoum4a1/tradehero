@@ -14,7 +14,7 @@
 
     <com.tradehero.common.widget.BetterViewAnimator
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:id="@+id/chart_image_wrapper"
         >
 
@@ -22,19 +22,24 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
+          android:minHeight="@dimen/discussion_list_padding"
+          android:gravity="center"
           android:text="@string/chart_loading_image"
           />
 
       <com.tradehero.th.fragments.security.ChartImageView
           android:id="@+id/chart_imageView"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_marginRight="20dp"
-          android:layout_marginLeft="20dp"
-          android:scaleType="fitXY"
-          android:adjustViewBounds="true"
+          android:layout_height="wrap_content"
+          android:paddingRight="@dimen/chart_horizontal_padding"
+          android:paddingLeft="@dimen/chart_horizontal_padding"
+          android:paddingTop="@dimen/chart_vertical_padding"
+          android:paddingBottom="@dimen/chart_vertical_padding"
           android:contentDescription="@null"
+          android:background="@drawable/basic_transparent_selector"
           app:includeVolume="false"
+          app:dominantMeasurement="width"
+          app:aspectRatioEnabled="false"
           />
 
     </com.tradehero.common.widget.BetterViewAnimator>
@@ -42,10 +47,12 @@
     <com.tradehero.th.widget.news.TimeSpanButtonSet
         android:id="@+id/chart_time_span_button_set"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="36dp"
         android:orientation="horizontal"
-        android:layout_marginLeft="@dimen/common_margin_10"
-        android:layout_marginRight="@dimen/common_margin_10"
+        android:layout_marginLeft="@dimen/timespan_horizontal_margin"
+        android:layout_marginRight="@dimen/timespan_horizontal_margin"
+        android:layout_marginTop="@dimen/timespan_vertical_margin"
+        android:layout_marginBottom="@dimen/timespan_vertical_margin"
         android:background="@drawable/trend_price_bar"
         tools:visibility="visible"
         >
@@ -58,12 +65,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="4dp"
+        android:paddingLeft="@dimen/chart_horizontal_padding"
+        android:paddingRight="@dimen/chart_horizontal_padding"
         android:background="@color/white"
         android:baselineAligned="false"
-        android:layout_marginBottom="50dp">
+        android:paddingBottom="@dimen/buy_sell_button_container_height">
 
       <TableLayout
           android:layout_width="wrap_content"
@@ -74,7 +80,9 @@
             android:id="@+id/row_warrant_type"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -102,7 +110,9 @@
             android:id="@+id/row_warrant_code"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -130,7 +140,9 @@
             android:id="@+id/row_warrant_expiry"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -279,7 +291,9 @@
             android:id="@+id/row_warrant_strike_price"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -307,7 +321,9 @@
             android:id="@+id/row_warrant_underlying"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -336,7 +352,9 @@
             android:id="@+id/row_warrant_issuer"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"

@@ -17,7 +17,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -32,6 +32,7 @@ import com.tradehero.th.persistence.competition.HelpVideoListCache;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class ProviderVideoListFragment extends CompetitionFragment
@@ -44,12 +45,16 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @InjectView(R.id.help_videos_list) AbsListView videoListView;
     @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
-    private ActionBar actionBar;
     private HelpVideoIdList helpVideoIds;
-    private DTOCache.Listener<HelpVideoListKey, HelpVideoIdList> helpVideoListCacheListener;
-    private DTOCache.GetOrFetchTask<HelpVideoListKey, HelpVideoIdList> helpVideoListFetchTask;
+    private DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList> helpVideoListCacheListener;
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        helpVideoListCacheListener = createVideoListCacheListener();
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -75,17 +80,8 @@ public class ProviderVideoListFragment extends CompetitionFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
         displayActionBarTitle();
-
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-        actionBar = null;
     }
     //</editor-fold>
 
@@ -99,22 +95,20 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
 
         detachListVideoFetchTask();
-
-        helpVideoListFetchTask = helpVideoListCache.getOrFetch(new HelpVideoListKey(providerId), false, helpVideoListCacheListener);
-        helpVideoListFetchTask.execute();
+        HelpVideoListKey key = new HelpVideoListKey(providerId);
+        helpVideoListCache.register(key, helpVideoListCacheListener);
+        helpVideoListCache.getOrFetchAsync(key, false);
     }
 
     @Override public void onPause()
     {
         currentDisplayedChild = helpVideoListScreen.getDisplayedChildLayoutId();
-
         super.onPause();
     }
 
     @Override public void onDestroyView()
     {
         detachListVideoFetchTask();
-        helpVideoListCacheListener = null;
         providerVideoAdapter = null;
         if (videoListView != null)
         {
@@ -125,21 +119,18 @@ public class ProviderVideoListFragment extends CompetitionFragment
         super.onDestroyView();
     }
 
+    @Override public void onDestroy()
+    {
+        helpVideoListCacheListener = null;
+        super.onDestroy();
+    }
+
     private void detachListVideoFetchTask()
     {
-        if (helpVideoListFetchTask != null)
-        {
-            helpVideoListFetchTask.setListener(null);
-        }
-        helpVideoListFetchTask = null;
+        helpVideoListCache.unregister(helpVideoListCacheListener);
     }
 
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-
-    @Override protected void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
         if (andDisplay)
@@ -165,11 +156,14 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private void displayActionBarTitle()
     {
+        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         if (actionBar != null)
         {
-            if (providerSpecificResourcesDTO != null && providerSpecificResourcesDTO.helpVideoListFragmentTitleResId > 0)
+            if (providerDTO != null
+                    && providerDTO.specificResources != null
+                    && providerDTO.specificResources.helpVideoListFragmentTitleResId > 0)
             {
-                actionBar.setTitle(providerSpecificResourcesDTO.helpVideoListFragmentTitleResId);
+                actionBar.setTitle(providerDTO.specificResources.helpVideoListFragmentTitleResId);
             }
             else if (providerDTO == null || providerDTO.name == null)
             {
@@ -250,9 +244,14 @@ public class ProviderVideoListFragment extends CompetitionFragment
         startActivity(intent);
     }
 
-    private class ProviderVideoListFragmentVideoListCacheListener implements DTOCache.Listener<HelpVideoListKey, HelpVideoIdList>
+    protected DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList> createVideoListCacheListener()
     {
-        @Override public void onDTOReceived(HelpVideoListKey key, HelpVideoIdList value, boolean fromCache)
+        return new ProviderVideoListFragmentVideoListCacheListener();
+    }
+
+    protected class ProviderVideoListFragmentVideoListCacheListener implements DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList>
+    {
+        @Override public void onDTOReceived(HelpVideoListKey key, HelpVideoIdList value)
         {
             onFinished();
             if (videoListView != null)

@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -21,6 +20,7 @@ import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -37,7 +37,7 @@ public class PortfolioListFragment extends DashboardFragment
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
 
     @Inject CurrentUserId currentUserId;
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -90,16 +90,10 @@ public class PortfolioListFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-        actionBar.setDisplayHomeAsUpEnabled(isDisplayHomeAsUpEnabled());
         actionBar.setTitle(getString(R.string.portfolio_topbar_title));
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public boolean isDisplayHomeAsUpEnabled()
-    {
-        return false;
-    }
 
     @Override public void onResume()
     {
@@ -186,13 +180,6 @@ public class PortfolioListFragment extends DashboardFragment
             Timber.d("Not handling portfolioItemClicked %s", view.getClass().getName());
         }
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return true;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="WithTutorial">
     @Override public int getTutorialLayout()

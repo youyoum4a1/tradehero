@@ -7,17 +7,15 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenter
 
 public enum UpdateCenterTabType
 {
-    Messages(R.string.message_center_tab_message, 0, 0, MessagesCenterFragment.class),
-    Notifications(R.string.message_center_tab_notification, 0, 0, NotificationsCenterFragment.class);
+    Messages(R.string.message_center_tab_message, MessagesCenterFragment.class),
+    Notifications(R.string.message_center_tab_notification, NotificationsCenterFragment.class);
 
     public final int titleRes;
-    public final int pageIndex;
     public final Class<? extends Fragment> tabClass;
 
-    private UpdateCenterTabType(int titleRes, int pageIndex, int id, Class<? extends Fragment> tabClass)
+    private UpdateCenterTabType(int titleRes, Class<? extends Fragment> tabClass)
     {
         this.titleRes = titleRes;
-        this.pageIndex = pageIndex;
         this.tabClass = tabClass;
     }
 

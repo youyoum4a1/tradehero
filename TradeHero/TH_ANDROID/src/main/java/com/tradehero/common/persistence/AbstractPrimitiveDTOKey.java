@@ -5,29 +5,21 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements Comparable, DTOKey
 {
-    public final T key;
+    @NotNull public T key;
 
     //<editor-fold desc="Constructors">
-    public AbstractPrimitiveDTOKey(T key)
+    public AbstractPrimitiveDTOKey() {}
+
+    public AbstractPrimitiveDTOKey(@NotNull T key)
     {
         super();
         this.key = key;
-        init();
     }
 
     public AbstractPrimitiveDTOKey(@NotNull Bundle args)
     {
         super();
-
-        if (args.containsKey(getBundleKey()))
-        {
-            key = fromKeyBundle(args.get(getBundleKey()));
-        }
-        else
-        {
-            key = null;
-        }
-        init();
+        key = fromKeyBundle(args.get(getBundleKey()));
     }
 
     protected T fromKeyBundle(Object keyBundle)
@@ -36,19 +28,11 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
     }
     //</editor-fold>
 
-    protected void init()
-    {
-        if (this.key == null)
-        {
-            throw new NullPointerException("Key cannot be null");
-        }
-    }
-
     abstract public String getBundleKey();
 
     @Override public int hashCode()
     {
-        return key == null ? 0 : key.hashCode();
+        return key.hashCode();
     }
 
     //@Override public boolean equals(Object other)
@@ -73,21 +57,16 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
         return (other != null) &&
                 getClass().isInstance(other) &&
                 other.getClass().isInstance(this) &&
-                (key == null ? other.key == null : key.equals(other.key));
+                key.equals(other.key);
     }
 
-    @Override public int compareTo(Object o)
+    @Override public int compareTo(@NotNull Object other)
     {
-        if (o == null)
+        if (other.getClass() == getClass())
         {
-            return 1;
+            return compareTo(getClass().cast(other));
         }
-
-        if (o.getClass() == getClass())
-        {
-            return compareTo(getClass().cast(o));
-        }
-        return o.getClass().getName().compareTo(getClass().getName());
+        return other.getClass().getName().compareTo(getClass().getName());
     }
 
     public int compareTo(AbstractPrimitiveDTOKey other)
@@ -116,6 +95,6 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
 
     @Override public String toString()
     {
-        return String.format("[key=%s]", key);
+        return String.format("[%s key=%s]", getClass(), key);
     }
 }

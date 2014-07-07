@@ -26,12 +26,4 @@ public class SecurityCompactDTOTest
         compact.exchange = "certainly not an exchange";
         assertThat(compact.getExchangeLogoId()).isEqualTo(0);
     }
-
-    @Test
-    public void getSecurityType_fromUnknownIsNull()
-    {
-        SecurityCompactDTO compact = new SecurityCompactDTO();
-        compact.securityType = 999959;
-        assertThat(compact.getSecurityType()).isNull();
-    }
 }

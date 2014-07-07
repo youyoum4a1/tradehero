@@ -3,24 +3,25 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.client.Response;
 
 @Singleton public class YahooNewsServiceWrapper
 {
-    private final YahooNewsService yahooNewsService;
-    private final YahooNewsServiceAsync yahooNewsServiceAsync;
+    @NotNull private final YahooNewsService yahooNewsService;
+    @NotNull private final YahooNewsServiceAsync yahooNewsServiceAsync;
 
     @Inject public YahooNewsServiceWrapper(
-            YahooNewsService yahooNewsService,
-            YahooNewsServiceAsync yahooNewsServiceAsync)
+            @NotNull YahooNewsService yahooNewsService,
+            @NotNull YahooNewsServiceAsync yahooNewsServiceAsync)
     {
         super();
         this.yahooNewsService = yahooNewsService;
         this.yahooNewsServiceAsync = yahooNewsServiceAsync;
     }
 
-    public Response getNews(String yahooSymbol)
+    public Response getNews(@NotNull String yahooSymbol)
     {
         return yahooNewsService.getNews(yahooSymbol);
     }

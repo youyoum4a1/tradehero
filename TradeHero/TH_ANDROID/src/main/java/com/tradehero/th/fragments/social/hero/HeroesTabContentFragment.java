@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroIdExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -29,15 +27,18 @@ import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragment
@@ -47,37 +48,30 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             HeroesTabContentFragment.class.getName() + ".followerId";
 
     private HeroManagerViewContainer viewContainer;
-    private ProgressDialog progressDialog;
     private HeroListItemAdapter heroListAdapter;
     // The follower whose heroes we are listing
-    private UserBaseKey followerId;
+    @NotNull private UserBaseKey followerId;
     private UserProfileDTO userProfileDTO;
     private List<HeroDTO> heroDTOs;
-    private HeroManagerInfoFetcher infoFetcher;
 
+    @Inject protected HeroManagerInfoFetcher infoFetcher;
     @Inject public Lazy<HeroCache> heroCache;
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
     /** when no heroes */
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject CurrentUserId currentUserId;
+    @Inject THRouter thRouter;
 
     public static void putFollowerId(Bundle args, UserBaseKey followerId)
     {
         args.putBundle(BUNDLE_KEY_FOLLOWER_ID, followerId.getArgs());
     }
 
-    public static UserBaseKey getFollowerId(Bundle args)
+    @NotNull public static UserBaseKey getFollowerId(@NotNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
-
-    //<editor-fold desc="BaseFragment.TabBarVisibilityInformer">
-    @Override public boolean isTabBarVisible()
-    {
-        return false;
-    }
-    //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -137,9 +131,8 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             );
         }
         setListShown(false);
-        this.infoFetcher = new HeroManagerInfoFetcher(
-                new HeroManagerUserProfileCacheListener(),
-                new HeroManagerHeroListCacheListener());
+        this.infoFetcher.setUserProfileListener(new HeroManagerUserProfileCacheListener());
+        this.infoFetcher.setHeroListListener(new HeroManagerHeroListCacheListener());
     }
 
     protected HeroListItemView.OnHeroStatusButtonClickedListener createHeroStatusButtonClickedListener()
@@ -172,10 +165,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setDisplayOptions(
-                ActionBar.DISPLAY_SHOW_HOME
-                        | ActionBar.DISPLAY_SHOW_TITLE
-                        | ActionBar.DISPLAY_HOME_AS_UP);
         actionBar.setTitle(getTitle());
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -183,7 +172,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Override public void onResume()
     {
         super.onResume();
-        this.followerId = getFollowerId(getArguments());
         enablePullToRefresh(false);
         displayProgress(true);
         this.infoFetcher.fetch(this.followerId);
@@ -225,14 +213,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     private void refreshContent()
     {
-        if (this.followerId == null)
-        {
-            this.followerId = getFollowerId(getArguments());
-        }
-
-        // TODO rework this part to handle the reload in a manner similar to the
-        // initial load, with passing the listener first.
-        this.infoFetcher.reloadHeroes(this.followerId, new HeroManagerHeroListRefreshListener());
+        this.infoFetcher.reloadHeroes(this.followerId);
     }
 
     protected HeroTypeResourceDTO getHeroTypeResource()
@@ -242,22 +223,12 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     abstract protected HeroType getHeroType();
 
-    @Override public void onPause()
-    {
-        if (this.progressDialog != null)
-        {
-            this.progressDialog.hide();
-        }
-        super.onPause();
-    }
-
     @Override public void onDestroyView()
     {
         if (this.infoFetcher != null)
         {
             this.infoFetcher.onDestroyView();
         }
-        this.infoFetcher = null;
 
         if (this.heroListAdapter != null)
         {
@@ -272,6 +243,12 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         this.viewContainer = null;
 
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        this.infoFetcher = null;
+        super.onDestroy();
     }
 
     @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -347,7 +324,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     private void pushTimelineFragment(UserBaseKey userBaseKey)
     {
         Bundle args = new Bundle();
-        args.putInt(PushableTimelineFragment.BUNDLE_KEY_SHOW_USER_ID, userBaseKey.key);
+        thRouter.save(args, userBaseKey);
         getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
     }
 
@@ -498,6 +475,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value)
         {
             //displayProgress(false);
+            onRefreshCompleted();
             setListShown(true);
             display(value);
             enablePullToRefresh(true);
@@ -511,27 +489,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             enablePullToRefresh(true);
             Timber.e(error, "Could not fetch heroes");
             THToast.show(R.string.error_fetch_hero);
-        }
-    }
-
-    private class HeroManagerHeroListRefreshListener
-            implements DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper>
-    {
-        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value)
-        {
-            onRefreshCompleted();
-            //setListShown(true);
-            display(value);
-            notifyHeroesLoaded(value);
-            Timber.d("HeroManagerHeroListRefreshListener,onDTOReceived");
-        }
-
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
-        {
-            onRefreshCompleted();
-            //setListShown(true);
-            Timber.e(error, "HeroManagerHeroListRefreshListener,Could not fetch heroes");
-            //THToast.show(R.string.error_fetch_hero);
         }
     }
 

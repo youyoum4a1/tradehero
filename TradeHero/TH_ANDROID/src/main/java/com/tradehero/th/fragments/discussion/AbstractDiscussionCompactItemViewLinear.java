@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.tradehero.common.persistence.DTOCache;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -30,7 +30,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     protected T discussionKey;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
-    private DTOCache.GetOrFetchTask<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchTask;
+    private DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchListener;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionCompactItemViewLinear(Context context)
@@ -54,18 +54,29 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
-        viewHolder = createViewHolder();
-        viewHolder.onFinishInflate(this);
-        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        if (!isInEditMode())
+        {
+            discussionFetchListener = createDiscussionFetchListener();
+            viewHolder = createViewHolder();
+            viewHolder.onFinishInflate(this);
+            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        }
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        viewHolder.onAttachedToWindow(this);
-        viewHolder.linkWith(abstractDiscussionCompactDTO, true);
-        viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
-        socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        if (discussionFetchListener == null)
+        {
+            discussionFetchListener = createDiscussionFetchListener();
+        }
+        if (!isInEditMode())
+        {
+            viewHolder.onAttachedToWindow(this);
+            viewHolder.linkWith(abstractDiscussionCompactDTO, true);
+            viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
+            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -74,6 +85,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         socialShareHelper.onDetach();
         viewHolder.setMenuClickedListener(null);
         viewHolder.onDetachedFromWindow();
+        discussionFetchListener = null;
         super.onDetachedFromWindow();
     }
 
@@ -98,18 +110,13 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     {
         detachFetchDiscussionTask();
 
-        discussionFetchTask =
-                discussionCache.getOrFetch(discussionKey, force, createDiscussionFetchListener());
-        discussionFetchTask.execute();
+        discussionCache.register(discussionKey, discussionFetchListener);
+        discussionCache.getOrFetchAsync(discussionKey, force);
     }
 
     private void detachFetchDiscussionTask()
     {
-        if (discussionFetchTask != null)
-        {
-            discussionFetchTask.setListener(null);
-        }
-        discussionFetchTask = null;
+        discussionCache.unregister(discussionFetchListener);
     }
 
     protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
@@ -121,16 +128,16 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         }
     }
 
-    protected DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
+    protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
     {
         return new DiscussionFetchListener();
     }
 
     private class DiscussionFetchListener
-            implements DTOCache.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
+            implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
         @Override
-        public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value, boolean fromCache)
+        public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value)
         {
             linkWith(value, true);
         }

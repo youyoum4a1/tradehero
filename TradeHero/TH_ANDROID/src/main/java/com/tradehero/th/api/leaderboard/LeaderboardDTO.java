@@ -2,20 +2,23 @@ package com.tradehero.th.api.leaderboard;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tradehero.common.persistence.BaseHasExpiration;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-public class LeaderboardDTO implements DTO
+public class LeaderboardDTO extends BaseHasExpiration
+        implements DTO
 {
     public static final String INCLUDE_FOF = "INCLUDE_FOF";
+    public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 300;
 
     public int id;
     public String name;
-    public List<LeaderboardUserDTO> users;
+    public LeaderboardUserDTOList users;
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
@@ -30,13 +33,22 @@ public class LeaderboardDTO implements DTO
     //<editor-fold desc="Constructors">
     public LeaderboardDTO()
     {
-        super();
+        super(DEFAULT_LIFE_EXPECTANCY_SECONDS);
     }
 
-    public LeaderboardDTO(int id, String name, List<LeaderboardUserDTO> users, int userIsAtPositionZeroBased, Date markUtc,
-            int minPositionCount, double maxSharpeRatioInPeriodVsSP500,
-            double maxStdDevPositionRoiInPeriod, double avgStdDevPositionRoiInPeriod)
+    public LeaderboardDTO(
+            int id,
+            String name,
+            LeaderboardUserDTOList users,
+            int userIsAtPositionZeroBased,
+            Date markUtc,
+            int minPositionCount,
+            double maxSharpeRatioInPeriodVsSP500,
+            double maxStdDevPositionRoiInPeriod,
+            double avgStdDevPositionRoiInPeriod,
+            @NotNull Date expirationDate)
     {
+        super(expirationDate);
         this.id = id;
         this.name = name;
         this.users = users;
@@ -50,7 +62,7 @@ public class LeaderboardDTO implements DTO
     //</editor-fold>
 
     @JsonIgnore
-    public LeaderboardKey getLeaderboardKey()
+    @NotNull public LeaderboardKey getLeaderboardKey()
     {
         return new LeaderboardKey(id);
     }
@@ -72,7 +84,7 @@ public class LeaderboardDTO implements DTO
     @JsonIgnore
     public Double getAvgVolatility()
     {
-        return (double) avgStdDevPositionRoiInPeriod;
+        return avgStdDevPositionRoiInPeriod;
     }
 
     @JsonIgnore
@@ -85,5 +97,4 @@ public class LeaderboardDTO implements DTO
         }
         return (double)2;
     }
-
 }

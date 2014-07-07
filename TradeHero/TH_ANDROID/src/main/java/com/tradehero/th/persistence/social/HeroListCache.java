@@ -13,11 +13,13 @@ import org.jetbrains.annotations.NotNull;
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
-    protected UserServiceWrapper userServiceWrapper;
-    protected HeroCache heroCache;
+    @NotNull protected final UserServiceWrapper userServiceWrapper;
+    @NotNull protected final HeroCache heroCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public HeroListCache(UserServiceWrapper userServiceWrapper, HeroCache heroCache)
+    @Inject public HeroListCache(
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull HeroCache heroCache)
     {
         super(DEFAULT_MAX_SIZE);
         this.userServiceWrapper = userServiceWrapper;
@@ -25,13 +27,15 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public HeroIdExtWrapper fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public HeroIdExtWrapper fetch(@NotNull UserBaseKey key) throws Throwable
     {
         HeroDTOList allHeros = userServiceWrapper.getHeroes(key);
         return putInternal(key, allHeros);
     }
 
-    protected HeroIdExtWrapper putInternal(UserBaseKey key, HeroDTOList fleshedValues)
+    protected HeroIdExtWrapper putInternal(
+            @NotNull UserBaseKey key,
+            @NotNull HeroDTOList fleshedValues)
     {
         heroCache.put(key, fleshedValues);
         HeroIdExtWrapper created = new HeroIdExtWrapper(key, fleshedValues);

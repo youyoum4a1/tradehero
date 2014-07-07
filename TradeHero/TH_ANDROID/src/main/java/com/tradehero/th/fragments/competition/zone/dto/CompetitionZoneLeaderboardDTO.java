@@ -4,13 +4,15 @@ import com.tradehero.th.api.competition.CompetitionDTO;
 
 public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
 {
-    public CompetitionDTO competitionDTO;
+    public final CompetitionDTO competitionDTO;
 
+    //<editor-fold desc="Constructors">
     public CompetitionZoneLeaderboardDTO(String title, String description, CompetitionDTO competitionDTO)
     {
         super(title, description);
         this.competitionDTO = competitionDTO;
     }
+    //</editor-fold>
 
     public Boolean isActive()
     {

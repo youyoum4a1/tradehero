@@ -7,19 +7,22 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import org.jetbrains.annotations.NotNull;
 
 public class ChooseImageFromItemViewHolder implements DTOView<ChooseImageFromDTO>
 {
     @InjectView(R.id.text_choose_from) TextView chooseFromText;
-    private Resources resources;
+    @NotNull private final Resources resources;
     private ChooseImageFromDTO chooseImageFromDTO;
 
-    public ChooseImageFromItemViewHolder(Resources resources, View view)
+    //<editor-fold desc="Constructors">
+    public ChooseImageFromItemViewHolder(@NotNull Resources resources, View view)
     {
         super();
         initViews(view);
         this.resources = resources;
     }
+    //</editor-fold>
 
     public void initViews(View view)
     {

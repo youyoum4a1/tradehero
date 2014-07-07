@@ -15,13 +15,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import timber.log.Timber;
 
-/**
- * Created by Windy on 14-5-26.
- */
 @Singleton
 public class QQAuthenticationProvider extends SocialAuthenticationProvider
 {
-
     private final String APP_ID = "1101331512";
     private static final String SCOPE = "all";
     private Tencent mTencent;
@@ -30,11 +26,11 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     public static final String KEY_ACCESS_TOKEN = "qq_access_token";
     public static final String KEY_OPEN_ID = "qq_openid";
 
-    @Inject
-    public QQAuthenticationProvider()
+    //<editor-fold desc="Constructors">
+    @Inject public QQAuthenticationProvider()
     {
-
     }
+    //</editor-fold>
 
     @Override
     public void authenticate(THAuthenticationCallback callback)
@@ -55,10 +51,7 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         }
         currentOperationCallback = callback;
 
-        if (currentOperationCallback != null)
-        {
-            currentOperationCallback.onStart();
-        }
+        callback.onStart();
 
         createQQAuth();
     }
@@ -108,7 +101,8 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
             obj = new JSONCredentials();
             obj.put(QQAuthenticationProvider.KEY_OPEN_ID, data.openid);
             obj.put(QQAuthenticationProvider.KEY_ACCESS_TOKEN, data.access_token);
-        } catch (JSONException e)
+        }
+        catch (JSONException e)
         {
         }
         return obj;
@@ -133,10 +127,8 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         currentOperationCallback = null;
     }
 
-    @Override
-    public void deauthenticate()
+    @Override public void deauthenticate()
     {
-
     }
 
     @Override
@@ -169,7 +161,6 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
 
         protected void doComplete(JSONObject values)
         {
-
         }
 
         @Override

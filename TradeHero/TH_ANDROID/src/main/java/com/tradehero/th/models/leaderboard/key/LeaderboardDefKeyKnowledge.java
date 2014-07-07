@@ -4,6 +4,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardDefKeyKnowledge
 {
@@ -45,7 +46,7 @@ public class LeaderboardDefKeyKnowledge
     }
     //</editor-fold>
 
-    public int getLeaderboardDefIcon(@NotNull LeaderboardDefKey leaderboardDefKey)
+    @Nullable public Integer getLeaderboardDefIcon(@NotNull LeaderboardDefKey leaderboardDefKey)
     {
         switch (leaderboardDefKey.key)
         {
@@ -131,7 +132,7 @@ public class LeaderboardDefKeyKnowledge
                 return R.drawable.icn_lb_6m;
 
             default:
-                return 0;
+                return null;
         }
     }
 }

@@ -2,8 +2,8 @@ package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
 import com.tradehero.th.R;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesFactory;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -31,7 +31,7 @@ public class PortfolioDTOUtil
             }
             if (portfolioDTO.providerId != null)
             {
-                ProviderSpecificResourcesDTO resourcesDTO = providerSpecificResourcesFactory.get().createResourcesDTO(portfolioDTO.getProviderIdKey());
+                ProviderSpecificResourcesDTO resourcesDTO = providerSpecificResourcesFactory.get().createResources(portfolioDTO.getProviderIdKey());
                 if (resourcesDTO != null && resourcesDTO.competitionPortfolioTitleResId > 0)
                 {
                     return context.getString(resourcesDTO.competitionPortfolioTitleResId);

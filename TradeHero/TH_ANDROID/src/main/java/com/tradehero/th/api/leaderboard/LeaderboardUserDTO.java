@@ -2,22 +2,22 @@ package com.tradehero.th.api.leaderboard;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.social.InviteDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardUserDTO extends UserBaseDTO
     implements ExpandableItem
 {
-    public static final String LEADERBOARD_PERIOD_START_STRING = "LEADERBOARD_PERIOD_START_STRING";
     private static final String LEADERBOARD_USER_POSITION = "LEADERBOARD_USER_POSITION";
     private static final String LEADERBOARD_ID = "LEADERBOARD_ID";
     private static final String LEADERBOARD_INCLUDE_FOF = "LEADERBOARD_INCLUDE_FOF";
@@ -64,27 +64,37 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public String currencyDisplay;
     public String currencyISO;
 
-    //for social friends
-    public String name;
-    public String thUserId;
-    public String fbId;
-    public String liId;
-    public String twId;
-    public String wbId;
-    public String fbPicUrl;
-    public String liPicUrl;
-    public String twPicUrl;
-    public String wbPicUrl;
-    public boolean alreadyInvited;
-
     public LeaderboardUserDTO()
     {
         super();
     }
 
-    public LeaderboardMarkUserId getLeaderboardMarkUserId()
+    @Nullable public GetPositionsDTOKey getGetPositionsDTOKey()
     {
-        return new LeaderboardMarkUserId((int) lbmuId);
+        GetPositionsDTOKey key = getLeaderboardMarkUserId();
+        if (key != null)
+        {
+            return key;
+        }
+        return getOwnedPortfolioId();
+    }
+
+    @Nullable public LeaderboardMarkUserId getLeaderboardMarkUserId()
+    {
+        if (lbmuId > 0)
+        {
+            return new LeaderboardMarkUserId((int) lbmuId);
+        }
+        return null;
+    }
+
+    @Nullable public OwnedPortfolioId getOwnedPortfolioId()
+    {
+        if (id > 0 && portfolioId > 0)
+        {
+            return new OwnedPortfolioId(id, portfolioId);
+        }
+        return null;
     }
 
     public LeaderboardUserId getLeaderboardUserId()
@@ -132,52 +142,6 @@ public class LeaderboardUserDTO extends UserBaseDTO
         return benchmarkRoiInPeriod != null ? benchmarkRoiInPeriod : 0;
     }
 
-    public String getPicture()
-    {
-        if (picture != null)
-        {
-            return picture;
-        }
-        else if (fbPicUrl != null)
-        {
-            return fbPicUrl;
-        }
-        else if (liPicUrl != null)
-        {
-            return liPicUrl;
-        }
-        else if (twPicUrl != null)
-        {
-            return twPicUrl;
-        }
-        else if (wbPicUrl != null)
-        {
-            return wbPicUrl;
-        }
-        return null;
-    }
-
-    public Integer getLableRes()
-    {
-        if (fbId != null)
-        {
-            return R.drawable.icon_share_fb_on;
-        }
-        else if (liId != null)
-        {
-            return R.drawable.icon_share_linkedin_on;
-        }
-        else if (twId != null)
-        {
-            return R.drawable.icon_share_tw_on;
-        }
-        else if (wbId != null)
-        {
-            return R.drawable.icn_weibo_round;
-        }
-        return null;
-    }
-
     public double normalizePerformance()
     {
         try
@@ -208,20 +172,6 @@ public class LeaderboardUserDTO extends UserBaseDTO
             //Timber.e("normalizePerformance", e);
         }
         return 0;
-    }
-
-    public InviteDTO getInviteDTO()
-    {
-        InviteDTO inviteDTO = new InviteDTO();
-        if (liId != null && !liId.isEmpty())
-        {
-            inviteDTO.liId = liId;
-        }
-        else if (twId != null && !twId.isEmpty())
-        {
-            inviteDTO.twId = twId;
-        }
-        return inviteDTO;
     }
 
     @JsonIgnore
