@@ -1,7 +1,7 @@
 package com.tradehero.th.api.competition;
 
 import android.os.Bundle;
-import com.thoj.route.RouteProperty;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import org.jetbrains.annotations.NotNull;
 

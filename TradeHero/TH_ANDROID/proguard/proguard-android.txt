@@ -113,7 +113,7 @@
 
 -keep class !com.tradehero.** { *; }
 -dontwarn **.VisibleForTesting
--dontwarn com.thoj.**
+-dontwarn com.tradehero.route.**
 -dontwarn com.handmark.**
 -dontwarn org.apache.**
 -dontwarn twitter4j.**

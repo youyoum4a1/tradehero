@@ -1,7 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
-import com.thoj.route.RouteProperty;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
 public class PortfolioId extends AbstractIntegerDTOKey

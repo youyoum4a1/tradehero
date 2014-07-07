@@ -2,8 +2,7 @@ package com.tradehero.routable;
 
 import android.app.Activity;
 import android.content.Intent;
-import com.thoj.route.Router;
-import com.thoj.route.internal.RouteNotFoundException;
+import com.tradehero.route.Router;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import org.junit.Before;
@@ -27,7 +26,8 @@ public class RouterTest
         router = new Router(activity);
     }
 
-    @Test(expected = RouteNotFoundException.class) public void shouldComplainWhenOpeningUrlDoesNotMatchAnyRegisteredUrls()
+    @Test(expected = RuntimeException.class)
+    public void shouldComplainWhenOpeningUrlDoesNotMatchAnyRegisteredUrls()
     {
         ShadowActivity shadowActivity = shadowOf(activity);
 
