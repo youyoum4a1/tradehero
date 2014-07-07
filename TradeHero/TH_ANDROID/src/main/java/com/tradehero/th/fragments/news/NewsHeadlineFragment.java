@@ -13,6 +13,8 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -22,8 +24,11 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
+import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -45,7 +50,7 @@ public class NewsHeadlineFragment
 {
     @Inject SecurityCompactCache securityCompactCache;
     @Inject NewsItemCompactListCacheNew newsTitleCache;
-
+    @Inject protected DiscussionCache discussionCache;
     @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
@@ -53,6 +58,9 @@ public class NewsHeadlineFragment
     @Nullable private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
     private NewsHeadlineAdapter adapter;
     private PaginatedDTO<NewsItemCompactDTO> paginatedNews;
+
+    private DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchListener;
+    protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
     public static final String TEST_KEY = "News-Test";
     public static long start = 0;
@@ -72,7 +80,39 @@ public class NewsHeadlineFragment
 
         ButterKnife.inject(this, view);
         initViews(view);
+        discussionFetchListener = createDiscussionFetchListener();
         return view;
+    }
+
+    protected DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> createDiscussionFetchListener()
+    {
+        return new DiscussionFetchListener();
+    }
+
+    private class DiscussionFetchListener
+            implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
+    {
+        @Override
+        public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(DiscussionKey key, Throwable error)
+        {
+            THToast.show(new THException(error));
+        }
+    }
+
+    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
+    {
+        this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
+        Bundle bundle = new Bundle();
+        if(abstractDiscussionCompactDTO!=null)
+        {
+            bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
+        }
+        getNavigator().pushFragment(WebViewFragment.class, bundle);
     }
 
     private void initViews(View view)
@@ -175,7 +215,7 @@ public class NewsHeadlineFragment
 
     @Override public void display()
     {
-        Timber.d("%s display consume: %s",TEST_KEY,(System.currentTimeMillis() - start));
+        Timber.d("%s display consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
         displayNewsListView();
 
         showNewsList();
@@ -219,15 +259,34 @@ public class NewsHeadlineFragment
 
     protected void handleNewsClicked(int position, @Nullable NewsItemDTOKey news)
     {
+        //if (news != null)
+        //{
+        //    int resId = adapter.getBackgroundRes(position);
+        //    Bundle bundle = new Bundle();
+        //    NewsDiscussionFragment.putBackgroundResId(bundle, resId);
+        //    NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
+        //    NewsDiscussionFragment.putDiscussionKey(bundle, news);
+        //    getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
+        //
+        //}
+
         if (news != null)
         {
-            int resId = adapter.getBackgroundRes(position);
-            Bundle bundle = new Bundle();
-            NewsDiscussionFragment.putBackgroundResId(bundle, resId);
-            NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
-            NewsDiscussionFragment.putDiscussionKey(bundle, news);
-            getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
+            fetchDiscussionDetail(true,news);
         }
+    }
+
+    private void fetchDiscussionDetail(boolean force,NewsItemDTOKey discussionKey)
+    {
+        detachFetchDiscussionTask();
+
+        discussionCache.register(discussionKey, discussionFetchListener);
+        discussionCache.getOrFetchAsync(discussionKey, force);
+    }
+
+    private void detachFetchDiscussionTask()
+    {
+        discussionCache.unregister(discussionFetchListener);
     }
 
     private Navigator getNavigator()
