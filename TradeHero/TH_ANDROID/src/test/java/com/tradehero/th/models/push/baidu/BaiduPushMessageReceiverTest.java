@@ -3,12 +3,14 @@ package com.tradehero.th.models.push.baidu;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -18,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowNotification;
 import org.robolectric.shadows.ShadowNotificationManager;
+import org.robolectric.shadows.ShadowPendingIntent;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedString;
@@ -95,5 +98,14 @@ public class BaiduPushMessageReceiverTest
         // Content text should be the last notified message text
         assertThat(shadowNotification.getContentText()).isEqualTo(notificationDTOs[NOTIFICATION_TEST_MESSAGES.length-1].text);
         assertThat(shadowNotification.getContentTitle()).isEqualTo(activity.getString(R.string.app_name));
+
+        ShadowPendingIntent shadowPendingIntent = shadowOf(notification.contentIntent);
+        Intent savedIntent = shadowPendingIntent.getSavedIntent();
+        assertThat(savedIntent).isNotNull();
+        assertThat(savedIntent.getAction()).isEqualTo(PushConstants.ACTION_NOTIFICATION_CLICKED);
+        assertThat(savedIntent.getExtras()).isNotNull();
+        assertThat(savedIntent.getExtras().containsKey(PushConstants.KEY_NOTIFICATION_CONTENT)).isTrue();
+        assertThat(savedIntent.getExtras().get(PushConstants.KEY_NOTIFICATION_CONTENT))
+                .isEqualTo(notificationDTOs[NOTIFICATION_TEST_MESSAGES.length-1].text);
     }
 }
