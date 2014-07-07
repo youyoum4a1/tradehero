@@ -75,7 +75,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         }
         else
         {
-            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            webView.setLayerType(View.LAYER_TYPE_NONE, null);
         }
 
         webChromeClient = new THWebChromeClient(this);
