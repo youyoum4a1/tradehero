@@ -1,14 +1,12 @@
 package com.tradehero.th.fragments.web;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -69,6 +67,16 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+        {
+            //To fix animation on Pre Chromium WebViews such as one on ResideMenu opening animation
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+        else
+        {
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
 
         webChromeClient = new THWebChromeClient(this);
         webView.setWebChromeClient(webChromeClient);
