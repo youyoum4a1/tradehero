@@ -222,14 +222,16 @@
 
   <style name="TH.Btn_BuySell_Action">
     <item name="android:layout_width">0dp</item>
-    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_weight">1</item>
     <item name="android:textSize">14sp</item>
-    <item name="android:textColor">@color/tab_scroll_color</item>
+    <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:singleLine">true</item>
     <item name="android:ellipsize">middle</item>
     <item name="android:layout_marginLeft">5dp</item>
     <item name="android:layout_marginRight">5dp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:minHeight">@dimen/button_height_30</item>
     <item name="android:background">@drawable/basic_white_selector</item>
   </style>
 
@@ -249,7 +251,7 @@
 
   <style name="TH.BuySell_ViewPager_Button">
     <item name="android:layout_width">0dp</item>
-    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_weight">1</item>
     <item name="android:paddingTop">5dp</item>
     <item name="android:paddingBottom">5dp</item>
