@@ -1,17 +1,17 @@
-package com.tradehero.th.models.provider;
+package com.tradehero.th.api.competition.specific;
 
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
-import com.tradehero.th.models.provider.etoro.EToroProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.macquarie.MacquarieProviderSpecificResourcesDTO;
-import com.tradehero.th.models.provider.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.etoro.EToroProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-@Singleton public class ProviderSpecificResourcesFactory
+public class ProviderSpecificResourcesFactory
 {
     //<editor-fold desc="Constructors">
     @Inject public ProviderSpecificResourcesFactory()
@@ -20,6 +20,7 @@ import timber.log.Timber;
     }
     //</editor-fold>
 
+    @Contract("null -> null; !null -> !null") @Nullable
     public ProviderSpecificResourcesDTO createResources(@Nullable ProviderDTO providerDTO)
     {
         ProviderSpecificResourcesDTO created = null;
@@ -30,6 +31,7 @@ import timber.log.Timber;
         return created;
     }
 
+    @Contract("null -> null; !null -> _") @Nullable
     public ProviderSpecificResourcesDTO createResources(@Nullable ProviderId providerId)
     {
         ProviderSpecificResourcesDTO created = null;

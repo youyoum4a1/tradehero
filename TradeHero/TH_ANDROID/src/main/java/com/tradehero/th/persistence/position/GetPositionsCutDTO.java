@@ -4,7 +4,9 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOKey;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import java.util.List;
@@ -33,14 +35,24 @@ class GetPositionsCutDTO implements DTO
         this.closedPositionsCount = getPositionsDTO.closedPositionsCount;
     }
 
-    @NotNull
+    @Nullable
     public GetPositionsDTO create(
             @NotNull SecurityCompactCache securityCompactCache,
             @NotNull PositionCache positionCache)
     {
+        PositionDTOList<PositionDTO> cachedPositionDTOs = positionCache.get(ownedPositionIds);
+        if (cachedPositionDTOs != null && cachedPositionDTOs.hasNullItem())
+        {
+            return null;
+        }
+        SecurityCompactDTOList securityCompactDTOs = securityCompactCache.get(securityIds);
+        if (securityCompactDTOs != null && securityCompactDTOs.hasNullItem())
+        {
+            return null;
+        }
         return new GetPositionsDTO(
-                positionCache.get(ownedPositionIds),
-                securityCompactCache.get(securityIds),
+                cachedPositionDTOs,
+                securityCompactDTOs,
                 openPositionsCount,
                 closedPositionsCount
         );

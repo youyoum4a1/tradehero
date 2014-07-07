@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard;
 
-import java.util.ArrayList;
+import com.tradehero.common.api.BaseArrayList;
 
-public class LeaderboardUserDTOList extends ArrayList<LeaderboardUserDTO>
+public class LeaderboardUserDTOList extends BaseArrayList<LeaderboardUserDTO>
 {
     //<editor-fold desc="Constructors">
     public LeaderboardUserDTOList()

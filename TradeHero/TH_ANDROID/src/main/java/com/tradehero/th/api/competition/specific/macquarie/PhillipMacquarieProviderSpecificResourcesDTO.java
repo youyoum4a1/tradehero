@@ -1,7 +1,7 @@
-package com.tradehero.th.models.provider.macquarie;
+package com.tradehero.th.api.competition.specific.macquarie;
 
 import com.tradehero.th.R;
-import com.tradehero.th.models.provider.ProviderSpecificResourcesDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
 
 public class PhillipMacquarieProviderSpecificResourcesDTO extends ProviderSpecificResourcesDTO
 {

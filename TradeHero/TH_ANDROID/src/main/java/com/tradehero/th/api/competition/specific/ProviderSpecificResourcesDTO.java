@@ -1,4 +1,4 @@
-package com.tradehero.th.models.provider;
+package com.tradehero.th.api.competition.specific;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

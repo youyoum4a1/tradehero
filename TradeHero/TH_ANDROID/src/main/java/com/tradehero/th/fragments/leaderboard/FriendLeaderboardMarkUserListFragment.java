@@ -27,17 +27,19 @@ import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
-    @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
-    @InjectView(R.id.progress) ProgressBar mProgress;
+    @Nullable @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
+    @Nullable @InjectView(R.id.progress) ProgressBar mProgress;
 
-    protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
+    @Nullable protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;
-    private DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> leaderboardFriendsKeyDTOListener;
+    @Nullable private DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> leaderboardFriendsKeyDTOListener;
     @Inject THLocalyticsSession localyticsSession;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
@@ -64,7 +66,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         }
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_friends_listview, container, false);
@@ -83,7 +85,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
     }
 
-    protected void inflateHeaderView(LayoutInflater inflater, ViewGroup container)
+    protected void inflateHeaderView(@NotNull LayoutInflater inflater, ViewGroup container)
     {
         if (leaderboardMarkUserListView != null)
         {
@@ -96,7 +98,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         }
     }
 
-    protected void initHeaderView(View headerView)
+    protected void initHeaderView(@NotNull View headerView)
     {
         String leaderboardDefDesc = getArguments().getString(BUNDLE_KEY_LEADERBOARD_DEF_DESC);
         TextView leaderboardMarkUserTimePeriod =
@@ -130,7 +132,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         return R.menu.friend_leaderboard_menu;
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
+    @Override public boolean onOptionsItemSelected(@NotNull MenuItem item)
     {
         switch (item.getItemId())
         {
@@ -182,7 +184,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         leaderboardFriendsCache.unregister(leaderboardFriendsKeyDTOListener);
     }
 
-    protected View inflateEmptyView(LayoutInflater inflater, ViewGroup container)
+    protected View inflateEmptyView(@NotNull LayoutInflater inflater, ViewGroup container)
     {
         return inflater.inflate(R.layout.friend_leaderboard_empty_view, container, false);
     }
@@ -209,7 +211,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         leaderboardFriendsCache.getOrFetchAsync(key);
     }
 
-    private void handleFriendsLeaderboardReceived(LeaderboardFriendsDTO dto)
+    private void handleFriendsLeaderboardReceived(@NotNull LeaderboardFriendsDTO dto)
     {
         Date markingTime = dto.leaderboard.markUtc;
         if (markingTime != null && leaderboardMarkUserMarkingTime != null)
@@ -231,7 +233,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         }
     }
 
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @NotNull @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new LeaderboardMarkUserListPremiumUserFollowedListener();
     }
@@ -262,19 +264,19 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         setCurrentUserProfileDTO(userProfileDTO);
     }
 
-    protected DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> createFriendsCacheListener()
+    @NotNull protected DTOCacheNew.Listener<LeaderboardFriendsKey, LeaderboardFriendsDTO> createFriendsCacheListener()
     {
         return new FriendLeaderboarMarkUserListFragmentCacheListener();
     }
 
     protected class FriendLeaderboarMarkUserListFragmentCacheListener implements DTOCacheNew.HurriedListener<LeaderboardFriendsKey, LeaderboardFriendsDTO>
     {
-        @Override public void onPreCachedDTOReceived(LeaderboardFriendsKey key, LeaderboardFriendsDTO dto)
+        @Override public void onPreCachedDTOReceived(LeaderboardFriendsKey key, @NotNull LeaderboardFriendsDTO dto)
         {
             handleFriendsLeaderboardReceived(dto);
         }
 
-        @Override public void onDTOReceived(LeaderboardFriendsKey key, LeaderboardFriendsDTO dto)
+        @Override public void onDTOReceived(LeaderboardFriendsKey key, @NotNull LeaderboardFriendsDTO dto)
         {
             mProgress.setVisibility(View.INVISIBLE);
             leaderboardFriendsUserListAdapter.clear();

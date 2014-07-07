@@ -14,7 +14,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.thoj.route.InjectRoute;
+import com.tradehero.route.InjectRoute;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -392,6 +392,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         this.userProfileView = null;
         this.loadingView = null;
+        timelineListView = null;
+        lastItemVisibleListener = null;
+        mainTimelineAdapter = null;
 
         super.onDestroyView();
     }
@@ -411,7 +414,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             mainTimelineAdapter.setProfileClickListener(null);
             mainTimelineAdapter.setOnLoadFinishedListener(null);
         }
-        mainTimelineAdapter = null;
     }
 
     protected void detachTimelineListView()
@@ -422,8 +424,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.setOnScrollListener(null);
             timelineListView.setOnLastItemVisibleListener(null);
         }
-        timelineListView = null;
-        lastItemVisibleListener = null;
     }
 
     private void detachFreeFollowMiddleCallback()

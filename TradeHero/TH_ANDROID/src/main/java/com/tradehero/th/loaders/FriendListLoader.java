@@ -8,6 +8,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
+import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -178,6 +179,6 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
 
     private void retrieveFriendList()
     {
-        userFriendsDTOs = userServiceWrapper.get().getFriends(currentUserId.toUserBaseKey());
+        userFriendsDTOs = userServiceWrapper.get().getFriends(new FriendsListKey(currentUserId.toUserBaseKey()));
     }
 }

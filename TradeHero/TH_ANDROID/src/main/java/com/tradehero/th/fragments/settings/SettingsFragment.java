@@ -21,7 +21,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
-import com.thoj.route.Routable;
+import com.tradehero.route.Routable;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
@@ -45,6 +45,7 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -706,7 +707,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleTopBannerClicked()
     {
-        getNavigator().pushFragment(InviteFriendFragment.class, null,
+        getNavigator().pushFragment(FriendsInvitationFragment.class, null,
                 Navigator.PUSH_UP_FROM_BOTTOM, null);
     }
 

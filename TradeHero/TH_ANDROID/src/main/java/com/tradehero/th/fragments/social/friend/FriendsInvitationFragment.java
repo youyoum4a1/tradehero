@@ -18,7 +18,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.thoj.route.Routable;
+import com.tradehero.route.Routable;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -81,7 +81,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     private static final int LIST_TYPE_FRIEND_LIST = 2;
 
     private Bundle savedState;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState)

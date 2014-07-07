@@ -1,16 +1,17 @@
-package com.tradehero.th.models.provider;
+package com.tradehero.th.api.competition.specific;
 
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.models.DTOProcessor;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class DTOProcessorReceivedProviderDTO implements DTOProcessor<ProviderDTO>
+public class ProviderSpecificsPopulator
 {
     @NotNull protected final ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
     @NotNull protected final ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorReceivedProviderDTO(
+    @Inject public ProviderSpecificsPopulator(
             @NotNull ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory,
             @NotNull ProviderSpecificResourcesFactory providerSpecificResourcesFactory)
     {
@@ -19,13 +20,12 @@ public class DTOProcessorReceivedProviderDTO implements DTOProcessor<ProviderDTO
     }
     //</editor-fold>
 
-    @Override public ProviderDTO process(ProviderDTO value)
+    public void populate(@Nullable ProviderDTO providerDTO)
     {
-        if (value != null)
+        if (providerDTO != null)
         {
-            value.specificKnowledge = providerSpecificKnowledgeFactory.createKnowledge(value);
-            value.specificResources = providerSpecificResourcesFactory.createResources(value);
+            providerDTO.specificResources = providerSpecificResourcesFactory.createResources(providerDTO);
+            providerDTO.specificKnowledge = providerSpecificKnowledgeFactory.createKnowledge(providerDTO);
         }
-        return value;
     }
 }

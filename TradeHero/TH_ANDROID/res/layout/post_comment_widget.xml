@@ -31,8 +31,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
-          android:padding="@dimen/discussion_action_buttons_drawable_padding"
           android:text="@string/timeline_discussion_post"
+          style="@style/TH.DiscussionPostButtons"
           />
 
       <ProgressBar
@@ -43,26 +43,17 @@
 
     </com.tradehero.common.widget.BetterViewAnimator>
 
-    <LinearLayout
-        android:layout_toLeftOf="@id/post_comment_action_wrapper"
+    <EditText
+        android:id="@+id/post_comment_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:orientation="horizontal">
+        android:hint="@string/timeline_discussion_comment_box_hint"
+        android:layout_toLeftOf="@id/post_comment_action_wrapper"
+        style="@style/TH.DiscussionTextBox">
 
-      <!--<include-->
-      <!--layout="@layout/discussion_edit_post_mention_buttons"-->
-      <!--/>-->
-      <EditText
-          android:id="@+id/post_comment_text"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:hint="@string/timeline_discussion_comment_box_hint"
-          style="@style/TH.DiscussionTextBox"
+      <requestFocus/>
 
-          />
-
-    </LinearLayout>
+    </EditText>
 
   </com.tradehero.th.fragments.discussion.PostCommentView>
 

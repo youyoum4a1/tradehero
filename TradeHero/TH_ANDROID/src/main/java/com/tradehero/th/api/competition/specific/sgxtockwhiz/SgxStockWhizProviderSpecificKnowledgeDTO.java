@@ -1,6 +1,6 @@
-package com.tradehero.th.models.provider.sgxtockwhiz;
+package com.tradehero.th.api.competition.specific.sgxtockwhiz;
 
-import com.tradehero.th.models.provider.ProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
 
 public class SgxStockWhizProviderSpecificKnowledgeDTO extends ProviderSpecificKnowledgeDTO
 {

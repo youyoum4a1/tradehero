@@ -82,10 +82,6 @@ public class HeroListItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        picasso.get().load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformation)
-                .into(userIcon);
     }
 
     @OnClick(R.id.ic_status) void onStatusIconClicked()
@@ -158,12 +154,7 @@ public class HeroListItemView extends RelativeLayout
         this.heroDTO = heroDTO;
         if (andDisplay)
         {
-            displayUserIcon();
-            displayTitle();
-            displayDateInfo();
-            displayStatus();
-            displayRevenue();
-            displayCountryLogo();
+            display();
         }
     }
 
@@ -180,30 +171,15 @@ public class HeroListItemView extends RelativeLayout
 
     public void displayUserIcon()
     {
+        displayDefaultUserIcon();
+
         if (heroDTO != null)
         {
-            //resetUserIcon();
-            displayDefaultUserIcon();
             picasso.get().load(heroDTO.picture)
                     .placeholder(userIcon.getDrawable())
                     .transform(peopleIconTransformation)
                     .error(R.drawable.superman_facebook)
-                    .into(userIcon, new Callback()
-                    {
-                        @Override public void onSuccess()
-                        {
-
-                        }
-
-                        @Override public void onError()
-                        {
-                            displayDefaultUserIcon();
-                        }
-                    });
-        }
-        else
-        {
-            displayDefaultUserIcon();
+                    .into(userIcon);
         }
     }
 

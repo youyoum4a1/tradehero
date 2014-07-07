@@ -1,9 +1,9 @@
 package com.tradehero.th.api.leaderboard.key;
 
-import java.util.ArrayList;
+import com.tradehero.common.api.BaseArrayList;
 import java.util.Collection;
 
-public class LeaderboardUserIdList extends ArrayList<LeaderboardUserId>
+public class LeaderboardUserIdList extends BaseArrayList<LeaderboardUserId>
 {
     //<editor-fold desc="Constructors">
     public LeaderboardUserIdList()

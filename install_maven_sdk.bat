@@ -1,0 +1,1 @@
+mvn install:install-file -DgroupId=com.google.android -DartifactId=android -Dversion=4.2.2 -Dfile=C:\adt\sdk\platforms\android-19\android.jar -Dpackaging=jar -DgeneratePom=true

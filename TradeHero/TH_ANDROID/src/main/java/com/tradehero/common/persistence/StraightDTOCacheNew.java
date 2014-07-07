@@ -27,7 +27,10 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
         @Nullable DTOType value = cacheValue.getValue();
         if (value != null && !isValid(value))
         {
-            invalidate(key);
+            if (cacheValue.getListenersCount() == 0)
+            {
+                invalidate(key);
+            }
             return null;
         }
         return value;

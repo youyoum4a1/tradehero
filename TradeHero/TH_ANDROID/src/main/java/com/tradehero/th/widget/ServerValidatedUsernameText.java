@@ -9,12 +9,14 @@ import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.persistence.user.UserAvailabilityCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 
 public class ServerValidatedUsernameText extends ServerValidatedText
 {
     @Inject UserAvailabilityCache userAvailabilityCache;
-    private DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> userAvailabilityListener;
+    @Nullable private DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> userAvailabilityListener;
     private boolean isValidInServer = true;
     private String originalUsernameValue;
 
@@ -115,7 +117,7 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         return super.getCurrentValidationMessage();
     }
 
-    protected void queryCache(String displayName)
+    protected void queryCache(@Nullable String displayName)
     {
         if (displayName != null)
         {
@@ -143,14 +145,16 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         hintDefaultStatus();
     }
 
-    protected DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> createValidatedUserNameListener()
+    @NotNull protected DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> createValidatedUserNameListener()
     {
         return new ValidatedUserNameAvailabilityListener();
     }
 
     protected class ValidatedUserNameAvailabilityListener implements DTOCacheNew.HurriedListener<DisplayNameDTO, UserAvailabilityDTO>
     {
-        @Override public void onPreCachedDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value)
+        @Override public void onPreCachedDTOReceived(
+                @NotNull DisplayNameDTO key,
+                @NotNull UserAvailabilityDTO value)
         {
             if (key.isSameName(getText().toString()))
             {
@@ -158,7 +162,9 @@ public class ServerValidatedUsernameText extends ServerValidatedText
             }
         }
 
-        @Override public void onDTOReceived(DisplayNameDTO key, UserAvailabilityDTO value)
+        @Override public void onDTOReceived(
+                @NotNull DisplayNameDTO key,
+                @NotNull UserAvailabilityDTO value)
         {
             if (key.isSameName(getText().toString()))
             {
@@ -167,7 +173,9 @@ public class ServerValidatedUsernameText extends ServerValidatedText
             }
         }
 
-        @Override public void onErrorThrown(DisplayNameDTO key, Throwable error)
+        @Override public void onErrorThrown(
+                @NotNull DisplayNameDTO key,
+                @NotNull Throwable error)
         {
             if (key.isSameName(getText().toString()))
             {

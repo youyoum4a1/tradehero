@@ -80,7 +80,9 @@
             android:id="@+id/row_warrant_type"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -108,7 +110,9 @@
             android:id="@+id/row_warrant_code"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -136,7 +140,9 @@
             android:id="@+id/row_warrant_expiry"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -285,7 +291,9 @@
             android:id="@+id/row_warrant_strike_price"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -313,7 +321,9 @@
             android:id="@+id/row_warrant_underlying"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"
@@ -342,7 +352,9 @@
             android:id="@+id/row_warrant_issuer"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            >
 
           <TextView
               style="@style/TH.Title"

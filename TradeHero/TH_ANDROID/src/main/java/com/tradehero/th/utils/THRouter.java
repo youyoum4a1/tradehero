@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import com.thoj.route.Routable;
-import com.thoj.route.Router;
-import com.thoj.route.internal.ContextNotProvided;
-import com.thoj.route.internal.RouterOptions;
-import com.thoj.route.internal.RouterParams;
+import com.tradehero.route.Routable;
+import com.tradehero.route.Router;
+import com.tradehero.route.RouterOptions;
+import com.tradehero.route.RouterParams;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.home.HomeFragment;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -37,9 +37,7 @@ public class THRouter extends Router
     {
         if (context == null)
         {
-            throw new ContextNotProvided(
-                    "You need to supply a context for Router "
-                            + this.toString());
+            throw new RuntimeException("You need to supply a context for Router " + this.toString());
         }
         if (aliases.containsKey(url))
         {
@@ -115,7 +113,13 @@ public class THRouter extends Router
                     args.putString(param.getKey(), param.getValue());
                 }
             }
-            navigator.pushFragment(options.getOpenFragmentClass(), args);
+            if(options.getOpenFragmentClass().equals(HomeFragment.class)&&navigator.getCurrentFragment()!=null && navigator.getCurrentFragment() instanceof HomeFragment)
+            {
+                ((HomeFragment)navigator.getCurrentFragment()).createInviteInHomePage(args.getString("SocialID"),args.getString("UserID"));
+            }else
+            {
+                navigator.pushFragment(options.getOpenFragmentClass(), args);
+            }
         }
     }
 

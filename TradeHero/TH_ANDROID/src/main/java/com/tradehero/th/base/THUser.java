@@ -234,6 +234,7 @@ public class THUser
 
             @Override public void failure(THException error)
             {
+                saveCredentialsToUserDefaults(credentialsDTO);
                 checkNeedForUpgrade(error);
                 checkNeedToRenewSocialToken(error, credentialsDTO);
                 callback.done(null, error);

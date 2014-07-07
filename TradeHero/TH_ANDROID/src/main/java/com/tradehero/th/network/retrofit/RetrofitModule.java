@@ -8,6 +8,9 @@ import com.tradehero.common.billing.alipay.service.AlipayService;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTODeserialiser;
+import com.tradehero.th.api.competition.ProviderDTOJacksonModule;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTODeserialiser;
 import com.tradehero.th.api.position.PositionDTOJacksonModule;
@@ -222,6 +225,11 @@ public class RetrofitModule
         return deserialiser;
     }
 
+    @Provides JsonDeserializer<ProviderDTO> providesProviderDTODeserialiser(ProviderDTODeserialiser deserialiser)
+    {
+        return deserialiser;
+    }
+
     @Provides JsonDeserializer<UserFriendsDTO> providersUserFriendsDTODeserialiser(UserFriendsDTODeserialiser deserialiser)
     {
         return deserialiser;
@@ -229,12 +237,14 @@ public class RetrofitModule
 
     @Provides @Singleton ObjectMapper provideObjectMapper(
             UserFriendsDTOJacksonModule userFriendsDTOModule,
-            PositionDTOJacksonModule positionDTOModule)
+            PositionDTOJacksonModule positionDTOModule,
+            ProviderDTOJacksonModule providerDTOModule)
     {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
+        objectMapper.registerModule(providerDTOModule);
 
         // TODO confirm this is correct here
         objectMapper.setVisibilityChecker(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()

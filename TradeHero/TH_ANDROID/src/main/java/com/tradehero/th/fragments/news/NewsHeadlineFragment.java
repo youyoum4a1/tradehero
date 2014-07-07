@@ -30,6 +30,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 /**
@@ -48,7 +50,7 @@ public class NewsHeadlineFragment
     @InjectView(R.id.list_news_headline) ListView listView;
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
 
-    private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
+    @Nullable private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
     private NewsHeadlineAdapter adapter;
     private PaginatedDTO<NewsItemCompactDTO> paginatedNews;
 
@@ -63,7 +65,7 @@ public class NewsHeadlineFragment
         start = System.currentTimeMillis();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_news_headline_list, container, false);
@@ -85,7 +87,7 @@ public class NewsHeadlineFragment
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+                public void onItemClick(@NotNull AdapterView<?> adapterView, View view, int position, long l)
                 {
                     Object o = adapterView.getItemAtPosition(position);
                     if (o instanceof NewsItemDTOKey)
@@ -133,10 +135,9 @@ public class NewsHeadlineFragment
         return securityCompactCache;
     }
 
-    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
+    @Override public void linkWith(@NotNull SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
-
         fetchSecurity(securityId);
     }
 
@@ -155,7 +156,7 @@ public class NewsHeadlineFragment
         securityCompactCache.unregister(this);
     }
 
-    protected void fetchSecurity(SecurityId securityId)
+    protected void fetchSecurity(@NotNull SecurityId securityId)
     {
         detachSecurityCache();
         securityCompactCache.register(securityId, this);
@@ -210,24 +211,22 @@ public class NewsHeadlineFragment
                     newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
                 }
             }
-
+            adapter.setSecurityId(securityId);
             adapter.setItems(newsItemDTOKeyList);
             adapter.notifyDataSetChanged();
         }
     }
 
-    protected void handleNewsClicked(int position, NewsItemDTOKey news)
+    protected void handleNewsClicked(int position, @Nullable NewsItemDTOKey news)
     {
         if (news != null)
         {
             int resId = adapter.getBackgroundRes(position);
             Bundle bundle = new Bundle();
-            bundle.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
-            bundle.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL,
-                    securityId.getSecuritySymbol());
+            NewsDiscussionFragment.putBackgroundResId(bundle, resId);
+            NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
             NewsDiscussionFragment.putDiscussionKey(bundle, news);
             getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
-
         }
     }
 
@@ -236,26 +235,30 @@ public class NewsHeadlineFragment
         return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
     }
 
-    protected DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> createNewsCacheListener()
+    @NotNull protected DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> createNewsCacheListener()
     {
         return new NewsHeadlineNewsListListener();
     }
 
     protected class NewsHeadlineNewsListListener implements DTOCacheNew.HurriedListener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
     {
-        @Override public void onPreCachedDTOReceived(NewsItemListKey key,
-                PaginatedDTO<NewsItemCompactDTO> value)
+        @Override public void onPreCachedDTOReceived(
+                @NotNull NewsItemListKey key,
+                @NotNull PaginatedDTO<NewsItemCompactDTO> value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onDTOReceived(NewsItemListKey key,
-                PaginatedDTO<NewsItemCompactDTO> value)
+        @Override public void onDTOReceived(
+                @NotNull NewsItemListKey key,
+                @NotNull PaginatedDTO<NewsItemCompactDTO> value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(NewsItemListKey key, Throwable error)
+        @Override public void onErrorThrown(
+                @NotNull NewsItemListKey key,
+                @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_security_info);
         }
