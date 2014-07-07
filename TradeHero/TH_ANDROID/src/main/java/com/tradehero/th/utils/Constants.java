@@ -33,12 +33,16 @@ public class Constants
     public static final String APP_HOME = BASE_STATIC_CONTENT_URL + "AppHome";
 
     // Request Header
+    public static final String ACCEPT_ENCODING= "Accept-Encoding";
+    public static final String ACCEPT_ENCODING_GZIP = "gzip";
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
     public static final String AUTHORIZATION = "Authorization";
     public static final String TH_LANGUAGE_CODE = "TH-Language-Code";
     public static final String TH_CLIENT_TYPE = "TH-Client-Type";
 
     // Response Header
+    public static final String CONTENT_ENCODING = "Content-Encoding";
+    public static final String CONTENT_ENCODING_GZIP = ACCEPT_ENCODING_GZIP;
     public static final String TH_ERROR_CODE = "TH-Error-Code";
 
     // Google PlayStore

@@ -186,6 +186,7 @@ public class HomeFragment extends BaseWebViewFragment
             additionalHeaders.put(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
             additionalHeaders.put(Constants.TH_CLIENT_VERSION, VersionUtils.getVersionId(getActivity()));
             additionalHeaders.put(Constants.TH_LANGUAGE_CODE, languageCode);
+            additionalHeaders.put(Constants.ACCEPT_ENCODING, Constants.ACCEPT_ENCODING_GZIP);
 
             loadUrl(appHomeLink, additionalHeaders);
         }
