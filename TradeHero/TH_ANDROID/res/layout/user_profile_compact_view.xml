@@ -31,7 +31,7 @@
         android:layout_width="@dimen/medium_logo_w_h"
         android:layout_height="@dimen/medium_logo_w_h"
         android:gravity="center"
-        android:src="@drawable/icn_info_normal"
+        android:src="@drawable/ic_action_action_about"
         android:contentDescription="@null"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
