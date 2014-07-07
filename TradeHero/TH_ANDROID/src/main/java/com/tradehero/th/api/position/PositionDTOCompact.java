@@ -5,6 +5,7 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,7 +74,9 @@ public class PositionDTOCompact extends ExtendedDTO
         return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
     }
 
-    public static List<PositionCompactId> getPositionCompactIds(List<PositionDTOCompact> positionDTOCompacts)
+    @Contract("null -> null; !null -> !null") @Nullable
+    public static List<PositionCompactId> getPositionCompactIds(
+            @Nullable List<PositionDTOCompact> positionDTOCompacts)
     {
         if (positionDTOCompacts == null)
         {
