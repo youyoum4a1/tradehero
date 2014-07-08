@@ -24,6 +24,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -64,6 +65,9 @@ public class NewsHeadlineFragment
 
     public static final String TEST_KEY = "News-Test";
     public static long start = 0;
+
+    int tempPostion = 0;
+    NewsItemDTOKey tempDto = null;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -108,11 +112,15 @@ public class NewsHeadlineFragment
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         Bundle bundle = new Bundle();
-        if (abstractDiscussionCompactDTO != null)
+        if (abstractDiscussionCompactDTO != null&&((NewsItemCompactDTO) abstractDiscussionCompactDTO).url!=null)
         {
             bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
+            getNavigator().pushFragment(WebViewFragment.class, bundle);
         }
-        getNavigator().pushFragment(WebViewFragment.class, bundle);
+        else
+        {
+            handleNewClicked(tempPostion,tempDto);
+        }
     }
 
     private void initViews(View view)
@@ -264,6 +272,7 @@ public class NewsHeadlineFragment
         }
     }
 
+
     protected void handleNewsClicked(int position, @Nullable NewsItemDTOKey news)
     {
         //if (news != null)
@@ -276,10 +285,25 @@ public class NewsHeadlineFragment
         //    getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
         //
         //}
-
+        tempPostion = position;
+        tempDto = news;
         if (news != null)
         {
             fetchDiscussionDetail(true, news);
+        }
+    }
+
+    protected void handleNewClicked(int position,  NewsItemDTOKey news)
+    {
+        if (news != null)
+        {
+            int resId = adapter.getBackgroundRes(position);
+            Bundle bundle = new Bundle();
+            NewsDiscussionFragment.putBackgroundResId(bundle, resId);
+            NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
+            NewsDiscussionFragment.putDiscussionKey(bundle, news);
+            getNavigator().pushFragment(NewsDiscussionFragment.class, bundle);
+
         }
     }
 
