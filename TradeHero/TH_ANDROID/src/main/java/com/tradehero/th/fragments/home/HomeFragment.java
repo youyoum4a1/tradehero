@@ -51,13 +51,10 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -305,6 +302,18 @@ public class HomeFragment extends BaseWebViewFragment
         }
     }
 
+    private void invite(UserFriendsDTO userDto)
+    {
+        InviteFormDTO inviteFriendForm = new InviteFormDTO();
+        inviteFriendForm.users = new ArrayList<>();
+        inviteFriendForm.users.add(userDto.createInvite());
+        getProgressDialog().show();
+        detachMiddleCallbackInvite();
+        middleCallbackInvite = userServiceWrapperLazy.get()
+                .inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm,
+                        new TrackShareCallback());
+    }
+
     private void sendRequestDialogFacebook()
     {
         StringBuilder stringBuilder = new StringBuilder();
@@ -342,6 +351,7 @@ public class HomeFragment extends BaseWebViewFragment
                             if (requestId != null)
                             {
                                 THToast.show(R.string.invite_friend_request_sent);
+                                invite(userFriendsDTO);
                             }
                             else
                             {

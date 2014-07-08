@@ -129,6 +129,7 @@ public class SplashActivity extends SherlockActivity
         {
             ActivityHelper.launchGuide(SplashActivity.this);
             firstLaunchPreference.set(true);
+            finish();
         }
         else
         {
