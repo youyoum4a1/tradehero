@@ -5,10 +5,14 @@ import dagger.Module;
 
 @Module(
         includes = {
-                FragmentBillingStoreTestModule.class,
+                FragmentBillingStoreTestModule.class
         },
         injects = {
-                StoreScreenFragmentTest.class
+                StoreItemClickableTest.class,
+                StoreItemHasFurtherTest.class,
+                StoreItemHeaderTest.class,
+                StoreItemPromptPurchaseTest.class,
+                StoreScreenFragmentTest.class,
         },
         complete = false,
         library = true

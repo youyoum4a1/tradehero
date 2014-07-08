@@ -9,23 +9,23 @@ import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import timber.log.Timber;
 
-public class StoreItemLikeButton extends StoreItemHasFurther
+public class StoreItemPromptPurchase extends StoreItemClickable
 {
     @InjectView(R.id.btn_buy_now) protected ImageView imageButton;
     protected StoreItemPromptPurchaseDTO storeItemPromptPurchaseDTO;
 
     //<editor-fold desc="Constructors">
-    public StoreItemLikeButton(Context context)
+    public StoreItemPromptPurchase(Context context)
     {
         super(context);
     }
 
-    public StoreItemLikeButton(Context context, AttributeSet attrs)
+    public StoreItemPromptPurchase(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public StoreItemLikeButton(Context context, AttributeSet attrs, int defStyle)
+    public StoreItemPromptPurchase(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
