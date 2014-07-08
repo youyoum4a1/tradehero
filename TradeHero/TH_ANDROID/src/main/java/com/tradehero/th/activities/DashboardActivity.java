@@ -158,7 +158,10 @@ public class DashboardActivity extends SherlockFragmentActivity
         //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        navigator.goToTab(INITIAL_TAB);
+        if (savedInstanceState == null && navigator.getCurrentFragment() == null)
+        {
+            navigator.goToTab(INITIAL_TAB);
+        }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();

@@ -106,14 +106,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
         inflater.inflate(R.menu.menu_discussion_edit_post, menu);
         postMenuButton = menu.findItem(R.id.discussion_edit_post);
 
-        getSherlockActivity().getSupportActionBar().setTitle(R.string.discussion);
+        setActionBarTitle(R.string.discussion);
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        //actionBar.setTitle(null);
-        actionBar.setSubtitle(null);
+        setActionBarSubtitle(null);
         Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
@@ -152,6 +150,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onDetach()
     {
         selectionFragment = null;
+        setActionBarSubtitle(null);
         super.onDetach();
     }
 
@@ -340,8 +339,11 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         if (andDisplay)
         {
-            getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
-            getSherlockActivity().invalidateOptionsMenu();
+            setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
+            if(getSherlockActivity() != null)
+            {
+                getSherlockActivity().invalidateOptionsMenu();
+            }
         }
     }
 
