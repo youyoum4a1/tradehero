@@ -132,14 +132,14 @@ public class BuySellFragmentTest
         assertThat(buySellFragment.mBtnAddWatchlist.getText()).isEqualTo("Add to Watchlist");
     }
 
-    @Test public void testWhenHasWatchlistShowEditWatchlist()
+    @Test public void testWhenHasWatchlistShowEditWatchlist() throws InterruptedException
     {
         populateUserWatchlistCache();
-
         buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, argsGoogle());
+
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
-
+        Thread.sleep(200); // This feels like a HACK but otherwise the test fails intermittently
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 

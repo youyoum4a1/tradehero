@@ -42,6 +42,8 @@ import timber.log.Timber;
 
 public class Application extends PApplication
 {
+    public static boolean timberPlanted = false;
+
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected THRouter thRouter;
 
@@ -49,7 +51,11 @@ public class Application extends PApplication
     {
         super.init();
 
-        Timber.plant(createTimberTree());
+        if (!timberPlanted)
+        {
+            Timber.plant(createTimberTree());
+            timberPlanted = true;
+        }
 
         // Supposedly get the count of cores
         KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
