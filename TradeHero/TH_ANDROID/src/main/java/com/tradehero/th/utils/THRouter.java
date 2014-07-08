@@ -58,13 +58,17 @@ public class THRouter extends Router
     @Override public Router registerRoutes(Class<?>... targets)
     {
         super.registerRoutes(targets);
-        for (Class<?> target: targets) {
-            if (Fragment.class.isAssignableFrom(target) && target.isAnnotationPresent(Routable.class)) {
+        for (Class<?> target : targets)
+        {
+            if (Fragment.class.isAssignableFrom(target) && target.isAnnotationPresent(Routable.class))
+            {
                 Routable routable = target.getAnnotation(Routable.class);
 
                 String[] routes = routable.value();
-                if (routes != null) {
-                    for (String route: routes) {
+                if (routes != null)
+                {
+                    for (String route : routes)
+                    {
                         @SuppressWarnings("unchecked")
                         Class<? extends Fragment> fragmentTarget = (Class<? extends Fragment>) target;
                         mapFragment(route, fragmentTarget);
@@ -108,15 +112,25 @@ public class THRouter extends Router
             }
             if (params.openParams != null)
             {
-                for (Map.Entry<String, String> param: params.openParams.entrySet())
+                for (Map.Entry<String, String> param : params.openParams.entrySet())
                 {
                     args.putString(param.getKey(), param.getValue());
                 }
             }
-            if(options.getOpenFragmentClass().equals(HomeFragment.class)&&navigator.getCurrentFragment()!=null && navigator.getCurrentFragment() instanceof HomeFragment)
+            if (options.getOpenFragmentClass().equals(HomeFragment.class)
+                    && navigator.getCurrentFragment() != null
+                    && navigator.getCurrentFragment() instanceof HomeFragment)
             {
-                ((HomeFragment)navigator.getCurrentFragment()).createInviteInHomePage(args.getString("SocialID"),args.getString("UserID"));
-            }else
+                if (args.getString("SocialID") != null && args.getString("UserID") != null)
+                {//invite
+                    ((HomeFragment) navigator.getCurrentFragment()).createInviteInHomePage(args.getString("SocialID"), args.getString("UserID"));
+                }
+                else if (args.getString("UserID") != null)
+                {//follow
+                    ((HomeFragment) navigator.getCurrentFragment()).createFollowInHomePage(args.getString("UserID"));
+                }
+            }
+            else
             {
                 navigator.pushFragment(options.getOpenFragmentClass(), args);
             }

@@ -69,7 +69,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_alipay_header));
+        setActionBarTitle(getResources().getString(R.string.settings_alipay_header));
         super.onCreateOptionsMenu(menu, inflater);
     }
     //</editor-fold>

@@ -5,12 +5,15 @@ import com.actionbarsherlock.internal.ActionBarSherlockCompat;
 import com.actionbarsherlock.internal.ActionBarSherlockNative;
 import com.actionbarsherlock.internal.ActionBarSherlockRobolectric;
 import com.tradehero.TestModule;
+import com.tradehero.common.log.SystemOutTree;
 import com.tradehero.th.utils.DaggerUtils;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.robolectric.TestLifecycleApplication;
+import timber.log.Timber;
 
 public class TestApplication extends Application
         implements TestLifecycleApplication
@@ -24,6 +27,12 @@ public class TestApplication extends Application
         ActionBarSherlock.registerImplementation(ActionBarSherlockRobolectric.class);
         ActionBarSherlock.unregisterImplementation(ActionBarSherlockNative.class);
         ActionBarSherlock.unregisterImplementation(ActionBarSherlockCompat.class);
+    }
+
+    // Find a better way as we plant multiple ones
+    @NotNull @Override protected Timber.Tree createTimberTree()
+    {
+        return new SystemOutTree();
     }
 
     @Override protected Object[] getModules()

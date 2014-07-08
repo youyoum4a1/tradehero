@@ -88,6 +88,7 @@ import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
+import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.RelationsListItemView;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
@@ -126,7 +127,6 @@ import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
-import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.updatecenter.messages.MessageListAdapter;
@@ -201,7 +201,6 @@ import javax.inject.Singleton;
                         MacquarieWarrantItemViewAdapter.class,
                         SecurityItemView.class,
                         WarrantSecurityItemView.class,
-                        SearchStockPeopleFragment.class,
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
@@ -267,6 +266,7 @@ import javax.inject.Singleton;
                         UserProfileDetailViewHolder.class,
 
                         LeaderboardCommunityFragment.class,
+                        PeopleSearchFragment.class,
                         LeaderboardDefListFragment.class,
 
                         LeaderboardDefView.class,

@@ -139,14 +139,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         fetchCorrespondentProfile();
     }
 
+    @Override public void onDetach()
+    {
+        setActionBarSubtitle(null);
+        super.onDetach();
+    }
+
     @Override public void onDestroyOptionsMenu()
     {
-        SherlockFragmentActivity activity = getSherlockActivity();
-        if (activity != null)
-        {
-            ActionBar actionBar = activity.getSupportActionBar();
-            actionBar.setSubtitle(null);
-        }
+        setActionBarSubtitle(null);
         super.onDestroyOptionsMenu();
     }
 
@@ -316,12 +317,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value)
         {
             Timber.d("MessageHeaderDTO=%s", value);
-            ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-            if (actionBar != null)
-            {
-                actionBar.setTitle(value.title);
-                actionBar.setSubtitle(value.subTitle);
-            }
+            setActionBarTitle(value.title);
+            setActionBarSubtitle(value.subTitle);
             if (value.unread)
             {
                 reportMessageRead(value);

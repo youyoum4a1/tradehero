@@ -37,6 +37,8 @@ public class PreferenceModule
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
     private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
 
+    public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SOCIAL_SHARE_FLAG";
+
     @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
         MainCredentialsPreference newPrefs = new MainCredentialsPreference(credentialsDTOFactory, sharedPreferences, PREF_MAIN_CREDENTIALS_KEY, "");

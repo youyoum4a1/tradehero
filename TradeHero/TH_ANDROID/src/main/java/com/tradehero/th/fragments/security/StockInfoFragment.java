@@ -293,17 +293,13 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayExchangeSymbol()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
+        if (securityId != null)
         {
-            if (securityId != null)
-            {
-                actionBar.setTitle(String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol()));
-            }
-            else
-            {
-                actionBar.setTitle("-:-");
-            }
+            setActionBarTitle(String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol()));
+        }
+        else
+        {
+            setActionBarTitle("-:-");
         }
     }
 

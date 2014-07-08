@@ -11,11 +11,11 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -84,11 +84,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
-        actionBar.setSubtitle(userInteractor.getName());
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+        setActionBarTitle(R.string.store_option_menu_title);  // Add the changing cute icon
+        setActionBarSubtitle(userInteractor.getName());
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -309,13 +309,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                         (PerPagedFilteredLeaderboardKey) currentLeaderboardKey);
                 filterIcon.setIcon(
                         areEqual ?
-                                R.drawable.filter :
-                                R.drawable.filter_active
+                                R.drawable.ic_action_icn_actionbar_filteroff :
+                                R.drawable.ic_action_icn_actionbar_filteron
                 );
             }
             else
             {
-                filterIcon.setIcon(R.drawable.filter);
+                filterIcon.setIcon(R.drawable.ic_action_icn_actionbar_filteroff);
             }
         }
     }

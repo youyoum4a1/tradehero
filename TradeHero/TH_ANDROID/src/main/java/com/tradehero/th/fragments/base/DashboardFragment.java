@@ -81,27 +81,24 @@ abstract public class DashboardFragment extends BaseFragment
             }
         }
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (shouldShowHomeAsUp())
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null)
         {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                    | ActionBar.DISPLAY_SHOW_TITLE
-                    | ActionBar.DISPLAY_SHOW_HOME);
+            if (shouldShowHomeAsUp())
+            {
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                        | ActionBar.DISPLAY_SHOW_TITLE
+                        | ActionBar.DISPLAY_SHOW_HOME);
+            }
+            else
+            {
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+                        | ActionBar.DISPLAY_SHOW_HOME
+                        | ActionBar.DISPLAY_USE_LOGO);
+                actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+            }
+            actionBar.setHomeButtonEnabled(true);
         }
-        else
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                    | ActionBar.DISPLAY_SHOW_HOME
-                    | ActionBar.DISPLAY_USE_LOGO);
-            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        }
-        actionBar.setHomeButtonEnabled(true);
-    }
-
-    protected void setActionBarTitle(String title)
-    {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(title);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

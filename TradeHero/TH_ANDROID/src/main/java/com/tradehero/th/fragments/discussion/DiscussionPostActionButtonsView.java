@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -23,6 +24,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.SocialSharePreferenceHelper;
 import javax.inject.Inject;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
@@ -31,6 +33,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @InjectView(R.id.btn_share_tw) ToggleButton mTwitterShareButton;
     @InjectView(R.id.btn_share_li) ToggleButton mLinkedInShareButton;
     @InjectView(R.id.btn_share_wb) ToggleButton mWbShareButton;
+    @InjectView(R.id.btn_wechat) ToggleButton mWechatShareButton;
     @InjectView(R.id.btn_location) ToggleButton mLocationShareButton;
     @InjectView(R.id.switch_share_public) ToggleButton mIsPublic;
 
@@ -40,6 +43,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject AlertDialogUtil alertDialogUtil;
+
+    private SharedPreferences mPrefSocialShare;
 
     //<editor-fold desc="Constructors">
     public DiscussionPostActionButtonsView(Context context)
@@ -63,16 +68,19 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
+        mPrefSocialShare = this.getContext().getSharedPreferences(SocialSharePreferenceHelper.PREFERENCE_NAME, Context.MODE_PRIVATE);
         initSocialBtnStatus();
     }
 
     private void initSocialBtnStatus()
     {
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        mFacebookShareButton.setChecked(userProfileDTO.fbLinked);
-        mTwitterShareButton.setChecked(userProfileDTO.twLinked);
-        mLinkedInShareButton.setChecked(userProfileDTO.liLinked);
-        mWbShareButton.setChecked(userProfileDTO.wbLinked);
+        //mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.FB,updatedUserProfileDTO.fbLinked);
+        mFacebookShareButton.setChecked(mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.FB, userProfileDTO.fbLinked));
+        mTwitterShareButton.setChecked(mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.TW, userProfileDTO.twLinked));
+        mLinkedInShareButton.setChecked(mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.LN, userProfileDTO.liLinked));
+        mWechatShareButton.setChecked(mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.WX, false));
+        mWbShareButton.setChecked(mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.WB, userProfileDTO.wbLinked));
     }
 
     @Override protected void onAttachedToWindow()
@@ -92,8 +100,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
             R.id.btn_share_tw,
             R.id.btn_share_li,
             R.id.btn_share_wb
-    })
-    void onSocialNetworkActionButtonClicked(CompoundButton view)
+    }) void onSocialNetworkActionButtonClicked(CompoundButton view)
     {
         SocialNetworkEnum socialNetwork = null;
         boolean ableToShare = false;
@@ -103,18 +110,22 @@ public class DiscussionPostActionButtonsView extends LinearLayout
             case R.id.btn_share_fb:
                 socialNetwork = SocialNetworkEnum.FB;
                 ableToShare = userProfileDTO != null && userProfileDTO.fbLinked;
+                SocialSharePreferenceHelper.saveValue(mPrefSocialShare, SocialSharePreferenceHelper.FB, view.isChecked());
                 break;
             case R.id.btn_share_tw:
                 socialNetwork = SocialNetworkEnum.TW;
                 ableToShare = userProfileDTO != null && userProfileDTO.twLinked;
+                SocialSharePreferenceHelper.saveValue(mPrefSocialShare, SocialSharePreferenceHelper.TW, view.isChecked());
                 break;
             case R.id.btn_share_li:
                 socialNetwork = SocialNetworkEnum.LN;
                 ableToShare = userProfileDTO != null && userProfileDTO.liLinked;
+                SocialSharePreferenceHelper.saveValue(mPrefSocialShare, SocialSharePreferenceHelper.LN, view.isChecked());
                 break;
             case R.id.btn_share_wb:
                 socialNetwork = SocialNetworkEnum.WB;
                 ableToShare = userProfileDTO != null && userProfileDTO.wbLinked;
+                SocialSharePreferenceHelper.saveValue(mPrefSocialShare, SocialSharePreferenceHelper.WB, view.isChecked());
                 break;
         }
 
@@ -163,7 +174,6 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         publishableFormDTO.geo_lat = null;
         publishableFormDTO.geo_long = null;
     }
-
 
     //<editor-fold desc="To be used in future, we should encapsulate searching for people and stock within this view, instead of doing it in the parent fragment">
     public static interface OnMentionListener

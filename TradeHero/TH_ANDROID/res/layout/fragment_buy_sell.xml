@@ -68,12 +68,12 @@
     <ImageView
         android:id="@+id/stock_bg_logo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/buy_sell_header_bg_height"
+        android:layout_height="0dp"
         android:layout_alignParentTop="true"
-        android:scaleType="fitCenter"
-        android:alpha="0.08"
+        android:scaleType="centerCrop"
+        android:alpha="0.2"
         tools:background="@color/gray_normal"
-        />
+        android:layout_alignBottom="@+id/buy_sell_action_buttons_bottom_margin"/>
 
     <ImageView
         android:id="@+id/market_closed_icon"
@@ -100,8 +100,8 @@
 
       <ImageView
           android:id="@+id/stock_logo"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_width="@dimen/big_avatar_w_h"
+          android:layout_height="@dimen/big_avatar_w_h"
           android:adjustViewBounds="true"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
@@ -154,11 +154,10 @@
     <LinearLayout
         android:id="@+id/buy_sell_action_buttons"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height_30"
+        android:layout_height="wrap_content"
         android:layout_below="@id/logo_layout"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/common_margin_15"
-        android:layout_marginBottom="@dimen/common_margin_10"
         android:paddingLeft="@dimen/common_margin_10"
         android:paddingRight="@dimen/common_margin_10"
         >
@@ -177,14 +176,22 @@
 
     </LinearLayout>
 
+
+    <Space
+        android:id="@+id/buy_sell_action_buttons_bottom_margin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_margin_10"
+        android:layout_below="@id/buy_sell_action_buttons"
+        />
+
     <LinearLayout
         android:id="@+id/belt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buy_sell_action_buttons"
+        android:layout_below="@id/stock_bg_logo"
         android:padding="5dp"
-        android:background="@color/white"
-        >
+        android:gravity="center_vertical"
+        android:background="@color/white">
 
       <TextView
           android:id="@+id/info"

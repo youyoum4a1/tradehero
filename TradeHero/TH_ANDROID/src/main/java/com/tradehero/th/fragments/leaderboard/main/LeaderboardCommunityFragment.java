@@ -12,10 +12,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -37,9 +37,8 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
+import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
-import com.tradehero.th.fragments.trending.TrendingSearchType;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
@@ -145,9 +144,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.social_search_menu, menu);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.dashboard_community);
+        setActionBarTitle(R.string.dashboard_community);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -434,9 +431,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     private void pushSearchFragment()
     {
-        Bundle args = new Bundle();
-        args.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, TrendingSearchType.PEOPLE.name());
-        getDashboardNavigator().pushFragment(SearchStockPeopleFragment.class, args);
+        getDashboardNavigator().pushFragment(PeopleSearchFragment.class, null);
     }
 
     private void pushInvitationFragment()

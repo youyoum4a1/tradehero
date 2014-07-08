@@ -95,8 +95,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.stock_alerts));
+        setActionBarTitle(getString(R.string.stock_alerts));
         super.onCreateOptionsMenu(menu, inflater);
     }
 

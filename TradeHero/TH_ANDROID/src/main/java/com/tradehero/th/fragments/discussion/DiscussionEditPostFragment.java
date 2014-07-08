@@ -18,6 +18,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
 import com.tradehero.common.utils.THToast;
@@ -36,8 +37,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
-import com.tradehero.th.fragments.trending.TrendingSearchType;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
+import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
@@ -48,6 +49,7 @@ import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -79,7 +81,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private MenuItem postMenuButton;
     private TextWatcher discussionEditTextWatcher;
 
-    private SearchStockPeopleFragment searchStockPeopleFragment;
+    private HasSelectedItem selectionFragment;
     private DiscussionKey discussionKey;
     private boolean isPosted;
 
@@ -104,14 +106,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
         inflater.inflate(R.menu.menu_discussion_edit_post, menu);
         postMenuButton = menu.findItem(R.id.discussion_edit_post);
 
-        getSherlockActivity().getSupportActionBar().setTitle(R.string.discussion);
+        setActionBarTitle(R.string.discussion);
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        //actionBar.setTitle(null);
-        actionBar.setSubtitle(null);
+        setActionBarSubtitle(null);
         Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
@@ -149,35 +149,27 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     @Override public void onDetach()
     {
-        searchStockPeopleFragment = null;
+        selectionFragment = null;
+        setActionBarSubtitle(null);
         super.onDetach();
     }
 
     //<editor-fold desc="View's events handling">
     // TODO following views' events should be handled inside DiscussionPostActionButtonsView
-    @OnClick({
-            R.id.btn_mention,
-            R.id.btn_security_tag
-    }) void onMentionButtonClicked(View clickedButton)
+    @OnClick(R.id.btn_security_tag)
+    void onSecurityButtonClicked(View clickedButton)
     {
-        TrendingSearchType searchType = null;
-        switch (clickedButton.getId())
-        {
-            case R.id.btn_mention:
-                searchType = TrendingSearchType.PEOPLE;
-                break;
-            case R.id.btn_security_tag:
-                searchType = TrendingSearchType.STOCKS;
-                break;
-        }
-
         Bundle bundle = new Bundle();
         bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
-        if (searchType != null)
-        {
-            bundle.putString(SearchStockPeopleFragment.BUNDLE_KEY_RESTRICT_SEARCH_TYPE, searchType.name());
-            searchStockPeopleFragment = getDashboardNavigator().pushFragment(SearchStockPeopleFragment.class, bundle);
-        }
+        selectionFragment = getDashboardNavigator().pushFragment(SecuritySearchFragment.class, bundle);
+    }
+
+    @OnClick(R.id.btn_mention)
+    void onMentionButtonClicked(View clickedButton)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putString(Navigator.BUNDLE_KEY_RETURN_FRAGMENT, this.getClass().getName());
+        selectionFragment = getDashboardNavigator().pushFragment(PeopleSearchFragment.class, bundle);
     }
     //</editor-fold>
 
@@ -268,14 +260,14 @@ public class DiscussionEditPostFragment extends DashboardFragment
             }
         }
 
-        if (searchStockPeopleFragment != null)
+        if (selectionFragment != null)
         {
-            Object extraInput = searchStockPeopleFragment.getSelectedItem();
+            @Nullable Object extraInput = selectionFragment.getSelectedItem();
             handleExtraInput(extraInput);
         }
     }
 
-    private void handleExtraInput(Object extraInput)
+    private void handleExtraInput(@Nullable Object extraInput)
     {
         String extraText = "";
         Editable editable = discussionPostContent.getText();
@@ -347,8 +339,11 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         if (andDisplay)
         {
-            getSherlockActivity().getSupportActionBar().setSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
-            getSherlockActivity().invalidateOptionsMenu();
+            setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
+            if(getSherlockActivity() != null)
+            {
+                getSherlockActivity().invalidateOptionsMenu();
+            }
         }
     }
 

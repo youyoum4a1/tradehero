@@ -59,13 +59,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         inflater.inflate(getMenuResource(), menu);
         super.onCreateOptionsMenu(menu, inflater);
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 
         Bundle args = getArguments();
         if (args != null)
         {
             String title = args.getString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE);
-            actionBar.setTitle(title == null ? "" : title);
+            setActionBarTitle(title == null ? "" : title);
         }
     }
     //</editor-fold>
