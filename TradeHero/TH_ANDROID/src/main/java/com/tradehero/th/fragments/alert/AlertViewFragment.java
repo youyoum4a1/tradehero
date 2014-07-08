@@ -11,7 +11,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -42,13 +41,14 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
 public class AlertViewFragment extends BasePurchaseManagerFragment
 {
-    public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertViewFragment.class.getName() + ".alertId";
+    private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = AlertViewFragment.class.getName() + ".alertId";
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
@@ -81,6 +81,16 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
     private THCallback<AlertCompactDTO> alertUpdateCallback;
     private MiddleCallback<AlertCompactDTO> alertUpdateMiddleCallback;
+
+    public static void putAlertId(@NotNull Bundle args, @NotNull AlertId alertId)
+    {
+        args.putBundle(BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+    }
+
+    @NotNull public static AlertId getAlertId(@NotNull Bundle args)
+    {
+        return new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -137,13 +147,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            alertId = new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
-            linkWith(alertId, true);
-        }
+        linkWith(getAlertId(getArguments()), true);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

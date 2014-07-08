@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
@@ -78,14 +78,14 @@ public class BuySellFragmentTest
         googleAlert.security.symbol = "GOOG";
         AlertId alertId = googleAlert.getAlertId(currentUserId.toUserBaseKey());
         alertCache.put(alertId, googleAlert);
-        AlertIdList alertIds = new AlertIdList();
-        alertIds.add(alertId);
-        alertCompactListCache.put(currentUserId.toUserBaseKey(), alertIds);
+        AlertCompactDTOList alertCompactDTOs = new AlertCompactDTOList();
+        alertCompactDTOs.add(googleAlert);
+        alertCompactListCache.put(currentUserId.toUserBaseKey(), alertCompactDTOs);
     }
 
     @Test public void testWhenHasNoAlertShowsAddAlert()
     {
-        alertCompactListCache.put(currentUserId.toUserBaseKey(), new AlertIdList());
+        alertCompactListCache.put(currentUserId.toUserBaseKey(), new AlertCompactDTOList());
 
         buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, argsGoogle());
         Robolectric.runBackgroundTasks();

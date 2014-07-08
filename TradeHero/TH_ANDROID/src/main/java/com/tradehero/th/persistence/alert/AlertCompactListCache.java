@@ -1,16 +1,16 @@
 package com.tradehero.th.persistence.alert;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.AlertServiceWrapper;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class AlertCompactListCache extends StraightDTOCacheNew<UserBaseKey, AlertIdList>
+@Singleton public class AlertCompactListCache extends StraightCutDTOCacheNew<UserBaseKey, AlertCompactDTOList, AlertIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -28,21 +28,28 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override @NotNull public AlertIdList fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public AlertCompactDTOList fetch(@NotNull UserBaseKey key) throws Throwable
     {
-        return putInternal(key, alertServiceWrapper.getAlerts(key));
+        return alertServiceWrapper.getAlerts(key);
     }
 
-    @NotNull protected AlertIdList putInternal(@NotNull UserBaseKey key, @NotNull List<AlertCompactDTO> fleshedValues)
+    @NotNull @Override protected AlertIdList cutValue(@NotNull UserBaseKey key, @NotNull AlertCompactDTOList value)
     {
-        AlertIdList alertIds = new AlertIdList(key, fleshedValues);
-        alertCompactCache.put(key, fleshedValues);
-        put(key, alertIds);
-        return alertIds;
+        alertCompactCache.put(key, value);
+        return new AlertIdList(key, value);
     }
 
-    @Override public void invalidateAll()
+    @Nullable @Override protected AlertCompactDTOList inflateValue(@NotNull UserBaseKey key, @Nullable AlertIdList cutValue)
     {
-        super.invalidateAll();
+        if (cutValue == null)
+        {
+            return null;
+        }
+        @NotNull AlertCompactDTOList value = alertCompactCache.get(cutValue);
+        if (value.hasNullItem())
+        {
+            return null;
+        }
+        return null;
     }
 }

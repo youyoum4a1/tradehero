@@ -1,9 +1,9 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
-import java.util.List;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -17,7 +17,7 @@ interface AlertServiceAsync
     @GET("/users/{userId}/alerts")
     void getAlerts(
             @Path("userId") int userId,
-            Callback<List<AlertCompactDTO>> callback);
+            Callback<AlertCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Alert">
