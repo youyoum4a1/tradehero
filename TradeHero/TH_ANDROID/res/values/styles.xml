@@ -68,6 +68,13 @@
     <item name="android:textSize">10sp</item>
   </style>
 
+  <style name="TH.Btn_Time_Span" parent="TH.Btn_Price_Bar_Base">
+    <item name="android:background">@drawable/basic_transparent_selector</item>
+    <item name="android:textColor">@color/price_bar_text_default</item>
+    <item name="android:textSize">10sp</item>
+    <item name="android:minHeight">@dimen/timespan_button_min_height</item>
+  </style>
+
   <style name="TH.Btn_Price_Bar_Middle" parent="TH.Btn_Price_Bar_Base">
     <!--item name="android:background">@drawable/price_bar_bg_color</item>
     <item name="android:textColor">@drawable/price_bar_text_color</item-->
@@ -233,6 +240,17 @@
     <item name="android:gravity">center</item>
     <item name="android:minHeight">@dimen/button_height_30</item>
     <item name="android:background">@drawable/basic_white_selector</item>
+  </style>
+
+  <style name="TH.Btn_Invite_Action">
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textSize">16sp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:paddingTop">5dp</item>
+    <item name="android:paddingBottom">5dp</item>
+    <item name="android:paddingLeft">10dp</item>
+    <item name="android:paddingRight">10dp</item>
+    <item name="android:minWidth">100dp</item>
   </style>
 
   <style name="TH.Time_Text">

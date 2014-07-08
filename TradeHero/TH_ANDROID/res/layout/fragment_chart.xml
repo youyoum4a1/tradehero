@@ -22,7 +22,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
-          android:minHeight="@dimen/discussion_list_padding"
+          android:minHeight="@dimen/chart_loading_text_height"
           android:gravity="center"
           android:text="@string/chart_loading_image"
           />
@@ -47,7 +47,7 @@
     <com.tradehero.th.widget.news.TimeSpanButtonSet
         android:id="@+id/chart_time_span_button_set"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="@dimen/timespan_button_min_height"
         android:orientation="horizontal"
         android:layout_marginLeft="@dimen/timespan_horizontal_margin"
         android:layout_marginRight="@dimen/timespan_horizontal_margin"

@@ -4,6 +4,6 @@
   <dimen name="chart_vertical_padding">10dp</dimen>
   <dimen name="timespan_vertical_margin">4dp</dimen>
   <dimen name="timespan_horizontal_margin">10dp</dimen>
-  <dimen name="timespan_button_min_height">36dp</dimen>
-  <dimen name="chart_loading_text_height">60dp</dimen>
+  <dimen name="timespan_button_min_height">48dp</dimen>
+  <dimen name="chart_loading_text_height">200dp</dimen>
 </resources>
