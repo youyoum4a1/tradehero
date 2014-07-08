@@ -18,7 +18,6 @@ import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.fragments.trending.ProviderTileView;
-import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
@@ -30,7 +29,6 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 UserProfileFetchAssistant.class,
-                SecurityAlertAssistant.class,
                 SettingsPayPalFragment.class,
                 SettingsAlipayFragment.class,
 

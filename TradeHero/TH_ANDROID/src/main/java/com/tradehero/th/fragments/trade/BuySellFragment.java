@@ -91,7 +91,6 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
@@ -104,6 +103,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -178,7 +178,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
-    @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject Picasso picasso;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
@@ -190,7 +189,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private PopupMenu mPortfolioSelectorMenu;
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
-    protected SecurityAlertAssistant securityAlertAssistant;
+    @Inject protected SecurityAlertAssistant securityAlertAssistant;
     protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchListener;
 
     private int mQuantity = 0;
@@ -210,7 +209,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        securityAlertAssistant = new SecurityAlertAssistant();
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
     }
@@ -936,6 +934,9 @@ public class BuySellFragment extends AbstractBuySellFragment
             else
             {
                 mBtnAddWatchlist.setEnabled(true);
+                mBtnAddWatchlist.setText(watchedList.contains(securityId) ?
+                        R.string.watchlist_edit_title :
+                        R.string.watchlist_add_title);
             }
         }
     }
@@ -2097,12 +2098,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
         {
             linkWithWatchlist(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to fetch list of watch list items", error);
             THToast.show(R.string.error_fetch_portfolio_list_info);

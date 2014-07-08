@@ -8,10 +8,10 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
-import com.tradehero.th.utils.DaggerUtils;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 /**
@@ -20,22 +20,25 @@ import timber.log.Timber;
  */
 public class SecurityAlertAssistant
 {
-    @Inject AlertCompactListCache alertCompactListCache;
-    @Inject AlertCompactCache alertCompactCache;
+    @NotNull final AlertCompactListCache alertCompactListCache;
+    @NotNull final AlertCompactCache alertCompactCache;
 
     private boolean populated;
     private boolean failed;
     private UserBaseKey userBaseKey;
-    private final Map<SecurityId, AlertId> securitiesWithAlerts;
+    @NotNull private final Map<SecurityId, AlertId> securitiesWithAlerts;
     private OnPopulatedListener onPopulatedListener;
     private AsyncTask<Void, Void, Void> populateTask;
 
     //<editor-fold desc="Constructors">
-    public SecurityAlertAssistant()
+    @Inject public SecurityAlertAssistant(
+            @NotNull AlertCompactListCache alertCompactListCache,
+            @NotNull AlertCompactCache alertCompactCache)
     {
         super();
+        this.alertCompactListCache = alertCompactListCache;
+        this.alertCompactCache = alertCompactCache;
         securitiesWithAlerts = new HashMap<>();
-        DaggerUtils.inject(this);
     }
     //</editor-fold>
 
@@ -68,10 +71,6 @@ public class SecurityAlertAssistant
         this.userBaseKey = userBaseKey;
     }
 
-    /**
-     * The listener needs to be strongly referenced elsewhere
-     * @param onPopulatedListener
-     */
     public void setOnPopulatedListener(OnPopulatedListener onPopulatedListener)
     {
         this.onPopulatedListener = onPopulatedListener;
