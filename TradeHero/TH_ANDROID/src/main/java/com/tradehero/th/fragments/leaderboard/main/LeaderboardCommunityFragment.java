@@ -24,7 +24,7 @@ import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
@@ -73,7 +73,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
     private ProviderDTOList providerDTOs;
-    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchListener;
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListFetchListener;
     private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -208,19 +208,19 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
     }
 
-    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createDefKeyListListener()
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> createDefKeyListListener()
     {
         return new LeaderboardCommunityLeaderboardDefKeyListListener();
     }
 
-    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+    protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList>
     {
-        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+        @Override public void onDTOReceived(@NotNull LeaderboardDefListKey key, @NotNull LeaderboardDefDTOList value)
         {
             recreateAdapter();
         }
 
-        @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull LeaderboardDefListKey key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
             Timber.e(error, "Error fetching the leaderboard def key list %s", key);
