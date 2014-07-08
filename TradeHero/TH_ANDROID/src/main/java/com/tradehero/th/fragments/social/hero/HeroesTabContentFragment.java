@@ -164,8 +164,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getTitle());
+        setActionBarTitle(getTitle());
         super.onCreateOptionsMenu(menu, inflater);
     }
 

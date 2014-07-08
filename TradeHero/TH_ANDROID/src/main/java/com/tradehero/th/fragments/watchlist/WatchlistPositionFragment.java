@@ -210,8 +210,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.position_watchlist_menu, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.watchlist_title));
+        setActionBarTitle(getString(R.string.watchlist_title));
         super.onCreateOptionsMenu(menu, inflater);
     }
 

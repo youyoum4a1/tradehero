@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th"
     android:versionName="2.2.5"
-    android:versionCode="114"
+    android:versionCode="115"
     android:installLocation="auto">
 
   <uses-sdk
@@ -109,7 +109,8 @@
         android:name=".activities.DashboardActivity"
         android:screenOrientation="portrait"
         android:theme="@style/TradeHero.Dashboard"
-        android:windowSoftInputMode="adjustResize">
+        android:windowSoftInputMode="adjustResize"
+        android:configChanges="orientation|screenSize">
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
@@ -127,6 +128,7 @@
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_user" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_providers" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_home" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_web" android:pathPattern=".*"/>
       </intent-filter>
     </activity>
 

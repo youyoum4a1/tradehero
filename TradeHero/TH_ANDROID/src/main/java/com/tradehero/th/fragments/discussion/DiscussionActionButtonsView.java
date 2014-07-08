@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -12,9 +11,6 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.widget.VotePair;
 
 public class DiscussionActionButtonsView extends LinearLayout
@@ -55,14 +51,12 @@ public class DiscussionActionButtonsView extends LinearLayout
         ButterKnife.inject(this);
     }
 
-
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
         display();
     }
-
 
     @Override protected void onDetachedFromWindow()
     {
@@ -124,12 +118,13 @@ public class DiscussionActionButtonsView extends LinearLayout
             commentCount.setText(String.valueOf(discussionDTO.commentCount));
             commentCount.setChecked(discussionDTO.commentCount > 0);
         }
+    }
 
-        if(isCommentShow()){
-            setCommentCountVisble(View.VISIBLE);
-        }
-        else{
-            setCommentCountVisble(View.GONE);
+    public void setCommentCountVisable(int visable)
+    {
+        if (commentCount != null)
+        {
+            commentCount.setVisibility(visable);
         }
     }
 
@@ -189,33 +184,9 @@ public class DiscussionActionButtonsView extends LinearLayout
     public static interface OnButtonClickedListener
     {
         void onCommentButtonClicked();
+
         void onShareButtonClicked();
+
         void onMoreButtonClicked();
     }
-
-    protected DashboardNavigator getNavigator()
-    {
-        return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-    }
-
-    protected boolean isCommentShow(){
-        Fragment fragment = getNavigator().getCurrentFragment();
-        if (fragment instanceof BuySellFragment)
-        {
-            if (((BuySellFragment) fragment).isNewsSubFragment())
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    public void setCommentCountVisble(int visble){
-        if(commentCount!=null)
-        {
-            commentCount.setVisibility(visble);
-        }
-    }
-
 }

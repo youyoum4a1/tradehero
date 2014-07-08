@@ -1,8 +1,8 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.discussion.CommentItemViewLinear;
@@ -16,7 +16,6 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.GraphicUtil;
 import dagger.Module;
 import dagger.Provides;
-import java.io.File;
 import javax.inject.Singleton;
 
 @Module(
@@ -39,12 +38,10 @@ import javax.inject.Singleton;
 )
 public class GraphicModule
 {
-    @Provides @Singleton Picasso providePicasso(Context context, LruMemFileCache lruFileCache)
+    @Provides @Singleton Picasso providePicasso(Context context, @ForPicasso LruCache lruFileCache)
     {
-        File cacheDir = lruFileCache.getCacheDirectory();
         Picasso mPicasso = new Picasso.Builder(context)
                 .memoryCache(lruFileCache)
-				//.downloader(new OkHttpDownloader(cacheDir))
                 .build();
 		mPicasso.setIndicatorsEnabled(Constants.PICASSO_DEBUG);
 		mPicasso.setLoggingEnabled(Constants.PICASSO_DEBUG);

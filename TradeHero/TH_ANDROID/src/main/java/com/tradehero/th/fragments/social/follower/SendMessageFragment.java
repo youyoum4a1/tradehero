@@ -104,9 +104,7 @@ public class SendMessageFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.broadcast_message_title));
+        setActionBarTitle(getString(R.string.broadcast_message_title));
         inflater.inflate(R.menu.send_message_menu, menu);
         Timber.d("onCreateOptionsMenu");
     }

@@ -240,25 +240,19 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void displayActionBarTitle()
     {
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
+        if (providerDTO != null
+                && providerDTO.specificResources != null
+                && providerDTO.specificResources.mainCompetitionFragmentTitleResId > 0)
         {
-            if (providerDTO != null
-                    && providerDTO.specificResources != null
-                    && providerDTO.specificResources.mainCompetitionFragmentTitleResId > 0)
-            {
-                actionBar.setTitle(
-                        providerDTO.specificResources.mainCompetitionFragmentTitleResId);
-            }
-            else if (this.providerDTO == null || this.providerDTO.name == null)
-            {
-                actionBar.setTitle("");
-            }
-            else
-            {
-                actionBar.setTitle(this.providerDTO.name);
-            }
+            setActionBarTitle(providerDTO.specificResources.mainCompetitionFragmentTitleResId);
+        }
+        else if (this.providerDTO == null || this.providerDTO.name == null)
+        {
+            setActionBarTitle("");
+        }
+        else
+        {
+            setActionBarTitle(this.providerDTO.name);
         }
     }
 

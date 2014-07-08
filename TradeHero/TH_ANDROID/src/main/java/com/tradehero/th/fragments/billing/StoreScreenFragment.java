@@ -85,8 +85,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
+        setActionBarTitle(R.string.store_option_menu_title);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

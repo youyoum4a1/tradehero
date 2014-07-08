@@ -67,13 +67,13 @@ public class DiscussionView extends FrameLayout
     public DiscussionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init(attrs);
+        init(context, attrs);
     }
 
     public DiscussionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init(attrs);
+        init(context, attrs);
     }
     //</editor-fold>
 
@@ -96,11 +96,11 @@ public class DiscussionView extends FrameLayout
         return new SingleViewDiscussionSetAdapter(getContext(), listItemLayout);
     }
 
-    private void init(AttributeSet attrs)
+    private void init(Context context, AttributeSet attrs)
     {
         if (attrs != null)
         {
-            TypedArray styled = getContext().obtainStyledAttributes(attrs, R.styleable.DiscussionView);
+            TypedArray styled = context.obtainStyledAttributes(attrs, R.styleable.DiscussionView);
             listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayout, 0);
             setTopicLayout(styled.getResourceId(R.styleable.DiscussionView_topicLayout, 0));
             styled.recycle();

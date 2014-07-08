@@ -15,10 +15,10 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.route.InjectRoute;
-import com.tradehero.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.InjectRoute;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -617,20 +617,15 @@ public class PositionListFragment
 
     public void displayActionBarTitle()
     {
-        SherlockFragmentActivity sherlockFragmentActivity = getSherlockActivity();
-        if (sherlockFragmentActivity != null)
+        if (getPositionsDTO != null && getPositionsDTO.positions != null)
         {
-            ActionBar actionBar = sherlockFragmentActivity.getSupportActionBar();
-            if (getPositionsDTO != null && getPositionsDTO.positions != null)
-            {
-                String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                        getPositionsDTO.positions.size());
-                actionBar.setTitle(title);
-            }
-            else
-            {
-                actionBar.setTitle(R.string.position_list_action_bar_header_unknown);
-            }
+            String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
+                    getPositionsDTO.positions.size());
+            setActionBarTitle(title);
+        }
+        else
+        {
+            setActionBarTitle(R.string.position_list_action_bar_header_unknown);
         }
     }
 
@@ -744,7 +739,7 @@ public class PositionListFragment
         {
             Bundle args = new Bundle();
             AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-            args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            AlertCreateFragment.putSecurityId(args, securityId);
             getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else

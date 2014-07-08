@@ -60,13 +60,14 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity,
         ResideMenu.OnMenuListener
 {
-    private final DashboardTabType INITIAL_TAB = DashboardTabType.TRENDING;
+    private final DashboardTabType INITIAL_TAB = DashboardTabType.HOME;
 
     private DashboardNavigator navigator;
 
@@ -99,7 +100,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
 
-    private DTOCacheNew.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
+    private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     private ProgressDialog progressDialog;
@@ -154,10 +155,13 @@ public class DashboardActivity extends SherlockFragmentActivity
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
         suggestUpgradeIfNecessary();
-        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list
+        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list, and this line is no use for it will update after login in prefetchesUponLogin
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        navigator.goToTab(INITIAL_TAB);
+        if (savedInstanceState == null && navigator.getCurrentFragment() == null)
+        {
+            navigator.goToTab(INITIAL_TAB);
+        }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
@@ -435,21 +439,25 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
-    protected DTOCacheNew.Listener<NotificationKey, NotificationDTO> createNotificationFetchListener()
+    protected DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> createNotificationFetchListener()
     {
         return new NotificationFetchListener();
     }
 
     protected class NotificationFetchListener
-            implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
+            implements DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO>
     {
+        @Override public void onPreCachedDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
+        {
+            onDTOReceived(key, value);
+        }
+
         @Override
         public void onDTOReceived(NotificationKey key, NotificationDTO value)
         {
             onFinish();
 
-            NotificationClickHandler notificationClickHandler =
-                    new NotificationClickHandler(DashboardActivity.this, value);
+            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, value);
             notificationClickHandler.handleNotificationItemClicked();
         }
 

@@ -161,7 +161,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                 {
                     Bundle bundle = new Bundle();
                     AlertEditFragment.putApplicablePortfolioId(bundle, getApplicablePortfolioId());
-                    bundle.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+                    AlertEditFragment.putAlertId(bundle, alertId);
                     getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
                 }
                 return true;
@@ -318,8 +318,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private void displayStockSymbol()
     {
         stockSymbol.setText(securityCompactDTO.getExchangeSymbol());
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null) actionBar.setTitle(securityCompactDTO.getExchangeSymbol());
+        setActionBarTitle(securityCompactDTO.getExchangeSymbol());
     }
 
     private void displayStockLogo()

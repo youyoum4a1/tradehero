@@ -9,7 +9,7 @@ import com.facebook.AppEventsLogger;
 import com.localytics.android.LocalyticsSession;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Event;
-import com.tapstream.sdk.Tapstream;
+import com.tapstream.sdk.Api;
 import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
@@ -48,7 +48,7 @@ public class SplashActivity extends SherlockActivity
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<LocalyticsSession> localyticsSession;
-    @Inject Lazy<Tapstream> tapStream;
+    @Inject Lazy<Api> tapStream;
     @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DTOCacheUtil dtoCacheUtil;

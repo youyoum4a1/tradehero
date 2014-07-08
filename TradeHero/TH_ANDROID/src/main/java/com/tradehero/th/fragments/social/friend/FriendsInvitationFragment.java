@@ -94,8 +94,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.action_invite));
+        setActionBarTitle(getString(R.string.action_invite));
     }
 
     @Override

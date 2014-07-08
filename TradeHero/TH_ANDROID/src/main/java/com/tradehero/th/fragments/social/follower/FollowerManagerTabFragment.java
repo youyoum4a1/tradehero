@@ -113,8 +113,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getTitle());
+        setActionBarTitle(getTitle());
 
         super.onCreateOptionsMenu(menu, inflater);
     }

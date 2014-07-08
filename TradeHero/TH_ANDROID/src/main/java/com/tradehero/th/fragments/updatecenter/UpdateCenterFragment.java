@@ -137,8 +137,7 @@ public class UpdateCenterFragment extends DashboardFragment
             ((SherlockFragment) getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
         }
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.message_center_title);
+        setActionBarTitle(R.string.message_center_title);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);

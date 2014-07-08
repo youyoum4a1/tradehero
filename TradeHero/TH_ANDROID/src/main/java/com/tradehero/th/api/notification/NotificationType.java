@@ -41,4 +41,9 @@ public enum NotificationType
 
         return None;
     }
+
+    public int getTypeId()
+    {
+        return typeId;
+    }
 }
