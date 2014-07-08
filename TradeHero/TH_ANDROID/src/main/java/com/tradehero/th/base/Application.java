@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class Application extends PApplication
@@ -48,20 +49,7 @@ public class Application extends PApplication
     {
         super.init();
 
-        if (Constants.RELEASE)
-        {
-            Timber.plant(new CrashReportingTree());
-        }
-        else
-        {
-            Timber.plant(new EasyDebugTree()
-            {
-                @Override public String createTag()
-                {
-                    return String.format("TradeHero-%s", super.createTag());
-                }
-            });
-        }
+        Timber.plant(createTimberTree());
 
         // Supposedly get the count of cores
         KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
@@ -100,6 +88,21 @@ public class Application extends PApplication
         thRouter.registerAlias("store/reset-portfolio", "store/" + StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
 
         THLog.showDeveloperKeyHash();
+    }
+
+    @NotNull protected Timber.Tree createTimberTree()
+    {
+        if (Constants.RELEASE)
+        {
+            return new CrashReportingTree();
+        }
+        return new EasyDebugTree()
+        {
+            @Override public String createTag()
+            {
+                return String.format("TradeHero-%s", super.createTag());
+            }
+        };
     }
 
     protected Object[] getModules()
