@@ -59,7 +59,7 @@ public class SplashActivityTest
     {
         firstLaunchPreference.set(true);
         SplashActivity activity = Robolectric.setupActivity(SplashActivity.class);
-        assertThat(activity.isFinishing()).isTrue();
+        assertThat(activity.isFinishing()).isFalse();
         assertThat(firstLaunchPreference.get()).isTrue();
     }
 }
