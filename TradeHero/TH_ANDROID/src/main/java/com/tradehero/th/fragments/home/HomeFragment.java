@@ -7,7 +7,6 @@ import android.view.View;
 import android.webkit.WebView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -24,6 +23,7 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
@@ -33,6 +33,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
@@ -53,16 +54,22 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.VersionUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-@Routable("refer-friend/:SocialID/:UserID")
+@Routable({
+        "refer-friend/:SocialID/:UserID",
+        "user/:UserID/follow/free"
+})
 public class HomeFragment extends BaseWebViewFragment
 {
     @InjectView(android.R.id.progress) View progressBar;
@@ -81,7 +88,10 @@ public class HomeFragment extends BaseWebViewFragment
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject SocialServiceWrapper socialServiceWrapper;
+    @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
+    @Inject UserProfileCache userProfileCache;
 
+    protected SocialFriendHandler socialFriendHandler;
     private ProgressDialog progressDialog;
     private UserFriendsDTO userFriendsDTO;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
@@ -257,6 +267,23 @@ public class HomeFragment extends BaseWebViewFragment
         invite();
     }
 
+    public void createFollowInHomePage(String userid)
+    {
+        if (userid == null) return;
+        Timber.d("Follow friend: " + userid);
+        UserFriendsDTO user = new UserFriendsContactEntryDTO();
+        user.thUserId = Integer.valueOf(userid);
+        Timber.d("Follow thUserId: " + user.thUserId);
+        follow(user);
+    }
+
+    public void follow(UserFriendsDTO userFriendsDTO)
+    {
+        Timber.d("onFollowButtonClick %s", userFriendsDTO);
+        List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
+        handleFollowUsers(usersToFollow);
+    }
+
     private void invite()
     {
         Timber.d("windy: invite()");
@@ -425,5 +452,63 @@ public class HomeFragment extends BaseWebViewFragment
         {
             getProgressDialog().dismiss();
         }
+    }
+
+    protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
+    {
+        createFriendHandler();
+        socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
+    }
+
+    protected void createFriendHandler()
+    {
+        if (socialFriendHandler == null)
+        {
+            socialFriendHandler = socialFriendHandlerProvider.get();
+        }
+    }
+
+    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
+    {
+        final List<UserFriendsDTO> usersToFollow;
+
+        private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
+        {
+            super(getActivity());
+            this.usersToFollow = usersToFollow;
+        }
+
+        @Override
+        public void success(@NotNull UserProfileDTO userProfileDTO, @NotNull Response response)
+        {
+            super.success(userProfileDTO, response);
+            if (response.getStatus() == 200 || response.getStatus() == 204)
+            {
+                // TODO
+                handleFollowSuccess();
+                userProfileCache.put(userProfileDTO.getBaseKey(), userProfileDTO);
+
+                return;
+            }
+            handleFollowError();
+        }
+
+        @Override
+        public void failure(RetrofitError retrofitError)
+        {
+            super.failure(retrofitError);
+            handleFollowError();
+        }
+    }
+
+    private void handleFollowSuccess()
+    {
+        THToast.show("Follow success");
+    }
+
+    protected void handleFollowError()
+    {
+        // TODO
+        THToast.show(R.string.follow_friend_request_error);
     }
 }
