@@ -1,19 +1,16 @@
 package com.tradehero.th.billing.samsung;
 
+import com.tradehero.RobolectricMavenTestRunner;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by xavier on 2014/4/2.
- */
-@RunWith(RobolectricTestRunner.class)
-@Config(manifest = Config.NONE)
+@RunWith(RobolectricMavenTestRunner.class)
 public class THSamsungConstantsTest
 {
+    @Ignore("Eyeball only")
     @Test public void eyeBallTestTodayAsExpected()
     {
         assertEquals("20140402", THSamsungConstants.getTodayStringForInbox());
