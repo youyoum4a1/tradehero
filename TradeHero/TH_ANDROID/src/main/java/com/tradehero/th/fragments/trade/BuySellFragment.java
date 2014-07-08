@@ -344,11 +344,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         securityAlertAssistant.populate();
     }
 
-    public boolean isNewsSubFragment()
-    {
-        return mBottomViewPager.getCurrentItem() == BuySellBottomStockPagerAdapter.FRAGMENT_ID_NEWS;
-    }
-
     @Override public void onPause()
     {
         LocalBroadcastManager.getInstance(getActivity())
