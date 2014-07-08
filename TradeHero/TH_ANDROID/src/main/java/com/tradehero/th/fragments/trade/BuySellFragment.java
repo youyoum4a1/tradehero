@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -95,6 +96,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.SocialSharePreferenceHelper;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
@@ -206,11 +208,15 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
 
+    private SharedPreferences mPrefSocialShare;
+
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
+        mPrefSocialShare = getActivity().getSharedPreferences(SocialSharePreferenceHelper.PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
     @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
@@ -1348,11 +1354,11 @@ public class BuySellFragment extends AbstractBuySellFragment
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null)
         {
-            publishToFb = updatedUserProfileDTO.fbLinked;
-            publishToLi = updatedUserProfileDTO.liLinked;
-            publishToTw = updatedUserProfileDTO.twLinked;
-            publishToWe = false;//set weixin is false default
-            publishToWb = updatedUserProfileDTO.wbLinked;
+            publishToFb = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.FB,updatedUserProfileDTO.fbLinked);
+            publishToLi = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.LN,updatedUserProfileDTO.liLinked);
+            publishToTw = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.TW,updatedUserProfileDTO.twLinked);
+            publishToWe = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.WX,false);;//set weixin is false default
+            publishToWb = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.WB,updatedUserProfileDTO.wbLinked);
         }
     }
 
@@ -1521,6 +1527,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     if (isPublishEnabled(SocialNetworkEnum.FB))
                     {
                         publishToFb = !publishToFb;
+                        SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.FB,publishToFb);
                     }
                     else if (!publishToFb)
                     {
@@ -1542,6 +1549,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     if (isPublishEnabled(SocialNetworkEnum.TW))
                     {
                         publishToTw = !publishToTw;
+                        SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.TW,publishToTw);
                     }
                     else if (!publishToTw)
                     {
@@ -1561,6 +1569,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 if (isPublishEnabled(SocialNetworkEnum.LN))
                 {
                     publishToLi = !publishToLi;
+                    SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.LN,publishToLi);
                 }
                 else if (!publishToLi)
                 {
@@ -1577,6 +1586,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             @Override public void onClick(View view)
             {
                 publishToWe = !publishToWe;
+                SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.WX,publishToWe);
             }
         });
         mBtnShareWb = null;
@@ -1589,6 +1599,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 if (isPublishEnabled(SocialNetworkEnum.WB))
                 {
                     publishToWb = !publishToWb;
+                    SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.WB,publishToWb);
                 }
                 else if (!publishToWb)
                 {
