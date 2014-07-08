@@ -905,15 +905,17 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mBtnAddTrigger != null)
         {
-            if (securityAlertAssistant.isPopulated()
-                    && securityAlertAssistant.getAlertId(securityId) != null)
+            if (securityAlertAssistant.isPopulated())
             {
                 mBtnAddTrigger.setEnabled(true);
-            }
-            else if (securityAlertAssistant.isPopulated()
-                    && securityAlertAssistant.getAlertId(securityId) == null)
-            {
-                mBtnAddTrigger.setEnabled(true);
+                if (securityAlertAssistant.getAlertId(securityId) != null)
+                {
+                    mBtnAddTrigger.setText(R.string.stock_alert_edit_alert);
+                }
+                else
+                {
+                    mBtnAddTrigger.setText(R.string.stock_alert_add_alert);
+                }
             }
             else // TODO check if failed
             {
@@ -1164,13 +1166,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
             if (alertId != null)
             {
-                args.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+                AlertEditFragment.putAlertId(args, alertId);
                 getDashboardNavigator().pushFragment(AlertEditFragment.class, args);
             }
             else
             {
-                args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                        securityId.getArgs());
+                AlertCreateFragment.putSecurityId(args, securityId);
                 getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
             }
         }

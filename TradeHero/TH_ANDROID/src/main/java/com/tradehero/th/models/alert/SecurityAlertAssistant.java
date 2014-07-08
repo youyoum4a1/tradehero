@@ -9,7 +9,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -28,7 +27,7 @@ public class SecurityAlertAssistant
     private boolean failed;
     private UserBaseKey userBaseKey;
     private final Map<SecurityId, AlertId> securitiesWithAlerts;
-    private WeakReference<OnPopulatedListener> onPopulatedListener = new WeakReference<>(null);
+    private OnPopulatedListener onPopulatedListener;
     private AsyncTask<Void, Void, Void> populateTask;
 
     //<editor-fold desc="Constructors">
@@ -69,25 +68,20 @@ public class SecurityAlertAssistant
         this.userBaseKey = userBaseKey;
     }
 
-    public OnPopulatedListener getOnPopulatedListener()
-    {
-        return onPopulatedListener.get();
-    }
-
     /**
      * The listener needs to be strongly referenced elsewhere
      * @param onPopulatedListener
      */
     public void setOnPopulatedListener(OnPopulatedListener onPopulatedListener)
     {
-        this.onPopulatedListener = new WeakReference<>(onPopulatedListener);
+        this.onPopulatedListener = onPopulatedListener;
     }
 
     protected void notifyPopulated()
     {
         populated = true;
         failed = false;
-        OnPopulatedListener populatedListener = getOnPopulatedListener();
+        OnPopulatedListener populatedListener = onPopulatedListener;
         if (populatedListener != null)
         {
             populatedListener.onPopulated(this);
@@ -98,7 +92,7 @@ public class SecurityAlertAssistant
     {
         populated = false;
         failed = true;
-        OnPopulatedListener populatedListener = getOnPopulatedListener();
+        OnPopulatedListener populatedListener = onPopulatedListener;
         if (populatedListener != null)
         {
             populatedListener.onPopulateFailed(this, error);

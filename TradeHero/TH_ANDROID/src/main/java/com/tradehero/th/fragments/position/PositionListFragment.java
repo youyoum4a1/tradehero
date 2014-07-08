@@ -15,10 +15,10 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.route.InjectRoute;
-import com.tradehero.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.InjectRoute;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -744,7 +744,7 @@ public class PositionListFragment
         {
             Bundle args = new Bundle();
             AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-            args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            AlertCreateFragment.putSecurityId(args, securityId);
             getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else

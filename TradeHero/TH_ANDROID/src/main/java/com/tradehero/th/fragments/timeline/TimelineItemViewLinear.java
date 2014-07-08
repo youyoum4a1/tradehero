@@ -205,7 +205,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         localyticsSession.tagEvent(LocalyticsConstants.Monitor_Alert);
 
         Bundle args = new Bundle();
-        args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
+        AlertCreateFragment.putSecurityId(args, getSecurityId());
         getNavigator().pushFragment(AlertCreateFragment.class, args);
     }
 

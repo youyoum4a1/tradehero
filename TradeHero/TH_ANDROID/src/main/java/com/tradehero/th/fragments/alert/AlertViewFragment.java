@@ -161,7 +161,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
                 {
                     Bundle bundle = new Bundle();
                     AlertEditFragment.putApplicablePortfolioId(bundle, getApplicablePortfolioId());
-                    bundle.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+                    AlertEditFragment.putAlertId(bundle, alertId);
                     getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
                 }
                 return true;

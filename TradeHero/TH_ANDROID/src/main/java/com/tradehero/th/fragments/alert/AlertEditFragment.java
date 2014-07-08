@@ -13,16 +13,27 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.alert.AlertCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class AlertEditFragment extends BaseAlertEditFragment
 {
-    public static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
+    private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
 
     protected AlertId alertId;
     @Inject protected AlertCache alertCache;
     protected DTOCacheNew.Listener<AlertId, AlertDTO> alertCacheFetchListener;
     protected MiddleCallback<AlertCompactDTO> middleCallbackUpdateAlertCompactDTO;
+
+    public static void putAlertId(@NotNull Bundle args, @NotNull AlertId alertId)
+    {
+        args.putBundle(BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+    }
+
+    @NotNull public static AlertId getAlertId(@NotNull Bundle args)
+    {
+        return new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -33,7 +44,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
     @Override public void onResume()
     {
         super.onResume();
-        linkWith(new AlertId(getArguments().getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE)), true);
+        linkWith(getAlertId(getArguments()), true);
     }
 
     @Override public void onStop()
