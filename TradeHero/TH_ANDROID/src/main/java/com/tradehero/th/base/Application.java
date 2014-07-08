@@ -7,8 +7,8 @@ import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.fragments.billing.StoreItemAdapter;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -90,8 +90,8 @@ public class Application extends PApplication
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
-        thRouter.registerAlias("reset-portfolio", "store/" + StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
-        thRouter.registerAlias("store/reset-portfolio", "store/" + StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
+        thRouter.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+        thRouter.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
 
         THLog.showDeveloperKeyHash();
     }

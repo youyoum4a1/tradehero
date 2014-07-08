@@ -3,13 +3,16 @@ package com.tradehero.th.fragments.billing;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.billing.store.StoreItemDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import timber.log.Timber;
 
 public class StoreItemLikeButton extends StoreItemHasFurther
 {
-    protected ImageView imageButton;
-    protected int imageButtonResId;
+    @InjectView(R.id.btn_buy_now) protected ImageView imageButton;
+    protected StoreItemPromptPurchaseDTO storeItemPromptPurchaseDTO;
 
     //<editor-fold desc="Constructors">
     public StoreItemLikeButton(Context context)
@@ -28,15 +31,10 @@ public class StoreItemLikeButton extends StoreItemHasFurther
     }
     //</editor-fold>
 
-    @Override protected void initViews()
+    @Override public void display(StoreItemDTO dto)
     {
-        super.initViews();
-        imageButton = (ImageView) findViewById(R.id.btn_buy_now);
-    }
-
-    public void setImageButtonResId(int imageButtonResId)
-    {
-        this.imageButtonResId = imageButtonResId;
+        super.display(dto);
+        storeItemPromptPurchaseDTO = (StoreItemPromptPurchaseDTO) dto;
         displayImageButton();
     }
 
@@ -48,11 +46,11 @@ public class StoreItemLikeButton extends StoreItemHasFurther
 
     protected void displayImageButton()
     {
-        if (imageButton != null)
+        if (imageButton != null && storeItemPromptPurchaseDTO != null)
         {
             try
             {
-                imageButton.setImageResource(imageButtonResId);
+                imageButton.setImageResource(storeItemPromptPurchaseDTO.buttonIconResId);
             }
             catch (OutOfMemoryError e)
             {

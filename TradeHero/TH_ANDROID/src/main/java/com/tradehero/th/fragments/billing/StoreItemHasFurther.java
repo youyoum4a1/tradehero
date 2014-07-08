@@ -5,16 +5,20 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import timber.log.Timber;
 
 public class StoreItemHasFurther extends RelativeLayout
+    implements DTOView<StoreItemDTO>
 {
-    protected TextView title;
-    protected int titleResId;
-
-    protected ImageView icon;
-    protected int iconResId;
+    @InjectView(R.id.title) protected TextView title;
+    @InjectView(R.id.icon) protected ImageView icon;
+    protected StoreItemClickableDTO storeItemClickableDTO;
 
     //<editor-fold desc="Constructors">
     public StoreItemHasFurther(Context context)
@@ -36,25 +40,13 @@ public class StoreItemHasFurther extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
+        ButterKnife.inject(this);
     }
 
-    protected void initViews()
+    @Override public void display(StoreItemDTO dto)
     {
-        title = (TextView) findViewById(R.id.title);
-        icon = (ImageView) findViewById(R.id.icon);
-    }
-
-    public void setTitleResId(int titleResId)
-    {
-        this.titleResId = titleResId;
-        displayTitle();
-    }
-
-    public void setIconResId(int iconResId)
-    {
-        this.iconResId = iconResId;
-        displayIcon();
+        storeItemClickableDTO = (StoreItemClickableDTO) dto;
+        display();
     }
 
     public void display()
@@ -65,19 +57,19 @@ public class StoreItemHasFurther extends RelativeLayout
 
     protected void displayTitle()
     {
-        if (title != null)
+        if (title != null && storeItemClickableDTO != null)
         {
-            title.setText(titleResId);
+            title.setText(storeItemClickableDTO.titleResId);
         }
     }
 
     protected void displayIcon()
     {
-        if (icon != null)
+        if (icon != null && storeItemClickableDTO != null)
         {
             try
             {
-                icon.setImageResource(iconResId);
+                icon.setImageResource(storeItemClickableDTO.iconResId);
             }
             catch (OutOfMemoryError e)
             {
