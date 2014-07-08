@@ -2,6 +2,7 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.squareup.picasso.LruCache;
 import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.LongPreference;
@@ -57,10 +58,10 @@ public class CacheModule
 {
     private static final String PREFERENCE_KEY = "th";
 
-    @Provides @Singleton LruMemFileCache provideLruMemFileCache(Context context)
+    @Provides @Singleton @ForPicasso LruCache provideLruMemFileCache(Context context)
     {
-        return LruMemFileCache.getInstance(context.getApplicationContext());
         //return new LruMemFileCache(context);
+        return LruMemFileCache.getInstance(context.getApplicationContext());
     }
 
     @Provides @Singleton SharedPreferences provideSharePreferences(Context context)
