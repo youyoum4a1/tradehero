@@ -120,6 +120,7 @@
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_user" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_providers" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_home" android:pathPattern=".*"/>
+        <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_web" android:pathPattern=".*"/>
       </intent-filter>
     </activity>
 
