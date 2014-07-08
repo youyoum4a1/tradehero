@@ -80,8 +80,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.social_followers));
+        setActionBarTitle(getString(R.string.social_followers));
 
         Fragment f = getCurrentFragment();
         if (f != null)

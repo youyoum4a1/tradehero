@@ -577,13 +577,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             userProfileView.display(shownProfile);
         }
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(
-                    userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
-        }
-
         displayActionBarTitle();
     }
 
@@ -595,17 +588,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void displayActionBarTitle()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
+        if (shownProfile != null)
         {
-            if (shownProfile != null)
-            {
-                actionBar.setTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
-            }
-            else
-            {
-                actionBar.setTitle(R.string.loading_loading);
-            }
+            setActionBarTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+        }
+        else
+        {
+            setActionBarTitle(R.string.loading_loading);
         }
     }
 

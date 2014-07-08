@@ -318,8 +318,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private void displayStockSymbol()
     {
         stockSymbol.setText(securityCompactDTO.getExchangeSymbol());
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null) actionBar.setTitle(securityCompactDTO.getExchangeSymbol());
+        setActionBarTitle(securityCompactDTO.getExchangeSymbol());
     }
 
     private void displayStockLogo()

@@ -96,11 +96,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
 
     protected void displayActionBarTitle()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(R.string.stock_alert_edit_alert);
-        }
+        setActionBarTitle(R.string.stock_alert_edit_alert);
     }
 
     protected DTOCacheNew.Listener<AlertId, AlertDTO> createAlertCacheListener()

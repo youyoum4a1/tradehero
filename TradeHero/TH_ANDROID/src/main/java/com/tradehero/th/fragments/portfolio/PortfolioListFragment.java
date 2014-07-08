@@ -89,8 +89,7 @@ public class PortfolioListFragment extends DashboardFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.portfolio_topbar_title));
+        setActionBarTitle(getString(R.string.portfolio_topbar_title));
         super.onCreateOptionsMenu(menu, inflater);
     }
 

@@ -617,20 +617,15 @@ public class PositionListFragment
 
     public void displayActionBarTitle()
     {
-        SherlockFragmentActivity sherlockFragmentActivity = getSherlockActivity();
-        if (sherlockFragmentActivity != null)
+        if (getPositionsDTO != null && getPositionsDTO.positions != null)
         {
-            ActionBar actionBar = sherlockFragmentActivity.getSupportActionBar();
-            if (getPositionsDTO != null && getPositionsDTO.positions != null)
-            {
-                String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                        getPositionsDTO.positions.size());
-                actionBar.setTitle(title);
-            }
-            else
-            {
-                actionBar.setTitle(R.string.position_list_action_bar_header_unknown);
-            }
+            String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
+                    getPositionsDTO.positions.size());
+            setActionBarTitle(title);
+        }
+        else
+        {
+            setActionBarTitle(R.string.position_list_action_bar_header_unknown);
         }
     }
 

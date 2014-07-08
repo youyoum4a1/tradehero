@@ -144,9 +144,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.social_search_menu, menu);
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.dashboard_community);
+        setActionBarTitle(R.string.dashboard_community);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

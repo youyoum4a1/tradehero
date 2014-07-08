@@ -765,8 +765,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             title = securityCompactDTO.name;
             symbol = securityCompactDTO.getExchangeSymbol();
         }
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.security_action_bar_title, title, symbol));
+        setActionBarTitle(getString(R.string.security_action_bar_title, title, symbol));
     }
 
     public void displayBuySellPrice()
