@@ -190,15 +190,6 @@ public class HomeFragment extends BaseWebViewFragment
             Timber.d("Getting home app data from cache!");
             webView.loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
         }
-        else
-        {
-            Map<String, String> additionalHeaders = new HashMap<>();
-            additionalHeaders.put(Constants.AUTHORIZATION, createTypedAuthParameters(mainCredentialsPreference.getCredentials()));
-            additionalHeaders.put(Constants.TH_CLIENT_VERSION, VersionUtils.getVersionId(getActivity()));
-            additionalHeaders.put(Constants.TH_LANGUAGE_CODE, languageCode);
-
-            loadUrl(appHomeLink, additionalHeaders);
-        }
     }
 
     public String createTypedAuthParameters(@NotNull CredentialsDTO credentialsDTO)
