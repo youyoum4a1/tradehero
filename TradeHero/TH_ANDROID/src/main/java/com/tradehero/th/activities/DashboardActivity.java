@@ -67,7 +67,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity,
         ResideMenu.OnMenuListener
 {
-    private final DashboardTabType INITIAL_TAB = DashboardTabType.TRENDING;
+    private final DashboardTabType INITIAL_TAB = DashboardTabType.HOME;
 
     private DashboardNavigator navigator;
 
@@ -155,7 +155,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
         suggestUpgradeIfNecessary();
-        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list
+        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list, and this line is no use for it will update after login in prefetchesUponLogin
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
         if (savedInstanceState == null && navigator.getCurrentFragment() == null)

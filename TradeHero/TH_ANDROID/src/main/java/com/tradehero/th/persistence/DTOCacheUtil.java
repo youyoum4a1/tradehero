@@ -273,7 +273,7 @@ import org.jetbrains.annotations.Nullable;
             }
         }
 
-        //initialPrefetches();//this will block first initial launch securities list
+        initialPrefetches();
     }
 
     public void initialPrefetches()
