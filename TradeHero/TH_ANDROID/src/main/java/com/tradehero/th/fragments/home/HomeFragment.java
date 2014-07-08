@@ -15,10 +15,10 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
-import com.tradehero.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -245,7 +245,7 @@ public class HomeFragment extends BaseWebViewFragment
             userFriendsDTO = new UserFriendsFacebookDTO();
             ((UserFriendsFacebookDTO) userFriendsDTO).fbId = userid;
         }
-        else if (social.equals("ln"))
+        else if (social.equals("li"))
         {
             userFriendsDTO = new UserFriendsLinkedinDTO();
             ((UserFriendsLinkedinDTO) userFriendsDTO).liId = userid;
