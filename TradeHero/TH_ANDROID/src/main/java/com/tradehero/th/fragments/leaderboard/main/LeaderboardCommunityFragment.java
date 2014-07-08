@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -18,8 +17,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderIdList;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
@@ -45,7 +43,6 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
@@ -62,7 +59,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 {
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject Lazy<ProviderListCache> providerListCache;
-    @Inject Lazy<ProviderCache> providerCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject THLocalyticsSession localyticsSession;
@@ -76,9 +72,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private BaseWebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
-    private ProviderIdList providerIds;
+    private ProviderDTOList providerDTOs;
     protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListFetchListener;
-    private DTOCacheNew.Listener<ProviderListKey, ProviderIdList> providerListFetchListener;
+    private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -238,20 +234,20 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         providerListCache.get().getOrFetchAsync(new ProviderListKey());
     }
 
-    protected DTOCacheNew.Listener<ProviderListKey, ProviderIdList> createProviderIdListListener()
+    protected DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> createProviderIdListListener()
     {
         return new LeaderboardCommunityProviderListListener();
     }
 
-    protected class LeaderboardCommunityProviderListListener implements DTOCacheNew.Listener<ProviderListKey, ProviderIdList>
+    protected class LeaderboardCommunityProviderListListener implements DTOCacheNew.Listener<ProviderListKey, ProviderDTOList>
     {
-        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value)
+        @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
         {
-            providerIds = value;
+            providerDTOs = value;
             recreateAdapter();
         }
 
-        @Override public void onErrorThrown(ProviderListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
         {
             handleFailToReceiveLeaderboardDefKeyList();
             THToast.show(getString(R.string.error_fetch_provider_info_list));
@@ -276,7 +272,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             }
             else if (item instanceof ProviderCommunityPageDTO)
             {
-                handleCompetitionItemClicked(providerCache.get().get(((ProviderCommunityPageDTO) item).providerId));
+                handleCompetitionItemClicked(((ProviderCommunityPageDTO) item).providerDTO);
             }
             else
             {
@@ -325,11 +321,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
         leaderboardDefListAdapter = createAdapter();
-        if (providerIds != null)
+        if (providerDTOs != null)
         {
-            for (ProviderId providerId : providerIds)
+            for (@NotNull ProviderDTO providerDTO : providerDTOs)
             {
-                leaderboardDefListAdapter.add(new ProviderCommunityPageDTO(providerId));
+                leaderboardDefListAdapter.add(new ProviderCommunityPageDTO(providerDTO));
             }
         }
         leaderboardDefListAdapter.addAll(communityPageDTOFactory.collectFromCaches(currentUserProfileDTO.countryCode));
