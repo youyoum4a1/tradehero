@@ -66,8 +66,8 @@ public class NewsHeadlineFragment
     public static final String TEST_KEY = "News-Test";
     public static long start = 0;
 
-    int tempPostion = 0;
-    NewsItemDTOKey tempDto = null;
+    private int tempPostion = 0;
+    private NewsItemDTOKey tempDto = null;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
