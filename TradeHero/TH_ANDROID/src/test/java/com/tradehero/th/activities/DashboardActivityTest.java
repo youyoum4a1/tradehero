@@ -39,7 +39,9 @@ public class DashboardActivityTest
         assertThat(activity.isFinishing()).isTrue();
     }
 
-    @Ignore
+    @Ignore("Robolectric does not work well with custom attribute, therefor it is failing while inflating layout fragment_private_message ("
+            + "because listItemLayout is always 0 with Robolectric)! If we set listItemLayout manually inside PrivateDiscussionView, "
+            + "this test will pass, however it is not recommended")
     @Test public void onNewIntentTest()
     {
         ShadowProgressDialog.reset();
