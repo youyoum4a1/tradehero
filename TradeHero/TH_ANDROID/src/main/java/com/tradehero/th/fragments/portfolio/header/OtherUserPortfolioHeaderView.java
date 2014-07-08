@@ -258,7 +258,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             this.followingImageView.setVisibility(GONE);
             this.followButton.setVisibility(GONE);
         }
-        else if (currentUser.isFollowingUser(this.userProfileDTO.id))
+        // TODO rework so we handle better the case where currentUser is null
+        else if (currentUser != null && currentUser.isFollowingUser(this.userProfileDTO.id))
         {
             this.followingImageView.setVisibility(VISIBLE);
             this.followButton.setVisibility(GONE);
