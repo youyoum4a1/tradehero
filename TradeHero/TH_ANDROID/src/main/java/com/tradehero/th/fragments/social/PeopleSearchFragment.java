@@ -22,7 +22,6 @@ import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserBaseKeyList;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
@@ -75,7 +74,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
 
     private PeopleItemViewAdapter peopleItemViewAdapterItemViewAdapter;
     private Map<Integer, UserSearchResultDTOList> pagedPeopleIds;
-    private Map<Integer, DTOCacheNew.Listener<UserListType, UserBaseKeyList>> userSearchListeners;
+    private Map<Integer, DTOCacheNew.Listener<UserListType, UserSearchResultDTOList>> userSearchListeners;
     private UserBaseKey selectedItem;
 
     private Runnable requestDataTask;
@@ -331,7 +330,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
 
     protected void detachPeopleSearchCache()
     {
-        for (DTOCacheNew.Listener<UserListType, UserBaseKeyList> listener : userSearchListeners.values())
+        for (DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> listener : userSearchListeners.values())
         {
             userBaseKeyListCache.get().unregister(listener);
         }
@@ -340,7 +339,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
 
     protected void detachUserSearchCache(int page)
     {
-        DTOCacheNew.Listener<UserListType, UserBaseKeyList> listener = userSearchListeners.get(page);
+        DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> listener = userSearchListeners.get(page);
         if (listener != null)
         {
             userBaseKeyListCache.get().unregister(listener);
@@ -376,7 +375,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
         {
             SearchUserListType searchUserListType = makeSearchUserListType(pageToLoad);
             detachUserSearchCache(pageToLoad);
-            DTOCacheNew.Listener<UserListType, UserBaseKeyList> listener = createUserBaseKeyListCacheListener();
+            DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> listener = createUserBaseKeyListCacheListener();
             userBaseKeyListCache.get().register(searchUserListType, listener);
             userSearchListeners.put(pageToLoad, listener);
             userBaseKeyListCache.get().getOrFetchAsync(searchUserListType);
@@ -489,21 +488,20 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private DTOCacheNew.Listener<UserListType, UserBaseKeyList> createUserBaseKeyListCacheListener()
+    private DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> createUserBaseKeyListCacheListener()
     {
         return new UserBaseKeyListCacheListener();
     }
 
     private class UserBaseKeyListCacheListener
-            implements DTOCacheNew.Listener<UserListType, UserBaseKeyList>
+            implements DTOCacheNew.Listener<UserListType, UserSearchResultDTOList>
     {
         @Override
-        public void onDTOReceived(@NotNull UserListType key, @NotNull UserBaseKeyList value)
+        public void onDTOReceived(@NotNull UserListType key, @NotNull UserSearchResultDTOList value)
         {
             SearchUserListType properKey = (SearchUserListType) key;
             Timber.d("Page loaded: %d", properKey.page);
-            UserSearchResultDTOList fleshedValues = userSearchResultCache.get().get(value);
-            pagedPeopleIds.put(properKey.page, fleshedValues);
+            pagedPeopleIds.put(properKey.page, value);
             userSearchListeners.remove(properKey.page);
 
             loadAdapterWithAvailableData();

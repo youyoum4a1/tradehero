@@ -16,7 +16,7 @@ import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -406,7 +406,7 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Search Users">
-    public List<UserSearchResultDTO> searchUsers(UserListType key)
+    public UserSearchResultDTOList searchUsers(UserListType key)
     {
         if (key instanceof SearchUserListType)
         {
@@ -415,7 +415,7 @@ import retrofit.client.Response;
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
-    protected List<UserSearchResultDTO> searchUsers(SearchUserListType key)
+    protected UserSearchResultDTOList searchUsers(SearchUserListType key)
     {
         if (key.searchString == null)
         {
@@ -424,7 +424,7 @@ import retrofit.client.Response;
         return this.userService.searchUsers(key.searchString, key.page, key.perPage);
     }
 
-    public MiddleCallback<List<UserSearchResultDTO>> searchUsers(UserListType key, Callback<List<UserSearchResultDTO>> callback)
+    public MiddleCallback<UserSearchResultDTOList> searchUsers(UserListType key, Callback<UserSearchResultDTOList> callback)
     {
         if (key instanceof SearchUserListType)
         {
@@ -433,9 +433,9 @@ import retrofit.client.Response;
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
-    protected MiddleCallback<List<UserSearchResultDTO>> searchUsers(SearchUserListType key, Callback<List<UserSearchResultDTO>> callback)
+    protected MiddleCallback<UserSearchResultDTOList> searchUsers(SearchUserListType key, Callback<UserSearchResultDTOList> callback)
     {
-        MiddleCallback<List<UserSearchResultDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserSearchResultDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         if (key.searchString == null)
         {
             this.userServiceAsync.searchUsers(null, null, null, middleCallback);
