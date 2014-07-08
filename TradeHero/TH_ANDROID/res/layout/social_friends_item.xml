@@ -1,50 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.tradehero.th.fragments.social.friend.SocialFriendItemView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:background="#a88"
-        android:minHeight="70dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@drawable/list_item_bg"
-        >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:background="#a88"
+    android:minHeight="70dp"
+    android:gravity="center_vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@drawable/list_item_bg"
+    >
 
-    <ImageView
-            android:id="@+id/social_item_logo"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            tools:src="@drawable/superman_facebook"
-            />
+  <ImageView
+      android:id="@+id/social_item_logo"
+      android:layout_width="50dp"
+      android:layout_height="50dp"
+      tools:src="@drawable/superman_facebook"
+      />
 
-    <TextView
-            android:id="@+id/social_item_title"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            tools:text="Invite from Facebook"
-            android:layout_marginLeft="10dp"
-            android:singleLine="true"
+  <TextView
+      android:id="@+id/social_item_title"
+      android:layout_width="0dp"
+      android:layout_weight="1"
+      android:layout_height="wrap_content"
+      android:textSize="16sp"
+      android:lines="2"
+      android:maxLines="2"
+      android:singleLine="false"
+      android:ellipsize="end"
+      tools:text="Invite from Facebook"
+      android:layout_marginLeft="10dp"
 
-            />
+      />
 
-    <TextView
-            android:id="@+id/social_item_action_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Invite"
-            android:width="80dp"
-            android:height="28dp"
-            android:gravity="center"
-            />
-
-    <!--android:paddingLeft="15dp"-->
-    <!--android:paddingRight="15dp"-->
-    <!--android:paddingTop="3dp"-->
-    <!--android:paddingBottom="3dp"-->
-    <!--android:background="@drawable/yellow_rounded_button_selector"-->
+  <TextView
+      android:id="@+id/social_item_action_btn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Invite"
+      style="@style/TH.Btn_Invite_Action"
+      />
 </com.tradehero.th.fragments.social.friend.SocialFriendItemView>
