@@ -20,6 +20,12 @@ public class StoreItemAdapter extends ArrayAdapter<StoreItemDTO>
     public static final int VIEW_TYPE_LIKE_BUTTON = 1;
     public static final int VIEW_TYPE_HAS_FURTHER = 2;
 
+    public static final int POSITION_BUY_VIRTUAL_DOLLARS = 1;
+    public static final int POSITION_BUY_FOLLOW_CREDITS = 2;
+    //now alerts are free
+    public static final int POSITION_BUY_STOCK_ALERTS = 8;
+    public static final int POSITION_BUY_RESET_PORTFOLIO = 3;
+
     @NotNull private HashMap<Integer, Integer> viewTypeToLayoutId;
 
     //<editor-fold desc="Constructors">
