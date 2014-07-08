@@ -43,7 +43,6 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
@@ -85,7 +84,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
-    @Inject DTOCacheUtil dtoCacheUtil;
+    //@Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<LocalyticsSession> localyticsSession;
@@ -156,7 +155,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
         suggestUpgradeIfNecessary();
-        this.dtoCacheUtil.initialPrefetches();
+        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
         navigator.goToTab(INITIAL_TAB);

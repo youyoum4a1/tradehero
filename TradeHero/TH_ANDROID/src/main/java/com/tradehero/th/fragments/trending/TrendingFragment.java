@@ -13,9 +13,9 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -56,6 +56,7 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
@@ -84,6 +85,7 @@ public class TrendingFragment extends SecurityListFragment
     @Inject THLocalyticsSession localyticsSession;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
+    @Inject DTOCacheUtil dtoCacheUtil;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
 
@@ -499,6 +501,8 @@ public class TrendingFragment extends SecurityListFragment
                 AppTiming.splashCreate - AppTiming.appCreate,
                 AppTiming.dashboardCreate - AppTiming.splashCreate,
                 AppTiming.trendingFilled - AppTiming.dashboardCreate);
+
+        dtoCacheUtil.initialPrefetches();
     }
 
     private void refreshAdapterWithTiles(boolean refreshTileTypes)
