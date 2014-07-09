@@ -9,23 +9,23 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.tradehero.route.InjectRoute;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -58,7 +58,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -108,11 +107,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     @InjectRoute UserBaseKey shownUserBaseKey;
     protected UserProfileDTO shownProfile;
-    protected OwnedPortfolioIdList portfolioIdList;
+    protected List<PortfolioCompactDTO> portfolioCompactDTOs;
     protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
     private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener;
-    protected PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
-    private Milestone.OnCompleteListener portfolioCompactListRetrievedMilestoneListener;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
     protected MessageHeaderDTO messageThreadHeaderDTO;
@@ -131,7 +128,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         super.onCreate(savedInstanceState);
         userProfileRetrievedMilestoneListener = createUserProfileRetrievedMilestoneListener();
-        portfolioCompactListRetrievedMilestoneListener = createPortfolioCompactListRetrievedMilestoneListener();
         messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
     }
 
@@ -189,7 +185,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onDefaultPortfolioClicked()
     {
-        if (portfolioIdList == null || portfolioIdList.size() < 1 || portfolioIdList.get(0) == null)
+        if (portfolioCompactDTOs == null || portfolioCompactDTOs.size() < 1 || portfolioCompactDTOs.get(0) == null)
         {
             // HACK, instead we should test for Default title on PortfolioDTO
             THToast.show("Not enough data, try again");
@@ -208,8 +204,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            pushPositionListFragment(
-                    portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey));
+            pushPositionListFragment(new OwnedPortfolioId(
+                    shownUserBaseKey,
+                    portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey)));
         }
     }
 
@@ -402,7 +399,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         messageThreadHeaderFetchListener = null;
-        portfolioCompactListRetrievedMilestoneListener = null;
         userProfileRetrievedMilestoneListener = null;
         super.onDestroy();
     }
@@ -479,10 +475,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 userProfileRetrievedMilestoneListener);
         userProfileRetrievedMilestone.launch();
 
-        createPortfolioCompactListRetrievedMilestone();
-        portfolioCompactListRetrievedMilestone.setOnCompleteListener(
-                portfolioCompactListRetrievedMilestoneListener);
-        portfolioCompactListRetrievedMilestone.launch();
         destroyInfoFetcher();
         infoFetcher = new FollowerManagerInfoFetcher(new FollowerSummaryListener());
         infoFetcher.fetch(currentUserIdLazy.get().toUserBaseKey());
@@ -533,14 +525,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void linkWith(OwnedPortfolioIdList ownedPortfolioIdList, boolean andDisplay)
+    private void linkWith(List<PortfolioCompactDTO> portfolioCompactDTOs, boolean andDisplay)
     {
-        this.portfolioIdList = ownedPortfolioIdList;
-        if (ownedPortfolioIdList != null)
+        this.portfolioCompactDTOs = portfolioCompactDTOs;
+        if (portfolioCompactDTOs != null)
         {
-            for(OwnedPortfolioId ownedPortfolioId: ownedPortfolioIdList)
+            for(PortfolioCompactDTO portfolioCompactDTO: portfolioCompactDTOs)
             {
-                portfolioCache.get().getOrFetchAsync(ownedPortfolioId);
+                portfolioCache.get().getOrFetchAsync(new OwnedPortfolioId(shownUserBaseKey, portfolioCompactDTO));
             }
         }
 
@@ -606,16 +598,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileRetrievedMilestone.setOnCompleteListener(null);
         }
         userProfileRetrievedMilestone = new UserProfileRetrievedMilestone(shownUserBaseKey);
-    }
-
-    protected void createPortfolioCompactListRetrievedMilestone()
-    {
-        if (portfolioCompactListRetrievedMilestone != null)
-        {
-            portfolioCompactListRetrievedMilestone.setOnCompleteListener(null);
-        }
-        portfolioCompactListRetrievedMilestone =
-                new PortfolioCompactListRetrievedMilestone(shownUserBaseKey);
     }
     //</editor-fold>
 
@@ -769,30 +751,21 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             }
         };
     }
-
-    private Milestone.OnCompleteListener createPortfolioCompactListRetrievedMilestoneListener()
-    {
-        return new Milestone.OnCompleteListener()
-        {
-            @Override public void onComplete(Milestone milestone)
-            {
-                OwnedPortfolioIdList cachedOwnedPortfolioIdList =
-                        portfolioCompactListCache.get().get(shownUserBaseKey);
-                if (cachedOwnedPortfolioIdList != null)
-                {
-                    linkWith(cachedOwnedPortfolioIdList, true);
-                }
-            }
-
-            @Override public void onFailed(Milestone milestone, Throwable throwable)
-            {
-                // We do not need to inform the player here
-                Timber.e("Error fetching the list of portfolio for user: %d",
-                        shownUserBaseKey.key, throwable);
-            }
-        };
-    }
     //</editor-fold>
+
+    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    {
+        return new TimelineFragmentPortfolioCompactListFetchListener();
+    }
+
+    protected class TimelineFragmentPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
+    {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+        {
+            super.onDTOReceived(key, value);
+            linkWith(value, true);
+        }
+    }
 
     protected List<UserBaseKey> getUserBaseKeys()
     {

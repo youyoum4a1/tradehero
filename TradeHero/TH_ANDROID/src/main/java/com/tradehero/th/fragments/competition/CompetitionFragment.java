@@ -84,11 +84,10 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     {
         this.providerDTO = providerDTO;
 
-        OwnedPortfolioId associatedPortfolioId =
-                new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
+        OwnedPortfolioId associatedPortfolioId = providerDTO.associatedPortfolio.getOwnedPortfolioId();
         putApplicablePortfolioId(getArguments(), associatedPortfolioId);
 
-        prepareApplicableOwnedPortolioId();
+        prepareApplicableOwnedPortolioId(null);
 
         if (andDisplay)
         {

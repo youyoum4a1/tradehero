@@ -44,17 +44,12 @@ public class MenuOwnedPortfolioIdFactory
 
     public MenuOwnedPortfolioId createMainPortfolioMenu(UserBaseKey forUser)
     {
-        OwnedPortfolioId mainPortfolioId = portfolioCompactListCache.getDefaultPortfolio(forUser);
-        if (mainPortfolioId == null)
-        {
-            return null;
-        }
-        PortfolioCompactDTO mainPortfolio = portfolioCompactCache.get(mainPortfolioId.getPortfolioIdKey());
+        PortfolioCompactDTO mainPortfolio = portfolioCompactListCache.getDefaultPortfolio(forUser);
         if (mainPortfolio == null)
         {
             return null;
         }
-        return new MenuOwnedPortfolioId(mainPortfolioId, mainPortfolio);
+        return new MenuOwnedPortfolioId(mainPortfolio.userBaseKey, mainPortfolio);
     }
 
     public MenuOwnedPortfolioIdList createPortfolioMenus(OwnedPortfolioIdList ownedPortfolioIds)

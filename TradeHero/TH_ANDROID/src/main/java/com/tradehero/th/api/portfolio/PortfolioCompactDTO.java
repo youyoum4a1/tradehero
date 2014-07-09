@@ -3,8 +3,10 @@ package com.tradehero.th.api.portfolio;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 
 public class PortfolioCompactDTO implements DTO
 {
@@ -29,6 +31,9 @@ public class PortfolioCompactDTO implements DTO
     public String currencyISO;
     public Double refCcyToUsdRate;
 
+    // Populated on client side
+    @NotNull public UserBaseKey userBaseKey;
+
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
     {
@@ -38,6 +43,11 @@ public class PortfolioCompactDTO implements DTO
     @JsonIgnore public PortfolioId getPortfolioId()
     {
         return new PortfolioId(id);
+    }
+
+    @JsonIgnore @NotNull public OwnedPortfolioId getOwnedPortfolioId()
+    {
+        return new OwnedPortfolioId(userBaseKey, this);
     }
 
     // Do NOT rename to getProviderId or providerId will always be null

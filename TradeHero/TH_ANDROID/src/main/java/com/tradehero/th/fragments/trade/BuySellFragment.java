@@ -32,7 +32,6 @@ import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
@@ -51,6 +50,7 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -219,9 +219,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         mPrefSocialShare = getActivity().getSharedPreferences(SocialSharePreferenceHelper.PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
-    @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
+    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
     {
-        return new BuySellPortfolioCompactListMilestoneListener();
+        return new BuySellPortfolioCompactListFetchListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -2076,21 +2076,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected class BuySellPortfolioCompactListMilestoneListener
-            extends BasePurchaseManagementPortfolioCompactListRetrievedListener
+    protected class BuySellPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
     {
-        @Override public void onComplete(Milestone milestone)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
-            super.onComplete(milestone);
+            super.onDTOReceived(key, value);
             buildUsedMenuPortfolios();
             setInitialSellQuantityIfCan();
             displayQuickPriceButtonSet();
-        }
-
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            Timber.e("Failed to fetch list of compact portfolio", throwable);
-            THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 
@@ -2122,7 +2115,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 UserProfileDTO updatedUserProfile)
         {
             linkWith(updatedUserProfile, true);
-            waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
             updateBuySellDialog();
         }
 

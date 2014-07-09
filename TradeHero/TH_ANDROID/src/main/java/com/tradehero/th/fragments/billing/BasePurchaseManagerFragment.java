@@ -9,6 +9,8 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -21,7 +23,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -43,8 +44,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     private DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> systemStatusCacheListener;
     protected SystemStatusDTO systemStatusDTO;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
-    private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
-    private Milestone.OnCompleteListener portfolioCompactListRetrievedListener;
+    private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
@@ -75,13 +75,13 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        portfolioCompactListRetrievedListener = createPortfolioCompactListRetrievedListener();
+        portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
         systemStatusCacheListener = createSystemStatusCacheListener();
     }
 
-    protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
+    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
     {
-        return new BasePurchaseManagementPortfolioCompactListRetrievedListener();
+        return new BasePurchaseManagementPortfolioCompactListFetchListener();
     }
 
     protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
@@ -104,28 +104,14 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        prepareApplicableOwnedPortolioId();
 
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle thIntentBundle = args.getBundle(BUNDLE_KEY_THINTENT_BUNDLE);
-            if (thIntentBundle != null)
-            {
-                int action = thIntentBundle.getInt(THIABBillingInteractor.BUNDLE_KEY_ACTION);
-                if (action > 0)
-                {
-                    userInteractor.doAction(action); // TODO place the action after portfolio has been set
-                }
-                args.remove(BUNDLE_KEY_THINTENT_BUNDLE);
-            }
-        }
+        fetchPortfolioCompactList();
     }
 
     @Override public void onStop()
     {
         detachSystemStatusCache();
-        detachPortfolioRetrievedMilestone();
+        detachPortfolioCompactListCache();
         detachPremiumFollowUserAssistant();
         detachRequestCode();
         super.onStop();
@@ -142,7 +128,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         systemStatusCacheListener = null;
-        portfolioCompactListRetrievedListener = null;
+        portfolioCompactListFetchListener = null;
         super.onDestroy();
     }
 
@@ -151,36 +137,31 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         systemStatusCache.unregister(systemStatusCacheListener);
     }
 
-    protected void prepareApplicableOwnedPortolioId()
+    protected void detachPortfolioCompactListCache()
+    {
+        portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
+    }
+
+    protected void fetchPortfolioCompactList()
+    {
+        detachPortfolioCompactListCache();
+        portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
+        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
     {
         Bundle args = getArguments();
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId(args);
 
-        if (applicablePortfolioId == null)
+        if (applicablePortfolioId == null && defaultIfNotInArgs != null)
         {
-            applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), null);
-        }
-        if (applicablePortfolioId.userId == null)
-        {
-            applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), applicablePortfolioId.portfolioId);
-        }
-        if (applicablePortfolioId.portfolioId == null)
-        {
-            final OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(applicablePortfolioId.getUserBaseKey());
-            if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
-            {
-                applicablePortfolioId = ownedPortfolioId;
-            }
-            else
-            {
-                // This situation will be handled by the milestone
-            }
+            applicablePortfolioId = defaultIfNotInArgs.getOwnedPortfolioId();
         }
 
-        if (applicablePortfolioId.portfolioId == null)
+        if (applicablePortfolioId == null)
         {
-            // At this stage, portfolioId is still null, we need to wait for the fetch
-            waitForPortfolioCompactListFetched(applicablePortfolioId.getUserBaseKey());
+            Timber.e(new NullPointerException(), "Null applicablePortfolio");
         }
         else
         {
@@ -191,18 +172,28 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
     {
         this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
+        doActionFromIntent();
         if (andDisplay)
         {
         }
     }
 
-    private void detachPortfolioRetrievedMilestone()
+    protected void doActionFromIntent()
     {
-        if (portfolioCompactListRetrievedMilestone != null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            portfolioCompactListRetrievedMilestone.setOnCompleteListener(null);
+            Bundle thIntentBundle = args.getBundle(BUNDLE_KEY_THINTENT_BUNDLE);
+            if (thIntentBundle != null)
+            {
+                int action = thIntentBundle.getInt(THIABBillingInteractor.BUNDLE_KEY_ACTION);
+                if (action > 0)
+                {
+                    userInteractor.doAction(action);
+                }
+                args.remove(BUNDLE_KEY_THINTENT_BUNDLE);
+            }
         }
-        portfolioCompactListRetrievedListener = null;
     }
 
     private void detachPremiumFollowUserAssistant()
@@ -212,14 +203,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             premiumFollowUserAssistant.setUserFollowedListener(null);
         }
         premiumFollowUserAssistant = null;
-    }
-
-    protected void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
-    {
-        detachPortfolioRetrievedMilestone();
-        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(userBaseKey);
-        portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListRetrievedListener);
-        portfolioCompactListRetrievedMilestone.launch();
     }
 
     @Nullable public OwnedPortfolioId getApplicablePortfolioId()
@@ -312,17 +295,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener
+    protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
     {
-        @Override public void onComplete(Milestone milestone)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
-            prepareApplicableOwnedPortolioId();
+            prepareApplicableOwnedPortolioId(value.getDefaultPortfolio());
         }
 
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_portfolio_list_info);
-            Timber.e(throwable, "Failed to download portfolio compacts");
         }
     }
 

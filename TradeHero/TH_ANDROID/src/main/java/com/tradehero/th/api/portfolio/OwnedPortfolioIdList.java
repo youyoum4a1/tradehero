@@ -1,7 +1,10 @@
 package com.tradehero.th.api.portfolio;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
+import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Collection;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
 {
@@ -11,14 +14,14 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
         super();
     }
 
-    public OwnedPortfolioIdList(int capacity)
+    public OwnedPortfolioIdList(
+            @NotNull UserBaseKey userBaseKey,
+            @NotNull List<PortfolioCompactDTO> portfolioCompactDTOs)
     {
-        super(capacity);
-    }
-
-    public OwnedPortfolioIdList(Collection<? extends OwnedPortfolioId> collection)
-    {
-        super(collection);
+        for (PortfolioCompactDTO portfolioCompactDTO : portfolioCompactDTOs)
+        {
+            add(new OwnedPortfolioId(userBaseKey, portfolioCompactDTO));
+        }
     }
     //</editor-fold>
 

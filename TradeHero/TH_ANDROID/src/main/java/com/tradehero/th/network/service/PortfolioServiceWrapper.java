@@ -2,9 +2,15 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
+import com.tradehero.th.models.portfolio.DTOProcessorPortfolioMarked;
+import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import com.tradehero.th.models.user.DTOProcessorAddCash;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -17,6 +23,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class PortfolioServiceWrapper
@@ -28,6 +35,7 @@ import retrofit.Callback;
     @NotNull private final Lazy<PortfolioCompactCache> portfolioCompactCache;
     @NotNull private final Lazy<PortfolioCache> portfolioCache;
 
+    //<editor-fold desc="Constructors">
     @Inject public PortfolioServiceWrapper(
             @NotNull PortfolioService portfolioService,
             @NotNull PortfolioServiceAsync portfolioServiceAsync,
@@ -44,6 +52,7 @@ import retrofit.Callback;
         this.portfolioCompactCache = portfolioCompactCache;
         this.portfolioCache = portfolioCache;
     }
+    //</editor-fold>
 
     private void basicCheck(OwnedPortfolioId ownedPortfolioId)
     {
@@ -62,46 +71,85 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="DTO Processors">
-    protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    protected DTOProcessor<PortfolioCompactDTO> createPortfolioCompactReceivedProcessor(@NotNull UserBaseKey userBaseKey)
     {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
+        return new DTOProcessorPortfolioReceived<>(userBaseKey);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get User Portfolio List">
+    protected DTOProcessor<PortfolioCompactDTOList> createPortfolioCompactListReceivedProcessor(@NotNull UserBaseKey userBaseKey)
+    {
+        return new DTOProcessorPortfolioListReceived<>(createPortfolioCompactReceivedProcessor(userBaseKey));
     }
 
-    protected DTOProcessor<UserProfileDTO> createAddCashProcessor(OwnedPortfolioId ownedPortfolioId)
+    @NotNull public PortfolioCompactDTOList getPortfolios(
+            @NotNull UserBaseKey userBaseKey,
+            @Nullable Boolean includeWatchList)
     {
-        return new DTOProcessorAddCash(userProfileCache,
-                portfolioCompactListCache.get(),
-                portfolioCompactCache.get(),
-                portfolioCache.get(),
-                ownedPortfolioId);
+        return createPortfolioCompactListReceivedProcessor(userBaseKey).process(
+                portfolioService.getPortfolios(userBaseKey.key, includeWatchList));
+    }
+
+    @NotNull public MiddleCallback<PortfolioCompactDTOList> getPortfolios(
+            @NotNull UserBaseKey userBaseKey,
+            @Nullable Boolean includeWatchList,
+            @Nullable Callback<PortfolioCompactDTOList> callback)
+    {
+        MiddleCallback<PortfolioCompactDTOList> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createPortfolioCompactListReceivedProcessor(userBaseKey));
+        portfolioServiceAsync.getPortfolios(userBaseKey.key, includeWatchList, middleCallback);
+        return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">
-    @NotNull
-    public PortfolioDTO getPortfolio(@NotNull OwnedPortfolioId ownedPortfolioId)
+    protected DTOProcessor<PortfolioDTO> createPortfolioReceivedProcessor(@NotNull UserBaseKey userBaseKey)
     {
-        basicCheck(ownedPortfolioId);
-        return this.portfolioService.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId);
+        return new DTOProcessorPortfolioReceived<>(userBaseKey);
     }
 
-    public BaseMiddleCallback<PortfolioDTO> getPortfolio(OwnedPortfolioId ownedPortfolioId, Callback<PortfolioDTO> callback)
+    @NotNull public PortfolioDTO getPortfolio(
+            @NotNull OwnedPortfolioId ownedPortfolioId)
     {
         basicCheck(ownedPortfolioId);
-        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        return createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()).process(
+                this.portfolioService.getPortfolio(
+                        ownedPortfolioId.userId,
+                        ownedPortfolioId.portfolioId));
+    }
+
+    @NotNull public BaseMiddleCallback<PortfolioDTO> getPortfolio(
+            @NotNull OwnedPortfolioId ownedPortfolioId,
+            @Nullable Callback<PortfolioDTO> callback)
+    {
+        basicCheck(ownedPortfolioId);
+        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()));
         this.portfolioServiceAsync.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
 
     //<editor-fold desc="Reset Cash">
-    public UserProfileDTO resetPortfolio(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO)
+    protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    {
+        return new DTOProcessorUpdateUserProfile(userProfileCache);
+    }
+
+    @NotNull public UserProfileDTO resetPortfolio(
+            @NotNull OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO)
     {
         basicCheck(ownedPortfolioId);
         return createUpdateProfileProcessor().process(this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO));
     }
 
-    public MiddleCallback<UserProfileDTO> resetPortfolio(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> resetPortfolio(
+            @NotNull OwnedPortfolioId ownedPortfolioId,
+            GooglePlayPurchaseDTO purchaseDTO,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         basicCheck(ownedPortfolioId);
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
@@ -111,13 +159,27 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
-    public UserProfileDTO addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO)
+    protected DTOProcessor<UserProfileDTO> createAddCashProcessor(OwnedPortfolioId ownedPortfolioId)
+    {
+        return new DTOProcessorAddCash(userProfileCache,
+                portfolioCompactListCache.get(),
+                portfolioCompactCache.get(),
+                portfolioCache.get(),
+                ownedPortfolioId);
+    }
+
+    @NotNull public UserProfileDTO addCash(
+            @NotNull OwnedPortfolioId ownedPortfolioId,
+            GooglePlayPurchaseDTO purchaseDTO)
     {
         basicCheck(ownedPortfolioId);
         return createAddCashProcessor(ownedPortfolioId).process(this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO));
     }
 
-    public MiddleCallback<UserProfileDTO> addCash(OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    @NotNull public MiddleCallback<UserProfileDTO> addCash(
+            @NotNull OwnedPortfolioId ownedPortfolioId,
+            GooglePlayPurchaseDTO purchaseDTO,
+            @Nullable Callback<UserProfileDTO> callback)
     {
         basicCheck(ownedPortfolioId);
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createAddCashProcessor(ownedPortfolioId));
@@ -127,15 +189,28 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Mark One User Portfolio">
-    public PortfolioDTO markPortfolio(OwnedPortfolioId ownedPortfolioId)
+    protected DTOProcessor<PortfolioDTO> createPortfolioMarkedProcessor(@NotNull UserBaseKey userBaseKey)
     {
-        basicCheck(ownedPortfolioId);
-        return this.portfolioService.markPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId);
+        return new DTOProcessorPortfolioMarked(userBaseKey, portfolioCache.get());
     }
 
-    public BaseMiddleCallback<PortfolioDTO> markPortfolio(OwnedPortfolioId ownedPortfolioId, Callback<PortfolioDTO> callback)
+    @NotNull public PortfolioDTO markPortfolio(
+            @NotNull OwnedPortfolioId ownedPortfolioId)
     {
-        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        basicCheck(ownedPortfolioId);
+        return createPortfolioMarkedProcessor(ownedPortfolioId.getUserBaseKey()).process(
+                this.portfolioService.markPortfolio(
+                        ownedPortfolioId.userId,
+                        ownedPortfolioId.portfolioId));
+    }
+
+    @NotNull public BaseMiddleCallback<PortfolioDTO> markPortfolio(
+            @NotNull OwnedPortfolioId ownedPortfolioId,
+            @Nullable Callback<PortfolioDTO> callback)
+    {
+        BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createPortfolioMarkedProcessor(ownedPortfolioId.getUserBaseKey()));
         basicCheck(ownedPortfolioId);
         this.portfolioServiceAsync.markPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
         return middleCallback;
