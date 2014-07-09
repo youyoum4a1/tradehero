@@ -7,6 +7,7 @@ import com.tradehero.th.models.push.baidu.BaiduPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.dagger.ForUser;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Provider;
@@ -52,7 +53,7 @@ public class PushModule
         return commonNotificationBuilder;
     }
 
-    @Provides @Singleton @MaxGroupNotifications IntPreference provideMaxGroupNotifications(SharedPreferences sharedPreferences)
+    @Provides @Singleton @MaxGroupNotifications IntPreference provideMaxGroupNotifications(@ForUser SharedPreferences sharedPreferences)
     {
         return new IntPreference(sharedPreferences, MAX_GROUP_NOTIFICATIONS, 3);
     }

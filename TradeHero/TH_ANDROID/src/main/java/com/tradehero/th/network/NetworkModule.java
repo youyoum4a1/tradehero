@@ -7,6 +7,7 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.retrofit.RetrofitModule;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.dagger.ForApp;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -23,7 +24,7 @@ public class NetworkModule
     public static final String SERVER_ENDPOINT_KEY = "SERVER_ENDPOINT_KEY";
 
     @Provides @Singleton @ServerEndpoint
-    StringPreference provideEndpointPreference(SharedPreferences sharedPreferences)
+    StringPreference provideEndpointPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.TRADEHERO_PROD_API_ENDPOINT);
     }

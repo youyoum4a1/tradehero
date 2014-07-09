@@ -24,6 +24,7 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -66,17 +67,13 @@ public class GuideActivity extends Activity
             Timber.e(e, null);
         }
 
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().open(custom_dimensions);
+        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().tagScreen(LocalyticsConstants.Splash);
     }
 
     @Override protected void onPause()
     {
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().close(custom_dimensions);
+        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().upload();
         super.onPause();
     }

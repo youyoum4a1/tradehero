@@ -120,11 +120,17 @@ public class FriendsInvitationFragment extends DashboardFragment
         super.onSaveInstanceState(outState);
     }
 
+    @Override public void onStop()
+    {
+        detachSocialLinkHelper();
+        detachSearchTask();
+        super.onStop();
+    }
+
     @Override
     public void onDestroyView()
     {
         savedState = saveState();
-        detachSocialLinkHelper();
 
         super.onDestroyView();
     }
