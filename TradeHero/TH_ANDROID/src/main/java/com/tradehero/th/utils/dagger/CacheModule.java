@@ -51,7 +51,8 @@ import javax.inject.Singleton;
 )
 public class CacheModule
 {
-    private static final String PREFERENCE_KEY = "th";
+    private static final String USER_PREFERENCE_KEY = "th_user";
+    private static final String APP_PREFERENCE_KEY = "th_app";
 
     @Provides @Singleton @ForPicasso LruCache providePicassoMemCache(Context context)
     {
@@ -60,22 +61,27 @@ public class CacheModule
         return new LruCache(context);
     }
 
-    @Provides @Singleton SharedPreferences provideSharePreferences(Context context)
+    @Provides @Singleton @ForUser SharedPreferences provideUserSharePreferences(Context context)
     {
-        return context.getSharedPreferences(PREFERENCE_KEY, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(USER_PREFERENCE_KEY, Context.MODE_PRIVATE);
     }
 
-    @Provides @Singleton @SingleCacheMaxSize IntPreference provideDefaultSingleCacheMaxSize(SharedPreferences preference)
+    @Provides @Singleton @ForApp SharedPreferences provideAPPSharePreferences(Context context)
+    {
+        return context.getSharedPreferences(APP_PREFERENCE_KEY, Context.MODE_PRIVATE);
+    }
+
+    @Provides @Singleton @SingleCacheMaxSize IntPreference provideDefaultSingleCacheMaxSize(@ForUser SharedPreferences preference)
     {
         return new IntPreference(preference, SingleCacheMaxSize.class.getName(), 1000);
     }
 
-    @Provides @Singleton @ListCacheMaxSize IntPreference provideListSingleCacheMaxSize(SharedPreferences preference)
+    @Provides @Singleton @ListCacheMaxSize IntPreference provideListSingleCacheMaxSize(@ForUser SharedPreferences preference)
     {
         return new IntPreference(preference, ListCacheMaxSize.class.getName(), 200);
     }
 
-    @Provides @Singleton @MessageListTimeline LongPreference provideMessageListTimeline(SharedPreferences preference)
+    @Provides @Singleton @MessageListTimeline LongPreference provideMessageListTimeline(@ForUser SharedPreferences preference)
     {
         return new LongPreference(preference, MessageListTimeline.class.getName(), -1L);
     }

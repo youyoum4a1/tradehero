@@ -40,6 +40,7 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.dagger.ForUser;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ public class THUser
     @Inject static CredentialsSetPreference credentialsSetPreference;
     @Inject static CurrentUserId currentUserId;
 
-    @Inject static Lazy<SharedPreferences> sharedPreferences;
+    @Inject @ForUser static Lazy<SharedPreferences> sharedPreferences;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionServiceWrapper> sessionServiceWrapper;
     @Inject static Lazy<UserProfileCache> userProfileCache;
@@ -365,10 +366,9 @@ public class THUser
         // clear all preferences
         mainCredentialsPreference.delete();
         credentialsSetPreference.delete();
-        //should not delete all data for some of them relate with app not only user by alex
-        //SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
-        //prefEditor.clear();
-        //prefEditor.commit();
+        SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
+        prefEditor.clear();
+        prefEditor.commit();
     }
 
     public static void setAuthenticationMode(AuthenticationMode authenticationMode)

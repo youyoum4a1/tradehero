@@ -26,6 +26,7 @@ import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.dagger.ForUser;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +42,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Inject protected LocalyticsSession localyticsSession;
 
     @Inject Provider<PrettyTime> prettyTime;
-    @Inject SharedPreferences preferences;
+    @Inject @ForUser SharedPreferences preferences;
 
     @InjectView(R.id.leaderboard_mark_user_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
     @InjectView(R.id.leaderboard_mark_user_screen) BetterViewAnimator leaderboardMarkUserScreen;
