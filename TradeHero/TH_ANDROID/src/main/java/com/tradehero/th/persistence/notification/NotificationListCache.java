@@ -1,22 +1,23 @@
 package com.tradehero.th.persistence.notification;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.notification.NotificationKeyList;
+import com.tradehero.th.api.notification.NotificationDTOList;
 import com.tradehero.th.api.notification.NotificationListKey;
-import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Singleton
-public class NotificationListCache extends StraightDTOCacheNew<NotificationListKey, NotificationKeyList>
+public class NotificationListCache extends StraightCutDTOCacheNew<
+        NotificationListKey,
+        PaginatedNotificationDTO,
+        PaginatedNotificationKey>
 {
     @NotNull private final Lazy<NotificationServiceWrapper> notificationService;
     @NotNull private final Lazy<NotificationCache> notificationCache;
@@ -34,27 +35,28 @@ public class NotificationListCache extends StraightDTOCacheNew<NotificationListK
     }
     //</editor-fold>
 
-    @Override @NotNull public NotificationKeyList fetch(@NotNull NotificationListKey key) throws Throwable
+    @Override @NotNull public PaginatedNotificationDTO fetch(@NotNull NotificationListKey key) throws Throwable
     {
-        return putInternal(notificationService.get().getNotifications(key));
+        return notificationService.get().getNotifications(key);
     }
 
-    @NotNull private NotificationKeyList putInternal(@NotNull PaginatedDTO<NotificationDTO> paginatedNotifications)
+    @NotNull @Override protected PaginatedNotificationKey cutValue(@NotNull NotificationListKey key, @NotNull PaginatedNotificationDTO value)
     {
-        List<NotificationDTO> notificationsList = paginatedNotifications.getData();
-        NotificationKeyList notificationKeyList = new NotificationKeyList();
+        notificationCache.get().put(value.getData());
+        return new PaginatedNotificationKey(value);
+    }
 
-        if (notificationsList != null)
+    @Nullable @Override protected PaginatedNotificationDTO inflateValue(@NotNull NotificationListKey key, @Nullable PaginatedNotificationKey cutValue)
+    {
+        if (cutValue == null)
         {
-            for (@NotNull NotificationDTO notificationDTO: notificationsList)
-            {
-                NotificationKey notificationDTOKey = notificationDTO.getDTOKey();
-                notificationKeyList.add(notificationDTOKey);
-
-                notificationCache.get().put(notificationDTOKey, notificationDTO);
-            }
+            return null;
         }
-
-        return notificationKeyList;
+        NotificationDTOList value = notificationCache.get().get(cutValue.getData());
+        if (value.hasNullItem())
+        {
+            return null;
+        }
+        return new PaginatedNotificationDTO(cutValue.getPagination(), value);
     }
 }
