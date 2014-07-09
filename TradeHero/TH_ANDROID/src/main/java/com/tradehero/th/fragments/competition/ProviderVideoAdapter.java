@@ -1,23 +1,17 @@
 package com.tradehero.th.fragments.competition;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.competition.key.HelpVideoId;
+import com.tradehero.th.adapters.ArrayDTOAdapterNew;
+import com.tradehero.th.api.competition.HelpVideoDTO;
 
-public class ProviderVideoAdapter extends ArrayDTOAdapter<HelpVideoId, ProviderVideoListItem>
+public class ProviderVideoAdapter extends ArrayDTOAdapterNew<HelpVideoDTO, ProviderVideoListItem>
 {
     //<editor-fold desc="Constructors">
-    public ProviderVideoAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public ProviderVideoAdapter(Context context, int layoutResourceId)
     {
-        super(context, inflater, layoutResourceId);
+        super(context, layoutResourceId);
     }
     //</editor-fold>
-
-    @Override protected void fineTune(int position, HelpVideoId videoId, final ProviderVideoListItem dtoView)
-    {
-        // Nothing to do
-    }
 
     @Override public boolean hasStableIds()
     {
@@ -26,7 +20,6 @@ public class ProviderVideoAdapter extends ArrayDTOAdapter<HelpVideoId, ProviderV
 
     @Override public long getItemId(int position)
     {
-        Object item = getItem(position);
-        return item == null ? 0 : item.hashCode();
+        return getItem(position).getHelpVideoId().hashCode();
     }
 }
