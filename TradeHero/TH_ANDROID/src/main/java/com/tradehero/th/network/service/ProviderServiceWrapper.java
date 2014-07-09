@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.HelpVideoDTO;
+import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
@@ -11,7 +11,6 @@ import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -122,28 +121,28 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">
-    public List<HelpVideoDTO> getHelpVideos(@NotNull HelpVideoListKey helpVideoListKey)
+    public HelpVideoDTOList getHelpVideos(@NotNull HelpVideoListKey helpVideoListKey)
     {
         return this.getHelpVideos(helpVideoListKey.getProviderId());
     }
 
-    @NotNull public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(
+    @NotNull public MiddleCallback<HelpVideoDTOList> getHelpVideos(
             @NotNull HelpVideoListKey helpVideoListKey,
-            @Nullable Callback<List<HelpVideoDTO>> callback)
+            @Nullable Callback<HelpVideoDTOList> callback)
     {
         return this.getHelpVideos(helpVideoListKey.getProviderId(), callback);
     }
 
-    public List<HelpVideoDTO> getHelpVideos(@NotNull ProviderId providerId)
+    public HelpVideoDTOList getHelpVideos(@NotNull ProviderId providerId)
     {
         return this.providerService.getHelpVideos(providerId.key);
     }
 
-    @NotNull public MiddleCallback<List<HelpVideoDTO>> getHelpVideos(
+    @NotNull public MiddleCallback<HelpVideoDTOList> getHelpVideos(
             @NotNull ProviderId providerId,
-            @Nullable Callback<List<HelpVideoDTO>> callback)
+            @Nullable Callback<HelpVideoDTOList> callback)
     {
-        MiddleCallback<List<HelpVideoDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<HelpVideoDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         this.providerServiceAsync.getHelpVideos(providerId.key, middleCallback);
         return middleCallback;
     }

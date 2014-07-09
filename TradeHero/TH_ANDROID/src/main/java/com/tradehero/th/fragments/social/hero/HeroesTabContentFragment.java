@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -17,7 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.social.HeroDTO;
-import com.tradehero.th.api.social.HeroIdExtWrapper;
+import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -32,7 +31,6 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
@@ -55,7 +53,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     private List<HeroDTO> heroDTOs;
 
     @Inject protected HeroManagerInfoFetcher infoFetcher;
-    @Inject public Lazy<HeroCache> heroCache;
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
     /** when no heroes */
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
@@ -358,7 +355,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         linkWith(userProfileDTO, true);
     }
 
-    abstract protected void display(HeroIdExtWrapper heroIds);
+    abstract protected void display(HeroDTOExtWrapper heroDTOExtWrapper);
 
     protected void display(List<HeroDTO> heroDTOs)
     {
@@ -469,9 +466,9 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     }
 
     private class HeroManagerHeroListCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper>
+            implements DTOCacheNew.Listener<UserBaseKey, HeroDTOExtWrapper>
     {
-        @Override public void onDTOReceived(UserBaseKey key, HeroIdExtWrapper value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HeroDTOExtWrapper value)
         {
             //displayProgress(false);
             onRefreshCompleted();
@@ -481,7 +478,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             notifyHeroesLoaded(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             displayProgress(false);
             setListShown(true);
@@ -499,7 +496,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         }
     }
 
-    private void notifyHeroesLoaded(HeroIdExtWrapper value)
+    private void notifyHeroesLoaded(HeroDTOExtWrapper value)
     {
         OnHeroesLoadedListener listener =
                 FragmentUtils.getParent(this, OnHeroesLoadedListener.class);
