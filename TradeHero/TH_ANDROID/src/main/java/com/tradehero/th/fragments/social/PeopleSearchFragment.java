@@ -167,6 +167,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
             mSearchTextField.setFocusable(true);
             mSearchTextField.setFocusableInTouchMode(true);
             mSearchTextField.requestFocus();
+            mSearchTextField.setHint(R.string.trending_search_empty_result_for_people);
             DeviceUtil.showKeyboardDelayed(mSearchTextField);
         }
     }
