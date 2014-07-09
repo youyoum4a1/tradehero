@@ -149,7 +149,7 @@ public class Navigator
             {
                 resetBackPressCount();
 
-                // TODO we should exit app completely while we don't handling memory, phone resources (battery for example) very well
+                // TODO we should exit app completely while we are not handling memory, phone resources (battery for example) very well
                 //if (context instanceof Activity)
                 //{
                 //    ((Activity) context).finish();

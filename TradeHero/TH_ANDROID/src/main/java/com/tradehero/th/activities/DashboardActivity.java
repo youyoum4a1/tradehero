@@ -55,7 +55,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -285,9 +285,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onResume();
 
         launchActions();
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().open(custom_dimensions);
+
+        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -313,9 +312,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onPause()
     {
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().close(custom_dimensions);
+        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().upload();
 
         super.onPause();
