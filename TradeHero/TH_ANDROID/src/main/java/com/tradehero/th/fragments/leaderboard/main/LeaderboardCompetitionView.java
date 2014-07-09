@@ -60,11 +60,7 @@ public class LeaderboardCompetitionView extends AspectRatioImageView
         this.communityPageDTO = dto;
         if (communityPageDTO != null)
         {
-            ProviderDTO cachedProviderDTO = providerCache.get().get(((ProviderCommunityPageDTO) communityPageDTO).providerId);
-            if (cachedProviderDTO != null)
-            {
-                linkWith(cachedProviderDTO, true);
-            }
+            linkWith(((ProviderCommunityPageDTO) communityPageDTO).providerDTO, true);
         }
     }
 

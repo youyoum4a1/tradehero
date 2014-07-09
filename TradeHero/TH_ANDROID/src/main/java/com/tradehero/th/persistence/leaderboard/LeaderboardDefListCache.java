@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.leaderboard;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
@@ -10,8 +10,9 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class LeaderboardDefListCache extends StraightDTOCacheNew<LeaderboardDefListKey, LeaderboardDefKeyList>
+@Singleton public class LeaderboardDefListCache extends StraightCutDTOCacheNew<LeaderboardDefListKey, LeaderboardDefDTOList, LeaderboardDefKeyList>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -32,23 +33,36 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override @NotNull public LeaderboardDefKeyList fetch(@NotNull LeaderboardDefListKey listKey) throws Throwable
+    @Override @NotNull public LeaderboardDefDTOList fetch(@NotNull LeaderboardDefListKey listKey) throws Throwable
     {
-        return putInternal(listKey, leaderboardServiceWrapper.getLeaderboardDefinitions());
+        LeaderboardDefDTOList received = leaderboardServiceWrapper.getLeaderboardDefinitions();
+        put(leaderboardDefDTOFactory.file(received)); // We have to do it here to avoid an infinite loop
+        return received;
     }
 
-    private LeaderboardDefKeyList putInternal(
-            @NotNull LeaderboardDefListKey listKey,
-            @NotNull LeaderboardDefDTOList allLeaderboardDefinitions)
+    @NotNull @Override protected LeaderboardDefKeyList cutValue(@NotNull LeaderboardDefListKey key, @NotNull LeaderboardDefDTOList value)
     {
-        put(leaderboardDefDTOFactory.file(allLeaderboardDefinitions));
-        leaderboardDefCache.put(allLeaderboardDefinitions);
-        return get(listKey);
+        leaderboardDefCache.put(value);
+        return value.createKeys();
     }
 
-    public void put(@NotNull Map<LeaderboardDefListKey, LeaderboardDefKeyList> keyMap)
+    @Nullable @Override protected LeaderboardDefDTOList inflateValue(@NotNull LeaderboardDefListKey key, @Nullable LeaderboardDefKeyList cutValue)
     {
-        for (Map.Entry<LeaderboardDefListKey, LeaderboardDefKeyList> entry : keyMap.entrySet())
+        if (cutValue == null)
+        {
+            return null;
+        }
+        LeaderboardDefDTOList value = leaderboardDefCache.get(cutValue);
+        if (value.hasNullItem())
+        {
+            return null;
+        }
+        return value;
+    }
+
+    public void put(@NotNull Map<LeaderboardDefListKey, LeaderboardDefDTOList> keyMap)
+    {
+        for (Map.Entry<LeaderboardDefListKey, LeaderboardDefDTOList> entry : keyMap.entrySet())
         {
             put(entry.getKey(), entry.getValue());
         }

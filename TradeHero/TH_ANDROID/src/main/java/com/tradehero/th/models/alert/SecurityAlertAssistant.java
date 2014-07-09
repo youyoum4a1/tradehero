@@ -2,8 +2,8 @@ package com.tradehero.th.models.alert;
 
 import android.os.AsyncTask;
 import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
@@ -144,27 +144,18 @@ public class SecurityAlertAssistant
         populate(alertCompactListCache.getOrFetchSync(userBaseKey));
     }
 
-    protected void populate(AlertIdList alertIds)
+    protected void populate(@NotNull AlertCompactDTOList alertCompactDTOs)
     {
-        if (alertIds != null)
+        for (@NotNull AlertCompactDTO alertCompactDTO : alertCompactDTOs)
         {
-            AlertCompactDTO alertCompactDTO;
-            for (AlertId alertId : alertIds)
+            if (alertCompactDTO.security != null)
             {
-                alertCompactDTO = alertCompactCache.get(alertId);
-                if (alertCompactDTO != null && alertCompactDTO.security != null)
-                {
-                    securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertId);
-                }
-                else
-                {
-                    Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertId);
-                }
+                securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO.getAlertId(userBaseKey));
             }
-        }
-        else
-        {
-            Timber.d("populate: alertIds were null");
+            else
+            {
+                Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertCompactDTO);
+            }
         }
     }
 
