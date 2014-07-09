@@ -124,10 +124,10 @@ public class SplashActivity extends SherlockActivity
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
         localyticsSession.get().tagEvent(LocalyticsConstants.LoadingScreen);
 
-        if (!firstLaunchPreference.get().booleanValue())
+        if (firstLaunchPreference.get().booleanValue())
         {
             ActivityHelper.launchGuide(SplashActivity.this);
-            firstLaunchPreference.set(true);
+            firstLaunchPreference.set(false);
             finish();
         }
         else

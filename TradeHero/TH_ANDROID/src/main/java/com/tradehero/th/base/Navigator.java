@@ -149,15 +149,15 @@ public class Navigator
             {
                 resetBackPressCount();
 
-                //if (context instanceof Activity)
-                //{
-                //    ((Activity) context).finish();
-                //}
-                //else
-                //{
+                if (context instanceof Activity)
+                {
+                    ((Activity) context).finish();
+                }
+                else
+                {
                     // Question: do we really need this?
-                    exitApp();
-                //}
+                    sendAppToBackground();
+                }
             }
             else
             {
@@ -177,7 +177,7 @@ public class Navigator
         }
     }
 
-    private void exitApp()
+    private void sendAppToBackground()
     {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
