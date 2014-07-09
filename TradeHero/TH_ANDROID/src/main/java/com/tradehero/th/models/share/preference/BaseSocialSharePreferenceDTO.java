@@ -1,5 +1,6 @@
 package com.tradehero.th.models.share.preference;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,10 +11,12 @@ public abstract class BaseSocialSharePreferenceDTO implements SocialSharePrefere
 
     private boolean isShareEnabled;
 
+    //<editor-fold desc="Constructors">
     protected BaseSocialSharePreferenceDTO(boolean isShareEnabled)
     {
         this.isShareEnabled = isShareEnabled;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {
@@ -25,7 +28,7 @@ public abstract class BaseSocialSharePreferenceDTO implements SocialSharePrefere
         return (o instanceof SocialSharePreferenceDTO) && (getSocialNetworkEnum().equals(((SocialSharePreferenceDTO) o).getSocialNetworkEnum()));
     }
 
-    @Override public JSONObject toJSONObject() throws JSONException
+    @Override @NotNull public JSONObject toJSONObject() throws JSONException
     {
         JSONObject o = new JSONObject();
         o.put(KEY_SOCIAL_NETWORK_ENUM, getSocialNetworkEnum());
