@@ -1,6 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
-import com.tradehero.th.api.social.HeroIdExtWrapper;
+import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.persistence.social.HeroType;
 
 public class PremiumHeroFragment extends HeroesTabContentFragment
@@ -10,8 +10,8 @@ public class PremiumHeroFragment extends HeroesTabContentFragment
         return HeroType.PREMIUM;
     }
 
-    @Override protected void display(HeroIdExtWrapper heroIds)
+    @Override protected void display(HeroDTOExtWrapper heroDTOExtWrapper)
     {
-        display(heroCache.get().get(heroIds.activePremiumHeroes));
+        display(heroDTOExtWrapper.activePremiumHeroes);
     }
 }
