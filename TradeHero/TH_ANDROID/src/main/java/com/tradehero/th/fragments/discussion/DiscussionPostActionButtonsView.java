@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SocialSharePreferenceHelper;
+import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
 import javax.inject.Inject;
 
 public class DiscussionPostActionButtonsView extends LinearLayout

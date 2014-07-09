@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:gravity="center"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_small"
             tools:text="sub title goes here"
             />
 
