@@ -8,7 +8,7 @@ import org.json.JSONObject;
 public interface SocialSharePreferenceDTO
 {
     boolean isShareEnabled();
-    JSONObject toJSONObject() throws JSONException;
+    @NotNull JSONObject toJSONObject() throws JSONException;
     @NotNull SocialNetworkEnum getSocialNetworkEnum();
     void setIsShareEnabled(boolean isShareEnabled);
 }
