@@ -14,14 +14,12 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -29,7 +27,6 @@ import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.JSONCredentials;
@@ -39,7 +36,6 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
@@ -48,7 +44,6 @@ import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.persistence.prefs.LanguageCode;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -58,7 +53,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -67,15 +61,13 @@ import timber.log.Timber;
         "refer-friend/:SocialID/:UserID",
         "user/:UserID/follow/free"
 })
-public class HomeFragment extends BaseWebViewFragment
+public final class HomeFragment extends BaseWebViewFragment
 {
     @InjectView(android.R.id.progress) View progressBar;
     @InjectView(R.id.main_content_wrapper) BetterViewAnimator mainContentWrapper;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject @LanguageCode String languageCode;
-    @Inject CurrentUserId currentUserId;
-    @Inject HomeContentCache homeContentCache;
 
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject Lazy<FacebookUtils> facebookUtils;
@@ -87,6 +79,8 @@ public class HomeFragment extends BaseWebViewFragment
     @Inject SocialServiceWrapper socialServiceWrapper;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject UserProfileCache userProfileCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject HomeContentCache homeContentCache;
 
     protected SocialFriendHandler socialFriendHandler;
     private ProgressDialog progressDialog;
@@ -94,12 +88,10 @@ public class HomeFragment extends BaseWebViewFragment
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private MiddleCallback<Response> middleCallbackInvite;
 
-    private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        homeContentCacheListener = createHomeContentCacheListener();
     }
 
     @Override protected int getLayoutResId()
@@ -114,84 +106,6 @@ public class HomeFragment extends BaseWebViewFragment
 
         webView.getSettings().setBuiltInZoomControls(false);
         webView.getSettings().setSupportZoom(false);
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        homeContentCache.register(currentUserId.toUserBaseKey(), homeContentCacheListener);
-        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
-    }
-
-    @Override public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-
-        reloadWebView();
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(R.string.dashboard_home);
-        inflater.inflate(R.menu.menu_refresh_button, menu);
-    }
-
-    @Override public boolean onOptionsItemSelected(@NotNull MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.btn_fresh:
-                homeContentCache.invalidate(currentUserId.toUserBaseKey());
-                reloadWebView();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override public void onStop()
-    {
-        detachHomeCacheListener();
-        super.onStop();
-    }
-
-    @Override public void onDestroyView()
-    {
-        ButterKnife.reset(this);
-        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
-        super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        homeContentCacheListener = null;
-        super.onDestroy();
-    }
-
-    private void detachHomeCacheListener()
-    {
-        homeContentCache.unregister(currentUserId.toUserBaseKey(), homeContentCacheListener);
-    }
-
-    private void reloadWebView()
-    {
-        reloadWebView(homeContentCache.get(currentUserId.toUserBaseKey()));
-    }
-
-    private void reloadWebView(@Nullable HomeContentDTO homeContentDTO)
-    {
-        String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
-
-        if (homeContentDTO != null)
-        {
-            Timber.d("Getting home app data from cache!");
-            webView.loadDataWithBaseURL(Constants.BASE_STATIC_CONTENT_URL, homeContentDTO.content, "text/html", "", appHomeLink);
-        }
-    }
-
-    public String createTypedAuthParameters(@NotNull CredentialsDTO credentialsDTO)
-    {
-        return String.format("%1$s %2$s", credentialsDTO.getAuthType(), credentialsDTO.getAuthHeaderParameter());
     }
 
     @Override protected void onProgressChanged(WebView view, int newProgress)
@@ -209,31 +123,41 @@ public class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    //<editor-fold desc="Listeners">
-    @NotNull private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> createHomeContentCacheListener()
+    @Override public void onActivityCreated(Bundle savedInstanceState)
     {
-        return new HomeContentCacheListener();
+        super.onActivityCreated(savedInstanceState);
+
+        webView.reload();
     }
 
-    private class HomeContentCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, HomeContentDTO>
+    @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
     {
-        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
-        {
-            reloadWebView(value);
-        }
-
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
-        {
-            reloadWebView(value);
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-            // do nothing
-        }
+        super.onCreateOptionsMenu(menu, inflater);
+        setActionBarTitle(R.string.dashboard_home);
+        inflater.inflate(R.menu.menu_refresh_button, menu);
     }
-    //</editor-fold>
 
+    @Override public boolean onOptionsItemSelected(@NotNull MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.btn_fresh:
+                homeContentCache.invalidate(currentUserId.toUserBaseKey());
+                webView.reload();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        super.onDestroyView();
+    }
+
+
+    //<editor-fold desc="Windy's stuff, to be refactored">
     public void createInviteInHomePage(String social, String userid)
     {
         if (social == null) return;
@@ -512,4 +436,5 @@ public class HomeFragment extends BaseWebViewFragment
         // TODO
         THToast.show(R.string.follow_friend_request_error);
     }
+    //</editor-fold>
 }
