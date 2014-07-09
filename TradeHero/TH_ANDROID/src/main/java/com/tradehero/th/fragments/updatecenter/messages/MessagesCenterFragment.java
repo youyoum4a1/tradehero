@@ -16,16 +16,17 @@ import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DirtyNewFirstMessageHeaderDTOComparator;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.MessageHeaderIdList;
+import com.tradehero.th.api.discussion.MessageHeaderDTOList;
+import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -38,17 +39,16 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,7 +65,6 @@ public class MessagesCenterFragment extends DashboardFragment
         ResideMenu.OnMenuListener
 {
     @Inject Lazy<MessageHeaderListCache> messageListCache;
-    @Inject MessageHeaderCache messageHeaderCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<DiscussionListCacheNew> discussionListCache;
     @Inject Lazy<DiscussionCache> discussionCache;
@@ -74,14 +73,14 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
 
-    @Nullable private DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> fetchMessageListListener;
-    @Nullable private DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> fetchMessageRefreshListListener;
+    @Nullable private DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> fetchMessageListListener;
+    @Nullable private DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> fetchMessageRefreshListListener;
     private MessageListKey nextOlderMessageListKey;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
-    @Nullable private MessageHeaderIdList alreadyFetched;
+    @Nullable private MessageHeaderDTOList alreadyFetched;
     private MessagesView messagesView;
     private SwipeListener swipeListener;
-    private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
+    @NotNull private MiddleCallbackWeakList<Response> middleCallbackList;
     @Nullable private MessageListAdapter messageListAdapter;
     @Nullable private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
@@ -91,7 +90,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        middleCallbackMap = new HashMap<>();
+        middleCallbackList = new MiddleCallbackWeakList<>();
         fetchMessageListListener = createMessageHeaderIdListCacheListener();
         fetchMessageRefreshListListener = createRefreshMessageHeaderIdListCacheListener();
         registerMessageReceiver();
@@ -245,14 +244,14 @@ public class MessagesCenterFragment extends DashboardFragment
         );
     }
 
-    @Override public void onUserClicked(@NotNull MessageHeaderId messageHeaderId)
+    @Override public void onUserClicked(@NotNull MessageHeaderDTO messageHeaderDTO)
     {
-        pushUserProfileFragment(messageHeaderCache.get(messageHeaderId));
+        pushUserProfileFragment(messageHeaderDTO);
     }
 
-    @Override public void onDeleteClicked(@NotNull MessageHeaderId messageHeaderId)
+    @Override public void onDeleteClicked(@NotNull MessageHeaderDTO messageHeaderDTO)
     {
-        removeMessageOnServer(messageHeaderId);
+        removeMessageOnServer(messageHeaderDTO);
     }
 
     @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
@@ -279,8 +278,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     protected void pushMessageFragment(int position)
     {
-        MessageHeaderDTO messageHeaderDTO =
-                messageHeaderCache.get(getListAdapter().getItem(position));
+        MessageHeaderDTO messageHeaderDTO = getListAdapter().getItem(position);
         Timber.d("pushMessageFragment=%s",messageHeaderDTO);
         //updateReadStatus(messageHeaderDTO);
 
@@ -409,26 +407,27 @@ public class MessagesCenterFragment extends DashboardFragment
         messageListCache.get().unregister(fetchMessageRefreshListListener);
     }
 
-    private void appendMessagesList(MessageHeaderIdList messageKeys)
+    private void appendMessagesList(List<MessageHeaderDTO> messageHeaderDTOs)
     {
         if (messageListAdapter == null)
         {
-            resetMessagesList(messageKeys);
+            resetMessagesList(messageHeaderDTOs);
         }
         else
         {
-            messageListAdapter.appendTail(messageKeys);
+            messageListAdapter.appendTail(messageHeaderDTOs);
             messageListAdapter.notifyDataSetChanged();
         }
     }
 
-    private void resetMessagesList(MessageHeaderIdList messageKeys)
+    private void resetMessagesList(List<MessageHeaderDTO> messageHeaderDTOs)
     {
         messageListAdapter =
                 new MessageListAdapter(
                         getActivity(),
-                        messageKeys,
-                        R.layout.message_list_item_wrapper);
+                        messageHeaderDTOs,
+                        R.layout.message_list_item_wrapper,
+                        new DirtyNewFirstMessageHeaderDTOComparator());
         messageListAdapter.setElementClickedListener(this);
 
         messagesView.getListView().setAdapter(messageListAdapter);
@@ -473,40 +472,35 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void removeMessageIfNecessary(int position)
     {
-        MessageHeaderId messageHeaderId = getListAdapter().getItem(position);
-        removeMessageOnServer(messageHeaderId);
+        MessageHeaderDTO messageHeaderDTO = getListAdapter().getItem(position);
+        removeMessageOnServer(messageHeaderDTO);
     }
 
-    /**
-     *
-     * @param messageHeaderId
-     */
-    private void removeMessageOnServer(@NotNull MessageHeaderId messageHeaderId)
+    private void removeMessageOnServer(@NotNull MessageHeaderDTO messageHeaderDTO)
     {
         unsetDeletionMiddleCallback();
-        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
-                messageHeaderId,
+                messageHeaderDTO.getDTOKey(),
                 messageHeaderDTO.senderUserId,
                 messageHeaderDTO.recipientUserId,
                 messageHeaderDTO.unread ? currentUserId.toUserBaseKey() : null,
-                new MessageDeletionCallback(messageHeaderId));
+                new MessageDeletionCallback(messageHeaderDTO));
     }
 
-    private void saveNewPage(MessageHeaderIdList value)
+    private void saveNewPage(List<MessageHeaderDTO> value)
     {
         if (alreadyFetched == null)
         {
-            alreadyFetched = new MessageHeaderIdList();
+            alreadyFetched = new MessageHeaderDTOList();
         }
         alreadyFetched.addAll(value);
     }
 
-    private void resetSavedPage(MessageHeaderIdList value)
+    private void resetSavedPage(List<MessageHeaderDTO> value)
     {
         if (alreadyFetched == null)
         {
-            alreadyFetched = new MessageHeaderIdList();
+            alreadyFetched = new MessageHeaderDTOList();
         }
         else
         {
@@ -515,14 +509,14 @@ public class MessagesCenterFragment extends DashboardFragment
         alreadyFetched.addAll(value);
     }
 
-    private void displayContent(MessageHeaderIdList value)
+    private void displayContent(List<MessageHeaderDTO> value)
     {
         messagesView.showListView();
         appendMessagesList(value);
         saveNewPage(value);
     }
 
-    private void resetContent(MessageHeaderIdList value)
+    private void resetContent(List<MessageHeaderDTO> value)
     {
         messagesView.showListView();
         resetMessagesList(value);
@@ -545,26 +539,18 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesView.showLoadingView(onlyShowLoadingView);
     }
 
-    private void refreshCache(@NotNull MessageHeaderIdList data)
-    {
-        MessageListKey messageListKey =
-                new MessageListKey(MessageListKey.FIRST_PAGE);
-        messageListCache.get().invalidateAll();
-        messageListCache.get().put(messageListKey, data);
-    }
-
-    @NotNull protected DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> createMessageHeaderIdListCacheListener()
+    @NotNull protected DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> createMessageHeaderIdListCacheListener()
     {
         return new MessageFetchListener();
     }
 
-    class MessageFetchListener implements DTOCacheNew.HurriedListener<MessageListKey, MessageHeaderIdList>
+    class MessageFetchListener implements DTOCacheNew.HurriedListener<MessageListKey, ReadablePaginatedMessageHeaderDTO>
     {
         @Override public void onPreCachedDTOReceived(
                 @NotNull MessageListKey key,
-                @NotNull MessageHeaderIdList value)
+                @NotNull ReadablePaginatedMessageHeaderDTO value)
         {
-            if (value.size() == 0)
+            if (value.getData().size() == 0)
             {
                 hasMorePage = false;
             }
@@ -572,15 +558,15 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 return;
             }
-            displayContent(value);
+            displayContent(value.getData());
         }
 
         @Override
         public void onDTOReceived(
                 @NotNull MessageListKey key,
-                @NotNull MessageHeaderIdList value)
+                @NotNull ReadablePaginatedMessageHeaderDTO value)
         {
-            if (value.size() == 0)
+            if (value.getData().size() == 0)
             {
                 hasMorePage = false;
             }
@@ -589,7 +575,7 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 return;
             }
-            displayContent(value);
+            displayContent(value.getData());
             //TODO how to invalidate the old data ..
         }
 
@@ -616,26 +602,25 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    @NotNull protected DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> createRefreshMessageHeaderIdListCacheListener()
+    @NotNull protected DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> createRefreshMessageHeaderIdListCacheListener()
     {
         return new RefreshMessageFetchListener();
     }
 
     class RefreshMessageFetchListener
-            implements DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList>
+            implements DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO>
     {
         @Override
-        public void onDTOReceived(MessageListKey key, @NotNull MessageHeaderIdList value)
+        public void onDTOReceived(@NotNull MessageListKey key, @NotNull ReadablePaginatedMessageHeaderDTO value)
         {
             requestUpdateTabCounter();
-            hasMorePage = (value.size() > 0);
-            refreshCache(value);
+            hasMorePage = (value.getData().size() > 0);
             resetPageNumber();
             if (getView() == null)
             {
                 return;
             }
-            resetContent(value);
+            resetContent(value.getData());
             onRefreshCompleted();
             //TODO how to invalidate the old data ..
         }
@@ -719,14 +704,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void unsetMarkAsReadMiddleCallbacks()
     {
-        if (middleCallbackMap != null)
-        {
-            for (MiddleCallback<Response> middleCallback : middleCallbackMap.values())
-            {
-                middleCallback.setPrimaryCallback(null);
-            }
-            middleCallbackMap.clear();
-        }
+        middleCallbackList.detach();
     }
 
     private void updateReadStatus(@Nullable MessageHeaderDTO messageHeaderDTO)
@@ -745,49 +723,38 @@ public class MessagesCenterFragment extends DashboardFragment
         }
         for (int i = firstVisibleItem; i < firstVisibleItem + visibleItemCount; ++i)
         {
-            MessageHeaderId messageHeaderId = messageListAdapter.getItem(i);
-            if (messageHeaderId != null)
+            MessageHeaderDTO messageHeaderDTO = messageListAdapter.getItem(i);
+            if (messageHeaderDTO != null && messageHeaderDTO.unread)
             {
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
-
-                if (messageHeaderDTO != null && messageHeaderDTO.unread)
-                {
-                    reportMessageRead(messageHeaderDTO);
-                }
+                reportMessageRead(messageHeaderDTO);
             }
         }
     }
 
     private void reportMessageRead(@NotNull MessageHeaderDTO messageHeaderDTO)
     {
-        MiddleCallback<Response> middleCallback = middleCallbackMap.get(messageHeaderDTO.id);
-        if (middleCallback != null)
-        {
-            middleCallback.setPrimaryCallback(null);
-        }
-        middleCallbackMap.put(
-                messageHeaderDTO.id,
+        middleCallbackList.add(
                 messageServiceWrapper.get().readMessage(
                         messageHeaderDTO.id,
                         messageHeaderDTO.senderUserId,
                         messageHeaderDTO.recipientUserId,
                         messageHeaderDTO.getDTOKey(),
                         currentUserId.toUserBaseKey(),
-                        createMessageAsReadCallback(messageHeaderDTO.id)));
+                        createMessageAsReadCallback(messageHeaderDTO)));
     }
 
-    @NotNull private Callback<Response> createMessageAsReadCallback(int pushId)
+    @NotNull private Callback<Response> createMessageAsReadCallback(MessageHeaderDTO messageHeaderDTO)
     {
-        return new MessageMarkAsReadCallback(pushId);
+        return new MessageMarkAsReadCallback(messageHeaderDTO);
     }
 
     private class MessageMarkAsReadCallback implements Callback<Response>
     {
-        private final int messageId;
+        private final MessageHeaderDTO messageHeaderDTO;
 
-        public MessageMarkAsReadCallback(int messageId)
+        public MessageMarkAsReadCallback(MessageHeaderDTO messageHeaderDTO)
         {
-            this.messageId = messageId;
+            this.messageHeaderDTO = messageHeaderDTO;
         }
 
         @Override public void success(@NotNull Response response, Response response2)
@@ -798,22 +765,17 @@ public class MessagesCenterFragment extends DashboardFragment
                 // TODO update title
 
                 // mark it as read in the cache
-                MessageHeaderId messageHeaderId = new MessageHeaderId(messageId);
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
                 if (messageHeaderDTO != null && messageHeaderDTO.unread)
                 {
                     messageHeaderDTO.unread = false;
-                    messageHeaderCache.put(messageHeaderId, messageHeaderDTO);
 
                     requestUpdateTabCounter();
                 }
-                middleCallbackMap.remove(messageId);
             }
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            Timber.d("Report failure for Message: %d", messageId);
         }
     }
 
@@ -826,12 +788,12 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private class MessageDeletionCallback implements Callback<Response>
     {
-        private final MessageHeaderId messageId;
+        @NotNull private final MessageHeaderDTO messageHeaderDTO;
 
         //<editor-fold desc="Constructors">
-        MessageDeletionCallback(MessageHeaderId messageId)
+        MessageDeletionCallback(@NotNull MessageHeaderDTO messageHeaderDTO)
         {
-            this.messageId = messageId;
+            this.messageHeaderDTO = messageHeaderDTO;
         }
         //</editor-fold>
 
@@ -842,14 +804,14 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 if (alreadyFetched != null)
                 {
-                    alreadyFetched.remove(messageId);
+                    alreadyFetched.remove(messageHeaderDTO);
                 }
 
                 requestUpdateTabCounter();
                 MessageListAdapter adapter = getListAdapter();
                 if (adapter != null)
                 {
-                    adapter.remove(messageId);
+                    adapter.remove(messageHeaderDTO);
                     adapter.notifyDataSetChanged();
                 }
             }

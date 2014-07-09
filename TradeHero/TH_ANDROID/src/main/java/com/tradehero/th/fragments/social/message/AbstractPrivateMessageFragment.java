@@ -314,7 +314,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             implements DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO>
     {
         @Override
-        public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value)
+        public void onDTOReceived(@NotNull MessageHeaderId key, @NotNull MessageHeaderDTO value)
         {
             Timber.d("MessageHeaderDTO=%s", value);
             setActionBarTitle(value.title);
@@ -325,7 +325,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             }
         }
 
-        @Override public void onErrorThrown(MessageHeaderId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull MessageHeaderId key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }
