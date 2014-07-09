@@ -162,6 +162,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             navigator.goToTab(INITIAL_TAB);
         }
+
+        if (getIntent() != null)
+        {
+            processNotificationDataIfPresence(getIntent().getExtras());
+        }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
@@ -294,6 +299,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onNewIntent(intent);
 
         Bundle extras = intent.getExtras();
+        processNotificationDataIfPresence(extras);
+    }
+
+    private void processNotificationDataIfPresence(Bundle extras)
+    {
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
             progressDialog = progressDialogUtil.get().show(this, "", "");
