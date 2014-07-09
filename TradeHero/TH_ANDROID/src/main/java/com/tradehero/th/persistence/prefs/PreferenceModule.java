@@ -10,6 +10,8 @@ import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
+import com.tradehero.th.utils.dagger.ForApp;
+import com.tradehero.th.utils.dagger.ForUser;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
@@ -39,7 +41,7 @@ public class PreferenceModule
 
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SOCIAL_SHARE_FLAG";
 
-    @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
+    @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(@ForUser SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
         MainCredentialsPreference newPrefs = new MainCredentialsPreference(credentialsDTOFactory, sharedPreferences, PREF_MAIN_CREDENTIALS_KEY, "");
 
@@ -72,7 +74,7 @@ public class PreferenceModule
         return mainCredentialsPreference;
     }
 
-    @Provides @Singleton CredentialsSetPreference provideSavedPrefCredentials(SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
+    @Provides @Singleton CredentialsSetPreference provideSavedPrefCredentials(@ForUser SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
         return new CredentialsSetPreference(credentialsDTOFactory, sharedPreferences, PREF_SAVED_CREDENTIALS_KEY, new HashSet<String>());
     }
@@ -82,22 +84,22 @@ public class PreferenceModule
         return credentialsSetPreference;
     }
 
-    @Provides @Singleton @ResetHelpScreens BooleanPreference provideResetHelpScreen(SharedPreferences sharedPreferences)
+    @Provides @Singleton @ResetHelpScreens BooleanPreference provideResetHelpScreen(@ForUser SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_RESET_HELP_SCREENS, false);
     }
 
-    @Provides @Singleton @SavedPushDeviceIdentifier StringPreference provideSavedPushIdentifier(SharedPreferences sharedPreferences)
+    @Provides @Singleton @SavedPushDeviceIdentifier StringPreference provideSavedPushIdentifier(@ForUser SharedPreferences sharedPreferences)
     {
         return new StringPreference(sharedPreferences, PREF_SAVED_PUSH_IDENTIFIER, "");
     }
 
-    @Provides @Singleton @BaiduPushDeviceIdentifierSentFlag BooleanPreference providePushIdentifierSentFlag(SharedPreferences sharedPreferences)
+    @Provides @Singleton @BaiduPushDeviceIdentifierSentFlag BooleanPreference providePushIdentifierSentFlag(@ForUser SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_PUSH_IDENTIFIER_SENT_FLAG, false);
     }
 
-    @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(SharedPreferences sharedPreferences)
+    @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, true);
     }
