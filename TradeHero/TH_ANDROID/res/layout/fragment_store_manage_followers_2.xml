@@ -42,7 +42,7 @@
         android:drawablePadding="5dp"
         android:layout_weight="1"
         android:paddingTop="5dp"
-        android:textSize="15sp"
+        android:textSize="@dimen/text_medium"
         android:textColor="@color/white"
         android:background="@drawable/message_button_bg_selector"
         android:paddingBottom="5dp"

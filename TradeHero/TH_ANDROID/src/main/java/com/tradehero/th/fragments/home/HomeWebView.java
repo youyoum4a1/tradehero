@@ -39,12 +39,17 @@ public final class HomeWebView extends WebView
 
     @Override public void reload()
     {
-        reloadWebView();
+        forceReloadWebView();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        forceReloadWebView();
+    }
+
+    private void forceReloadWebView()
+    {
         homeContentCacheListener = createHomeContentCacheListener();
         homeContentCache.register(currentUserId.toUserBaseKey(), homeContentCacheListener);
         homeContentCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);

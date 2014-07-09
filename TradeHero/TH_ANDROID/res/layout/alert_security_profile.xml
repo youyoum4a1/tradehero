@@ -116,7 +116,7 @@
         android:layout_toRightOf="@id/current_price"
         android:layout_marginLeft="4dp"
         tools:text="as of 2 Feb 2014 16:12"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_xsmall"
         android:maxLines="1"
         />
 

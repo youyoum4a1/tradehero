@@ -81,6 +81,10 @@ public class THWebViewClient extends WebViewClient
                 else if (uri.getHost().equalsIgnoreCase(context.getString(R.string.intent_host_web)))
                 {
                     String redirectUrl = uri.getQueryParameter("url");
+                    if (redirectUrl != null)
+                    {
+                        redirectUrl = android.net.Uri.decode(redirectUrl);
+                    }
                     if (redirectUrl != null && context instanceof DashboardNavigatorActivity)
                     {
                         Timber.d("Opening this page: %s", redirectUrl);
