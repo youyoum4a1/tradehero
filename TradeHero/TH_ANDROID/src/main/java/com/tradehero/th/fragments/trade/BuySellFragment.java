@@ -1883,6 +1883,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             navigator.popFragment();
 
             Bundle args = new Bundle();
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null)
+            {
+                PositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            }
             PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
             PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
             navigator.pushFragment(PositionListFragment.class, args);
