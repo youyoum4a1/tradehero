@@ -32,7 +32,7 @@
       android:layout_height="wrap_content"
       android:text="@string/authentication_confirm"
       android:layout_marginTop="5dip"
-      android:textSize="24sp"
+      android:textSize="@dimen/text_xxlarge"
       android:textColor="@color/white"
       android:textStyle="bold"
       android:background="@drawable/authentication_welcome_newuser_button"

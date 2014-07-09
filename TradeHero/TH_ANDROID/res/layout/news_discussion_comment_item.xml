@@ -45,7 +45,7 @@
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dp"
           android:textColor="@color/black"
-          android:textSize="15sp"
+          android:textSize="@dimen/text_medium"
           android:textStyle="bold"
           android:ellipsize="middle"
           android:singleLine="true"
@@ -77,7 +77,7 @@
         tools:text="Tho Nguyen is the world best trader!"
         android:textColorLink="@color/timeline_item_link"
         android:textColor="@color/timeline_item"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_xsmall"
         android:textStyle="normal"
         />
   </RelativeLayout>

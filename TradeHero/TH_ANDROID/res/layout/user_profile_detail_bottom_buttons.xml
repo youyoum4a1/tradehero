@@ -27,7 +27,7 @@
           android:layout_height="wrap_content"
           android:gravity="center"
           android:textColor="@color/black"
-          android:textSize="20sp"
+          android:textSize="@dimen/text_xlarge"
           android:textStyle="bold"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
           android:drawableTop="@drawable/icn_followers"
@@ -41,7 +41,7 @@
           android:layout_marginTop="0dp"
           android:text="@string/user_profile_count_followers"
           android:textColor="@color/text_gray_normal"
-          android:textSize="12sp"
+          android:textSize="@dimen/text_xsmall"
           android:textStyle="normal"/>
     </LinearLayout>
 
@@ -61,7 +61,7 @@
           android:layout_height="wrap_content"
           android:gravity="center"
           android:textColor="@color/black"
-          android:textSize="20sp"
+          android:textSize="@dimen/text_xlarge"
           android:textStyle="bold"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
           android:drawableTop="@drawable/icn_heroes"
@@ -75,7 +75,7 @@
           android:gravity="center_vertical"
           android:text="@string/user_profile_count_heroes"
           android:textColor="@color/text_gray_normal"
-          android:textSize="12sp"
+          android:textSize="@dimen/text_xsmall"
           android:textStyle="normal"
           />
 
@@ -96,7 +96,7 @@
           android:layout_height="wrap_content"
           android:gravity="center"
           android:textColor="@color/black"
-          android:textSize="20sp"
+          android:textSize="@dimen/text_xlarge"
           android:textStyle="bold"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
           android:drawableTop="@drawable/icn_trades"
@@ -110,7 +110,7 @@
           android:layout_marginTop="0dp"
           android:text="@string/user_profile_count_trades"
           android:textColor="@color/text_gray_normal"
-          android:textSize="12sp"
+          android:textSize="@dimen/text_xsmall"
           android:textStyle="normal"
           />
 
@@ -131,7 +131,7 @@
           android:layout_height="wrap_content"
           android:gravity="center"
           android:textColor="@color/black"
-          android:textSize="20sp"
+          android:textSize="@dimen/text_xlarge"
           android:textStyle="bold"
           android:drawableTop="@drawable/icn_exchanges"
           tools:text="2"
@@ -144,7 +144,7 @@
           android:gravity="center_vertical"
           android:text="@string/user_profile_count_exchanges"
           android:textColor="@color/text_gray_normal"
-          android:textSize="12sp"
+          android:textSize="@dimen/text_xsmall"
           android:textStyle="normal"
           />
 

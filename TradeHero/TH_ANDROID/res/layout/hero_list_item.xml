@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:text=""
-        android:textSize="10sp"
+        android:textSize="@dimen/text_xsmall"
         />
 
   </LinearLayout>
