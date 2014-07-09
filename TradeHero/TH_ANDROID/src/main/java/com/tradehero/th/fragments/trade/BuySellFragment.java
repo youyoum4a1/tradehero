@@ -1695,7 +1695,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void shareToWeChat()
     {
-        if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, false))
+        //if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, false))
+        if(mBtnShareWeChat.isChecked())
         {
             WeChatDTO weChatDTO = new WeChatDTO();
             weChatDTO.id = securityCompactDTO.id;
