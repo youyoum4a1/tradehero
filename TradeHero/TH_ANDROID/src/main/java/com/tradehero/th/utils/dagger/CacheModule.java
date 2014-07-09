@@ -51,7 +51,7 @@ import javax.inject.Singleton;
 )
 public class CacheModule
 {
-    private static final String USER_PREFERENCE_KEY = "th_user";
+    private static final String USER_PREFERENCE_KEY = "th";
     private static final String APP_PREFERENCE_KEY = "th_app";
 
     @Provides @Singleton @ForPicasso LruCache providePicassoMemCache(Context context)
