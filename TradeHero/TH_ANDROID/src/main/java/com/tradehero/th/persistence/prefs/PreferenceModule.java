@@ -99,6 +99,6 @@ public class PreferenceModule
 
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(SharedPreferences sharedPreferences)
     {
-        return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, false);
+        return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, true);
     }
 }

@@ -47,19 +47,19 @@ public class SplashActivityTest
 
     @Test public void shouldOpenGuideScreenOnFirstLaunch()
     {
-        firstLaunchPreference.set(false);
+        firstLaunchPreference.set(true);
         SplashActivity activity = Robolectric.setupActivity(SplashActivity.class);
         ShadowActivity shadowSplashActivity = shadowOf(activity);
         assertThat(activity.isFinishing()).isTrue();
         assertThat(shadowSplashActivity.getNextStartedActivity().getComponent().getClassName()).isEqualTo(GuideActivity.class.getName());
-        assertThat(firstLaunchPreference.get()).isTrue();
+        assertThat(firstLaunchPreference.get()).isFalse();
     }
 
     @Test public void shouldNotOpenGuideScreenAfterFirstLaunch()
     {
-        firstLaunchPreference.set(true);
+        firstLaunchPreference.set(false);
         SplashActivity activity = Robolectric.setupActivity(SplashActivity.class);
         assertThat(activity.isFinishing()).isFalse();
-        assertThat(firstLaunchPreference.get()).isTrue();
+        assertThat(firstLaunchPreference.get()).isFalse();
     }
 }
