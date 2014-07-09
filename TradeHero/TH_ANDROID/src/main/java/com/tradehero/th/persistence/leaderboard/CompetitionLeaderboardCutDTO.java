@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.leaderboard;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.PrizeDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.util.List;
@@ -40,8 +41,17 @@ class CompetitionLeaderboardCutDTO implements DTO
 
     public CompetitionLeaderboardDTO create(@NotNull LeaderboardCache leaderboardCache)
     {
+        LeaderboardDTO leaderboardDTO = null;
+        if (leaderboardKey != null)
+        {
+            leaderboardDTO = leaderboardCache.get(leaderboardKey);
+            if (leaderboardDTO == null)
+            {
+                return null;
+            }
+        }
         return new CompetitionLeaderboardDTO(
-                leaderboardKey != null ? leaderboardCache.get(leaderboardKey) : null,
+                leaderboardDTO,
                 ads,
                 adFrequencyRows,
                 adStartRow,

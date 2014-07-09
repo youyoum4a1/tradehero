@@ -1,10 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import java.util.List;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -18,7 +17,7 @@ interface CompetitionServiceAsync
     @GET("/providers/{providerId}/competitions")
     void getCompetitions(
             @Path("providerId") int providerId,
-            Callback<List<CompetitionDTO>> callback);
+            Callback<CompetitionDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Competition Leaderboard">

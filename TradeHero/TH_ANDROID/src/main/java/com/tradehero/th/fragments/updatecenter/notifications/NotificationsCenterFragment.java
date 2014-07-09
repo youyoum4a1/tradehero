@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.thoj.route.Routable;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 

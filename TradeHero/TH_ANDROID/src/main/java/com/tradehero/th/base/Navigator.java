@@ -149,15 +149,15 @@ public class Navigator
             {
                 resetBackPressCount();
 
-                if (context instanceof Activity)
-                {
-                    ((Activity) context).finish();
-                }
-                else
-                {
+                //if (context instanceof Activity)
+                //{
+                //    ((Activity) context).finish();
+                //}
+                //else
+                //{
                     // Question: do we really need this?
                     exitApp();
-                }
+                //}
             }
             else
             {

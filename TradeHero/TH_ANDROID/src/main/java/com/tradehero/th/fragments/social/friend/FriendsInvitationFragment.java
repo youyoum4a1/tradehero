@@ -18,7 +18,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.thoj.route.Routable;
+import com.tradehero.route.Routable;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -94,8 +94,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.action_invite));
+        setActionBarTitle(getString(R.string.action_invite));
     }
 
     @Override

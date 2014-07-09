@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -39,12 +40,12 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.thoj.route.Routable;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
@@ -91,11 +92,11 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.SocialSharePreferenceHelper;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
@@ -104,6 +105,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -178,7 +180,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
-    @Inject WatchlistPositionCache watchlistPositionCache;
     @Inject Picasso picasso;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
@@ -190,7 +191,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private PopupMenu mPortfolioSelectorMenu;
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
-    protected SecurityAlertAssistant securityAlertAssistant;
+    @Inject protected SecurityAlertAssistant securityAlertAssistant;
     protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchListener;
 
     private int mQuantity = 0;
@@ -207,12 +208,15 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
 
+    private SharedPreferences mPrefSocialShare;
+
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        securityAlertAssistant = new SecurityAlertAssistant();
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
+        mPrefSocialShare = getActivity().getSharedPreferences(SocialSharePreferenceHelper.PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
     @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
@@ -336,7 +340,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                         new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
 
         mBottomViewPager.setCurrentItem(selectedPageIndex);
-
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
     }
@@ -762,8 +765,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             title = securityCompactDTO.name;
             symbol = securityCompactDTO.getExchangeSymbol();
         }
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.security_action_bar_title, title, symbol));
+        setActionBarTitle(getString(R.string.security_action_bar_title, title, symbol));
     }
 
     public void displayBuySellPrice()
@@ -901,15 +903,17 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mBtnAddTrigger != null)
         {
-            if (securityAlertAssistant.isPopulated()
-                    && securityAlertAssistant.getAlertId(securityId) != null)
+            if (securityAlertAssistant.isPopulated())
             {
                 mBtnAddTrigger.setEnabled(true);
-            }
-            else if (securityAlertAssistant.isPopulated()
-                    && securityAlertAssistant.getAlertId(securityId) == null)
-            {
-                mBtnAddTrigger.setEnabled(true);
+                if (securityAlertAssistant.getAlertId(securityId) != null)
+                {
+                    mBtnAddTrigger.setText(R.string.stock_alert_edit_alert);
+                }
+                else
+                {
+                    mBtnAddTrigger.setText(R.string.stock_alert_add_alert);
+                }
             }
             else // TODO check if failed
             {
@@ -930,6 +934,9 @@ public class BuySellFragment extends AbstractBuySellFragment
             else
             {
                 mBtnAddWatchlist.setEnabled(true);
+                mBtnAddWatchlist.setText(watchedList.contains(securityId) ?
+                        R.string.watchlist_edit_title :
+                        R.string.watchlist_add_title);
             }
         }
     }
@@ -1160,13 +1167,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             AlertId alertId = securityAlertAssistant.getAlertId(securityId);
             if (alertId != null)
             {
-                args.putBundle(AlertEditFragment.BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
+                AlertEditFragment.putAlertId(args, alertId);
                 getDashboardNavigator().pushFragment(AlertEditFragment.class, args);
             }
             else
             {
-                args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                        securityId.getArgs());
+                AlertCreateFragment.putSecurityId(args, securityId);
                 getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
             }
         }
@@ -1342,11 +1348,11 @@ public class BuySellFragment extends AbstractBuySellFragment
                 userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null)
         {
-            publishToFb = updatedUserProfileDTO.fbLinked;
-            publishToLi = updatedUserProfileDTO.liLinked;
-            publishToTw = updatedUserProfileDTO.twLinked;
-            publishToWe = false;//set weixin is false default
-            publishToWb = updatedUserProfileDTO.wbLinked;
+            publishToFb = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.FB,updatedUserProfileDTO.fbLinked);
+            publishToLi = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.LN,updatedUserProfileDTO.liLinked);
+            publishToTw = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.TW,updatedUserProfileDTO.twLinked);
+            publishToWe = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.WX,false);;//set weixin is false default
+            publishToWb = mPrefSocialShare.getBoolean(SocialSharePreferenceHelper.WB,updatedUserProfileDTO.wbLinked);
         }
     }
 
@@ -1515,6 +1521,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     if (isPublishEnabled(SocialNetworkEnum.FB))
                     {
                         publishToFb = !publishToFb;
+                        SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.FB,publishToFb);
                     }
                     else if (!publishToFb)
                     {
@@ -1536,6 +1543,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     if (isPublishEnabled(SocialNetworkEnum.TW))
                     {
                         publishToTw = !publishToTw;
+                        SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.TW,publishToTw);
                     }
                     else if (!publishToTw)
                     {
@@ -1555,6 +1563,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 if (isPublishEnabled(SocialNetworkEnum.LN))
                 {
                     publishToLi = !publishToLi;
+                    SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.LN,publishToLi);
                 }
                 else if (!publishToLi)
                 {
@@ -1571,6 +1580,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             @Override public void onClick(View view)
             {
                 publishToWe = !publishToWe;
+                SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.WX,publishToWe);
             }
         });
         mBtnShareWb = null;
@@ -1583,6 +1593,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 if (isPublishEnabled(SocialNetworkEnum.WB))
                 {
                     publishToWb = !publishToWb;
+                    SocialSharePreferenceHelper.saveValue(mPrefSocialShare,SocialSharePreferenceHelper.WB,publishToWb);
                 }
                 else if (!publishToWb)
                 {
@@ -2092,12 +2103,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
         {
             linkWithWatchlist(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to fetch list of watch list items", error);
             THToast.show(R.string.error_fetch_portfolio_list_info);

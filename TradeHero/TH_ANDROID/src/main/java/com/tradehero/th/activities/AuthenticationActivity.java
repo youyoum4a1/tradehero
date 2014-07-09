@@ -470,6 +470,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 {
                     progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero_only));
                 }
+                progressDialog.show();
                 return true;
             }
             return false;

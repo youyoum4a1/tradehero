@@ -65,8 +65,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getTitle());
+        setActionBarTitle(getTitle());
 
         super.onCreateOptionsMenu(menu, inflater);
     }

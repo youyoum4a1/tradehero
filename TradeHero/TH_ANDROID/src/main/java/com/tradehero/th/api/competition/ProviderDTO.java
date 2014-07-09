@@ -11,6 +11,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ProviderDTO implements DTO
@@ -172,7 +173,7 @@ public class ProviderDTO implements DTO
     }
 
     @JsonIgnore
-    public OwnedPortfolioId getAssociatedOwnedPortfolioId(UserBaseKey userBaseKey)
+    public OwnedPortfolioId getAssociatedOwnedPortfolioId(@NotNull UserBaseKey userBaseKey)
     {
         if (associatedPortfolio == null)
         {

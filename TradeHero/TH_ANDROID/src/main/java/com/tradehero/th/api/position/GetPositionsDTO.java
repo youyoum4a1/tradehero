@@ -1,7 +1,7 @@
 package com.tradehero.th.api.position;
 
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class GetPositionsDTO extends AbstractGetPositionsDTO<PositionDTO>
         super();
     }
 
-    public GetPositionsDTO(PositionDTOList<PositionDTO> positions, List<SecurityCompactDTO> securities, int openPositionsCount, int closedPositionsCount)
+    public GetPositionsDTO(PositionDTOList<PositionDTO> positions, SecurityCompactDTOList securities, int openPositionsCount, int closedPositionsCount)
     {
         super(positions, securities, openPositionsCount, closedPositionsCount);
     }

@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import com.thoj.route.Routable;
-import com.thoj.route.Router;
-import com.thoj.route.internal.ContextNotProvided;
-import com.thoj.route.internal.RouterOptions;
-import com.thoj.route.internal.RouterParams;
+import com.tradehero.route.Routable;
+import com.tradehero.route.Router;
+import com.tradehero.route.RouterOptions;
+import com.tradehero.route.RouterParams;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.home.HomeFragment;
@@ -38,9 +37,7 @@ public class THRouter extends Router
     {
         if (context == null)
         {
-            throw new ContextNotProvided(
-                    "You need to supply a context for Router "
-                            + this.toString());
+            throw new RuntimeException("You need to supply a context for Router " + this.toString());
         }
         if (aliases.containsKey(url))
         {
@@ -61,13 +58,17 @@ public class THRouter extends Router
     @Override public Router registerRoutes(Class<?>... targets)
     {
         super.registerRoutes(targets);
-        for (Class<?> target: targets) {
-            if (Fragment.class.isAssignableFrom(target) && target.isAnnotationPresent(Routable.class)) {
+        for (Class<?> target : targets)
+        {
+            if (Fragment.class.isAssignableFrom(target) && target.isAnnotationPresent(Routable.class))
+            {
                 Routable routable = target.getAnnotation(Routable.class);
 
                 String[] routes = routable.value();
-                if (routes != null) {
-                    for (String route: routes) {
+                if (routes != null)
+                {
+                    for (String route : routes)
+                    {
                         @SuppressWarnings("unchecked")
                         Class<? extends Fragment> fragmentTarget = (Class<? extends Fragment>) target;
                         mapFragment(route, fragmentTarget);
@@ -111,15 +112,25 @@ public class THRouter extends Router
             }
             if (params.openParams != null)
             {
-                for (Map.Entry<String, String> param: params.openParams.entrySet())
+                for (Map.Entry<String, String> param : params.openParams.entrySet())
                 {
                     args.putString(param.getKey(), param.getValue());
                 }
             }
-            if(options.getOpenFragmentClass().equals(HomeFragment.class)&&navigator.getCurrentFragment()!=null && navigator.getCurrentFragment() instanceof HomeFragment)
+            if (options.getOpenFragmentClass().equals(HomeFragment.class)
+                    && navigator.getCurrentFragment() != null
+                    && navigator.getCurrentFragment() instanceof HomeFragment)
             {
-                ((HomeFragment)navigator.getCurrentFragment()).createInviteInHomePage(args.getString("SocialID"),args.getString("UserID"));
-            }else
+                if (args.getString("SocialID") != null && args.getString("UserID") != null)
+                {//invite
+                    ((HomeFragment) navigator.getCurrentFragment()).createInviteInHomePage(args.getString("SocialID"), args.getString("UserID"));
+                }
+                else if (args.getString("UserID") != null)
+                {//follow
+                    ((HomeFragment) navigator.getCurrentFragment()).createFollowInHomePage(args.getString("UserID"));
+                }
+            }
+            else
             {
                 navigator.pushFragment(options.getOpenFragmentClass(), args);
             }

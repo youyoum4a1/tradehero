@@ -1,10 +1,8 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -14,17 +12,14 @@ import timber.log.Timber;
 class CommunityPageDTOFactory
 {
     @NotNull private final LeaderboardDefListCache leaderboardDefListCache;
-    @NotNull private final LeaderboardDefCache leaderboardDefCache;
     @NotNull private final MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
 
     //<editor-fold desc="Constructors">
     @Inject CommunityPageDTOFactory(
             @NotNull LeaderboardDefListCache leaderboardDefListCache,
-            @NotNull LeaderboardDefCache leaderboardDefCache,
             @NotNull MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory)
     {
         this.leaderboardDefListCache = leaderboardDefListCache;
-        this.leaderboardDefCache = leaderboardDefCache;
         this.leaderboardDefListKeyFactory = leaderboardDefListKeyFactory;
     }
     //</editor-fold>
@@ -40,8 +35,7 @@ class CommunityPageDTOFactory
             Timber.e("Type %s, key %s", type, key);
             if (key != null)
             {
-                cached = leaderboardDefCache.get(
-                        leaderboardDefListCache.get(key));
+                cached = leaderboardDefListCache.get(key);
                 if (cached != null)
                 {
                     collected.addAllLeaderboardDefDTO(cached);
@@ -57,10 +51,10 @@ class CommunityPageDTOFactory
 
     @NotNull public LeaderboardDefDTOList collectForCountryCodeFromCaches(@NotNull String countryCode)
     {
-        LeaderboardDefKeyList allKeys = leaderboardDefListCache.get(new LeaderboardDefListKey());
+        LeaderboardDefDTOList allKeys = leaderboardDefListCache.get(new LeaderboardDefListKey());
         if (allKeys != null)
         {
-            return leaderboardDefCache.get(allKeys).keepForCountryCode(countryCode);
+            return allKeys.keepForCountryCode(countryCode);
         }
         else
         {

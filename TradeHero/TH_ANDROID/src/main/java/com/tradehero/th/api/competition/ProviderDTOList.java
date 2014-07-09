@@ -1,12 +1,13 @@
 package com.tradehero.th.api.competition;
 
+import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.UserBaseKey;
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
 
-public class ProviderDTOList extends ArrayList<ProviderDTO>
+public class ProviderDTOList extends BaseArrayList<ProviderDTO>
     implements DTO
 {
     //<editor-fold desc="Constructors">
@@ -16,20 +17,7 @@ public class ProviderDTOList extends ArrayList<ProviderDTO>
     }
     //</editor-fold>
 
-    public ProviderIdList getIds()
-    {
-        ProviderIdList ids = new ProviderIdList();
-        for (ProviderDTO providerDTO : this)
-        {
-            if (providerDTO != null)
-            {
-                ids.add(providerDTO.getProviderId());
-            }
-        }
-        return ids;
-    }
-
-    public OwnedPortfolioIdList getAssociatedOwnedPortfolioIds(UserBaseKey forUser)
+    @NotNull public OwnedPortfolioIdList getAssociatedOwnedPortfolioIds(@NotNull UserBaseKey forUser)
     {
         OwnedPortfolioIdList ownedPortfolioIds = new OwnedPortfolioIdList();
         OwnedPortfolioId providerPortfolioId;
@@ -42,5 +30,15 @@ public class ProviderDTOList extends ArrayList<ProviderDTO>
             }
         }
         return ownedPortfolioIds;
+    }
+
+    @NotNull public ProviderIdList createKeys()
+    {
+        ProviderIdList list = new ProviderIdList();
+        for (@NotNull ProviderDTO providerDTO : this)
+        {
+            list.add(providerDTO.getProviderId());
+        }
+        return list;
     }
 }

@@ -8,10 +8,9 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderIdList;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
-import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -21,7 +20,6 @@ public class ProviderTileView extends ImageView
     implements DTOView<ProviderDTO>
 {
     @Inject Lazy<ProviderListCache> providerListCache;
-    @Inject Lazy<ProviderCache> providerCache;
     @Inject Lazy<Picasso> picasso;
     @Inject @ForExtraTileBackground Transformation backgroundTransformation;
     private ProviderDTO providerDTO;
@@ -53,12 +51,12 @@ public class ProviderTileView extends ImageView
     {
         super.onAttachedToWindow();
 
-        ProviderIdList providerList = providerListCache.get().get(new ProviderListKey());
+        ProviderDTOList providerList = providerListCache.get().get(new ProviderListKey());
 
         if (providerList != null && providerList.size() > 0)
         {
             int randomProviderId = (int) Math.floor(Math.random() * providerList.size());
-            display(providerCache.get().get(providerList.get(randomProviderId)));
+            display(providerList.get(randomProviderId));
         }
     }
 

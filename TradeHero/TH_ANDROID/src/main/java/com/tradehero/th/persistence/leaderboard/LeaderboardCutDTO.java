@@ -2,18 +2,19 @@ package com.tradehero.th.persistence.leaderboard;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
-import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserIdList;
 import java.util.Date;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 // The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.
 class LeaderboardCutDTO implements DTO
 {
     public final int id;
     public final String name;
-    public final List<LeaderboardUserId> userIds;
+    public final LeaderboardUserIdList userIds;
     public final int userIsAtPositionZeroBased;
     public final Date markUtc;
     public final int minPositionCount;
@@ -42,12 +43,17 @@ class LeaderboardCutDTO implements DTO
         this.expirationDate = leaderboardDTO.expirationDate;
     }
 
-    @NotNull public LeaderboardDTO create(@NotNull LeaderboardUserCache leaderboardUserCache)
+    @Nullable public LeaderboardDTO create(@NotNull LeaderboardUserCache leaderboardUserCache)
     {
+        LeaderboardUserDTOList leaderboardUserDTOs = leaderboardUserCache.get(userIds);
+        if (leaderboardUserDTOs != null && leaderboardUserDTOs.hasNullItem())
+        {
+            return null;
+        }
         return new LeaderboardDTO(
                 id,
                 name,
-                leaderboardUserCache.get(userIds),
+                leaderboardUserDTOs,
                 userIsAtPositionZeroBased,
                 markUtc,
                 minPositionCount,

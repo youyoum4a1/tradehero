@@ -41,11 +41,11 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    @InjectView(R.id.discussion_action_buttons) @Optional protected DiscussionActionButtonsView discussionActionButtonsView;
+    @InjectView(R.id.discussion_action_buttons) @Optional public DiscussionActionButtonsView discussionActionButtonsView;
     @InjectView(R.id.discussion_time) protected TextView time;
 
-    @InjectView(R.id.private_text_stub_container) @Optional protected  View stubTextContainer;
-    @InjectView(R.id.discussion_stub_content) @Optional protected  TextView stubContent;
+    @InjectView(R.id.private_text_stub_container) @Optional protected View stubTextContainer;
+    @InjectView(R.id.discussion_stub_content) @Optional protected TextView stubContent;
 
     @InjectView(R.id.discussion_translate_notice_wrapper) @Optional protected View translateNoticeWrapper;
     @InjectView(R.id.discussion_translate_notice) @Optional protected TextView translateNotice;
@@ -364,7 +364,8 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         };
     }
 
-    abstract protected class AbstractDiscussionCompactItemViewHolderSocialShareHelperMenuClickedListener implements SocialShareTranslationHelper.OnMenuClickedListener
+    abstract protected class AbstractDiscussionCompactItemViewHolderSocialShareHelperMenuClickedListener
+            implements SocialShareTranslationHelper.OnMenuClickedListener
     {
         @Override public void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
                 TranslationResult translationResult)

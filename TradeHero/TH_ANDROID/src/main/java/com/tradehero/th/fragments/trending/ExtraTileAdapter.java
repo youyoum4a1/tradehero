@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
-import com.tradehero.th.api.competition.ProviderIdList;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -357,12 +357,12 @@ public class ExtraTileAdapter extends BaseAdapter
 
     private boolean isProviderDataAvailable()
     {
-        ProviderIdList providerListKey = providerListCache.get().get(new ProviderListKey());
-        if (providerListKey != null)
+        ProviderDTOList providerDTOs = providerListCache.get().get(new ProviderListKey());
+        if (providerDTOs != null)
         {
-            //Timber.d("Provider has %d items", providerListKey.size());
+            //Timber.d("Provider has %d items", providerDTOs.size());
         }
-        return providerListKey != null && !providerListKey.isEmpty();
+        return providerDTOs != null && !providerDTOs.isEmpty();
     }
 
     private TileType[] generateRandomTypeForTiles(int[] extraTileIndexes)

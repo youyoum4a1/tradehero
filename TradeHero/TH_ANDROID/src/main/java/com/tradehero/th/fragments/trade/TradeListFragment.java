@@ -10,8 +10,8 @@ import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.ActionBar;
-import com.thoj.route.Routable;
-import com.thoj.route.RouteProperty;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -238,13 +238,15 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         }
     }
 
+    @Override public void onDetach()
+    {
+        setActionBarSubtitle(null);
+        super.onDetach();
+    }
+
     @Override public void onDestroyOptionsMenu()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setSubtitle(null);
-        }
+        setActionBarSubtitle(null);
         super.onDestroyOptionsMenu();
     }
 
@@ -337,35 +339,31 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     public void displayActionBarTitle()
     {
-        ActionBar actionBarCopy = getSherlockActivity().getSupportActionBar();
-        if (actionBarCopy != null)
+        if (positionDTO == null || securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId)) == null)
         {
-            if (positionDTO == null || securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId)) == null)
+            setActionBarTitle(R.string.trade_list_title);
+        }
+        else
+        {
+            SecurityId securityId = securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId));
+            if (securityId == null)
             {
-                actionBarCopy.setTitle(R.string.trade_list_title);
+                setActionBarTitle(R.string.trade_list_title);
             }
             else
             {
-                SecurityId securityId = securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId));
-                if (securityId == null)
+                SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
+                if (securityCompactDTO == null || securityCompactDTO.name == null)
                 {
-                    actionBarCopy.setTitle(R.string.trade_list_title);
+                    setActionBarTitle(
+                            String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                                    securityId.getSecuritySymbol()));
                 }
                 else
                 {
-                    SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
-                    if (securityCompactDTO == null || securityCompactDTO.name == null)
-                    {
-                        actionBarCopy.setTitle(
-                                String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
-                                        securityId.getSecuritySymbol()));
-                    }
-                    else
-                    {
-                        actionBarCopy.setTitle(securityCompactDTO.name);
-                        actionBarCopy.setSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
-                                securityId.getSecuritySymbol()));
-                    }
+                    setActionBarTitle(securityCompactDTO.name);
+                    setActionBarSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                            securityId.getSecuritySymbol()));
                 }
             }
         }

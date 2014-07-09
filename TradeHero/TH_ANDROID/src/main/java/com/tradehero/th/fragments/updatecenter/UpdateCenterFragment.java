@@ -19,8 +19,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.thoj.route.Routable;
-import com.thoj.route.RouteProperty;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -137,8 +137,7 @@ public class UpdateCenterFragment extends DashboardFragment
             ((SherlockFragment) getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
         }
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.message_center_title);
+        setActionBarTitle(R.string.message_center_title);
         inflater.inflate(R.menu.notification_center_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);

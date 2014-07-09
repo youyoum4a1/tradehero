@@ -3,6 +3,7 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import com.localytics.android.LocalyticsSession;
 import com.mobileapptracker.MobileAppTracker;
+import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
 import com.tradehero.th.base.Application;
@@ -49,7 +50,7 @@ public class UxModule
     }
 
     // TapStream
-    @Provides @Singleton Tapstream provideTapStream(Application app, Config config)
+    @Provides @Singleton Api provideTapStream(Application app, Config config)
     {
         Tapstream.create(app, TAPSTREAM_APP_NAME, TAPSTREAM_KEY, config);
         return Tapstream.getInstance();

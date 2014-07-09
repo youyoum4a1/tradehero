@@ -15,6 +15,7 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -25,6 +26,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -38,10 +40,11 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class SecuritySearchFragment
-        extends BasePurchaseManagerFragment
+public class SecuritySearchFragment extends BasePurchaseManagerFragment
+    implements HasSelectedItem
 {
     private final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = SecuritySearchFragment.class.getName() + ".currentSearchString";
     public final static String BUNDLE_KEY_PER_PAGE = SecuritySearchFragment.class.getName() + ".perPage";
@@ -70,6 +73,7 @@ public class SecuritySearchFragment
     private SecurityItemViewAdapterNew<SecurityCompactDTO> securityItemViewAdapter;
     private Map<Integer, List<SecurityCompactDTO>> pagedSecurityIds;
     private Map<Integer, DTOCacheNew.Listener<SecurityListType, SecurityIdList>> securitySearchListeners;
+    private SecurityCompactDTO selectedItem;
 
     private Runnable requestDataTask;
 
@@ -216,6 +220,11 @@ public class SecuritySearchFragment
     {
         securityItemViewAdapter = null;
         super.onDestroy();
+    }
+
+    @Override @Nullable public SecurityCompactDTO getSelectedItem()
+    {
+        return selectedItem;
     }
 
     protected void startAnew()
@@ -437,6 +446,15 @@ public class SecuritySearchFragment
 
     protected void handleSecurityClicked(SecurityCompactDTO clicked)
     {
+        this.selectedItem = clicked;
+
+        if (getArguments() != null && getArguments().containsKey(
+                Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
+        {
+            getDashboardNavigator().popFragment();
+            return;
+        }
+
         if (clicked == null)
         {
             Timber.e(new NullPointerException("clicked was null"), null);

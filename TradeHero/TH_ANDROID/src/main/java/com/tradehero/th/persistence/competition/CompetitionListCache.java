@@ -1,17 +1,16 @@
 package com.tradehero.th.persistence.competition;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionIdList;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class CompetitionListCache extends StraightDTOCacheNew<ProviderId, CompetitionIdList>
+@Singleton public class CompetitionListCache extends StraightCutDTOCacheNew<ProviderId, CompetitionDTOList, CompetitionIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -29,22 +28,24 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override @NotNull public CompetitionIdList fetch(@NotNull ProviderId key) throws Throwable
+    @Override @NotNull public CompetitionDTOList fetch(@NotNull ProviderId key) throws Throwable
     {
-        return putInternal(key, competitionServiceWrapper.getCompetitions(key));
+        return competitionServiceWrapper.getCompetitions(key);
     }
 
-    @NotNull protected CompetitionIdList putInternal(@NotNull ProviderId key, @NotNull List<CompetitionDTO> fleshedValues)
+    @NotNull @Override protected CompetitionIdList cutValue(@NotNull ProviderId key, @NotNull CompetitionDTOList value)
     {
-        CompetitionIdList competitionIds = new CompetitionIdList();
-        CompetitionId competitionId;
-        for (@NotNull CompetitionDTO competitionDTO: fleshedValues)
+        competitionCache.put(value);
+        return value.createKeys();
+    }
+
+    @Nullable @Override protected CompetitionDTOList inflateValue(@NotNull ProviderId key, @Nullable CompetitionIdList cutValue)
+    {
+        CompetitionDTOList value = competitionCache.get(cutValue);
+        if (value != null && value.hasNullItem())
         {
-            competitionId = competitionDTO.getCompetitionId();
-            competitionIds.add(competitionId);
-            competitionCache.put(competitionId, competitionDTO);
+            return null;
         }
-        put(key, competitionIds);
-        return competitionIds;
+        return value;
     }
 }

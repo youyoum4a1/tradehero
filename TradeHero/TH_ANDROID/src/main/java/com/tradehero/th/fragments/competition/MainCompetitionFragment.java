@@ -7,19 +7,17 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
-import com.tradehero.th.api.competition.CompetitionIdList;
+import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -43,10 +41,8 @@ import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFra
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -66,14 +62,13 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject CompetitionListCache competitionListCache;
-    @Inject CompetitionCache competitionCache;
     @Inject ProviderUtil providerUtil;
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected List<CompetitionId> competitionIds;
-    private DTOCacheNew.Listener<ProviderId, CompetitionIdList> competitionListCacheFetchListener;
+    protected CompetitionDTOList competitionDTOs;
+    private DTOCacheNew.Listener<ProviderId, CompetitionDTOList> competitionListCacheFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -201,9 +196,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    protected void linkWith(List<CompetitionId> competitionIds, boolean andDisplay)
+    protected void linkWith(CompetitionDTOList competitionIds, boolean andDisplay)
     {
-        this.competitionIds = competitionIds;
+        this.competitionDTOs = competitionIds;
         placeAdapterInList();
     }
 
@@ -222,7 +217,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         newAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
         newAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
         newAdapter.setProvider(providerDTO);
-        newAdapter.setCompetitionDTOs(competitionCache.get(competitionIds));
+        newAdapter.setCompetitionDTOs(competitionDTOs);
 
         CompetitionZoneListItemAdapter currentAdapterCopy = this.competitionZoneListItemAdapter;
         if (currentAdapterCopy != null)
@@ -240,25 +235,19 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void displayActionBarTitle()
     {
-
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
+        if (providerDTO != null
+                && providerDTO.specificResources != null
+                && providerDTO.specificResources.mainCompetitionFragmentTitleResId > 0)
         {
-            if (providerDTO != null
-                    && providerDTO.specificResources != null
-                    && providerDTO.specificResources.mainCompetitionFragmentTitleResId > 0)
-            {
-                actionBar.setTitle(
-                        providerDTO.specificResources.mainCompetitionFragmentTitleResId);
-            }
-            else if (this.providerDTO == null || this.providerDTO.name == null)
-            {
-                actionBar.setTitle("");
-            }
-            else
-            {
-                actionBar.setTitle(this.providerDTO.name);
-            }
+            setActionBarTitle(providerDTO.specificResources.mainCompetitionFragmentTitleResId);
+        }
+        else if (this.providerDTO == null || this.providerDTO.name == null)
+        {
+            setActionBarTitle("");
+        }
+        else
+        {
+            setActionBarTitle(this.providerDTO.name);
         }
     }
 
@@ -496,20 +485,20 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private DTOCacheNew.Listener<ProviderId, CompetitionIdList> createCompetitionListCacheListener()
+    private DTOCacheNew.Listener<ProviderId, CompetitionDTOList> createCompetitionListCacheListener()
     {
         return new MainCompetitionCompetitionListCacheListener();
     }
 
     private class MainCompetitionCompetitionListCacheListener
-            implements DTOCacheNew.Listener<ProviderId, CompetitionIdList>
+            implements DTOCacheNew.Listener<ProviderId, CompetitionDTOList>
     {
-        @Override public void onDTOReceived(ProviderId providerId, CompetitionIdList value)
+        @Override public void onDTOReceived(@NotNull ProviderId providerId, @NotNull CompetitionDTOList value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(ProviderId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull ProviderId key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_competition_leaderboard_list));
             Timber.e("Error fetching the list of competition info %s", key, error);

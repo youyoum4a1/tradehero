@@ -1,28 +1,17 @@
 package com.tradehero.th.api.position;
 
+import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.utils.SecurityUtils;
-import java.util.ArrayList;
-import java.util.Collection;
 
-public class PositionDTOCompactList extends ArrayList<PositionDTOCompact>
+public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
 {
     //<editor-fold desc="Constructors">
-    public PositionDTOCompactList(int capacity)
-    {
-        super(capacity);
-    }
-
     public PositionDTOCompactList()
     {
         super();
-    }
-
-    public PositionDTOCompactList(Collection<? extends PositionDTOCompact> collection)
-    {
-        super(collection);
     }
     //</editor-fold>
 

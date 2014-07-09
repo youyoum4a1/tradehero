@@ -7,8 +7,8 @@ import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.fragments.billing.StoreItemAdapter;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionModule;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
@@ -37,10 +37,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class Application extends PApplication
 {
+    public static boolean timberPlanted = false;
+
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected THRouter thRouter;
 
@@ -48,19 +51,10 @@ public class Application extends PApplication
     {
         super.init();
 
-        if (Constants.RELEASE)
+        if (!timberPlanted)
         {
-            Timber.plant(new CrashReportingTree());
-        }
-        else
-        {
-            Timber.plant(new EasyDebugTree()
-            {
-                @Override public String createTag()
-                {
-                    return String.format("TradeHero-%s", super.createTag());
-                }
-            });
+            Timber.plant(createTimberTree());
+            timberPlanted = true;
         }
 
         // Supposedly get the count of cores
@@ -96,10 +90,25 @@ public class Application extends PApplication
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");
-        thRouter.registerAlias("reset-portfolio", "store/" + StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
-        thRouter.registerAlias("store/reset-portfolio", "store/" + StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO);
+        thRouter.registerAlias("reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
+        thRouter.registerAlias("store/reset-portfolio", "store/" + ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO.ordinal());
 
         THLog.showDeveloperKeyHash();
+    }
+
+    @NotNull protected Timber.Tree createTimberTree()
+    {
+        if (Constants.RELEASE)
+        {
+            return new CrashReportingTree();
+        }
+        return new EasyDebugTree()
+        {
+            @Override public String createTag()
+            {
+                return String.format("TradeHero-%s", super.createTag());
+            }
+        };
     }
 
     protected Object[] getModules()

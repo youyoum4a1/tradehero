@@ -2,17 +2,16 @@ package com.tradehero.th.models.alert;
 
 import android.os.AsyncTask;
 import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.alert.AlertIdList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
-import com.tradehero.th.utils.DaggerUtils;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 /**
@@ -21,22 +20,25 @@ import timber.log.Timber;
  */
 public class SecurityAlertAssistant
 {
-    @Inject AlertCompactListCache alertCompactListCache;
-    @Inject AlertCompactCache alertCompactCache;
+    @NotNull final AlertCompactListCache alertCompactListCache;
+    @NotNull final AlertCompactCache alertCompactCache;
 
     private boolean populated;
     private boolean failed;
     private UserBaseKey userBaseKey;
-    private final Map<SecurityId, AlertId> securitiesWithAlerts;
-    private WeakReference<OnPopulatedListener> onPopulatedListener = new WeakReference<>(null);
+    @NotNull private final Map<SecurityId, AlertId> securitiesWithAlerts;
+    private OnPopulatedListener onPopulatedListener;
     private AsyncTask<Void, Void, Void> populateTask;
 
     //<editor-fold desc="Constructors">
-    public SecurityAlertAssistant()
+    @Inject public SecurityAlertAssistant(
+            @NotNull AlertCompactListCache alertCompactListCache,
+            @NotNull AlertCompactCache alertCompactCache)
     {
         super();
+        this.alertCompactListCache = alertCompactListCache;
+        this.alertCompactCache = alertCompactCache;
         securitiesWithAlerts = new HashMap<>();
-        DaggerUtils.inject(this);
     }
     //</editor-fold>
 
@@ -69,25 +71,16 @@ public class SecurityAlertAssistant
         this.userBaseKey = userBaseKey;
     }
 
-    public OnPopulatedListener getOnPopulatedListener()
-    {
-        return onPopulatedListener.get();
-    }
-
-    /**
-     * The listener needs to be strongly referenced elsewhere
-     * @param onPopulatedListener
-     */
     public void setOnPopulatedListener(OnPopulatedListener onPopulatedListener)
     {
-        this.onPopulatedListener = new WeakReference<>(onPopulatedListener);
+        this.onPopulatedListener = onPopulatedListener;
     }
 
     protected void notifyPopulated()
     {
         populated = true;
         failed = false;
-        OnPopulatedListener populatedListener = getOnPopulatedListener();
+        OnPopulatedListener populatedListener = onPopulatedListener;
         if (populatedListener != null)
         {
             populatedListener.onPopulated(this);
@@ -98,7 +91,7 @@ public class SecurityAlertAssistant
     {
         populated = false;
         failed = true;
-        OnPopulatedListener populatedListener = getOnPopulatedListener();
+        OnPopulatedListener populatedListener = onPopulatedListener;
         if (populatedListener != null)
         {
             populatedListener.onPopulateFailed(this, error);
@@ -151,27 +144,18 @@ public class SecurityAlertAssistant
         populate(alertCompactListCache.getOrFetchSync(userBaseKey));
     }
 
-    protected void populate(AlertIdList alertIds)
+    protected void populate(@NotNull AlertCompactDTOList alertCompactDTOs)
     {
-        if (alertIds != null)
+        for (@NotNull AlertCompactDTO alertCompactDTO : alertCompactDTOs)
         {
-            AlertCompactDTO alertCompactDTO;
-            for (AlertId alertId : alertIds)
+            if (alertCompactDTO.security != null)
             {
-                alertCompactDTO = alertCompactCache.get(alertId);
-                if (alertCompactDTO != null && alertCompactDTO.security != null)
-                {
-                    securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertId);
-                }
-                else
-                {
-                    Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertId);
-                }
+                securitiesWithAlerts.put(alertCompactDTO.security.getSecurityId(), alertCompactDTO.getAlertId(userBaseKey));
             }
-        }
-        else
-        {
-            Timber.d("populate: alertIds were null");
+            else
+            {
+                Timber.d("populate: AlertId %s had a null alertCompact of securityCompact", alertCompactDTO);
+            }
         }
     }
 

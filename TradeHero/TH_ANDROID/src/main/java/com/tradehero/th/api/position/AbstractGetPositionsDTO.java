@@ -3,7 +3,7 @@ package com.tradehero.th.api.position;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDTO> implements DTO
 {
     @Nullable public PositionDTOList<PositionDTOType> positions;
-    @Nullable public List<SecurityCompactDTO> securities;
+    @Nullable public SecurityCompactDTOList securities;
     public int openPositionsCount;
     public int closedPositionsCount;
 
@@ -23,7 +23,7 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
 
     public AbstractGetPositionsDTO(
             @Nullable PositionDTOList<PositionDTOType> positions,
-            @Nullable List<SecurityCompactDTO> securities,
+            @Nullable SecurityCompactDTOList securities,
             int openPositionsCount,
             int closedPositionsCount)
     {

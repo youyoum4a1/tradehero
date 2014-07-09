@@ -120,6 +120,14 @@ public class DiscussionActionButtonsView extends LinearLayout
         }
     }
 
+    public void setCommentCountVisable(int visable)
+    {
+        if (commentCount != null)
+        {
+            commentCount.setVisibility(visable);
+        }
+    }
+
     protected void displayMoreButton()
     {
         if (moreButton != null)
@@ -176,7 +184,9 @@ public class DiscussionActionButtonsView extends LinearLayout
     public static interface OnButtonClickedListener
     {
         void onCommentButtonClicked();
+
         void onShareButtonClicked();
+
         void onMoreButtonClicked();
     }
 }
