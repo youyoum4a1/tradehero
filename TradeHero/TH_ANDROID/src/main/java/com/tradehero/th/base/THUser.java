@@ -365,9 +365,10 @@ public class THUser
         // clear all preferences
         mainCredentialsPreference.delete();
         credentialsSetPreference.delete();
-        SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
-        prefEditor.clear();
-        prefEditor.commit();
+        //should not delete all data for some of them relate with app not only user by alex
+        //SharedPreferences.Editor prefEditor = sharedPreferences.get().edit();
+        //prefEditor.clear();
+        //prefEditor.commit();
     }
 
     public static void setAuthenticationMode(AuthenticationMode authenticationMode)
