@@ -104,6 +104,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -1359,25 +1360,34 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public boolean isPublishEnabled(SocialNetworkEnum socialNetwork)
+    @Nullable public Boolean isSocialLinked(SocialNetworkEnum socialNetwork)
     {
-        UserProfileDTO updatedUserProfileDTO =
-                userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (updatedUserProfileDTO != null)
+        UserProfileDTO userProfileCopy = userProfileDTO;
+        if (userProfileCopy != null)
         {
             switch (socialNetwork)
             {
                 case FB:
-                    return updatedUserProfileDTO.fbLinked;
+                    return userProfileCopy.fbLinked;
                 case TW:
-                    return updatedUserProfileDTO.twLinked;
+                    return userProfileCopy.twLinked;
                 case LN:
-                    return updatedUserProfileDTO.liLinked;
+                    return userProfileCopy.liLinked;
                 case WB:
-                    return updatedUserProfileDTO.wbLinked;
+                    return userProfileCopy.wbLinked;
+
+                default:
+                    Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
+                    return false;
             }
         }
-        return false;
+        return null;
+    }
+
+    public boolean isSocialLinkedOr(SocialNetworkEnum socialNetwork, boolean orElse)
+    {
+        @Nullable Boolean socialLinked = isSocialLinked(socialNetwork);
+        return socialLinked != null ? socialLinked : orElse;
     }
 
     public void showBuySellDialog()
@@ -1495,7 +1505,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mBtnShareFacebook != null)
         {
             mBtnShareFacebook.setTag(SocialNetworkEnum.FB);
-            mBtnShareFacebook.setChecked(socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.FB, isPublishEnabled(SocialNetworkEnum.FB)));
+            mBtnShareFacebook.setChecked(initialShareButtonState(SocialNetworkEnum.FB));
             mBtnShareFacebook.setOnCheckedChangeListener(createCheckedChangeListener());
         }
 
@@ -1504,7 +1514,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mBtnShareTwitter != null)
         {
             mBtnShareTwitter.setTag(SocialNetworkEnum.TW);
-            mBtnShareTwitter.setChecked(socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.TW, isPublishEnabled(SocialNetworkEnum.TW)));
+            mBtnShareTwitter.setChecked(initialShareButtonState(SocialNetworkEnum.TW));
             mBtnShareTwitter.setOnCheckedChangeListener(createCheckedChangeListener());
         }
 
@@ -1513,13 +1523,16 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mBtnShareLinkedIn != null)
         {
             mBtnShareLinkedIn.setTag(SocialNetworkEnum.LN);
-            mBtnShareLinkedIn.setChecked(socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.LN, isPublishEnabled(SocialNetworkEnum.LN)));
+            mBtnShareLinkedIn.setChecked(initialShareButtonState(SocialNetworkEnum.LN));
             mBtnShareLinkedIn.setOnCheckedChangeListener(createCheckedChangeListener());
         }
 
         mBtnShareWeChat = null;
         mBtnShareWeChat = (ToggleButton) view.findViewById(R.id.btn_wechat);
-        mBtnShareWeChat.setChecked(socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, false));
+        if (mBtnShareWeChat != null)
+        {
+            mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WECHAT));
+        }
 
         mBtnShareWb = null;
         mBtnShareWb = (ToggleButton) view.findViewById(R.id.btn_share_wb);
@@ -1527,7 +1540,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (mBtnShareWb != null)
         {
             mBtnShareWb.setTag(SocialNetworkEnum.WB);
-            mBtnShareWb.setChecked(socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WB, isPublishEnabled(SocialNetworkEnum.WB)));
+            mBtnShareWb.setChecked(initialShareButtonState(SocialNetworkEnum.WB));
             mBtnShareWb.setOnCheckedChangeListener(createCheckedChangeListener());
         }
 
@@ -1599,6 +1612,13 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBuySellDialog.show();
     }
 
+    protected boolean initialShareButtonState(@NotNull SocialNetworkEnum socialNetworkEnum)
+    {
+        return socialSharePreferenceHelperNew.isShareEnabled(
+                socialNetworkEnum,
+                isSocialLinkedOr(socialNetworkEnum, false));
+    }
+
     public void askToLinkAccountToSocial(final SocialNetworkEnum socialNetwork)
     {
         alertDialogUtil.popWithOkCancelButton(
@@ -1631,10 +1651,13 @@ public class BuySellFragment extends AbstractBuySellFragment
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
             {
                 SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
-
-                if (isChecked && !isPublishEnabled(networkEnum))
+                Boolean socialLinked = isSocialLinked(networkEnum);
+                if (isChecked && (socialLinked == null || !socialLinked))
                 {
-                    askToLinkAccountToSocial(networkEnum);
+                    if (socialLinked != null)
+                    {
+                        askToLinkAccountToSocial(networkEnum);
+                    }
                     isChecked = false;
                 }
 
@@ -1834,11 +1857,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         //Timber.d("fb=%b tw=%b li=%b location=%b public=%b quantity=%d", publishToFb,
         //        publishToTw, publishToLi, shareLocation, sharePublic,
         //        isBuy ? mBuyQuantity : mSellQuantity);
+
         return new TransactionFormDTO(
-                socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.FB, isPublishEnabled(SocialNetworkEnum.FB)),
-                socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.TW, isPublishEnabled(SocialNetworkEnum.TW)),
-                socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.LN, isPublishEnabled(SocialNetworkEnum.LN)),
-                socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WB, isPublishEnabled(SocialNetworkEnum.WB)),
+                shareForTransaction(SocialNetworkEnum.FB),
+                shareForTransaction(SocialNetworkEnum.TW),
+                shareForTransaction(SocialNetworkEnum.LN),
+                shareForTransaction(SocialNetworkEnum.WB),
                 shareLocation ? null : null, // TODO implement location
                 shareLocation ? null : null,
                 shareLocation ? null : null,
@@ -1848,6 +1872,11 @@ public class BuySellFragment extends AbstractBuySellFragment
                 mQuantity,
                 getApplicablePortfolioId().portfolioId
         );
+    }
+
+    protected boolean shareForTransaction(@NotNull SocialNetworkEnum socialNetworkEnum)
+    {
+        return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinkedOr(socialNetworkEnum, true));
     }
 
     private void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
