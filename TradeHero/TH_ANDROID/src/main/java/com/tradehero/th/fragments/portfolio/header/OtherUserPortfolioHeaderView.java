@@ -273,7 +273,6 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     /**
      * The listener should be strongly referenced elsewhere.
-     * @param followRequestedListener
      */
     @Override public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
     {
@@ -300,7 +299,6 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     /**
      * The listener should be strongly referenced elsewhere
-     * @param timelineRequestedListener
      */
     @Override public void setTimelineRequestedListener(OnTimelineRequestedListener timelineRequestedListener)
     {
