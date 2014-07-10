@@ -2165,7 +2165,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            if (retrofitError != null)
+            if (retrofitError != null && retrofitError.getResponse() != null)
             {
                 Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
             }
