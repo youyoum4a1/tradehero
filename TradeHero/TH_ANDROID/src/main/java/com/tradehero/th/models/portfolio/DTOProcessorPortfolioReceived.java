@@ -19,7 +19,7 @@ public class DTOProcessorPortfolioReceived<PortfolioCompactType extends Portfoli
 
     @Override public PortfolioCompactType process(PortfolioCompactType value)
     {
-        value.userBaseKey = userBaseKey;
+        value.userId = userBaseKey.key;
         return value;
     }
 }

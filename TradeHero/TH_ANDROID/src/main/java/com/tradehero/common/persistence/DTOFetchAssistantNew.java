@@ -2,6 +2,7 @@ package com.tradehero.common.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class DTOFetchAssistantNew<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -31,7 +32,7 @@ abstract public class DTOFetchAssistantNew<DTOKeyType extends DTOKey, DTOType ex
         }
     }
 
-    private void fetch(DTOKeyType key, boolean force)
+    private void fetch(@NotNull DTOKeyType key, boolean force)
     {
         getCache().register(key, this);
         getCache().getOrFetchAsync(key, force);
@@ -43,19 +44,19 @@ abstract public class DTOFetchAssistantNew<DTOKeyType extends DTOKey, DTOType ex
         getCache().unregister(this);
     }
 
-    abstract protected DTOCacheNew<DTOKeyType, DTOType> getCache();
+    @NotNull abstract protected DTOCacheNew<DTOKeyType, DTOType> getCache();
 
     //<editor-fold desc="DTOCache.Listener<DTOKeyType, DTOType>">
-    @Override public void onDTOReceived(final DTOKeyType key, final DTOType value)
+    @Override public void onDTOReceived(@NotNull final DTOKeyType key, @NotNull final DTOType value)
     {
-        if (key != null && fetched.containsKey(key))
+        if (fetched.containsKey(key))
         {
             fetched.put(key, value);
             notifyListener();
         }
     }
 
-    @Override public void onErrorThrown(final DTOKeyType key, final Throwable error)
+    @Override public void onErrorThrown(@NotNull final DTOKeyType key, @NotNull final Throwable error)
     {
         Timber.e("Error fetching %s", key, error);
     }

@@ -3,7 +3,6 @@ package com.tradehero.th.api.portfolio;
 import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,26 +12,14 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
     public final static String BUNDLE_KEY_USER_ID = OwnedPortfolioId.class.getName() + ".userId";
     public final static String BUNDLE_KEY_PORTFOLIO_ID = OwnedPortfolioId.class.getName() + ".portfolioId";
 
-    public Integer userId;
-    public Integer portfolioId;
+    @NotNull public final Integer userId;
+    @NotNull public final Integer portfolioId;
 
     //<editor-fold desc="Constructors">
-    public OwnedPortfolioId()
-    {
-    }
-
-    public OwnedPortfolioId(final Integer userId, final Integer portfolioId)
+    public OwnedPortfolioId(final int userId, final int portfolioId)
     {
         this.userId = userId;
         this.portfolioId = portfolioId;
-    }
-
-    public OwnedPortfolioId(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PortfolioId portfolioId)
-    {
-        this.userId = userBaseKey.key;
-        this.portfolioId = portfolioId.key;
     }
 
     public OwnedPortfolioId(@NotNull OwnedPortfolioId ownedPortfolioId)
@@ -41,61 +28,37 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
         this.portfolioId = ownedPortfolioId.portfolioId;
     }
 
-    public OwnedPortfolioId(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PortfolioCompactDTO portfolioCompactDTO)
-    {
-        this.userId = userBaseKey.key;
-        this.portfolioId = portfolioCompactDTO.id;
-    }
-
-    public OwnedPortfolioId(
-            @NotNull UserBaseDTO userBaseDTO,
-            @NotNull PortfolioCompactDTO portfolioCompactDTO)
-    {
-        this.userId = userBaseDTO.id;
-        this.portfolioId = portfolioCompactDTO.id;
-    }
-
     public OwnedPortfolioId(@NotNull Bundle args)
     {
-        this.userId = args.containsKey(BUNDLE_KEY_USER_ID) ? args.getInt(BUNDLE_KEY_USER_ID) : null;
-        this.portfolioId = args.containsKey(BUNDLE_KEY_PORTFOLIO_ID) ? args.getInt(BUNDLE_KEY_PORTFOLIO_ID) : null;
+        this.userId = args.getInt(BUNDLE_KEY_USER_ID);
+        this.portfolioId = args.getInt(BUNDLE_KEY_PORTFOLIO_ID);
     }
     //</editor-fold>
 
-    public static boolean isOwnedPortfolioId(@Nullable Bundle args)
+    public static boolean isOwnedPortfolioId(@NotNull Bundle args)
     {
-        return args != null &&
-                args.containsKey(BUNDLE_KEY_USER_ID) &&
+        return args.containsKey(BUNDLE_KEY_USER_ID) &&
                 args.containsKey(BUNDLE_KEY_PORTFOLIO_ID);
     }
 
     @Override public int hashCode()
     {
-        return (userId == null ? 0 : userId.hashCode()) ^
-                (portfolioId == null ? 0 : portfolioId.hashCode());
+        return userId.hashCode() ^ portfolioId.hashCode();
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
         return getClass().isInstance(other) && equals(getClass().cast(other));
     }
 
-    public boolean equals(OwnedPortfolioId other)
+    public boolean equals(@NotNull OwnedPortfolioId other)
     {
-        return (other != null) &&
-                (userId == null ? other.userId == null : userId.equals(other.userId)) &&
-                (portfolioId == null ? other.portfolioId == null : portfolioId.equals(other.portfolioId));
+        return userId.equals(other.userId) &&
+                portfolioId.equals(other.portfolioId);
     }
 
-    @Override public int compareTo(Object other)
+    @Override public int compareTo(@NotNull Object other)
     {
-        if (other == null)
-        {
-            return 1;
-        }
-
         if (other.getClass() == getClass())
         {
             return compareTo(getClass().cast(other));
@@ -103,16 +66,11 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
         return other.getClass().getName().compareTo(getClass().getName());
     }
 
-    public int compareTo(OwnedPortfolioId other)
+    public int compareTo(@NotNull OwnedPortfolioId other)
     {
         if (this == other)
         {
             return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
         }
 
         int exchangeComp = userId.compareTo(other.userId);
@@ -126,29 +84,23 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
 
     @JsonIgnore public boolean isValid()
     {
-        return userId != null && portfolioId != null;
+        return userId > 0 && portfolioId > 0;
     }
 
-    protected void putParameters(Bundle args)
+    protected void putParameters(@NotNull Bundle args)
     {
-        if (userId != null)
-        {
-            args.putInt(BUNDLE_KEY_USER_ID, userId);
-        }
-        if (portfolioId != null)
-        {
-            args.putInt(BUNDLE_KEY_PORTFOLIO_ID, portfolioId);
-        }
+        args.putInt(BUNDLE_KEY_USER_ID, userId);
+        args.putInt(BUNDLE_KEY_PORTFOLIO_ID, portfolioId);
     }
 
-    @JsonIgnore public Bundle getArgs()
+    @JsonIgnore @NotNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);
         return args;
     }
 
-    @JsonIgnore public UserBaseKey getUserBaseKey()
+    @JsonIgnore @NotNull public UserBaseKey getUserBaseKey()
     {
         return new UserBaseKey(userId);
     }
@@ -158,7 +110,7 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
         return new PortfolioId(portfolioId);
     }
 
-    @Override public String toString()
+    @Override @NotNull public String toString()
     {
         return "OwnedPortfolioId{" +
                 "portfolioId=" + portfolioId +

@@ -25,6 +25,12 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
     }
     //</editor-fold>
 
+    public static boolean isOwnedTradeId(@NotNull Bundle args)
+    {
+        return isOwnedPositionId(args)
+                && args.containsKey(BUNDLE_KEY_TRADE_ID);
+    }
+    
     @Override public int hashCode()
     {
         return super.hashCode() ^ tradeId.hashCode();
@@ -58,13 +64,13 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         return tradeId.compareTo(other.tradeId);
     }
 
-    @Override protected void putParameters(Bundle args)
+    @Override protected void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_TRADE_ID, tradeId);
     }
 
-    @Override public String toString()
+    @Override @NotNull public String toString()
     {
         return String.format("[userId=%d; portfolioId=%d; positionId=%d; tradeId=%d]", userId, portfolioId, positionId, tradeId);
     }

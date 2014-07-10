@@ -74,7 +74,7 @@ import org.jetbrains.annotations.Nullable;
             for (@NotNull PortfolioCompactDTO portfolioCompactDTO : value)
             {
                 portfolioCompactCache.get().invalidate(portfolioCompactDTO.getPortfolioId());
-                portfolioCache.get().invalidate(new OwnedPortfolioId(key, portfolioCompactDTO));
+                portfolioCache.get().invalidate(new OwnedPortfolioId(key.key, portfolioCompactDTO.id));
             }
         }
     }

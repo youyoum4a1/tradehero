@@ -55,8 +55,8 @@ class SecurityPositionDetailCutDTO implements DTO
         {
             portfolioCache.put(
                     new OwnedPortfolioId(
-                            userBaseKey,
-                            securityPositionDetailDTO.portfolio.getPortfolioId()),
+                            userBaseKey.key,
+                            securityPositionDetailDTO.portfolio.id),
                     securityPositionDetailDTO.portfolio);
             this.portfolioId = securityPositionDetailDTO.portfolio.getPortfolioId();
         }
@@ -98,7 +98,7 @@ class SecurityPositionDetailCutDTO implements DTO
         if (portfolioId != null)
         {
             cachedPortfolio = portfolioCache.get(
-                    new OwnedPortfolioId(userBaseKey, portfolioId));
+                    new OwnedPortfolioId(userBaseKey.key, portfolioId.key));
             if (cachedPortfolio == null)
             {
                 return null;

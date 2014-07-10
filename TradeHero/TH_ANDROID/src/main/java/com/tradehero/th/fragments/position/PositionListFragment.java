@@ -147,7 +147,7 @@ public class PositionListFragment
         }
         else
         {
-            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey, injectedPortfolioId);
+            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
 
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
@@ -487,7 +487,7 @@ public class PositionListFragment
 
     public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
     {
-        return ownedPortfolioId == null ? false : (ownedPortfolioId.portfolioId == null || ownedPortfolioId.portfolioId <= 0);
+        return ownedPortfolioId != null && ownedPortfolioId.portfolioId <= 0;
     }
 
     protected void fetchSimplePage()

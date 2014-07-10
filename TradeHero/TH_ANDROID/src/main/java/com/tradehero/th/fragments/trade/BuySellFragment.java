@@ -1885,8 +1885,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
         {
-            pushPortfolioFragment(new OwnedPortfolioId(currentUserId.toUserBaseKey(),
-                    securityPositionDetailDTO.portfolio.getPortfolioId()));
+            pushPortfolioFragment(new OwnedPortfolioId(
+                    currentUserId.get(),
+                    securityPositionDetailDTO.portfolio.id));
         }
         else
         {

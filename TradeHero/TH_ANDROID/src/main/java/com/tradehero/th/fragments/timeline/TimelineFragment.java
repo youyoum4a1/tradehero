@@ -204,9 +204,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            pushPositionListFragment(new OwnedPortfolioId(
-                    shownUserBaseKey,
-                    portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey)));
+            @Nullable PortfolioCompactDTO defaultPortfolio = portfolioCompactListCache.get().getDefaultPortfolio(shownUserBaseKey);
+            if (defaultPortfolio != null)
+            {
+                pushPositionListFragment(new OwnedPortfolioId(
+                        shownUserBaseKey.key,
+                        defaultPortfolio.id));
+            }
         }
     }
 
@@ -289,17 +293,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private class FollowerSummaryListener implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
         {
             updateHeroType(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            if (error != null)
-            {
-                THToast.show(error.getMessage());
-            }
+            THToast.show(error.getMessage());
         }
     }
 
@@ -532,7 +533,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             for(PortfolioCompactDTO portfolioCompactDTO: portfolioCompactDTOs)
             {
-                portfolioCache.get().getOrFetchAsync(new OwnedPortfolioId(shownUserBaseKey, portfolioCompactDTO));
+                portfolioCache.get().getOrFetchAsync(new OwnedPortfolioId(shownUserBaseKey.key, portfolioCompactDTO.id));
             }
         }
 
@@ -978,12 +979,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected class TimelineMessageThreadHeaderCacheListener implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, MessageHeaderDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull MessageHeaderDTO value)
         {
             linkWithMessageThread(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             if (!(error instanceof RetrofitError) ||
                     (((RetrofitError) error).getResponse() != null &&

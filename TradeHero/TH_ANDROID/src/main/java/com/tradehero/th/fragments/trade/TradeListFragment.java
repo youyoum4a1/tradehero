@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -74,12 +75,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
 
-    public static void putPositionDTOKey(Bundle args, PositionDTOKey positionDTOKey)
+    public static void putPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKey positionDTOKey)
     {
         args.putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, positionDTOKey.getArgs());
     }
 
-    private static PositionDTOKey getPositionDTOKey(Bundle args, PositionDTOKeyFactory positionDTOKeyFactory)
+    @Nullable private static PositionDTOKey getPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKeyFactory positionDTOKeyFactory)
     {
         return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }

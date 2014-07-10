@@ -54,22 +54,6 @@ import retrofit.Callback;
     }
     //</editor-fold>
 
-    private void basicCheck(OwnedPortfolioId ownedPortfolioId)
-    {
-        if (ownedPortfolioId == null)
-        {
-            throw new NullPointerException("ownedPortfolioId cannot be null");
-        }
-        if (ownedPortfolioId.userId == null)
-        {
-            throw new NullPointerException("ownedPortfolioId.userId cannot be null");
-        }
-        if (ownedPortfolioId.portfolioId == null)
-        {
-            throw new NullPointerException("ownedPortfolioId.portfolioId cannot be null");
-        }
-    }
-
     //<editor-fold desc="DTO Processors">
     protected DTOProcessor<PortfolioCompactDTO> createPortfolioCompactReceivedProcessor(@NotNull UserBaseKey userBaseKey)
     {
@@ -80,7 +64,7 @@ import retrofit.Callback;
     //<editor-fold desc="Get User Portfolio List">
     protected DTOProcessor<PortfolioCompactDTOList> createPortfolioCompactListReceivedProcessor(@NotNull UserBaseKey userBaseKey)
     {
-        return new DTOProcessorPortfolioListReceived<>(createPortfolioCompactReceivedProcessor(userBaseKey));
+        return new DTOProcessorPortfolioListReceived<>(userBaseKey);
     }
 
     @NotNull public PortfolioCompactDTOList getPortfolios(
@@ -113,7 +97,6 @@ import retrofit.Callback;
     @NotNull public PortfolioDTO getPortfolio(
             @NotNull OwnedPortfolioId ownedPortfolioId)
     {
-        basicCheck(ownedPortfolioId);
         return createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()).process(
                 this.portfolioService.getPortfolio(
                         ownedPortfolioId.userId,
@@ -124,7 +107,6 @@ import retrofit.Callback;
             @NotNull OwnedPortfolioId ownedPortfolioId,
             @Nullable Callback<PortfolioDTO> callback)
     {
-        basicCheck(ownedPortfolioId);
         BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()));
@@ -140,9 +122,9 @@ import retrofit.Callback;
     }
 
     @NotNull public UserProfileDTO resetPortfolio(
-            @NotNull OwnedPortfolioId ownedPortfolioId, GooglePlayPurchaseDTO purchaseDTO)
+            @NotNull OwnedPortfolioId ownedPortfolioId,
+            GooglePlayPurchaseDTO purchaseDTO)
     {
-        basicCheck(ownedPortfolioId);
         return createUpdateProfileProcessor().process(this.portfolioService.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO));
     }
 
@@ -151,7 +133,6 @@ import retrofit.Callback;
             GooglePlayPurchaseDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        basicCheck(ownedPortfolioId);
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
         this.portfolioServiceAsync.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallback);
         return middleCallback;
@@ -172,7 +153,6 @@ import retrofit.Callback;
             @NotNull OwnedPortfolioId ownedPortfolioId,
             GooglePlayPurchaseDTO purchaseDTO)
     {
-        basicCheck(ownedPortfolioId);
         return createAddCashProcessor(ownedPortfolioId).process(this.portfolioService.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO));
     }
 
@@ -181,7 +161,6 @@ import retrofit.Callback;
             GooglePlayPurchaseDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
-        basicCheck(ownedPortfolioId);
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createAddCashProcessor(ownedPortfolioId));
         this.portfolioServiceAsync.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallback);
         return middleCallback;
@@ -197,7 +176,6 @@ import retrofit.Callback;
     @NotNull public PortfolioDTO markPortfolio(
             @NotNull OwnedPortfolioId ownedPortfolioId)
     {
-        basicCheck(ownedPortfolioId);
         return createPortfolioMarkedProcessor(ownedPortfolioId.getUserBaseKey()).process(
                 this.portfolioService.markPortfolio(
                         ownedPortfolioId.userId,
@@ -211,7 +189,6 @@ import retrofit.Callback;
         BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createPortfolioMarkedProcessor(ownedPortfolioId.getUserBaseKey()));
-        basicCheck(ownedPortfolioId);
         this.portfolioServiceAsync.markPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
         return middleCallback;
     }

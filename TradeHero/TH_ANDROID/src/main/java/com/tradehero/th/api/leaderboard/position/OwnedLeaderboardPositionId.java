@@ -3,6 +3,7 @@ package com.tradehero.th.api.leaderboard.position;
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.position.PositionDTOKey;
+import org.jetbrains.annotations.NotNull;
 
 public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, DTO
 {
@@ -24,18 +25,20 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
         this(leaderboardMarkUserId.key, leaderboardMarkUserPositionId);
     }
 
-    public OwnedLeaderboardPositionId(Bundle args)
+    public OwnedLeaderboardPositionId(@NotNull Bundle args)
     {
-        this.leaderboardMarkUserId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) ? args.getInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) : null;
-        this.leaderboardMarkUserPositionId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID) ? args.getInt(
-                BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID) : null;
+        this.leaderboardMarkUserId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) ?
+                args.getInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) :
+                null;
+        this.leaderboardMarkUserPositionId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID) ?
+                args.getInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID) :
+                null;
     }
     //</editor-fold>
 
-    public static boolean isOwnedLeaderboardPositionId(Bundle args)
+    public static boolean isOwnedLeaderboardPositionId(@NotNull Bundle args)
     {
-        return args != null &&
-                args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) &&
+        return args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) &&
                 args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID);
     }
 
@@ -58,13 +61,8 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
                         == null : leaderboardMarkUserPositionId.equals(other.leaderboardMarkUserPositionId));
     }
 
-    @Override public int compareTo(Object o)
+    @Override public int compareTo(@NotNull Object o)
     {
-        if (o == null)
-        {
-            return 1;
-        }
-
         if (o.getClass() == OwnedLeaderboardPositionId.class)
         {
             return compareTo((OwnedLeaderboardPositionId) o);
@@ -72,16 +70,11 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
         return o.getClass().getName().compareTo(OwnedLeaderboardPositionId.class.getName());
     }
 
-    public int compareTo(OwnedLeaderboardPositionId other)
+    public int compareTo(@NotNull OwnedLeaderboardPositionId other)
     {
         if (this == other)
         {
             return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
         }
 
         int lbmuComp = leaderboardMarkUserId.compareTo(other.leaderboardMarkUserId);
@@ -109,11 +102,6 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
         Bundle args = new Bundle();
         putParameters(args);
         return args;
-    }
-
-    public LeaderboardMarkUserId getLeaderboardMarkUserKey()
-    {
-        return new LeaderboardMarkUserId(leaderboardMarkUserId);
     }
 
     @Override public String toString()

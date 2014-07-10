@@ -26,7 +26,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
     }
     //</editor-fold>
 
-    public static boolean isOwnedPositionId(Bundle args)
+    public static boolean isOwnedPositionId(@NotNull Bundle args)
     {
         return isOwnedPortfolioId(args) &&
                 args.containsKey(BUNDLE_KEY_POSITION_ID);
@@ -65,7 +65,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         return positionId.compareTo(other.positionId);
     }
 
-    @Override protected void putParameters(Bundle args)
+    @Override protected void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_POSITION_ID, positionId);
@@ -76,7 +76,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         return this.positionId < 0;
     }
 
-    @Override public String toString()
+    @Override @NotNull public String toString()
     {
         return "OwnedPositionId{" +
                 "portfolioId=" + portfolioId +
