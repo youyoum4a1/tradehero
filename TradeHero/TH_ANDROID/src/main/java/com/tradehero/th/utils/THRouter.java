@@ -10,7 +10,6 @@ import com.tradehero.route.RouterOptions;
 import com.tradehero.route.RouterParams;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.home.HomeFragment;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -117,18 +116,15 @@ public class THRouter extends Router
                     args.putString(param.getKey(), param.getValue());
                 }
             }
-            if (options.getOpenFragmentClass().equals(HomeFragment.class)
-                    && navigator.getCurrentFragment() != null
-                    && navigator.getCurrentFragment() instanceof HomeFragment)
+
+            Fragment currentFragment = navigator.getCurrentFragment();
+
+            /** If the opening fragment is active, and not yet detached, resume it with routing bundle **/
+            if (currentFragment != null && !currentFragment.isDetached() &&
+                    ((Object) currentFragment).getClass().equals(options.getOpenFragmentClass()))
             {
-                if (args.getString("socialId") != null && args.getString("userId") != null)
-                {//invite
-                    ((HomeFragment) navigator.getCurrentFragment()).createInviteInHomePage(args.getString("socialId"), args.getString("userId"));
-                }
-                else if (args.getString("userId") != null)
-                {//follow
-                    ((HomeFragment) navigator.getCurrentFragment()).createFollowInHomePage(args.getString("userId"));
-                }
+                currentFragment.getArguments().putAll(args);
+                currentFragment.onResume();
             }
             else
             {

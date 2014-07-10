@@ -59,7 +59,7 @@ import timber.log.Timber;
 
 @Routable({
         "refer-friend/:socialId/:userId",
-        "user/:UserID/follow/free"
+        "user/:userId/follow/free"
 })
 public final class HomeFragment extends BaseWebViewFragment
 {
@@ -156,6 +156,20 @@ public final class HomeFragment extends BaseWebViewFragment
         super.onDestroyView();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        Bundle args = getArguments();
+        if (args.getString("socialId") != null && args.getString("userId") != null)
+        {
+            createInviteInHomePage(args.getString("socialId"), args.getString("userId"));
+        }
+        else if (args.getString("userId") != null)
+        {
+            createFollowInHomePage(args.getString("userId"));
+        }
+    }
 
     //<editor-fold desc="Windy's stuff, to be refactored">
     public void createInviteInHomePage(String social, String userid)
