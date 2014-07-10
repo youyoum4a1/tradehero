@@ -1,18 +1,21 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class SecurityCompactListCache extends StraightDTOCacheNew<SecurityListType, SecurityIdList>
+@Singleton public class SecurityCompactListCache extends StraightCutDTOCacheNew<
+        SecurityListType,
+        SecurityCompactDTOList,
+        SecurityIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -30,24 +33,28 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override @NotNull public SecurityIdList fetch(@NotNull SecurityListType key) throws Throwable
+    @Override @NotNull public SecurityCompactDTOList fetch(@NotNull SecurityListType key) throws Throwable
     {
-        return putInternal(key, securityServiceWrapper.get().getSecurities(key));
+        return securityServiceWrapper.get().getSecurities(key);
     }
 
-    @NotNull protected SecurityIdList putInternal(
-            @NotNull SecurityListType key,
-            @NotNull  List<SecurityCompactDTO> fleshedValues)
+    @NotNull @Override protected SecurityIdList cutValue(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
     {
-        SecurityIdList securityIds = new SecurityIdList();
-        @NotNull SecurityId securityId;
-        for (@NotNull SecurityCompactDTO securityCompactDTO: fleshedValues)
+        securityCompactCache.get().put(value);
+        return new SecurityIdList(value, (SecurityCompactDTO) null);
+    }
+
+    @Nullable @Override protected SecurityCompactDTOList inflateValue(@NotNull SecurityListType key, @Nullable SecurityIdList cutValue)
+    {
+        if (cutValue == null)
         {
-            securityId = securityCompactDTO.getSecurityId();
-            securityIds.add(securityId);
-            securityCompactCache.get().put(securityId, securityCompactDTO);
+            return null;
         }
-        put(key, securityIds);
-        return securityIds;
+        SecurityCompactDTOList value = securityCompactCache.get().get(cutValue);
+        if (value.hasNullItem())
+        {
+            return null;
+        }
+        return value;
     }
 }

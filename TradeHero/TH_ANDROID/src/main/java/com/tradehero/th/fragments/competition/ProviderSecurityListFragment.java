@@ -21,7 +21,7 @@ import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
@@ -260,7 +260,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected class ProviderSecurityListLoaderCallback extends SecurityListLoaderCallback
     {
-        @Override public Loader<SecurityIdList> onCreateLoader(int id, Bundle args)
+        @Override public Loader<SecurityCompactDTOList> onCreateLoader(int id, Bundle args)
         {
             if (id == getSecurityIdListLoaderId())
             {

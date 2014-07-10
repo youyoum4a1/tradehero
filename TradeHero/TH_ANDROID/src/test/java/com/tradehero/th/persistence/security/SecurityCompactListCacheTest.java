@@ -1,7 +1,7 @@
 package com.tradehero.th.persistence.security;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import dagger.Lazy;
@@ -44,7 +44,7 @@ public class SecurityCompactListCacheTest
     @Test public void basicAll_1_10NotEqualOthers()
     {
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 1, 10))).isNull();
-        securityCompactListCache.put(new TrendingBasicSecurityListType(null, 1, 10), new SecurityIdList());
+        securityCompactListCache.put(new TrendingBasicSecurityListType(null, 1, 10), new SecurityCompactDTOList());
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 1, 10))).isNotNull();
 
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 2, 10))).isNull();
@@ -61,7 +61,7 @@ public class SecurityCompactListCacheTest
     @Test public void basicAll_4_10NotEqualOthers()
     {
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 4, 10))).isNull();
-        securityCompactListCache.put(new TrendingBasicSecurityListType(null, 4, 10), new SecurityIdList());
+        securityCompactListCache.put(new TrendingBasicSecurityListType(null, 4, 10), new SecurityCompactDTOList());
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 4, 10))).isNotNull();
 
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 5, 10))).isNull();

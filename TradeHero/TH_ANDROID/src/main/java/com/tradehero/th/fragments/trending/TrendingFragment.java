@@ -28,7 +28,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -481,17 +481,17 @@ public class TrendingFragment extends SecurityListFragment
     }
     //</editor-fold>
 
-    @Override protected void handleSecurityItemReceived(SecurityIdList securityIds)
+    @Override protected void handleSecurityItemReceived(@NotNull SecurityCompactDTOList securityCompactDTOs)
     {
         if (AppTiming.trendingFilled == 0)
         {
             AppTiming.trendingFilled = System.currentTimeMillis();
         }
-        //Timber.d("handleSecurityItemReceived "+securityIds.toString());
+        //Timber.d("handleSecurityItemReceived "+securityCompactDTOs.toString());
         if (securityItemViewAdapter != null)
         {
             // It may have been nullified if coming out
-            securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
+            securityItemViewAdapter.setItems(securityCompactDTOs);
             refreshAdapterWithTiles(false);
         }
 
