@@ -4,38 +4,25 @@ import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.NotNull;
 
 public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey, DTO
 {
     public final static String BUNDLE_KEY_POSITION_ID = OwnedPositionId.class.getName() + ".positionId";
 
-    public final Integer positionId;
+    @NotNull public final Integer positionId;
 
     //<editor-fold desc="Constructors">
-    public OwnedPositionId(Integer userId, Integer portfolioId, Integer positionId)
+    public OwnedPositionId(int userId, int portfolioId, int positionId)
     {
         super(userId, portfolioId);
-        this.positionId = positionId;
-    }
-
-    public OwnedPositionId(UserBaseKey userBaseKey, PortfolioId portfolioId, Integer positionId)
-    {
-        super(userBaseKey, portfolioId);
         this.positionId = positionId;
     }
 
     public OwnedPositionId(Bundle args)
     {
         super(args);
-        this.positionId = args.containsKey(BUNDLE_KEY_POSITION_ID) ? args.getInt(BUNDLE_KEY_POSITION_ID) : null;
-    }
-
-    public OwnedPositionId(OwnedPositionId ownedPositionId)
-    {
-        super(ownedPositionId.getUserBaseKey(), ownedPositionId.getPortfolioIdKey());
-        this.positionId = ownedPositionId.positionId;
+        this.positionId = args.getInt(BUNDLE_KEY_POSITION_ID);
     }
     //</editor-fold>
 
@@ -47,14 +34,14 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
 
     @Override public int hashCode()
     {
-        return super.hashCode() ^ (positionId == null ? 0 : positionId.hashCode());
+        return super.hashCode() ^ positionId.hashCode();
     }
 
     public boolean equals(OwnedPositionId other)
     {
         return (other != null) &&
                 super.equals(other) &&
-                (positionId == null ? other.positionId == null : positionId.equals(other.positionId));
+                positionId.equals(other.positionId);
     }
 
     public int compareTo(OwnedPositionId other)
@@ -76,11 +63,6 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         }
 
         return positionId.compareTo(other.positionId);
-    }
-
-    @JsonIgnore @Override public boolean isValid()
-    {
-        return super.isValid() && this.positionId != null;
     }
 
     @Override protected void putParameters(Bundle args)

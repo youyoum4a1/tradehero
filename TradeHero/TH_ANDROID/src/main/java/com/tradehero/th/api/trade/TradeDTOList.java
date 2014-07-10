@@ -1,41 +1,15 @@
 package com.tradehero.th.api.trade;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import org.jetbrains.annotations.Nullable;
+import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.DTO;
 
-public class TradeDTOList extends ArrayList<TradeDTO>
+public class TradeDTOList extends BaseArrayList<TradeDTO>
+    implements DTO
 {
     //<editor-fold desc="Constructors">
-    public TradeDTOList(int initialCapacity)
-    {
-        super(initialCapacity);
-    }
-
     public TradeDTOList()
     {
         super();
     }
-
-    public TradeDTOList(Collection<? extends TradeDTO> c)
-    {
-        super(c);
-    }
     //</editor-fold>
-
-    @Nullable
-    public TradeDTO getLatestTrade()
-    {
-        TradeDTO latest = null;
-        Comparator<TradeDTO> dateIncreasingComparator = new TradeDTODateIncreasingComparator();
-        for (TradeDTO tradeDTO : this)
-        {
-            if (dateIncreasingComparator.compare(latest, tradeDTO) >= 0)
-            {
-                latest = tradeDTO;
-            }
-        }
-        return latest;
-    }
 }
