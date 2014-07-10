@@ -8,6 +8,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -33,13 +34,13 @@ public class PeopleSearchFragmentTest
     }
 
     //<editor-fold desc="Hint">
+    @Ignore("This test will fail because the setup mocks the action bar, which then returns a null view")
     @Test public void testHintIsCorrect()
     {
-        //peopleSearchFragment = dashboardNavigator.pushFragment(PeopleSearchFragment.class);
+        peopleSearchFragment = dashboardNavigator.pushFragment(PeopleSearchFragment.class);
 
-        // TODO not mock the action bar
-        //assertThat(peopleSearchFragment.mSearchTextField.getHint())
-        //        .isEqualTo(context.getString(R.string.search_social_friend_hint));
+        assertThat(peopleSearchFragment.mSearchTextField.getHint())
+                .isEqualTo(context.getString(R.string.search_social_friend_hint));
     }
     //</editor-fold>
 }
