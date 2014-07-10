@@ -292,7 +292,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             Bundle args = new Bundle();
             String url = providerUtil.appendUserId(adDTO.redirectUrl, '&', currentUserId.toUserBaseKey());
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, url);
+            CompetitionWebViewFragment.putUrl(args, url);
             getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         }
     }
@@ -338,8 +338,8 @@ public class MainCompetitionFragment extends CompetitionFragment
             competitionUrl = providerUtil.getWizardPage(providerId);
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
         }
-        
-        args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, competitionUrl);
+
+        CompetitionWebViewFragment.putUrl(args, competitionUrl);
         this.webViewFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
@@ -381,13 +381,11 @@ public class MainCompetitionFragment extends CompetitionFragment
         Bundle args = new Bundle();
         if ((competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
         {
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL,
-                    providerUtil.getRulesPage(providerId));
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getRulesPage(providerId));
         }
         else
         {
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL,
-                    providerUtil.getTermsPage(providerId));
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
         }
         getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
     }
@@ -473,12 +471,12 @@ public class MainCompetitionFragment extends CompetitionFragment
     private class MainCompetitionUserProfileCacheListener
             implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey providerId, UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey providerId, @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_your_user_profile));
             Timber.e("Error fetching the profile info %s", key, error);

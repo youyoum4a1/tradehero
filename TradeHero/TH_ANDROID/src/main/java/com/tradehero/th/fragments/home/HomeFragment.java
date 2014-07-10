@@ -142,7 +142,6 @@ public final class HomeFragment extends BaseWebViewFragment
         switch (item.getItemId())
         {
             case R.id.btn_fresh:
-                homeContentCache.invalidate(currentUserId.toUserBaseKey());
                 webView.reload();
                 return true;
         }

@@ -407,7 +407,7 @@ public class TrendingFragment extends SecurityListFragment
         else if (providerDTO != null)
         {
             Bundle args = new Bundle();
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
@@ -422,7 +422,7 @@ public class TrendingFragment extends SecurityListFragment
         if (userProfileDTO != null && userProfileDTO.activeSurveyURL != null)
         {
             Bundle bundle = new Bundle();
-            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, userProfileDTO.activeSurveyURL);
+            WebViewFragment.putUrl(bundle, userProfileDTO.activeSurveyURL);
             getDashboardNavigator().pushFragment(WebViewFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
         }
     }
@@ -527,13 +527,13 @@ public class TrendingFragment extends SecurityListFragment
 
     protected class TrendingExchangeListTypeFetchListener implements DTOCacheNew.Listener<ExchangeListType, ExchangeCompactDTOList>
     {
-        @Override public void onDTOReceived(ExchangeListType key, ExchangeCompactDTOList value)
+        @Override public void onDTOReceived(@NotNull ExchangeListType key, @NotNull ExchangeCompactDTOList value)
         {
             Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(ExchangeListType key, Throwable error)
+        @Override public void onErrorThrown(@NotNull ExchangeListType key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_exchange_list_info));
             Timber.e("Error fetching the list of exchanges %s", key, error);
@@ -549,13 +549,13 @@ public class TrendingFragment extends SecurityListFragment
 
     protected class TrendingUserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             Timber.d("Retrieve user with surveyUrl=%s", value.activeSurveyImageURL);
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_user_profile);
         }

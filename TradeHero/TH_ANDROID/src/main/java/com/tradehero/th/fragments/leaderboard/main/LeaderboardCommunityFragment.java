@@ -400,7 +400,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             // HACK Just in case the user eventually enrolls
             portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
             Bundle args = new Bundle();
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
