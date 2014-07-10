@@ -8,6 +8,7 @@ import com.tradehero.th.fragments.timeline.FragmentTimelineTestModule;
 import com.tradehero.th.fragments.trade.FragmentTradeTestModule;
 import com.tradehero.th.fragments.trending.FragmentTrendingTestModule;
 import com.tradehero.th.fragments.updatecenter.FragmentUpdateCenterTestModule;
+import com.tradehero.th.fragments.web.FragmentWebTestModule;
 import dagger.Module;
 
 @Module(
@@ -20,6 +21,7 @@ import dagger.Module;
                 FragmentTrendingTestModule.class,
                 FragmentUpdateCenterTestModule.class,
                 FragmentSettingsTestModule.class,
+                FragmentWebTestModule.class
         },
         complete = false,
         library = true

@@ -56,7 +56,16 @@ public class ProviderPageIntent extends OneProviderIntent
 
     public String getCompleteForwardUriPath()
     {
-        return apiServer.getUrl() + getForwardUriPath();
+        String path = getForwardUriPath();
+        Uri forwardUri = Uri.parse(path);
+        if (forwardUri.getScheme() == null && forwardUri.getHost() == null)
+        {
+            return apiServer.getUrl() + getForwardUriPath();
+        }
+        else
+        {
+            return path;
+        }
     }
 
     public String getForwardUriPath()
