@@ -3,7 +3,6 @@ package com.tradehero.th.models.intent.trending;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
-import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +27,7 @@ public class TrendingIntentTest
     @Test public void constructorSetsPath()
     {
         THIntent intent = new TrendingIntent();
-        Assert.assertEquals("tradehero://trending", intent.getData() + "");
+        assertThat(intent.getData() + "").isEqualTo("tradehero://trending");
     }
 
     @Test public void uriPathIsWellFormed()
