@@ -33,6 +33,7 @@ import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
@@ -353,7 +354,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void handleSecurityItemReceived(@NotNull SecurityCompactDTOList securityCompactDTOs)
+    protected void handleSecurityItemReceived(@Nullable SecurityCompactDTOList securityCompactDTOs)
     {
         if (securityItemViewAdapter != null)
         {

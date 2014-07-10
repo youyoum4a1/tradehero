@@ -53,7 +53,9 @@ public class MainCompetitionFragmentTest
         // creating mock object for providerDTO
         ProviderDTO mockProviderDTO = new ProviderDTO();
         mockProviderDTO.id = providerId.key;
-        mockProviderDTO.associatedPortfolio = mock(PortfolioCompactDTO.class);
+        mockProviderDTO.associatedPortfolio = new PortfolioCompactDTO();
+        mockProviderDTO.associatedPortfolio.id = 24;
+        mockProviderDTO.associatedPortfolio.userId = 25;
 
         AdDTO adDTO = new AdDTO();
         adDTO.redirectUrl = TEST_ADS_WEB_URL;
@@ -63,7 +65,7 @@ public class MainCompetitionFragmentTest
         providerCache.put(providerId, mockProviderDTO);
     }
 
-    @Test public void shouldAbleToNavigateToMainCompetitionFragmentWithOutApplicablePortfolioId()
+    @Test public void shouldBeAbleToNavigateToMainCompetitionFragmentWithOutApplicablePortfolioId()
     {
         Bundle args = new Bundle();
 
