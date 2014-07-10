@@ -15,12 +15,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
-@Config(manifest = Config.NONE)
 public class DisplayablePortfolioDTOComparableTest
 {
     @Before public void setUp() throws IOException

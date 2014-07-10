@@ -16,6 +16,14 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
     @NotNull public final Integer portfolioId;
 
     //<editor-fold desc="Constructors">
+    private OwnedPortfolioId()
+    {
+        // Do not remove. Exists only for JSON deserialiser
+        super();
+        this.userId = -1;
+        this.portfolioId = -1;
+    }
+
     public OwnedPortfolioId(final int userId, final int portfolioId)
     {
         this.userId = userId;
