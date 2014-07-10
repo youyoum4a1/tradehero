@@ -17,7 +17,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -42,7 +42,6 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -491,14 +490,17 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
-    public List<UserTransactionHistoryDTO> getUserTransactions(UserBaseKey userBaseKey)
+    @NotNull public UserTransactionHistoryDTOList getUserTransactions(
+            @NotNull UserBaseKey userBaseKey)
     {
         return userService.getUserTransactions(userBaseKey.key);
     }
 
-    public MiddleCallback<List<UserTransactionHistoryDTO>> getUserTransactions(UserBaseKey userBaseKey, Callback<List<UserTransactionHistoryDTO>> callback)
+    @NotNull public MiddleCallback<UserTransactionHistoryDTOList> getUserTransactions(
+            @NotNull UserBaseKey userBaseKey,
+            @Nullable Callback<UserTransactionHistoryDTOList> callback)
     {
-        MiddleCallback<List<UserTransactionHistoryDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserTransactionHistoryDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getUserTransactions(userBaseKey.key, middleCallback);
         return middleCallback;
     }
