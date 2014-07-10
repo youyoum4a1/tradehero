@@ -38,7 +38,7 @@
         android:textSize="@dimen/text_small"
         android:gravity="center_horizontal"
         android:textColor="@color/text_gray_normal"
-        android:padding="15sp"
+        android:padding="15dp"
         />
 
   </LinearLayout>

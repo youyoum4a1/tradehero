@@ -12,7 +12,7 @@
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
       android:textStyle="bold"
-      android:textSize="12sp"
+      android:textSize="@dimen/text_xsmall"
       android:text="@string/na"
     />
 

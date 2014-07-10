@@ -6,6 +6,8 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
+import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
+import com.tradehero.th.models.share.preference.SocialShareSetPreference;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
@@ -38,8 +40,8 @@ public class PreferenceModule
     private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_PUSH_IDENTIFIER_SENT_FLAG";
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
     private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
-
-    public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SOCIAL_SHARE_FLAG";
+    public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
+    private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
 
     @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(@ForUser SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
@@ -82,6 +84,12 @@ public class PreferenceModule
     @Provides @Singleton @SavedCredentials StringSetPreference provideSavedPrefCredentials(CredentialsSetPreference credentialsSetPreference)
     {
         return credentialsSetPreference;
+    }
+
+    @Provides @Singleton SocialShareSetPreference provideSocialSharePref(@ForUser SharedPreferences sharedPreferences,
+            SocialSharePreferenceDTOFactory sharePreferenceDTOFactory)
+    {
+        return new SocialShareSetPreference(sharePreferenceDTOFactory, sharedPreferences, PREF_SAVED_SOCIAL_SHARE_KEY, new HashSet<String>());
     }
 
     @Provides @Singleton @ResetHelpScreens BooleanPreference provideResetHelpScreen(@ForUser SharedPreferences sharedPreferences)

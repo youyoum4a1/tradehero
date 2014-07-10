@@ -107,7 +107,7 @@
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
           style="@style/TH.SmallTitle"
-          android:textSize="10sp"
+          android:textSize="@dimen/text_xxsmall"
           tools:text="as of 27 Jan 2014"
           />
 

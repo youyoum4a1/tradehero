@@ -11,7 +11,7 @@
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
       tools:text="US$ 4.60"
-      android:textSize="18sp"
+      android:textSize="@dimen/text_large"
       android:textStyle="bold"
       />
 
@@ -22,7 +22,7 @@
       android:layout_height="wrap_content"
       android:text="@string/buy_sell_usd_price_unit_left"
       android:gravity="center_horizontal"
-      android:textSize="13sp"
+      android:textSize="@dimen/text_small"
       />
 
   <TableLayout
@@ -43,14 +43,14 @@
           android:layout_weight="1"
           tools:text="4.5"
           android:gravity="right"
-          android:textSize="13sp"
+          android:textSize="@dimen/text_small"
           android:singleLine="true"
           />
 
       <TextView
           android:text=" x "
           android:gravity="center"
-          android:textSize="13sp"
+          android:textSize="@dimen/text_small"
           android:padding="4dp"
           android:singleLine="true"
           />
@@ -63,7 +63,7 @@
           android:layout_weight="1"
           tools:text="4.6"
           android:gravity="left"
-          android:textSize="13sp"
+          android:textSize="@dimen/text_small"
           android:singleLine="true"
           />
 
@@ -82,14 +82,14 @@
           android:layout_weight="1"
           android:gravity="right"
           android:text="@string/buy_sell_bid_with_bracket"
-          android:textSize="12sp"
+          android:textSize="@dimen/text_xsmall"
           android:singleLine="true"
           />
 
       <TextView
           android:text=" "
           android:gravity="center"
-          android:textSize="12sp"
+          android:textSize="@dimen/text_xsmall"
           android:padding="4dp"
           android:singleLine="true"
           />
@@ -102,7 +102,7 @@
           android:layout_weight="1"
           android:gravity="left"
           android:text="@string/buy_sell_ask_with_bracket"
-          android:textSize="12sp"
+          android:textSize="@dimen/text_xsmall"
           android:singleLine="true"
           />
 
