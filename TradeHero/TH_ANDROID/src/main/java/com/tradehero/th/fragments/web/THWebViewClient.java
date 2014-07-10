@@ -71,6 +71,7 @@ public class THWebViewClient extends WebViewClient
             {
                 Timber.d("shouldOverrideUrlLoading Notifying parent with intent");
                 notifyThIntentPassed(thIntent);
+                return true;
             }
             else
             {
@@ -95,8 +96,8 @@ public class THWebViewClient extends WebViewClient
                         return false;
                     }
                 }
+                return true;
             }
-            return true;
         }
 
         if (Uri.parse(url).getScheme().equals("market"))
