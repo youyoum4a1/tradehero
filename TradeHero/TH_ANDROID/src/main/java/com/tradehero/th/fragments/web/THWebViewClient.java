@@ -71,6 +71,7 @@ public class THWebViewClient extends WebViewClient
             {
                 Timber.d("shouldOverrideUrlLoading Notifying parent with intent");
                 notifyThIntentPassed(thIntent);
+                return true;
             }
             else
             {
@@ -90,13 +91,13 @@ public class THWebViewClient extends WebViewClient
                         Timber.d("Opening this page: %s", redirectUrl);
                         DashboardNavigator navigator = ((DashboardNavigatorActivity) context).getDashboardNavigator();
                         Bundle bundle = new Bundle();
-                        bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, redirectUrl);
+                        WebViewFragment.putUrl(bundle, redirectUrl);
                         navigator.pushFragment(WebViewFragment.class, bundle);
                         return false;
                     }
                 }
+                return true;
             }
-            return true;
         }
 
         if (Uri.parse(url).getScheme().equals("market"))

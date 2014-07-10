@@ -242,12 +242,12 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e(error, "");
         }

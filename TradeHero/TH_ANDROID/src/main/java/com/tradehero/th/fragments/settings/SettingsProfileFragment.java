@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -229,12 +230,12 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
             {
                 profileView.populate(value);
             }
 
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
             {
                 THToast.show(new THException(error));
             }

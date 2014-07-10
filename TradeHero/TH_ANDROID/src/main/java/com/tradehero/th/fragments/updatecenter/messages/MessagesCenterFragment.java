@@ -625,7 +625,7 @@ public class MessagesCenterFragment extends DashboardFragment
             //TODO how to invalidate the old data ..
         }
 
-        @Override public void onErrorThrown(MessageListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull MessageListKey key, @NotNull Throwable error)
         {
             hasMorePage = true;
             onRefreshCompleted();

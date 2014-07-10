@@ -30,6 +30,7 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class SettingsAlipayFragment extends DashboardFragment
 {
@@ -186,7 +187,7 @@ public class SettingsAlipayFragment extends DashboardFragment
         return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
             @Override
-            public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
             {
                 if (!isDetached())
                 {
@@ -196,7 +197,7 @@ public class SettingsAlipayFragment extends DashboardFragment
                 }
             }
 
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
             {
                 if (!isDetached())
                 {

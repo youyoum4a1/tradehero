@@ -79,6 +79,8 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -138,12 +140,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             currentUserProfileRetrievedMilestoneListener;
     private LogInCallback socialConnectLogInCallback;
 
-    public static void putSocialNetworkToConnect(Bundle args, SocialNetworkEnum socialNetwork)
+    public static void putSocialNetworkToConnect(@NotNull Bundle args, @NotNull SocialNetworkEnum socialNetwork)
     {
         args.putString(KEY_SOCIAL_NETWORK_TO_CONNECT, socialNetwork.name());
     }
 
-    public static void putSocialNetworkToConnect(Bundle args, SocialShareFormDTO shareFormDTO)
+    public static void putSocialNetworkToConnect(@NotNull Bundle args, @Nullable SocialShareFormDTO shareFormDTO)
     {
         if (shareFormDTO instanceof TimelineItemShareFormDTO &&
                 ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO != null &&
@@ -153,7 +155,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
-    public static SocialNetworkEnum getSocialNetworkToConnect(Bundle args)
+    @Nullable public static SocialNetworkEnum getSocialNetworkToConnect(@Nullable Bundle args)
     {
         if (args == null)
         {
@@ -946,7 +948,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         String faqUrl = getResources().getString(R.string.th_faq_url);
         Bundle bundle = new Bundle();
-        bundle.putString(WebViewFragment.BUNDLE_KEY_URL, faqUrl);
+        WebViewFragment.putUrl(bundle, faqUrl);
         getNavigator().pushFragment(WebViewFragment.class, bundle);
     }
 

@@ -30,6 +30,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DiscussionView extends FrameLayout
@@ -443,7 +444,7 @@ public class DiscussionView extends FrameLayout
         return new DiscussionViewCommentPostedListener();
     }
 
-    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value)
+    @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value)
     {
         onFinish();
 
@@ -463,7 +464,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
+    @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
     {
         onFinish();
 

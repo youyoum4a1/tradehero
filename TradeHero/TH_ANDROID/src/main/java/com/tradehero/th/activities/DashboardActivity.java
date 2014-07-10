@@ -415,12 +415,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             supportInvalidateOptionsMenu();
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
 
         }
@@ -460,7 +460,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
 
         @Override
-        public void onDTOReceived(NotificationKey key, NotificationDTO value)
+        public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
         {
             onFinish();
 
@@ -468,7 +468,7 @@ public class DashboardActivity extends SherlockFragmentActivity
             notificationClickHandler.handleNotificationItemClicked();
         }
 
-        @Override public void onErrorThrown(NotificationKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
         {
             onFinish();
             THToast.show(new THException(error));

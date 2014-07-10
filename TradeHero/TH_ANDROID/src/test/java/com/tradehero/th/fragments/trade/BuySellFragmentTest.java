@@ -60,7 +60,7 @@ public class BuySellFragmentTest
     }
 
     //<editor-fold desc="Alert Button">
-    private Bundle argsGoogle()
+    private Bundle bundleWithGoogleSecurityId()
     {
         SecurityId googleId = new SecurityId("NYSE", "GOOG");
         Bundle args = new Bundle();
@@ -68,7 +68,7 @@ public class BuySellFragmentTest
         return args;
     }
 
-    private void populateAlertCacheWithGoogle()
+    private void populateAlertCacheWithGoogleSecurityId()
     {
         AlertDTO googleAlert = new AlertDTO();
         googleAlert.id = 32;
@@ -87,18 +87,19 @@ public class BuySellFragmentTest
     {
         alertCompactListCache.put(currentUserId.toUserBaseKey(), new AlertCompactDTOList());
 
-        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, argsGoogle());
+        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 
         assertThat(buySellFragment.mBtnAddTrigger.getText()).isEqualTo("Add Alert");
     }
 
-    @Test public void testWhenHasAlertShowsEditAlert()
+    @Test public void testWhenHasAlertShowsEditAlert() throws Throwable
     {
-        populateAlertCacheWithGoogle();
+        populateAlertCacheWithGoogleSecurityId();
+        assertThat(alertCompactListCache.getOrFetchSync(currentUserId.toUserBaseKey())).isNotNull();
 
-        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, argsGoogle());
+        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 
@@ -122,7 +123,7 @@ public class BuySellFragmentTest
                 currentUserId.toUserBaseKey(),
                 new SecurityIdList());
 
-        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, argsGoogle());
+        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 
@@ -135,7 +136,7 @@ public class BuySellFragmentTest
     @Test public void testWhenHasWatchlistShowEditWatchlist() throws InterruptedException
     {
         populateUserWatchlistCache();
-        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, argsGoogle());
+        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();

@@ -322,7 +322,7 @@ public class NotificationsView extends BetterViewAnimator
             onFinish();
         }
 
-        @Override public void onErrorThrown(NotificationListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationListKey key, @NotNull Throwable error)
         {
             onFinish();
             Timber.e("NotificationRefreshListener onErrorThrown");

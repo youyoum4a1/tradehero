@@ -33,7 +33,7 @@ public class AdView extends RelativeLayout
         {
             Bundle bundle = new Bundle();
             String url = adDTO.redirectUrl + String.format("&userId=%d", currentUserId.get());
-            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, url);
+            WebViewFragment.putUrl(bundle, url);
             getNavigator().pushFragment(WebViewFragment.class, bundle);
         }
     }
