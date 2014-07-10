@@ -48,5 +48,7 @@
   <string name="share_to_wechat_timeline_discussion">我在全民股神上分享了一段讨论，快来加入吧</string>
   <string name="share_to_wechat_timeline_timeline">我在全民股神上分享了我的动态，快来加入吧</string>
   <string name="share_to_wechat_timeline_trade">我在全民股神上完成了一笔交易，快来加入吧</string>
+  <string name="share_to_wechat_invite_friends">我正在玩全民股神，快来加入吧</string>
+
   <string name="share_success">分享成功</string>
 </resources>

@@ -188,6 +188,7 @@
   <string name="social_friend_empty">Sorry,no friends</string>
   <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
   <string name="invite_from_weibo">Invite from Weibo</string>
+  <string name="invite_from_wechat">Invite from Wechat</string>
   <string name="invite_from_linkedIn">Invite from LinkedIn</string>
   <string name="invite_from_twitter">Invite from Twitter</string>
   <string name="invite_from_facebook">Invite from Facebook</string>
