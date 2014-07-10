@@ -121,13 +121,13 @@ public class THRouter extends Router
                     && navigator.getCurrentFragment() != null
                     && navigator.getCurrentFragment() instanceof HomeFragment)
             {
-                if (args.getString("SocialID") != null && args.getString("UserID") != null)
+                if (args.getString("socialId") != null && args.getString("userId") != null)
                 {//invite
-                    ((HomeFragment) navigator.getCurrentFragment()).createInviteInHomePage(args.getString("SocialID"), args.getString("UserID"));
+                    ((HomeFragment) navigator.getCurrentFragment()).createInviteInHomePage(args.getString("socialId"), args.getString("userId"));
                 }
-                else if (args.getString("UserID") != null)
+                else if (args.getString("userId") != null)
                 {//follow
-                    ((HomeFragment) navigator.getCurrentFragment()).createFollowInHomePage(args.getString("UserID"));
+                    ((HomeFragment) navigator.getCurrentFragment()).createFollowInHomePage(args.getString("userId"));
                 }
             }
             else

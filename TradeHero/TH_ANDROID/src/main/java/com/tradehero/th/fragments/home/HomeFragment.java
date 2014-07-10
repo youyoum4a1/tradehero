@@ -58,7 +58,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 @Routable({
-        "refer-friend/:SocialID/:UserID",
+        "refer-friend/:socialId/:userId",
         "user/:UserID/follow/free"
 })
 public final class HomeFragment extends BaseWebViewFragment
