@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
-import static org.junit.Assert.assertEquals;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class TrendingIntentTest
@@ -33,11 +33,11 @@ public class TrendingIntentTest
 
     @Test public void uriPathIsWellFormed()
     {
-        assertEquals("tradehero://trending", new TrendingIntent().getUriPath());
+        assertThat(new TrendingIntent().getUriPath()).isEqualTo("tradehero://trending");
     }
 
     @Test public void typeIsDashboard()
     {
-        assertEquals(DashboardTabType.TRENDING, new TrendingIntent().getDashboardType());
+        assertThat(new TrendingIntent().getDashboardType()).isEqualTo(DashboardTabType.TRENDING);
     }
 }
