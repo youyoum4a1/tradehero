@@ -120,6 +120,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;
 
+    private static final boolean DEFAULT_IS_SHARED_TO_WECHAT = false;
+
     @InjectView(R.id.stock_bg_logo) protected ImageView mStockBgLogo;
     @InjectView(R.id.stock_logo) protected ImageView mStockLogo;
     @InjectView(R.id.portfolio_selector_container) protected View mSelectedPortfolioContainer;
@@ -1375,7 +1377,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                     return userProfileCopy.liLinked;
                 case WB:
                     return userProfileCopy.wbLinked;
-
                 default:
                     Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
                     return false;
@@ -1531,7 +1532,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBtnShareWeChat = (ToggleButton) view.findViewById(R.id.btn_wechat);
         if (mBtnShareWeChat != null)
         {
+            mBtnShareWeChat.setTag(SocialNetworkEnum.WECHAT);
             mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WECHAT));
+            mBtnShareWeChat.setOnCheckedChangeListener(createCheckedChangeListenerForWechat());
         }
 
         mBtnShareWb = null;
@@ -1644,6 +1647,18 @@ public class BuySellFragment extends AbstractBuySellFragment
         );
     }
 
+    private CompoundButton.OnCheckedChangeListener createCheckedChangeListenerForWechat()
+    {
+        return new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+            {
+                SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
+                socialSharePreferenceHelperNew.updateSocialSharePreference(networkEnum, isChecked);
+            }
+        };
+    }
+
     private CompoundButton.OnCheckedChangeListener createCheckedChangeListener()
     {
         return new CompoundButton.OnCheckedChangeListener()
@@ -1695,8 +1710,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void shareToWeChat()
     {
-        //if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, false))
-        if(mBtnShareWeChat.isChecked())
+        if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, DEFAULT_IS_SHARED_TO_WECHAT))
         {
             WeChatDTO weChatDTO = new WeChatDTO();
             weChatDTO.id = securityCompactDTO.id;
