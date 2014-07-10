@@ -41,6 +41,7 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -384,13 +385,13 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList>
     {
-        @Override public void onDTOReceived(OwnedPositionId key, OwnedTradeIdList ownedTradeIds)
+        @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull OwnedTradeIdList ownedTradeIds)
         {
             displayProgress(false);
             linkWith(ownedTradeIds, true);
         }
 
-        @Override public void onErrorThrown(OwnedPositionId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull OwnedPositionId key, @NotNull Throwable error)
         {
             displayProgress(false);
             THToast.show(R.string.error_fetch_trade_list_info);

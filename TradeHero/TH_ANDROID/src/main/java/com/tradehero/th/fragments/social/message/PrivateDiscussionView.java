@@ -270,12 +270,12 @@ public class PrivateDiscussionView extends DiscussionView
 
     protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
-        @Override public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value)
+        @Override public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
         {
             linkWithInitiating((PrivateDiscussionDTO) value, true);
         }
 
-        @Override public void onErrorThrown(DiscussionKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull DiscussionKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_private_message_initiating_discussion);
         }
@@ -317,18 +317,14 @@ public class PrivateDiscussionView extends DiscussionView
 
     private class MessageHeaderFetchListener implements DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value)
+        @Override public void onDTOReceived(@NotNull MessageHeaderId key, @NotNull MessageHeaderDTO value)
         {
-            if (value == null)
-            {
-                Timber.e(new NullPointerException("Server returned MessageHeaderDTO null for key " + key), "");
-            }
             setRecipient(new UserBaseKey(value.recipientUserId));
             linkWith(discussionKey, true);
             refresh();
         }
 
-        @Override public void onErrorThrown(MessageHeaderId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull MessageHeaderId key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }

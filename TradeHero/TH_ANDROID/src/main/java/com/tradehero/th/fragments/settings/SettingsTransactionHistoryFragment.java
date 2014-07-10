@@ -21,6 +21,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
@@ -124,14 +125,14 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
     protected class SettingsTransactionHistoryListListener implements DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList>
     {
-        @Override public void onDTOReceived(UserTransactionHistoryListType key, UserTransactionHistoryIdList value)
+        @Override public void onDTOReceived(@NotNull UserTransactionHistoryListType key, @NotNull UserTransactionHistoryIdList value)
         {
             transactionListViewAdapter.setItems(userTransactionHistoryCache.get(value));
             transactionListViewAdapter.notifyDataSetChanged();
             progressDialog.hide();
         }
 
-        @Override public void onErrorThrown(UserTransactionHistoryListType key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserTransactionHistoryListType key, @NotNull Throwable error)
         {
             THToast.show("Unable to fetch transaction history. Please try again later.");
             progressDialog.hide();

@@ -273,7 +273,7 @@ public class NotificationsView extends BetterViewAnimator
             this.shouldAppend = shouldAppend;
         }
 
-        @Override public void onDTOReceived(NotificationListKey key, NotificationKeyList notificationKeyList)
+        @Override public void onDTOReceived(@NotNull NotificationListKey key, @NotNull NotificationKeyList notificationKeyList)
         {
             onFinish();
 
@@ -291,7 +291,7 @@ public class NotificationsView extends BetterViewAnimator
             }
         }
 
-        @Override public void onErrorThrown(NotificationListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationListKey key, @NotNull Throwable error)
         {
             onFinish();
 
@@ -322,7 +322,7 @@ public class NotificationsView extends BetterViewAnimator
 
     private class NotificationRefreshListener implements DTOCacheNew.Listener<NotificationListKey, NotificationKeyList>
     {
-        @Override public void onDTOReceived(NotificationListKey key, NotificationKeyList notificationKeyList)
+        @Override public void onDTOReceived(@NotNull NotificationListKey key, @NotNull NotificationKeyList notificationKeyList)
         {
             resetPage();
             resetContent(notificationKeyList);
@@ -330,7 +330,7 @@ public class NotificationsView extends BetterViewAnimator
             onFinish();
         }
 
-        @Override public void onErrorThrown(NotificationListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationListKey key, @NotNull Throwable error)
         {
             onFinish();
             Timber.e("NotificationRefreshListener onErrorThrown");

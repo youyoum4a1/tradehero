@@ -177,7 +177,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     protected class LeaderboardCommunityUserProfileCacheListener extends BaseLeaderboardFragmentProfileCacheListener
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             super.onDTOReceived(key, value);
             loadLeaderboardData();

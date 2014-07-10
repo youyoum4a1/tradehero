@@ -188,7 +188,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
     protected class SocialShareTranslationHelperTranslationCacheListener implements DTOCacheNew.Listener<TranslationKey, TranslationResult>
     {
-        @Override public void onDTOReceived(TranslationKey key, TranslationResult value)
+        @Override public void onDTOReceived(@NotNull TranslationKey key, @NotNull TranslationResult value)
         {
             notifyTranslatedOneAttribute(toTranslate, value);
             abstractDiscussionCompactDTOFactory.populateTranslation(translated, key, value);
@@ -196,7 +196,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             notifyAllDoneIfPossible();
         }
 
-        @Override public void onErrorThrown(TranslationKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull TranslationKey key, @NotNull Throwable error)
         {
             notifyTranslateFailed(toTranslate, error);
             remainingKeys.remove(key);
