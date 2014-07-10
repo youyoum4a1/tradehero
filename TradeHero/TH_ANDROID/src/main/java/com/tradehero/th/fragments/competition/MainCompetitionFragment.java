@@ -336,7 +336,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (competitionUrl == null)
         {
             competitionUrl = providerUtil.getWizardPage(providerId);
-            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
+            CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
         }
 
         CompetitionWebViewFragment.putUrl(args, competitionUrl);

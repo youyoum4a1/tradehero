@@ -410,7 +410,7 @@ public class TrendingFragment extends SecurityListFragment
             CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
-            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
+            CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
             webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
