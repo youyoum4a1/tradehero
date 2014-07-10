@@ -5,10 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class WeChatSharePreferenceDTO extends BaseSocialSharePreferenceDTO
 {
+    //<editor-fold desc="Constructors">
     public WeChatSharePreferenceDTO(boolean isShareEnabled)
     {
         super(isShareEnabled);
     }
+    //</editor-fold>
 
     @NotNull @Override public SocialNetworkEnum getSocialNetworkEnum()
     {

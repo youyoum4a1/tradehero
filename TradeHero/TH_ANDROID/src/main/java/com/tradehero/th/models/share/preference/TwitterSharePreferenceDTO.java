@@ -5,10 +5,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class TwitterSharePreferenceDTO extends BaseSocialSharePreferenceDTO
 {
+    //<editor-fold desc="Constructors">
     public TwitterSharePreferenceDTO(boolean isShareEnabled)
     {
         super(isShareEnabled);
     }
+    //</editor-fold>
 
     @NotNull @Override public SocialNetworkEnum getSocialNetworkEnum()
     {

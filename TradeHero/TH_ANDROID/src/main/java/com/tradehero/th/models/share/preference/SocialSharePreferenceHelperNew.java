@@ -4,36 +4,41 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.HashMap;
 import java.util.HashSet;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SocialSharePreferenceHelperNew
 {
-    private final SocialShareSetPreference socialShareSetPreference;
-    private final SocialSharePreferenceDTOFactory socialSharePreferenceFactory;
-    private HashMap<SocialNetworkEnum, SocialSharePreferenceDTO> hashSharePreferencesSet;
+    @NotNull private final SocialShareSetPreference socialShareSetPreference;
+    @NotNull private final SocialSharePreferenceDTOFactory socialSharePreferenceFactory;
+    @NotNull private HashMap<SocialNetworkEnum, SocialSharePreferenceDTO> sharePreferencesMap;
 
-    @Inject public SocialSharePreferenceHelperNew(SocialShareSetPreference socialShareSetPreference,
-            SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory)
+    //<editor-fold desc="Constructors">
+    @Inject public SocialSharePreferenceHelperNew(
+            @NotNull SocialShareSetPreference socialShareSetPreference,
+            @NotNull SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory)
     {
         super();
         this.socialSharePreferenceFactory = socialSharePreferenceDTOFactory;
         this.socialShareSetPreference = socialShareSetPreference;
-        hashSharePreferencesSet = new HashMap<>();
+        sharePreferencesMap = new HashMap<>();
         load();
     }
+    //</editor-fold>
 
     public void load()
     {
-        hashSharePreferencesSet.clear();
+        sharePreferencesMap.clear();
 
-        for (SocialSharePreferenceDTO socialSharePreferenceDTO : socialShareSetPreference.getSocialSharePreference())
+        for (@NotNull SocialSharePreferenceDTO socialSharePreferenceDTO : socialShareSetPreference.getSocialSharePreference())
         {
-            hashSharePreferencesSet.put(socialSharePreferenceDTO.getSocialNetworkEnum(), socialSharePreferenceDTO);
+            sharePreferencesMap.put(socialSharePreferenceDTO.getSocialNetworkEnum(), socialSharePreferenceDTO);
         }
     }
 
-    public boolean isShareEnabled(SocialNetworkEnum socialNetworkEnum, boolean defaultValue)
+    public boolean isShareEnabled(@NotNull SocialNetworkEnum socialNetworkEnum, boolean defaultValue)
     {
-        SocialSharePreferenceDTO socialSharePreferenceDTO = hashSharePreferencesSet.get(socialNetworkEnum);
+        @Nullable SocialSharePreferenceDTO socialSharePreferenceDTO = sharePreferencesMap.get(socialNetworkEnum);
         if (socialSharePreferenceDTO != null)
         {
             return socialSharePreferenceDTO.isShareEnabled();
@@ -41,9 +46,9 @@ public class SocialSharePreferenceHelperNew
         return defaultValue;
     }
 
-    public void updateSocialSharePreference(SocialNetworkEnum networkEnum, boolean isShareEnabled)
+    public void updateSocialSharePreference(@NotNull SocialNetworkEnum networkEnum, boolean isShareEnabled)
     {
-        SocialSharePreferenceDTO socialSharePreferenceDTO = hashSharePreferencesSet.get(networkEnum);
+        @Nullable SocialSharePreferenceDTO socialSharePreferenceDTO = sharePreferencesMap.get(networkEnum);
 
         if (socialSharePreferenceDTO != null)
         {
@@ -52,13 +57,13 @@ public class SocialSharePreferenceHelperNew
         else
         {
             //Create and add
-            hashSharePreferencesSet.put(networkEnum, socialSharePreferenceFactory.create(networkEnum, isShareEnabled));
+            sharePreferencesMap.put(networkEnum, socialSharePreferenceFactory.create(networkEnum, isShareEnabled));
         }
     }
 
     public void save()
     {
         //Save to preference
-        socialShareSetPreference.setSocialSharePreference(new HashSet<>(hashSharePreferencesSet.values()));
+        socialShareSetPreference.setSocialSharePreference(new HashSet<>(sharePreferencesMap.values()));
     }
 }
