@@ -17,6 +17,7 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -46,6 +47,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +60,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 @Routable({
-        "refer-friend/:socialId/:userId",
+        "refer-friend/:socialId/:socialUserId",
         "user/:userId/follow/free"
 })
 public final class HomeFragment extends BaseWebViewFragment
@@ -81,13 +83,18 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
+    @Inject THRouter thRouter;
+
+    @RouteProperty("socialId") String socialId;
+    @RouteProperty("socialUserId") String socialUserId;
+
+    @RouteProperty("userId") Integer userId;
 
     protected SocialFriendHandler socialFriendHandler;
     private ProgressDialog progressDialog;
     private UserFriendsDTO userFriendsDTO;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private MiddleCallback<Response> middleCallbackInvite;
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -159,47 +166,43 @@ public final class HomeFragment extends BaseWebViewFragment
     @Override public void onResume()
     {
         super.onResume();
+        thRouter.inject(this);
 
-        Bundle args = getArguments();
-        if (args.getString("socialId") != null && args.getString("userId") != null)
+        if (socialId != null && socialUserId != null)
         {
-            createInviteInHomePage(args.getString("socialId"), args.getString("userId"));
+            createInviteInHomePage();
         }
-        else if (args.getString("userId") != null)
+        else if (userId != null)
         {
-            createFollowInHomePage(args.getString("userId"));
+            createFollowInHomePage();
         }
     }
 
     //<editor-fold desc="Windy's stuff, to be refactored">
-    public void createInviteInHomePage(String social, String userid)
+    private void createInviteInHomePage()
     {
-        if (social == null) return;
-        if (social.equals("fb"))
+        if (socialId.equals("fb"))
         {
             userFriendsDTO = new UserFriendsFacebookDTO();
-            ((UserFriendsFacebookDTO) userFriendsDTO).fbId = userid;
+            ((UserFriendsFacebookDTO) userFriendsDTO).fbId = socialUserId;
         }
-        else if (social.equals("li"))
+        else if (socialId.equals("li"))
         {
             userFriendsDTO = new UserFriendsLinkedinDTO();
-            ((UserFriendsLinkedinDTO) userFriendsDTO).liId = userid;
+            ((UserFriendsLinkedinDTO) userFriendsDTO).liId = socialUserId;
         }
-        else if (social.equals("tw"))
+        else if (socialId.equals("tw"))
         {
             userFriendsDTO = new UserFriendsTwitterDTO();
-            ((UserFriendsTwitterDTO) userFriendsDTO).twId = userid;
+            ((UserFriendsTwitterDTO) userFriendsDTO).twId = socialUserId;
         }
         invite();
     }
 
-    public void createFollowInHomePage(String userid)
+    public void createFollowInHomePage()
     {
-        if (userid == null) return;
-        Timber.d("Follow friend: " + userid);
         UserFriendsDTO user = new UserFriendsContactEntryDTO();
-        user.thUserId = Integer.valueOf(userid);
-        Timber.d("Follow thUserId: " + user.thUserId);
+        user.thUserId = userId;
         follow(user);
     }
 
