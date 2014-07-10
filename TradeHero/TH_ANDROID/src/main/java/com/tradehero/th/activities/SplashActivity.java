@@ -101,6 +101,7 @@ public class SplashActivity extends SherlockActivity
         tapStream.get().fireEvent(
                 new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
         mobileAppTrackerLazy.get().setReferralSources(this);
+        mobileAppTrackerLazy.get().setPackageName(getPackageName()+"."+Constants.TAP_STREAM_TYPE.name());
         //mobileAppTrackerLazy.get().setDebugMode(true);//no debug, no log by alex
         mobileAppTrackerLazy.get().measureSession();
         TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
