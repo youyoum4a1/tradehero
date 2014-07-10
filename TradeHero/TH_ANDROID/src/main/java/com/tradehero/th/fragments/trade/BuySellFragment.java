@@ -1374,6 +1374,8 @@ public class BuySellFragment extends AbstractBuySellFragment
                     return userProfileCopy.liLinked;
                 case WB:
                     return userProfileCopy.wbLinked;
+                case WECHAT:
+                    return null;
                 default:
                     Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
                     return false;
