@@ -140,6 +140,7 @@ public class BuySellFragmentTest
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
+        // TODO any better way than sleeping?
         Thread.sleep(200); // This feels like a HACK but otherwise the test fails intermittently
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
