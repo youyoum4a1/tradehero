@@ -49,6 +49,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -375,7 +376,7 @@ public class SendMessageFragment extends DashboardFragment
         return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
             @Override
-            public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
             {
                 if (value != null)
                 {
@@ -387,7 +388,7 @@ public class SendMessageFragment extends DashboardFragment
                 }
             }
 
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
             {
                 THToast.show(new THException(error));
                 sendMessage(getCountFromCache(messageType));

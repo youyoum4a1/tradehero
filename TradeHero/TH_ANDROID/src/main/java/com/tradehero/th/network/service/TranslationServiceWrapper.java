@@ -77,12 +77,12 @@ import timber.log.Timber;
             this.middleCallback = middleCallback;
         }
 
-        @Override public void onDTOReceived(TranslationTokenKey key, TranslationToken value)
+        @Override public void onDTOReceived(@NotNull TranslationTokenKey key, @NotNull TranslationToken value)
         {
             translate(value, from, to, text, middleCallback);
         }
 
-        @Override public void onErrorThrown(TranslationTokenKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull TranslationTokenKey key, @NotNull Throwable error)
         {
             if (middleCallback != null && error instanceof RetrofitError)
             {

@@ -302,12 +302,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected class BasePurchaseManagementSystemStatusCacheListener implements DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, SystemStatusDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SystemStatusDTO value)
         {
             BasePurchaseManagerFragment.this.systemStatusDTO = value;
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
         }
     }

@@ -64,6 +64,25 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return previous;
     }
 
+    @Override @Nullable public DTOType get(@NotNull DTOKeyType key)
+    {
+        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
+        if (cacheValue == null)
+        {
+            return null;
+        }
+        @Nullable DTOType value = cacheValue.getValue();
+        if (value != null && !isValid(value))
+        {
+            if (cacheValue.getListenersCount() == 0)
+            {
+                invalidate(key);
+            }
+            return null;
+        }
+        return value;
+    }
+
     @Override @NotNull public DTOType getOrFetchSync(@NotNull DTOKeyType key) throws Throwable
     {
         return getOrFetchSync(key, DEFAULT_FORCE_UPDATE);

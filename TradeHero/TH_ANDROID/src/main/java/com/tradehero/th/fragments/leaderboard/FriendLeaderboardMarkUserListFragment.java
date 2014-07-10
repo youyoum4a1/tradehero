@@ -271,18 +271,18 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     protected class FriendLeaderboarMarkUserListFragmentCacheListener implements DTOCacheNew.HurriedListener<LeaderboardFriendsKey, LeaderboardFriendsDTO>
     {
-        @Override public void onPreCachedDTOReceived(LeaderboardFriendsKey key, @NotNull LeaderboardFriendsDTO dto)
+        @Override public void onPreCachedDTOReceived(@NotNull LeaderboardFriendsKey key, @NotNull LeaderboardFriendsDTO dto)
         {
             handleFriendsLeaderboardReceived(dto);
         }
 
-        @Override public void onDTOReceived(LeaderboardFriendsKey key, @NotNull LeaderboardFriendsDTO dto)
+        @Override public void onDTOReceived(@NotNull LeaderboardFriendsKey key, @NotNull LeaderboardFriendsDTO dto)
         {
             mProgress.setVisibility(View.INVISIBLE);
             leaderboardFriendsUserListAdapter.clear();
             handleFriendsLeaderboardReceived(dto);        }
 
-        @Override public void onErrorThrown(LeaderboardFriendsKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull LeaderboardFriendsKey key, @NotNull Throwable error)
         {
             mProgress.setVisibility(View.INVISIBLE);
             if (error instanceof RetrofitError)

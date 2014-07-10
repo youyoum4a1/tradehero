@@ -177,7 +177,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     protected class LeaderboardCommunityUserProfileCacheListener extends BaseLeaderboardFragmentProfileCacheListener
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             super.onDTOReceived(key, value);
             loadLeaderboardData();
@@ -400,10 +400,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             // HACK Just in case the user eventually enrolls
             portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
             Bundle args = new Bundle();
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
-            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
+            CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
             webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }

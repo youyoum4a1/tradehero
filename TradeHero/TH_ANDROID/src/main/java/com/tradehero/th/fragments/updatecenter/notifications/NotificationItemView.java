@@ -28,6 +28,7 @@ import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class NotificationItemView
@@ -174,12 +175,12 @@ public class NotificationItemView
 
     protected class NotificationFetchListener implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
     {
-        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value)
+        @Override public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(NotificationKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }

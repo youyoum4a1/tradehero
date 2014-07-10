@@ -205,8 +205,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
 
-
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -1232,7 +1230,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 throw new IllegalArgumentException("Unhandled button " + view.getId());
         }
         showBuySellDialog();
-
     }
 
     @OnClick(R.id.market_closed_icon)
@@ -1377,6 +1374,8 @@ public class BuySellFragment extends AbstractBuySellFragment
                     return userProfileCopy.liLinked;
                 case WB:
                     return userProfileCopy.wbLinked;
+                case WECHAT:
+                    return null;
                 default:
                     Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
                     return false;
@@ -1503,49 +1502,23 @@ public class BuySellFragment extends AbstractBuySellFragment
         //share
         mBtnShareFacebook = null;
         mBtnShareFacebook = (ToggleButton) view.findViewById(R.id.btn_share_fb);
-        if (mBtnShareFacebook != null)
-        {
-            mBtnShareFacebook.setTag(SocialNetworkEnum.FB);
-            mBtnShareFacebook.setChecked(initialShareButtonState(SocialNetworkEnum.FB));
-            mBtnShareFacebook.setOnCheckedChangeListener(createCheckedChangeListener());
-        }
+        initSocialButton(mBtnShareFacebook, SocialNetworkEnum.FB);
 
         mBtnShareTwitter = null;
         mBtnShareTwitter = (ToggleButton) view.findViewById(R.id.btn_share_tw);
-        if (mBtnShareTwitter != null)
-        {
-            mBtnShareTwitter.setTag(SocialNetworkEnum.TW);
-            mBtnShareTwitter.setChecked(initialShareButtonState(SocialNetworkEnum.TW));
-            mBtnShareTwitter.setOnCheckedChangeListener(createCheckedChangeListener());
-        }
+        initSocialButton(mBtnShareTwitter, SocialNetworkEnum.TW);
 
         mBtnShareLinkedIn = null;
         mBtnShareLinkedIn = (ToggleButton) view.findViewById(R.id.btn_share_li);
-        if (mBtnShareLinkedIn != null)
-        {
-            mBtnShareLinkedIn.setTag(SocialNetworkEnum.LN);
-            mBtnShareLinkedIn.setChecked(initialShareButtonState(SocialNetworkEnum.LN));
-            mBtnShareLinkedIn.setOnCheckedChangeListener(createCheckedChangeListener());
-        }
+        initSocialButton(mBtnShareLinkedIn, SocialNetworkEnum.LN);
 
         mBtnShareWeChat = null;
         mBtnShareWeChat = (ToggleButton) view.findViewById(R.id.btn_wechat);
-        if (mBtnShareWeChat != null)
-        {
-            mBtnShareWeChat.setTag(SocialNetworkEnum.WECHAT);
-            mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WECHAT));
-            mBtnShareWeChat.setOnCheckedChangeListener(createCheckedChangeListenerForWechat());
-        }
+        initSocialButton(mBtnShareWeChat, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
 
         mBtnShareWb = null;
         mBtnShareWb = (ToggleButton) view.findViewById(R.id.btn_share_wb);
-
-        if (mBtnShareWb != null)
-        {
-            mBtnShareWb.setTag(SocialNetworkEnum.WB);
-            mBtnShareWb.setChecked(initialShareButtonState(SocialNetworkEnum.WB));
-            mBtnShareWb.setOnCheckedChangeListener(createCheckedChangeListener());
-        }
+        initSocialButton(mBtnShareWb, SocialNetworkEnum.WB);
 
         mBtnLocation = null;
         mBtnLocation = (ToggleButton) view.findViewById(R.id.btn_location);
@@ -1613,6 +1586,22 @@ public class BuySellFragment extends AbstractBuySellFragment
         updateBuySellDialog();
         mBuySellDialog = builder.create();
         mBuySellDialog.show();
+    }
+
+    private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum)
+    {
+        initSocialButton(socialButton, socialNetworkEnum, createCheckedChangeListener());
+    }
+
+    private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum,
+            CompoundButton.OnCheckedChangeListener onCheckedChangedListener)
+    {
+        if (socialButton != null)
+        {
+            socialButton.setTag(socialNetworkEnum);
+            socialButton.setChecked(initialShareButtonState(socialNetworkEnum));
+            socialButton.setOnCheckedChangeListener(onCheckedChangedListener);
+        }
     }
 
     protected boolean initialShareButtonState(@NotNull SocialNetworkEnum socialNetworkEnum)
@@ -2178,7 +2167,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            if (retrofitError != null)
+            if (retrofitError != null && retrofitError.getResponse() != null)
             {
                 Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
             }

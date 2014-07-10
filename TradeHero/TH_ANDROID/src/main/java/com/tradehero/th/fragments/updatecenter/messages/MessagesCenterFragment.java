@@ -625,7 +625,7 @@ public class MessagesCenterFragment extends DashboardFragment
             implements DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList>
     {
         @Override
-        public void onDTOReceived(MessageListKey key, @NotNull MessageHeaderIdList value)
+        public void onDTOReceived(@NotNull MessageListKey key, @NotNull MessageHeaderIdList value)
         {
             requestUpdateTabCounter();
             hasMorePage = (value.size() > 0);
@@ -640,7 +640,7 @@ public class MessagesCenterFragment extends DashboardFragment
             //TODO how to invalidate the old data ..
         }
 
-        @Override public void onErrorThrown(MessageListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull MessageListKey key, @NotNull Throwable error)
         {
             hasMorePage = true;
             onRefreshCompleted();

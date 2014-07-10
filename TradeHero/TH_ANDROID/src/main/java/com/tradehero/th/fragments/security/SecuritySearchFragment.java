@@ -500,7 +500,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
             implements DTOCacheNew.Listener<SecurityListType, SecurityIdList>
     {
         @Override
-        public void onDTOReceived(SecurityListType key, SecurityIdList value)
+        public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityIdList value)
         {
             Timber.d("Page loaded: %d", key.getPage());
             List<SecurityCompactDTO> fleshedValues = securityCompactCache.get().get(value);
@@ -521,7 +521,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
             localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
         }
 
-        @Override public void onErrorThrown(SecurityListType key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
             securitySearchListeners.remove(key.getPage());
             nearEndScrollListener.lowerEndFlag();
