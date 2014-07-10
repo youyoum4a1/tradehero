@@ -71,6 +71,7 @@ public class MessageHeaderListCache extends StraightCutDTOCacheNew<
             return null;
         }
         ReadablePaginatedMessageHeaderDTO value = new ReadablePaginatedMessageHeaderDTO(
+                cutValue.expirationDate,
                 cutValue.getPagination(),
                 messageHeaderCache.get(cutValue.getData()));
         if (value.hasNullItem())

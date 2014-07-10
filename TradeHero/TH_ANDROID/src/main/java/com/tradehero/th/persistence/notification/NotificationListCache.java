@@ -2,7 +2,6 @@ package com.tradehero.th.persistence.notification;
 
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.notification.NotificationDTOList;
 import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
@@ -52,11 +51,14 @@ public class NotificationListCache extends StraightCutDTOCacheNew<
         {
             return null;
         }
-        NotificationDTOList value = notificationCache.get().get(cutValue.getData());
+        PaginatedNotificationDTO value = new PaginatedNotificationDTO(
+                cutValue.expirationDate,
+                cutValue.getPagination(),
+                notificationCache.get().get(cutValue.getData()));
         if (value.hasNullItem())
         {
             return null;
         }
-        return new PaginatedNotificationDTO(cutValue.getPagination(), value);
+        return value;
     }
 }
