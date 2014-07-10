@@ -35,7 +35,7 @@ public class PeopleSearchFragmentTest
     //<editor-fold desc="Hint">
     @Test public void testHintIsCorrect()
     {
-        peopleSearchFragment = dashboardNavigator.pushFragment(PeopleSearchFragment.class);
+        //peopleSearchFragment = dashboardNavigator.pushFragment(PeopleSearchFragment.class);
 
         // TODO not mock the action bar
         //assertThat(peopleSearchFragment.mSearchTextField.getHint())
