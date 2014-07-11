@@ -88,6 +88,12 @@ public class UserTranslationSettingPreference extends StringSetPreference
     public void addOrReplaceSettingDTO(@NotNull UserTranslationSettingDTO settingDTO)
             throws JsonProcessingException
     {
+        //noinspection ConstantConditions
+        if (settingDTO == null)
+        {
+            // We want a crash here, including during tests.
+            throw new NullPointerException();
+        }
         HashSet<UserTranslationSettingDTO> existing = new HashSet<>();
         try
         {
