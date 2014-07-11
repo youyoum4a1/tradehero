@@ -51,12 +51,17 @@ public class TranslatableLanguageListFragmentTest
         assertThat(latestToastText).isEqualTo(context.getString(R.string.error_incomplete_info_message));
     }
 
-    @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken()
+    @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken() throws InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);
+
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
+
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasks();
+        Thread.sleep(400); // TODO remove this HACK
 
         assertThat(listFragment.listView.getAdapter().getCount()).isGreaterThan(10);
     }
