@@ -7,6 +7,7 @@ import dagger.Module;
         },
         injects = {
                 LanguageCodePredicateTest.class,
+                LanguageDTOTest.class,
         },
         complete = false,
         library = true

@@ -13,7 +13,7 @@ public class LanguageDTO
     //<editor-fold desc="Constructors">
     public LanguageDTO(@NotNull String code)
     {
-        this(code, Locale.forLanguageTag(code));
+        this(code, forLanguageTag(code));
     }
 
     public LanguageDTO(@NotNull String code, @NotNull Locale locale)
@@ -33,6 +33,18 @@ public class LanguageDTO
         this.nameInOwnLang = nameInOwnLang;
     }
     //</editor-fold>
+
+    public static Locale forLanguageTag(String languageCode)
+    {
+        for (@NotNull Locale locale : Locale.getAvailableLocales())
+        {
+            if (locale.getLanguage().equals(languageCode))
+            {
+                return locale;
+            }
+        }
+        return Locale.ENGLISH;
+    }
 
     @Override public int hashCode()
     {
