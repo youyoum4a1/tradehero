@@ -96,7 +96,10 @@ public class LocalyticsConstants
     public static final String BroadcastPremiumFollowers = "Broadcast Premium Followers";//
     public static final String Email = "Email";//
     public static final String Facebook = "Facebook";//
+    public static final String FollowedFromScreen = "FollowedFromScreen";
+    public static final String FreeFollow_Success = "FreeFollow/Success";
     public static final String InviteFriends = "InviteFriends";//
+    public static final String Leaderboard = "Leaderboard";
     public static final String Linkedin = "Linkedin";//
     public static final String Loading = "Loading";//
     public static final String LoadingScreen = "LoadingScreen";//
@@ -106,7 +109,10 @@ public class LocalyticsConstants
     public static final String LoginRegisterScreen = "LoginRegisterScreen";//
     public static final String MessageComposer_Show = "MessageComposer/Show";//
     public static final String MessageComposer_Send = "MessageComposer/Send";//
+    public static final String PositionList = "PositionList";
+    public static final String PremiumFollow_Success = "PremiumFollow/Success";
     public static final String PrivateMessage = "Private Message";//
+    public static final String Profile = "Profile";
     public static final String QQ = "QQ";//
     public static final String Register_Form = "RegisterForm";//
     public static final String RegisterFormScreen = "RegisterFormScreen";//

@@ -62,26 +62,24 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, View.OnClickListener,
         ExpandingLayout.OnExpandListener
 {
-    @Inject @ForUserPhoto Transformation peopleIconTransformation;
-    @Inject Lazy<Picasso> picasso;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Lazy<Picasso> picasso;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
     @Inject THRouter thRouter;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
     protected OwnedPortfolioId applicablePortfolioId;
-
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     protected FollowDialogCombo followDialogCombo;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
     // data
     protected LeaderboardUserDTO leaderboardItem;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -516,17 +514,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 // TODO right now the icon is gone
                 break;
             case R.id.leaderboard_user_item_open_profile:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Profile);
+                thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Leaderboard_Profile);
                 handleOpenProfileButtonClicked();
                 break;
 
             case R.id.leaderboard_user_item_open_positions_list:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Positions);
+                thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Leaderboard_Positions);
                 handleOpenPositionListClicked();
                 break;
 
             case R.id.leaderboard_user_item_follow:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
+                thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Leaderboard_Follow);
                 detachFollowDialogCombo();
                 followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER,
@@ -559,6 +557,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             alertDialogUtilLazy.get().dismissProgressDialog();
             LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Leaderboard);
         }
 
         @Override public void failure(RetrofitError retrofitError)

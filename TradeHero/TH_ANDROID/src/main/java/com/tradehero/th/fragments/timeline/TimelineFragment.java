@@ -62,6 +62,8 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,52 +79,53 @@ import timber.log.Timber;
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
-    private View loadingView;
-    private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
-
     public static enum TabType
     {
         TIMELINE, PORTFOLIO_LIST, STATS
     }
 
-    @Inject protected THRouter thRouter;
+    @Inject DiscussionKeyFactory discussionKeyFactory;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
+    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
     @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
-    @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
+    @Inject protected THRouter thRouter;
+    @Inject UserBaseDTOUtil userBaseDTOUtil;
 
     @InjectView(R.id.timeline_list_view) TimelineListView timelineListView;
     @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
     @InjectView(R.id.follow_button) Button mFollowButton;
     @InjectView(R.id.message_button) Button mSendMsgButton;
 
-    private UserProfileView userProfileView;
-    private MainTimelineAdapter mainTimelineAdapter;
-    private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     @InjectRoute UserBaseKey shownUserBaseKey;
-    protected UserProfileDTO shownProfile;
-    protected List<PortfolioCompactDTO> portfolioCompactDTOs;
-    protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
-    private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+
     protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
-    protected MessageHeaderDTO messageThreadHeaderDTO;
     protected FollowDialogCombo followDialogCombo;
     protected FollowerManagerInfoFetcher infoFetcher;
+    protected List<PortfolioCompactDTO> portfolioCompactDTOs;
+    protected MessageHeaderDTO messageThreadHeaderDTO;
+    protected UserProfileDTO shownProfile;
+    protected UserProfileRetrievedMilestone userProfileRetrievedMilestone;
+    private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
+    private MainTimelineAdapter mainTimelineAdapter;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    private Milestone.OnCompleteListener userProfileRetrievedMilestoneListener;
+    private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
+    private UserProfileView userProfileView;
+    private View loadingView;
 
-    private boolean cancelRefreshingOnResume;
+    public TabType currentTab = TabType.TIMELINE;
     protected boolean mIsOtherProfile = false;
+    private boolean cancelRefreshingOnResume;
     private int displayingProfileHeaderLayoutId;
     //TODO need move to pushableTimelineFragment
     private int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     private boolean mIsHero = false;//whether the showUser follow the user
-    public TabType currentTab = TabType.TIMELINE;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -904,6 +907,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
+            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Profile);
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -959,6 +963,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 linkWith(currentUserProfileDTO, true);
             }
             updateBottomButton();
+            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Profile);
         }
     }
 
@@ -969,6 +974,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             pushPrivateMessageFragment();
+            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Profile);
         }
     }
 

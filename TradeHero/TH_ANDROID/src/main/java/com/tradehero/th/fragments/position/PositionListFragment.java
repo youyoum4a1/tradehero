@@ -49,6 +49,8 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -73,15 +75,15 @@ public class PositionListFragment
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
+    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
-    @Inject UserProfileCache userProfileCache;
-    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
-    @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
+    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
     @Inject PortfolioCache portfolioCache;
+    @Inject UserProfileCache userProfileCache;
 
-    private PortfolioHeaderView portfolioHeaderView;
     @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView;
@@ -91,6 +93,7 @@ public class PositionListFragment
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
 
+    private PortfolioHeaderView portfolioHeaderView;
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
@@ -844,6 +847,7 @@ public class PositionListFragment
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             displayHeaderView();
             fetchSimplePage(true);
+            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.PositionList);
         }
     }
 

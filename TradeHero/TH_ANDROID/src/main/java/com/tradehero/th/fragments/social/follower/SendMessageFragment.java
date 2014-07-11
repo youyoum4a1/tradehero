@@ -41,7 +41,6 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
@@ -49,7 +48,6 @@ import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -103,9 +101,7 @@ public class SendMessageFragment extends DashboardFragment
         middleCallbackSendMessages = new ArrayList<>();
 
         Timber.d("onCreate messageType:%s,discussionType:%s", messageType, discussionType);
-        thLocalyticsSession.open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         thLocalyticsSession.tagEvent(LocalyticsConstants.MessageComposer_Show);
-        thLocalyticsSession.upload();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -207,8 +203,6 @@ public class SendMessageFragment extends DashboardFragment
     {
         DeviceUtil.dismissKeyboard(getActivity(), inputText);
         progressDialogUtilLazy.get().dismiss(getActivity());
-        thLocalyticsSession.close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
-        thLocalyticsSession.upload();
         super.onDestroy();
     }
 
@@ -463,6 +457,7 @@ public class SendMessageFragment extends DashboardFragment
             invalidateMessageCache();
             THToast.show(getActivity().getString(R.string.broadcast_success));
             thLocalyticsSession.tagEventType(LocalyticsConstants.MessageComposer_Send, messageType.localyticsResource);
+            thLocalyticsSession.upload();
             //TODO close me?
             closeMe();
         }

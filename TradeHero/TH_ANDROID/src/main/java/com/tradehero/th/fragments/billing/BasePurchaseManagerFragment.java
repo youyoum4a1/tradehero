@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -38,20 +37,19 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
-    @Inject protected THBillingInteractor userInteractor;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected SystemStatusCache systemStatusCache;
-    private DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> systemStatusCacheListener;
     protected SystemStatusDTO systemStatusDTO;
-    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
+    protected Integer showProductDetailRequestCode;
+    protected PremiumFollowUserAssistant premiumFollowUserAssistant;
+    private DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> systemStatusCacheListener;
     private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
 
-    protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
-    @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
-    protected Integer showProductDetailRequestCode;
-
-    protected PremiumFollowUserAssistant premiumFollowUserAssistant;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+    @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
+    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @Inject protected SystemStatusCache systemStatusCache;
+    @Inject protected THBillingInteractor userInteractor;
 
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
