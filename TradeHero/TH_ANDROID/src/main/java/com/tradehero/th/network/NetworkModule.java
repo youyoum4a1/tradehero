@@ -1,13 +1,13 @@
 package com.tradehero.th.network;
 
 import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.LoginFormDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.retrofit.RetrofitModule;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.dagger.ForApp;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

@@ -40,7 +40,7 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.dagger.ForUser;
+import com.tradehero.common.annotation.ForUser;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;

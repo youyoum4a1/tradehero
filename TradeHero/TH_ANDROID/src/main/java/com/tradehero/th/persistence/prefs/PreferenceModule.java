@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.prefs;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
@@ -12,8 +14,7 @@ import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.utils.dagger.ForApp;
-import com.tradehero.th.utils.dagger.ForUser;
+import com.tradehero.common.annotation.ForUser;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
@@ -42,6 +43,19 @@ public class PreferenceModule
     private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
+
+    private static final String USER_PREFERENCE_KEY = "th";
+    private static final String APP_PREFERENCE_KEY = "th_app";
+
+    @Provides @Singleton @ForUser SharedPreferences provideUserSharePreferences(Context context)
+    {
+        return context.getSharedPreferences(USER_PREFERENCE_KEY, Context.MODE_PRIVATE);
+    }
+
+    @Provides @Singleton @ForApp SharedPreferences provideAppSharePreferences(Context context)
+    {
+        return context.getSharedPreferences(APP_PREFERENCE_KEY, Context.MODE_PRIVATE);
+    }
 
     @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(@ForUser SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {

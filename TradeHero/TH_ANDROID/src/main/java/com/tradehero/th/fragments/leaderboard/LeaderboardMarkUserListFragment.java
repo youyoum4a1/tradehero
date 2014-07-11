@@ -27,7 +27,7 @@ import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.dagger.ForUser;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import java.util.Date;
 import java.util.List;
