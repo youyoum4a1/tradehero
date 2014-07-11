@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.translation;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.th.api.translation.TranslationToken;
@@ -61,6 +62,16 @@ public class UserTranslationSettingPreferenceTest
         assertThat(gotSettingDTO.languageCode).isEqualTo("tp");
         assertThat(gotSettingDTO.autoTranslate).isTrue();
     }
+
+    @Test(expected = JsonParseException.class)
+    public void getSettingThrowsWhenGarbage() throws IOException
+    {
+        Set<String> garbage = new HashSet<>();
+        garbage.add("Hello");
+        userTranslationSettingPreference.set(garbage);
+
+        userTranslationSettingPreference.getSettingDTOs();
+    }
     //</editor-fold>
 
     //<editor-fold desc="Get of same type setting">
@@ -115,6 +126,55 @@ public class UserTranslationSettingPreferenceTest
     {
         assertThat(userTranslationSettingPreference.getOfSameTypeOrDefault(new BingTranslationToken()))
                 .isExactlyInstanceOf(BingUserTranslationSettingDTO.class);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Add or Replace">
+    @Test(expected = IllegalArgumentException.class)
+    public void ifIntelliJAddOrReplaceNullThrowsIllegal() throws IOException
+    {
+        assumeTrue(TestConstants.IS_INTELLIJ);
+        //noinspection ConstantConditions
+        userTranslationSettingPreference.addOrReplaceSettingDTO(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void ifNotIntelliJAddOrReplaceNullThrowsNPE() throws IOException
+    {
+        assumeTrue(!TestConstants.IS_INTELLIJ);
+        //noinspection ConstantConditions
+        userTranslationSettingPreference.addOrReplaceSettingDTO(null);
+    }
+
+    @Test public void addOrReplaceAddsWhenNothing() throws IOException
+    {
+        assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(0);
+
+        userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr"));
+
+        assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(1);
+        assertThat(userTranslationSettingPreference.getSettingDTOs().iterator().next().languageCode).isEqualTo("fr");
+    }
+
+    @Test public void addOrReplaceReplacesWhenSameType() throws IOException
+    {
+        userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr"));
+        assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(1);
+
+        userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("de"));
+        assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(1);
+        assertThat(userTranslationSettingPreference.getSettingDTOs().iterator().next().languageCode).isEqualTo("de");
+    }
+
+    @Test public void addOrReplaceDoesNotCrashWhenHasGarbage()throws IOException
+    {
+        Set<String> garbage = new HashSet<>();
+        garbage.add("Hello");
+        userTranslationSettingPreference.set(garbage);
+
+        userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("de"));
+        assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(1);
+        assertThat(userTranslationSettingPreference.getSettingDTOs().iterator().next().languageCode).isEqualTo("de");
     }
     //</editor-fold>
 }

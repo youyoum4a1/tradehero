@@ -84,4 +84,22 @@ public class UserTranslationSettingPreference extends StringSetPreference
         }
         set(savedStrings);
     }
+
+    public void addOrReplaceSettingDTO(@NotNull UserTranslationSettingDTO settingDTO)
+            throws JsonProcessingException
+    {
+        HashSet<UserTranslationSettingDTO> existing = new HashSet<>();
+        try
+        {
+            // Here we catch in order to overwrite if reading failed.
+            existing = getSettingDTOs();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        existing.remove(settingDTO);
+        existing.add(settingDTO);
+        setSettingDTOs(existing);
+    }
 }
