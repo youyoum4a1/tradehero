@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="translation_error_creating_languages">There was an error creating the list of languages</string>
+
+</resources>

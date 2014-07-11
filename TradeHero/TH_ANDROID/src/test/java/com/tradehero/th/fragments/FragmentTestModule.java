@@ -7,6 +7,7 @@ import com.tradehero.th.fragments.settings.FragmentSettingsTestModule;
 import com.tradehero.th.fragments.social.FragmentSocialTestModule;
 import com.tradehero.th.fragments.timeline.FragmentTimelineTestModule;
 import com.tradehero.th.fragments.trade.FragmentTradeTestModule;
+import com.tradehero.th.fragments.translation.FragmentTranslationTestModule;
 import com.tradehero.th.fragments.trending.FragmentTrendingTestModule;
 import com.tradehero.th.fragments.updatecenter.FragmentUpdateCenterTestModule;
 import com.tradehero.th.fragments.web.FragmentWebTestModule;
@@ -21,6 +22,7 @@ import dagger.Module;
                 FragmentSocialTestModule.class,
                 FragmentTimelineTestModule.class,
                 FragmentTradeTestModule.class,
+                FragmentTranslationTestModule.class,
                 FragmentTrendingTestModule.class,
                 FragmentUpdateCenterTestModule.class,
                 FragmentWebTestModule.class
