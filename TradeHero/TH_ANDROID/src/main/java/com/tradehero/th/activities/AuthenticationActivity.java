@@ -106,6 +106,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().tagScreen(LocalyticsConstants.Login_Register);
         localyticsSession.get().tagEvent(LocalyticsConstants.LoginRegisterScreen);
+        localyticsSession.get().upload();
     }
 
     @Override protected void onPause()

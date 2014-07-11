@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {
-    @Inject LocalyticsSession localyticsSession;
+    @Inject THLocalyticsSession localyticsSession;
 
     @InjectView(R.id.leaderboard_filter_monthly_activity_container) protected LeaderboardFilterValueSlider minMonthlyActivityView;
     @InjectView(R.id.leaderboard_filter_win_ratio_container) protected LeaderboardFilterValueSlider minWinRatioView;

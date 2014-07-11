@@ -15,7 +15,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -54,6 +53,7 @@ import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.Collections;
 import java.util.Date;
@@ -87,7 +87,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     //@Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject Lazy<THLocalyticsSession> localyticsSession;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
@@ -292,6 +292,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         launchActions();
 
         localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().upload();
     }
 
     @Override protected void onNewIntent(Intent intent)

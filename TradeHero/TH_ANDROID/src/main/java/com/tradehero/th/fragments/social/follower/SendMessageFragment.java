@@ -17,7 +17,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -42,11 +41,15 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -79,13 +82,13 @@ public class SendMessageFragment extends DashboardFragment
     @InjectView(R.id.message_type) TextView messageTypeView;
 
     @Inject CurrentUserId currentUserId;
-    @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
-    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<FollowerSummaryCache> followerSummaryCache;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<MessageHeaderListCache> messageListCache;
-
+    @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
+    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
+    @Inject THLocalyticsSession thLocalyticsSession;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -96,10 +99,13 @@ public class SendMessageFragment extends DashboardFragment
                 DiscussionType.BROADCAST_MESSAGE.value);
         this.discussionType = DiscussionType.fromValue(discussionTypeValue);
         int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
-        this.messageType = MessageType.fromId(messageTypeInt);
+        messageType = MessageType.fromId(messageTypeInt);
         middleCallbackSendMessages = new ArrayList<>();
 
         Timber.d("onCreate messageType:%s,discussionType:%s", messageType, discussionType);
+        thLocalyticsSession.open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        thLocalyticsSession.tagEvent(LocalyticsConstants.MessageComposer_Show);
+        thLocalyticsSession.upload();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -201,13 +207,15 @@ public class SendMessageFragment extends DashboardFragment
     {
         DeviceUtil.dismissKeyboard(getActivity(), inputText);
         progressDialogUtilLazy.get().dismiss(getActivity());
+        thLocalyticsSession.close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        thLocalyticsSession.upload();
         super.onDestroy();
     }
 
     private void changeHeroType(MessageType messageType)
     {
         this.messageType = messageType;
-        this.messageTypeView.setText(getString(messageType.titleResource));
+        messageTypeView.setText(getString(messageType.titleResource));
         Timber.d("changeHeroType:%s, discussionType:%s", messageType, discussionType);
     }
 
@@ -449,11 +457,12 @@ public class SendMessageFragment extends DashboardFragment
             THToast.show(getString(R.string.broadcast_error));
         }
 
-        @Override public void success(DiscussionDTO response, Response response2)
+        @Override public void success(DiscussionDTO discussionDTO, Response response2)
         {
             dismissDialog(progressDialog);
             invalidateMessageCache();
             THToast.show(getActivity().getString(R.string.broadcast_success));
+            thLocalyticsSession.tagEventType(LocalyticsConstants.MessageComposer_Send, messageType.localyticsResource);
             //TODO close me?
             closeMe();
         }

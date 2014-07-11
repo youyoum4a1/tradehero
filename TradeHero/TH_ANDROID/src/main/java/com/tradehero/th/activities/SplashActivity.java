@@ -6,7 +6,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
-import com.localytics.android.LocalyticsSession;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
@@ -28,6 +27,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.Collections;
 import java.util.Timer;
@@ -47,7 +47,7 @@ public class SplashActivity extends SherlockActivity
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
-    @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject Lazy<THLocalyticsSession> localyticsSession;
     @Inject Lazy<Api> tapStream;
     @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
     @Inject CurrentActivityHolder currentActivityHolder;
