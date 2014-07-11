@@ -29,6 +29,7 @@ public class UserTranslationSettingPreferenceTest
                 .isEqualTo(0);
     }
 
+    //<editor-fold desc="Get and Set">
     @Test public void savesSetting() throws IOException
     {
         UserTranslationSettingDTO settingDTO = new BingUserTranslationSettingDTO("tg", true);
@@ -55,5 +56,29 @@ public class UserTranslationSettingPreferenceTest
         UserTranslationSettingDTO gotSettingDTO = gotSettingDTOSet.iterator().next();
         assertThat(gotSettingDTO.languageCode).isEqualTo("tp");
         assertThat(gotSettingDTO.autoTranslate).isTrue();
+    }
+    //</editor-fold>
+
+    @Test public void getOfSameTypeIfNoneReturnsSame() throws IOException
+    {
+        UserTranslationSettingDTO settingDTO = new BingUserTranslationSettingDTO("tp", true);
+        UserTranslationSettingDTO found = userTranslationSettingPreference.getOfSameTypeOrDefault(settingDTO);
+
+        assertThat(found).isSameAs(settingDTO);
+    }
+
+    @Test public void getOfSameTypeWhenHasReturnsTheOther() throws IOException
+    {
+        UserTranslationSettingDTO savedSetting = new BingUserTranslationSettingDTO("tp", true);
+        Set<UserTranslationSettingDTO> settingDTOSet = new HashSet<>();
+        settingDTOSet.add(savedSetting);
+        userTranslationSettingPreference.setSettingDTOs(settingDTOSet);
+
+        UserTranslationSettingDTO defaultSettingDTO = new BingUserTranslationSettingDTO("ur", false);
+        UserTranslationSettingDTO found = userTranslationSettingPreference.getOfSameTypeOrDefault(defaultSettingDTO);
+
+        assertThat(found).isExactlyInstanceOf(BingUserTranslationSettingDTO.class);
+        assertThat(found.languageCode).isEqualTo("tp");
+        assertThat(found.autoTranslate).isTrue();
     }
 }

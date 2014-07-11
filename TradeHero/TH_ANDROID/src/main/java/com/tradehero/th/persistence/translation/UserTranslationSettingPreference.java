@@ -29,7 +29,8 @@ public class UserTranslationSettingPreference extends StringSetPreference
     }
     //</editor-fold>
 
-    public HashSet<UserTranslationSettingDTO> getSettingDTOs()
+    @SuppressWarnings("DuplicateThrows")
+    @NotNull public HashSet<UserTranslationSettingDTO> getSettingDTOs()
             throws JsonParseException, JsonMappingException, IOException
     {
         HashSet<UserTranslationSettingDTO> set = new HashSet<>();
@@ -39,6 +40,21 @@ public class UserTranslationSettingPreference extends StringSetPreference
             set.add(userTranslationSettingDTOFactory.create(saved));
         }
         return set;
+    }
+
+    @SuppressWarnings("DuplicateThrows")
+    public UserTranslationSettingDTO getOfSameTypeOrDefault(@NotNull UserTranslationSettingDTO defaultIfNotFound)
+            throws JsonParseException, JsonMappingException, IOException
+    {
+        UserTranslationSettingDTO found = defaultIfNotFound;
+        for (@NotNull UserTranslationSettingDTO saved : getSettingDTOs())
+        {
+            if (saved.getClass().equals(defaultIfNotFound.getClass()))
+            {
+                found = saved;
+            }
+        }
+        return found;
     }
 
     public void setSettingDTOs(@Nullable Set<UserTranslationSettingDTO> settingDTOs)
