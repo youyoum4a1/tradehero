@@ -24,4 +24,17 @@ abstract public class TranslatableLanguageDTOFactory
     }
 
     abstract protected String[] getLanguageCodes();
+
+    @NotNull public LanguageDTO getBestMatch(@NotNull String languageCode, @NotNull String fallback)
+    {
+        LanguageDTO bestMatch = new LanguageDTO(fallback);
+        for (@NotNull LanguageDTO languageDTO : getTargetLanguages())
+        {
+            if (languageDTO.code.equals(languageCode))
+            {
+                bestMatch = languageDTO;
+            }
+        }
+        return bestMatch;
+    }
 }

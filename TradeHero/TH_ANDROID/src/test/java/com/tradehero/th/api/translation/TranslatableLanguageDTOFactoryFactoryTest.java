@@ -2,6 +2,7 @@ package com.tradehero.th.api.translation;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.TestConstants;
+import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingLanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
@@ -111,6 +112,22 @@ public class TranslatableLanguageDTOFactoryFactoryTest
         translationTokenCache.put(new TranslationTokenKey(), translationToken);
         assertThat(translatableLanguageDTOFactoryFactory.create())
                 .isExactlyInstanceOf(BingLanguageDTOFactory.class);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Best Match">
+    @Test public void getBestMatchWithWeirdReturnsFallback()
+    {
+        //noinspection ConstantConditions
+        LanguageDTO bestMatch = translatableLanguageDTOFactoryFactory.create(new BingTranslationToken()).getBestMatch("weird", "fr");
+        assertThat(bestMatch.code).isEqualTo("fr");
+    }
+
+    @Test public void getBestMatchWithExistingReturnsExisting()
+    {
+        //noinspection ConstantConditions
+        LanguageDTO bestMatch = translatableLanguageDTOFactoryFactory.create(new BingTranslationToken()).getBestMatch("ca", "fr");
+        assertThat(bestMatch.code).isEqualTo("ca");
     }
     //</editor-fold>
 }
