@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
         property = "translatorType"
 )
 @JsonSubTypes(
-        @JsonSubTypes.Type(value = BingUserTranslationSettingDTO.class, name = BingTranslationToken.TOKEN_TYPE)
+        @JsonSubTypes.Type(value = BingUserTranslationSettingDTO.class, name = BingUserTranslationSettingDTO.SETTING_TYPE)
 )
 public class UserTranslationSettingDTO implements DTO
 {

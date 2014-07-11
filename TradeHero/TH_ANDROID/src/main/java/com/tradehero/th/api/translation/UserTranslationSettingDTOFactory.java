@@ -17,12 +17,15 @@ public class UserTranslationSettingDTOFactory
 {
     @NotNull private final Context applicationContext;
     @NotNull private final ObjectMapper objectMapper;
+    @NotNull private final TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTranslationSettingDTOFactory(
+            @NotNull TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory,
             @NotNull Context applicationContext,
             @NotNull ObjectMapper objectMapper)
     {
+        this.translatableLanguageDTOFactoryFactory = translatableLanguageDTOFactoryFactory;
         this.applicationContext = applicationContext;
         this.objectMapper = objectMapper;
     }
@@ -43,9 +46,18 @@ public class UserTranslationSettingDTOFactory
 
     @Nullable public UserTranslationSettingDTO createDefaultPerType(@NotNull TranslationToken translationToken)
     {
+        @Nullable TranslatableLanguageDTOFactory translatableLanguageDTOFactory = translatableLanguageDTOFactoryFactory.create(translationToken);
+        String bestTranslatableMatch = UserTranslationSettingDTO.DEFAULT_LANGUAGE_CODE;
+        if (translatableLanguageDTOFactory != null)
+        {
+            bestTranslatableMatch = translatableLanguageDTOFactory.getBestMatch(
+                    applicationContext.getResources().getConfiguration().locale.getLanguage(),
+                    bestTranslatableMatch)
+                    .code;
+        }
         if (translationToken instanceof BingTranslationToken)
         {
-            return new BingUserTranslationSettingDTO(applicationContext.getResources().getConfiguration().locale.getLanguage());
+            return new BingUserTranslationSettingDTO(bestTranslatableMatch);
         }
         Timber.e(new IllegalArgumentException(), "Unhandled token type", translationToken.getClass());
         return null;
