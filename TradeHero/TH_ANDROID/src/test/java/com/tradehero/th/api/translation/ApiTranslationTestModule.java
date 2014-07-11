@@ -7,9 +7,12 @@ import dagger.Module;
         includes = {
                 ApiTranslationBingTestModule.class,
         },
+        injects = {
+                TranslatableLanguageDTOFactoryFactoryTest.class,
+        },
         complete = false,
         library = true
 )
-public class ApitTranslationTestModule
+public class ApiTranslationTestModule
 {
 }
