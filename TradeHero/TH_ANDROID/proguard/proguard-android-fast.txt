@@ -97,6 +97,7 @@
 -keep class !com.tradehero.** { *; }
 -dontwarn com.tencent.**
 -dontwarn **.VisibleForTesting
+-dontwarn com.tradehero.th.api.i18n.**
 -dontwarn com.tradehero.route.**
 -dontwarn com.handmark.**
 -dontwarn org.apache.**

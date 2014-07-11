@@ -9,6 +9,7 @@ import dagger.Module;
         },
         injects = {
                 TranslatableLanguageDTOFactoryFactoryTest.class,
+                UserTranslationSettingDTOFactoryTest.class,
         },
         complete = false,
         library = true

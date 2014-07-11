@@ -8,6 +8,7 @@ import dagger.Module;
         injects = {
                 BingLanguageDTOFactoryTest.class,
                 BingTranslationTokenTest.class,
+                BingUserTranslationSettingDTOTest.class,
         },
         complete = false,
         library = true
