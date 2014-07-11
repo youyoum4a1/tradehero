@@ -9,6 +9,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
 {
@@ -17,7 +18,7 @@ public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
     @InjectView(R.id.translatable_text_own_language) protected TextView languageNameOwn;
     @InjectView(R.id.translatable_tick_is_current) protected View isCurrentView;
 
-    private UserTranslationSettingDTO currentTranslationSetting;
+    @Nullable private UserTranslationSettingDTO currentTranslationSetting;
     private LanguageDTO languageDTO;
 
     public void initViews(@NotNull View view)
@@ -30,7 +31,7 @@ public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
         ButterKnife.reset(this);
     }
 
-    public void setCurrentTranslationSetting(UserTranslationSettingDTO currentTranslationSetting)
+    public void setCurrentTranslationSetting(@Nullable UserTranslationSettingDTO currentTranslationSetting)
     {
         this.currentTranslationSetting = currentTranslationSetting;
         displayIsCurrent();

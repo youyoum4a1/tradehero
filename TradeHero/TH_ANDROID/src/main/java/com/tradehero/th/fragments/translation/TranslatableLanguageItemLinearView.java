@@ -7,6 +7,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TranslatableLanguageItemLinearView extends LinearLayout
     implements DTOView<LanguageDTO>
@@ -61,7 +62,7 @@ public class TranslatableLanguageItemLinearView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void setCurrentTranslationSetting(UserTranslationSettingDTO currentTranslationSetting)
+    public void setCurrentTranslationSetting(@Nullable UserTranslationSettingDTO currentTranslationSetting)
     {
         viewHolder.setCurrentTranslationSetting(currentTranslationSetting);
     }
