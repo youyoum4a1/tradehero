@@ -139,6 +139,7 @@ import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
+import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
@@ -201,6 +202,7 @@ import javax.inject.Singleton;
                         ProfileInfoView.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
+                        TranslatableLanguageListFragment.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
                         ServerValidatedUsernameText.class,
