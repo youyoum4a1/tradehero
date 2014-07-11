@@ -1643,6 +1643,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
             {
+                if(!compoundButton.isPressed())
+                {
+                    return;
+                }
                 SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
                 socialSharePreferenceHelperNew.updateSocialSharePreference(networkEnum, isChecked);
             }
@@ -1655,6 +1659,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
             {
+                if(!compoundButton.isPressed())
+                {
+                    return;
+                }
                 SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
                 Boolean socialLinked = isSocialLinked(networkEnum);
                 if (isChecked && (socialLinked == null || !socialLinked))
@@ -1690,6 +1698,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
+            linkWith(userProfileDTO, true);
             setPublishEnable(socialNetworkEnum);
         }
 
