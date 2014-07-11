@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
@@ -40,7 +41,6 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.common.annotation.ForUser;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -235,7 +235,6 @@ public class THUser
 
             @Override public void failure(THException error)
             {
-                saveCredentialsToUserDefaults(credentialsDTO);
                 checkNeedForUpgrade(error);
                 checkNeedToRenewSocialToken(error, credentialsDTO);
                 callback.done(null, error);
