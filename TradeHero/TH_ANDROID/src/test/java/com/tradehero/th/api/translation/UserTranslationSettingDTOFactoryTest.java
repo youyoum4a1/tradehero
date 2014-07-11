@@ -2,6 +2,7 @@ package com.tradehero.th.api.translation;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.TestConstants;
+import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -68,6 +69,30 @@ public class UserTranslationSettingDTOFactoryTest
 
         assertThat(userTranslationSettingDTOFactory.serialise(settingDTO))
                 .isEqualTo(expected);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Create Default">
+    @Test(expected = IllegalArgumentException.class)
+    public void ifIntelliJCreateDefaultWithNullThrowsIllegal()
+    {
+        assumeTrue(TestConstants.IS_INTELLIJ);
+        //noinspection ConstantConditions
+        userTranslationSettingDTOFactory.createDefaultPerType(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void ifNotIntelliJCreateDefaultWithNullThrowsNPE()
+    {
+        assumeTrue(!TestConstants.IS_INTELLIJ);
+        //noinspection ConstantConditions
+        userTranslationSettingDTOFactory.createDefaultPerType(null);
+    }
+
+    @Test public void createDefaultPerTypeBing()
+    {
+        assertThat(userTranslationSettingDTOFactory.createDefaultPerType(new BingTranslationToken()))
+                .isExactlyInstanceOf(BingUserTranslationSettingDTO.class);
     }
     //</editor-fold>
 }
