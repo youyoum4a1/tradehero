@@ -21,11 +21,11 @@ public class LanguageCodePredicateTest
     }
 
     @Test(expected = NullPointerException.class)
-    public void ifNotIntelliJNPEOnConstructNullLanguageCode()
+    public void ifNotIntelliJNPEOnConstructAndUserNullLanguageCode()
     {
         assumeTrue(!TestConstants.IS_INTELLIJ);
         //noinspection ConstantConditions
-        new LanguageCodePredicate(null);
+        new LanguageCodePredicate(null).apply(new LanguageDTO("en"));
     }
     //</editor-fold>
 
