@@ -27,7 +27,6 @@ import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.shadowOf;
@@ -148,7 +147,7 @@ public class MainCompetitionFragmentTest
         WebView webView = competitionWebViewFragment.getWebView();
         ShadowWebView shadowWebView = shadowOf(webView);
         assertThat(webView).isNotNull();
-        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&', currentUserId.toUserBaseKey()));
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&'));
     }
 
     @Test public void shouldGoToCompetitionPortfolioAfterClickOnCompetitionPortfolio()

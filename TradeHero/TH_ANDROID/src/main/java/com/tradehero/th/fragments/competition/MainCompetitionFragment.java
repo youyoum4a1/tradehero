@@ -291,7 +291,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (adDTO != null && adDTO.redirectUrl != null)
         {
             Bundle args = new Bundle();
-            String url = providerUtil.appendUserId(adDTO.redirectUrl, '&', currentUserId.toUserBaseKey());
+            String url = providerUtil.appendUserId(adDTO.redirectUrl, '&');
             CompetitionWebViewFragment.putUrl(args, url);
             getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         }
