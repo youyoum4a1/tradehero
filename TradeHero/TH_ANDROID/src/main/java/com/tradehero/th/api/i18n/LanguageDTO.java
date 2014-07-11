@@ -56,4 +56,13 @@ public class LanguageDTO
     {
         return other.code.equals(code);
     }
+
+    @Override public String toString()
+    {
+        return "[LanguageDTO " +
+                "code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", nameInOwnLang='" + nameInOwnLang + '\'' +
+                ']';
+    }
 }

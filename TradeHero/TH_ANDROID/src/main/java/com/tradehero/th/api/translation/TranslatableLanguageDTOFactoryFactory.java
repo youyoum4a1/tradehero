@@ -26,13 +26,13 @@ public class TranslatableLanguageDTOFactoryFactory
     }
     //</editor-fold>
 
-    @Nullable TranslatableLanguageDTOFactory create()
+    @Nullable public TranslatableLanguageDTOFactory create()
     {
         TranslationToken token = translationTokenCacheLazy.get().get(new TranslationTokenKey());
         return token != null ? create(token) : null;
     }
 
-    @Nullable TranslatableLanguageDTOFactory create(@NotNull TranslationToken type)
+    @Nullable public TranslatableLanguageDTOFactory create(@NotNull TranslationToken type)
     {
         if (type instanceof BingTranslationToken)
         {
