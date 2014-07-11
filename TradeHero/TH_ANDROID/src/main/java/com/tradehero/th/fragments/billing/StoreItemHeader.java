@@ -5,11 +5,17 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tradehero.thm.R;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.fragments.billing.store.StoreItemDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
 
 public class StoreItemHeader extends LinearLayout
+    implements DTOView<StoreItemDTO>
 {
-    private TextView title;
-    private int titleResId;
+    @InjectView(R.id.title) protected TextView title;
+    private StoreItemTitleDTO storeItemTitleDTO;
 
     //<editor-fold desc="Constructors">
     public StoreItemHeader(Context context)
@@ -31,25 +37,20 @@ public class StoreItemHeader extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        initViews();
+        ButterKnife.inject(this);
     }
 
-    protected void initViews()
+    @Override public void display(StoreItemDTO dto)
     {
-        title = (TextView) findViewById(R.id.title);
-    }
-
-    public void setTitleResId(int titleResId)
-    {
-        this.titleResId = titleResId;
+        storeItemTitleDTO = (StoreItemTitleDTO) dto;
         displayTitle();
     }
 
     protected void displayTitle()
     {
-        if (title != null)
+        if (title != null && storeItemTitleDTO != null)
         {
-            title.setText(titleResId);
+            title.setText(storeItemTitleDTO.titleResId);
         }
     }
 }

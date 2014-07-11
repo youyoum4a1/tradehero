@@ -14,7 +14,7 @@
       android:id="@+id/dialog_stock_name"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textSize="16sp"
+      android:textSize="@dimen/text_medium"
       android:layout_marginLeft="15dp"
       android:layout_marginTop="15dp"
       android:textStyle="bold"
@@ -218,7 +218,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:text="@string/buy_sell_confirm_share_on"
-        android:textSize="13sp"
+        android:textSize="@dimen/text_small"
         android:textColor="@color/authentication_button_light"
         />
 
@@ -302,7 +302,7 @@
         />
 
     <View
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
@@ -311,7 +311,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginRight="12dp"
-        android:textSize="13sp"
+        android:textSize="@dimen/text_small"
         android:background="@null"
         android:textOn="@string/buy_sell_confirm_share_public"
         android:textOff="@string/buy_sell_confirm_share_private"
@@ -334,7 +334,7 @@
         android:layout_weight="1"
         android:text="@string/authentication_cancel"
         android:background="@drawable/security_dialog_btn_cancel"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_xlarge"
         android:textColor="@color/trending_gray_border"
         />
 
@@ -345,7 +345,7 @@
         android:layout_weight="1"
         android:text="@string/authentication_confirm"
         android:background="@drawable/security_dialog_btn_confirm"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_xlarge"
         android:textColor="@color/white"
         android:layout_marginLeft="1dp"
         />

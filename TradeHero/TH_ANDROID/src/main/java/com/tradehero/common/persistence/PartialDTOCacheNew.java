@@ -44,9 +44,22 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     @Override @Nullable public DTOType put(@NotNull DTOKeyType key, @NotNull DTOType value)
     {
-        @NotNull CacheValue<DTOKeyType, DTOType> cacheValue = this.getOrCreateCacheValue(key);
-        @Nullable DTOType previous = cacheValue.getValue();
-        cacheValue.setValue(value);
+        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = this.getCacheValue(key);
+        @Nullable DTOType previous = null;
+        if (!isValid(value))
+        {
+            // We do not bother creating a CacheValue for an invalid value
+            if (cacheValue != null)
+            {
+                previous = cacheValue.getValue();
+            }
+        }
+        else
+        {
+            cacheValue = this.getOrCreateCacheValue(key);
+            previous = cacheValue.getValue();
+            cacheValue.setValue(value);
+        }
         return previous;
     }
 

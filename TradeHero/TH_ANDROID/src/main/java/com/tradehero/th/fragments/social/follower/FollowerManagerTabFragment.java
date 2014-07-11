@@ -113,8 +113,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getTitle());
+        setActionBarTitle(getTitle());
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -147,12 +146,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         {
             this.viewContainer.followerList.setOnItemClickListener(null);
         }
-        this.viewContainer = null;
-        this.followerListAdapter = null;
         if (this.infoFetcher != null)
         {
             this.infoFetcher.onDestroyView();
         }
+        this.viewContainer = null;
+        this.followerListAdapter = null;
         this.infoFetcher = null;
         super.onDestroyView();
     }
@@ -233,8 +232,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     public void displayProgress(boolean running)
     {
-        Timber.d("displayProgress running:%s,progressBar:%b", running,
-                (viewContainer.progressBar != null));
         if (this.viewContainer.progressBar != null)
         {
             this.viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);

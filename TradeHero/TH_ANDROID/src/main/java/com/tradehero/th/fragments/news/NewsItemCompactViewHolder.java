@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.news;
 
+import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -116,7 +117,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
     {
         if (newsDescription != null)
         {
-            newsDescription.setText(getDescriptionText());
+            newsDescription.setText(Html.fromHtml(getDescriptionText()).toString());
         }
     }
 
@@ -143,7 +144,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         throw new IllegalStateException("Unhandled state " + currentTranslationStatus);
     }
 
-    public void setBackroundResource(int resId)
+    @Override public void setBackroundResource(int resId)
     {
         if (this.newsItemPlaceholder != null)
         {

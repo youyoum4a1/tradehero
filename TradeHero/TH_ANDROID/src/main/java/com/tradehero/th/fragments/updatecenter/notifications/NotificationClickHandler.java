@@ -56,52 +56,55 @@ public class NotificationClickHandler
     public boolean handleNotificationItemClicked()
     {
         Timber.d("Handling notification (%d)", notificationDTO.pushId);
-        NotificationType notificationType = NotificationType.fromType(notificationDTO.pushTypeId);
-
-        switch (notificationType)
+        if (notificationDTO.pushTypeId != null)
         {
-            case HeroAction:
-                handleHeroActionNotification();
-                return true;
-            case LowBalance:
-            case SubscriptionExpired:
-                handleLowCreditNotificationWithDisplayAlert();
-                return true;
+            NotificationType notificationType = NotificationType.fromType(notificationDTO.pushTypeId);
 
-            case ReferralSucceeded:
-                handleReferralSucceededNotificationWithAlert();
-                return true;
+            switch (notificationType)
+            {
+                case HeroAction:
+                    handleHeroActionNotification();
+                    return true;
+                case LowBalance:
+                case SubscriptionExpired:
+                    handleLowCreditNotificationWithDisplayAlert();
+                    return true;
 
-            case FriendStartedFollowing:
-            case PositionClosed:
-            case TradeOfTheWeek:
-                handleFriendStartedFollowingNotification();
-                return true;
+                case ReferralSucceeded:
+                    handleReferralSucceededNotificationWithAlert();
+                    return true;
 
-            case TradeInCompetition:
-            case CompetitionInvite:
-                handleTradeInCompetitionOrCompetitionInvite();
-                return true;
+                case FriendStartedFollowing:
+                case PositionClosed:
+                case TradeOfTheWeek:
+                    handleFriendStartedFollowingNotification();
+                    return true;
 
-            case StockAlert:
-                handleStockAlertNotification();
-                return true;
+                case TradeInCompetition:
+                case CompetitionInvite:
+                    handleTradeInCompetitionOrCompetitionInvite();
+                    return true;
 
-            case GeneralAnnouncement:
-            case FreeCash:
-                handleGenericNotificationWithAlert();
-                return true;
+                case StockAlert:
+                    handleStockAlertNotification();
+                    return true;
 
-            case ResetPortfolio:
-                handleResetPortfolioNotification();
-                return true;
+                case GeneralAnnouncement:
+                case FreeCash:
+                    handleGenericNotificationWithAlert();
+                    return true;
 
-            case PrivateMessage:
-            case BroadcastMessage:
-            case NotifyOriginator:
-            case NotifyContributors:
-                handleContributorsNotification();
-                return true;
+                case ResetPortfolio:
+                    handleResetPortfolioNotification();
+                    return true;
+
+                case PrivateMessage:
+                case BroadcastMessage:
+                case NotifyOriginator:
+                case NotifyContributors:
+                    handleContributorsNotification();
+                    return true;
+            }
         }
 
         return false;
@@ -137,16 +140,43 @@ public class NotificationClickHandler
                 case PRIVATE_MESSAGE:
                 {
                     // Both are needed in ReplyPrivateMessageFragment
-                    ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
-                    ReplyPrivateMessageFragment.putDiscussionKey(bundle, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                    if (notificationDTO.referencedUserId == null && notificationDTO.threadId == null)
+                    {
+                        // server side problem? report it
+                        Timber.e("Notification for Private messaging (id=%d) but does not contain neither referencedUserId nor threadId",
+                                notificationDTO.pushId);
+                        return;
+                    }
+                    if (notificationDTO.referencedUserId != null)
+                    {
+                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
+                    }
+                    if (notificationDTO.threadId != null)
+                    {
+                        ReplyPrivateMessageFragment.putDiscussionKey(bundle, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                    }
                     navigator.pushFragment(ReplyPrivateMessageFragment.class, bundle);
                 }
                 break;
 
                 case BROADCAST_MESSAGE:
                 {
-                    ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
-                    ReplyPrivateMessageFragment.putDiscussionKey(bundle, discussionKeyFactory.create(discussionType, notificationDTO.replyableId));
+                    // Both are needed in ReplyPrivateMessageFragment
+                    if (notificationDTO.referencedUserId == null && notificationDTO.replyableId == null)
+                    {
+                        // server side problem? report it
+                        Timber.e("Notification for Private messaging (id=%d) but does not contain neither referencedUserId nor replyableId",
+                                notificationDTO.pushId);
+                        return;
+                    }
+                    if (notificationDTO.referencedUserId != null)
+                    {
+                        ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(bundle, new UserBaseKey(notificationDTO.referencedUserId));
+                    }
+                    if (notificationDTO.replyableId != null)
+                    {
+                        ReplyPrivateMessageFragment.putDiscussionKey(bundle, discussionKeyFactory.create(discussionType, notificationDTO.replyableId));
+                    }
                     navigator.pushFragment(ReplyPrivateMessageFragment.class, bundle);
                 }
                 break;

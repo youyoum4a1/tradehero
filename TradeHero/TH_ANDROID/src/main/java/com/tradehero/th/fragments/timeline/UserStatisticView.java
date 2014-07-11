@@ -64,7 +64,11 @@ public class UserStatisticView extends LinearLayout
     @Override public void display(LeaderboardUserDTO dto)
     {
         this.leaderboardUserDTO = dto;
+        display();
+    }
 
+    protected void display()
+    {
         if (leaderboardUserDTO != null)
         {
             // Statistic text view

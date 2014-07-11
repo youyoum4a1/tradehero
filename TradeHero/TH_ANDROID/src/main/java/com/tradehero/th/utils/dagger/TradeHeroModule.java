@@ -42,6 +42,7 @@ import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
+import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
@@ -100,6 +101,7 @@ import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
+import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.RelationsListItemView;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerListItemView;
@@ -137,7 +139,6 @@ import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
-import com.tradehero.th.fragments.trending.SearchStockPeopleFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.updatecenter.messages.MessageListAdapter;
@@ -213,7 +214,6 @@ import javax.inject.Singleton;
                         MacquarieWarrantItemViewAdapter.class,
                         SecurityItemView.class,
                         WarrantSecurityItemView.class,
-                        SearchStockPeopleFragment.class,
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
@@ -279,6 +279,7 @@ import javax.inject.Singleton;
                         UserProfileDetailViewHolder.class,
 
                         LeaderboardCommunityFragment.class,
+                        PeopleSearchFragment.class,
                         LeaderboardDefListFragment.class,
 
                         LeaderboardDefView.class,
@@ -378,6 +379,7 @@ import javax.inject.Singleton;
                         WeiboSocialFriendsFragment.class,
 
                         HomeFragment.class,
+                        HomeWebView.class,
                         GuideActivity.class,
                 },
         staticInjections =

@@ -21,15 +21,15 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
-import com.thoj.route.Routable;
+import com.squareup.picasso.LruCache;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
-import com.tradehero.common.cache.LruMemFileCache;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.thm.R;
+import com.tradehero.route.Routable;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.share.SocialShareFormDTO;
@@ -72,6 +72,7 @@ import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.dagger.ForPicasso;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
@@ -101,7 +102,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
-    @Inject LruMemFileCache lruCache;
+    @Inject @ForPicasso LruCache lruCache;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
@@ -1040,7 +1041,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void flushCache()
     {
-        lruCache.flush();
+        lruCache.clear();
     }
 
     private void handleCacheCleared()

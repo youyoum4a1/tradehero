@@ -2,8 +2,8 @@
 <resources>
   <dimen name="leaderboard_buttonlist_radius">0dp</dimen>
   <dimen name="leaderboard_button_border_padding">0dp</dimen>
-  <dimen name="leaderboard_title_text_size">16sp</dimen>
-  <dimen name="leaderboard_position_text_size">20sp</dimen>
+  <dimen name="leaderboard_title_text_size">@dimen/text_medium</dimen>
+  <dimen name="leaderboard_position_text_size">@dimen/text_xlarge</dimen>
   <dimen name="leaderboard_title_text_padding">8dp</dimen>
   <dimen name="leaderboard_user_view_profile_width">@dimen/medium_logo_w_h</dimen>
 </resources>

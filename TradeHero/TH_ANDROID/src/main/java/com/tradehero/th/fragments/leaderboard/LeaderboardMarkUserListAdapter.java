@@ -74,7 +74,7 @@ public class LeaderboardMarkUserListAdapter extends
             //}
             //TODO
             expandingLayout.setVisibility(dto.isExpanded() ? View.VISIBLE : View.GONE);
-
+            dtoView.onExpand(dto.isExpanded());
         }
     }
 

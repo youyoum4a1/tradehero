@@ -2,11 +2,14 @@ package com.tradehero.th.fragments.base;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.utils.DaggerUtils;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class BaseFragment extends SherlockFragment
 {
@@ -37,15 +40,68 @@ public class BaseFragment extends SherlockFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (isOptionMenuVisible)
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null)
         {
-            actionBar.show();
+            if (isOptionMenuVisible)
+            {
+                actionBar.show();
+            }
+            else
+            {
+                actionBar.hide();
+            }
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Nullable protected ActionBar getSupportActionBar()
+    {
+        if (getSherlockActivity() != null)
+        {
+            ActionBar actionbar = getSherlockActivity().getSupportActionBar();
+            return actionbar;
         }
         else
         {
-            actionBar.hide();
+            Timber.e(new Exception(),"getActivity is Null");
+            return null;
         }
-        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    protected void setActionBarTitle(int titleresId)
+    {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+        {
+            actionBar.setTitle(titleresId);
+        }
+    }
+
+    protected void setActionBarTitle(String title)
+    {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+        {
+            actionBar.setTitle(title);
+        }
+    }
+
+    protected void setActionBarSubtitle(int subtitleResId)
+    {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+        {
+            actionBar.setSubtitle(subtitleResId);
+        }
+    }
+
+    protected void setActionBarSubtitle(String subtitle)
+    {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+        {
+            actionBar.setSubtitle(subtitle);
+        }
     }
 }

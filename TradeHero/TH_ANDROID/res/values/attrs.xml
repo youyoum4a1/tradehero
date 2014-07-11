@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="ValidatedText">
-        <attr name="invalidDrawable" format="reference"/>
-        <attr name="validDrawable" format="reference"/>
-        <attr name="invalidDrawableRight" format="reference"/>
-        <attr name="validDrawableRight" format="reference"/>
-    </declare-styleable>
+  <declare-styleable name="ValidatedText">
+    <attr name="invalidDrawable" format="reference"/>
+    <attr name="validDrawable" format="reference"/>
+    <attr name="invalidDrawableRight" format="reference"/>
+    <attr name="validDrawableRight" format="reference"/>
+  </declare-styleable>
 
-    <declare-styleable name="SelfValidatedText">
-        <attr name="minTextLength" format="integer"/>
-        <attr name="maxTextLength" format="integer"/>
-        <attr name="validatePattern" format="string"/>
-        <attr name="delayValidationByMilliSec" format="integer"/>
-        <attr name="invalidMinTextLengthMessage" format="string"/>
-        <attr name="invalidMaxTextLengthMessage" format="string"/>
-        <attr name="invalidBetweenTextLengthMessage" format="string"/>
-        <attr name="invalidPatternMessage" format="string"/>
-    </declare-styleable>
+  <declare-styleable name="SelfValidatedText">
+    <attr name="minTextLength" format="integer"/>
+    <attr name="maxTextLength" format="integer"/>
+    <attr name="validatePattern" format="string"/>
+    <attr name="delayValidationByMilliSec" format="integer"/>
+    <attr name="invalidMinTextLengthMessage" format="string"/>
+    <attr name="invalidMaxTextLengthMessage" format="string"/>
+    <attr name="invalidBetweenTextLengthMessage" format="string"/>
+    <attr name="invalidPatternMessage" format="string"/>
+  </declare-styleable>
 
   <declare-styleable name="ValidatedPasswordText">
     <attr name="validateOnlyIfNotEmpty" format="boolean"/>
   </declare-styleable>
 
-    <declare-styleable name="MatchingPasswordText">
-        <attr name="matchWith" format="reference"/>
-    </declare-styleable>
+  <declare-styleable name="MatchingPasswordText">
+    <attr name="matchWith" format="reference"/>
+  </declare-styleable>
 
-    <declare-styleable name="ServerValidatedText">
-        <attr name="progressIndicator" format="reference"/>
-    </declare-styleable>
+  <declare-styleable name="ServerValidatedText">
+    <attr name="progressIndicator" format="reference"/>
+  </declare-styleable>
 
-    <declare-styleable name="QuickPriceButton">
-        <attr name="price" format="integer"/>
-    </declare-styleable>
+  <declare-styleable name="QuickPriceButton">
+    <attr name="price" format="integer"/>
+  </declare-styleable>
 
-    <declare-styleable name="TimeSpanButton">
-        <attr name="timeSpan" format="string"/>
-    </declare-styleable>
+  <declare-styleable name="TimeSpanButton">
+    <attr name="timeSpan" format="string"/>
+  </declare-styleable>
 
   <declare-styleable name="DiscussionView">
     <attr name="listItemLayout" format="reference"/>
@@ -49,54 +49,54 @@
   </declare-styleable>
 
   <declare-styleable name="GaugeView">
-    <attr name="showOuterShadow" format="boolean" />
-    <attr name="showOuterBorder" format="boolean" />
-    <attr name="showOuterRim" format="boolean" />
-    <attr name="showInnerRim" format="boolean" />
-    <attr name="showNeedle" format="boolean" />
-    <attr name="showScale" format="boolean" />
-    <attr name="showRanges" format="boolean" />
-    <attr name="showText" format="boolean" />
+    <attr name="showOuterShadow" format="boolean"/>
+    <attr name="showOuterBorder" format="boolean"/>
+    <attr name="showOuterRim" format="boolean"/>
+    <attr name="showInnerRim" format="boolean"/>
+    <attr name="showNeedle" format="boolean"/>
+    <attr name="showScale" format="boolean"/>
+    <attr name="showRanges" format="boolean"/>
+    <attr name="showText" format="boolean"/>
 
-    <attr name="outerShadowWidth" format="float" />
-    <attr name="outerBorderWidth" format="float" />
-    <attr name="outerRimWidth" format="float" />
-    <attr name="innerRimWidth" format="float" />
-    <attr name="innerRimBorderWidth" format="float" />
-    <attr name="needleWidth" format="float" />
-    <attr name="needleHeight" format="float" />
+    <attr name="outerShadowWidth" format="float"/>
+    <attr name="outerBorderWidth" format="float"/>
+    <attr name="outerRimWidth" format="float"/>
+    <attr name="innerRimWidth" format="float"/>
+    <attr name="innerRimBorderWidth" format="float"/>
+    <attr name="needleWidth" format="float"/>
+    <attr name="needleHeight" format="float"/>
 
-    <attr name="scalePosition" format="float" />
-    <attr name="scaleStartValue" format="float" />
-    <attr name="scaleEndValue" format="float" />
-    <attr name="scaleStartAngle" format="float" />
+    <attr name="scalePosition" format="float"/>
+    <attr name="scaleStartValue" format="float"/>
+    <attr name="scaleEndValue" format="float"/>
+    <attr name="scaleStartAngle" format="float"/>
 
-    <attr name="divisions" format="integer" />
-    <attr name="subdivisions" format="integer" />
+    <attr name="divisions" format="integer"/>
+    <attr name="subdivisions" format="integer"/>
 
-    <attr name="rangeValues" format="reference" />
-    <attr name="rangeColors" format="reference" />
+    <attr name="rangeValues" format="reference"/>
+    <attr name="rangeColors" format="reference"/>
 
-    <attr name="textValue" format="string|reference" />
-    <attr name="textValueColor" format="color" />
+    <attr name="textValue" format="string|reference"/>
+    <attr name="textValueColor" format="color"/>
     <!--text size(ratio)-->
-    <attr name="textValueSize" format="float" />
-    <attr name="textUnit" format="string|reference" />
-    <attr name="textUnitColor" format="color" />
+    <attr name="textValueSize" format="float"/>
+    <attr name="textUnit" format="string|reference"/>
+    <attr name="textUnitColor" format="color"/>
     <!--text unit size(ratio)-->
-    <attr name="textUnitSize" format="float" />
-    <attr name="textShadowColor" format="color" />
+    <attr name="textUnitSize" format="float"/>
+    <attr name="textShadowColor" format="color"/>
 
-    <attr name="animationDuration" format="integer|reference" />
-    <attr name="drawCenterIndicator" format="boolean" />
+    <attr name="animationDuration" format="integer|reference"/>
+    <attr name="drawCenterIndicator" format="boolean"/>
 
   </declare-styleable>
 
   <declare-styleable name="AnimatedTextView">
-    <attr name="animatedDuration" format="integer|reference" />
-    <attr name="animatedInterval" format="integer|reference" />
-    <attr name="showAnimation" format="boolean"  />
-    <attr name="textSize" format="dimension" />
+    <attr name="animatedDuration" format="integer|reference"/>
+    <attr name="animatedInterval" format="integer|reference"/>
+    <attr name="showAnimation" format="boolean"/>
+    <attr name="textSize" format="dimension"/>
   </declare-styleable>
 
   <declare-styleable name="RightLeftViewSwitcher">

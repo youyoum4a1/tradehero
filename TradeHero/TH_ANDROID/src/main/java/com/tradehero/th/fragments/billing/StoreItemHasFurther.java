@@ -2,19 +2,12 @@ package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import com.tradehero.thm.R;
-import timber.log.Timber;
+import com.tradehero.th.fragments.billing.store.StoreItemDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 
-public class StoreItemHasFurther extends RelativeLayout
+public class StoreItemHasFurther extends StoreItemClickable
 {
-    protected TextView title;
-    protected int titleResId;
-
-    protected ImageView icon;
-    protected int iconResId;
+    protected StoreItemHasFurtherDTO storeItemHasFurtherDTO;
 
     //<editor-fold desc="Constructors">
     public StoreItemHasFurther(Context context)
@@ -33,56 +26,9 @@ public class StoreItemHasFurther extends RelativeLayout
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
+    @Override public void display(StoreItemDTO dto)
     {
-        super.onFinishInflate();
-        initViews();
-    }
-
-    protected void initViews()
-    {
-        title = (TextView) findViewById(R.id.title);
-        icon = (ImageView) findViewById(R.id.icon);
-    }
-
-    public void setTitleResId(int titleResId)
-    {
-        this.titleResId = titleResId;
-        displayTitle();
-    }
-
-    public void setIconResId(int iconResId)
-    {
-        this.iconResId = iconResId;
-        displayIcon();
-    }
-
-    public void display()
-    {
-        displayTitle();
-        displayIcon();
-    }
-
-    protected void displayTitle()
-    {
-        if (title != null)
-        {
-            title.setText(titleResId);
-        }
-    }
-
-    protected void displayIcon()
-    {
-        if (icon != null)
-        {
-            try
-            {
-                icon.setImageResource(iconResId);
-            }
-            catch (OutOfMemoryError e)
-            {
-                Timber.e(e, "");
-            }
-        }
+        super.display(dto);
+        storeItemHasFurtherDTO= (StoreItemHasFurtherDTO) dto;
     }
 }

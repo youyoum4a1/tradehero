@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_previous_close"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="13sp" />
+            android:textSize="@dimen/text_small" />
       </TableRow>
 
       <TableRow
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_open"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -78,7 +78,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="13sp" />
+            android:textSize="@dimen/text_small" />
       </TableRow>
 
       <TableRow
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_days_high"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -104,7 +104,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="13sp" />
+            android:textSize="@dimen/text_small" />
       </TableRow>
 
       <TableRow
@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_days_low"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -130,7 +130,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="13sp" />
+            android:textSize="@dimen/text_small" />
       </TableRow>
 
       <TableRow
@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_market_cap"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -156,7 +156,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="13sp" />
+            android:textSize="@dimen/text_small" />
       </TableRow>
     </TableLayout>
 
@@ -178,7 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_pe_ratio"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -190,7 +190,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="13sp" />
+            android:textSize="@dimen/text_small" />
       </TableRow>
 
       <TableRow
@@ -204,7 +204,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_eps"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -216,7 +216,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text=""
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             />
       </TableRow>
 
@@ -231,7 +231,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_volume"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -243,7 +243,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text="@string/na"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             />
       </TableRow>
 
@@ -258,7 +258,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/security_avg_volume"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             android:gravity="right"
             />
 
@@ -270,7 +270,7 @@
             android:layout_weight="1"
             android:gravity="left"
             android:text="@string/na"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_small"
             />
       </TableRow>
 

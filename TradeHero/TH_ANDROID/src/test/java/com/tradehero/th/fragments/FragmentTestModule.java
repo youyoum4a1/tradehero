@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.fragments.billing.FragmentBillingTestModule;
 import com.tradehero.th.fragments.competition.FragmentCompetitionTestModule;
 import com.tradehero.th.fragments.security.FragmentSecurityTestModule;
 import com.tradehero.th.fragments.settings.FragmentSettingsTestModule;
@@ -11,6 +12,7 @@ import dagger.Module;
 
 @Module(
         includes = {
+                FragmentBillingTestModule.class,
                 FragmentCompetitionTestModule.class,
                 FragmentSecurityTestModule.class,
                 FragmentTimelineTestModule.class,

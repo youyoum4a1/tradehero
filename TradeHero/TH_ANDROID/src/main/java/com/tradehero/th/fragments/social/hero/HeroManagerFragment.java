@@ -9,14 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.thm.R;
-import com.tradehero.th.api.social.HeroIdExtWrapper;
+import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -131,8 +129,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getTitle());
+        setActionBarTitle(getTitle());
     }
 
     private void handleBuyMoreClicked()
@@ -189,7 +186,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         tv.setText(title);
     }
 
-    @Override public void onHerosLoaded(HeroTypeResourceDTO resourceDTO, HeroIdExtWrapper value)
+    @Override public void onHerosLoaded(HeroTypeResourceDTO resourceDTO, HeroDTOExtWrapper value)
     {
         if (!isDetached())
         {

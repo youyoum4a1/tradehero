@@ -1,7 +1,7 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
-import java.util.ArrayList;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserIdList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,14 +35,14 @@ public class LeaderboardUserDTOUtil
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public List<LeaderboardUserId> getIds(@Nullable List<LeaderboardUserDTO> leaderboardUserDTOs)
+    public LeaderboardUserIdList getIds(@Nullable List<LeaderboardUserDTO> leaderboardUserDTOs)
     {
         if (leaderboardUserDTOs == null)
         {
             return null;
         }
 
-        List<LeaderboardUserId> returned = new ArrayList<>();
+        LeaderboardUserIdList returned = new LeaderboardUserIdList();
         for (@NotNull LeaderboardUserDTO leaderboardUserDTO: leaderboardUserDTOs)
         {
             returned.add(leaderboardUserDTO.getLeaderboardUserId());

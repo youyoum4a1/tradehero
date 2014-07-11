@@ -92,7 +92,7 @@ public class DashboardNavigator extends Navigator
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
 
-        updateTabBarOnTabChanged(pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp).getClass().getName());
+        updateTabBarOnTabChanged(((Object) pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp)).getClass().getName());
     }
 
     private void postPushActionFragment(final THIntent thIntent)

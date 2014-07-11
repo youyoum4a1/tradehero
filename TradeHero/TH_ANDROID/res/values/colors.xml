@@ -28,7 +28,7 @@
   <!--<color name="splash_background_solid">#4699c4</color>-->
   <color name="splash_background_solid">#58b0dd</color>
   <color name="follow_button_background">@color/tradehero_blue</color>
-  <color name="follow_button_background_pressed">@color/tradehero_blue</color>
+  <color name="follow_button_background_pressed">#58b0dd</color>
   <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
   <color name="connect_accounts">#1376FB</color>
 
@@ -58,8 +58,9 @@
   <color name="light_green1">#30D720</color>
   <color name="light_green">#6ED200</color>
   <color name="dark_green">#54A700</color>
-  <color name="light_yellow">#FFD000</color>
   <color name="dark_dark_yellow">#FAB000</color>
+  <color name="light_yellow">#FFD000</color>
+  <color name="pale_yellow">#fff39c</color>
   <color name="discussion_action_buttons_border_top_color">#fafafa</color>
 
   <color name="grid_item_bg_border">#88000000</color>

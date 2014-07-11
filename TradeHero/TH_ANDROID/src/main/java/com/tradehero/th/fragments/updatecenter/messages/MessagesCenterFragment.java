@@ -16,7 +16,7 @@ import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.special.ResideMenu.ResideMenu;
-import com.thoj.route.Routable;
+import com.tradehero.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -50,6 +50,8 @@ import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -72,18 +74,18 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
 
-    private DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> fetchMessageListListener;
-    private DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> fetchMessageRefreshListListener;
+    @Nullable private DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> fetchMessageListListener;
+    @Nullable private DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> fetchMessageRefreshListListener;
     private MessageListKey nextOlderMessageListKey;
-    private MessageListKey nextMoreRecentMessageListKey;
-    private MessageHeaderIdList alreadyFetched;
+    @Nullable private MessageListKey nextMoreRecentMessageListKey;
+    @Nullable private MessageHeaderIdList alreadyFetched;
     private MessagesView messagesView;
     private SwipeListener swipeListener;
     private Map<Integer, MiddleCallback<Response>> middleCallbackMap;
-    private MessageListAdapter messageListAdapter;
-    private MiddleCallback<Response> messageDeletionMiddleCallback;
+    @Nullable private MessageListAdapter messageListAdapter;
+    @Nullable private MiddleCallback<Response> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
-    private BroadcastReceiver broadcastReceiver;
+    @Nullable private BroadcastReceiver broadcastReceiver;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -96,7 +98,7 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         Timber.d("onCreateView");
@@ -145,7 +147,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             broadcastReceiver = new BroadcastReceiver()
             {
-                @Override public void onReceive(Context context, Intent intent)
+                @Override public void onReceive(Context context, @NotNull Intent intent)
                 {
                     if (PushConstants.ACTION_MESSAGE_RECEIVED.equals(intent.getAction()))
                     {
@@ -219,14 +221,15 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("onDestroy");
     }
 
-    private void createDeleteMessageDialog(final int position) {
+    private void createDeleteMessageDialog(final int position)
+    {
         THDialog.showCenterDialog(getActivity(), null,
                 getResources().getString(R.string.sure_to_delete_message),
                 getResources().getString(android.R.string.cancel),
                 getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
         {
             @Override
-            public void onClick(DialogInterface dialog, int which)
+            public void onClick(@NotNull DialogInterface dialog, int which)
             {
                 if (which == DialogInterface.BUTTON_POSITIVE)
                 {
@@ -242,12 +245,12 @@ public class MessagesCenterFragment extends DashboardFragment
         );
     }
 
-    @Override public void onUserClicked(MessageHeaderId messageHeaderId)
+    @Override public void onUserClicked(@NotNull MessageHeaderId messageHeaderId)
     {
         pushUserProfileFragment(messageHeaderCache.get(messageHeaderId));
     }
 
-    @Override public void onDeleteClicked(MessageHeaderId messageHeaderId)
+    @Override public void onDeleteClicked(@NotNull MessageHeaderId messageHeaderId)
     {
         removeMessageOnServer(messageHeaderId);
     }
@@ -269,7 +272,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    public UpdateCenterTabType getTabType()
+    @NotNull public UpdateCenterTabType getTabType()
     {
         return UpdateCenterTabType.Messages;
     }
@@ -289,7 +292,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void pushUserProfileFragment(MessageHeaderDTO messageHeaderDTO)
+    private void pushUserProfileFragment(@Nullable MessageHeaderDTO messageHeaderDTO)
     {
         if (messageHeaderDTO != null)
         {
@@ -308,7 +311,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    protected void pushMessageFragment(DiscussionKey discussionKey, UserBaseKey correspondentId)
+    protected void pushMessageFragment(@NotNull DiscussionKey discussionKey, @NotNull UserBaseKey correspondentId)
     {
         Bundle args = new Bundle();
         // TODO separate between Private and Broadcast
@@ -431,7 +434,7 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesView.getListView().setAdapter(messageListAdapter);
     }
 
-    private MessageListAdapter getListAdapter()
+    @Nullable private MessageListAdapter getListAdapter()
     {
         return messageListAdapter;
     }
@@ -478,7 +481,7 @@ public class MessagesCenterFragment extends DashboardFragment
      *
      * @param messageHeaderId
      */
-    private void removeMessageOnServer(MessageHeaderId messageHeaderId)
+    private void removeMessageOnServer(@NotNull MessageHeaderId messageHeaderId)
     {
         unsetDeletionMiddleCallback();
         MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
@@ -542,7 +545,7 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesView.showLoadingView(onlyShowLoadingView);
     }
 
-    private void refreshCache(MessageHeaderIdList data)
+    private void refreshCache(@NotNull MessageHeaderIdList data)
     {
         MessageListKey messageListKey =
                 new MessageListKey(MessageListKey.FIRST_PAGE);
@@ -550,14 +553,16 @@ public class MessagesCenterFragment extends DashboardFragment
         messageListCache.get().put(messageListKey, data);
     }
 
-    protected DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> createMessageHeaderIdListCacheListener()
+    @NotNull protected DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> createMessageHeaderIdListCacheListener()
     {
         return new MessageFetchListener();
     }
 
     class MessageFetchListener implements DTOCacheNew.HurriedListener<MessageListKey, MessageHeaderIdList>
     {
-        @Override public void onPreCachedDTOReceived(MessageListKey key, MessageHeaderIdList value)
+        @Override public void onPreCachedDTOReceived(
+                @NotNull MessageListKey key,
+                @NotNull MessageHeaderIdList value)
         {
             if (value.size() == 0)
             {
@@ -571,7 +576,9 @@ public class MessagesCenterFragment extends DashboardFragment
         }
 
         @Override
-        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value)
+        public void onDTOReceived(
+                @NotNull MessageListKey key,
+                @NotNull MessageHeaderIdList value)
         {
             if (value.size() == 0)
             {
@@ -586,7 +593,9 @@ public class MessagesCenterFragment extends DashboardFragment
             //TODO how to invalidate the old data ..
         }
 
-        @Override public void onErrorThrown(MessageListKey key, Throwable error)
+        @Override public void onErrorThrown(
+                @NotNull MessageListKey key,
+                @NotNull Throwable error)
         {
             hasMorePage = true;
             decreasePageNumber();
@@ -607,7 +616,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    protected DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> createRefreshMessageHeaderIdListCacheListener()
+    @NotNull protected DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList> createRefreshMessageHeaderIdListCacheListener()
     {
         return new RefreshMessageFetchListener();
     }
@@ -616,7 +625,7 @@ public class MessagesCenterFragment extends DashboardFragment
             implements DTOCacheNew.Listener<MessageListKey, MessageHeaderIdList>
     {
         @Override
-        public void onDTOReceived(MessageListKey key, MessageHeaderIdList value)
+        public void onDTOReceived(MessageListKey key, @NotNull MessageHeaderIdList value)
         {
             requestUpdateTabCounter();
             hasMorePage = (value.size() > 0);
@@ -720,7 +729,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void updateReadStatus(MessageHeaderDTO messageHeaderDTO)
+    private void updateReadStatus(@Nullable MessageHeaderDTO messageHeaderDTO)
     {
         if (messageHeaderDTO != null && messageHeaderDTO.unread)
         {
@@ -749,7 +758,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
+    private void reportMessageRead(@NotNull MessageHeaderDTO messageHeaderDTO)
     {
         MiddleCallback<Response> middleCallback = middleCallbackMap.get(messageHeaderDTO.id);
         if (middleCallback != null)
@@ -767,7 +776,7 @@ public class MessagesCenterFragment extends DashboardFragment
                         createMessageAsReadCallback(messageHeaderDTO.id)));
     }
 
-    private Callback<Response> createMessageAsReadCallback(int pushId)
+    @NotNull private Callback<Response> createMessageAsReadCallback(int pushId)
     {
         return new MessageMarkAsReadCallback(pushId);
     }
@@ -781,7 +790,7 @@ public class MessagesCenterFragment extends DashboardFragment
             this.messageId = messageId;
         }
 
-        @Override public void success(Response response, Response response2)
+        @Override public void success(@NotNull Response response, Response response2)
         {
             if (response.getStatus() == 200)
             {

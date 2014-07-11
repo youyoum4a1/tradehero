@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
+import butterknife.OnItemClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -23,14 +23,12 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.thm.R;
 import com.tradehero.th.activities.WebViewActivity;
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.api.competition.HelpVideoIdList;
+import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.key.HelpVideoId;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.persistence.competition.HelpVideoCache;
 import com.tradehero.th.persistence.competition.HelpVideoListCache;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -45,8 +43,8 @@ public class ProviderVideoListFragment extends CompetitionFragment
     @InjectView(R.id.help_videos_list) AbsListView videoListView;
     @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
-    private HelpVideoIdList helpVideoIds;
-    private DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList> helpVideoListCacheListener;
+    private HelpVideoDTOList helpVideoDTOs;
+    private DTOCacheNew.Listener<HelpVideoListKey, HelpVideoDTOList> helpVideoListCacheListener;
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
 
@@ -67,14 +65,8 @@ public class ProviderVideoListFragment extends CompetitionFragment
     {
         ButterKnife.inject(this, view);
         helpVideoListCacheListener = new ProviderVideoListFragmentVideoListCacheListener();
-        providerVideoAdapter = new ProviderVideoAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.help_video_item_view);
-        providerVideoAdapter.setItems(new ArrayList<HelpVideoId>());
-
-        if (videoListView != null)
-        {
-            videoListView.setAdapter(providerVideoAdapter);
-            videoListView.setOnItemClickListener(new ProviderVideoListFragmentItemClickListener());
-        }
+        providerVideoAdapter = new ProviderVideoAdapter(getActivity(), R.layout.help_video_item_view);
+        videoListView.setAdapter(providerVideoAdapter);
     }
 
     //<editor-fold desc="ActionBar">
@@ -106,16 +98,17 @@ public class ProviderVideoListFragment extends CompetitionFragment
         super.onPause();
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         detachListVideoFetchTask();
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         providerVideoAdapter = null;
-        if (videoListView != null)
-        {
-            videoListView.setOnItemClickListener(null);
-            videoListView.setEmptyView(null);
-        }
-        videoListView = null;
+        videoListView.setEmptyView(null);
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -139,9 +132,9 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
     }
 
-    private void linkWith(HelpVideoIdList helpVideoIds, boolean andDisplay)
+    private void linkWith(HelpVideoDTOList videoDTOs, boolean andDisplay)
     {
-        this.helpVideoIds = helpVideoIds;
+        this.helpVideoDTOs = videoDTOs;
         if (andDisplay)
         {
             updateAdapter();
@@ -150,56 +143,46 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private void updateAdapter()
     {
-        providerVideoAdapter.setItems(helpVideoIds);
+        providerVideoAdapter.clear();
+        if (helpVideoDTOs != null)
+        {
+            providerVideoAdapter.addAll(helpVideoDTOs);
+        }
         providerVideoAdapter.notifyDataSetChanged();
     }
 
     private void displayActionBarTitle()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
+        if (providerDTO != null
+                && providerDTO.specificResources != null
+                && providerDTO.specificResources.helpVideoListFragmentTitleResId > 0)
         {
-            if (providerDTO != null
-                    && providerDTO.specificResources != null
-                    && providerDTO.specificResources.helpVideoListFragmentTitleResId > 0)
-            {
-                actionBar.setTitle(providerDTO.specificResources.helpVideoListFragmentTitleResId);
-            }
-            else if (providerDTO == null || providerDTO.name == null)
-            {
-                actionBar.setTitle("");
-            }
-            else
-            {
-                actionBar.setTitle(providerDTO.name);
-            }
+            setActionBarTitle(providerDTO.specificResources.helpVideoListFragmentTitleResId);
+        }
+        else if (providerDTO == null || providerDTO.name == null)
+        {
+            setActionBarTitle("");
+        }
+        else
+        {
+            setActionBarTitle(providerDTO.name);
         }
     }
 
-    private void launchVideo(HelpVideoId helpVideoId)
+    private void launchVideo(@NotNull HelpVideoDTO videoDTO)
     {
-        HelpVideoDTO cachedHelpVideo = helpVideoCache.get(helpVideoId);
-        if (cachedHelpVideo == null)
-        {
-            Timber.d("There is no Help Video in cache for id %d", helpVideoId);
-            THToast.show(R.string.error_fetch_help_video_info);
-            return;
-        }
-
-        // openVideoInExternalPlayer(cachedHelpVideo);
-
         try
         {
-            openVideoInChromeBrowser(cachedHelpVideo);
+            openVideoInChromeBrowser(videoDTO);
         }
         catch (ActivityNotFoundException e)
         {
             Timber.e("Failed to start Chrome Browser", e);
             // TODO In the vague hope it will work
-            openVideoWithInApp(cachedHelpVideo);
+            openVideoWithInApp(videoDTO);
         }
 
-        // openVideoWithInApp(cachedHelpVideo);
+        // openVideoWithInApp(videoDTO);
     }
 
     /**
@@ -244,14 +227,14 @@ public class ProviderVideoListFragment extends CompetitionFragment
         startActivity(intent);
     }
 
-    protected DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList> createVideoListCacheListener()
+    protected DTOCacheNew.Listener<HelpVideoListKey, HelpVideoDTOList> createVideoListCacheListener()
     {
         return new ProviderVideoListFragmentVideoListCacheListener();
     }
 
-    protected class ProviderVideoListFragmentVideoListCacheListener implements DTOCacheNew.Listener<HelpVideoListKey, HelpVideoIdList>
+    protected class ProviderVideoListFragmentVideoListCacheListener implements DTOCacheNew.Listener<HelpVideoListKey, HelpVideoDTOList>
     {
-        @Override public void onDTOReceived(HelpVideoListKey key, HelpVideoIdList value)
+        @Override public void onDTOReceived(@NotNull HelpVideoListKey key, @NotNull HelpVideoDTOList value)
         {
             onFinished();
             if (videoListView != null)
@@ -262,7 +245,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(HelpVideoListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull HelpVideoListKey key, @NotNull Throwable error)
         {
             onFinished();
             THToast.show(getString(R.string.error_fetch_help_video_list_info));
@@ -275,12 +258,10 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
     }
 
-    private class ProviderVideoListFragmentItemClickListener implements AdapterView.OnItemClickListener
+    @OnItemClick(R.id.help_videos_list)
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
-        @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-        {
-            // It is not testing for availability on purpose
-            launchVideo(ProviderVideoListFragment.this.helpVideoIds.get(position));
-        }
+        // It is not testing for availability on purpose
+        launchVideo((HelpVideoDTO) adapterView.getItemAtPosition(position));
     }
 }

@@ -59,7 +59,7 @@
           android:gravity="center"
           android:background="@drawable/btn_follow_green"
           android:text="@string/follow"
-          android:textSize="15sp"
+          android:textSize="@dimen/text_medium"
           android:textColor="@color/white"
           android:drawableLeft="@drawable/icn_star_white"
           android:visibility="gone"/>
@@ -74,7 +74,7 @@
           android:gravity="center"
           android:background="@drawable/btn_message_blue"
           android:text="@string/message"
-          android:textSize="15sp"
+          android:textSize="@dimen/text_medium"
           android:textColor="@color/white"
           android:drawableLeft="@drawable/icn_message_white"
           android:visibility="gone"/>

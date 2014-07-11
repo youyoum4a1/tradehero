@@ -76,7 +76,7 @@
         android:background="@drawable/authentication_button"
         android:padding="@dimen/common_margin_10"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="@dimen/text_xxlarge"
         android:textStyle="bold"
         android:layout_height="wrap_content"/>
 

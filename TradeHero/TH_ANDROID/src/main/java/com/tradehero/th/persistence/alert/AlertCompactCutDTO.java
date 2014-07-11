@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.alert;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import java.util.Date;
@@ -39,7 +40,7 @@ class AlertCompactCutDTO implements DTO
         this.activeUntilDate = alertCompactDTO.activeUntilDate;
     }
 
-    public AlertCompactDTO create(@NotNull SecurityCompactCache securityCompactCache)
+    @Nullable public AlertCompactDTO create(@NotNull SecurityCompactCache securityCompactCache)
     {
         AlertCompactDTO compactDTO = new AlertCompactDTO();
         compactDTO.id = this.id;
@@ -48,14 +49,16 @@ class AlertCompactCutDTO implements DTO
         compactDTO.priceMovement = this.priceMovement;
         compactDTO.active = this.active;
         compactDTO.activeUntilDate = this.activeUntilDate;
+        SecurityCompactDTO cachedSecurity = null;
         if (securityId != null)
         {
-            compactDTO.security = securityCompactCache.get(securityId);
+            cachedSecurity = securityCompactCache.get(securityId);
+            if (cachedSecurity == null)
+            {
+                return null;
+            }
         }
-        else
-        {
-            compactDTO.security = null;
-        }
+        compactDTO.security = cachedSecurity;
 
         return compactDTO;
     }

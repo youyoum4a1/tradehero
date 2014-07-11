@@ -225,11 +225,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     public void displayActionBarTitle()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(getDisplayName());
-        }
+        setActionBarTitle(getDisplayName());
     }
 
     public void displayPaymentList()

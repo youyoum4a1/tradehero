@@ -10,7 +10,7 @@ import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
 import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
@@ -139,7 +139,7 @@ public interface UserService
 
     //<editor-fold desc="Search Users">
     @GET("/users/search")
-    List<UserSearchResultDTO> searchUsers(
+    UserSearchResultDTOList searchUsers(
             @Query("q") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);

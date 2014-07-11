@@ -40,6 +40,7 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.dagger.ForUser;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ public class THUser
     @Inject static CredentialsSetPreference credentialsSetPreference;
     @Inject static CurrentUserId currentUserId;
 
-    @Inject static Lazy<SharedPreferences> sharedPreferences;
+    @Inject @ForUser static Lazy<SharedPreferences> sharedPreferences;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionServiceWrapper> sessionServiceWrapper;
     @Inject static Lazy<UserProfileCache> userProfileCache;
@@ -234,6 +235,7 @@ public class THUser
 
             @Override public void failure(THException error)
             {
+                saveCredentialsToUserDefaults(credentialsDTO);
                 checkNeedForUpgrade(error);
                 checkNeedToRenewSocialToken(error, credentialsDTO);
                 callback.done(null, error);

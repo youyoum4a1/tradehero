@@ -13,6 +13,9 @@ import timber.log.Timber;
 
 public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
 {
+    public static final int FRAGMENT_ID_CHART = 0;
+    public static final int FRAGMENT_ID_DISCUSS = 1;
+    public static final int FRAGMENT_ID_NEWS = 2;
     private SecurityId securityId;
 
     //<editor-fold desc="Constructors">
@@ -49,17 +52,17 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
         Fragment fragment;
         Bundle args = new Bundle();
 
-        switch(position)
+        switch (position)
         {
-            case 0:
+            case FRAGMENT_ID_CHART:
                 fragment = new ChartFragment();
                 populateForChartFragment(args);
                 break;
-            case 1:
+            case FRAGMENT_ID_DISCUSS:
                 fragment = new SecurityDiscussionFragment();
                 populateForSecurityDiscussionFragment(args);
                 break;
-            case 2:
+            case FRAGMENT_ID_NEWS:
                 fragment = new NewsHeadlineFragment();
                 populateForNewsHeadlineFragment(args);
                 break;

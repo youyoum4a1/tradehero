@@ -183,23 +183,19 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected void displayTitle()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
+        if (providerDTO != null
+                && providerDTO.specificResources != null
+                && providerDTO.specificResources.securityListFragmentTitleResId > 0)
         {
-            if (providerDTO != null
-                    && providerDTO.specificResources != null
-                    && providerDTO.specificResources.securityListFragmentTitleResId > 0)
-            {
-                actionBar.setTitle(providerDTO.specificResources.securityListFragmentTitleResId);
-            }
-            else if (providerDTO != null)
-            {
-                actionBar.setTitle(providerDTO.name);
-            }
-            else
-            {
-                actionBar.setTitle(R.string.provider_security_list_title);
-            }
+            setActionBarTitle(providerDTO.specificResources.securityListFragmentTitleResId);
+        }
+        else if (providerDTO != null)
+        {
+            setActionBarTitle(providerDTO.name);
+        }
+        else
+        {
+            setActionBarTitle(R.string.provider_security_list_title);
         }
     }
 

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -65,15 +66,16 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     {
         super.display(discussionKey);
         linkWith(newsItemCompactCache.get(discussionKey), true);
+        viewHolder.discussionActionButtonsView.setCommentCountVisable(View.GONE);
     }
 
     public void setNewsBackgroundResource(int resId)
     {
         this.backgroundResourceId = resId;
 
-        if (viewHolder != null && viewHolder instanceof NewsItemCompactViewHolder)
+        if (viewHolder != null)
         {
-            ((NewsItemCompactViewHolder) viewHolder).setBackroundResource(resId);
+            viewHolder.setBackroundResource(resId);
         }
     }
 

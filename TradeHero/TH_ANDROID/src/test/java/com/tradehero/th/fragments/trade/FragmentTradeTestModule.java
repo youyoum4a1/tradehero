@@ -4,7 +4,8 @@ import dagger.Module;
 
 @Module(
         injects = {
-                TradeListFragmentTest.class
+                BuySellFragmentTest.class,
+                TradeListFragmentTest.class,
         },
         complete = false,
         library = true

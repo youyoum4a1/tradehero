@@ -64,7 +64,7 @@
             android:layout_marginBottom="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_medium"
             android:text="@string/loading_loading"
             android:textColor="#888"
             android:gravity="center"
@@ -77,7 +77,7 @@
             android:layout_marginTop="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_medium"
             android:textColor="#444"
             tools:text="A big one"
             />

@@ -2,11 +2,11 @@ package com.tradehero.th.persistence.alert;
 
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,19 +54,34 @@ import org.jetbrains.annotations.Nullable;
         return cutValue.create(securityCompactCache.get());
     }
 
-    @Contract("_, null -> null; _, !null -> !null")
-    public ArrayList<AlertCompactDTO> put(@NotNull UserBaseKey userBaseKey, @Nullable List<AlertCompactDTO> values)
+    @Contract("_, null -> null; _, !null -> !null") @Nullable
+    public AlertCompactDTOList put(@NotNull UserBaseKey userBaseKey, @Nullable List<AlertCompactDTO> values)
     {
         if (values == null)
         {
             return null;
         }
 
-        ArrayList<AlertCompactDTO> previous = new ArrayList<>();
+        AlertCompactDTOList previous = new AlertCompactDTOList();
         for (@NotNull AlertCompactDTO alertCompactDTO : values)
         {
             previous.add(put(new AlertId(userBaseKey, alertCompactDTO.id), alertCompactDTO));
         }
         return previous;
+    }
+
+    @Contract("null -> null; !null -> !null") @Nullable
+    public AlertCompactDTOList get(@Nullable List<AlertId> alertIds)
+    {
+        if (alertIds == null)
+        {
+            return null;
+        }
+        AlertCompactDTOList values = new AlertCompactDTOList();
+        for (AlertId alertId : alertIds)
+        {
+            values.add(get(alertId));
+        }
+        return values;
     }
 }

@@ -36,7 +36,7 @@
         android:layout_toRightOf="@id/user_profile_avatar"
         android:layout_below="@id/title"
         android:textStyle="bold"
-        android:textSize="18sp"/>
+        android:textSize="@dimen/text_large"/>
   </RelativeLayout>
 
   <LinearLayout
@@ -77,7 +77,7 @@
           android:layout_width="0dp"
           android:layout_weight="1"
           android:text="@string/continue_free_follow"
-          android:textSize="14sp"
+          android:textSize="@dimen/text_small"
           android:textColor="#77a4fd"
           android:background="@drawable/basic_white_selector"/>
 
@@ -88,7 +88,7 @@
           android:layout_weight="1"
           android:background="@drawable/basic_green_selector"
           android:text="@string/upgrade"
-          android:textSize="16sp"
+          android:textSize="@dimen/text_medium"
           android:textColor="@color/black"
           android:textStyle="bold"
           android:layout_marginLeft="1dp"/>

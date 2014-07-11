@@ -7,14 +7,14 @@
     <item name="android:textColor">@color/black</item>
   </style>
   <style name="header" parent="header_base">
-    <item name="android:textSize">22dip</item>
+    <item name="android:textSize">@dimen/text_xlarge</item>
   </style>
   <style name="bold_header" parent="header_base">
-    <item name="android:textSize">18dip</item>
+    <item name="android:textSize">@dimen/text_large</item>
     <item name="android:textStyle">bold</item>
   </style>
   <style name="dark_bold_header" parent="dark_header_base">
-    <item name="android:textSize">16sp</item>
+    <item name="android:textSize">@dimen/text_medium</item>
     <item name="android:textStyle">bold</item>
     <item name="android:textColor">@color/white</item>
   </style>

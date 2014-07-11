@@ -10,16 +10,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.thoj.route.InjectRoute;
-import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.thm.R;
+import com.tradehero.route.InjectRoute;
+import com.tradehero.route.Routable;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioId;
@@ -57,6 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId")
@@ -94,35 +94,35 @@ public class PositionListFragment
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
-    protected UserProfileDTO userProfileDTO;
+    @Nullable protected UserProfileDTO userProfileDTO;
 
-    protected AbstractPositionItemAdapter positionItemAdapter;
+    @Nullable protected AbstractPositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
-    private boolean[] expandedPositions;
+    @Nullable private boolean[] expandedPositions;
 
-    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
-    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> refreshGetPositionsDTOListener;
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
+    @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> refreshGetPositionsDTOListener;
+    @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject THRouter thRouter;
 
     //<editor-fold desc="Arguments Handling">
-    public static void putGetPositionsDTOKey(Bundle args, GetPositionsDTOKey getPositionsDTOKey)
+    public static void putGetPositionsDTOKey(@NotNull Bundle args, @NotNull GetPositionsDTOKey getPositionsDTOKey)
     {
         args.putBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE, getPositionsDTOKey.getArgs());
     }
 
-    private static GetPositionsDTOKey getGetPositionsDTOKey(GetPositionsDTOKeyFactory getPositionsDTOKeyFactory, Bundle args)
+    private static GetPositionsDTOKey getGetPositionsDTOKey(@NotNull GetPositionsDTOKeyFactory getPositionsDTOKeyFactory, @NotNull Bundle args)
     {
         return getPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
     }
 
-    public static void putShownUser(Bundle args, UserBaseKey shownUser)
+    public static void putShownUser(@NotNull Bundle args, @NotNull UserBaseKey shownUser)
     {
         args.putBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE, shownUser.getArgs());
     }
 
-    private static UserBaseKey getUserBaseKey(Bundle args)
+    @NotNull private static UserBaseKey getUserBaseKey(@NotNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
     }
@@ -154,12 +154,12 @@ public class PositionListFragment
         refreshGetPositionsDTOListener = createGetPositionsRefreshCacheListener();
     }
 
-    @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @NotNull @Override protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new AbstractPositionListPremiumUserFollowedListener();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         if (savedInstanceState != null)
         {
@@ -174,7 +174,7 @@ public class PositionListFragment
         return view;
     }
 
-    @Override protected void initViews(View view)
+    @Override protected void initViews(@Nullable View view)
     {
         if (view != null)
         {
@@ -317,7 +317,7 @@ public class PositionListFragment
         positionItemAdapter.setCellListener(this);
     }
 
-    protected Map<PositionItemType, Integer> getLayoutResIds()
+    @NotNull protected Map<PositionItemType, Integer> getLayoutResIds()
     {
         Map<PositionItemType, Integer> layouts = new HashMap<>();
         layouts.put(PositionItemType.Header, R.layout.position_item_header);
@@ -356,7 +356,7 @@ public class PositionListFragment
         getDashboardNavigator().pushFragment(TrendingFragment.class, args);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
     {
         inflater.inflate(R.menu.position_list_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -409,7 +409,7 @@ public class PositionListFragment
         super.onPause();
     }
 
-    @Override public void onSaveInstanceState(Bundle outState)
+    @Override public void onSaveInstanceState(@NotNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
         detachGetPositionsTask();
@@ -485,14 +485,14 @@ public class PositionListFragment
         userProfileCache.getOrFetchAsync(shownUser);
     }
 
-    public boolean isShownOwnedPortfolioIdForOtherPeople(OwnedPortfolioId ownedPortfolioId)
+    public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
     {
         return ownedPortfolioId == null ? false : (ownedPortfolioId.portfolioId == null || ownedPortfolioId.portfolioId <= 0);
     }
 
     protected void fetchSimplePage()
     {
-        fetchSimplePage(false);
+        fetchSimplePage(true);
     }
 
     protected void fetchSimplePage(boolean force)
@@ -615,24 +615,19 @@ public class PositionListFragment
 
     public void displayActionBarTitle()
     {
-        SherlockFragmentActivity sherlockFragmentActivity = getSherlockActivity();
-        if (sherlockFragmentActivity != null)
+        if (getPositionsDTO != null && getPositionsDTO.positions != null)
         {
-            ActionBar actionBar = sherlockFragmentActivity.getSupportActionBar();
-            if (getPositionsDTO != null && getPositionsDTO.positions != null)
-            {
-                String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                        getPositionsDTO.positions.size());
-                actionBar.setTitle(title);
-            }
-            else
-            {
-                actionBar.setTitle(R.string.position_list_action_bar_header_unknown);
-            }
+            String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
+                    getPositionsDTO.positions.size());
+            setActionBarTitle(title);
+        }
+        else
+        {
+            setActionBarTitle(R.string.position_list_action_bar_header_unknown);
         }
     }
 
-    private void pushBuySellFragment(PositionDTO clickedPositionDTO, boolean isBuy)
+    private void pushBuySellFragment(@Nullable PositionDTO clickedPositionDTO, boolean isBuy)
     {
         if (clickedPositionDTO != null)
         {
@@ -712,7 +707,7 @@ public class PositionListFragment
     //</editor-fold>
 
     //<editor-fold desc="PositionListener">
-    @Override public void onTradeHistoryClicked(PositionDTO clickedPositionDTO)
+    @Override public void onTradeHistoryClicked(@NotNull PositionDTO clickedPositionDTO)
     {
         Bundle args = new Bundle();
         // By default tries
@@ -735,14 +730,14 @@ public class PositionListFragment
         pushBuySellFragment(clickedPositionDTO, false);
     }
 
-    @Override public void onAddAlertClicked(PositionDTO clickedPositionDTO)
+    @Override public void onAddAlertClicked(@NotNull PositionDTO clickedPositionDTO)
     {
         SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
         if (securityId != null && getApplicablePortfolioId() != null)
         {
             Bundle args = new Bundle();
             AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-            args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            AlertCreateFragment.putSecurityId(args, securityId);
             getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else
@@ -752,7 +747,7 @@ public class PositionListFragment
         }
     }
 
-    @Override public void onStockInfoClicked(PositionDTO clickedPositionDTO)
+    @Override public void onStockInfoClicked(@NotNull PositionDTO clickedPositionDTO)
     {
         SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
         if (securityId == null)
@@ -769,7 +764,7 @@ public class PositionListFragment
     }
     //</editor-fold>
 
-    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
+    @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
     {
         return new GetPositionsListener();
     }
@@ -777,19 +772,25 @@ public class PositionListFragment
     protected class GetPositionsListener
             implements DTOCacheNew.HurriedListener<GetPositionsDTOKey, GetPositionsDTO>
     {
-        @Override public void onPreCachedDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
+        @Override public void onPreCachedDTOReceived(
+                @NotNull GetPositionsDTOKey key,
+                @NotNull GetPositionsDTO value)
         {
             linkWith(value, true);
             showResultIfNecessary();
         }
 
-        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
+        @Override public void onDTOReceived(
+                @NotNull GetPositionsDTOKey key,
+                @NotNull GetPositionsDTO value)
         {
             linkWith(value, true);
             showResultIfNecessary();
         }
 
-        @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)
+        @Override public void onErrorThrown(
+                @NotNull GetPositionsDTOKey key,
+                @NotNull Throwable error)
         {
             //displayProgress(false);
             THToast.show(getString(R.string.error_fetch_position_list_info));
@@ -798,19 +799,23 @@ public class PositionListFragment
         }
     }
 
-    protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener()
+    @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsRefreshCacheListener()
     {
         return new RefreshPositionsListener();
     }
 
     protected class RefreshPositionsListener extends GetPositionsListener
     {
-        @Override public void onPreCachedDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
+        @Override public void onPreCachedDTOReceived(
+                @NotNull GetPositionsDTOKey key,
+                @NotNull GetPositionsDTO value)
         {
             // Do nothing
         }
 
-        @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)
+        @Override public void onErrorThrown(
+                @NotNull GetPositionsDTOKey key,
+                @NotNull Throwable error)
         {
             //super.onErrorThrown(key, error);
             boolean loaded = checkLoadingSuccess();
@@ -826,7 +831,7 @@ public class PositionListFragment
         return R.layout.tutorial_position_list;
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
+    @NotNull protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileCacheListener()
     {
         return new AbstractPositionListProfileCacheListener();
     }
@@ -844,13 +849,17 @@ public class PositionListFragment
 
     protected class AbstractPositionListProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        @Override public void onDTOReceived(
+                @NotNull UserBaseKey key,
+                @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
             showResultIfNecessary();
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(
+                @NotNull UserBaseKey key,
+                @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_user_profile);
             //TODO not just toast

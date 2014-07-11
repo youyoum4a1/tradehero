@@ -78,8 +78,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.message_center_new_message_title);
+        setActionBarTitle(R.string.message_center_new_message_title);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

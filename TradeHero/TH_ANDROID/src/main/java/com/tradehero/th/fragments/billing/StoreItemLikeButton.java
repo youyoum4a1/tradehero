@@ -28,9 +28,8 @@ public class StoreItemLikeButton extends StoreItemHasFurther
     }
     //</editor-fold>
 
-    @Override protected void initViews()
+    protected void initViews()
     {
-        super.initViews();
         imageButton = (ImageView) findViewById(R.id.btn_buy_now);
     }
 

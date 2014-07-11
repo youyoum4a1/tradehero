@@ -198,7 +198,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         return 0;
     }
 
-    public void setTitleBackground(int resId)
+    @Override public void setBackroundResource(int resId)
     {
         if (mNewsDetailTitlePlaceholder != null)
         {

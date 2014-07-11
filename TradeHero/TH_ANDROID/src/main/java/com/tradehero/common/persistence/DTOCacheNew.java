@@ -65,7 +65,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             return value;
         }
 
-        public void setValue(@NotNull DTOType value)
+        public void setValue(@SuppressWarnings("NullableProblems") @NotNull DTOType value)
         {
             this.value = value;
         }
@@ -109,21 +109,18 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             fetchTask = new WeakReference<>(null);
             for (@NotNull Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
-                listener.onDTOReceived(key, value);
                 unregisterListener(listener);
+                listener.onDTOReceived(key, value);
             }
         }
 
         public void notifyListenersFailed(@NotNull DTOKeyType key, @NotNull Throwable error)
         {
             fetchTask = new WeakReference<>(null);
-            for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
+            for (@NotNull Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
-                if (listener != null)
-                {
-                    listener.onErrorThrown(key, error);
-                }
                 unregisterListener(listener);
+                listener.onErrorThrown(key, error);
             }
         }
     }
