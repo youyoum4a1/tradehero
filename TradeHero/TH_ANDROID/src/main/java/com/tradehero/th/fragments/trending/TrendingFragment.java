@@ -67,6 +67,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -481,7 +482,7 @@ public class TrendingFragment extends SecurityListFragment
     }
     //</editor-fold>
 
-    @Override protected void handleSecurityItemReceived(@NotNull SecurityCompactDTOList securityCompactDTOs)
+    @Override protected void handleSecurityItemReceived(@Nullable SecurityCompactDTOList securityCompactDTOs)
     {
         if (AppTiming.trendingFilled == 0)
         {
