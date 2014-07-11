@@ -134,7 +134,7 @@
   </TableRow>
 
   <SeekBar
-      android:id="@+id/seekBar"
+      android:id="@+id/seek_bar"
       android:layout_width="match_parent"
       android:layout_height="32dp"
       android:layout_marginLeft="20dp"
@@ -221,7 +221,7 @@
         />
 
     <ToggleButton
-        android:id="@+id/btn_wechat"
+        android:id="@+id/btn_share_wechat"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginLeft="8dp"

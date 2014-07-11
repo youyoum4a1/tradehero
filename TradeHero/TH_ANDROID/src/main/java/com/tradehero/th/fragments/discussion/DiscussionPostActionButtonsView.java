@@ -31,7 +31,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @InjectView(R.id.btn_share_tw) ToggleButton mTwitterShareButton;
     @InjectView(R.id.btn_share_li) ToggleButton mLinkedInShareButton;
     @InjectView(R.id.btn_share_wb) ToggleButton mWbShareButton;
-    @InjectView(R.id.btn_wechat) ToggleButton mWechatShareButton;
+    @InjectView(R.id.btn_share_wechat) ToggleButton mWechatShareButton;
     @InjectView(R.id.btn_location) ToggleButton mLocationShareButton;
     @InjectView(R.id.switch_share_public) ToggleButton mIsPublic;
 

@@ -632,27 +632,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         displayActionBarElements();
         displayPageElements();
-
-        //TODO not know do what, temp remove by alex
-        //int avgDailyVolume = 0;
-        //if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
-        //{
-        //    avgDailyVolume = 0;
-        //}
-        //else
-        //{
-        //    avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
-        //}
-        //
-        //int volume = 0;
-        //if (securityCompactDTO == null || securityCompactDTO.volume == null)
-        //{
-        //    volume = 0;
-        //}
-        //else
-        //{
-        //    volume = (int) Math.ceil(securityCompactDTO.volume);
-        //}
     }
 
     public void displayPageElements()
@@ -1390,6 +1369,26 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void showBuySellDialog()
     {
+
+        BuySellDialogFragment buySellDialogFragment = BuySellDialogFragment.newInstance(securityId, purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(), quoteDTO, isTransactionTypeBuy);
+        buySellDialogFragment.setBuySellTransactionListener(new BuySellDialogFragment.BuySellTransactionListener()
+        {
+            @Override public void onTransactionSuccessful(boolean isBuy)
+            {
+                if (pushPortfolioFragmentRunnable != null)
+                {
+                    pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+                }
+            }
+
+            @Override public void onTransactionFailed(boolean isBuy, THException error)
+            {
+
+            }
+        });
+        buySellDialogFragment.show(getFragmentManager(), BuySellDialogFragment.class.getName());
+
+
         // TODO Move to DialogFragment? and pass the values to be shared using bundle/intent
         setPublishToShareBySetting();
 
@@ -1457,7 +1456,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 isTransactionTypeBuy ? R.string.buy_sell_cash_left : R.string.buy_sell_share_left);
 
         mSlider = null;
-        mSlider = (SeekBar) view.findViewById(R.id.seekBar);
+        mSlider = (SeekBar) view.findViewById(R.id.seek_bar);
         if (mSlider != null)
         {
             mSlider.setOnSeekBarChangeListener(createSeekBarListener());
@@ -1511,7 +1510,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         initSocialButton(mBtnShareLinkedIn, SocialNetworkEnum.LN);
 
         mBtnShareWeChat = null;
-        mBtnShareWeChat = (ToggleButton) view.findViewById(R.id.btn_wechat);
+        mBtnShareWeChat = (ToggleButton) view.findViewById(R.id.btn_share_wechat);
         initSocialButton(mBtnShareWeChat, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
 
         mBtnShareWb = null;
@@ -1583,7 +1582,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         updateBuySellDialog();
         mBuySellDialog = builder.create();
-        mBuySellDialog.show();
+        //mBuySellDialog.show();
     }
 
     private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum)
