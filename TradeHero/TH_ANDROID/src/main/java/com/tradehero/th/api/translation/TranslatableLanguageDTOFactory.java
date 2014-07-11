@@ -4,6 +4,9 @@ import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Given a translation service, not all languages known to Android may be translatable.
+ */
 abstract public class TranslatableLanguageDTOFactory
 {
     //<editor-fold desc="Constructors">

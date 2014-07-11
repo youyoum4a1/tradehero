@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
+import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
 import java.io.IOException;
@@ -43,7 +44,19 @@ public class UserTranslationSettingPreference extends StringSetPreference
     }
 
     @SuppressWarnings("DuplicateThrows")
-    public UserTranslationSettingDTO getOfSameTypeOrDefault(@NotNull UserTranslationSettingDTO defaultIfNotFound)
+    @Nullable public UserTranslationSettingDTO getOfSameTypeOrDefault(@NotNull TranslationToken translationToken)
+            throws JsonParseException, JsonMappingException, IOException
+    {
+        UserTranslationSettingDTO defaultOne = userTranslationSettingDTOFactory.createDefaultPerType(translationToken);
+        if (defaultOne == null)
+        {
+            return null;
+        }
+        return getOfSameTypeOrDefault(defaultOne);
+    }
+
+    @SuppressWarnings("DuplicateThrows")
+    @NotNull public UserTranslationSettingDTO getOfSameTypeOrDefault(@NotNull UserTranslationSettingDTO defaultIfNotFound)
             throws JsonParseException, JsonMappingException, IOException
     {
         UserTranslationSettingDTO found = defaultIfNotFound;

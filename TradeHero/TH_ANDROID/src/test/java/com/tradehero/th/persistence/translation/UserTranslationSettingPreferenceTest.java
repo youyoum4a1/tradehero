@@ -1,7 +1,10 @@
 package com.tradehero.th.persistence.translation;
 
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.TestConstants;
+import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
+import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.io.IOException;
 import java.util.HashSet;
@@ -12,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.junit.Assume.assumeTrue;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class UserTranslationSettingPreferenceTest
@@ -59,6 +63,7 @@ public class UserTranslationSettingPreferenceTest
     }
     //</editor-fold>
 
+    //<editor-fold desc="Get of same type setting">
     @Test public void getOfSameTypeIfNoneReturnsSame() throws IOException
     {
         UserTranslationSettingDTO settingDTO = new BingUserTranslationSettingDTO("tp", true);
@@ -81,4 +86,35 @@ public class UserTranslationSettingPreferenceTest
         assertThat(found.languageCode).isEqualTo("tp");
         assertThat(found.autoTranslate).isTrue();
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Get of same type as token">
+    @Test(expected = IllegalArgumentException.class)
+    public void ifIntelliJGetOfSameTypeAsTokenNullThrowsIllegal() throws IOException
+    {
+        assumeTrue(TestConstants.IS_INTELLIJ);
+        //noinspection ConstantConditions
+        userTranslationSettingPreference.getOfSameTypeOrDefault((TranslationToken) null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void ifNotIntelliJGetOfSameTypeAsTokenNullThrowsNPE() throws IOException
+    {
+        assumeTrue(!TestConstants.IS_INTELLIJ);
+        //noinspection ConstantConditions
+        userTranslationSettingPreference.getOfSameTypeOrDefault((TranslationToken) null);
+    }
+
+    @Test public void getOfSameTypeAsTokenIfUnknownReturnsNull() throws IOException
+    {
+        assertThat(userTranslationSettingPreference.getOfSameTypeOrDefault(new TranslationToken()))
+                .isNull();
+    }
+
+    @Test public void getOfSameTypeAsTokenBing() throws IOException
+    {
+        assertThat(userTranslationSettingPreference.getOfSameTypeOrDefault(new BingTranslationToken()))
+                .isExactlyInstanceOf(BingUserTranslationSettingDTO.class);
+    }
+    //</editor-fold>
 }

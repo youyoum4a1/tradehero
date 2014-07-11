@@ -89,6 +89,12 @@ public class UserTranslationSettingDTOFactoryTest
         userTranslationSettingDTOFactory.createDefaultPerType(null);
     }
 
+    @Test public void createDefaultPerTypeUnknownReturnsNull()
+    {
+        assertThat(userTranslationSettingDTOFactory.createDefaultPerType(new TranslationToken()))
+                .isNull();
+    }
+
     @Test public void createDefaultPerTypeBing()
     {
         assertThat(userTranslationSettingDTOFactory.createDefaultPerType(new BingTranslationToken()))
