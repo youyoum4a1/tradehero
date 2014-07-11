@@ -6,6 +6,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -44,4 +45,14 @@ public class UserTranslationSettingDTO implements DTO
         this.autoTranslate = autoTranslate;
     }
     //</editor-fold>
+
+    @Override public int hashCode()
+    {
+        return getClass().hashCode();
+    }
+
+    @Override public boolean equals(@Nullable Object other)
+    {
+        return other != null && other.getClass().equals(getClass());
+    }
 }

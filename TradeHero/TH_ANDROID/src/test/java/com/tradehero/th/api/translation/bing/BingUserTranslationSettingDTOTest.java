@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ public class BingUserTranslationSettingDTOTest
 {
     @Inject ObjectMapper objectMapper;
 
+    //<editor-fold desc="De/Serialisation">
     @Test public void canSerialiseDTO() throws JsonProcessingException
     {
         UserTranslationSettingDTO settingDTO = new BingUserTranslationSettingDTO("en", true);
@@ -33,5 +36,23 @@ public class BingUserTranslationSettingDTOTest
         assertThat(settingDTO).isExactlyInstanceOf(BingUserTranslationSettingDTO.class);
         assertThat(settingDTO.languageCode).isEqualTo("de");
         assertThat(settingDTO.autoTranslate).isFalse();
+    }
+    //</editor-fold>
+
+    @Test public void canOnlyHaveFirstOnePerHashSet()
+    {
+        Set<UserTranslationSettingDTO> set = new HashSet<>();
+
+        set.add(new BingUserTranslationSettingDTO("en"));
+        assertThat(set.size()).isEqualTo(1);
+        assertThat(set.iterator().next().languageCode).isEqualTo("en");
+
+        set.add(new BingUserTranslationSettingDTO("de"));
+        assertThat(set.size()).isEqualTo(1);
+        assertThat(set.iterator().next().languageCode).isEqualTo("en");
+
+        set.add(new BingUserTranslationSettingDTO("fr"));
+        assertThat(set.size()).isEqualTo(1);
+        assertThat(set.iterator().next().languageCode).isEqualTo("en");
     }
 }
