@@ -1,7 +1,7 @@
 package com.tradehero.th.api.competition;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +14,7 @@ public class ProviderUtilTest
     private static final String TEST_URL = "http://www.tradehero.mobi";
 
     @Inject ProviderUtil providerUtil;
+    @Inject CurrentUserId currentUserId;
 
     @Test public void shouldAppendToUrlCorrectly()
     {
@@ -23,9 +24,9 @@ public class ProviderUtilTest
 
     @Test public void shoudAppendUserIdCorrectly()
     {
-        UserBaseKey userBaseKey = new UserBaseKey(10);
-        assertThat(providerUtil.appendUserId(TEST_URL, '&', userBaseKey)).isEqualTo(TEST_URL + "?&userId=10");
-        assertThat(providerUtil.appendUserId(TEST_URL, '?', userBaseKey)).isEqualTo(TEST_URL + "?userId=10");
+        currentUserId.set(10);
+        assertThat(providerUtil.appendUserId(TEST_URL, '&')).isEqualTo(TEST_URL + "?&userId=10");
+        assertThat(providerUtil.appendUserId(TEST_URL, '?')).isEqualTo(TEST_URL + "?userId=10");
     }
 
     @Test public void shoudAppendProviderIdCorrectly()

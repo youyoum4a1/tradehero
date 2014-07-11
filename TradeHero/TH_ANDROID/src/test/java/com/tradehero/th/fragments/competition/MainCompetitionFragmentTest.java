@@ -146,7 +146,7 @@ public class MainCompetitionFragmentTest
         WebView webView = competitionWebViewFragment.getWebView();
         ShadowWebView shadowWebView = shadowOf(webView);
         assertThat(webView).isNotNull();
-        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&', currentUserId.toUserBaseKey()));
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&'));
     }
 
     @Test public void shouldGoToCompetitionPortfolioAfterClickOnCompetitionPortfolio()
