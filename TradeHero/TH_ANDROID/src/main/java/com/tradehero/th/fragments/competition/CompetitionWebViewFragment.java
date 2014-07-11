@@ -63,7 +63,7 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
         String loadingUrl = super.getLoadingUrl();
         if (loadingUrl == null)
         {
-            return providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
+            return providerUtil.getLandingPage(providerId);
         }
         else
         {
