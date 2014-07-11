@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.i18n.LanguageDTO;
+import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import org.jetbrains.annotations.NotNull;
 
 public class TranslatableLanguageItemLinearView extends LinearLayout
@@ -58,6 +59,11 @@ public class TranslatableLanguageItemLinearView extends LinearLayout
     {
         viewHolder.resetViews();
         super.onDetachedFromWindow();
+    }
+
+    public void setCurrentTranslationSetting(UserTranslationSettingDTO currentTranslationSetting)
+    {
+        viewHolder.setCurrentTranslationSetting(currentTranslationSetting);
     }
 
     @Override public void display(LanguageDTO dto)

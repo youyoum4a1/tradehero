@@ -3,52 +3,69 @@
 <com.tradehero.th.fragments.translation.TranslatableLanguageItemLinearView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
     >
 
   <LinearLayout
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
+      android:orientation="vertical"
+      android:layout_weight="1"
       >
 
-    <TextView
-        android:id="@+id/translatable_text_own_language"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_small"
-        tools:text="français"
-        />
+        android:orientation="horizontal"
+        >
+
+      <TextView
+          android:id="@+id/translatable_text_own_language"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/text_small"
+          tools:text="français"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="16dp"
+          android:paddingRight="16dp"
+          android:textSize="@dimen/text_small"
+          android:text="-"
+          />
+
+      <TextView
+          android:id="@+id/translatable_text_local"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/text_small"
+          tools:text="French"
+          />
+
+    </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/translatable_text_code"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="@dimen/text_small"
-        android:text="-"
-        />
-
-    <TextView
-        android:id="@+id/translatable_text_local"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_small"
-        tools:text="French"
+        android:paddingTop="8dp"
+        android:textSize="@dimen/text_xsmall"
+        tools:text="en"
         />
 
   </LinearLayout>
 
-  <TextView
-      android:id="@+id/translatable_text_code"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="8dp"
-      android:textSize="@dimen/text_xsmall"
-      tools:text="en"
+  <ImageView
+      android:id="@+id/translatable_tick_is_current"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
+      android:src="@drawable/tick_green"
+      android:visibility="gone"
       />
 
 </com.tradehero.th.fragments.translation.TranslatableLanguageItemLinearView>

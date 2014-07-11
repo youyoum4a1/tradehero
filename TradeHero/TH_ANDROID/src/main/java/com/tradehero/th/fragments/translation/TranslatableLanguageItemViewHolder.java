@@ -7,6 +7,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.i18n.LanguageDTO;
+import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import org.jetbrains.annotations.NotNull;
 
 public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
@@ -14,7 +15,9 @@ public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
     @InjectView(R.id.translatable_text_code) protected TextView languageCode;
     @InjectView(R.id.translatable_text_local) protected  TextView languageName;
     @InjectView(R.id.translatable_text_own_language) protected TextView languageNameOwn;
+    @InjectView(R.id.translatable_tick_is_current) protected View isCurrentView;
 
+    private UserTranslationSettingDTO currentTranslationSetting;
     private LanguageDTO languageDTO;
 
     public void initViews(@NotNull View view)
@@ -25,6 +28,12 @@ public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
     public void resetViews()
     {
         ButterKnife.reset(this);
+    }
+
+    public void setCurrentTranslationSetting(UserTranslationSettingDTO currentTranslationSetting)
+    {
+        this.currentTranslationSetting = currentTranslationSetting;
+        displayIsCurrent();
     }
 
     public void display(LanguageDTO languageDTO)
@@ -47,6 +56,7 @@ public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
         displayLanguageCode();
         displayLanguageName();
         displayLanguageNameOwn();
+        displayIsCurrent();
     }
 
     public void displayLanguageCode()
@@ -91,6 +101,17 @@ public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
             {
                 languageNameOwn.setText(R.string.na);
             }
+        }
+    }
+
+    public void displayIsCurrent()
+    {
+        if (isCurrentView != null)
+        {
+            boolean isCurrent = currentTranslationSetting != null
+                    && languageDTO != null
+                    && languageDTO.code.equals(currentTranslationSetting.languageCode);
+            isCurrentView.setVisibility(isCurrent ? View.VISIBLE : View.GONE);
         }
     }
     //</editor-fold>
