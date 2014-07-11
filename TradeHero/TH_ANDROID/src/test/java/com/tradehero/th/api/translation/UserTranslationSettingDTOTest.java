@@ -1,6 +1,7 @@
 package com.tradehero.th.api.translation;
 
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,5 +32,11 @@ public class UserTranslationSettingDTOTest
 
         set.add(new FakeSettingDTO("en"));
         assertThat(set.size()).isEqualTo(2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void basicClassCannotClone()
+    {
+        new UserTranslationSettingDTO("em").cloneForLanguage(new LanguageDTO("a"));
     }
 }

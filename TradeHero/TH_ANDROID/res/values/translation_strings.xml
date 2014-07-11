@@ -2,5 +2,6 @@
 <resources>
 
   <string name="translation_error_creating_languages">There was an error creating the list of languages</string>
+  <string name="translation_error_saving_preference">There was an error saving your preference</string>
 
 </resources>

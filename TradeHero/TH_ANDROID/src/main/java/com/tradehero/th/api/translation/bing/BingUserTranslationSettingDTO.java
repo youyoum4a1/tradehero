@@ -1,5 +1,6 @@
 package com.tradehero.th.api.translation.bing;
 
+import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,4 +28,9 @@ public class BingUserTranslationSettingDTO extends UserTranslationSettingDTO
         super(languageCode, autoTranslate);
     }
     //</editor-fold>
+
+    @NotNull @Override public BingUserTranslationSettingDTO cloneForLanguage(@NotNull LanguageDTO languageDTO)
+    {
+        return new BingUserTranslationSettingDTO(languageDTO.code, autoTranslate);
+    }
 }

@@ -3,7 +3,7 @@ package com.tradehero.th.api.translation;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
+import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +45,11 @@ public class UserTranslationSettingDTO implements DTO
         this.autoTranslate = autoTranslate;
     }
     //</editor-fold>
+
+    @NotNull public UserTranslationSettingDTO cloneForLanguage(@NotNull LanguageDTO languageDTO)
+    {
+        throw new IllegalArgumentException("Not implemented");
+    }
 
     @Override public int hashCode()
     {
