@@ -80,6 +80,26 @@ import org.jetbrains.annotations.NotNull;
         super.tagEvent(event, Collections.singletonMap(key, type));
     }
 
+    public void tagEventBuySell(boolean isBuy, boolean hasComment, String lastSelectBy,
+            boolean shareToFacebook, boolean shareToTwitter, boolean shareToLinkedIn,
+            boolean shareToWeChat, boolean shareToWeibo, String symbol, Integer providerId)
+    {
+        String event = isBuy ? LocalyticsConstants.Trade_Buy : LocalyticsConstants.Trade_Sell;
+        //TODO TCAgent need send map
+        TCAgent.onEvent(context, event);
+        Map<String, String> dic = new HashMap<>();
+        dic.put(LocalyticsConstants.HAS_COMMENT_MAP_KEY, hasComment ? "1" : "0");
+        dic.put(LocalyticsConstants.LAST_SELECT_BY_MAP_KEY, lastSelectBy);
+        dic.put(LocalyticsConstants.SHARE_TO_FACEBOOK_MAP_KEY, shareToFacebook ? "1" : "0");
+        dic.put(LocalyticsConstants.SHARE_TO_TWITTER_MAP_KEY, shareToTwitter ? "1" : "0");
+        dic.put(LocalyticsConstants.SHARE_TO_LINKEDIN_MAP_KEY, shareToLinkedIn ? "1" : "0");
+        dic.put(LocalyticsConstants.SHARE_TO_WECHAT_MAP_KEY, shareToWeChat ? "1" : "0");
+        dic.put(LocalyticsConstants.SHARE_TO_WEIBO_MAP_KEY, shareToWeibo ? "1" : "0");
+        dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY, symbol);
+        dic.put(LocalyticsConstants.PROVIDER_ID_MAP_KEY, providerId.toString());
+        super.tagEvent(event, dic);
+    }
+
     public void tagEvent(String event, SecurityId securityId)
     {
         Map<String, String> dic = new HashMap<>();

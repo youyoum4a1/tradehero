@@ -110,7 +110,7 @@ import retrofit.Callback;
         BaseMiddleCallback<PortfolioDTO> middleCallback = new BaseMiddleCallback<>(
                 callback,
                 createPortfolioReceivedProcessor(ownedPortfolioId.getUserBaseKey()));
-        this.portfolioServiceAsync.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
+        portfolioServiceAsync.getPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

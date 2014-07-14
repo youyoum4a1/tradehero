@@ -40,7 +40,6 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -172,7 +171,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
@@ -194,6 +193,8 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private int mQuantity = 0;
     private Bundle desiredArguments;
+    private String mLastSelectBy;
+    private Integer mTempProviderId;
 
     protected SecurityIdList watchedList;
 
@@ -321,7 +322,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onStart()
     {
         super.onStart();
-        localyticsSession.tagEvent(LocalyticsConstants.BuySellPanel_Chart,
+        thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.BuySellPanel_Chart,
                 BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan(), securityId);
     }
 
@@ -570,6 +571,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
     {
         super.linkWith(portfolioCompactDTO, andDisplay);
+        mTempProviderId = portfolioCompactDTO.providerId;
         clampBuyQuantity(andDisplay);
         clampSellQuantity(andDisplay);
         if (andDisplay)
@@ -1330,6 +1332,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     mQuantity = progress;
                     mQuantityTextView.setText(String.valueOf(progress));
                     updateBuySellDialog();
+                    mLastSelectBy = LocalyticsConstants.Slider;
                 }
             }
         };
@@ -1573,6 +1576,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                         mBuySellDialog.dismiss();
                     }
                     socialSharePreferenceHelperNew.save();
+                    buySellReport();
                     launchBuySell();
                 }
             });
@@ -1587,6 +1591,28 @@ public class BuySellFragment extends AbstractBuySellFragment
         updateBuySellDialog();
         mBuySellDialog = builder.create();
         mBuySellDialog.show();
+    }
+
+    private void buySellReport()
+    {
+        boolean hasComment = !mCommentsEditText.getText().toString().isEmpty();
+        boolean shareToFacebook = mBtnShareFacebook == null ? false : mBtnShareFacebook.isChecked();
+        boolean shareToTwitter = mBtnShareTwitter == null ? false : mBtnShareTwitter.isChecked();
+        boolean shareToLinkedIn = mBtnShareLinkedIn.isChecked();
+        boolean shareToWeChat = mBtnShareWeChat.isChecked();
+        boolean shareToWeibo = mBtnShareWb.isChecked();
+        String symbol = securityCompactDTO.exchange;
+        if (providerId != null)
+        {
+            mTempProviderId = providerId.key;
+        }
+        else if (mTempProviderId == null)
+        {
+            mTempProviderId = 0;
+        }
+        thLocalyticsSessionLazy.get().tagEventBuySell(isTransactionTypeBuy, hasComment,
+                mLastSelectBy, shareToFacebook, shareToTwitter, shareToLinkedIn,
+                shareToWeChat, shareToWeibo, symbol, mTempProviderId);
     }
 
     private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum)
@@ -1940,7 +1966,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void trackBuyClickEvent()
     {
-        localyticsSession.tagEvent(
+        thLocalyticsSessionLazy.get().tagEvent(
                 isTransactionTypeBuy ? LocalyticsConstants.Trade_Buy
                         : LocalyticsConstants.Trade_Sell,
                 securityId);
@@ -1974,6 +2000,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 Integer selectedQuantity = isTransactionTypeBuy ? mBuyQuantity : mSellQuantity;
                 mQuantity = selectedQuantity != null ? selectedQuantity : 0;
                 updateBuySellDialog();
+                mLastSelectBy = LocalyticsConstants.MoneySelection;
             }
         };
     }
@@ -1985,7 +2012,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (providerId != null)
         {
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
-                    this.providerId.getArgs());
+                    providerId.getArgs());
         }
         getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
     }
