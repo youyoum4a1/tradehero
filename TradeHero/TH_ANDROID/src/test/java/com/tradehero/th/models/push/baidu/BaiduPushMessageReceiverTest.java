@@ -88,7 +88,7 @@ public class BaiduPushMessageReceiverTest
             baiduPushMessageReceiver.onMessage(activity, NOTIFICATION_TEST_MESSAGES[i], null);
         }
 
-        // since they are all in one roup, there should be only one notification appear on notification center, and this one has to be in inbox style
+        // since they are all in one group, there should be only one notification appear on notification center, and this one has to be in inbox style
         assertThat(shadowNotificationManager.size()).isEqualTo(1);
         Notification notification = shadowNotificationManager.getAllNotifications().get(0);
         assertThat(notification).isNotNull();
