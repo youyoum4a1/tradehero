@@ -49,7 +49,7 @@ public class SplashActivity extends SherlockActivity
     @Inject MainCredentialsPreference mainCredentialsPreference;
     @Inject Lazy<THLocalyticsSession> localyticsSession;
     @Inject Lazy<Api> tapStream;
-    @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
+    @Inject MobileAppTracker mobileAppTracker;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DTOCacheUtil dtoCacheUtil;
 
@@ -98,12 +98,9 @@ public class SplashActivity extends SherlockActivity
         localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
         AppEventsLogger.activateApp(this, facebookAppId);
-        tapStream.get().fireEvent(
-                new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
-        mobileAppTrackerLazy.get().setReferralSources(this);
-        mobileAppTrackerLazy.get().setPackageName(getPackageName()+"."+Constants.TAP_STREAM_TYPE.name());
-        //mobileAppTrackerLazy.get().setDebugMode(true);//no debug, no log by alex
-        mobileAppTrackerLazy.get().measureSession();
+        tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
+        mobileAppTracker.setReferralSources(this);
+        mobileAppTracker.measureSession();
         TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
 
         if (!Constants.RELEASE)

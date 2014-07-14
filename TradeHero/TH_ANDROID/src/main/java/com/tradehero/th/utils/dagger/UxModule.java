@@ -43,7 +43,7 @@ public class UxModule
         return Constants.RELEASE ? Constants.LOCALYTICS_APP_KEY_RELEASE : Constants.LOCALYTICS_APP_KEY_DEBUG;
     }
 
-    // localytics
+    // Localytics
     @Provides @Singleton LocalyticsSession provideLocalyticsSession(THLocalyticsSession localyticsSession)
     {
         return localyticsSession;
@@ -60,15 +60,17 @@ public class UxModule
     {
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice
-        config.setInstallEventName(context.getString(
-                Constants.TAP_STREAM_TYPE.installResId));
+        config.setInstallEventName(context.getString(Constants.TAP_STREAM_TYPE.installResId));
         return config;
     }
 
-    //MAT
-    @Provides @Singleton MobileAppTracker provideMAT(Context context)
+    // MobileAppTracker
+    @Provides @Singleton MobileAppTracker provideMobileAppTracker(Context context)
     {
         MobileAppTracker.init(context, MAT_APP_ID, MAT_APP_KEY);
-        return MobileAppTracker.getInstance();
+        MobileAppTracker mobileAppTrackerInstance = MobileAppTracker.getInstance();
+        mobileAppTrackerInstance.setPackageName(context.getPackageName() + "." + Constants.TAP_STREAM_TYPE.name());
+        mobileAppTrackerInstance.setDebugMode(!Constants.RELEASE);
+        return mobileAppTrackerInstance;
     }
 }
