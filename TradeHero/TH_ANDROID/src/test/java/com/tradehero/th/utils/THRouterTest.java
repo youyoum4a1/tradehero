@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import android.app.AlertDialog;
+import android.os.Bundle;
 import android.webkit.WebView;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
@@ -14,8 +15,10 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
+import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -36,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
+import org.robolectric.shadows.ShadowDialog;
 import org.robolectric.shadows.ShadowHandler;
 import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.ShadowWebView;
@@ -66,6 +70,10 @@ public class THRouterTest
     @After public void tearDown()
     {
         portfolioCompactListCache.invalidateAll();
+        dashboardNavigator.popFragment();
+        dashboardNavigator = null;
+
+        thRouter.setContext(null);
     }
 
     //region Timeline
@@ -231,6 +239,20 @@ public class THRouterTest
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(FriendsInvitationFragment.class);
     }
 
+    @Test public void shouldOpenHomeScreenAndPopupDialogWhenClickSingleFriendReferLink()
+    {
+        dashboardNavigator.pushFragment(AboutFragment.class, new Bundle());
+        Robolectric.getUiThreadScheduler().pause();
+
+        thRouter.open("refer-friend/fb/100000000624420");
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(HomeFragment.class);
+        assertThat(ShadowDialog.getLatestDialog()).isNotNull();
+        assertThat(ShadowDialog.getLatestDialog().isShowing()).isTrue();
+
+        Robolectric.runUiThreadTasks();
+        assertThat(ShadowDialog.getLatestDialog().isShowing()).isFalse();
+    }
+
     @Test public void shouldOpenNotificationCenter()
     {
         thRouter.open("notifications");
@@ -254,5 +276,4 @@ public class THRouterTest
         thRouter.open("trending-securities");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(TrendingFragment.class);
     }
-
 }
