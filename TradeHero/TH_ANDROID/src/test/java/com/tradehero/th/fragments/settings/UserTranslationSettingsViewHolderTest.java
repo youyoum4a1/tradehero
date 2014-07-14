@@ -90,11 +90,12 @@ public class UserTranslationSettingsViewHolderTest
         assertThat(shadowPreferenceContainer.isEnabled()).isFalse();
     }
 
-    @Test public void enabledIfHasCache()
+    @Test public void enabledIfHasCache() throws InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
 
+        Thread.sleep(200); // TODO remove this HACK
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 
