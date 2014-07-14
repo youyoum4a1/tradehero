@@ -42,7 +42,6 @@ import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -103,7 +102,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Override protected void onResume()
     {
         super.onResume();
-        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().open();
         localyticsSession.get().tagScreen(LocalyticsConstants.Login_Register);
         localyticsSession.get().tagEvent(LocalyticsConstants.LoginRegisterScreen);
         localyticsSession.get().upload();
@@ -115,7 +114,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             progressDialog.dismiss();
         }
-        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().close();
         localyticsSession.get().upload();
 
         super.onPause();

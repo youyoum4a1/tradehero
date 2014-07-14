@@ -29,7 +29,6 @@ import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
-import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
@@ -95,12 +94,16 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().open();
         localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
+
         AppEventsLogger.activateApp(this, facebookAppId);
+
         tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
+
         mobileAppTracker.setReferralSources(this);
         mobileAppTracker.measureSession();
+
         TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
 
         if (!Constants.RELEASE)
@@ -111,7 +114,7 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().close();
         localyticsSession.get().upload();
 
         super.onPause();
@@ -122,7 +125,7 @@ public class SplashActivity extends SherlockActivity
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
         localyticsSession.get().tagEvent(LocalyticsConstants.LoadingScreen);
 
-        if (firstLaunchPreference.get().booleanValue())
+        if (firstLaunchPreference.get())
         {
             ActivityHelper.launchGuide(SplashActivity.this);
             firstLaunchPreference.set(false);

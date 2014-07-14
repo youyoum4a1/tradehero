@@ -7,7 +7,10 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.ChartTimeSpanMetricsCodeFactory;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,21 +19,51 @@ import org.jetbrains.annotations.NotNull;
 @Singleton public class THLocalyticsSession extends LocalyticsSession
 {
     public static final String SECURITY_ID_FORMAT = "%s:%s";
-    @NotNull final Context context;
+
+    @NotNull private final Context context;
     @NotNull protected final ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory;
+    @NotNull private final List<String> predefineDimensions;
 
     //<editor-fold desc="Constructors">
     @Inject public THLocalyticsSession(
             @NotNull Context context,
-            @NotNull @LocalyticAppKey String appKey,
+            @NotNull @ForLocalytics String appKey,
+            @NotNull @ForLocalytics List<String> predefineDimensions,
             @NotNull ChartTimeSpanMetricsCodeFactory chartTimeSpanMetricsCodeFactory)
     {
         super(context, appKey);
         this.context = context;
+        this.predefineDimensions = predefineDimensions;
         this.chartTimeSpanMetricsCodeFactory = chartTimeSpanMetricsCodeFactory;
     }
-
     //</editor-fold>
+
+    @Override public void open()
+    {
+        super.open(predefineDimensions);
+    }
+
+    @Override public void close()
+    {
+        super.close(predefineDimensions);
+    }
+
+    @Override public void open(List<String> customDimensions)
+    {
+        super.open(mergeDimensions(customDimensions));
+    }
+
+    @Override public void close(List<String> customDimensions)
+    {
+        super.close(mergeDimensions(customDimensions));
+    }
+
+    private List<String> mergeDimensions(List<String> customDimensions)
+    {
+        List<String> dimensions = new LinkedList<>(customDimensions);
+        dimensions.addAll(predefineDimensions);
+        return Collections.unmodifiableList(dimensions);
+    }
 
     public void tagEvent(String event)
     {

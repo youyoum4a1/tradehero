@@ -55,7 +55,6 @@ import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -291,7 +290,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         launchActions();
 
-        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().open();
         localyticsSession.get().upload();
     }
 
@@ -323,7 +322,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().close();
         localyticsSession.get().upload();
 
         super.onPause();

@@ -19,12 +19,10 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -51,7 +49,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
-        localyticsSession.open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.tagScreen(LocalyticsConstants.Register_Form);
         localyticsSession.tagEvent(LocalyticsConstants.RegisterFormScreen);
         localyticsSession.tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Email);
@@ -161,8 +158,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             backButton.setOnClickListener(null);
             backButton = null;
         }
-        localyticsSession.close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
-        localyticsSession.upload();
         super.onDestroyView();
     }
 
