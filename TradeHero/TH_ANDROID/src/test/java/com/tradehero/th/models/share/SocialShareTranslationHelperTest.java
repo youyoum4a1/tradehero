@@ -11,6 +11,7 @@ import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import java.io.IOException;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,17 +23,23 @@ public class SocialShareTranslationHelperTest
 {
     @Inject TranslationTokenCache translationTokenCache;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
-    @Inject SocialShareTranslationHelper translationHelper;
+    @Inject Provider<SocialShareTranslationHelper> translationHelperProvider;
+    private SocialShareTranslationHelper translationHelper;
 
     @After public void tearDown()
     {
         translationTokenCache.invalidateAll();
         userTranslationSettingPreference.delete();
+        if (translationHelper != null)
+        {
+            translationHelper.onDetach();
+        }
     }
 
     //<editor-fold desc="Lifecycle">
     @Test public void correctLifecycle()
     {
+        translationHelper = translationHelperProvider.get();
         assertThat(translationHelper.translationTokenListener).isNotNull();
 
         translationHelper.onDetach();
@@ -45,11 +52,13 @@ public class SocialShareTranslationHelperTest
     //<editor-fold desc="Can Translate or not">
     @Test public void cannotTranslateNullDiscussion()
     {
+        translationHelper = translationHelperProvider.get();
         assertThat(translationHelper.canTranslate(null)).isFalse();
     }
 
     @Test public void cannotTranslateWhenLangNull()
     {
+        translationHelper = translationHelperProvider.get();
         assertThat(translationHelper.canTranslate(new NewsItemCompactDTO())).isFalse();
     }
 
@@ -57,6 +66,7 @@ public class SocialShareTranslationHelperTest
     {
         AbstractDiscussionCompactDTO discussion = new NewsItemCompactDTO();
         discussion.langCode = "";
+        translationHelper = translationHelperProvider.get();
         assertThat(translationHelper.canTranslate(discussion)).isFalse();
     }
 
@@ -64,19 +74,23 @@ public class SocialShareTranslationHelperTest
     {
         AbstractDiscussionCompactDTO discussion = new NewsItemCompactDTO();
         discussion.langCode = "xxx";
+        translationHelper = translationHelperProvider.get();
         assertThat(translationHelper.canTranslate(discussion)).isFalse();
     }
 
     @Test public void cannotTranslateWhenLangIsSameAsTarget()
     {
+        translationHelper = translationHelperProvider.get();
         assertThat(translationHelper.getTargetLanguage()).isEqualTo("en");
         AbstractDiscussionCompactDTO discussion = new NewsItemCompactDTO();
         discussion.langCode = "en";
+
         assertThat(translationHelper.canTranslate(discussion)).isFalse();
     }
 
     @Test public void cannotTranslateWhenNoTranslationToken()
     {
+        translationHelper = translationHelperProvider.get();
         assertThat(translationHelper.getTargetLanguage()).isEqualTo("en");
         AbstractDiscussionCompactDTO discussion = new NewsItemCompactDTO();
         discussion.langCode = "fr";
@@ -86,12 +100,13 @@ public class SocialShareTranslationHelperTest
 
     @Test public void canTranslateWhenTranslationToken()
     {
-        assertThat(translationHelper.getTargetLanguage()).isEqualTo("en");
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
-        translationHelper.fetchTranslationToken();
+        assertThat(translationTokenCache.get(new TranslationTokenKey())).isNotNull();
         AbstractDiscussionCompactDTO discussion = new NewsItemCompactDTO();
         discussion.langCode = "fr";
+        translationHelper = translationHelperProvider.get();
 
+        assertThat(translationHelper.getTargetLanguage()).isEqualTo("en");
         assertThat(translationHelper.canTranslate(discussion)).isTrue();
     }
     //</editor-fold>
@@ -101,6 +116,8 @@ public class SocialShareTranslationHelperTest
     {
         assertThat(translationTokenCache.get(new TranslationTokenKey())).isNull();
         assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(0);
+        translationHelper = translationHelperProvider.get();
+
         assertThat(translationHelper.getTargetLanguage()).isEqualTo("en");
     }
 
@@ -110,7 +127,7 @@ public class SocialShareTranslationHelperTest
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", false));
         assertThat(translationTokenCache.get(new TranslationTokenKey())).isNotNull();
         assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(1);
-        translationHelper.fetchTranslationToken();
+        translationHelper = translationHelperProvider.get();
 
         assertThat(translationHelper.getTargetLanguage()).isEqualTo("fr");
     }
@@ -121,6 +138,8 @@ public class SocialShareTranslationHelperTest
     {
         assertThat(translationTokenCache.get(new TranslationTokenKey())).isNull();
         assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(0);
+        translationHelper = translationHelperProvider.get();
+
         assertThat(translationHelper.isAutoTranslate()).isFalse();
     }
 
@@ -128,7 +147,7 @@ public class SocialShareTranslationHelperTest
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", false));
-        translationHelper.fetchTranslationToken();
+        translationHelper = translationHelperProvider.get();
 
         assertThat(translationHelper.isAutoTranslate()).isFalse();
     }
@@ -137,7 +156,7 @@ public class SocialShareTranslationHelperTest
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", true));
-        translationHelper.fetchTranslationToken();
+        translationHelper = translationHelperProvider.get();
 
         assertThat(translationHelper.isAutoTranslate()).isTrue();
     }
