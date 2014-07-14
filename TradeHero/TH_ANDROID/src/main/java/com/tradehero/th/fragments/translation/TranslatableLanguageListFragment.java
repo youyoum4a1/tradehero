@@ -33,13 +33,11 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     @Inject TranslationTokenCache translationTokenCache;
     @Inject TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
-    private TranslationToken fetchedTranslationToken;
     private UserTranslationSettingDTO currentSettings;
-    @SuppressWarnings("FieldCanBeLocal")
-    private TranslatableLanguageDTOFactory translatableLanguageDTOFactory;
     private TranslatableLanguageItemAdapter itemAdapter;
     private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> tokenFetchListener;
     @InjectView(android.R.id.list) ListView listView;
+    @InjectView(android.R.id.empty) View emptyView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -59,6 +57,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         listView.setAdapter(itemAdapter);
+        listView.setEmptyView(emptyView);
     }
 
     @Override public void onResume()
@@ -70,7 +69,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         detachTokenCache();
-        listView.setAdapter(null);
+        listView.setEmptyView(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -120,7 +119,6 @@ public class TranslatableLanguageListFragment extends DashboardFragment
 
     protected void handleTranslationTokenReceived(@NotNull TranslationToken translationToken)
     {
-        this.fetchedTranslationToken = translationToken;
         try
         {
             currentSettings = userTranslationSettingPreference.getOfSameTypeOrDefault(translationToken);
@@ -131,7 +129,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
             Timber.e(e, "Failed to pull preference %s", translationToken.getClass());
         }
         itemAdapter.setUserTranslationSettingDTO(currentSettings);
-        translatableLanguageDTOFactory = translatableLanguageDTOFactoryFactory.create(translationToken);
+        TranslatableLanguageDTOFactory translatableLanguageDTOFactory = translatableLanguageDTOFactoryFactory.create(translationToken);
         if (translatableLanguageDTOFactory == null)
         {
             THToast.show(R.string.translation_error_creating_languages);
