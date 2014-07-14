@@ -1,6 +1,7 @@
 package com.tradehero.th.api.translation;
 
 import com.tradehero.th.api.i18n.LanguageDTO;
+import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.i18n.LanguageDTOList;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,9 +10,12 @@ import org.jetbrains.annotations.NotNull;
  */
 abstract public class TranslatableLanguageDTOFactory
 {
+    @NotNull protected final LanguageDTOFactory languageDTOFactory;
+
     //<editor-fold desc="Constructors">
-    protected TranslatableLanguageDTOFactory()
+    protected TranslatableLanguageDTOFactory(@NotNull LanguageDTOFactory languageDTOFactory)
     {
+        this.languageDTOFactory = languageDTOFactory;
     }
     //</editor-fold>
 
@@ -21,7 +25,7 @@ abstract public class TranslatableLanguageDTOFactory
         String[] langCodes = getLanguageCodes();
         for (String langCode : langCodes)
         {
-            targetLanguages.add(new LanguageDTO(langCode));
+            targetLanguages.add(languageDTOFactory.createFromCode(langCode));
         }
         return targetLanguages;
     }
@@ -30,7 +34,7 @@ abstract public class TranslatableLanguageDTOFactory
 
     @NotNull public LanguageDTO getBestMatch(@NotNull String languageCode, @NotNull String fallback)
     {
-        LanguageDTO bestMatch = new LanguageDTO(fallback);
+        LanguageDTO bestMatch = languageDTOFactory.createFromCode(fallback);
         for (@NotNull LanguageDTO languageDTO : getTargetLanguages())
         {
             if (languageDTO.code.equals(languageCode))

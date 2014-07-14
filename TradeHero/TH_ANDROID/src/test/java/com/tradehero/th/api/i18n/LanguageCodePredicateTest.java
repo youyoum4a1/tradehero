@@ -2,6 +2,7 @@ package com.tradehero.th.api.i18n;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.TestConstants;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -11,6 +12,8 @@ import static org.junit.Assume.assumeTrue;
 @RunWith(RobolectricMavenTestRunner.class)
 public class LanguageCodePredicateTest
 {
+    @Inject LanguageDTOFactory languageDTOFactory;
+
     //<editor-fold desc="Constructor does not accept null language code">
     @Test(expected = IllegalArgumentException.class)
     public void ifIntelliJIllegalOnConstructNullLanguageCode()
@@ -25,7 +28,7 @@ public class LanguageCodePredicateTest
     {
         assumeTrue(!TestConstants.IS_INTELLIJ);
         //noinspection ConstantConditions
-        new LanguageCodePredicate(null).apply(new LanguageDTO("en"));
+        new LanguageCodePredicate(null).apply(languageDTOFactory.createFromCode("en"));
     }
     //</editor-fold>
 

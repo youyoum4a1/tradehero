@@ -8,6 +8,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
+import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
@@ -23,6 +24,7 @@ import timber.log.Timber;
 
 public class UserTranslationSettingsViewHolder
 {
+    @Inject LanguageDTOFactory languageDTOFactory;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
     @Inject TranslationTokenCache translationTokenCache;
     private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
@@ -140,7 +142,7 @@ public class UserTranslationSettingsViewHolder
         if (userTranslationSettingDTO != null)
         {
             translationContainer.setEnabled(true);
-            linkWith(new LanguageDTO(userTranslationSettingDTO.languageCode));
+            linkWith(languageDTOFactory.createFromCode(userTranslationSettingDTO.languageCode));
             translationAuto.setChecked(userTranslationSettingDTO.autoTranslate);
             translationAuto.setSummary(userTranslationSettingDTO.getProviderStringResId());
         }

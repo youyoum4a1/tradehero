@@ -1,10 +1,11 @@
 package com.tradehero.th.api.translation;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.api.i18n.LanguageDTO;
+import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.util.HashSet;
 import java.util.Set;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,8 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(RobolectricMavenTestRunner.class)
 public class UserTranslationSettingDTOTest
 {
+    @Inject LanguageDTOFactory languageDTOFactory;
+
     private class FakeSettingDTO extends UserTranslationSettingDTO
     {
         public FakeSettingDTO(@NotNull String languageCode)
@@ -37,7 +40,7 @@ public class UserTranslationSettingDTOTest
     @Test(expected = IllegalArgumentException.class)
     public void basicClassCannotCloneForLanguage()
     {
-        new UserTranslationSettingDTO("em").cloneForLanguage(new LanguageDTO("a"));
+        new UserTranslationSettingDTO("em").cloneForLanguage(languageDTOFactory.createFromCode("a"));
     }
 
     @Test(expected = IllegalArgumentException.class)

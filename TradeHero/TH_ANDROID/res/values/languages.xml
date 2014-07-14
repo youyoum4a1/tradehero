@@ -45,8 +45,8 @@
     <item>uk</item>
     <item>ur</item>
     <item>vi</item>
-    <item>zh-hant</item>
-    <item>zh-hans</item>
+    <item>zh-CHS</item>
+    <item>zh-CHT</item>
   </string-array>
 
 </resources>

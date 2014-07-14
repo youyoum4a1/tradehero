@@ -8,4 +8,23 @@
   <string name="translation_error_creating_languages">There was an error creating the list of languages</string>
   <string name="translation_error_saving_preference">There was an error saving your preference</string>
 
+  <string name="translation_language_known_he">Hebrew</string>
+  <string name="translation_language_known_he_own">Hebrew</string>
+  <string name="translation_language_known_ht">Haitian Creole</string>
+  <string name="translation_language_known_ht_own">Haitian Creole</string>
+  <string name="translation_language_known_id">Indonesian</string>
+  <string name="translation_language_known_id_own">Bahasa Indonesia</string>
+  <string name="translation_language_known_mww">Hmong Daw</string>
+  <string name="translation_language_known_mww_own">Hmong Daw</string>
+  <string name="translation_language_known_no">Norwegian</string>
+  <string name="translation_language_known_no_own">Norwegian</string>
+  <string name="translation_language_known_tlh">Klingon</string>
+  <string name="translation_language_known_tlh_own">Klingon</string>
+  <string name="translation_language_known_tlh_qaak">Klingon (pIqaD)</string>
+  <string name="translation_language_known_tlh_qaak_own">Klingon (pIqaD)</string>
+  <string name="translation_language_known_zh_CHS">Chinese Simplified</string>
+  <string name="translation_language_known_zh_CHS_own">Chinese Simplified</string>
+  <string name="translation_language_known_zh_CHT">Chinese Traditional</string>
+  <string name="translation_language_known_zh_CHT_own">Chinese Traditional</string>
+
 </resources>
