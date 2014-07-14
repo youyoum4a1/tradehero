@@ -35,8 +35,14 @@ public class UserTranslationSettingDTOTest
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void basicClassCannotClone()
+    public void basicClassCannotCloneForLanguage()
     {
         new UserTranslationSettingDTO("em").cloneForLanguage(new LanguageDTO("a"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void basicClassCannotCloneForAuto()
+    {
+        new UserTranslationSettingDTO("em").cloneForAuto(false);
     }
 }

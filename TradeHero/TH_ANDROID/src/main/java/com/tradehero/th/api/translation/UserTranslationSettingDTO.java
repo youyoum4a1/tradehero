@@ -51,6 +51,16 @@ public class UserTranslationSettingDTO implements DTO
         throw new IllegalArgumentException("Not implemented");
     }
 
+    @NotNull public UserTranslationSettingDTO cloneForAuto(boolean newAutoValue)
+    {
+        throw new IllegalArgumentException("Not implemented");
+    }
+
+    public int getProviderStringResId()
+    {
+        throw new IllegalArgumentException("Not implemented");
+    }
+
     @Override public int hashCode()
     {
         return getClass().hashCode();

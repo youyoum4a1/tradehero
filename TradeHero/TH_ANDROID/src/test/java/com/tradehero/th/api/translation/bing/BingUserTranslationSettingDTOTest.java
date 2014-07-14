@@ -85,5 +85,15 @@ public class BingUserTranslationSettingDTOTest
         assertThat(cloned.languageCode).isEqualTo("fr");
         assertThat(cloned.autoTranslate).isFalse();
     }
+
+    @Test public void canCloneWithAuto()
+    {
+        UserTranslationSettingDTO settingDTO = new BingUserTranslationSettingDTO("en", false);
+        UserTranslationSettingDTO cloned = settingDTO.cloneForAuto(true);
+
+        assertThat(cloned).isExactlyInstanceOf(BingUserTranslationSettingDTO.class);
+        assertThat(cloned.languageCode).isEqualTo("en");
+        assertThat(cloned.autoTranslate).isTrue();
+    }
     //</editor-fold>
 }
