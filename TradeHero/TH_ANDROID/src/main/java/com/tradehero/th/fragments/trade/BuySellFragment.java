@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -14,18 +13,14 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
@@ -38,8 +33,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -55,14 +48,12 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
@@ -93,7 +84,6 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
@@ -104,9 +94,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
@@ -1297,9 +1284,10 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
         };
 
-        BuySellDialogFragment buySellDialogFragment = BuySellDialogFragment.newInstance(securityId,
+        AbstractTransactionDialogFragment abstractTransactionDialogFragment = BuyDialogFragment.newInstance(securityId,
                 purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(), quoteDTO, isTransactionTypeBuy);
-        buySellDialogFragment.setBuySellTransactionListener(new BuySellDialogFragment.BuySellTransactionListener()
+        abstractTransactionDialogFragment.show(getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
+        abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
         {
             @Override public void onTransactionSuccessful(boolean isBuy)
             {
@@ -1314,7 +1302,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
             }
         });
-        buySellDialogFragment.show(getFragmentManager(), BuySellDialogFragment.class.getName());
+
     }
 
     public void shareToWeChat()

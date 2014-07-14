@@ -132,9 +132,11 @@ import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.fragments.timeline.UserProfileCompactViewHolder;
 import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
-import com.tradehero.th.fragments.trade.BuySellDialogFragment;
+import com.tradehero.th.fragments.trade.AbstractTransactionDialogFragment;
+import com.tradehero.th.fragments.trade.BuyDialogFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
+import com.tradehero.th.fragments.trade.SellDialogFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
@@ -218,7 +220,9 @@ import javax.inject.Singleton;
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
-                        BuySellDialogFragment.class,
+                        AbstractTransactionDialogFragment.class,
+                        BuyDialogFragment.class,
+                        SellDialogFragment.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,

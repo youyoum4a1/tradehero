@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -29,6 +31,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
@@ -53,12 +56,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class BuySellDialogFragment extends BaseDialogFragment
+public abstract class AbstractTransactionDialogFragment extends BaseDialogFragment
 {
-    private static final String KEY_SECURITY_ID = BuySellDialogFragment.class.getName() + ".security_id";
-    private static final String KEY_PORTFOLIO_ID = BuySellDialogFragment.class.getName() + ".portfolio_id";
-    private static final String KEY_QUOTE_DTO = BuySellDialogFragment.class.getName() + ".quote_dto";
-    private static final String KEY_IS_BUY = BuySellDialogFragment.class.getName() + ".is_buy";
+    protected static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
+    protected static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
+    protected static final String KEY_QUOTE_DTO = AbstractTransactionDialogFragment.class.getName() + ".quote_dto";
 
     @InjectView(R.id.dialog_stock_name) protected TextView mStockNameTextView;
     @InjectView(R.id.vtrade_value) protected TextView mTradeValueTextView;
@@ -100,37 +102,53 @@ public class BuySellDialogFragment extends BaseDialogFragment
     SocialLinkHelper socialLinkHelper;
     private ProgressDialog transactionDialog;
 
-    private SecurityId securityId;
-    private SecurityCompactDTO securityCompactDTO;
+    protected SecurityId securityId;
+    protected SecurityCompactDTO securityCompactDTO;
     private PortfolioId portfolioId;
-    private PortfolioCompactDTO portfolioCompactDTO;
-    private QuoteDTO quoteDTO;
-    private boolean isTransactionBuy; // TODO eventually remove this flag and create appropriate subclass to handle buy/sell
-    private int mQuantity;
+    protected PortfolioCompactDTO portfolioCompactDTO;
+    protected QuoteDTO quoteDTO;
+    //private boolean isTransactionBuy; // TODO eventually remove this flag and create appropriate subclass to handle buy/sell
+    //protected int mQuantity;
     private boolean isTransactionRunning;
-    private Integer mTransactionQuantity;
-    private Integer mBuyQuantity;
-    private Integer mSellQuantity;
-    private PositionDTOCompactList positionDTOCompactList;
-    private UserProfileDTO userProfileDTO;
+    protected Integer mTransactionQuantity;
+    protected PositionDTOCompactList positionDTOCompactList;
     private BuySellTransactionListener buySellTransactionListener;
 
-    private BuySellDialogFragment()
-    {
-        super();
-    }
+    protected UserProfileDTO userProfileDTO;
 
-    public static BuySellDialogFragment newInstance(SecurityId securityId, PortfolioId portfolioId, QuoteDTO quoteDTO, boolean isBuy)
+    public static AbstractTransactionDialogFragment newInstance(SecurityId securityId, PortfolioId portfolioId, QuoteDTO quoteDTO, boolean isBuy)
     {
-        BuySellDialogFragment buySellDialogFragment = new BuySellDialogFragment();
+        AbstractTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragment() : new SellDialogFragment();
         Bundle args = new Bundle();
         args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
         args.putBundle(KEY_PORTFOLIO_ID, portfolioId.getArgs());
         args.putBundle(KEY_QUOTE_DTO, quoteDTO.getArgs());
-        args.putBoolean(KEY_IS_BUY, isBuy);
-        buySellDialogFragment.setArguments(args);
-        return buySellDialogFragment;
+        abstractBuySellDialogFragment.setArguments(args);
+        return abstractBuySellDialogFragment;
     }
+
+    protected AbstractTransactionDialogFragment()
+    {
+        super();
+    }
+
+    protected abstract String getLabel();
+
+    protected abstract int getCashLeftLabelResId();
+
+    protected abstract String getCashLeft();
+
+    protected abstract Integer getMaxValue();
+
+    protected abstract boolean hasValidInfo();
+
+    protected abstract boolean isQuickButtonEnabled();
+
+    protected abstract double getQuickButtonMaxValue();
+
+    protected abstract MiddleCallback<SecurityPositionDetailDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO);
+
+    protected abstract Double getPriceCcy();
 
     protected SecurityId getSecurityId()
     {
@@ -153,11 +171,6 @@ public class BuySellDialogFragment extends BaseDialogFragment
     private QuoteDTO getBundledQuoteDTO()
     {
         return new QuoteDTO(getArguments().getBundle(KEY_QUOTE_DTO));
-    }
-
-    private boolean getBundledTransactionFlag()
-    {
-        return getArguments().getBoolean(KEY_IS_BUY);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -183,20 +196,12 @@ public class BuySellDialogFragment extends BaseDialogFragment
         securityCompactDTO = securityCompactCache.get(getSecurityId());
         portfolioCompactDTO = portfolioCompactCache.get(getPortfolioId());
         quoteDTO = getBundledQuoteDTO();
-        isTransactionBuy = getBundledTransactionFlag();
         SecurityPositionDetailDTO detailDTO = securityPositionDetailCache.get().get(this.securityId);
         if (detailDTO != null)
         {
             positionDTOCompactList = detailDTO.positions;
         }
-        if (isTransactionBuy)
-        {
-            clampBuyQuantity(true);
-        }
-        else
-        {
-            clampSellQuantity(true);
-        }
+        clampQuantity(true);
         linkWith(userProfileCache.get(currentUserId.toUserBaseKey()));
         setPublishToShareBySetting();
     }
@@ -205,27 +210,11 @@ public class BuySellDialogFragment extends BaseDialogFragment
     {
         mStockNameTextView.setText(securityCompactDTO.name);
 
-        String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
+        mStockPriceTextView.setText(String.valueOf(getLabel()));
 
-        String bPrice;
-        THSignedNumber bThSignedNumber;
-        bThSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, THSignedNumber.WITHOUT_SIGN, "");
-        bPrice = bThSignedNumber.toString();
-        String buyPriceText = getString(R.string.buy_sell_button_buy, display, bPrice);
+        mQuantityTextView.setText(String.valueOf(mTransactionQuantity));
 
-        String sPrice;
-        THSignedNumber sthSignedNumber;
-        sthSignedNumber =
-                new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
-        sPrice = sthSignedNumber.toString();
-        String sellPriceText = getString(R.string.buy_sell_button_sell, display, sPrice);
-
-        mStockPriceTextView.setText(String.valueOf(isTransactionBuy ? buyPriceText : sellPriceText));
-
-        mQuantityTextView.setText(String.valueOf(mQuantity));
-
-        mCashShareLeftLabelTextView.setText(
-                isTransactionBuy ? R.string.buy_sell_cash_left : R.string.buy_sell_share_left);
+        mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
@@ -233,9 +222,8 @@ public class BuySellDialogFragment extends BaseDialogFragment
             {
                 if (fromUser)
                 {
-                    mQuantity = progress;
-                    mQuantityTextView.setText(String.valueOf(progress));
-                    updateBuySellDialog();
+                    mTransactionQuantity = progress;
+                    updateTransactionDialog();
                 }
             }
 
@@ -249,23 +237,12 @@ public class BuySellDialogFragment extends BaseDialogFragment
 
             }
         });
-        if (isTransactionBuy)
+
+        Integer maxValue = getMaxValue();
+        if (maxValue != null)
         {
-            Integer maxPurchasableShares = getMaxPurchasableShares();
-            if (maxPurchasableShares != null)
-            {
-                mSeekBar.setMax(maxPurchasableShares);
-                mSeekBar.setEnabled(maxPurchasableShares > 0);
-            }
-        }
-        else
-        {
-            Integer maxSellableShares = getMaxSellableShares();
-            if (maxSellableShares != null)
-            {
-                mSeekBar.setMax(maxSellableShares);
-                mSeekBar.setEnabled(maxSellableShares > 0);
-            }
+            mSeekBar.setMax(maxValue);
+            mSeekBar.setEnabled(maxValue > 0);
         }
 
         mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
@@ -285,7 +262,25 @@ public class BuySellDialogFragment extends BaseDialogFragment
         });
 
         initSocialButtons();
-        updateBuySellDialog();
+        updateTransactionDialog();
+    }
+
+    protected String getValueText()
+    {
+        String valueText = "-";
+        if (quoteDTO != null)
+        {
+            Double priceRefCcy = getPriceCcy();
+            if (priceRefCcy != null && portfolioCompactDTO != null)
+            {
+                double value = mTransactionQuantity * priceRefCcy;
+                THSignedNumber thTradeValue =
+                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
+                                portfolioCompactDTO.currencyDisplay);
+                valueText = thTradeValue.toString();
+            }
+        }
+        return valueText;
     }
 
     @OnClick(R.id.dialog_btn_cancel)
@@ -311,37 +306,8 @@ public class BuySellDialogFragment extends BaseDialogFragment
         QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
         if (buttonSetCopy != null)
         {
-            if (quoteDTO == null)
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else if (isTransactionBuy && quoteDTO.ask == null)
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else if (isTransactionBuy)
-            {
-                buttonSetCopy.setEnabled(true);
-                //if (this.userProfileDTO != null && userProfileDTO.portfolio != null)
-                //{
-                buttonSetCopy.setMaxPrice(portfolioCompactDTO.cashBalance);
-                //}
-            }
-            else if ((quoteDTO.bid == null || quoteDTO.toUSDRate == null))
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else
-            {
-                buttonSetCopy.setEnabled(true);
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null)
-                {
-                    // TODO see other currencies
-                    buttonSetCopy.setMaxPrice(
-                            maxSellableShares * quoteDTO.bid * quoteDTO.toUSDRate);
-                }
-            }
+            buttonSetCopy.setEnabled(isQuickButtonEnabled());
+            buttonSetCopy.setMaxPrice(getQuickButtonMaxValue());
         }
     }
 
@@ -350,140 +316,40 @@ public class BuySellDialogFragment extends BaseDialogFragment
         THToast.show("What is the square root of fish? Yay!! Free Money!");
     }
 
-    public void updateBuySellDialog()
+    public void updateTransactionDialog()
     {
-        String valueText = "-";
-        String cashLeftText = getResources().getString(R.string.na);
-        if (quoteDTO != null)
-        {
-            Double priceRefCcy = quoteDTO.getPriceRefCcy(portfolioCompactDTO, true);
-            if (priceRefCcy != null && portfolioCompactDTO != null)
-            {
-                double value = mQuantity * priceRefCcy;
-                THSignedNumber thTradeValue =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
-                                portfolioCompactDTO.currencyDisplay);
-                valueText = thTradeValue.toString();
+        mCashShareLeftTextView.setText(getCashLeft());
+        mTradeValueTextView.setText(getValueText());
+        mQuantityTextView.setText(String.valueOf(mTransactionQuantity));
+        mSeekBar.setProgress(mTransactionQuantity);
+        mConfirm.setEnabled(mTransactionQuantity != 0 && (hasValidInfo()));
+    }
 
-                if (isTransactionBuy)
-                {
-                    double cashAvailable = portfolioCompactDTO.cashBalance;
-                    THSignedNumber thSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable - value,
-                                    THSignedNumber.WITHOUT_SIGN, portfolioCompactDTO.currencyDisplay);
-                    cashLeftText = thSignedNumber.toString();
-                }
-            }
-            if (!isTransactionBuy
-                    //&& positionDTOCompactList != null
-                    && portfolioCompactDTO != null)
-            {
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null && maxSellableShares != 0)
-                {
-                    cashLeftText = String.valueOf(maxSellableShares - mQuantity);//share left
-                }
-            }
-        }
-        if (mTradeValueTextView != null)
+    protected void clampQuantity(boolean andDisplay)
+    {
+        linkWithQuantity(mTransactionQuantity, andDisplay);
+    }
+
+    protected void linkWithQuantity(Integer quantity, boolean andDisplay)
+    {
+        this.mTransactionQuantity = clampedQuantity(quantity);
+        if(andDisplay)
         {
-            mTradeValueTextView.setText(valueText);
-        }
-        if (mQuantityTextView != null)
-        {
-            mQuantityTextView.setText(String.valueOf(mQuantity));
-        }
-        if (mCashShareLeftTextView != null)
-        {
-            mCashShareLeftTextView.setText(cashLeftText);
-        }
-        if (mSeekBar != null)
-        {
-            mSeekBar.setProgress(mQuantity);
-        }
-        if (mConfirm != null)
-        {
-            mConfirm.setEnabled(mQuantity != 0 && (
-                    (
-                            //!isTransactionRunning &&
-                            isTransactionBuy && hasValidInfoForBuy()) ||
-                            (
-                                    //!isSelling &&
-                                    !isTransactionBuy && hasValidInfoForSell())
-            ));
+            updateTransactionDialog();
         }
     }
 
-    public Integer getMaxSellableShares()
+    protected Integer clampedQuantity(Integer candidate)
     {
-        return
-                positionDTOCompactList.getMaxSellableShares(
-                        this.quoteDTO,
-                        this.portfolioCompactDTO);
-    }
-
-    public Integer getMaxPurchasableShares()
-    {
-        return portfolioCompactDTOUtil.getMaxPurchasableShares(portfolioCompactDTO, quoteDTO);
-    }
-
-    protected boolean hasValidInfoForBuy()
-    {
-        return securityId != null
-                && securityCompactDTO != null
-                && quoteDTO != null
-                && quoteDTO.ask != null;
-    }
-
-    protected boolean hasValidInfoForSell()
-    {
-        return securityId != null
-                && securityCompactDTO != null
-                && quoteDTO != null
-                && quoteDTO.bid != null;
-    }
-
-    protected void clampBuyQuantity(boolean andDisplay)
-    {
-        linkWithBuyQuantity(mBuyQuantity, andDisplay);
-    }
-
-    protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
-    {
-        this.mBuyQuantity = clampedBuyQuantity(buyQuantity);
-    }
-
-    protected Integer clampedBuyQuantity(Integer candidate)
-    {
-        Integer maxPurchasable = getMaxPurchasableShares();
-        if (candidate == null || maxPurchasable == null)
+        Integer maxTransactionValue = getMaxValue();
+        if (candidate == null || maxTransactionValue == null)
         {
-            return candidate;
+            return 0;
         }
-        return Math.min(candidate, maxPurchasable);
+        return Math.min(candidate, maxTransactionValue);
     }
 
-    protected void linkWithSellQuantity(Integer sellQuantity, boolean andDisplay)
-    {
-        this.mSellQuantity = clampedSellQuantity(sellQuantity);
-    }
-
-    protected Integer clampedSellQuantity(Integer candidate)
-    {
-        Integer maxSellable = getMaxSellableShares();
-        if (candidate == null || maxSellable == null || maxSellable == 0)
-        {
-            return candidate;
-        }
-        return Math.min(candidate, maxSellable);
-    }
-
-    protected void clampSellQuantity(boolean andDisplay)
-    {
-        linkWithSellQuantity(mSellQuantity, andDisplay);
-    }
-
-    private boolean checkValidToBuyOrSell()
+    private boolean checkValidToTransact()
     {
         return securityId != null && securityId.getExchange() != null
                 && securityId.getSecuritySymbol() != null;
@@ -493,17 +359,15 @@ public class BuySellDialogFragment extends BaseDialogFragment
     {
         detachBuySellMiddleCallback();
 
-        if (checkValidToBuyOrSell())
+        if (checkValidToTransact())
         {
-            TransactionFormDTO transactionFormDTO = getBuySellOrder(isTransactionBuy);
+            TransactionFormDTO transactionFormDTO = getBuySellOrder();
             if (transactionFormDTO != null)
             {
-                transactionDialog = progressDialogUtil.show(BuySellDialogFragment.this.getActivity(),
+                transactionDialog = progressDialogUtil.show(AbstractTransactionDialogFragment.this.getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 
-                buySellMiddleCallback = securityServiceWrapper.doTransaction(
-                        securityId, transactionFormDTO, isTransactionBuy,
-                        new BuySellCallback(isTransactionBuy));
+                buySellMiddleCallback = getTransactionMiddleCallback(transactionFormDTO);
 
                 isTransactionRunning = true;
             }
@@ -514,7 +378,7 @@ public class BuySellDialogFragment extends BaseDialogFragment
         }
     }
 
-    private TransactionFormDTO getBuySellOrder(boolean isBuy)
+    private TransactionFormDTO getBuySellOrder()
     {
         if (quoteDTO == null)
         {
@@ -544,7 +408,7 @@ public class BuySellDialogFragment extends BaseDialogFragment
                 false,
                 mCommentsEditText == null ? null : mCommentsEditText.getText().toString(),
                 quoteDTO.rawResponse,
-                mQuantity,
+                mTransactionQuantity,
                 portfolioId.key
         );
     }
@@ -780,33 +644,25 @@ public class BuySellDialogFragment extends BaseDialogFragment
                 }
                 else
                 {
-                    Double priceRefCcy =
-                            quoteDTO.getPriceRefCcy(portfolioCompactDTO, isTransactionBuy);
+                    Double priceRefCcy = getPriceCcy();
                     if (priceRefCcy == null || priceRefCcy == 0)
                     {
                         // Nothing to do
                     }
                     else
                     {
-                        if (isTransactionBuy)
-                        {
-                            linkWithBuyQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
-                        }
-                        else
-                        {
-                            linkWithSellQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
-                        }
+                        linkWithQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
                     }
                 }
 
-                Integer selectedQuantity = isTransactionBuy ? mBuyQuantity : mSellQuantity;
-                mQuantity = selectedQuantity != null ? selectedQuantity : 0;
-                updateBuySellDialog();
+                Integer selectedQuantity = mTransactionQuantity;
+                mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
+                updateTransactionDialog();
             }
         };
     }
 
-    private class BuySellCallback implements retrofit.Callback<SecurityPositionDetailDTO>
+    protected class BuySellCallback implements retrofit.Callback<SecurityPositionDetailDTO>
     {
         private final boolean isBuy;
 
@@ -839,10 +695,6 @@ public class BuySellDialogFragment extends BaseDialogFragment
             {
                 buySellTransactionListener.onTransactionSuccessful(isBuy);
             }
-            //if (pushPortfolioFragmentRunnable != null)
-            //{
-            //    pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
-            //}
         }
 
         private void onFinish()
@@ -868,6 +720,24 @@ public class BuySellDialogFragment extends BaseDialogFragment
             {
                 buySellTransactionListener.onTransactionFailed(isBuy, thException);
             }
+        }
+    }
+
+    protected class BuySellPurchaseReportedListener
+            implements PurchaseReporter.OnPurchaseReportedListener
+    {
+        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
+                UserProfileDTO updatedUserProfile)
+        {
+            //linkWith(updatedUserProfile, true);
+            //waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
+            //updateTransactionDialog();
+        }
+
+        @Override
+        public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
+                BillingException error)
+        {
         }
     }
 
