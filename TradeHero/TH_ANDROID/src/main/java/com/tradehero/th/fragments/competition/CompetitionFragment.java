@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
-import com.tradehero.route.InjectRoute;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
