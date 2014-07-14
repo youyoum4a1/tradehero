@@ -131,6 +131,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private CheckBoxPreference linkedInSharing;
     private CheckBoxPreference weiboSharing;
     private CheckBoxPreference qqSharing;
+    protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
@@ -178,6 +179,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         DaggerUtils.inject(this);
 
+        userTranslationSettingsViewHolder = new UserTranslationSettingsViewHolder();
         createSocialConnectLogInCallback();
 
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
@@ -290,6 +292,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroyView()
     {
+        userTranslationSettingsViewHolder.destroyViews();
         detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
         detachLogoutCallback();
@@ -357,6 +360,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroy()
     {
+        userTranslationSettingsViewHolder = null;
         socialConnectLogInCallback = null;
         this.currentUserProfileRetrievedMilestoneListener = null;
         this.purchaseRestorerFinishedListener = null;
@@ -611,6 +615,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
         }
+
+        // Translations
+        userTranslationSettingsViewHolder.initViews(this);
+
         // notification
         pushNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push));

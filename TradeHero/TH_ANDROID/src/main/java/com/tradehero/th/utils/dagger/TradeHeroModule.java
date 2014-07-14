@@ -100,6 +100,7 @@ import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
+import com.tradehero.th.fragments.settings.UserTranslationSettingsViewHolder;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
@@ -202,6 +203,7 @@ import javax.inject.Singleton;
                         ProfileInfoView.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
+                        UserTranslationSettingsViewHolder.class,
                         TranslatableLanguageListFragment.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
