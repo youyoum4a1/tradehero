@@ -58,14 +58,7 @@ import org.jetbrains.annotations.NotNull;
         super.close(mergeDimensions(customDimensions));
     }
 
-    private List<String> mergeDimensions(List<String> customDimensions)
-    {
-        List<String> dimensions = new LinkedList<>(customDimensions);
-        dimensions.addAll(predefineDimensions);
-        return Collections.unmodifiableList(dimensions);
-    }
-
-    public void tagEvent(String event)
+    @Override public void tagEvent(String event)
     {
         TCAgent.onEvent(context, event);
         super.tagEvent(event);
@@ -73,26 +66,18 @@ import org.jetbrains.annotations.NotNull;
 
     public void tagEventMethod(String event, String method)
     {
-        TCAgent.onEvent(context, event, method);
-        Map<String, String> dic = new HashMap<>();
-        dic.put(LocalyticsConstants.METHOD_MAP_KEY, method);
-        super.tagEvent(event, dic);
+        this.tagEventCustom(event, LocalyticsConstants.METHOD_MAP_KEY, method);
     }
 
     public void tagEventType(String event, String type)
     {
-        TCAgent.onEvent(context, event, type);
-        Map<String, String> dic = new HashMap<>();
-        dic.put(LocalyticsConstants.TYPE_MAP_KEY, type);
-        super.tagEvent(event, dic);
+        this.tagEventCustom(event, LocalyticsConstants.TYPE_MAP_KEY, type);
     }
 
     public void tagEventCustom(String event, String key, String type)
     {
         TCAgent.onEvent(context, event, type);
-        Map<String, String> dic = new HashMap<>();
-        dic.put(key, type);
-        super.tagEvent(event, dic);
+        super.tagEvent(event, Collections.singletonMap(key, type));
     }
 
     public void tagEvent(String event, SecurityId securityId)
@@ -109,15 +94,6 @@ import org.jetbrains.annotations.NotNull;
         super.tagEvent(String.format(event, chartTimeSpanMetricsCodeFactory.createCode(chartTimeSpan)), dic);
     }
 
-    private void populate(Map<String, String> dic, SecurityId securityId)
-    {
-        if (securityId != null)
-        {
-            dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY,
-                    String.format(SECURITY_ID_FORMAT, securityId.getExchange(), securityId.getSecuritySymbol()));
-        }
-    }
-
     public void tagEvent(String event, TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
         Map<String, String> dic = new HashMap<>();
@@ -131,5 +107,21 @@ import org.jetbrains.annotations.NotNull;
         {
             dic.put(LocalyticsConstants.TRENDING_FILTER_CATEGORY_MAP_KEY, trendingFilterTypeDTO.getTrackEventCategory());
         }
+    }
+
+    private void populate(Map<String, String> dic, SecurityId securityId)
+    {
+        if (securityId != null)
+        {
+            dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY,
+                    String.format(SECURITY_ID_FORMAT, securityId.getExchange(), securityId.getSecuritySymbol()));
+        }
+    }
+
+    private List<String> mergeDimensions(List<String> customDimensions)
+    {
+        List<String> dimensions = new LinkedList<>(customDimensions);
+        dimensions.addAll(predefineDimensions);
+        return Collections.unmodifiableList(dimensions);
     }
 }
