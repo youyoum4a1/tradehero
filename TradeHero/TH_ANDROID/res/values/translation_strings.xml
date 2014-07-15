@@ -2,7 +2,7 @@
 <resources>
 
   <!-- We cannot have %3$s - %2$s as it returns weird results on right-to-left languages -->
-  <string name="translation_preferred_language_summary">%2$s - %3$s (%1$s)</string>
+  <string name="translation_preferred_language_summary" translatable="false">%2$s - %3$s (%1$s)</string>
   <string name="translation_provided_by_bing">Provided by Bing</string>
 
   <string name="translation_error_creating_languages">There was an error creating the list of languages</string>
