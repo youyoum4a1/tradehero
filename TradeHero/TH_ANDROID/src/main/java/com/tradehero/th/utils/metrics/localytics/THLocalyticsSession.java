@@ -60,23 +60,26 @@ import org.jetbrains.annotations.NotNull;
 
     @Override public void tagEvent(String event)
     {
-        TCAgent.onEvent(context, event);
         super.tagEvent(event);
+    }
+
+    @Override public void tagEvent(String event, Map<String, String> attributes)
+    {
+        super.tagEvent(event, attributes);
     }
 
     public void tagEventMethod(String event, String method)
     {
-        this.tagEventCustom(event, LocalyticsConstants.METHOD_MAP_KEY, method);
+        this.tagSingleEvent(event, LocalyticsConstants.METHOD_MAP_KEY, method);
     }
 
     public void tagEventType(String event, String type)
     {
-        this.tagEventCustom(event, LocalyticsConstants.TYPE_MAP_KEY, type);
+        this.tagSingleEvent(event, LocalyticsConstants.TYPE_MAP_KEY, type);
     }
 
-    public void tagEventCustom(String event, String key, String type)
+    public void tagSingleEvent(String event, String key, String type)
     {
-        TCAgent.onEvent(context, event, type);
         super.tagEvent(event, Collections.singletonMap(key, type));
     }
 

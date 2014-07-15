@@ -907,7 +907,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
-            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Profile);
+            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen,
+                    LocalyticsConstants.Profile);
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -963,7 +964,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 linkWith(currentUserProfileDTO, true);
             }
             updateBottomButton();
-            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Profile);
+            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen,
+                    LocalyticsConstants.Profile);
         }
     }
 
@@ -974,7 +976,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             pushPrivateMessageFragment();
-            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Profile);
+            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen,
+                    LocalyticsConstants.Profile);
         }
     }
 

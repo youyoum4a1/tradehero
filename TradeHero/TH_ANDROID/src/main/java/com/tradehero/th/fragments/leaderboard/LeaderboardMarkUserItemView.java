@@ -557,7 +557,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             alertDialogUtilLazy.get().dismissProgressDialog();
             LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Leaderboard);
+            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen,
+                    LocalyticsConstants.Leaderboard);
         }
 
         @Override public void failure(RetrofitError retrofitError)

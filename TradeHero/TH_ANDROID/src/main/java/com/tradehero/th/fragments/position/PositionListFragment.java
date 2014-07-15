@@ -847,7 +847,8 @@ public class PositionListFragment
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             displayHeaderView();
             fetchSimplePage(true);
-            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.PositionList);
+            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen,
+                    LocalyticsConstants.PositionList);
         }
     }
 

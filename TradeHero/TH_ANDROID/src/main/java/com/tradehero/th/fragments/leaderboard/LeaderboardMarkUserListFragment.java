@@ -374,7 +374,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
-            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.PremiumFollow_Success,
+            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.PremiumFollow_Success,
                     LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Leaderboard);
         }
     }
