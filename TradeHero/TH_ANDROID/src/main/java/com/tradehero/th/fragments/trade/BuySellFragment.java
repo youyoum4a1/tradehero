@@ -1602,11 +1602,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         boolean shareToWeChat = mBtnShareWeChat.isChecked();
         boolean shareToWeibo = mBtnShareWb.isChecked();
         String symbol = securityCompactDTO.exchange;
-        if (providerId != null)
-        {
-            mTempProviderId = providerId.key;
-        }
-        else if (mTempProviderId == null)
+        if (mTempProviderId == null)
         {
             mTempProviderId = 0;
         }
