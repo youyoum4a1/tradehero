@@ -32,8 +32,9 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
 
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @InjectView(R.id.search_empty_container) View searchEmptyContainer;
     @InjectView(R.id.search_empty_textview) View searchEmptyTextView;
@@ -517,7 +518,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
                     securityItemViewAdapter.clear();
                 }
             }
-            localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
         }
 
         @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)

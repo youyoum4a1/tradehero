@@ -50,8 +50,9 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import javax.inject.Inject;
@@ -88,7 +89,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
-    @Inject Lazy<THLocalyticsSession> localyticsSessionLazy;
+    @Inject Analytics analytics;
 
     public LeaderboardFriendsItemView(Context context)
     {
@@ -348,11 +349,11 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             if (userFriendsDTO instanceof UserFriendsLinkedinDTO)
             {
-                localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Linkedin);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Linkedin));
             }
             else
             {
-                localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Twitter);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Twitter));
             }
             InviteFormDTO inviteFriendForm = new InviteFormDTO();
             inviteFriendForm.users = new ArrayList<>();
@@ -365,7 +366,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
-            localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Facebook);
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
             if (Session.getActiveSession() == null)
             {
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),

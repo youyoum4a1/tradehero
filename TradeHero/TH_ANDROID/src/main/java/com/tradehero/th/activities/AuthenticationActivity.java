@@ -38,8 +38,10 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.WeiboUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -66,7 +68,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
-    @Inject Lazy<THLocalyticsSession> localyticsSession;
+    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject CredentialsDTOFactory credentialsDTOFactory;
@@ -102,10 +104,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     @Override protected void onResume()
     {
         super.onResume();
-        localyticsSession.get().open();
-        localyticsSession.get().tagScreen(LocalyticsConstants.Login_Register);
-        localyticsSession.get().tagEvent(LocalyticsConstants.LoginRegisterScreen);
-        localyticsSession.get().upload();
+        analytics.openSession();
+        analytics.tagScreen(AnalyticsConstants.Login_Register);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
     }
 
     @Override protected void onPause()
@@ -114,8 +115,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         {
             progressDialog.dismiss();
         }
-        localyticsSession.get().close();
-        localyticsSession.get().upload();
+        analytics.closeSession();
 
         super.onPause();
     }
@@ -277,7 +277,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
     private LogInCallback createCallbackForEmailSign(final AuthenticationMode authenticationMode)
     {
         final boolean isSigningUp = authenticationMode == AuthenticationMode.SignUp;
-        return new SocialAuthenticationCallback(LocalyticsConstants.Email)
+        return new SocialAuthenticationCallback(AnalyticsConstants.Email)
         {
             private final boolean signingUp = isSigningUp;
 
@@ -300,43 +300,42 @@ public class AuthenticationActivity extends SherlockFragmentActivity
      */
     public void authenticateWithWeibo()
     {
-        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.WeiBo);
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.WeiBo));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_weibo);
-        weiboUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.WeiBo));
+        weiboUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.WeiBo));
     }
 
     public void authenticateWithQQ()
     {
-        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.QQ);
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.QQ));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_qq);
-        qqUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.QQ));
+        qqUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.QQ));
     }
 
     public void authenticateWithLinkedIn()
     {
-        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Linkedin);
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Linkedin));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_linkedin);
-        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.Linkedin));
+        linkedInUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Linkedin));
     }
 
     public void authenticateWithFacebook()
     {
-        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap,
-                LocalyticsConstants.Facebook);
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Facebook));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_connecting_to_facebook);
-        facebookUtils.get().logIn(this, new SocialAuthenticationCallback(LocalyticsConstants.Facebook));
+        facebookUtils.get().logIn(this, new SocialAuthenticationCallback(AnalyticsConstants.Facebook));
     }
 
     public void authenticateWithTwitter()
     {
-        localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Twitter);
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Twitter));
         progressDialog = progressDialogUtil.show(this, R.string.alert_dialog_please_wait, R.string.authentication_twitter_connecting);
         twitterUtils.get().logIn(this, createTwitterAuthenticationCallback());
     }
 
     private SocialAuthenticationCallback createTwitterAuthenticationCallback()
     {
-        return new SocialAuthenticationCallback(LocalyticsConstants.Twitter)
+        return new SocialAuthenticationCallback(AnalyticsConstants.Twitter)
         {
             @Override public boolean isSigningUp()
             {
@@ -382,7 +381,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             {
                 if (user != null)
                 {
-                    localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Success, LocalyticsConstants.Twitter);
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, AnalyticsConstants.Twitter));
                     launchDashboard(user);
                     finish();
                 }
@@ -436,7 +435,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             Response response;
             if (user != null)
             {
-                localyticsSession.get().tagEventMethod(LocalyticsConstants.SignUp_Success, providerName);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Success, providerName));
                 launchDashboard(user);
             }
             else if ((cause = ex.getCause()) != null && cause instanceof RetrofitError &&
@@ -457,7 +456,7 @@ public class AuthenticationActivity extends SherlockFragmentActivity
             if (!isSigningUp())
             {
                 // HACK
-                if (!LocalyticsConstants.Email.equals(providerName))
+                if (!AnalyticsConstants.Email.equals(providerName))
                 {
                     progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), providerName));
                 }

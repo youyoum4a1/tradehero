@@ -11,15 +11,16 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @InjectView(R.id.leaderboard_filter_monthly_activity_container) protected LeaderboardFilterValueSlider minMonthlyActivityView;
     @InjectView(R.id.leaderboard_filter_win_ratio_container) protected LeaderboardFilterValueSlider minWinRatioView;
@@ -63,7 +64,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
             @Override public void onClick(View view)
             {
                 setParameters(getStartingFilter(getResources(), perPagedFilteredLeaderboardKey.key), leaderboardDTO);
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterReset);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterReset));
             }
         });
         displayPerPagedFilteredLeaderboardKey();

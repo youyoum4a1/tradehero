@@ -4,19 +4,19 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.ActivityUtil;
+import com.tradehero.th.utils.metrics.Analytics;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class THIABPurchaseRestorerAlertUtil extends THIABAlertDialogUtil
 {
-    @Inject public THIABPurchaseRestorerAlertUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache)
+    @Inject public THIABPurchaseRestorerAlertUtil(Analytics analytics, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache)
     {
-        super(localyticsSession, activityUtil, thiabPurchaseCache);
+        super(analytics, activityUtil, thiabPurchaseCache);
     }
 
     @Deprecated // TODO user list of exceptions

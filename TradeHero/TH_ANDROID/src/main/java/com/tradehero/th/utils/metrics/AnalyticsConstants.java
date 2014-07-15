@@ -1,6 +1,6 @@
-package com.tradehero.th.utils.metrics.localytics;
+package com.tradehero.th.utils.metrics;
 
-public class LocalyticsConstants
+public class AnalyticsConstants
 {
     public static final String AppLaunch = "AppLaunch";
     public static final String TabBar_Me = "TabBar/Me";
@@ -127,15 +127,8 @@ public class LocalyticsConstants
 
     //public static final String CHANNEL_MAP_KEY = "channel";
     public static final String HAS_COMMENT_MAP_KEY = "hasComment";//
-    public static final String LAST_SELECT_BY_MAP_KEY = "lastSelectBy";//
-    public static final String METHOD_MAP_KEY = "method";
+    public static final String PRICE_SELECT_METHOD = "lastSelectBy";//
     public static final String PROVIDER_ID_MAP_KEY = "providerId";//
     public static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
-    public static final String SHARE_TO_FACEBOOK_MAP_KEY = "shareToFacebook";//
-    public static final String SHARE_TO_LINKEDIN_MAP_KEY = "shareToLinkedIn";//
-    public static final String SHARE_TO_TWITTER_MAP_KEY = "shareToTwitter";//
-    public static final String SHARE_TO_WECHAT_MAP_KEY = "shareToWeChat";//
-    public static final String SHARE_TO_WEIBO_MAP_KEY = "shareToWeibo";//
     public static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
-    public static final String TYPE_MAP_KEY = "type";
 }

@@ -73,8 +73,9 @@ import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.dagger.ForPicasso;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -114,7 +115,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
@@ -305,7 +306,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Settings));
         if (socialNetworkToConnectTo != null)
         {
             changeSharing(socialNetworkToConnectTo, true);
@@ -952,7 +953,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleFaqClicked()
     {
-        localyticsSession.tagEvent(LocalyticsConstants.Settings_FAQ);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_FAQ));
 
         String faqUrl = getResources().getString(R.string.th_faq_url);
         Bundle bundle = new Bundle();

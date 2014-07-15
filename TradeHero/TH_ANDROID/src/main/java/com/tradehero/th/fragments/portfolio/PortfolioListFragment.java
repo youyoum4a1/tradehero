@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
@@ -19,8 +18,9 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -37,7 +37,7 @@ public class PortfolioListFragment extends DashboardFragment
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
 
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -98,7 +98,7 @@ public class PortfolioListFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Portfolio);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Portfolio));
 
         displayProgress(true);
         displayablePortfolioFetchAssistant.fetch(getUserBaseKeys());
