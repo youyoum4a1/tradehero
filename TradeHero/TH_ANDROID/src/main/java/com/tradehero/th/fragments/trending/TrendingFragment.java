@@ -445,8 +445,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
     {
-        localyticsSession.tagEvent(LocalyticsConstants.TrendingStock,
-                securityCompactDTO.getSecurityId());
+        localyticsSession.tagTrendingStock(securityCompactDTO.getSecurityId());
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
 

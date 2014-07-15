@@ -322,8 +322,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onStart()
     {
         super.onStart();
-        thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.BuySellPanel_Chart,
-                BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan(), securityId);
+        thLocalyticsSessionLazy.get().tagChartTimeEvent(BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan(), securityId);
     }
 
     @Override public void onResume()

@@ -113,22 +113,30 @@ import org.jetbrains.annotations.NotNull;
     public void tagBuySellEvent(boolean isTransactionTypeBuy, SecurityId securityId)
     {
         Map<String, String> dic = new HashMap<>();
+        populate(dic, securityId);
+        super.tagEvent(isTransactionTypeBuy ? LocalyticsConstants.Trade_Buy : LocalyticsConstants.Trade_Sell, dic);
+    }
+
+    private void populate(Map<String, String> dic, SecurityId securityId)
+    {
         if (securityId != null)
         {
             dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY,
                     String.format(SECURITY_ID_FORMAT, securityId.getExchange(), securityId.getSecuritySymbol()));
         }
-        super.tagEvent(isTransactionTypeBuy ? LocalyticsConstants.Trade_Buy : LocalyticsConstants.Trade_Sell, dic);
+    }
+
+    public void tagTrendingStock(SecurityId securityId)
+    {
+        Map<String, String> dic = new HashMap<>();
+        populate(dic, securityId);
+        super.tagEvent(LocalyticsConstants.TrendingStock, dic);
     }
 
     public void tagChartTimeEvent(ChartTimeSpan chartTimeSpan, SecurityId securityId)
     {
         Map<String, String> dic = new HashMap<>();
-        if (securityId != null)
-        {
-            dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY,
-                    String.format(SECURITY_ID_FORMAT, securityId.getExchange(), securityId.getSecuritySymbol()));
-        }
+        populate(dic, securityId);
         super.tagEvent(String.format(LocalyticsConstants.PickChart, chartTimeSpanMetricsCodeFactory.createCode(chartTimeSpan)), dic);
     }
 
