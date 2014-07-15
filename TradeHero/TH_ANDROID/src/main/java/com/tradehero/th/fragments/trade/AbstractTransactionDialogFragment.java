@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
@@ -93,7 +94,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
     @Inject Lazy<SecurityPositionDetailCache> securityPositionDetailCache;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject AlertDialogUtil alertDialogUtil;
@@ -101,14 +101,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     SocialLinkHelper socialLinkHelper;
     private ProgressDialog transactionDialog;
+    private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     private PortfolioId portfolioId;
     protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
-    //private boolean isTransactionBuy; // TODO eventually remove this flag and create appropriate subclass to handle buy/sell
-    //protected int mQuantity;
     private boolean isTransactionRunning;
     protected Integer mTransactionQuantity;
     protected PositionDTOCompactList positionDTOCompactList;
@@ -136,7 +135,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     protected abstract int getCashLeftLabelResId();
 
-    protected abstract String getCashLeft();
+    public abstract String getCashLeft();
 
     protected abstract Integer getMaxValue();
 
@@ -265,7 +264,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         updateTransactionDialog();
     }
 
-    protected String getValueText()
+    public String getValueText()
     {
         String valueText = "-";
         if (quoteDTO != null)
@@ -283,6 +282,31 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return valueText;
     }
 
+    public Integer getQuantity()
+    {
+        return mTransactionQuantity;
+    }
+
+    public QuickPriceButtonSet getQuickPriceButtonSet()
+    {
+        return mQuickPriceButtonSet;
+    }
+
+    public EditText getCommentView()
+    {
+        return mCommentsEditText;
+    }
+
+    public SeekBar getSeekBar()
+    {
+        return mSeekBar;
+    }
+
+    public Button getConfirmButton()
+    {
+        return mConfirm;
+    }
+
     @OnClick(R.id.dialog_btn_cancel)
     public void onCancelClicked(View v)
     {
@@ -294,6 +318,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         socialSharePreferenceHelperNew.save();
         launchBuySell();
+    }
+
+    @VisibleForTesting
+    public void setTransactionQuantity(Integer quantity)
+    {
+        this.mTransactionQuantity = quantity;
+        updateTransactionDialog();
     }
 
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
@@ -333,7 +364,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected void linkWithQuantity(Integer quantity, boolean andDisplay)
     {
         this.mTransactionQuantity = clampedQuantity(quantity);
-        if(andDisplay)
+        if (andDisplay)
         {
             updateTransactionDialog();
         }
@@ -559,14 +590,21 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         this.userProfileDTO = updatedUserProfileDTO;
     }
 
-    @Override public void onDestroyView()
+    @Override public void onDestroy()
     {
-        super.onDestroyView();
         securityCompactDTO = null;
         portfolioCompactDTO = null;
         quoteDTO = null;
+        positionDTOCompactList = null;
+        super.onDestroy();
+    }
+
+    @Override public void onDestroyView()
+    {
+        transactionDialog = null;
         detachBuySellMiddleCallback();
         detachSocialLinkHelper();
+        super.onDestroyView();
     }
 
     private CompoundButton.OnCheckedChangeListener createCheckedChangeListenerForWechat()

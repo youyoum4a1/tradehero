@@ -32,7 +32,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
         return R.string.buy_sell_cash_left;
     }
 
-    @Override protected String getCashLeft()
+    @Override public String getCashLeft()
     {
         String cashLeftText = getResources().getString(R.string.na);
         if (quoteDTO != null)

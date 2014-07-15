@@ -4,6 +4,8 @@ import dagger.Module;
 
 @Module(
         injects = {
+                AbstractTransactionDialogFragmentTest.class,
+                BuyDialogFragmentTest.class,
         },
         complete = false,
         library = true
