@@ -1,5 +1,7 @@
 package com.tradehero.th.utils.metrics.talkingdata;
 
+import android.content.Context;
+import com.tendcloud.tenddata.TCAgent;
 import com.tradehero.th.utils.metrics.AnalyticsAdapter;
 import com.tradehero.th.utils.metrics.events.AnalyticsEvent;
 import java.util.Set;
@@ -10,9 +12,11 @@ import javax.inject.Singleton;
 public class TalkingDataAdapter
     implements AnalyticsAdapter
 {
-    @Inject public TalkingDataAdapter()
+    private final Context context;
+
+    @Inject public TalkingDataAdapter(Context context)
     {
-        super();
+        this.context = context;
     }
 
     @Override public void open(Set<String> customDimensions)
@@ -27,7 +31,8 @@ public class TalkingDataAdapter
 
     @Override public void addEvent(AnalyticsEvent analyticsEvent)
     {
-        // TODO
+        /** second string is a tag **/
+        TCAgent.onEvent(context, analyticsEvent.getName(), "", analyticsEvent.getAttributes());
     }
 
     @Override public void tagScreen(String screenName)
