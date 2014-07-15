@@ -82,6 +82,7 @@ public class Analytics
         {
             doAction(action);
         }
+        closeSession();
     }
 
     /** Functional programming can cure this pain **/

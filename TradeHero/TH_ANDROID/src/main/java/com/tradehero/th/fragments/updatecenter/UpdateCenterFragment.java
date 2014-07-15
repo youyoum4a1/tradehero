@@ -18,10 +18,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -38,8 +38,9 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -56,7 +57,7 @@ public class UpdateCenterFragment extends DashboardFragment
 
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject MessageHeaderListCache messageListCache;
     @Inject MessageHeaderCache messageHeaderCache;
@@ -147,7 +148,7 @@ public class UpdateCenterFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case R.id.menu_private:
-                localyticsSession.tagEvent(AnalyticsConstants.Notification_New_Message);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Message));
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
                         .pushFragment(AllRelationsFragment.class);
                 return true;
@@ -201,7 +202,7 @@ public class UpdateCenterFragment extends DashboardFragment
 
     private void jumpToSendBroadcastMessage()
     {
-        localyticsSession.tagEvent(AnalyticsConstants.Notification_New_Broadcast);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Broadcast));
         Bundle args = new Bundle();
         args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
                 DiscussionType.BROADCAST_MESSAGE.value);

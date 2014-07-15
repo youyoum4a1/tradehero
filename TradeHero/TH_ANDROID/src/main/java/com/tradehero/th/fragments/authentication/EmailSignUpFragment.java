@@ -21,8 +21,10 @@ import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -42,16 +44,16 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private EditText emailEditText;
     private ImageView backButton;
 
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
-        localyticsSession.tagScreen(AnalyticsConstants.Register_Form);
-        localyticsSession.tagEvent(AnalyticsConstants.RegisterFormScreen);
-        localyticsSession.tagEventMethod(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email);
+        analytics.tagScreen(AnalyticsConstants.Register_Form);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
+        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
     }
 
     @Override public int getDefaultViewId()

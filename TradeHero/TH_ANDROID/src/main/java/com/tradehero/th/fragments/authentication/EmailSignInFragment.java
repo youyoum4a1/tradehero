@@ -24,12 +24,12 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 
@@ -44,7 +44,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject Lazy<THLocalyticsSession> localyticsSession;
+    @Inject Analytics analytics;
 
     protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
 
@@ -52,8 +52,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
-        localyticsSession.get().tagScreen(AnalyticsConstants.Login_Form);
-        localyticsSession.get().tagEvent(AnalyticsConstants.LoginFormScreen);
+        analytics.tagScreen(AnalyticsConstants.Login_Form);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

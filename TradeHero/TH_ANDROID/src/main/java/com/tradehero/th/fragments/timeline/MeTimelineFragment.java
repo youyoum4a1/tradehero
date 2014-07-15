@@ -14,8 +14,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -27,7 +28,7 @@ public class MeTimelineFragment extends TimelineFragment
     implements WithTutorial
 {
     @Inject protected CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -41,7 +42,7 @@ public class MeTimelineFragment extends TimelineFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(AnalyticsConstants.TabBar_Me);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,

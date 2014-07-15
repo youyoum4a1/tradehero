@@ -14,8 +14,9 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +25,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE = LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";
 
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject LeaderboardCache leaderboardCache;
     @InjectView(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
 
@@ -81,11 +82,11 @@ public class LeaderboardFilterFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                localyticsSession.tagEvent(AnalyticsConstants.Leaderboard_FilterReset);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterReset));
                 break;
 
             case R.id.btn_leaderboard_filter_confirm:
-                localyticsSession.tagEvent(AnalyticsConstants.Leaderboard_FilterDone);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterDone));
                 returnToLeaderboard();
                 break;
         }
@@ -96,7 +97,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(AnalyticsConstants.Leaderboard_FilterShow);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterShow));
     }
 
     @Override public void onPause()

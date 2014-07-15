@@ -62,8 +62,9 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +90,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
-    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
+    @Inject Analytics analytics;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject MessageThreadHeaderCache messageThreadHeaderCache;
@@ -907,8 +908,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
-            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.FollowedFromScreen,
-                    AnalyticsConstants.Profile);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Profile));
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -964,8 +964,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 linkWith(currentUserProfileDTO, true);
             }
             updateBottomButton();
-            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.FollowedFromScreen,
-                    AnalyticsConstants.Profile);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
         }
     }
 
@@ -976,8 +975,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             pushPrivateMessageFragment();
-            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.FollowedFromScreen,
-                    AnalyticsConstants.Profile);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
         }
     }
 

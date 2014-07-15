@@ -25,8 +25,10 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
@@ -44,7 +46,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userCache;
     @Inject Picasso picasso;
-    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
+    @Inject Analytics analytics;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -115,7 +117,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
      */
     public void showFollowDialog()
     {
-        thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Positions_Follow);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
         detachFollowDialogCombo();
         followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
@@ -179,8 +181,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
-            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.FollowedFromScreen,
-                    AnalyticsConstants.PositionList);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.PositionList));
         }
 
         @Override public void failure(RetrofitError retrofitError)

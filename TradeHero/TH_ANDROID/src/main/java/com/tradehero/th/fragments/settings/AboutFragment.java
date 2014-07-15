@@ -16,8 +16,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.staff.StaffDTO;
 import com.tradehero.th.models.staff.StaffDTOFactory;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 
 public class AboutFragment extends DashboardFragment
@@ -25,7 +26,7 @@ public class AboutFragment extends DashboardFragment
     @InjectView(R.id.main_content_wrapper) View mainContentWrapper;
     @InjectView(R.id.staff_list_holder) LinearLayout staffList;
 
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject StaffDTOFactory staffDTOFactory;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -69,7 +70,7 @@ public class AboutFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(AnalyticsConstants.Settings_About);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_About));
 
         AnimationSet set = new AnimationSet(false);
 

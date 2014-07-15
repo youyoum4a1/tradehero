@@ -43,8 +43,10 @@ import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.utils.metrics.events.TypeEvent;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -86,7 +88,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
-    @Inject THLocalyticsSession thLocalyticsSession;
+    @Inject Analytics analytics;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -101,7 +103,7 @@ public class SendMessageFragment extends DashboardFragment
         middleCallbackSendMessages = new ArrayList<>();
 
         Timber.d("onCreate messageType:%s,discussionType:%s", messageType, discussionType);
-        thLocalyticsSession.tagEvent(AnalyticsConstants.MessageComposer_Show);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.MessageComposer_Show));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -456,8 +458,7 @@ public class SendMessageFragment extends DashboardFragment
             dismissDialog(progressDialog);
             invalidateMessageCache();
             THToast.show(getActivity().getString(R.string.broadcast_success));
-            thLocalyticsSession.tagEventType(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource);
-            thLocalyticsSession.upload();
+            analytics.addEvent(new TypeEvent(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource));
             //TODO close me?
             closeMe();
         }

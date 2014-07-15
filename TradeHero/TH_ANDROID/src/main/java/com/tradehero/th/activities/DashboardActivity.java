@@ -53,7 +53,7 @@ import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
@@ -86,7 +86,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     //@Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject Lazy<THLocalyticsSession> localyticsSession;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
@@ -96,12 +95,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject ResideMenu resideMenu;
 
     @Inject THRouter thRouter;
-
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
+    @Inject Analytics analytics;
 
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ProgressDialog progressDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -290,8 +289,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         launchActions();
 
-        localyticsSession.get().open();
-        localyticsSession.get().upload();
+        analytics.openSession();
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -322,9 +320,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close();
-        localyticsSession.get().upload();
-
+        analytics.closeSession();
         super.onPause();
     }
 

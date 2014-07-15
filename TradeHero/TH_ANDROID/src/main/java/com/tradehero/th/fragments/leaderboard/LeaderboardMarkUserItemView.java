@@ -47,8 +47,10 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -68,7 +70,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
+    @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -416,7 +418,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         // volatility
         String volatilityFormat = getContext().getString(R.string.leaderboard_volatility);
-        String volatility = String.format(volatilityFormat, leaderboardItem.getVolatility());
+        String volatility = String.format(volatilityFormat, leaderboardItem.getVolatility().floatValue());
         lbmuVolatility.setText(Html.fromHtml(volatility));
 
         // number of positions holding
@@ -514,17 +516,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 // TODO right now the icon is gone
                 break;
             case R.id.leaderboard_user_item_open_profile:
-                thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Leaderboard_Profile);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
                 handleOpenProfileButtonClicked();
                 break;
 
             case R.id.leaderboard_user_item_open_positions_list:
-                thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Leaderboard_Positions);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
                 handleOpenPositionListClicked();
                 break;
 
             case R.id.leaderboard_user_item_follow:
-                thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Leaderboard_Follow);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
                 detachFollowDialogCombo();
                 followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER,
@@ -557,8 +559,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             alertDialogUtilLazy.get().dismissProgressDialog();
             LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.FollowedFromScreen,
-                    AnalyticsConstants.Leaderboard);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
         }
 
         @Override public void failure(RetrofitError retrofitError)

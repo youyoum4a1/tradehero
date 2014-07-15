@@ -16,6 +16,8 @@ import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +40,7 @@ abstract public class BillingAlertDialogUtil<
 {
     protected LocalyticsSession localyticsSession;
     public ActivityUtil activityUtil;
+    private Analytics analytics;
 
     public BillingAlertDialogUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil)
     {
@@ -111,7 +114,7 @@ abstract public class BillingAlertDialogUtil<
         List<THProductDetailType> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailAdapter.setItems(desiredSkuDetails);
 
-        localyticsSession.tagEvent(skuDomain.localyticsShowTag);
+        analytics.addEvent(new SimpleEvent(skuDomain.localyticsShowTag));
 
         return popBuyDialog(requestCode, activity, detailAdapter, titleResId, clickListener);
     }

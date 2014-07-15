@@ -49,8 +49,9 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +75,7 @@ public class InviteFriendFragment extends DashboardFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     private FriendListAdapter referFriendListAdapter;
@@ -316,7 +317,7 @@ public class InviteFriendFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(AnalyticsConstants.Referrals_Settings);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Referrals_Settings));
 
         getProgressDialog().show();
 
