@@ -204,7 +204,7 @@ public class AlipayActivity extends Activity
     private void getOrderIdFromServer()
     {
         OwnedPortfolioId portfolioId = portfolioCompactListCacheLazy.get().getDefaultPortfolio(
-                currentUserId.toUserBaseKey());
+                currentUserId.toUserBaseKey()).getOwnedPortfolioId();
         if (portfolioId != null)
         {
             Timber.d("lyl portfolioId=%s", portfolioId.portfolioId.toString());
