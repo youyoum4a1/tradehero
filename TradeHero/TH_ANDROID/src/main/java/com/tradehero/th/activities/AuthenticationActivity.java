@@ -90,7 +90,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         if (currentFragment == null)
         {
             currentFragment = Fragment.instantiate(this, SignInFragment.class.getName(), null);
-            //currentFragment = Fragment.instantiate(this, WelcomeFragment.class.getName(), null);
         }
 
         setupViewFragmentMapping();
