@@ -107,7 +107,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         analytics.openSession();
         analytics.tagScreen(AnalyticsConstants.Login_Register);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
-        analytics.fire();
     }
 
     @Override protected void onPause()

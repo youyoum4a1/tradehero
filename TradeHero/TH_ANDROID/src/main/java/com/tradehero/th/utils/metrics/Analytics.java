@@ -32,11 +32,6 @@ public class Analytics
         return this;
     }
 
-    public final void fire()
-    {
-        doPendingActions();
-    }
-
     public final void fireEvent(AnalyticsEvent analyticsEvent)
     {
         // TODO should create a policy for deciding whether to discard or to process pending action
@@ -82,7 +77,6 @@ public class Analytics
         {
             doAction(action);
         }
-        closeSession();
     }
 
     /** Functional programming can cure this pain **/
