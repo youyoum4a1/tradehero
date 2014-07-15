@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import android.view.LayoutInflater;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
@@ -38,14 +37,13 @@ abstract public class BillingAlertDialogUtil<
                 ProductDetailViewType>>
         extends AlertDialogUtil
 {
-    protected LocalyticsSession localyticsSession;
-    public ActivityUtil activityUtil;
-    private Analytics analytics;
+    public final ActivityUtil activityUtil;
+    private final Analytics analytics;
 
-    public BillingAlertDialogUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil)
+    public BillingAlertDialogUtil(Analytics analytics, ActivityUtil activityUtil)
     {
         super();
-        this.localyticsSession = localyticsSession;
+        this.analytics = analytics;
         this.activityUtil = activityUtil;
     }
 
