@@ -28,7 +28,6 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
@@ -140,7 +139,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             @Override public void onTimeSpanButtonSelected(ChartTimeSpan selected)
             {
-                localyticsSession.tagEvent(LocalyticsConstants.PickChart, selected, securityId);
+                localyticsSession.tagChartTimeEvent(selected, securityId);
                 linkWith(selected, true);
             }
         };

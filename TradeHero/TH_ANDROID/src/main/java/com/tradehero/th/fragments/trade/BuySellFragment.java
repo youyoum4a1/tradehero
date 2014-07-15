@@ -1606,7 +1606,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             mTempProviderId = 0;
         }
-        thLocalyticsSessionLazy.get().tagEventBuySell(isTransactionTypeBuy, hasComment,
+        thLocalyticsSessionLazy.get().tagSharingOptionsEvent(isTransactionTypeBuy, hasComment,
                 mLastSelectBy, shareToFacebook, shareToTwitter, shareToLinkedIn,
                 shareToWeChat, shareToWeibo, symbol, mTempProviderId);
     }
@@ -1962,10 +1962,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void trackBuyClickEvent()
     {
-        thLocalyticsSessionLazy.get().tagEvent(
-                isTransactionTypeBuy ? LocalyticsConstants.Trade_Buy
-                        : LocalyticsConstants.Trade_Sell,
-                securityId);
+        thLocalyticsSessionLazy.get().tagBuySellEvent(isTransactionTypeBuy, securityId);
     }
 
     private QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()

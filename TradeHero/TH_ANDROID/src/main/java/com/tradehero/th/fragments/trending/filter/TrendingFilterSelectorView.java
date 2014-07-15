@@ -12,19 +12,13 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.adapter.SpinnerIconAdapter;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class TrendingFilterSelectorView extends RelativeLayout
 {
@@ -162,7 +156,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     private void trackChangeEvent(TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Trending, trendingFilterTypeDTO);
+        localyticsSession.tagTrendingFilterEvent(trendingFilterTypeDTO);
     }
 
     protected AdapterView.OnItemSelectedListener createTrendingFilterSelectorViewSpinnerListener()

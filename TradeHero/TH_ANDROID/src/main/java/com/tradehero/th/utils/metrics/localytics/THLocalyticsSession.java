@@ -68,6 +68,13 @@ import org.jetbrains.annotations.NotNull;
         super.tagEvent(event, attributes);
     }
 
+    private List<String> mergeDimensions(List<String> customDimensions)
+    {
+        List<String> dimensions = new LinkedList<>(customDimensions);
+        dimensions.addAll(predefineDimensions);
+        return Collections.unmodifiableList(dimensions);
+    }
+
     public void tagEventMethod(String event, String method)
     {
         this.tagSingleEvent(event, LocalyticsConstants.METHOD_MAP_KEY, method);
@@ -83,7 +90,7 @@ import org.jetbrains.annotations.NotNull;
         super.tagEvent(event, Collections.singletonMap(key, type));
     }
 
-    public void tagEventBuySell(boolean isBuy, boolean hasComment, String lastSelectBy,
+    public void tagSharingOptionsEvent(boolean isBuy, boolean hasComment, String lastSelectBy,
             boolean shareToFacebook, boolean shareToTwitter, boolean shareToLinkedIn,
             boolean shareToWeChat, boolean shareToWeibo, String symbol, Integer providerId)
     {
@@ -103,48 +110,35 @@ import org.jetbrains.annotations.NotNull;
         super.tagEvent(event, dic);
     }
 
-    public void tagEvent(String event, SecurityId securityId)
+    public void tagBuySellEvent(boolean isTransactionTypeBuy, SecurityId securityId)
     {
         Map<String, String> dic = new HashMap<>();
-        populate(dic, securityId);
-        super.tagEvent(event, dic);
-    }
-
-    public void tagEvent(String event, ChartTimeSpan chartTimeSpan, SecurityId securityId)
-    {
-        Map<String, String> dic = new HashMap<>();
-        populate(dic, securityId);
-        super.tagEvent(String.format(event, chartTimeSpanMetricsCodeFactory.createCode(chartTimeSpan)), dic);
-    }
-
-    public void tagEvent(String event, TrendingFilterTypeDTO trendingFilterTypeDTO)
-    {
-        Map<String, String> dic = new HashMap<>();
-        populate(dic, trendingFilterTypeDTO);
-        super.tagEvent(event, dic);
-    }
-
-    private void populate(Map<String, String> dic, TrendingFilterTypeDTO trendingFilterTypeDTO)
-    {
-        if (trendingFilterTypeDTO != null)
-        {
-            dic.put(LocalyticsConstants.TRENDING_FILTER_CATEGORY_MAP_KEY, trendingFilterTypeDTO.getTrackEventCategory());
-        }
-    }
-
-    private void populate(Map<String, String> dic, SecurityId securityId)
-    {
         if (securityId != null)
         {
             dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY,
                     String.format(SECURITY_ID_FORMAT, securityId.getExchange(), securityId.getSecuritySymbol()));
         }
+        super.tagEvent(isTransactionTypeBuy ? LocalyticsConstants.Trade_Buy : LocalyticsConstants.Trade_Sell, dic);
     }
 
-    private List<String> mergeDimensions(List<String> customDimensions)
+    public void tagChartTimeEvent(ChartTimeSpan chartTimeSpan, SecurityId securityId)
     {
-        List<String> dimensions = new LinkedList<>(customDimensions);
-        dimensions.addAll(predefineDimensions);
-        return Collections.unmodifiableList(dimensions);
+        Map<String, String> dic = new HashMap<>();
+        if (securityId != null)
+        {
+            dic.put(LocalyticsConstants.SECURITY_SYMBOL_MAP_KEY,
+                    String.format(SECURITY_ID_FORMAT, securityId.getExchange(), securityId.getSecuritySymbol()));
+        }
+        super.tagEvent(String.format(LocalyticsConstants.PickChart, chartTimeSpanMetricsCodeFactory.createCode(chartTimeSpan)), dic);
+    }
+
+    public void tagTrendingFilterEvent(TrendingFilterTypeDTO trendingFilterTypeDTO)
+    {
+        Map<String, String> dic = new HashMap<>();
+        if (trendingFilterTypeDTO != null)
+        {
+            dic.put(LocalyticsConstants.TRENDING_FILTER_CATEGORY_MAP_KEY, trendingFilterTypeDTO.getTrackEventCategory());
+        }
+        super.tagEvent(LocalyticsConstants.TabBar_Trending, dic);
     }
 }
