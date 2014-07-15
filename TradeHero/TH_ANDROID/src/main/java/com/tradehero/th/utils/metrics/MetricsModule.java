@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.localytics.ForLocalytics;
+import com.tradehero.th.utils.metrics.localytics.LocalyticsAdapter;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.utils.metrics.talkingdata.TalkingDataAdapter;
 import dagger.Module;
@@ -95,5 +96,11 @@ public class MetricsModule
     public AnalyticsAdapter provideTalkingDataAdapter(TalkingDataAdapter talkingDataAdapter)
     {
         return talkingDataAdapter;
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AnalyticsAdapter provideLocalyticsAdapter(LocalyticsAdapter localyticsAdapter)
+    {
+        return localyticsAdapter;
     }
 }
