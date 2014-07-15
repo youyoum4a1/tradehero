@@ -39,8 +39,7 @@ import retrofit.mime.TypedOutput;
 public interface UserService
 {
     //<editor-fold desc="Sign-Up With Email">
-    @FormUrlEncoded @POST("/SignupWithEmail")
-    UserProfileDTO signUpWithEmail(
+    @FormUrlEncoded @POST("/SignupWithEmail") UserProfileDTO signUpWithEmail(
             @Header("Authorization") String authorization,
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
@@ -56,8 +55,7 @@ public interface UserService
             @Field("username") String username,
             @Field("website") String website);
 
-    @Multipart @POST("/SignupWithEmail")
-    UserProfileDTO signUpWithEmail(
+    @Multipart @POST("/SignupWithEmail") UserProfileDTO signUpWithEmail(
             @Header("Authorization") String authorization,
             @Part("biography") String biography,
             @Part("deviceToken") String deviceToken,
@@ -76,15 +74,13 @@ public interface UserService
     //</editor-fold>
 
     //<editor-fold desc="Signup">
-    @POST("/users")
-    UserProfileDTO signUp(
+    @POST("/users") UserProfileDTO signUp(
             @Header("Authorization") String authorization,
             @Body UserFormDTO user);
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
-    @FormUrlEncoded @PUT("/users/{userId}/updateUser")
-    UserProfileDTO updateProfile(
+    @FormUrlEncoded @PUT("/users/{userId}/updateUser") UserProfileDTO updateProfile(
             @Path("userId") int userId,
             @Field("deviceToken") String deviceToken,
             @Field("displayName") String displayName,
@@ -100,8 +96,7 @@ public interface UserService
             @Field("location") String location,
             @Field("website") String website);
 
-    @Multipart @PUT("/users/{userId}/updateUser")
-    UserProfileDTO updateProfile(
+    @Multipart @PUT("/users/{userId}/updateUser") UserProfileDTO updateProfile(
             @Path("userId") int userId,
             @Part("deviceToken") String deviceToken,
             @Part("displayName") String displayName,
@@ -120,129 +115,110 @@ public interface UserService
     //</editor-fold>
 
     //<editor-fold desc="Signin">
-    @POST("users/signin")
-    Response signIn(
+    @POST("users/signin") Response signIn(
             @Body WebSignInFormDTO webSignInFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
-    @GET("/checkDisplayNameAvailable")
-    UserAvailabilityDTO checkDisplayNameAvailable(
+    @GET("/checkDisplayNameAvailable") UserAvailabilityDTO checkDisplayNameAvailable(
             @Query("displayName") String username);
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
-    @POST("/forgotPassword")
-    ForgotPasswordDTO forgotPassword(
+    @POST("/forgotPassword") ForgotPasswordDTO forgotPassword(
             @Body ForgotPasswordFormDTO forgotPasswordFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Search Users">
-    @GET("/users/search")
-    UserSearchResultDTOList searchUsers(
+    @GET("/users/search") UserSearchResultDTOList searchUsers(
             @Query("q") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
-    @GET("/users/allowableRecipients")
-    PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
+    @GET("/users/allowableRecipients") PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
             @Query("searchTerm") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
     //</editor-fold>
 
     //<editor-fold desc="Get User">
-    @GET("/users/{userId}")
-    UserProfileDTO getUser(
+    @GET("/users/{userId}") UserProfileDTO getUser(
             @Path("userId") int userId);
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
-    @GET("/users/{userId}/transactionHistory")
-    List<UserTransactionHistoryDTO> getUserTransactions(
+    @GET("/users/{userId}/transactionHistory") List<UserTransactionHistoryDTO> getUserTransactions(
             @Path("userId") int userId);
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @POST("/users/{userId}/updatePayPalEmail")
-    UpdatePayPalEmailDTO updatePayPalEmail(
+    @POST("/users/{userId}/updatePayPalEmail") UpdatePayPalEmailDTO updatePayPalEmail(
             @Path("userId") int userId,
             @Body UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay Account">
-    @POST("/users/{userId}/updateAlipayAccount")
-    UpdateAlipayAccountDTO updateAlipayAccount(
+    @POST("/users/{userId}/updateAlipayAccount") UpdateAlipayAccountDTO updateAlipayAccount(
             @Path("userId") int userId,
             @Body UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
-    @DELETE("/users/{userId}")
-    Response deleteUser(
+    @DELETE("/users/{userId}") Response deleteUser(
             @Path("userId") int userId);
     //</editor-fold>
 
     //<editor-fold desc="Get Friends">
-    @GET("/users/{userId}/getFriends")
-    UserFriendsDTOList getFriends(
+    @GET("/users/{userId}/getFriends") UserFriendsDTOList getFriends(
             @Path("userId") int userId);
 
-    @GET("/users/{userId}/GetNewFriends")
-    UserFriendsDTOList getSocialFriends(
+    @GET("/users/{userId}/getweibofriends") UserFriendsDTOList getSocialWeiboFriends(@Path("userId") int userId);
+
+    @GET("/users/{userId}/GetNewFriends") UserFriendsDTOList getSocialFriends(
             @Path("userId") int userId,
             @Query("socialNetwork") SocialNetworkEnum socialNetwork);
 
-    @GET("/users/{userId}/SearchFriends")
-    UserFriendsDTOList searchSocialFriends(
+    @GET("/users/{userId}/SearchFriends") UserFriendsDTOList searchSocialFriends(
             @Path("userId") int userId,
             @Query("socialNetwork") SocialNetworkEnum socialNetwork,
             @Query("q") String query);
     //</editor-fold>
 
-    @POST("/users/BatchFollow/free")
-    Response followBatchFree(@Body FollowFriendsForm followFriendsForm);
+    @POST("/users/BatchFollow/free") Response followBatchFree(@Body FollowFriendsForm followFriendsForm);
 
     //<editor-fold desc="Invite Friends">
-    @POST("/users/{userId}/inviteFriends")
-    Response inviteFriends(
+    @POST("/users/{userId}/inviteFriends") Response inviteFriends(
             @Path("userId") int userId,
             @Body InviteFormDTO inviteFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Add Follow Credit">
-    @POST("/users/{userId}/addCredit")
-    UserProfileDTO addCredit(
+    @POST("/users/{userId}/addCredit") UserProfileDTO addCredit(
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO);
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    @POST("/users/{userId}/follow")
-    UserProfileDTO follow(
+    @POST("/users/{userId}/follow") UserProfileDTO follow(
             @Path("userId") int userId);
 
-    @POST("/users/{userId}/follow/free")
-    UserProfileDTO freeFollow(
+    @POST("/users/{userId}/follow/free") UserProfileDTO freeFollow(
             @Path("userId") int userId);
 
-    @POST("/users/{userId}/follow")
-    UserProfileDTO follow(
+    @POST("/users/{userId}/follow") UserProfileDTO follow(
             @Path("userId") int userId,
             @Body GooglePlayPurchaseDTO purchaseDTO);
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
-    @POST("/users/{userId}/unfollow")
-    UserProfileDTO unfollow(
+    @POST("/users/{userId}/unfollow") UserProfileDTO unfollow(
             @Path("userId") int userId);
     //</editor-fold>
 
     //<editor-fold desc="Get Heroes">
-    @GET("/users/{userId}/heroes")
-    HeroDTOList getHeroes(
+    @GET("/users/{userId}/heroes") HeroDTOList getHeroes(
             @Path("userId") int userId);
     //</editor-fold>
 }

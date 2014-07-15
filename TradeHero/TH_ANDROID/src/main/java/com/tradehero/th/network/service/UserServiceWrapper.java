@@ -573,9 +573,16 @@ import retrofit.client.Response;
         }
         else if (friendsListKey.socialNetworkEnum != null)
         {
-            received = userService.getSocialFriends(
-                    friendsListKey.userBaseKey.key,
-                    friendsListKey.socialNetworkEnum);
+            if(friendsListKey.socialNetworkEnum == SocialNetworkEnum.WB)
+            {
+                received = userService.getSocialWeiboFriends(friendsListKey.userBaseKey.key);
+            }
+            else
+            {
+                received = userService.getSocialFriends(
+                        friendsListKey.userBaseKey.key,
+                        friendsListKey.socialNetworkEnum);
+            }
         }
         else
         {
@@ -655,6 +662,11 @@ import retrofit.client.Response;
     }
 
     public Response inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO)
+    {
+        return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
+    }
+
+    public Response inviteWeiboFriends(String msg,UserBaseKey userKey, InviteFormDTO inviteFormDTO)
     {
         return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
     }

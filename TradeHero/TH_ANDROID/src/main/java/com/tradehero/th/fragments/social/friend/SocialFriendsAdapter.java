@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.AbstractArrayAdapter;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
+import timber.log.Timber;
 
 public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
 
@@ -70,6 +71,13 @@ public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
         public void onInviteButtonClick(UserFriendsDTO userFriendsDTO) {
             handleInviteEvent(userFriendsDTO);
         }
+
+        @Override
+        public void onCheckBoxClick(UserFriendsDTO userFriendsDTO)
+        {
+            Timber.d("onCheckBoxClicked " + userFriendsDTO);
+        }
+
 
     }
 

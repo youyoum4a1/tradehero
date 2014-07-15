@@ -373,6 +373,13 @@ public class FriendsInvitationFragment extends DashboardFragment
         handleInviteUsers(userFriendsDTO);
     }
 
+    public void onCheckBoxClick(UserFriendsDTO userFriendsDTO)
+    {
+        Timber.d("onCheckBoxClicked " + userFriendsDTO);
+    }
+
+
+
     protected void handleFollowUsers(UserFriendsDTO userToFollow)
     {
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userToFollow);

@@ -70,6 +70,14 @@ public class SocialFriendsListView extends RelativeLayout {
         }
     }
 
+    public void setInviteAllViewText(String strInvite)
+    {
+        if(inviteAllView!=null)
+        {
+            ((TextView)inviteAllView).setText(strInvite);
+        }
+    }
+
     public void setInviteAllViewVisible(boolean viewVisible)
     {
         inviteAllView.setVisibility(viewVisible ? View.VISIBLE : View.GONE);

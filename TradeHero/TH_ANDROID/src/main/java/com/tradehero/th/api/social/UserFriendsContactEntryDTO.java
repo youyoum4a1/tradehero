@@ -50,4 +50,9 @@ public class UserFriendsContactEntryDTO extends UserFriendsDTO
         return super.equals(other) &&
                 email == null ? other.email == null : email.equals(other.email);
     }
+
+    @Override public SocialNetworkEnum getNetworkSocial()
+    {
+        return null;
+    }
 }

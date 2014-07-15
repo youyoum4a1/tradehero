@@ -95,4 +95,9 @@
   <string name="notification_new_activities">您有 %d 条新活动</string>
   <string name="friend_link_social_network">请绑定社交网络</string>
 
+  <string name="friends_can_be_invite">%s 个好友可邀请</string>
+  <string name="friends_can_be_follow">%s 个好友可关注</string>
+  <string name="weibo_message_text_limit">[%d/140]</string>
+  <string name="weibo_message_length_error">不能超过140字</string>
+  <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！</string>
 </resources>

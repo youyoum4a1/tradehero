@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@color/white"
+    >
+
+  <TextView
+      android:background="@color/stock_info_bg"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:padding="10dp"
+      android:textSize="20sp"
+      android:gravity="center_horizontal"
+      android:text="@string/sina_weibo"
+      android:id="@+id/tvInviteMessage"/>
+
+  <View android:layout_width="fill_parent"
+      android:layout_height="1px"
+      android:background="@color/black"/>
+
+
+  <EditText
+      android:background="@color/stock_info_bg"
+      android:layout_width="fill_parent"
+      android:layout_height="300dp"
+      android:gravity="top|left"
+      android:padding="10dp"
+      android:text="@string/weibo_friends_invite"
+      android:id="@+id/edtInviteMessage"/>
+
+  <TextView
+      android:background="@color/stock_info_bg"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:padding="10dp"
+      android:text="140"
+      android:id="@+id/tvMessageCount"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      >
+
+    <Button
+        android:id="@+id/btnCancle"
+        android:layout_height="40dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="@string/authentication_cancel"
+        android:background="@drawable/security_dialog_btn_cancel"
+        android:textSize="@dimen/text_xlarge"
+        android:textColor="@color/trending_gray_border"
+        />
+
+    <Button
+        android:id="@+id/btnComfirm"
+        android:layout_height="40dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="@string/authentication_confirm"
+        android:background="@drawable/security_dialog_btn_confirm"
+        android:textSize="@dimen/text_xlarge"
+        android:textColor="@color/white"
+        android:layout_marginLeft="1dp"
+        />
+
+  </LinearLayout>
+
+</LinearLayout>

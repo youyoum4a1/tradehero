@@ -82,4 +82,10 @@
   <string name="chart_loading_image">차트 이미지 로딩중…</string>
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">KRW</string>
+
+  <string name="friends_can_be_invite">%s friends can be invite</string>
+  <string name="friends_can_be_follow">%s friends can be follow</string>
+  <string name="weibo_message_text_limit">[%d/140]</string>
+  <string name="weibo_message_length_error">no more than 140 character</string>
+  <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！</string>
 </resources>

@@ -5,42 +5,66 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    tools:background="#a88"
-    android:minHeight="70dp"
-    android:gravity="center_vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:background="@drawable/list_item_bg"
+    android:orientation="vertical"
     >
-
-  <ImageView
-      android:id="@+id/social_item_logo"
-      android:layout_width="50dp"
-      android:layout_height="50dp"
-      tools:src="@drawable/superman_facebook"
-      />
-
   <TextView
-      android:id="@+id/social_item_title"
-      android:layout_width="0dp"
-      android:layout_weight="1"
+      android:visibility="gone"
+      android:id="@+id/social_friend_headline"
+      android:layout_width="fill_parent"
+      android:layout_height="24dp"
+      android:background="@color/gray_1"
+      android:gravity="center_vertical"
+      android:paddingLeft="10dp"
+      android:text="head line">
+  </TextView>
+  <LinearLayout
+      android:id="@+id/social_friend_item_ll"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textSize="@dimen/text_medium"
-      android:lines="2"
-      android:maxLines="2"
-      android:singleLine="false"
-      android:ellipsize="end"
-      tools:text="Invite from Facebook"
-      android:layout_marginLeft="10dp"
+      android:orientation="horizontal"
+      tools:background="#a88"
+      android:minHeight="70dp"
+      android:gravity="center_vertical"
+      android:paddingLeft="10dp"
+      android:paddingRight="10dp"
+      android:background="@drawable/list_item_bg">
+    <ImageView
+        android:id="@+id/social_item_logo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        tools:src="@drawable/superman_facebook"
+        />
 
-      />
+    <TextView
+        android:id="@+id/social_item_title"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_medium"
+        android:lines="2"
+        android:maxLines="2"
+        android:singleLine="false"
+        android:ellipsize="end"
+        tools:text="Invite from Facebook"
+        android:layout_marginLeft="10dp"
+        />
+    <TextView
+        android:visibility="visible"
+        android:id="@+id/social_item_action_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Invite"
+        style="@style/TH.Btn_Invite_Action"
+        />
 
-  <TextView
-      android:id="@+id/social_item_action_btn"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      tools:text="Invite"
-      style="@style/TH.Btn_Invite_Action"
-      />
+    <CheckBox
+        android:visibility="gone"
+        android:id="@+id/social_item_action_cb"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="10dp">
+    </CheckBox>
+  </LinearLayout>
+
+
 </com.tradehero.th.fragments.social.friend.SocialFriendItemView>

@@ -198,7 +198,10 @@
 
   <plurals name="inbox_notification_title">
     <item quantity="one">1 New Message</item>
-    <item quantity="other">%d <b>New</b> Messages</item>
+    <item quantity="other">%d
+      <b>New</b>
+      Messages
+    </item>
   </plurals>
 
   <string name="inbox_summary">+%d more</string>
@@ -207,4 +210,9 @@
   <string name="friend_link_social_network">Please Link Social Network.</string>
   <string name="exit_app">Exit app</string>
 
+  <string name="friends_can_be_invite">%s friends can be invite</string>
+  <string name="friends_can_be_follow">%s friends can be follow</string>
+  <string name="weibo_message_text_limit">[%d/140]</string>
+  <string name="weibo_message_length_error">no more than 140 character</string>
+  <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！</string>
 </resources>
