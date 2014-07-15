@@ -31,6 +31,7 @@
   <string name="stock_alert_count_alert_format">%d 预警</string>
   <string name="stock_alert_plan_unlimited">无限制</string>
   <string name="stock_alert_manage_subscriptions">管理您的订阅</string>
+
   <string name="error_fetch_alert">获取预警信息时发生错误</string>
   <string name="error_alert_insufficient_info">设置股市预警信息不全</string>
 

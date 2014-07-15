@@ -2,6 +2,7 @@
 <resources>
 
   <string name="settings">设置</string>
+
   <string name="settings_sharing">分享</string>
   <string name="settings_sharing_facebook">Facebook</string>
   <string name="settings_sharing_twitter">Twitter</string>
@@ -12,6 +13,7 @@
   <string name="settings_primary_send_love">我爱全民股神!</string>
   <string name="settings_primary_send_feedback">发送反馈</string>
   <string name="settings_primary_faq">FAQ</string>
+
   <string name="setting_accounts">账号</string>
   <string name="settings_primary_profile">个人资料</string>
   <string name="settings_primary_paypal">PayPal</string>
@@ -25,6 +27,11 @@
   <string name="settings_misc_sign_out_alert_title">登出中</string>
   <string name="settings_misc_sign_out_alert_message">请等待&#8230;</string>
   <string name="settings_misc_sign_out_failed">登出失败</string>
+
+  <string name="settings_translations">翻译</string>
+  <string name="settings_translations_language_preferred">优先语言</string>
+  <string name="settings_translations_auto_translate">自动翻译</string>
+
   <string name="settings_notifications">通知</string>
   <string name="settings_notifications_email">邮件通知</string>
   <string name="settings_notifications_email_alert_title">更新您的邮件通知设置</string>

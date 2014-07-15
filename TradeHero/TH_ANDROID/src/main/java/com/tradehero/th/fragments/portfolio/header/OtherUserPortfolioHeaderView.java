@@ -179,7 +179,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
-            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.PositionList);
+            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen,
+                    LocalyticsConstants.PositionList);
         }
 
         @Override public void failure(RetrofitError retrofitError)
