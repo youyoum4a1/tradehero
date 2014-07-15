@@ -26,8 +26,10 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.UxModule;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,11 +48,11 @@ public class SplashActivity extends SherlockActivity
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
-    @Inject Lazy<THLocalyticsSession> localyticsSession;
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DTOCacheUtil dtoCacheUtil;
+    @Inject Analytics analytics;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -94,8 +96,8 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-        localyticsSession.get().open();
-        localyticsSession.get().tagScreen(AnalyticsConstants.Loading);
+        analytics.openSession();
+        analytics.tagScreen(AnalyticsConstants.Loading);
 
         AppEventsLogger.activateApp(this, facebookAppId);
 
@@ -114,16 +116,16 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close();
-        localyticsSession.get().upload();
+        analytics.closeSession();
 
         super.onPause();
     }
 
     protected void initialisation()
     {
-        localyticsSession.get().tagEvent(AnalyticsConstants.AppLaunch);
-        localyticsSession.get().tagEvent(AnalyticsConstants.LoadingScreen);
+        analytics
+                .addEvent(new AppLaunchEvent())
+                .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
 
         if (firstLaunchPreference.get())
         {
