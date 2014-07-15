@@ -396,11 +396,11 @@ import javax.inject.Singleton;
         complete = false,
         library = true // TODO remove this line
 )
-public class TradeHeroModule
+public class AppModule
 {
     private final Application application;
 
-    public TradeHeroModule(Application application)
+    public AppModule(Application application)
     {
         this.application = application;
     }
