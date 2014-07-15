@@ -8,14 +8,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 
-public class MessageItemViewWrapper extends FrameLayout implements DTOView<MessageHeaderId>
+public class MessageItemViewWrapper extends FrameLayout implements DTOView<MessageHeaderDTO>
 {
     @InjectView(R.id.swipelist_frontview) MessageItemView messageItemView;
     @InjectView(R.id.swipelist_backview) View messageItemBackView;
 
-    private MessageHeaderId messageHeaderId;
+    private MessageHeaderDTO messageHeaderDTO;
     private OnElementClickedListener elementClickedListener;
 
     //<editor-fold desc="Constructors">
@@ -60,9 +60,9 @@ public class MessageItemViewWrapper extends FrameLayout implements DTOView<Messa
         messageItemView.setElementClickedListener(createMessageItemViewUserClickedListener());
     }
 
-    @Override public void display(MessageHeaderId dto)
+    @Override public void display(MessageHeaderDTO dto)
     {
-        this.messageHeaderId = dto;
+        this.messageHeaderDTO = dto;
         if (messageItemView != null)
         {
             messageItemView.display(dto);
@@ -74,21 +74,21 @@ public class MessageItemViewWrapper extends FrameLayout implements DTOView<Messa
         this.elementClickedListener = elementClickedListener;
     }
 
-    protected void notifyUserClicked(MessageHeaderId messageHeaderId)
+    protected void notifyUserClicked(MessageHeaderDTO messageHeaderDTO)
     {
         OnElementClickedListener elementClickedListenerCopy = elementClickedListener;
         if (elementClickedListenerCopy != null)
         {
-            elementClickedListenerCopy.onUserClicked(messageHeaderId);
+            elementClickedListenerCopy.onUserClicked(messageHeaderDTO);
         }
     }
 
-    protected void notifyDeleteClicked(MessageHeaderId messageHeaderId)
+    protected void notifyDeleteClicked(MessageHeaderDTO messageHeaderDTO)
     {
         OnElementClickedListener elementClickedListenerCopy = elementClickedListener;
         if (elementClickedListenerCopy != null)
         {
-            elementClickedListenerCopy.onDeleteClicked(messageHeaderId);
+            elementClickedListenerCopy.onDeleteClicked(messageHeaderDTO);
         }
     }
 
@@ -99,14 +99,14 @@ public class MessageItemViewWrapper extends FrameLayout implements DTOView<Messa
 
     public class MessageItemWrapperElementClickedListener implements MessageItemView.OnElementClickedListener
     {
-        @Override public void onUserClicked(MessageHeaderId messageHeaderId)
+        @Override public void onUserClicked(MessageHeaderDTO messageHeaderDTO)
         {
-            notifyUserClicked(messageHeaderId);
+            notifyUserClicked(messageHeaderDTO);
         }
     }
 
     public static interface OnElementClickedListener extends MessageItemView.OnElementClickedListener
     {
-        void onDeleteClicked(MessageHeaderId messageHeaderId);
+        void onDeleteClicked(MessageHeaderDTO messageHeaderDTO);
     }
 }

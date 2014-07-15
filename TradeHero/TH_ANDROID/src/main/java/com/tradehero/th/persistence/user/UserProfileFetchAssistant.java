@@ -26,14 +26,14 @@ public class UserProfileFetchAssistant extends DTOFetchAssistantNew<UserBaseKey,
     }
 
     //<editor-fold desc="DTOCache.Listener<UserBaseKey, UserProfileDTO>">
-    @Override public void onErrorThrown(final UserBaseKey key, final Throwable error)
+    @Override public void onErrorThrown(@NotNull final UserBaseKey key, @NotNull final Throwable error)
     {
         super.onErrorThrown(key, error);
         THToast.show(context.getString(R.string.error_fetch_user_profile));
     }
     //</editor-fold>
 
-    @Override protected DTOCacheNew<UserBaseKey, UserProfileDTO> getCache()
+    @Override @NotNull protected DTOCacheNew<UserBaseKey, UserProfileDTO> getCache()
     {
         return userProfileCache.get();
     }

@@ -24,6 +24,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 {
@@ -262,13 +263,13 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected class FollowerPayoutManagerFollowerListener implements DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO>
     {
-        @Override public void onDTOReceived(FollowerHeroRelationId key, UserFollowerDTO value)
+        @Override public void onDTOReceived(@NotNull FollowerHeroRelationId key, @NotNull UserFollowerDTO value)
         {
             display(value);
         }
 
         @Override
-        public void onErrorThrown(FollowerHeroRelationId key, Throwable error)
+        public void onErrorThrown(@NotNull FollowerHeroRelationId key, @NotNull Throwable error)
         {
             THToast.show(
                     "There was an error fetching your follower information");

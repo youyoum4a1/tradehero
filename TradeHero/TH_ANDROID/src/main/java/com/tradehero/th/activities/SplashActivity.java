@@ -6,7 +6,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
-import com.localytics.android.LocalyticsSession;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
@@ -28,8 +27,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.UxModule;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
-import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.inject.Inject;
@@ -47,9 +46,9 @@ public class SplashActivity extends SherlockActivity
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
 
     @Inject MainCredentialsPreference mainCredentialsPreference;
-    @Inject Lazy<LocalyticsSession> localyticsSession;
+    @Inject Lazy<THLocalyticsSession> localyticsSession;
     @Inject Lazy<Api> tapStream;
-    @Inject Lazy<MobileAppTracker> mobileAppTrackerLazy;
+    @Inject MobileAppTracker mobileAppTracker;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject DTOCacheUtil dtoCacheUtil;
 
@@ -96,14 +95,16 @@ public class SplashActivity extends SherlockActivity
         };
         initialAsyncTask.execute();
 
-        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().open();
         localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
+
         AppEventsLogger.activateApp(this, facebookAppId);
-        tapStream.get().fireEvent(
-                new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
-        mobileAppTrackerLazy.get().setReferralSources(this);
-        //mobileAppTrackerLazy.get().setDebugMode(true);//no debug, no log by alex
-        mobileAppTrackerLazy.get().measureSession();
+
+        tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
+
+        mobileAppTracker.setReferralSources(this);
+        mobileAppTracker.measureSession();
+
         TCAgent.init(getApplicationContext(), UxModule.TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name());
 
         if (!Constants.RELEASE)
@@ -114,7 +115,7 @@ public class SplashActivity extends SherlockActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().close();
         localyticsSession.get().upload();
 
         super.onPause();
@@ -125,7 +126,7 @@ public class SplashActivity extends SherlockActivity
         localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
         localyticsSession.get().tagEvent(LocalyticsConstants.LoadingScreen);
 
-        if (firstLaunchPreference.get().booleanValue())
+        if (firstLaunchPreference.get())
         {
             ActivityHelper.launchGuide(SplashActivity.this);
             firstLaunchPreference.set(false);

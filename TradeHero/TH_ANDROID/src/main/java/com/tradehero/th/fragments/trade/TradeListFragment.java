@@ -9,11 +9,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -23,8 +22,8 @@ import com.tradehero.th.api.position.PositionDTOKeyFactory;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.api.trade.OwnedTradeId;
-import com.tradehero.th.api.trade.OwnedTradeIdList;
+import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -41,6 +40,8 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -67,19 +68,19 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     protected PositionDTOKey positionDTOKey;
     protected PositionDTO positionDTO;
-    protected OwnedTradeIdList ownedTradeIds;
+    protected TradeDTOList tradeDTOList;
 
     protected TradeListItemAdapter adapter;
     protected TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
-    private DTOCacheNew.Listener<OwnedPositionId, OwnedTradeIdList> fetchTradesListener;
+    private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
 
-    public static void putPositionDTOKey(Bundle args, PositionDTOKey positionDTOKey)
+    public static void putPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKey positionDTOKey)
     {
         args.putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, positionDTOKey.getArgs());
     }
 
-    private static PositionDTOKey getPositionDTOKey(Bundle args, PositionDTOKeyFactory positionDTOKeyFactory)
+    @Nullable private static PositionDTOKey getPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKeyFactory positionDTOKeyFactory)
     {
         return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }
@@ -148,7 +149,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     protected void rePurposeAdapter()
     {
-        if (this.positionDTO != null && this.ownedTradeIds != null)
+        if (this.positionDTO != null && this.tradeDTOList != null)
         {
             createAdapter();
             adapter.setTradeListHeaderClickListener(this.buttonListener);
@@ -164,9 +165,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     protected List<PositionTradeDTOKey> createUnderlyingItems()
     {
         List<PositionTradeDTOKey> created = new ArrayList<>();
-        for (OwnedTradeId tradeId : ownedTradeIds)
+        for (TradeDTO tradeDTO : tradeDTOList)
         {
-            created.add(new PositionTradeDTOKey(positionDTOKey, tradeId));
+            created.add(new PositionTradeDTOKey(positionDTOKey, tradeDTO));
         }
         return created;
     }
@@ -309,9 +310,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void linkWith(OwnedTradeIdList ownedTradeIds, boolean andDisplay)
+    public void linkWith(TradeDTOList tradeDTOs, boolean andDisplay)
     {
-        this.ownedTradeIds = ownedTradeIds;
+        this.tradeDTOList = tradeDTOs;
         rePurposeAdapter();
 
         if (andDisplay)
@@ -377,20 +378,20 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList> createTradeListeCacheListener()
+    protected TradeListCache.Listener<OwnedPositionId, TradeDTOList> createTradeListeCacheListener()
     {
         return new GetTradesListener();
     }
 
-    private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, OwnedTradeIdList>
+    private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, TradeDTOList>
     {
-        @Override public void onDTOReceived(OwnedPositionId key, OwnedTradeIdList ownedTradeIds)
+        @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
         {
             displayProgress(false);
-            linkWith(ownedTradeIds, true);
+            linkWith(tradeDTOs, true);
         }
 
-        @Override public void onErrorThrown(OwnedPositionId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull OwnedPositionId key, @NotNull Throwable error)
         {
             displayProgress(false);
             THToast.show(R.string.error_fetch_trade_list_info);

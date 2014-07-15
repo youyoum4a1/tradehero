@@ -4,7 +4,7 @@ import android.content.Context;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.notification.NotificationListKey;
-import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.notification.DTOProcessorNotificationRead;
@@ -60,16 +60,16 @@ public class NotificationServiceWrapper
     }
 
     //<editor-fold desc="Get Notifications">
-    public PaginatedDTO<NotificationDTO> getNotifications(@NotNull NotificationListKey notificationListKey)
+    public PaginatedNotificationDTO getNotifications(@NotNull NotificationListKey notificationListKey)
     {
         return notificationService.getNotifications(notificationListKey.toMap());
     }
 
-    @NotNull public MiddleCallback<PaginatedDTO<NotificationDTO>> getNotifications(
+    @NotNull public MiddleCallback<PaginatedNotificationDTO> getNotifications(
             @NotNull NotificationListKey notificationListKey,
-            @Nullable Callback<PaginatedDTO<NotificationDTO>> callback)
+            @Nullable Callback<PaginatedNotificationDTO> callback)
     {
-        MiddleCallback<PaginatedDTO<NotificationDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<PaginatedNotificationDTO> middleCallback = new BaseMiddleCallback<>(callback);
         notificationServiceAsync.getNotifications(notificationListKey.toMap(), middleCallback);
         return middleCallback;
     }

@@ -44,14 +44,13 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userCache;
     @Inject Picasso picasso;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
-
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
     private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
@@ -116,7 +115,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
      */
     public void showFollowDialog()
     {
-        localyticsSession.tagEvent(LocalyticsConstants.Positions_Follow);
+        thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Positions_Follow);
         detachFollowDialogCombo();
         followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
@@ -180,6 +179,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
+            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.PositionList);
         }
 
         @Override public void failure(RetrofitError retrofitError)

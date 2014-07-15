@@ -232,7 +232,7 @@ public class PricingBidAskView extends LinearLayout
         Double priceRefCcy = quoteDTO == null ? null : quoteDTO.getPriceRefCcy(portfolioCompactDTO, buy);
         if (priceRefCcy == null)
         {
-            return "= " + portfolioCompactDTO.getCurrencyDisplayOrUsd();
+            return "= " + portfolioCompactDTO.getNiceCurrency();
         }
         else
         {
@@ -240,7 +240,7 @@ public class PricingBidAskView extends LinearLayout
                     THSignedNumber.TYPE_MONEY,
                     priceRefCcy,
                     THSignedNumber.WITHOUT_SIGN,
-                    portfolioCompactDTO.getCurrencyDisplayOrUsd());
+                    portfolioCompactDTO.getNiceCurrency());
             return String.format("= %s", thSignedNumber.toString());
         }
     }

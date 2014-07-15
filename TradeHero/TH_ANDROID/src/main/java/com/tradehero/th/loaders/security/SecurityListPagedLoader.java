@@ -2,8 +2,8 @@ package com.tradehero.th.loaders.security;
 
 import android.content.Context;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.SecurityListTypeFactory;
 import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
@@ -13,8 +13,8 @@ import javax.inject.Inject;
 
 public class SecurityListPagedLoader extends PagedDTOCacheLoaderNew<
         SecurityListType,
-        SecurityId,
-        SecurityIdList>
+        SecurityCompactDTO,
+        SecurityCompactDTOList>
 {
     @Inject protected Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject protected SecurityListTypeFactory securityListTypeFactory;
@@ -29,14 +29,14 @@ public class SecurityListPagedLoader extends PagedDTOCacheLoaderNew<
         super(context);
     }
 
-    @Override protected DTOCacheNew<SecurityListType, SecurityIdList> getCache()
+    @Override protected DTOCacheNew<SecurityListType, SecurityCompactDTOList> getCache()
     {
         return securityCompactListCache.get();
     }
 
-    @Override protected SecurityIdList createEmptyValue()
+    @Override protected SecurityCompactDTOList createEmptyValue()
     {
-        return new SecurityIdList();
+        return new SecurityCompactDTOList();
     }
 
     @Override protected SecurityListType cloneAtPage(SecurityListType initial, int page)

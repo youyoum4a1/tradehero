@@ -68,7 +68,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
     protected int perPage = DEFAULT_PER_PAGE;
     private FlagNearEdgeScrollListener nearEndScrollListener;
 
-    private EditText mSearchTextField;
+    protected EditText mSearchTextField;
     protected String mSearchText;
     private SearchTextWatcher mSearchTextWatcher;
 

@@ -6,9 +6,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton public class ProviderUtil
+public class ProviderUtil
 {
     public static final String LANDING = "landing/";
     public static final String QUERY_KEY_PROVIDER_ID = "providerId";
@@ -41,7 +40,7 @@ import javax.inject.Singleton;
     {
         String url = competitionUrl + LANDING;
         url = appendProviderId(url, '?', providerId);
-        url = appendUserId(url, '&', userBaseKey);
+        url = appendUserId(url, '&');
         url = appendShowNextButton(url, '&');
         return appendAuthorization(url, '&');
     }
@@ -55,7 +54,7 @@ import javax.inject.Singleton;
     {
         String url = competitionUrl + RULES;
         url = appendProviderId(url, '?', providerId);
-        url = appendUserId(url, '&', currentUserId.toUserBaseKey());
+        url = appendUserId(url, '&');
         if (showNextButton)
         {
             url = appendShowNextButton(url, '&');
@@ -67,7 +66,7 @@ import javax.inject.Singleton;
     {
         String url = competitionUrl + TERMS;
         url = appendProviderId(url, '?', providerId);
-        url = appendUserId(url, '&', currentUserId.toUserBaseKey());
+        url = appendUserId(url, '&');
         return appendAuthorization(url, '&');
     }
 
@@ -84,9 +83,9 @@ import javax.inject.Singleton;
         return appendToUrl(url, separator + QUERY_KEY_PROVIDER_ID + "=" + providerId.key);
     }
 
-    public String appendUserId(String url, char separator, UserBaseKey userBaseKey)
+    public String appendUserId(String url, char separator)
     {
-        return appendToUrl(url, separator + QUERY_KEY_USER_ID + "=" + userBaseKey.key);
+        return appendToUrl(url, separator + QUERY_KEY_USER_ID + "=" + currentUserId.get());
     }
 
     public String appendToUrl(String url, String forAppend)

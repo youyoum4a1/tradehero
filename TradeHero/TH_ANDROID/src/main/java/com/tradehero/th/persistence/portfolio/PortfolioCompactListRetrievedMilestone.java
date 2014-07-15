@@ -1,15 +1,15 @@
 package com.tradehero.th.persistence.portfolio;
 
 import com.tradehero.common.persistence.DTORetrievedAsyncMilestoneNew;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
 @Deprecated // We should always ask for the value from the cache
-public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMilestoneNew<UserBaseKey, OwnedPortfolioIdList, PortfolioCompactListCache>
+public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMilestoneNew<UserBaseKey, PortfolioCompactDTOList, PortfolioCompactListCache>
 {
     @Inject PortfolioCompactListCache portfolioCompactListCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
@@ -40,15 +40,15 @@ public class PortfolioCompactListRetrievedMilestone extends DTORetrievedAsyncMil
         return super.isComplete() && hasCompacts(portfolioCompactListCache.get(key));
     }
 
-    public boolean hasCompacts(OwnedPortfolioIdList keyList)
+    public boolean hasCompacts(PortfolioCompactDTOList compactDTOs)
     {
-        if (keyList == null)
+        if (compactDTOs == null)
         {
             return false;
         }
-        for (OwnedPortfolioId id : keyList)
+        for (PortfolioCompactDTO portfolioCompactDTO : compactDTOs)
         {
-            if (portfolioCompactCache.get(id.getPortfolioIdKey()) == null)
+            if (portfolioCompactDTO == null)
             {
                 return false;
             }

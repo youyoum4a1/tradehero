@@ -460,12 +460,12 @@ public class WatchlistEditFragment extends DashboardFragment
 
     protected class WatchlistEditSecurityCompactCacheListener implements DTOCacheNew.HurriedListener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onPreCachedDTOReceived(SecurityId key, @NotNull SecurityCompactDTO value)
+        @Override public void onPreCachedDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
         {
             onDTOReceived(key, value);
         }
 
-        @Override public void onDTOReceived(SecurityId key, @NotNull SecurityCompactDTO value)
+        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
         {
             if (progressBar != null)
             {
@@ -474,7 +474,7 @@ public class WatchlistEditFragment extends DashboardFragment
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
             if (progressBar != null)
             {

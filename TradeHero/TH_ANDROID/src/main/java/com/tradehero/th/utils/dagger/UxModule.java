@@ -12,10 +12,12 @@ import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.authentication.SignUpFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.localytics.LocalyticAppKey;
+import com.tradehero.th.utils.metrics.localytics.ForLocalytics;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Module;
 import dagger.Provides;
+import java.util.Arrays;
+import java.util.List;
 import javax.inject.Singleton;
 
 @Module(
@@ -36,15 +38,21 @@ public class UxModule
     private static final String MAT_APP_KEY = "c65b99d5b751944e3637593edd04ce01";
     public static final String TD_APP_ID_KEY = "5991FF8EFB8EFF717C206FCCF9C969A8";
 
-    @Provides @LocalyticAppKey String provideLocalyticsAppKey()
+    @Provides @ForLocalytics String provideLocalyticsAppKey()
     {
         return Constants.RELEASE ? Constants.LOCALYTICS_APP_KEY_RELEASE : Constants.LOCALYTICS_APP_KEY_DEBUG;
     }
 
-    // localytics
+    // Localytics
     @Provides @Singleton LocalyticsSession provideLocalyticsSession(THLocalyticsSession localyticsSession)
     {
         return localyticsSession;
+    }
+
+    @Provides @ForLocalytics List<String> provideLocalyticsPredefineDimensions() {
+        return Arrays.asList(
+                Constants.TAP_STREAM_TYPE.name()
+        );
     }
 
     // TapStream
@@ -58,15 +66,17 @@ public class UxModule
     {
         Config config = new Config();
         config.setFireAutomaticOpenEvent(false);//this will send twice
-        config.setInstallEventName(context.getString(
-                Constants.TAP_STREAM_TYPE.installResId));
+        config.setInstallEventName(context.getString(Constants.TAP_STREAM_TYPE.installResId));
         return config;
     }
 
-    //MAT
-    @Provides @Singleton MobileAppTracker provideMAT(Context context)
+    // MobileAppTracker
+    @Provides @Singleton MobileAppTracker provideMobileAppTracker(Context context)
     {
         MobileAppTracker.init(context, MAT_APP_ID, MAT_APP_KEY);
-        return MobileAppTracker.getInstance();
+        MobileAppTracker mobileAppTrackerInstance = MobileAppTracker.getInstance();
+        mobileAppTrackerInstance.setPackageName(context.getPackageName() + "." + Constants.TAP_STREAM_TYPE.name());
+        mobileAppTrackerInstance.setDebugMode(!Constants.RELEASE);
+        return mobileAppTrackerInstance;
     }
 }

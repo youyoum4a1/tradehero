@@ -79,6 +79,8 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -129,6 +131,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private CheckBoxPreference linkedInSharing;
     private CheckBoxPreference weiboSharing;
     private CheckBoxPreference qqSharing;
+    protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
@@ -138,12 +141,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             currentUserProfileRetrievedMilestoneListener;
     private LogInCallback socialConnectLogInCallback;
 
-    public static void putSocialNetworkToConnect(Bundle args, SocialNetworkEnum socialNetwork)
+    public static void putSocialNetworkToConnect(@NotNull Bundle args, @NotNull SocialNetworkEnum socialNetwork)
     {
         args.putString(KEY_SOCIAL_NETWORK_TO_CONNECT, socialNetwork.name());
     }
 
-    public static void putSocialNetworkToConnect(Bundle args, SocialShareFormDTO shareFormDTO)
+    public static void putSocialNetworkToConnect(@NotNull Bundle args, @Nullable SocialShareFormDTO shareFormDTO)
     {
         if (shareFormDTO instanceof TimelineItemShareFormDTO &&
                 ((TimelineItemShareFormDTO) shareFormDTO).timelineItemShareRequestDTO != null &&
@@ -153,7 +156,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
-    public static SocialNetworkEnum getSocialNetworkToConnect(Bundle args)
+    @Nullable public static SocialNetworkEnum getSocialNetworkToConnect(@Nullable Bundle args)
     {
         if (args == null)
         {
@@ -176,6 +179,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         DaggerUtils.inject(this);
 
+        userTranslationSettingsViewHolder = new UserTranslationSettingsViewHolder();
         createSocialConnectLogInCallback();
 
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
@@ -288,6 +292,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroyView()
     {
+        userTranslationSettingsViewHolder.destroyViews();
         detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
         detachLogoutCallback();
@@ -355,6 +360,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroy()
     {
+        userTranslationSettingsViewHolder = null;
         socialConnectLogInCallback = null;
         this.currentUserProfileRetrievedMilestoneListener = null;
         this.purchaseRestorerFinishedListener = null;
@@ -609,6 +615,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
         }
+
+        // Translations
+        userTranslationSettingsViewHolder.initViews(this);
+
         // notification
         pushNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push));
@@ -946,7 +956,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         String faqUrl = getResources().getString(R.string.th_faq_url);
         Bundle bundle = new Bundle();
-        bundle.putString(WebViewFragment.BUNDLE_KEY_URL, faqUrl);
+        WebViewFragment.putUrl(bundle, faqUrl);
         getNavigator().pushFragment(WebViewFragment.class, bundle);
     }
 

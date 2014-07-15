@@ -45,11 +45,11 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     }
 
     /**
-     * Launch necessary action to have notificationDTO available in the cache, give notificationId. If notificationDTO is already available in the
+     * Launch necessary action to have notificationDTO available in the cache, given notificationId. If notificationDTO is already available in the
      * cache, will start build notification UI.
      *
-     * @param notificationId
-     * @return
+     * @param notificationId given notificationId
+     * @return null when notificationDTO is not in the cache, otherwise, return Notification ui data
      */
     @Override public Notification buildNotification(int notificationId)
     {
@@ -188,7 +188,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
      * we cannot use notificationId to be a unique key for notification, indeed, the unique key should be generated from the
      *
      * @param notificationDTO NotificationDTO that already in the cache
-     * @return
+     * @return unique id across all notificationDTO
      */
     private int uniquifyNotificationId(NotificationDTO notificationDTO)
     {

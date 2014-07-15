@@ -294,6 +294,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         try
         {
             this.currentOperationCallback.onSuccess(authData);
+            restoreAuthentication(authData);
         }
         finally
         {

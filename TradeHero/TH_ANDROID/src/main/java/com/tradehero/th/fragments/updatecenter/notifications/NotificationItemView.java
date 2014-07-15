@@ -12,43 +12,35 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class NotificationItemView
         extends LinearLayout
-        implements DTOView<NotificationKey>
+        implements DTOView<NotificationDTO>
 {
     @InjectView(R.id.discussion_content) TextView notificationContent;
     @InjectView(R.id.notification_user_picture) ImageView notificationPicture;
     @InjectView(R.id.discussion_time) TextView notificationTime;
     @InjectView(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
 
-    @Inject NotificationCache notificationCache;
     @Inject PrettyTime prettyTime;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject THRouter thRouter;
 
-    private NotificationKey notificationKey;
     private NotificationDTO notificationDTO;
-
-    private DTOCacheNew.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
 
     //<editor-fold desc="Constructors">
     public NotificationItemView(Context context)
@@ -73,27 +65,16 @@ public class NotificationItemView
 
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
-
-        notificationFetchListener = createNotificationFetchListener();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-
-        if (notificationFetchListener == null)
-        {
-            notificationFetchListener = createNotificationFetchListener();
-        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        detachNotificationCache();
-
         resetView();
-
-        notificationFetchListener = null;
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -108,14 +89,7 @@ public class NotificationItemView
         }
     }
 
-    @Override public void display(NotificationKey notificationKey)
-    {
-        this.notificationKey = notificationKey;
-
-        fetchNotification();
-    }
-
-    private void display(NotificationDTO notificationDTO)
+    @Override public void display(NotificationDTO notificationDTO)
     {
         if (notificationDTO != null)
         {
@@ -153,46 +127,6 @@ public class NotificationItemView
         picasso.load(R.drawable.superman_facebook)
                 .transform(userPhotoTransformation)
                 .into(notificationPicture);
-    }
-
-    private void fetchNotification()
-    {
-        detachNotificationCache();
-        notificationCache.register(notificationKey, notificationFetchListener);
-        notificationCache.getOrFetchAsync(notificationKey, false);
-    }
-
-    private void detachNotificationCache()
-    {
-        notificationCache.unregister(notificationFetchListener);
-    }
-
-    protected DTOCacheNew.Listener<NotificationKey, NotificationDTO> createNotificationFetchListener()
-    {
-        return new NotificationFetchListener();
-    }
-
-    protected class NotificationFetchListener implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
-    {
-        @Override public void onDTOReceived(NotificationKey key, NotificationDTO value)
-        {
-            linkWith(value, true);
-        }
-
-        @Override public void onErrorThrown(NotificationKey key, Throwable error)
-        {
-            THToast.show(new THException(error));
-        }
-    }
-
-    private void linkWith(NotificationDTO notificationDTO, boolean andDisplay)
-    {
-        this.notificationDTO = notificationDTO;
-
-        if (andDisplay)
-        {
-            display(notificationDTO);
-        }
     }
 
     //<editor-fold desc="Navigation">

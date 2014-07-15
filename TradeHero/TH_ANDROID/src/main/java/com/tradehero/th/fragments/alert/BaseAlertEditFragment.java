@@ -50,6 +50,7 @@ import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import timber.log.Timber;
 
@@ -701,13 +702,13 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected class BaseAlertEditSecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
         {
             hideDialog();
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
             hideDialog();
             THToast.show(new THException(error));

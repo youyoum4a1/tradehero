@@ -22,8 +22,8 @@ import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.base.Navigator;
@@ -71,8 +71,8 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
     private SearchTextWatcher mSearchTextWatcher;
 
     private SecurityItemViewAdapterNew<SecurityCompactDTO> securityItemViewAdapter;
-    private Map<Integer, List<SecurityCompactDTO>> pagedSecurityIds;
-    private Map<Integer, DTOCacheNew.Listener<SecurityListType, SecurityIdList>> securitySearchListeners;
+    private Map<Integer, List<SecurityCompactDTO>> pagedSecurityCompacts;
+    private Map<Integer, DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>> securitySearchListeners;
     private SecurityCompactDTO selectedItem;
 
     private Runnable requestDataTask;
@@ -108,7 +108,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        pagedSecurityIds = new HashMap<>();
+        pagedSecurityCompacts = new HashMap<>();
         securitySearchListeners = new HashMap<>();
         mSearchText = getSearchString(getArguments());
         mSearchText = getSearchString(savedInstanceState);
@@ -230,7 +230,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
     protected void startAnew()
     {
         detachSecuritySearchCache();
-        this.pagedSecurityIds.clear();
+        this.pagedSecurityCompacts.clear();
         if (nearEndScrollListener != null)
         {
             nearEndScrollListener.lowerEndFlag();
@@ -260,7 +260,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
         }
 
         Integer lastPageInAdapter = securityItemViewAdapter.getLastPageLoaded();
-        if ((lastPageInAdapter == null && pagedSecurityIds.containsKey(FIRST_PAGE)) ||
+        if ((lastPageInAdapter == null && pagedSecurityCompacts.containsKey(FIRST_PAGE)) ||
                 lastPageInAdapter != null)
         {
             if (lastPageInAdapter == null)
@@ -268,9 +268,9 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
                 lastPageInAdapter = FIRST_PAGE - 1;
             }
 
-            while (pagedSecurityIds.containsKey(++lastPageInAdapter))
+            while (pagedSecurityCompacts.containsKey(++lastPageInAdapter))
             {
-                securityItemViewAdapter.addPage(lastPageInAdapter, pagedSecurityIds.get(lastPageInAdapter));
+                securityItemViewAdapter.addPage(lastPageInAdapter, pagedSecurityCompacts.get(lastPageInAdapter));
             }
             securityItemViewAdapter.notifyDataSetChanged();
         }
@@ -293,11 +293,11 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
 
     protected boolean hasEmptyResult()
     {
-        if (!pagedSecurityIds.containsKey(FIRST_PAGE))
+        if (!pagedSecurityCompacts.containsKey(FIRST_PAGE))
         {
             return false;
         }
-        List<SecurityCompactDTO> firstPage = pagedSecurityIds.get(FIRST_PAGE);
+        List<SecurityCompactDTO> firstPage = pagedSecurityCompacts.get(FIRST_PAGE);
         return  firstPage == null || firstPage.size() == 0;
     }
 
@@ -308,12 +308,12 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
 
     protected boolean hasData(int page)
     {
-        return pagedSecurityIds.containsKey(page);
+        return pagedSecurityCompacts.containsKey(page);
     }
 
     protected boolean isLast(int page)
     {
-        return hasData(page) && pagedSecurityIds.get(page) == null;
+        return hasData(page) && pagedSecurityCompacts.get(page) == null;
     }
 
     protected boolean isRequesting()
@@ -328,7 +328,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
 
     protected void detachSecuritySearchCache()
     {
-        for (DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener : securitySearchListeners.values())
+        for (DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener : securitySearchListeners.values())
         {
             securityCompactListCache.get().unregister(listener);
         }
@@ -337,7 +337,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
 
     protected void detachSecuritySearchCache(int page)
     {
-        DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener = securitySearchListeners.get(page);
+        DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener = securitySearchListeners.get(page);
         if (listener != null)
         {
             securityCompactListCache.get().unregister(listener);
@@ -373,7 +373,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
         {
             SecurityListType searchSecurityListType = makeSearchSecurityListType(pageToLoad);
             detachSecuritySearchCache(pageToLoad);
-            DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener = createSecurityIdListCacheListener();
+            DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener = createSecurityIdListCacheListener();
             securityCompactListCache.get().register(searchSecurityListType, listener);
             securitySearchListeners.put(pageToLoad, listener);
             securityCompactListCache.get().getOrFetchAsync(searchSecurityListType);
@@ -491,26 +491,25 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private DTOCacheNew.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
+    private DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityIdListCacheListener()
     {
         return new SecurityIdListCacheListener();
     }
 
     private class SecurityIdListCacheListener
-            implements DTOCacheNew.Listener<SecurityListType, SecurityIdList>
+            implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
     {
         @Override
-        public void onDTOReceived(SecurityListType key, SecurityIdList value)
+        public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
             Timber.d("Page loaded: %d", key.getPage());
-            List<SecurityCompactDTO> fleshedValues = securityCompactCache.get().get(value);
-            pagedSecurityIds.put(key.getPage(), fleshedValues);
+            pagedSecurityCompacts.put(key.getPage(), value);
             securitySearchListeners.remove(key.getPage());
 
             loadAdapterWithAvailableData();
 
             nearEndScrollListener.lowerEndFlag();
-            if (value == null || value.size() == 0)
+            if (value.size() == 0)
             {
                 nearEndScrollListener.deactivateEnd();
                 if (key.getPage() == FIRST_PAGE)
@@ -521,7 +520,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
             localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
         }
 
-        @Override public void onErrorThrown(SecurityListType key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
             securitySearchListeners.remove(key.getPage());
             nearEndScrollListener.lowerEndFlag();

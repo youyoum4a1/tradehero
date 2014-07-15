@@ -10,7 +10,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
@@ -26,8 +25,10 @@ import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.dagger.ForUser;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -39,8 +40,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
 
-    @Inject protected LocalyticsSession localyticsSession;
-
+    @Inject protected Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject @ForUser SharedPreferences preferences;
 
@@ -158,7 +158,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
+                thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Leaderboard_Back);
                 break;
             case R.id.button_leaderboard_filter:
                 pushFilterFragmentIn();
@@ -374,6 +374,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
+            thLocalyticsSessionLazy.get().tagEventCustom(LocalyticsConstants.PremiumFollow_Success,
+                    LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Leaderboard);
         }
     }
 }

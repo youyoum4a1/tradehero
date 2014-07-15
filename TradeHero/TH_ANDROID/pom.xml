@@ -276,6 +276,7 @@
     <dependency>
       <groupId>com.squareup.retrofit</groupId>
       <artifactId>retrofit</artifactId>
+      <!-- Use 1.6.2-SNAPSHOT or more recent when available -->
       <version>1.5.1-TradeHero</version>
     </dependency>
 

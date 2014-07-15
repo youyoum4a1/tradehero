@@ -166,9 +166,7 @@ public class ExtraTileAdapter extends BaseAdapter
         itemHeight = mPref.getInt("trending_item_height", 0);
         if (itemHeight != 0 && convertView.getHeight() != itemHeight)
         {
-            //use image well but convert not well
-            ImageView image = (ImageView)convertView;
-            ViewGroup.LayoutParams lp = image.getLayoutParams();
+            ViewGroup.LayoutParams lp = convertView.getLayoutParams();
             lp.height = itemHeight;
         }
 

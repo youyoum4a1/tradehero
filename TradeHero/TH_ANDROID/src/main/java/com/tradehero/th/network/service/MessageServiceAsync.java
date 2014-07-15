@@ -2,8 +2,8 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
-import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -21,7 +21,7 @@ interface MessageServiceAsync
     void getMessageHeaders(
             @Query("page") int page,
             @Query("perPage") int perPage,
-            Callback<ReadablePaginatedDTO<MessageHeaderDTO>> callback);
+            Callback<ReadablePaginatedMessageHeaderDTO> callback);
 
     @GET("/messages/{discussionType}/{senderId}")
     void getMessageHeaders(
@@ -29,7 +29,7 @@ interface MessageServiceAsync
             @Path("senderId") Integer senderId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<ReadablePaginatedDTO<MessageHeaderDTO>> callback);
+            Callback<ReadablePaginatedMessageHeaderDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get Message Header">

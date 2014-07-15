@@ -34,11 +34,6 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         }
     }
 
-    @Override public boolean isAutoTranslate()
-    {
-        return true;
-    }
-
     //<editor-fold desc="Display Methods">
     @Override public void display()
     {

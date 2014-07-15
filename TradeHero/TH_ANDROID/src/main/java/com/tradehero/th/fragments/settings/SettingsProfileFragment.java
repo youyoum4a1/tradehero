@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -45,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -229,12 +231,12 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     {
         return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
             {
                 profileView.populate(value);
             }
 
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
             {
                 THToast.show(new THException(error));
             }
@@ -321,7 +323,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     protected void askImageFromCamera()
     {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, REQUEST_CAMERA);
+        try
+        {
+            startActivityForResult(cameraIntent, REQUEST_CAMERA);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            THToast.show(R.string.error_launch_camera);
+        }
     }
 
     @Override public void notifyValidation(ValidationMessage message)

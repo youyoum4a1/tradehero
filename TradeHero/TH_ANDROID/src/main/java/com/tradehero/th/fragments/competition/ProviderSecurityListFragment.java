@@ -21,7 +21,7 @@ import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
@@ -222,8 +222,8 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     private void pushWizardElement()
     {
         Bundle args = new Bundle();
-        args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
-        args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
+        CompetitionWebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
+        CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
         this.webViewFragment = getDashboardNavigator().pushFragment(
                 CompetitionWebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
@@ -244,7 +244,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected class ProviderSecurityListFragmentProviderCacheListener implements DTOCacheNew.Listener<ProviderId, ProviderDTO>
     {
-        @Override public void onDTOReceived(ProviderId key, ProviderDTO value)
+        @Override public void onDTOReceived(@NotNull ProviderId key, @NotNull ProviderDTO value)
         {
             if (key.equals(ProviderSecurityListFragment.this.providerId))
             {
@@ -252,7 +252,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             }
         }
 
-        @Override public void onErrorThrown(ProviderId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull ProviderId key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_info));
         }
@@ -260,7 +260,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected class ProviderSecurityListLoaderCallback extends SecurityListLoaderCallback
     {
-        @Override public Loader<SecurityIdList> onCreateLoader(int id, Bundle args)
+        @Override public Loader<SecurityCompactDTOList> onCreateLoader(int id, Bundle args)
         {
             if (id == getSecurityIdListLoaderId())
             {

@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.loaders.FriendListLoader;

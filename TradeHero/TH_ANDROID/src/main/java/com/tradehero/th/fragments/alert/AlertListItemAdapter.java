@@ -14,6 +14,8 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, AlertItemView>
@@ -26,17 +28,19 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
 
     protected final int alertResId;
 
-    public AlertListItemAdapter(Context context, int alertResId)
+    //<editor-fold desc="Constructors">
+    public AlertListItemAdapter(@NotNull Context context, int alertResId)
     {
         super(context);
         this.alertResId = alertResId;
 
         DaggerUtils.inject(this);
     }
+    //</editor-fold>
 
-    @Override protected Set<AlertCompactDTO> createSet(Collection<AlertCompactDTO> objects)
+    @Override @NotNull protected Set<AlertCompactDTO> createSet(@Nullable Collection<AlertCompactDTO> objects)
     {
-        return new TreeSet<>(new Comparator<AlertCompactDTO>()
+        Set<AlertCompactDTO> set = new TreeSet<>(new Comparator<AlertCompactDTO>()
         {
             @Override public int compare(AlertCompactDTO lhs, AlertCompactDTO rhs)
             {
@@ -70,6 +74,11 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
                 return 1;
             }
         });
+        if (objects != null)
+        {
+            set.addAll(objects);
+        }
+        return set;
     }
 
     @Override protected int getViewResId(int position)

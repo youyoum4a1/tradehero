@@ -53,12 +53,6 @@ interface LeaderboardServiceAsync
     void getUserOnLeaderboard(
             @Path("leaderboardId") int leaderboardId,
             @Path("userId") int userId,
-            Callback<LeaderboardDTO> callback);
-
-    @Deprecated @GET("/leaderboards/{leaderboardId}/users/{userId}")
-    void getUserOnLeaderboard(
-            @Path("leaderboardId") int leaderboardId,
-            @Path("userId") int userId,
             @Query("sortType") Integer sortType,
             Callback<LeaderboardDTO> callback);
     //</editor-fold>

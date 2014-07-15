@@ -1,8 +1,10 @@
 package com.tradehero.th.api.trade;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
 
 public class TradeDTO implements DTO
 {
@@ -26,12 +28,18 @@ public class TradeDTO implements DTO
 
     public String commentText;
 
+    //<editor-fold desc="These need to be set on client side, in ServiceWrapper">
+    public int userId;
+    public int portfolioId;
+    public int positionId;
+    //</editor-fold>
+
     public TradeDTO()
     {
     }
 
-    public TradeId getTradeId()
+    @JsonIgnore @NotNull public OwnedTradeId getOwnedTradeId()
     {
-        return new TradeId(id);
+        return new OwnedTradeId(userId, portfolioId, positionId, id);
     }
 }

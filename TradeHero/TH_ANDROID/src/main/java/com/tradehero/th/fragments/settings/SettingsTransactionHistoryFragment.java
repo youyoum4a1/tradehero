@@ -12,15 +12,15 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserTransactionHistoryIdList;
+import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.user.UserTransactionHistoryCache;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
@@ -29,12 +29,11 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     private ProgressDialog progressDialog;
 
     @Inject UserTransactionHistoryListCache userTransactionHistoryListCache;
-    @Inject UserTransactionHistoryCache userTransactionHistoryCache;
     @Inject CurrentUserId currentUserId;
     @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
 
-    protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList> transactionListCacheListener;
+    protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryDTOList> transactionListCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -117,21 +116,21 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         userTransactionHistoryListCache.getOrFetchAsync(key);
     }
 
-    protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList> createTransactionHistoryListener()
+    protected DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryDTOList> createTransactionHistoryListener()
     {
         return new SettingsTransactionHistoryListListener();
     }
 
-    protected class SettingsTransactionHistoryListListener implements DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryIdList>
+    protected class SettingsTransactionHistoryListListener implements DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryDTOList>
     {
-        @Override public void onDTOReceived(UserTransactionHistoryListType key, UserTransactionHistoryIdList value)
+        @Override public void onDTOReceived(@NotNull UserTransactionHistoryListType key, @NotNull UserTransactionHistoryDTOList value)
         {
-            transactionListViewAdapter.setItems(userTransactionHistoryCache.get(value));
+            transactionListViewAdapter.setItems(value);
             transactionListViewAdapter.notifyDataSetChanged();
             progressDialog.hide();
         }
 
-        @Override public void onErrorThrown(UserTransactionHistoryListType key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserTransactionHistoryListType key, @NotNull Throwable error)
         {
             THToast.show("Unable to fetch transaction history. Please try again later.");
             progressDialog.hide();

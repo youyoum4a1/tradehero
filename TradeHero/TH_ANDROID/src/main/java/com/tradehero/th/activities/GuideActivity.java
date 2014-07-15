@@ -18,13 +18,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -67,13 +65,13 @@ public class GuideActivity extends Activity
             Timber.e(e, null);
         }
 
-        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().open();
         localyticsSession.get().tagScreen(LocalyticsConstants.Splash);
     }
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        localyticsSession.get().close();
         localyticsSession.get().upload();
         super.onPause();
     }
