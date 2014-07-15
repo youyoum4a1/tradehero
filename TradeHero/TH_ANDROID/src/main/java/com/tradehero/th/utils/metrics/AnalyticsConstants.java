@@ -128,9 +128,7 @@ public class AnalyticsConstants
     //public static final String CHANNEL_MAP_KEY = "channel";
     public static final String HAS_COMMENT_MAP_KEY = "hasComment";//
     public static final String PRICE_SELECT_METHOD = "lastSelectBy";//
-    public static final String METHOD_MAP_KEY = "method";
     public static final String PROVIDER_ID_MAP_KEY = "providerId";//
     public static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
     public static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
-    public static final String TYPE_MAP_KEY = "type";
 }
