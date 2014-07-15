@@ -8,6 +8,7 @@ import com.tradehero.th.api.home.HomeContentDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.user.auth.CredentialsDTO;
+import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.home.HomeContentCache;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
@@ -20,6 +21,7 @@ public final class HomeWebView extends WebView
 {
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
+    @Inject DTOCacheUtil dtoCacheUtil;
 
     private DTOCacheNew.Listener<UserBaseKey, HomeContentDTO> homeContentCacheListener;
 
@@ -104,6 +106,7 @@ public final class HomeWebView extends WebView
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
         {
             reloadWebView(value);
+            dtoCacheUtil.initialPrefetches();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)

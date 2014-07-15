@@ -503,7 +503,7 @@ public class TrendingFragment extends SecurityListFragment
                 AppTiming.dashboardCreate - AppTiming.splashCreate,
                 AppTiming.trendingFilled - AppTiming.dashboardCreate);
 
-        dtoCacheUtil.initialPrefetches();
+        //dtoCacheUtil.initialPrefetches();
     }
 
     private void refreshAdapterWithTiles(boolean refreshTileTypes)
