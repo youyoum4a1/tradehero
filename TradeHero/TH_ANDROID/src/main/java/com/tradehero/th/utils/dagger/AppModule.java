@@ -1,7 +1,6 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-import com.squareup.otto.Bus;
 import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
@@ -423,9 +422,5 @@ public class AppModule
     @Provides @Singleton Application provideApplication()
     {
         return application;
-    }
-
-    @Provides @Singleton Bus provideApplicationBus() {
-        return new Bus();
     }
 }
