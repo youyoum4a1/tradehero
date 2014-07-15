@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 @Singleton public class THLocalyticsSession extends LocalyticsSession
 {
     public static final String SECURITY_ID_FORMAT = "%s:%s";
