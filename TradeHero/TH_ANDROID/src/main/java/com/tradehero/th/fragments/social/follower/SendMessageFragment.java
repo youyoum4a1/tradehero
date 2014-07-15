@@ -43,7 +43,7 @@ import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -101,7 +101,7 @@ public class SendMessageFragment extends DashboardFragment
         middleCallbackSendMessages = new ArrayList<>();
 
         Timber.d("onCreate messageType:%s,discussionType:%s", messageType, discussionType);
-        thLocalyticsSession.tagEvent(LocalyticsConstants.MessageComposer_Show);
+        thLocalyticsSession.tagEvent(AnalyticsConstants.MessageComposer_Show);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -456,7 +456,7 @@ public class SendMessageFragment extends DashboardFragment
             dismissDialog(progressDialog);
             invalidateMessageCache();
             THToast.show(getActivity().getString(R.string.broadcast_success));
-            thLocalyticsSession.tagEventType(LocalyticsConstants.MessageComposer_Send, messageType.localyticsResource);
+            thLocalyticsSession.tagEventType(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource);
             thLocalyticsSession.upload();
             //TODO close me?
             closeMe();

@@ -62,7 +62,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -907,8 +907,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             alertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
-            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen,
-                    LocalyticsConstants.Profile);
+            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.FollowedFromScreen,
+                    AnalyticsConstants.Profile);
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -964,8 +964,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 linkWith(currentUserProfileDTO, true);
             }
             updateBottomButton();
-            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen,
-                    LocalyticsConstants.Profile);
+            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.FollowedFromScreen,
+                    AnalyticsConstants.Profile);
         }
     }
 
@@ -976,8 +976,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             pushPrivateMessageFragment();
-            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen,
-                    LocalyticsConstants.Profile);
+            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.FollowedFromScreen,
+                    AnalyticsConstants.Profile);
         }
     }
 

@@ -25,7 +25,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
@@ -115,7 +115,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
      */
     public void showFollowDialog()
     {
-        thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Positions_Follow);
+        thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Positions_Follow);
         detachFollowDialogCombo();
         followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
@@ -179,8 +179,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
-            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen,
-                    LocalyticsConstants.PositionList);
+            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.FollowedFromScreen,
+                    AnalyticsConstants.PositionList);
         }
 
         @Override public void failure(RetrofitError retrofitError)

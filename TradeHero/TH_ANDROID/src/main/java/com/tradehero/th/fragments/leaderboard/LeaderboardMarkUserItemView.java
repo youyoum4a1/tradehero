@@ -47,7 +47,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
@@ -514,17 +514,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 // TODO right now the icon is gone
                 break;
             case R.id.leaderboard_user_item_open_profile:
-                thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Leaderboard_Profile);
+                thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Leaderboard_Profile);
                 handleOpenProfileButtonClicked();
                 break;
 
             case R.id.leaderboard_user_item_open_positions_list:
-                thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Leaderboard_Positions);
+                thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Leaderboard_Positions);
                 handleOpenPositionListClicked();
                 break;
 
             case R.id.leaderboard_user_item_follow:
-                thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Leaderboard_Follow);
+                thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Leaderboard_Follow);
                 detachFollowDialogCombo();
                 followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER,
@@ -557,8 +557,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             alertDialogUtilLazy.get().dismissProgressDialog();
             LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.FreeFollow_Success, LocalyticsConstants.FollowedFromScreen,
-                    LocalyticsConstants.Leaderboard);
+            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.FollowedFromScreen,
+                    AnalyticsConstants.Leaderboard);
         }
 
         @Override public void failure(RetrofitError retrofitError)

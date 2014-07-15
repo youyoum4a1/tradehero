@@ -26,7 +26,7 @@ import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -184,7 +184,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     {
         if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
         {
-            localyticsSession.tagEvent(LocalyticsConstants.Monitor_BuySell);
+            localyticsSession.tagEvent(AnalyticsConstants.Monitor_BuySell);
 
             SecurityMediaDTO flavorSecurityForDisplay = ((TimelineItemDTO) abstractDiscussionCompactDTO).getFlavorSecurityForDisplay();
             if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
@@ -202,7 +202,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
     private void openStockAlertEditor()
     {
-        localyticsSession.tagEvent(LocalyticsConstants.Monitor_Alert);
+        localyticsSession.tagEvent(AnalyticsConstants.Monitor_Alert);
 
         Bundle args = new Bundle();
         AlertCreateFragment.putSecurityId(args, getSecurityId());
@@ -218,12 +218,12 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             WatchlistEditFragment.putSecurityId(args, securityId);
             if (watchlistPositionCache.get().get(securityId) != null)
             {
-                localyticsSession.tagEvent(LocalyticsConstants.Monitor_EditWatchlist);
+                localyticsSession.tagEvent(AnalyticsConstants.Monitor_EditWatchlist);
                 DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
             }
             else
             {
-                localyticsSession.tagEvent(LocalyticsConstants.Monitor_CreateWatchlist);
+                localyticsSession.tagEvent(AnalyticsConstants.Monitor_CreateWatchlist);
                 DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }

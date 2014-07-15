@@ -42,7 +42,7 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.text.DecimalFormat;
@@ -156,7 +156,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                 }
                 morePopupMenu.show();
 
-                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_More_Tap);
+                localyticsSession.tagEvent(AnalyticsConstants.Watchlist_More_Tap);
             }
         };
     }

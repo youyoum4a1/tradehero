@@ -32,7 +32,7 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -91,7 +91,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Store);
+        localyticsSession.tagEvent(AnalyticsConstants.TabBar_Store);
 
         storeItemAdapter.clear();
         storeItemAdapter.addAll(storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS));

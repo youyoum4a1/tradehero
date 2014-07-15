@@ -14,7 +14,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -81,11 +81,11 @@ public class LeaderboardFilterFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterReset);
+                localyticsSession.tagEvent(AnalyticsConstants.Leaderboard_FilterReset);
                 break;
 
             case R.id.btn_leaderboard_filter_confirm:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterDone);
+                localyticsSession.tagEvent(AnalyticsConstants.Leaderboard_FilterDone);
                 returnToLeaderboard();
                 break;
         }
@@ -96,7 +96,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterShow);
+        localyticsSession.tagEvent(AnalyticsConstants.Leaderboard_FilterShow);
     }
 
     @Override public void onPause()

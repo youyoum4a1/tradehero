@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.facebook.FacebookException;
@@ -50,7 +49,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -317,7 +316,7 @@ public class InviteFriendFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.Referrals_Settings);
+        localyticsSession.tagEvent(AnalyticsConstants.Referrals_Settings);
 
         getProgressDialog().show();
 

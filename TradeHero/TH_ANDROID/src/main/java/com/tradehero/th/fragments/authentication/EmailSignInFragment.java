@@ -24,7 +24,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
@@ -52,8 +52,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     {
         super.onCreate(savedInstanceState);
         DaggerUtils.inject(this);
-        localyticsSession.get().tagScreen(LocalyticsConstants.Login_Form);
-        localyticsSession.get().tagEvent(LocalyticsConstants.LoginFormScreen);
+        localyticsSession.get().tagScreen(AnalyticsConstants.Login_Form);
+        localyticsSession.get().tagEvent(AnalyticsConstants.LoginFormScreen);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

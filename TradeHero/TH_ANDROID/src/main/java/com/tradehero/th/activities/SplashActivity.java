@@ -26,7 +26,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.dagger.UxModule;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.Timer;
@@ -95,7 +95,7 @@ public class SplashActivity extends SherlockActivity
         initialAsyncTask.execute();
 
         localyticsSession.get().open();
-        localyticsSession.get().tagScreen(LocalyticsConstants.Loading);
+        localyticsSession.get().tagScreen(AnalyticsConstants.Loading);
 
         AppEventsLogger.activateApp(this, facebookAppId);
 
@@ -122,8 +122,8 @@ public class SplashActivity extends SherlockActivity
 
     protected void initialisation()
     {
-        localyticsSession.get().tagEvent(LocalyticsConstants.AppLaunch);
-        localyticsSession.get().tagEvent(LocalyticsConstants.LoadingScreen);
+        localyticsSession.get().tagEvent(AnalyticsConstants.AppLaunch);
+        localyticsSession.get().tagEvent(AnalyticsConstants.LoadingScreen);
 
         if (firstLaunchPreference.get())
         {

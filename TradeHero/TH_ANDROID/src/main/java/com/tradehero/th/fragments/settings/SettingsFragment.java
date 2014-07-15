@@ -73,7 +73,7 @@ import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.dagger.ForPicasso;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.List;
@@ -305,7 +305,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
+        localyticsSession.tagEvent(AnalyticsConstants.TabBar_Settings);
         if (socialNetworkToConnectTo != null)
         {
             changeSharing(socialNetworkToConnectTo, true);
@@ -952,7 +952,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private void handleFaqClicked()
     {
-        localyticsSession.tagEvent(LocalyticsConstants.Settings_FAQ);
+        localyticsSession.tagEvent(AnalyticsConstants.Settings_FAQ);
 
         String faqUrl = getResources().getString(R.string.th_faq_url);
         Bundle bundle = new Bundle();

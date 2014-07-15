@@ -22,7 +22,7 @@ import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import java.util.Date;
@@ -123,7 +123,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onResume()
     {
         super.onResume();
-        localyticsSession.tagEvent(LocalyticsConstants.FriendsLeaderboard_Filter_FoF);
+        localyticsSession.tagEvent(AnalyticsConstants.FriendsLeaderboard_Filter_FoF);
         fetchLeaderboardFriends();
         mProgress.setVisibility(View.VISIBLE);
     }

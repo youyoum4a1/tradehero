@@ -10,14 +10,13 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.staff.StaffDTO;
 import com.tradehero.th.models.staff.StaffDTOFactory;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
@@ -70,7 +69,7 @@ public class AboutFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.Settings_About);
+        localyticsSession.tagEvent(AnalyticsConstants.Settings_About);
 
         AnimationSet set = new AnimationSet(false);
 

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
@@ -41,6 +41,6 @@ public class SignInFragment extends SignInOrUpFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.SignIn);
+        localyticsSession.tagEvent(AnalyticsConstants.SignIn);
     }
 }

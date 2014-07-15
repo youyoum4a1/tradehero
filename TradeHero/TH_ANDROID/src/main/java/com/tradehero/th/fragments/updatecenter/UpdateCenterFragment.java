@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -39,7 +38,7 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.List;
@@ -148,7 +147,7 @@ public class UpdateCenterFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case R.id.menu_private:
-                localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Message);
+                localyticsSession.tagEvent(AnalyticsConstants.Notification_New_Message);
                 ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
                         .pushFragment(AllRelationsFragment.class);
                 return true;
@@ -202,7 +201,7 @@ public class UpdateCenterFragment extends DashboardFragment
 
     private void jumpToSendBroadcastMessage()
     {
-        localyticsSession.tagEvent(LocalyticsConstants.Notification_New_Broadcast);
+        localyticsSession.tagEvent(AnalyticsConstants.Notification_New_Broadcast);
         Bundle args = new Bundle();
         args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
                 DiscussionType.BROADCAST_MESSAGE.value);

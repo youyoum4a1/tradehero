@@ -32,7 +32,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -517,7 +517,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
                     securityItemViewAdapter.clear();
                 }
             }
-            localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
+            localyticsSession.tagEvent(AnalyticsConstants.SearchResult_Stock);
         }
 
         @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)

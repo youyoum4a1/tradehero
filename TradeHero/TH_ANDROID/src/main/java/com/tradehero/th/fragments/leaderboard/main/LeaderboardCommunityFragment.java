@@ -45,7 +45,7 @@ import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -111,7 +111,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Community);
+        localyticsSession.tagEvent(AnalyticsConstants.TabBar_Community);
 
         // We came back into view so we have to forget the web fragment
         detachWebFragment();
@@ -366,7 +366,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
         {
             DrillDownLeaderboardDefDTO drillDownLeaderboardDefDTO = (DrillDownLeaderboardDefDTO) leaderboardDefDTO;
-            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
+            localyticsSession.tagEvent(AnalyticsConstants.Leaderboards_DrillDown);
             if (drillDownLeaderboardDefDTO instanceof SectorContainerLeaderboardDefDTO)
             {
                 pushLeaderboardDefSector();
@@ -382,7 +382,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         }
         else
         {
-            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
+            localyticsSession.tagEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard);
             pushLeaderboardListViewFragment(leaderboardDefDTO);
         }
     }

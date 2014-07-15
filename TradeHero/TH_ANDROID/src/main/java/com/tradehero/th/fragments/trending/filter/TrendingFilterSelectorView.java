@@ -16,7 +16,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,8 +32,8 @@ public class TrendingFilterSelectorView extends RelativeLayout
     private TrendingFilterSpinnerIconAdapterNew mExchangeSelectionAdapter;
 
     @NotNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
+    @Inject Analytics analytics;
     private OnFilterTypeChangedListener changedListener;
-    @Inject THLocalyticsSession localyticsSession;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterSelectorView(Context context)
@@ -156,7 +157,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     private void trackChangeEvent(TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
-        localyticsSession.tagTrendingFilterEvent(trendingFilterTypeDTO);
+        analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
     }
 
     protected AdapterView.OnItemSelectedListener createTrendingFilterSelectorViewSpinnerListener()

@@ -27,7 +27,7 @@ import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPr
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.common.annotation.ForUser;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.Date;
@@ -159,7 +159,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                thLocalyticsSessionLazy.get().tagEvent(LocalyticsConstants.Leaderboard_Back);
+                thLocalyticsSessionLazy.get().tagEvent(AnalyticsConstants.Leaderboard_Back);
                 break;
             case R.id.button_leaderboard_filter:
                 pushFilterFragmentIn();
@@ -374,8 +374,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
-            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.PremiumFollow_Success,
-                    LocalyticsConstants.FollowedFromScreen, LocalyticsConstants.Leaderboard);
+            thLocalyticsSessionLazy.get().tagSingleEvent(AnalyticsConstants.PremiumFollow_Success,
+                    AnalyticsConstants.FollowedFromScreen, AnalyticsConstants.Leaderboard);
         }
     }
 }

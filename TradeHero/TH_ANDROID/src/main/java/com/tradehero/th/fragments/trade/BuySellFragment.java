@@ -96,8 +96,11 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.BuySellEvent;
+import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
+import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Set;
@@ -114,8 +117,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         implements SecurityAlertAssistant.OnPopulatedListener, ViewPager.OnPageChangeListener,
         WithTutorial
 {
-    public static final String EVENT_CHART_IMAGE_CLICKED =
-            BuySellFragment.class.getName() + ".chartButtonClicked";
+    public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
     private static final String BUNDLE_KEY_SELECTED_PAGE_INDEX = ".selectedPage";
 
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;
@@ -171,7 +173,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
-    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
@@ -193,8 +194,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private int mQuantity = 0;
     private Bundle desiredArguments;
-    private String mLastSelectBy;
-    private Integer mTempProviderId;
+    private String mPriceSelectionMethod;
 
     protected SecurityIdList watchedList;
 
@@ -206,6 +206,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     SocialLinkHelper socialLinkHelper;
     @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
+
+    @Inject Analytics analytics;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -322,7 +324,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onStart()
     {
         super.onStart();
-        thLocalyticsSessionLazy.get().tagChartTimeEvent(BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan(), securityId);
+        analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
     }
 
     @Override public void onResume()
@@ -570,7 +572,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
     {
         super.linkWith(portfolioCompactDTO, andDisplay);
-        mTempProviderId = portfolioCompactDTO.providerId;
         clampBuyQuantity(andDisplay);
         clampSellQuantity(andDisplay);
         if (andDisplay)
@@ -1331,7 +1332,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     mQuantity = progress;
                     mQuantityTextView.setText(String.valueOf(progress));
                     updateBuySellDialog();
-                    mLastSelectBy = LocalyticsConstants.Slider;
+                    mPriceSelectionMethod = AnalyticsConstants.Slider;
                 }
             }
         };
@@ -1594,20 +1595,20 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void buySellReport()
     {
-        boolean hasComment = !mCommentsEditText.getText().toString().isEmpty();
-        boolean shareToFacebook = mBtnShareFacebook == null ? false : mBtnShareFacebook.isChecked();
-        boolean shareToTwitter = mBtnShareTwitter == null ? false : mBtnShareTwitter.isChecked();
-        boolean shareToLinkedIn = mBtnShareLinkedIn.isChecked();
-        boolean shareToWeChat = mBtnShareWeChat.isChecked();
-        boolean shareToWeibo = mBtnShareWb.isChecked();
-        String symbol = securityCompactDTO.exchange;
-        if (mTempProviderId == null)
-        {
-            mTempProviderId = 0;
-        }
-        thLocalyticsSessionLazy.get().tagSharingOptionsEvent(isTransactionTypeBuy, hasComment,
-                mLastSelectBy, shareToFacebook, shareToTwitter, shareToLinkedIn,
-                shareToWeChat, shareToWeibo, symbol, mTempProviderId);
+        SharingOptionsEvent sharingOptionsEvent = new SharingOptionsEvent.Builder()
+                .setBuyEvent(isTransactionTypeBuy)
+                .setSecurityId(securityId)
+                .setProviderId(portfolioCompactDTO.getProviderIdKey())
+                .setPriceSelectionMethod(mPriceSelectionMethod)
+                .hasComment(mCommentsEditText != null && !mCommentsEditText.getText().toString().isEmpty())
+                .facebookEnabled(mBtnShareFacebook != null && mBtnShareFacebook.isChecked())
+                .twitterEnabled(mBtnShareTwitter != null && mBtnShareTwitter.isChecked())
+                .linkedInEnabled(mBtnShareLinkedIn != null && mBtnShareLinkedIn.isChecked())
+                .wechatEnabled(mBtnShareWeChat != null && mBtnShareWeChat.isChecked())
+                .weiboEnabled(mBtnShareWb != null && mBtnShareWb.isChecked())
+                .build();
+
+        analytics.fireEvent(sharingOptionsEvent);
     }
 
     private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum)
@@ -1961,7 +1962,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void trackBuyClickEvent()
     {
-        thLocalyticsSessionLazy.get().tagBuySellEvent(isTransactionTypeBuy, securityId);
+        analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
     }
 
     private QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
@@ -1992,7 +1993,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 Integer selectedQuantity = isTransactionTypeBuy ? mBuyQuantity : mSellQuantity;
                 mQuantity = selectedQuantity != null ? selectedQuantity : 0;
                 updateBuySellDialog();
-                mLastSelectBy = LocalyticsConstants.MoneySelection;
+                mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
             }
         };
     }

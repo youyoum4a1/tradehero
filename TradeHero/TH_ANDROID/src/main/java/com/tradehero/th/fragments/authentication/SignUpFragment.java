@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 
@@ -45,14 +45,14 @@ public class SignUpFragment extends SignInOrUpFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.SignUp);
+        localyticsSession.tagEvent(AnalyticsConstants.SignUp);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         if (item.getItemId() == android.R.id.home)
         {
-            localyticsSession.tagEvent(LocalyticsConstants.SignUp_Back);
+            localyticsSession.tagEvent(AnalyticsConstants.SignUp_Back);
         }
 
         return super.onOptionsItemSelected(item);

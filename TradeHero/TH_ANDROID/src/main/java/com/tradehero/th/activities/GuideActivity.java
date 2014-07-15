@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class GuideActivity extends Activity
         }
 
         localyticsSession.get().open();
-        localyticsSession.get().tagScreen(LocalyticsConstants.Splash);
+        localyticsSession.get().tagScreen(AnalyticsConstants.Splash);
     }
 
     @Override protected void onPause()
@@ -179,7 +179,7 @@ public class GuideActivity extends Activity
 
     @Override public void onClick(View v)
     {
-        localyticsSession.get().tagEvent(LocalyticsConstants.SplashScreenCancel);
+        localyticsSession.get().tagEvent(AnalyticsConstants.SplashScreenCancel);
         ActivityHelper.launchAuthentication(this);
     }
 
@@ -249,8 +249,8 @@ public class GuideActivity extends Activity
                 imageView.setOnClickListener(null);
             }
             container.addView(view);
-            localyticsSession.get().tagEventMethod(LocalyticsConstants.SplashScreen,
-                    LocalyticsConstants.Screen + String.valueOf(position));
+            localyticsSession.get().tagEventMethod(AnalyticsConstants.SplashScreen,
+                    AnalyticsConstants.Screen + String.valueOf(position));
             return view;
         }
 

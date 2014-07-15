@@ -21,7 +21,7 @@ import com.tradehero.th.fragments.settings.FocusableOnTouchListener;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import java.util.Date;
 import java.util.Map;
@@ -49,9 +49,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
-        localyticsSession.tagScreen(LocalyticsConstants.Register_Form);
-        localyticsSession.tagEvent(LocalyticsConstants.RegisterFormScreen);
-        localyticsSession.tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Email);
+        localyticsSession.tagScreen(AnalyticsConstants.Register_Form);
+        localyticsSession.tagEvent(AnalyticsConstants.RegisterFormScreen);
+        localyticsSession.tagEventMethod(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email);
     }
 
     @Override public int getDefaultViewId()

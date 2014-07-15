@@ -17,7 +17,7 @@ import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +68,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.Settings_TransactionHistory);
+        localyticsSession.tagEvent(AnalyticsConstants.Settings_TransactionHistory);
 
         fetchTransactionList();
     }

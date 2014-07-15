@@ -26,7 +26,7 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
@@ -64,7 +64,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.Settings_Alipay);
+        localyticsSession.tagEvent(AnalyticsConstants.Settings_Alipay);
     }
 
     //<editor-fold desc="ActionBar">

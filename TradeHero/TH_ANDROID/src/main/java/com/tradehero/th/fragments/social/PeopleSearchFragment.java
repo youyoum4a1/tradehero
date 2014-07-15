@@ -33,7 +33,7 @@ import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -516,7 +516,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
                     peopleItemViewAdapterItemViewAdapter.clear();
                 }
             }
-            localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
+            localyticsSession.tagEvent(AnalyticsConstants.SearchResult_Stock);
         }
 
         @Override public void onErrorThrown(@NotNull UserListType key, @NotNull Throwable error)

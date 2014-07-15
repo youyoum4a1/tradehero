@@ -11,7 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +63,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
             @Override public void onClick(View view)
             {
                 setParameters(getStartingFilter(getResources(), perPagedFilteredLeaderboardKey.key), leaderboardDTO);
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_FilterReset);
+                localyticsSession.tagEvent(AnalyticsConstants.Leaderboard_FilterReset);
             }
         });
         displayPerPagedFilteredLeaderboardKey();

@@ -32,7 +32,7 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -282,12 +282,12 @@ public class WatchlistEditFragment extends DashboardFragment
         if (watchlistPositionCache.get().get(securityId) != null)
         {
             setActionBarTitle(getString(R.string.watchlist_edit_title));
-            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Edit);
+            localyticsSession.tagEvent(AnalyticsConstants.Watchlist_Edit);
         }
         else
         {
             setActionBarTitle(getString(R.string.watchlist_add_title));
-            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Add);
+            localyticsSession.tagEvent(AnalyticsConstants.Watchlist_Add);
         }
         querySecurity(securityId, andDisplay);
 
