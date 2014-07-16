@@ -42,22 +42,23 @@ public class Analytics
         closeSession();
     }
 
-    public void openSession()
+    public final Analytics openSession()
     {
-        openSession(null);
+        return openSession(null);
     }
 
-    public final void openSession(Set<String> customDimensions)
+    public final Analytics openSession(Set<String> customDimensions)
     {
         doAction(new OpenSessionAction(customDimensions));
+        return this;
     }
 
-    public void closeSession()
+    public final void closeSession()
     {
         closeSession(null);
     }
 
-    public void closeSession(Set<String> customDimensions)
+    public final void closeSession(Set<String> customDimensions)
     {
         if (!pendingActions.isEmpty())
         {
@@ -98,7 +99,7 @@ public class Analytics
     }
 
     private abstract class HandlerAction
-        implements  Action
+        implements Action
     {
         protected AnalyticsAdapter handler;
 
@@ -140,7 +141,6 @@ public class Analytics
 
     private final class OpenSessionAction extends HandlerActionWithDimensions
     {
-
         public OpenSessionAction(Set<String> customDimensions)
         {
             super(customDimensions);

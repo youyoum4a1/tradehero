@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class TrendingFilterEvent extends AnalyticsEvent
 {
+    static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
+
     private final TrendingFilterTypeDTO trendingFilterTypeDTO;
 
     public TrendingFilterEvent(TrendingFilterTypeDTO trendingFilterTypeDTO)
@@ -19,7 +21,7 @@ public class TrendingFilterEvent extends AnalyticsEvent
         Map<String, String> attributes = super.getAttributes();
         if (attributes != null)
         {
-            attributes.put(AnalyticsConstants.TRENDING_FILTER_CATEGORY_MAP_KEY, trendingFilterTypeDTO.getTrackEventCategory());
+            attributes.put(TRENDING_FILTER_CATEGORY_MAP_KEY, trendingFilterTypeDTO.getTrackEventCategory());
         }
         return attributes;
     }
