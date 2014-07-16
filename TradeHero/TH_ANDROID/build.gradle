@@ -55,6 +55,9 @@ android {
             java {
                 srcDir 'src'
             }
+            aidl {
+                srcDir 'src'
+            }
             res {
                 srcDir 'res'
             }
