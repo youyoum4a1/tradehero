@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import android.view.LayoutInflater;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
@@ -16,6 +15,8 @@ import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +37,13 @@ abstract public class BillingAlertDialogUtil<
                 ProductDetailViewType>>
         extends AlertDialogUtil
 {
-    protected LocalyticsSession localyticsSession;
-    public ActivityUtil activityUtil;
+    public final ActivityUtil activityUtil;
+    private final Analytics analytics;
 
-    public BillingAlertDialogUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil)
+    public BillingAlertDialogUtil(Analytics analytics, ActivityUtil activityUtil)
     {
         super();
-        this.localyticsSession = localyticsSession;
+        this.analytics = analytics;
         this.activityUtil = activityUtil;
     }
 
@@ -111,7 +112,7 @@ abstract public class BillingAlertDialogUtil<
         List<THProductDetailType> desiredSkuDetails = domainInformer.getDetailsOfDomain(skuDomain);
         detailAdapter.setItems(desiredSkuDetails);
 
-        localyticsSession.tagEvent(skuDomain.localyticsShowTag);
+        analytics.addEvent(new SimpleEvent(skuDomain.localyticsShowTag));
 
         return popBuyDialog(requestCode, activity, detailAdapter, titleResId, clickListener);
     }

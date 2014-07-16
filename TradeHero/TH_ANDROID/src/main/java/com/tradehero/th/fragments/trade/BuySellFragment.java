@@ -33,7 +33,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -42,6 +41,7 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -86,8 +86,11 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.BuySellEvent;
+import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
+import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Set;
@@ -101,8 +104,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         implements SecurityAlertAssistant.OnPopulatedListener, ViewPager.OnPageChangeListener,
         WithTutorial
 {
-    public static final String EVENT_CHART_IMAGE_CLICKED =
-            BuySellFragment.class.getName() + ".chartButtonClicked";
+    public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
     private static final String BUNDLE_KEY_SELECTED_PAGE_INDEX = ".selectedPage";
 
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;
@@ -158,7 +160,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
-    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
@@ -180,6 +181,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private int mQuantity = 0;
     private Bundle desiredArguments;
+    //private String mPriceSelectionMethod;
 
     protected SecurityIdList watchedList;
 
@@ -192,6 +194,8 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
 
+    @Inject Analytics analytics;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -199,9 +203,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
     }
 
-    @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
+    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
     {
-        return new BuySellPortfolioCompactListMilestoneListener();
+        return new BuySellPortfolioCompactListFetchListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -307,8 +311,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onStart()
     {
         super.onStart();
-        localyticsSession.tagEvent(LocalyticsConstants.BuySellPanel_Chart,
-                BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan(), securityId);
+        analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
     }
 
     @Override public void onResume()
@@ -1302,7 +1305,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
             }
         });
-
     }
 
     public void shareToWeChat()
@@ -1346,8 +1348,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
         {
-            pushPortfolioFragment(new OwnedPortfolioId(currentUserId.toUserBaseKey(),
-                    securityPositionDetailDTO.portfolio.getPortfolioId()));
+            pushPortfolioFragment(new OwnedPortfolioId(
+                    currentUserId.get(),
+                    securityPositionDetailDTO.portfolio.id));
         }
         else
         {
@@ -1388,10 +1391,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void trackBuyClickEvent()
     {
-        localyticsSession.tagEvent(
-                isTransactionTypeBuy ? LocalyticsConstants.Trade_Buy
-                        : LocalyticsConstants.Trade_Sell,
-                securityId);
+        analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
     }
 
     private void pushStockInfoFragmentIn()
@@ -1401,7 +1401,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (providerId != null)
         {
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
-                    this.providerId.getArgs());
+                    providerId.getArgs());
         }
         getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
     }
@@ -1491,21 +1491,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected class BuySellPortfolioCompactListMilestoneListener
-            extends BasePurchaseManagementPortfolioCompactListRetrievedListener
+    protected class BuySellPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
     {
-        @Override public void onComplete(Milestone milestone)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
-            super.onComplete(milestone);
+            super.onDTOReceived(key, value);
             buildUsedMenuPortfolios();
             setInitialSellQuantityIfCan();
             displayQuickPriceButtonSet();
-        }
-
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            Timber.e("Failed to fetch list of compact portfolio", throwable);
-            THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 

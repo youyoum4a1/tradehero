@@ -287,4 +287,5 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
     //TODO test the value when quote = null
     //TODO test the subtitle - price Info
+    //TODO test on the analytics fired
 }

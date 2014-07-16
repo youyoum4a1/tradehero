@@ -28,6 +28,10 @@
   <string name="settings_misc_sign_out_alert_message">Please wait&#8230;</string>
   <string name="settings_misc_sign_out_failed">Failed to Sign Out</string>
 
+  <string name="settings_translations">Translations</string>
+  <string name="settings_translations_language_preferred">Preferred Language</string>
+  <string name="settings_translations_auto_translate">Auto-Translate</string>
+
   <string name="settings_notifications">Notifications</string>
   <string name="settings_notifications_email">Email Notifications</string>
   <string name="settings_notifications_email_alert_title">Updating Your Email Notification Settings</string>

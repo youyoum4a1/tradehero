@@ -5,6 +5,7 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 
 public class BuyDialogFragment extends AbstractTransactionDialogFragment
 {
@@ -13,6 +14,11 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
     protected BuyDialogFragment()
     {
         super();
+    }
+
+    @Override protected void setBuyEventFor(SharingOptionsEvent.Builder builder)
+    {
+        builder.setBuyEvent(IS_BUY);
     }
 
     @Override protected String getLabel()

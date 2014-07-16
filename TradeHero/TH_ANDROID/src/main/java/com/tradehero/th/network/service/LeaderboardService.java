@@ -47,13 +47,8 @@ public interface LeaderboardService
     @GET("/leaderboards/{leaderboardId}/users/{userId}")
     LeaderboardDTO getUserOnLeaderboard(
             @Path("leaderboardId") int leaderboardId,
-            @Path("userId") int userId);
-
-    @Deprecated @GET("/leaderboards/{leaderboardId}/users/{userId}")
-    LeaderboardDTO getUserOnLeaderboard(
-            @Path("leaderboardId") int leaderboardId,
             @Path("userId") int userId,
-            @Query("sortType") int sortType);
+            @Query("sortType") Integer sortType);
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">

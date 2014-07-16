@@ -31,7 +31,6 @@ import com.tradehero.th.fragments.billing.googleplay.THSKUDetailAdapter;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -62,7 +61,6 @@ public class THIABBillingInteractor
     @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
-    @Inject THLocalyticsSession localyticsSession;
 
     @Inject protected HeroListCache heroListCache;
     @Inject protected UserService userService;

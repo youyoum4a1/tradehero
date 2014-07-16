@@ -108,8 +108,8 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
         this.users = users;
         this.callback = callback;
 
-        Session session = getFacebookSession();
-        //Session session = Session.getActiveSession();
+        //Session session = getFacebookSession();
+        Session session = Session.getActiveSession();
         if (session == null || session.getAccessToken() == null)
         {
             login(userKey);
@@ -160,7 +160,10 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
             userProfileCache.put(userBaseKey, userProfileDTO);
-            sendRequestDialog(currentActivityHolder.getCurrentActivity(), users);
+            if(Session.getActiveSession()!=null)
+            {
+                sendRequestDialog(currentActivityHolder.getCurrentActivity(), users);
+            }
         }
 
         @Override protected void failure(THException ex)
@@ -177,10 +180,10 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
 
     @Inject FacebookAuthenticationProvider facebookAuthenticationProvider;
 
-    private Session getFacebookSession()
-    {
-        return facebookAuthenticationProvider.getSession();
-    }
+    //private Session getFacebookSession()
+    //{
+    //    return facebookAuthenticationProvider.getSession();
+    //}
 
     private void sendRequestDialog(Activity activity, List<UserFriendsDTO> friendsDTOs)
     {
@@ -207,7 +210,8 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
         params.putString("message", messageToFacebookFriends);
         params.putString("to", stringBuilder.toString());
 
-        Session session = getFacebookSession();
+        //Session session = getFacebookSession();
+        Session session = Session.getActiveSession();
         WebDialog requestsDialog = (
                 new WebDialog.RequestsDialogBuilder(activity,
                         session,

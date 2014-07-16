@@ -49,6 +49,9 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -98,11 +101,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialLinkHelperFactory socialLinkHelperFactory;
+    @Inject Analytics analytics;
 
     SocialLinkHelper socialLinkHelper;
     private ProgressDialog mTransactionDialog;
-    private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
 
+    private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
     private PortfolioId portfolioId;
@@ -111,10 +115,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private boolean isTransactionRunning;
     protected Integer mTransactionQuantity;
     protected PositionDTOCompactList positionDTOCompactList;
-    private BuySellTransactionListener buySellTransactionListener;
 
+    private BuySellTransactionListener buySellTransactionListener;
     protected UserProfileDTO userProfileDTO;
+
     private AlertDialog mSocialLinkingDialog;
+    private String mPriceSelectionMethod;
 
     protected abstract String getLabel();
 
@@ -343,6 +349,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     public void onConfirmClicked(View v)
     {
         socialSharePreferenceHelperNew.save();
+        fireBuySellReport();
         launchBuySell();
     }
 
@@ -523,6 +530,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                     return userProfileCopy.liLinked;
                 case WB:
                     return userProfileCopy.wbLinked;
+                case WECHAT:
+                    return null;
                 default:
                     Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
                     return false;
@@ -622,6 +631,30 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         this.userProfileDTO = updatedUserProfileDTO;
     }
 
+    protected void fireBuySellReport()
+    {
+        analytics.fireEvent(getSharingOptionEvent());
+    }
+
+    public SharingOptionsEvent getSharingOptionEvent()
+    {
+        SharingOptionsEvent.Builder builder = new SharingOptionsEvent.Builder()
+                .setSecurityId(securityId)
+                .setProviderId(portfolioCompactDTO.getProviderIdKey())
+                .setPriceSelectionMethod(mPriceSelectionMethod)
+                .hasComment(!mCommentsEditText.getText().toString().isEmpty())
+                .facebookEnabled(shareForTransaction(SocialNetworkEnum.FB))
+                .twitterEnabled(shareForTransaction(SocialNetworkEnum.TW))
+                .linkedInEnabled(shareForTransaction(SocialNetworkEnum.LN))
+                .wechatEnabled(mBtnShareWeChat != null && mBtnShareWeChat.isChecked())
+                .weiboEnabled(mBtnShareWb != null && mBtnShareWb.isChecked());
+        setBuyEventFor(builder);
+
+        return builder.build();
+    }
+
+    protected abstract void setBuyEventFor(SharingOptionsEvent.Builder builder);
+
     @Override public void onDestroy()
     {
         securityCompactDTO = null;
@@ -664,6 +697,10 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
+                if(fromUser)
+                {
+                    mPriceSelectionMethod = AnalyticsConstants.Slider;
+                }
                 mTransactionQuantity = progress;
                 updateTransactionDialogForSeekbar();
             }
@@ -769,6 +806,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 Integer selectedQuantity = mTransactionQuantity;
                 mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
                 updateTransactionDialog();
+                mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
             }
         };
     }
@@ -841,7 +879,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 UserProfileDTO updatedUserProfile)
         {
             //linkWith(updatedUserProfile, true);
-            //waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
             //updateTransactionDialog();
         }
 

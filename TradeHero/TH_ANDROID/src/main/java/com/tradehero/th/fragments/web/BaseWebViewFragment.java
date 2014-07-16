@@ -14,11 +14,13 @@ import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseWebViewFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_URL = BaseWebViewFragment.class.getName() + ".url";
+    private static final String BUNDLE_KEY_URL = BaseWebViewFragment.class.getName() + ".url";
 
     protected WebView webView;
 
@@ -26,6 +28,20 @@ abstract public class BaseWebViewFragment extends DashboardFragment
     protected THIntentPassedListener thIntentPassedListener;
     protected THWebViewClient thWebViewClient;
     protected THWebChromeClient webChromeClient;
+
+    public static void putUrl(@NotNull Bundle args, @NotNull String url)
+    {
+        args.putString(BUNDLE_KEY_URL, url);
+    }
+
+    @Nullable public static String getUrl(@Nullable Bundle args)
+    {
+        if (args != null)
+        {
+            return args.getString(BUNDLE_KEY_URL);
+        }
+        return null;
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -45,16 +61,9 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         loadUrl(getLoadingUrl());
     }
 
-    protected String getLoadingUrl()
+    @Nullable protected String getLoadingUrl()
     {
-        if (getArguments() != null)
-        {
-            return getArguments().getString(BUNDLE_KEY_URL);
-        }
-        else
-        {
-            return null;
-        }
+        return getUrl(getArguments());
     }
 
     protected void initViews(View v)

@@ -7,7 +7,6 @@ import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -47,7 +46,7 @@ public class MessageItemViewTest
     @Test public void testUnreadShowsFlag()
     {
         messageHeaderCache.put(messageHeaderDTO.getDTOKey(), messageHeaderDTO);
-        messageItemView.display(messageHeaderDTO.getDTOKey());
+        messageItemView.display(messageHeaderDTO);
         assertThat(messageItemView.mUnreadFlag.getVisibility()).isEqualTo(View.VISIBLE);
     }
 
@@ -55,7 +54,7 @@ public class MessageItemViewTest
     {
         messageHeaderDTO.unread = false;
         messageHeaderCache.put(messageHeaderDTO.getDTOKey(), messageHeaderDTO);
-        messageItemView.display(messageHeaderDTO.getDTOKey());
+        messageItemView.display(messageHeaderDTO);
         assertThat(messageItemView.mUnreadFlag.getVisibility()).isEqualTo(View.GONE);
     }
 }

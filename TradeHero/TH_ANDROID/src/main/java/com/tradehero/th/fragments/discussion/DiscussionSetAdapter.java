@@ -10,22 +10,27 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class DiscussionSetAdapter
         extends ViewDTOSetAdapter<DiscussionKey, AbstractDiscussionCompactItemViewLinear<DiscussionKey>>
 {
-    public DiscussionSetAdapter(Context context)
+    //<editor-fold desc="Constructors">
+    public DiscussionSetAdapter(@NotNull Context context)
     {
         super(context);
     }
 
-    public DiscussionSetAdapter(Context context,
-            Collection<DiscussionKey> objects)
+    public DiscussionSetAdapter(
+            @NotNull Context context,
+            @Nullable Collection<DiscussionKey> objects)
     {
         super(context, objects);
     }
+    //</editor-fold>
 
-    @Override protected Set<DiscussionKey> createSet(Collection<DiscussionKey> objects)
+    @Override @NotNull protected Set<DiscussionKey> createSet(@Nullable Collection<DiscussionKey> objects)
     {
         Set<DiscussionKey> created = new TreeSet<>(new DiscussionKeyComparatorIdDesc());
         if (objects != null)

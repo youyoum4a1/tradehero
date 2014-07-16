@@ -3,6 +3,7 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.squareup.picasso.LruCache;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.fragments.alert.AlertItemView;
@@ -51,24 +52,11 @@ import javax.inject.Singleton;
 )
 public class CacheModule
 {
-    private static final String USER_PREFERENCE_KEY = "th";
-    private static final String APP_PREFERENCE_KEY = "th_app";
-
     @Provides @Singleton @ForPicasso LruCache providePicassoMemCache(Context context)
     {
         //return new LruMemFileCache(context);
         //return LruMemFileCache.getInstance(context.getApplicationContext());
         return new LruCache(context);
-    }
-
-    @Provides @Singleton @ForUser SharedPreferences provideUserSharePreferences(Context context)
-    {
-        return context.getSharedPreferences(USER_PREFERENCE_KEY, Context.MODE_PRIVATE);
-    }
-
-    @Provides @Singleton @ForApp SharedPreferences provideAPPSharePreferences(Context context)
-    {
-        return context.getSharedPreferences(APP_PREFERENCE_KEY, Context.MODE_PRIVATE);
     }
 
     @Provides @Singleton @SingleCacheMaxSize IntPreference provideDefaultSingleCacheMaxSize(@ForUser SharedPreferences preference)

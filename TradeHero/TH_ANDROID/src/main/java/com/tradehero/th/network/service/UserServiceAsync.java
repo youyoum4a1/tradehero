@@ -11,7 +11,7 @@ import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.WebSignInFormDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
@@ -20,7 +20,6 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
-import java.util.List;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -174,7 +173,7 @@ interface UserServiceAsync
     @GET("/users/{userId}/transactionHistory")
     void getUserTransactions(
             @Path("userId") int userId,
-            Callback<List<UserTransactionHistoryDTO>> callback);
+            Callback<UserTransactionHistoryDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">

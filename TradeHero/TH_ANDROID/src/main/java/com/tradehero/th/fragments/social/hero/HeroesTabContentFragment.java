@@ -450,7 +450,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             if (key.equals(HeroesTabContentFragment.this.followerId))
             {
@@ -458,7 +458,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             }
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e("Could not fetch user profile", error);
             THToast.show(R.string.error_fetch_user_profile);

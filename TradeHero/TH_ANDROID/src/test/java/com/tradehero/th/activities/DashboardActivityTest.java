@@ -59,4 +59,9 @@ public class DashboardActivityTest
         assertThat(activity.getDashboardNavigator().getCurrentFragment())
                 .isInstanceOf(ReplyPrivateMessageFragment.class);
     }
+
+    @Test public void getPackageName_shouldReturnSameValueAppliedToActivityAndContext()
+    {
+        assertThat(activity.getPackageName()).isEqualTo(activity.getApplicationContext().getPackageName());
+    }
 }

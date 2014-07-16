@@ -1,12 +1,12 @@
 package com.tradehero.common.persistence;
 
-import java.util.ArrayList;
+import com.tradehero.common.api.BaseArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 
-public class BaseArrayListHasExpiration<T> extends ArrayList<T>
+public class BaseArrayListHasExpiration<T> extends BaseArrayList<T>
     implements HasExpiration
 {
     @NotNull public Date expirationDate;

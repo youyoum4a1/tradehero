@@ -384,13 +384,13 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             }
         }
 
-        @Override public void onDTOReceived(AlertId key, AlertDTO value)
+        @Override public void onDTOReceived(@NotNull AlertId key, @NotNull AlertDTO value)
         {
             linkWith(value, true);
             finish();
         }
 
-        @Override public void onErrorThrown(AlertId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull AlertId key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_alert);
             Timber.e(error, "Failed fetching alert " + key);

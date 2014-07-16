@@ -68,7 +68,7 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
         if (abstractDiscussionCompactDTO != null)
         {
             Bundle bundle = new Bundle();
-            bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
+            WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
             getNavigator().pushFragment(WebViewFragment.class, bundle);
         }
     }

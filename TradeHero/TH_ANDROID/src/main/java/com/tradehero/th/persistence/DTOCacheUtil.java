@@ -273,7 +273,7 @@ import org.jetbrains.annotations.Nullable;
             }
         }
 
-        initialPrefetches();
+        //initialPrefetches();
     }
 
     public void initialPrefetches()

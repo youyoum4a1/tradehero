@@ -110,18 +110,18 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
                         break;
                 }
             }
-            showNotification(context, baiduPushMessageDTO);
+            createAndNotify(context, baiduPushMessageDTO.getId());
         }
     }
 
-    private void showNotification(Context context, BaiduPushMessageDTO baiduPushMessageDTO)
+    private void createAndNotify(Context context, int pushId)
     {
-        Notification notification = thNotificationBuilder.buildNotification(baiduPushMessageDTO.getId());
+        Notification notification = thNotificationBuilder.buildNotification(pushId);
 
         if (notification != null)
         {
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(thNotificationBuilder.getNotifyId(baiduPushMessageDTO.getId()), notification);
+            nm.notify(thNotificationBuilder.getNotifyId(pushId), notification);
         }
     }
 
