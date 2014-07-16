@@ -74,6 +74,7 @@ android {
 dependencies {
     compile project(':ResideMenu')
     compile project(':samsung_iap')
+    compile project(':facebook-android-sdk:facebook')
 
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.android.support:support-v4:19.1.0'
