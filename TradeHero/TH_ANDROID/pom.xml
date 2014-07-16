@@ -208,12 +208,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.squareup</groupId>
-      <artifactId>javawriter</artifactId>
-      <version>${javawriter.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.4.0</version>
