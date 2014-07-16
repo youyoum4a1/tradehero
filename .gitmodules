@@ -10,3 +10,6 @@
 [submodule "AndroidResideMenu"]
 	path = AndroidResideMenu
 	url = git@github.com:nguyentruongtho/AndroidResideMenu.git
+[submodule "samsung_iap"]
+	path = samsung_iap
+	url = git@github.com:TradeHero/samsung_iap.git

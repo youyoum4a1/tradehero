@@ -2,7 +2,6 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'http://download.crashlytics.com/maven' }
-
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.0'
@@ -21,6 +20,7 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
     maven { url "https://github.com/dahlgren/pulltorefresh-aar/raw/master" }
     maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
+    maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
 }
 
 android {
@@ -64,6 +64,7 @@ android {
 
 dependencies {
     compile project(':ResideMenu')
+    compile project(':samsung_iap')
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.android.support:support-v4:19.1.0'
     compile ('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {
@@ -75,7 +76,7 @@ dependencies {
     compile ('se.emilsjolander:stickylistheaders:2.4.1@aar') {
         // exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-    compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
+    compile ('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
         // exclude group: 'com.android.support', module: 'appcompat-v7'
     }
 }

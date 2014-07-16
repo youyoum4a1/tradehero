@@ -1,2 +1,3 @@
-include ':TradeHero:TH_ANDROID', ':ResideMenu'
+include ':TradeHero:TH_ANDROID', ':ResideMenu', ':samsung_iap'
 project(':ResideMenu').projectDir = new File('AndroidResideMenu/ResideMenu')
+project(':samsung_iap').projectDir = new File('samsung_iap/library')
