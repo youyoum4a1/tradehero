@@ -119,7 +119,11 @@ dependencies {
     compile 'com.crashlytics.android:crashlytics:1.1.10+'
 
     compile 'oauth.signpost:signpost-core:1.2.1.2'
-    compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
+    compile ('oauth.signpost:signpost-commonshttp4:1.2.1.2') {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
     compile 'org.twitter4j:twitter4j-core:3.0+'
 
     compile ('com.localytics.android:library:2.19.0') {
