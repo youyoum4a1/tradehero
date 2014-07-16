@@ -91,11 +91,16 @@ public class QuickPriceButtonSet extends LinearLayout
 
     public void clearButtons()
     {
-        for (QuickPriceButton button:buttons)
+        for (QuickPriceButton button : buttons)
         {
             button.setOnClickListener(null);
         }
         buttons.clear();
+    }
+
+    public List<QuickPriceButton> getButtons()
+    {
+        return buttons;
     }
 
     @Override protected void onAttachedToWindow()
@@ -146,11 +151,11 @@ public class QuickPriceButtonSet extends LinearLayout
 
     public void display()
     {
-        for (QuickPriceButton button: buttons)
+        for (QuickPriceButton button : buttons)
         {
             button.setEnabled(enabled && (button.getPrice() <= maxPrice));
         }
-        for (Button button: buttons)
+        for (Button button : buttons)
         {
             button.setSelected(button == this.currentSelected && button.isEnabled());
         }

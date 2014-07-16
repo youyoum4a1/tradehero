@@ -31,7 +31,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return R.string.buy_sell_share_left;
     }
 
-    @Override public String getCashLeft()
+    @Override public String getCashShareLeft()
     {
         String cashLeftText = getResources().getString(R.string.na);
         if (quoteDTO != null)
@@ -86,7 +86,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
                 new BuySellCallback(IS_BUY));
     }
 
-    @Override protected Double getPriceCcy()
+    @Override public Double getPriceCcy()
     {
         if (quoteDTO == null)
         {

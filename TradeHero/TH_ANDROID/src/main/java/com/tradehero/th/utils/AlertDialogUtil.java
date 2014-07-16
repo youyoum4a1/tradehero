@@ -183,6 +183,19 @@ public class AlertDialogUtil
             @Nullable final DialogInterface.OnClickListener okClickListener,
             @Nullable final DialogInterface.OnClickListener cancelClickListener)
     {
+        return popWithOkCancelButton(context, title, description, okResId, cancelResId,
+                okClickListener, cancelClickListener, null);
+    }
+
+    @NotNull
+    public AlertDialog popWithOkCancelButton(
+            @NotNull final Context context,
+            @NotNull String title, @NotNull String description,
+            int okResId, int cancelResId,
+            @Nullable final DialogInterface.OnClickListener okClickListener,
+            @Nullable final DialogInterface.OnClickListener cancelClickListener,
+            @Nullable final DialogInterface.OnDismissListener onDismissListener)
+    {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
                 .setTitle(title)
@@ -191,7 +204,9 @@ public class AlertDialogUtil
                 .setCancelable(true)
                 .setNegativeButton(cancelResId, cancelClickListener)
                 .setPositiveButton(okResId, okClickListener);
+
         AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setOnDismissListener(onDismissListener);
         alertDialog.show();
         alertDialog.setCanceledOnTouchOutside(true);
         return alertDialog;

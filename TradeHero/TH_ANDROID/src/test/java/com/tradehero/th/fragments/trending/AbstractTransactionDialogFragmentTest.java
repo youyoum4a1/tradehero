@@ -24,6 +24,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public abstract class AbstractTransactionDialogFragmentTest
 {
+    protected static final int CASH_BALANCE = 100000;
 
     @Inject UserProfileCache userProfileCache;
     @Inject SecurityCompactCache securityCompactCache;
@@ -55,14 +56,18 @@ public abstract class AbstractTransactionDialogFragmentTest
         quoteDTO.securityId = sId;
 
         UserProfileDTO mockUserProfileDTO = new UserProfileDTO();
+        mockUserProfileDTO.fbLinked = true;
+        mockUserProfileDTO.twLinked = false;
         userProfileCache.put(currentUserId.toUserBaseKey(), mockUserProfileDTO);
 
         //TODO create MockObjects
         SecurityCompactDTO mockSecurityCompactDTO = new SecurityCompactDTO();
         mockSecurityCompactDTO.id = sId;
-
+        mockSecurityCompactDTO.name = "Security Name";
         PortfolioCompactDTO mockPortfolioCompactDTO = new PortfolioCompactDTO();
-        mockPortfolioCompactDTO.cashBalance = 100000;
+        mockPortfolioCompactDTO.cashBalance = CASH_BALANCE;
+        mockPortfolioCompactDTO.currencyDisplay = "US$";
+        mockPortfolioCompactDTO.currencyISO = "USD";
         PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
         PortfolioDTO mockPortfolioDTO = new PortfolioDTO();
         ProviderDTOList mockProvidersDTOList = new ProviderDTOList();
@@ -88,6 +93,4 @@ public abstract class AbstractTransactionDialogFragmentTest
     }
 
     abstract boolean isBuy();
-
-
 }

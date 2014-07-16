@@ -1,10 +1,18 @@
 package com.tradehero.th.fragments.trending;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.fragments.trade.view.QuickPriceButton;
+import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
+import com.tradehero.th.utils.THSignedNumber;
+import java.util.List;
+import java.util.Random;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
@@ -36,11 +44,11 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     }
 
     @Test
-    public void testCashLeftShouldEqual100k()
+    public void testCashLeftShouldEqualCashBalance()
     {
-        String cashLeft = abstractTransactionDialogFragment.getCashLeft();
+        String cashLeft = abstractTransactionDialogFragment.getCashShareLeft();
 
-        assertThat(cashLeft).isEqualTo("US$ 100,000");
+        assertThat(cashLeft).isEqualTo(getCashLeft(0));
     }
 
     @Test
@@ -48,26 +56,38 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     {
         SeekBar s = abstractTransactionDialogFragment.getSeekBar();
 
-        assertThat(s.getMax()).isEqualTo(3225);
+        Double priceCcy = abstractTransactionDialogFragment.getPriceCcy();
+        int max = (int) Math.floor(CASH_BALANCE / priceCcy);
+
+        assertThat(s.getMax()).isEqualTo(max);
     }
 
     @Test
-    public void testTradeValueOnMaxSliderValue()
+    public void testTradeValueOnRandomSliderValue()
     {
         SeekBar s = abstractTransactionDialogFragment.getSeekBar();
 
-        int val = s.getMax();
+        int max = s.getMax();
+        int min = 10;
+        for (int i = 0; i < 50; i++)
+        {
+            int val = min + (int) (Math.random() * ((max - min) + 1));
 
-        abstractTransactionDialogFragment.setTransactionQuantity(val);
+            s.setProgress(val);
+            assertThat(s.getProgress()).isEqualTo(val);
+            assertThat(s.getProgress()).isGreaterThan(0);
 
-        String tv = abstractTransactionDialogFragment.getValueText();
-        assertThat(tv).isEqualTo("US$ 99,975");
+            Double value = val * abstractTransactionDialogFragment.getPriceCcy();
 
-        Integer qTv = abstractTransactionDialogFragment.getQuantity();
-        assertThat(qTv).isEqualTo(val);
+            assertThat(abstractTransactionDialogFragment.getTradeValueText()).isEqualTo(getSignedNumberString(value));
+            assertThat(abstractTransactionDialogFragment.getQuantity()).isEqualTo(val);
+            assertThat(abstractTransactionDialogFragment.getQuantityString()).isEqualTo(String.valueOf(val));
+            assertThat(abstractTransactionDialogFragment.getCashShareLeft()).isEqualTo(getCashLeft(value));
+            assertThat(abstractTransactionDialogFragment.getConfirmButton().isEnabled()).isEqualTo(true);
 
-        String lTv = abstractTransactionDialogFragment.getCashLeft();
-        assertThat(lTv).isEqualTo("US$ 25");
+            TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+            assertThat(transactionFormDTO.quantity).isEqualTo(val);
+        }
     }
 
     @Test
@@ -77,7 +97,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
         assertThat(btn.isEnabled()).isEqualTo(false);
 
-        abstractTransactionDialogFragment.setTransactionQuantity(0);
+        abstractTransactionDialogFragment.getSeekBar().setProgress(0);
 
         assertThat(btn.isEnabled()).isEqualTo(false);
     }
@@ -89,21 +109,182 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
         assertThat(btn.isEnabled()).isEqualTo(false);
 
-        abstractTransactionDialogFragment.setTransactionQuantity(10);
+        SeekBar s = abstractTransactionDialogFragment.getSeekBar();
+
+        int max = s.getMax();
+
+        int rand = new Random().nextInt(max);
+        abstractTransactionDialogFragment.getSeekBar().setProgress(rand);
 
         assertThat(btn.isEnabled()).isEqualTo(true);
     }
 
-    //TODO test the - value when quote = null
-    //TODO test the dialog is onPause/Resume
-    //TODO test the title
-    //TODO test the price Info
-    //TODO test the value in the center
-    //TODO test the quickbuttonPrice
-    //TODO test the quickButtonPrice disabled when cash is not enough
-    //TODO test the quickButtonPrice and Value and Quantity
-    //TODO test quickPrice and Seekbar at the same time
-    //TODO test the transaction order
-    //TODO test the Comments
-    //TODO test the SocialLink
+    @Test
+    public void testTitleShouldMatchSecurityName()
+    {
+        String title = abstractTransactionDialogFragment.getTitle();
+        assertThat(title).isEqualTo("Security Name");
+    }
+
+    @Test
+    public void testValueShouldMatch()
+    {
+        abstractTransactionDialogFragment.getSeekBar().setProgress(500);
+        assertThat(abstractTransactionDialogFragment.getQuantity()).isEqualTo(500);
+        assertThat(abstractTransactionDialogFragment.getQuantityString()).isEqualTo(String.valueOf(500));
+    }
+
+    @Test
+    public void testQuickButtonPriceShouldUpdateDialog()
+    {
+        QuickPriceButtonSet quickPriceButtonSet = abstractTransactionDialogFragment.getQuickPriceButtonSet();
+        List<QuickPriceButton> list = quickPriceButtonSet.getButtons();
+
+        SeekBar seekBar = abstractTransactionDialogFragment.getSeekBar();
+        Double priceCcy = abstractTransactionDialogFragment.getPriceCcy();
+        for (QuickPriceButton quickPriceButton : list)
+        {
+            quickPriceButton.performClick();
+
+            double price = quickPriceButton.getPrice();
+            int qty = (int) Math.floor(price / priceCcy);
+            Double value = (qty * abstractTransactionDialogFragment.getPriceCcy());
+
+            assertThat(seekBar.getProgress()).isEqualTo(qty);
+            assertThat(abstractTransactionDialogFragment.getQuantity()).isEqualTo(qty);
+            assertThat(abstractTransactionDialogFragment.getQuantityString()).isEqualTo(String.valueOf(qty));
+            assertThat(abstractTransactionDialogFragment.getTradeValueText()).isEqualTo(getSignedNumberString(value));
+            assertThat(abstractTransactionDialogFragment.getCashShareLeft()).isEqualTo(getCashLeft(value));
+            assertThat(abstractTransactionDialogFragment.getConfirmButton().isEnabled()).isEqualTo(true);
+
+            TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+            assertThat(transactionFormDTO.quantity).isEqualTo(qty);
+        }
+    }
+
+    public void testQuickButtonPriceSetShouldPartiallyBeDisabled()
+    {
+        //TODO
+    }
+
+    private String getCashLeft(double transactionValue)
+    {
+        double cashLeft = CASH_BALANCE - transactionValue; //Since we starts with 100 000
+
+        return getSignedNumberString(cashLeft);
+    }
+
+    private String getSignedNumberString(double value)
+    {
+        THSignedNumber thTradeValue =
+                new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
+                        "US$");
+        return thTradeValue.toString();
+    }
+
+    //TODO test the transaction buy/sell order
+    public void shouldReturnNullTransactionFormDTOWhenQuoteIsNull()
+    {
+
+    }
+
+    public void shouldReturnNullTransactionFormDTOWhenPortfolioIsNull()
+    {
+
+    }
+
+    @Test
+    public void shouldGenerateTransactionFormDTOWithComments()
+    {
+        String comment = "Super awesome stock! 50% discount!!!";
+
+        EditText mComments = abstractTransactionDialogFragment.getCommentView();
+
+        mComments.setText(comment);
+
+        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+
+        assertThat(transactionFormDTO).isNotNull();
+        assertThat(transactionFormDTO.tradeComment).isEqualTo(comment);
+    }
+
+    @Test
+    public void shouldGenerateTransactionFormDTOWithoutComments()
+    {
+        String comment = "";
+
+        EditText mComments = abstractTransactionDialogFragment.getCommentView();
+
+        mComments.setText(comment);
+
+        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+
+        assertThat(transactionFormDTO).isNotNull();
+        assertThat(transactionFormDTO.tradeComment).isEmpty();
+    }
+
+    @Test
+    public void testSocialShareIsOnByDefault()
+    {
+        assertThat(abstractTransactionDialogFragment.getFacebookShareButton().isChecked()).isEqualTo(true);
+    }
+
+    @Test
+    public void testSocialShareIsOffByDefault()
+    {
+        assertThat(abstractTransactionDialogFragment.getTwitterShareButton().isChecked()).isEqualTo(false);
+    }
+
+    @Test
+    public void testSocialShareShouldChangeStateAfterClick()
+    {
+        abstractTransactionDialogFragment.getFacebookShareButton().setPressed(true);
+
+        abstractTransactionDialogFragment.getFacebookShareButton().performClick();
+
+        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+        assertThat(abstractTransactionDialogFragment.getFacebookShareButton().isChecked()).isEqualTo(false);
+        assertThat(transactionFormDTO.publishToFb).isEqualTo(false);
+
+        abstractTransactionDialogFragment.getFacebookShareButton().performClick();
+
+        transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+        assertThat(abstractTransactionDialogFragment.getFacebookShareButton().isChecked()).isEqualTo(true);
+        assertThat(transactionFormDTO.publishToFb).isEqualTo(true);
+    }
+
+    @Test
+    public void shouldAskForSocialLinking()
+    {
+        abstractTransactionDialogFragment.getLinkedInShareButton().setPressed(true);
+        abstractTransactionDialogFragment.getLinkedInShareButton().performClick();
+
+        AlertDialog alertDialog = abstractTransactionDialogFragment.getSocialLinkingDialog();
+
+        assertThat(alertDialog).isNotNull();
+
+        assertThat(alertDialog.isShowing()).isEqualTo(true);
+
+        //dismiss the dialog for now
+        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).performClick();
+
+        assertThat(alertDialog.isShowing()).isEqualTo(false);
+
+        assertThat(abstractTransactionDialogFragment.getSocialLinkingDialog()).isNull();
+
+        //Test whether the social link is turned off
+        assertThat(abstractTransactionDialogFragment.getLinkedInShareButton().isChecked()).isEqualTo(false);
+
+        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+        assertThat(transactionFormDTO.publishToLi).isEqualTo(false);
+
+    }
+
+    public void testSocialIsOnAfterLinkSuccessful()
+    {
+        //TODO test if the user click link now!
+    }
+
+    //TODO test the value when quote = null
+    //TODO test the subtitle - price Info
 }

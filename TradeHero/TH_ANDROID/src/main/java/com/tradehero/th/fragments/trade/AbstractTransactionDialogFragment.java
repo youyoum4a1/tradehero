@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
@@ -100,7 +100,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Inject SocialLinkHelperFactory socialLinkHelperFactory;
 
     SocialLinkHelper socialLinkHelper;
-    private ProgressDialog transactionDialog;
+    private ProgressDialog mTransactionDialog;
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
 
     protected SecurityId securityId;
@@ -114,6 +114,25 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private BuySellTransactionListener buySellTransactionListener;
 
     protected UserProfileDTO userProfileDTO;
+    private AlertDialog mSocialLinkingDialog;
+
+    protected abstract String getLabel();
+
+    protected abstract int getCashLeftLabelResId();
+
+    public abstract String getCashShareLeft();
+
+    protected abstract Integer getMaxValue();
+
+    protected abstract boolean hasValidInfo();
+
+    protected abstract boolean isQuickButtonEnabled();
+
+    protected abstract double getQuickButtonMaxValue();
+
+    protected abstract MiddleCallback<SecurityPositionDetailDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO);
+
+    public abstract Double getPriceCcy();
 
     public static AbstractTransactionDialogFragment newInstance(SecurityId securityId, PortfolioId portfolioId, QuoteDTO quoteDTO, boolean isBuy)
     {
@@ -130,24 +149,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         super();
     }
-
-    protected abstract String getLabel();
-
-    protected abstract int getCashLeftLabelResId();
-
-    public abstract String getCashLeft();
-
-    protected abstract Integer getMaxValue();
-
-    protected abstract boolean hasValidInfo();
-
-    protected abstract boolean isQuickButtonEnabled();
-
-    protected abstract double getQuickButtonMaxValue();
-
-    protected abstract MiddleCallback<SecurityPositionDetailDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO);
-
-    protected abstract Double getPriceCcy();
 
     protected SecurityId getSecurityId()
     {
@@ -215,27 +216,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
-        {
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-            {
-                if (fromUser)
-                {
-                    mTransactionQuantity = progress;
-                    updateTransactionDialog();
-                }
-            }
-
-            @Override public void onStartTrackingTouch(SeekBar seekBar)
-            {
-
-            }
-
-            @Override public void onStopTrackingTouch(SeekBar seekBar)
-            {
-
-            }
-        });
+        mSeekBar.setOnSeekBarChangeListener(createSeekBarListener());
 
         Integer maxValue = getMaxValue();
         if (maxValue != null)
@@ -264,7 +245,17 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         updateTransactionDialog();
     }
 
-    public String getValueText()
+    public String getTitle()
+    {
+        return mStockNameTextView.getText().toString();
+    }
+
+    public String getSubtitle()
+    {
+        return mStockPriceTextView.getText().toString();
+    }
+
+    public String getTradeValueText()
     {
         String valueText = "-";
         if (quoteDTO != null)
@@ -287,6 +278,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mTransactionQuantity;
     }
 
+    public String getQuantityString()
+    {
+        return mQuantityTextView.getText().toString();
+    }
+
     public QuickPriceButtonSet getQuickPriceButtonSet()
     {
         return mQuickPriceButtonSet;
@@ -307,6 +303,36 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mConfirm;
     }
 
+    public CompoundButton getFacebookShareButton()
+    {
+        return mBtnShareFb;
+    }
+
+    public CompoundButton getTwitterShareButton()
+    {
+        return mBtnShareTw;
+    }
+
+    public CompoundButton getLinkedInShareButton()
+    {
+        return mBtnShareLn;
+    }
+
+    public CompoundButton getWeiboShareButton()
+    {
+        return mBtnShareWb;
+    }
+
+    public CompoundButton getWeChatShareButton()
+    {
+        return mBtnShareWeChat;
+    }
+
+    public AlertDialog getSocialLinkingDialog()
+    {
+        return mSocialLinkingDialog;
+    }
+
     @OnClick(R.id.dialog_btn_cancel)
     public void onCancelClicked(View v)
     {
@@ -318,13 +344,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         socialSharePreferenceHelperNew.save();
         launchBuySell();
-    }
-
-    @VisibleForTesting
-    public void setTransactionQuantity(Integer quantity)
-    {
-        this.mTransactionQuantity = quantity;
-        updateTransactionDialog();
     }
 
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
@@ -349,10 +368,16 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public void updateTransactionDialog()
     {
-        mCashShareLeftTextView.setText(getCashLeft());
-        mTradeValueTextView.setText(getValueText());
-        mQuantityTextView.setText(String.valueOf(mTransactionQuantity));
         mSeekBar.setProgress(mTransactionQuantity);
+        updateTransactionDialogForSeekbar();
+    }
+
+    public void updateTransactionDialogForSeekbar()
+    {
+        //Skip updating/ setProgress to seekbar or we'll have StackOverflow
+        mCashShareLeftTextView.setText(getCashShareLeft());
+        mTradeValueTextView.setText(getTradeValueText());
+        mQuantityTextView.setText(String.valueOf(mTransactionQuantity));
         mConfirm.setEnabled(mTransactionQuantity != 0 && (hasValidInfo()));
     }
 
@@ -395,7 +420,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             TransactionFormDTO transactionFormDTO = getBuySellOrder();
             if (transactionFormDTO != null)
             {
-                transactionDialog = progressDialogUtil.show(AbstractTransactionDialogFragment.this.getActivity(),
+                mTransactionDialog = progressDialogUtil.show(AbstractTransactionDialogFragment.this.getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 
                 buySellMiddleCallback = getTransactionMiddleCallback(transactionFormDTO);
@@ -409,7 +434,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         }
     }
 
-    private TransactionFormDTO getBuySellOrder()
+    public TransactionFormDTO getBuySellOrder()
     {
         if (quoteDTO == null)
         {
@@ -546,27 +571,34 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public void askToLinkAccountToSocial(final SocialNetworkEnum socialNetwork)
     {
-        alertDialogUtil.popWithOkCancelButton(
-                getActivity(),
-                getActivity().getApplicationContext().getString(R.string.link, socialNetwork.getName()),
-                getActivity().getApplicationContext().getString(R.string.link_description, socialNetwork.getName()),
-                R.string.link_now,
-                R.string.later,
-                new DialogInterface.OnClickListener()//Ok
+        mSocialLinkingDialog = alertDialogUtil.popWithOkCancelButton(
+            getActivity(),
+            getActivity().getApplicationContext().getString(R.string.link, socialNetwork.getName()),
+            getActivity().getApplicationContext().getString(R.string.link_description, socialNetwork.getName()),
+            R.string.link_now,
+            R.string.later,
+            new DialogInterface.OnClickListener()//Ok
+            {
+                @Override public void onClick(DialogInterface dialogInterface, int i)
                 {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        linkSocialNetwork(socialNetwork);
-                    }
-                },
-                new DialogInterface.OnClickListener()//Cancel
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        alertDialogUtil.dismissProgressDialog();
-                    }
+                    linkSocialNetwork(socialNetwork);
                 }
-        );
+            },
+            new DialogInterface.OnClickListener()//Cancel
+            {
+                @Override public void onClick(DialogInterface dialogInterface, int i)
+                {
+                    alertDialogUtil.dismissProgressDialog();
+                }
+            },
+            new DialogInterface.OnDismissListener()
+            {
+                @Override public void onDismiss(DialogInterface dialogInterface)
+                {
+                    destroySocialLinkDialog();
+                }
+            }
+    );
     }
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
@@ -601,10 +633,51 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     @Override public void onDestroyView()
     {
-        transactionDialog = null;
+        destroyTransactionDialog();
+        destroySocialLinkDialog();
         detachBuySellMiddleCallback();
         detachSocialLinkHelper();
         super.onDestroyView();
+    }
+
+    private void destroySocialLinkDialog()
+    {
+        if(mSocialLinkingDialog != null && mSocialLinkingDialog.isShowing())
+        {
+            mSocialLinkingDialog.dismiss();
+        }
+        mSocialLinkingDialog = null;
+    }
+
+    private void destroyTransactionDialog()
+    {
+        if(mTransactionDialog != null && mTransactionDialog.isShowing())
+        {
+            mTransactionDialog.dismiss();
+        }
+        mTransactionDialog = null;
+    }
+
+    private SeekBar.OnSeekBarChangeListener createSeekBarListener()
+    {
+        return new SeekBar.OnSeekBarChangeListener()
+        {
+            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                mTransactionQuantity = progress;
+                updateTransactionDialogForSeekbar();
+            }
+
+            @Override public void onStartTrackingTouch(SeekBar seekBar)
+            {
+
+            }
+
+            @Override public void onStopTrackingTouch(SeekBar seekBar)
+            {
+
+            }
+        };
     }
 
     private CompoundButton.OnCheckedChangeListener createCheckedChangeListenerForWechat()
@@ -737,9 +810,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
         private void onFinish()
         {
-            if (transactionDialog != null)
+            if (mTransactionDialog != null)
             {
-                transactionDialog.dismiss();
+                mTransactionDialog.dismiss();
             }
             getDialog().dismiss();
         }
