@@ -10,15 +10,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.thoj.route.InjectRoute;
-import com.thoj.route.Routable;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.InjectRoute;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -51,6 +49,9 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -75,15 +76,15 @@ public class PositionListFragment
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
+    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
-    @Inject UserProfileCache userProfileCache;
-    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
-    @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
+    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject Analytics analytics;
     @Inject PortfolioCache portfolioCache;
+    @Inject UserProfileCache userProfileCache;
 
-    private PortfolioHeaderView portfolioHeaderView;
     @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView;
@@ -93,6 +94,7 @@ public class PositionListFragment
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
 
+    private PortfolioHeaderView portfolioHeaderView;
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
@@ -149,7 +151,7 @@ public class PositionListFragment
         }
         else
         {
-            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey, injectedPortfolioId);
+            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
 
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
@@ -489,12 +491,12 @@ public class PositionListFragment
 
     public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
     {
-        return ownedPortfolioId == null ? false : (ownedPortfolioId.portfolioId == null || ownedPortfolioId.portfolioId <= 0);
+        return ownedPortfolioId != null && ownedPortfolioId.portfolioId <= 0;
     }
 
     protected void fetchSimplePage()
     {
-        fetchSimplePage(false);
+        fetchSimplePage(true);
     }
 
     protected void fetchSimplePage(boolean force)
@@ -617,20 +619,15 @@ public class PositionListFragment
 
     public void displayActionBarTitle()
     {
-        SherlockFragmentActivity sherlockFragmentActivity = getSherlockActivity();
-        if (sherlockFragmentActivity != null)
+        if (getPositionsDTO != null && getPositionsDTO.positions != null)
         {
-            ActionBar actionBar = sherlockFragmentActivity.getSupportActionBar();
-            if (getPositionsDTO != null && getPositionsDTO.positions != null)
-            {
-                String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
-                        getPositionsDTO.positions.size());
-                actionBar.setTitle(title);
-            }
-            else
-            {
-                actionBar.setTitle(R.string.position_list_action_bar_header_unknown);
-            }
+            String title = String.format(getResources().getString(R.string.position_list_action_bar_header),
+                    getPositionsDTO.positions.size());
+            setActionBarTitle(title);
+        }
+        else
+        {
+            setActionBarTitle(R.string.position_list_action_bar_header_unknown);
         }
     }
 
@@ -744,7 +741,7 @@ public class PositionListFragment
         {
             Bundle args = new Bundle();
             AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-            args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            AlertCreateFragment.putSecurityId(args, securityId);
             getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
         }
         else
@@ -851,6 +848,7 @@ public class PositionListFragment
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             displayHeaderView();
             fetchSimplePage(true);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
         }
     }
 

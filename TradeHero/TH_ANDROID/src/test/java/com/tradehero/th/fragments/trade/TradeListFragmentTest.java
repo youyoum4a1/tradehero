@@ -39,8 +39,17 @@ public class TradeListFragmentTest
         tradeListFragment = null;
     }
 
-    @Test(expected = NullPointerException.class) public void shouldNPEOnNullArgs()
+    @Test(expected = NullPointerException.class)
+    public void ifNotIntelliJShouldNPEOnNullArgs()
     {
+        assumeTrue(!TestConstants.IS_INTELLIJ);
+        tradeListFragment = dashboardNavigator.pushFragment(TradeListFragment.class, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ifIntelliJShouldIllegalOnNullArgs()
+    {
+        assumeTrue(TestConstants.IS_INTELLIJ);
         tradeListFragment = dashboardNavigator.pushFragment(TradeListFragment.class, null);
     }
 

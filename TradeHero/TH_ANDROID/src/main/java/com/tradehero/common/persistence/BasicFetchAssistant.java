@@ -4,12 +4,12 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class BasicFetchAssistant<DTOKeyType, DTOType> implements FetchAssistant<DTOKeyType, DTOType>
 {
-    protected WeakReference<OnInfoFetchedListener<DTOKeyType, DTOType>> weakListener = new WeakReference<>(null);
-
-    protected final Map<DTOKeyType, DTOType> fetched;
+    @NotNull protected WeakReference<OnInfoFetchedListener<DTOKeyType, DTOType>> weakListener = new WeakReference<>(null);
+    @NotNull protected final Map<DTOKeyType, DTOType> fetched;
 
     public BasicFetchAssistant(List<DTOKeyType> keysToFetch)
     {

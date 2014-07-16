@@ -38,6 +38,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class PortfolioListItemView extends RelativeLayout
@@ -411,7 +412,7 @@ public class PortfolioListItemView extends RelativeLayout
     protected class PortfolioListItemViewGetPositionsListener
             implements DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO>
     {
-        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
+        @Override public void onDTOReceived(@NotNull GetPositionsDTOKey key, @NotNull GetPositionsDTO value)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
                     PortfolioListItemView.this.displayablePortfolioDTO;
@@ -422,7 +423,7 @@ public class PortfolioListItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull GetPositionsDTOKey key, @NotNull Throwable error)
         {
             // We do not inform the user as this is not critical
         }
@@ -436,7 +437,7 @@ public class PortfolioListItemView extends RelativeLayout
     protected class PortfolioListItemViewWatchedSecurityIdListListener
             implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
     {
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
                     PortfolioListItemView.this.displayablePortfolioDTO;
@@ -452,7 +453,7 @@ public class PortfolioListItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             // We do not inform the user as this is not critical
         }

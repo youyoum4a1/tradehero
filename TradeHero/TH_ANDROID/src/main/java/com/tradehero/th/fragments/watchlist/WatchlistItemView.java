@@ -42,8 +42,9 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
@@ -60,7 +61,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
@@ -156,7 +157,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                 }
                 morePopupMenu.show();
 
-                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_More_Tap);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
             }
         };
     }
@@ -512,7 +513,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     {
         Bundle args = new Bundle();
         //args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
-        args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        AlertCreateFragment.putSecurityId(args, securityId);
         getNavigator().pushFragment(AlertCreateFragment.class, args);
     }
 

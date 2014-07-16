@@ -2,12 +2,16 @@ package com.tradehero.th.persistence.position;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.position.PositionDTOCompact;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.competition.ProviderCache;
@@ -51,8 +55,8 @@ class SecurityPositionDetailCutDTO implements DTO
         {
             portfolioCache.put(
                     new OwnedPortfolioId(
-                            userBaseKey,
-                            securityPositionDetailDTO.portfolio.getPortfolioId()),
+                            userBaseKey.key,
+                            securityPositionDetailDTO.portfolio.id),
                     securityPositionDetailDTO.portfolio);
             this.portfolioId = securityPositionDetailDTO.portfolio.getPortfolioId();
         }
@@ -67,22 +71,51 @@ class SecurityPositionDetailCutDTO implements DTO
         this.firstTradeAllTime = securityPositionDetailDTO.firstTradeAllTime;
     }
 
-    @NotNull public SecurityPositionDetailDTO create(
+    @Nullable public SecurityPositionDetailDTO create(
             @NotNull SecurityCompactCache securityCompactCache,
             @NotNull PortfolioCache portfolioCache,
             @NotNull PositionCompactCache positionCompactCache,
             @NotNull ProviderCache providerCache,
             @NotNull UserBaseKey userBaseKey)
     {
+        SecurityCompactDTO cachedSecurity = null;
+        if (securityId != null)
+        {
+            cachedSecurity = securityCompactCache.get(securityId);
+            if (cachedSecurity == null)
+            {
+                return null;
+            }
+        }
+
+        PositionDTOCompactList cachedPositionDTOCompacts = positionCompactCache.get(positionIds);
+        if (cachedPositionDTOCompacts != null && cachedPositionDTOCompacts.hasNullItem())
+        {
+            return null;
+        }
+
+        PortfolioDTO cachedPortfolio = null;
+        if (portfolioId != null)
+        {
+            cachedPortfolio = portfolioCache.get(
+                    new OwnedPortfolioId(userBaseKey.key, portfolioId.key));
+            if (cachedPortfolio == null)
+            {
+                return null;
+            }
+        }
+
+        ProviderDTOList cachedProviderDTOs = providerCache.get(providerIds);
+        if (cachedProviderDTOs != null && cachedProviderDTOs.hasNullItem())
+        {
+            return null;
+        }
+
         return new SecurityPositionDetailDTO(
-                securityId != null ? securityCompactCache.get(securityId) : null,
-                positionCompactCache.get(positionIds),
-                this.portfolioId != null ?
-                        portfolioCache.get(new OwnedPortfolioId(
-                                userBaseKey,
-                                portfolioId))
-                        : null,
-                providerCache.get(providerIds),
+                cachedSecurity,
+                cachedPositionDTOCompacts,
+                cachedPortfolio,
+                cachedProviderDTOs,
                 firstTradeAllTime
         );
     }

@@ -8,6 +8,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
+@Deprecated // We should always ask for it
 public class UserProfileRetrievedMilestone extends DTORetrievedAsyncMilestoneNew<UserBaseKey, UserProfileDTO, UserProfileCache>
 {
     @Inject Lazy<UserProfileCache> userProfileCache;

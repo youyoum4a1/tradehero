@@ -109,11 +109,6 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         }
     }
 
-    @Override public boolean isAutoTranslate()
-    {
-        return true;
-    }
-
     //<editor-fold desc="Display Methods">
     @Override public void display()
     {

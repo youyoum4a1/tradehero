@@ -27,7 +27,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@android:color/white"
-      android:textSize="18sp"
+      android:textSize="@dimen/text_large"
       android:layout_marginLeft="10dp"
       android:layout_gravity="center_vertical"
       android:id="@+id/tv_title"
@@ -43,7 +43,7 @@
       android:gravity="center"
       android:visibility="gone"
       android:textColor="@color/white"
-      android:textSize="9sp"
+      android:textSize="@dimen/text_xxsmall"
       android:background="@drawable/red_circle"
       tools:text="33"
       />

@@ -78,8 +78,8 @@
     <java.version-target>1.6</java.version-target>
 
     <!-- Dependencies -->
-    <android.version>4.1.1.4</android.version>
-    <android.platform>14</android.platform>
+    <android.version>4.2.2</android.version>
+    <android.platform>19</android.platform>
 
     <!-- Test Dependencies -->
     <junit.version>4.10</junit.version>

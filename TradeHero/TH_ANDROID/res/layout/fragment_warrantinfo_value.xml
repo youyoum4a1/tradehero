@@ -66,7 +66,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_type"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
@@ -78,7 +78,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="Put"
-              android:textSize="13sp" />
+              android:textSize="@dimen/text_medium" />
         </TableRow>
 
         <TableRow
@@ -92,7 +92,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_code"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
@@ -104,7 +104,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="T1IW"
-              android:textSize="13sp" />
+              android:textSize="@dimen/text_medium" />
         </TableRow>
 
         <TableRow
@@ -118,7 +118,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_expiry"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
@@ -130,7 +130,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="1 Apr 14"
-              android:textSize="13sp" />
+              android:textSize="@dimen/text_medium" />
         </TableRow>
 
       </TableLayout>
@@ -152,7 +152,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_strike_price"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
@@ -164,7 +164,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="SG$ 2.000"
-              android:textSize="13sp" />
+              android:textSize="@dimen/text_medium" />
         </TableRow>
 
         <TableRow
@@ -178,7 +178,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_underlying"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
@@ -190,7 +190,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="Ascendas REOT"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_medium"
               />
         </TableRow>
 
@@ -205,7 +205,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_issuer"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_medium"
               android:gravity="right"
               />
 
@@ -217,7 +217,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="MB"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_medium"
               />
         </TableRow>
 

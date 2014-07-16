@@ -5,6 +5,7 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PositionInPeriodDTO extends PositionDTO
 {
@@ -48,7 +49,7 @@ public class PositionInPeriodDTO extends PositionDTO
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    public OwnedLeaderboardPositionId getLbOwnedPositionId()
+    @NotNull public OwnedLeaderboardPositionId getLbOwnedPositionId()
     {
         return new OwnedLeaderboardPositionId(userId, id);
     }
@@ -63,7 +64,7 @@ public class PositionInPeriodDTO extends PositionDTO
         return marketValueStartPeriodRefCcy == null ? 0 : marketValueStartPeriodRefCcy;
     }
 
-    public Double getROIInPeriod()
+    @Nullable public Double getROIInPeriod()
     {
         if (marketValueEndPeriodRefCcy == null || marketValueStartPeriodRefCcy == null)
         {

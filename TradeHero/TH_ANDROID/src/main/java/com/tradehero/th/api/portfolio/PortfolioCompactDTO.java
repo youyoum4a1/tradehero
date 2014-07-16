@@ -3,14 +3,21 @@ package com.tradehero.th.api.portfolio;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PortfolioCompactDTO implements DTO
 {
     public static final String DEFAULT_TITLE = "Default";
 
     public int id;
+    //<editor-fold desc="Populated on client side">
+    public int userId;
+    //</editor-fold>
+
     public Integer providerId;
     public String title;
 
@@ -27,7 +34,7 @@ public class PortfolioCompactDTO implements DTO
     public Date markingAsOfUtc;
     public String currencyDisplay;
     public String currencyISO;
-    public Double refCcyToUsdRate;
+    @Nullable public Double refCcyToUsdRate;
 
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
@@ -35,13 +42,23 @@ public class PortfolioCompactDTO implements DTO
     }
     //</editor-fold>
 
-    @JsonIgnore public PortfolioId getPortfolioId()
+    @JsonIgnore @NotNull public UserBaseKey getUserBaseKey()
+    {
+        return new UserBaseKey(userId);
+    }
+
+    @JsonIgnore @NotNull public PortfolioId getPortfolioId()
     {
         return new PortfolioId(id);
     }
 
+    @JsonIgnore @NotNull public OwnedPortfolioId getOwnedPortfolioId()
+    {
+        return new OwnedPortfolioId(userId, id);
+    }
+
     // Do NOT rename to getProviderId or providerId will always be null
-    @JsonIgnore public ProviderId getProviderIdKey()
+    @JsonIgnore @Nullable public ProviderId getProviderIdKey()
     {
         if (providerId == null)
         {
@@ -84,9 +101,9 @@ public class PortfolioCompactDTO implements DTO
         return cashBalance * getProperRefCcyToUsdRate();
     }
 
-    @JsonIgnore public String getCurrencyDisplayOrUsd()
+    @JsonIgnore @NotNull public String getNiceCurrency()
     {
-        if (currencyDisplay != null)
+        if (currencyDisplay != null && !currencyDisplay.isEmpty())
         {
             return currencyDisplay;
         }
@@ -98,9 +115,9 @@ public class PortfolioCompactDTO implements DTO
         return refCcyToUsdRate == null ? 1 : refCcyToUsdRate;
     }
 
-    @Override public String toString()
+    @Override @NotNull public String toString()
     {
-        return "PortfolioCompactDTO{" +
+        return "[PortfolioCompactDTO " +
                 "cashBalance=" + cashBalance +
                 ", id=" + id +
                 ", providerId=" + providerId +
@@ -116,6 +133,7 @@ public class PortfolioCompactDTO implements DTO
                 ", markingAsOfUtc=" + markingAsOfUtc +
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", refCcyToUsdRate=" + refCcyToUsdRate +
-                '}';
+                ", userId=" + userId +
+                ']';
     }
 }

@@ -1,24 +1,28 @@
 package com.tradehero.th.api.discussion;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.DTO;
+import org.jetbrains.annotations.NotNull;
 
-public class MessageHeaderDTOList extends ArrayList<MessageHeaderDTO>
+public class MessageHeaderDTOList extends BaseArrayList<MessageHeaderDTO>
+    implements DTO
 {
-    //<editor-fold desc="Constructors">
-    public MessageHeaderDTOList(int i)
-    {
-        super(i);
-    }
+    public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 300;
 
+    //<editor-fold desc="Constructors">
     public MessageHeaderDTOList()
     {
-        super();
-    }
-
-    public MessageHeaderDTOList(Collection<? extends MessageHeaderDTO> messageHeaderDTOs)
-    {
-        super(messageHeaderDTOs);
+        super(DEFAULT_LIFE_EXPECTANCY_SECONDS);
     }
     //</editor-fold>
+
+    @NotNull public MessageHeaderIdList createKeys()
+    {
+        MessageHeaderIdList keys = new MessageHeaderIdList();
+        for (@NotNull MessageHeaderDTO messageHeaderDTO : this)
+        {
+            keys.add(messageHeaderDTO.getDTOKey());
+        }
+        return keys;
+    }
 }

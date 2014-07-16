@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -42,9 +41,11 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -58,7 +59,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioHeaderFactory headerFactory;
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionFetchListener;
     private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionRefreshListener;
@@ -143,7 +144,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                         SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
                         adapter.remove(deletedSecurityId);
-                        localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Delete);
+                        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Delete));
                         watchlistListView.closeOpenedItems();
                     }
                 }
@@ -210,8 +211,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.position_watchlist_menu, menu);
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.watchlist_title));
+        setActionBarTitle(getString(R.string.watchlist_title));
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -235,7 +235,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.Watchlist_List);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_List));
 
         LocalBroadcastManager.getInstance(this.getActivity())
                 .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
@@ -423,12 +423,12 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
     {
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
         {
             displayWatchlist(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             watchlistPositionListView.onRefreshComplete();
             THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
@@ -442,13 +442,13 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected class RefreshWatchlisListener implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
     {
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
         {
             watchlistPositionListView.onRefreshComplete();
             displayWatchlist(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             watchlistPositionListView.onRefreshComplete();
             if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
@@ -465,13 +465,13 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected class WatchlistPositionFragmentPortfolioCacheListener implements DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO>
     {
-        @Override public void onDTOReceived(OwnedPortfolioId key, PortfolioDTO value)
+        @Override public void onDTOReceived(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
         {
             shownPortfolioDTO = value;
             displayHeader();
         }
 
-        @Override public void onErrorThrown(OwnedPortfolioId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_portfolio_info);
         }
@@ -487,7 +487,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         @Override public void onStartOpen(int position, int action, boolean right)
         {
-            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_CellSwipe);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_CellSwipe));
             super.onStartOpen(position, action, right);
         }
 

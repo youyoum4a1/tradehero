@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.trending.EarnCreditTileView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/extra_tile_background"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/todo_trending_security_item_height"
+    android:layout_height="@dimen/grid_item_height"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/tile_earn_credit_bg">
 
-    android:paddingBottom="@dimen/security_tile_bg_padding_r_b"
-    android:paddingLeft="@dimen/security_tile_bg_padding_t_l"
-    android:paddingRight="@dimen/security_tile_bg_padding_r_b"
-    android:paddingTop="@dimen/security_tile_bg_padding_t_l"
-    >
+  <ImageView
+      android:layout_width="@dimen/big_avatar_w_h"
+      android:layout_height="@dimen/big_avatar_w_h"
+      android:scaleType="fitCenter"
+      android:id="@+id/extra_tile_image"
+      android:src="@drawable/icon_earn_credit"
+      android:layout_gravity="center"
+      android:contentDescription="@null"/>
 
-</com.tradehero.th.fragments.trending.EarnCreditTileView>
+  <TextView
+      android:id="@+id/extra_tile_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:textColor="@color/white"
+      android:text="@string/tile_earn_credit_text"
+      />
+
+</LinearLayout>

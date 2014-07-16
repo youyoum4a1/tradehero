@@ -15,33 +15,37 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class SecuritySearchFragment
-        extends BasePurchaseManagerFragment
+public class SecuritySearchFragment extends BasePurchaseManagerFragment
+    implements HasSelectedItem
 {
     private final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = SecuritySearchFragment.class.getName() + ".currentSearchString";
     public final static String BUNDLE_KEY_PER_PAGE = SecuritySearchFragment.class.getName() + ".perPage";
@@ -52,7 +56,7 @@ public class SecuritySearchFragment
 
     @Inject Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @InjectView(R.id.search_empty_container) View searchEmptyContainer;
     @InjectView(R.id.search_empty_textview) View searchEmptyTextView;
@@ -68,8 +72,9 @@ public class SecuritySearchFragment
     private SearchTextWatcher mSearchTextWatcher;
 
     private SecurityItemViewAdapterNew<SecurityCompactDTO> securityItemViewAdapter;
-    private Map<Integer, List<SecurityCompactDTO>> pagedSecurityIds;
-    private Map<Integer, DTOCacheNew.Listener<SecurityListType, SecurityIdList>> securitySearchListeners;
+    private Map<Integer, List<SecurityCompactDTO>> pagedSecurityCompacts;
+    private Map<Integer, DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>> securitySearchListeners;
+    private SecurityCompactDTO selectedItem;
 
     private Runnable requestDataTask;
 
@@ -104,7 +109,7 @@ public class SecuritySearchFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        pagedSecurityIds = new HashMap<>();
+        pagedSecurityCompacts = new HashMap<>();
         securitySearchListeners = new HashMap<>();
         mSearchText = getSearchString(getArguments());
         mSearchText = getSearchString(savedInstanceState);
@@ -218,10 +223,15 @@ public class SecuritySearchFragment
         super.onDestroy();
     }
 
+    @Override @Nullable public SecurityCompactDTO getSelectedItem()
+    {
+        return selectedItem;
+    }
+
     protected void startAnew()
     {
         detachSecuritySearchCache();
-        this.pagedSecurityIds.clear();
+        this.pagedSecurityCompacts.clear();
         if (nearEndScrollListener != null)
         {
             nearEndScrollListener.lowerEndFlag();
@@ -251,7 +261,7 @@ public class SecuritySearchFragment
         }
 
         Integer lastPageInAdapter = securityItemViewAdapter.getLastPageLoaded();
-        if ((lastPageInAdapter == null && pagedSecurityIds.containsKey(FIRST_PAGE)) ||
+        if ((lastPageInAdapter == null && pagedSecurityCompacts.containsKey(FIRST_PAGE)) ||
                 lastPageInAdapter != null)
         {
             if (lastPageInAdapter == null)
@@ -259,9 +269,9 @@ public class SecuritySearchFragment
                 lastPageInAdapter = FIRST_PAGE - 1;
             }
 
-            while (pagedSecurityIds.containsKey(++lastPageInAdapter))
+            while (pagedSecurityCompacts.containsKey(++lastPageInAdapter))
             {
-                securityItemViewAdapter.addPage(lastPageInAdapter, pagedSecurityIds.get(lastPageInAdapter));
+                securityItemViewAdapter.addPage(lastPageInAdapter, pagedSecurityCompacts.get(lastPageInAdapter));
             }
             securityItemViewAdapter.notifyDataSetChanged();
         }
@@ -284,11 +294,11 @@ public class SecuritySearchFragment
 
     protected boolean hasEmptyResult()
     {
-        if (!pagedSecurityIds.containsKey(FIRST_PAGE))
+        if (!pagedSecurityCompacts.containsKey(FIRST_PAGE))
         {
             return false;
         }
-        List<SecurityCompactDTO> firstPage = pagedSecurityIds.get(FIRST_PAGE);
+        List<SecurityCompactDTO> firstPage = pagedSecurityCompacts.get(FIRST_PAGE);
         return  firstPage == null || firstPage.size() == 0;
     }
 
@@ -299,12 +309,12 @@ public class SecuritySearchFragment
 
     protected boolean hasData(int page)
     {
-        return pagedSecurityIds.containsKey(page);
+        return pagedSecurityCompacts.containsKey(page);
     }
 
     protected boolean isLast(int page)
     {
-        return hasData(page) && pagedSecurityIds.get(page) == null;
+        return hasData(page) && pagedSecurityCompacts.get(page) == null;
     }
 
     protected boolean isRequesting()
@@ -319,7 +329,7 @@ public class SecuritySearchFragment
 
     protected void detachSecuritySearchCache()
     {
-        for (DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener : securitySearchListeners.values())
+        for (DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener : securitySearchListeners.values())
         {
             securityCompactListCache.get().unregister(listener);
         }
@@ -328,7 +338,7 @@ public class SecuritySearchFragment
 
     protected void detachSecuritySearchCache(int page)
     {
-        DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener = securitySearchListeners.get(page);
+        DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener = securitySearchListeners.get(page);
         if (listener != null)
         {
             securityCompactListCache.get().unregister(listener);
@@ -364,7 +374,7 @@ public class SecuritySearchFragment
         {
             SecurityListType searchSecurityListType = makeSearchSecurityListType(pageToLoad);
             detachSecuritySearchCache(pageToLoad);
-            DTOCacheNew.Listener<SecurityListType, SecurityIdList> listener = createSecurityIdListCacheListener();
+            DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener = createSecurityIdListCacheListener();
             securityCompactListCache.get().register(searchSecurityListType, listener);
             securitySearchListeners.put(pageToLoad, listener);
             securityCompactListCache.get().getOrFetchAsync(searchSecurityListType);
@@ -437,6 +447,15 @@ public class SecuritySearchFragment
 
     protected void handleSecurityClicked(SecurityCompactDTO clicked)
     {
+        this.selectedItem = clicked;
+
+        if (getArguments() != null && getArguments().containsKey(
+                Navigator.BUNDLE_KEY_RETURN_FRAGMENT))
+        {
+            getDashboardNavigator().popFragment();
+            return;
+        }
+
         if (clicked == null)
         {
             Timber.e(new NullPointerException("clicked was null"), null);
@@ -473,26 +492,25 @@ public class SecuritySearchFragment
         }
     }
 
-    private DTOCacheNew.Listener<SecurityListType, SecurityIdList> createSecurityIdListCacheListener()
+    private DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityIdListCacheListener()
     {
         return new SecurityIdListCacheListener();
     }
 
     private class SecurityIdListCacheListener
-            implements DTOCacheNew.Listener<SecurityListType, SecurityIdList>
+            implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
     {
         @Override
-        public void onDTOReceived(SecurityListType key, SecurityIdList value)
+        public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
             Timber.d("Page loaded: %d", key.getPage());
-            List<SecurityCompactDTO> fleshedValues = securityCompactCache.get().get(value);
-            pagedSecurityIds.put(key.getPage(), fleshedValues);
+            pagedSecurityCompacts.put(key.getPage(), value);
             securitySearchListeners.remove(key.getPage());
 
             loadAdapterWithAvailableData();
 
             nearEndScrollListener.lowerEndFlag();
-            if (value == null || value.size() == 0)
+            if (value.size() == 0)
             {
                 nearEndScrollListener.deactivateEnd();
                 if (key.getPage() == FIRST_PAGE)
@@ -500,10 +518,10 @@ public class SecuritySearchFragment
                     securityItemViewAdapter.clear();
                 }
             }
-            localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
         }
 
-        @Override public void onErrorThrown(SecurityListType key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
             securitySearchListeners.remove(key.getPage());
             nearEndScrollListener.lowerEndFlag();

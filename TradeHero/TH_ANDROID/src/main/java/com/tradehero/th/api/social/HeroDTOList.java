@@ -1,11 +1,13 @@
 package com.tradehero.th.api.social;
 
+import com.android.internal.util.Predicate;
+import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class HeroDTOList extends ArrayList<HeroDTO>
+public class HeroDTOList extends BaseArrayList<HeroDTO>
+    implements DTO
 {
     //<editor-fold desc="Constructors">
     public HeroDTOList()
@@ -14,33 +16,41 @@ public class HeroDTOList extends ArrayList<HeroDTO>
     }
     //</editor-fold>
 
-    @NotNull public HeroIdList filter(
-            @NotNull UserBaseKey followerId,
-            @NotNull HeroDTOActiveFreePredicate predicate)
+    @NotNull public FollowerHeroRelationIdList createKeys(@NotNull UserBaseKey followerId)
     {
-        HeroIdList filtered = new HeroIdList();
-        for (@Nullable HeroDTO heroDTO : this)
+        FollowerHeroRelationIdList followerHeroRelationIdList = new FollowerHeroRelationIdList();
+        for (@NotNull HeroDTO heroDTO : this)
+        {
+            followerHeroRelationIdList.add(heroDTO.getHeroId(followerId));
+        }
+        return followerHeroRelationIdList;
+    }
+
+    @NotNull public HeroDTOList filter(@NotNull Predicate<HeroDTO> predicate)
+    {
+        HeroDTOList filtered = new HeroDTOList();
+        for (@NotNull HeroDTO heroDTO : this)
         {
             if (predicate.apply(heroDTO))
             {
-                filtered.add(heroDTO.getHeroId(followerId));
+                filtered.add(heroDTO);
             }
         }
         return filtered;
     }
 
-    public HeroIdList getAllActiveHeroIds(@NotNull UserBaseKey followerId)
+    @NotNull public HeroDTOList getAllActiveHeroIds()
     {
-        return filter(followerId, new HeroDTOActiveFreePredicateImpl(true, null));
+        return filter(new HeroDTOActiveFreePredicateImpl(true, null));
     }
 
-    public HeroIdList getFreeActiveHeroIds(@NotNull UserBaseKey followerId)
+    @NotNull public HeroDTOList getFreeActiveHeroIds()
     {
-        return filter(followerId, new HeroDTOActiveFreePredicateImpl(true, true));
+        return filter(new HeroDTOActiveFreePredicateImpl(true, true));
     }
 
-    public HeroIdList getPremiumActiveHeroIds(@NotNull UserBaseKey followerId)
+    @NotNull public HeroDTOList getPremiumActiveHeroIds()
     {
-        return filter(followerId, new HeroDTOActiveFreePredicateImpl(true, false));
+        return filter(new HeroDTOActiveFreePredicateImpl(true, false));
     }
 }

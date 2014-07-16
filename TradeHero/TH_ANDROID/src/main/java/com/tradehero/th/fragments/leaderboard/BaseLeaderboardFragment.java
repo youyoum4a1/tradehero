@@ -59,13 +59,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         inflater.inflate(getMenuResource(), menu);
         super.onCreateOptionsMenu(menu, inflater);
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 
         Bundle args = getArguments();
         if (args != null)
         {
             String title = args.getString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE);
-            actionBar.setTitle(title == null ? "" : title);
+            setActionBarTitle(title == null ? "" : title);
         }
     }
     //</editor-fold>
@@ -185,12 +184,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             super();
         }
 
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             setCurrentUserProfileDTO(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to download current UserProfile", error);
             THToast.show(R.string.error_fetch_your_user_profile);

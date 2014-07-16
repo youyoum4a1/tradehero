@@ -12,7 +12,6 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,32 +61,18 @@ import org.jetbrains.annotations.Nullable;
         return super.put(key, value);
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
-    public SecurityCompactDTOList put(@Nullable List<SecurityCompactDTO> values)
+    @NotNull public SecurityCompactDTOList put(@NotNull List<SecurityCompactDTO> values)
     {
-        if (values == null)
-        {
-            return null;
-        }
-
         SecurityCompactDTOList previousValues = new SecurityCompactDTOList();
-
         for (SecurityCompactDTO securityCompactDTO: values)
         {
             previousValues.add(put(securityCompactDTO.getSecurityId(), securityCompactDTO));
         }
-
         return previousValues;
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
-    public SecurityCompactDTOList get(@Nullable List<SecurityId> keys)
+    @NotNull public SecurityCompactDTOList get(@NotNull List<SecurityId> keys)
     {
-        if (keys == null)
-        {
-            return null;
-        }
-
         SecurityCompactDTOList values = new SecurityCompactDTOList();
 
         for (SecurityId securityId: keys)

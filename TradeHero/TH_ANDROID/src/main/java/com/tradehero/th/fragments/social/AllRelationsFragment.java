@@ -30,6 +30,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
         implements AdapterView.OnItemClickListener
@@ -78,8 +79,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.message_center_new_message_title);
+        setActionBarTitle(R.string.message_center_new_message_title);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -160,8 +160,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
             SearchAllowableRecipientListType,
             PaginatedDTO<AllowableRecipientDTO>>
     {
-        @Override public void onDTOReceived(SearchAllowableRecipientListType key,
-                PaginatedDTO<AllowableRecipientDTO> value)
+        @Override public void onDTOReceived(@NotNull SearchAllowableRecipientListType key,
+                @NotNull PaginatedDTO<AllowableRecipientDTO> value)
         {
             //mRelationsList = userProfileCompactCache.get(value.getData());
             mRelationsList = value.getData();
@@ -170,7 +170,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
             mRelationsListItemAdapter.notifyDataSetChanged();
         }
 
-        @Override public void onErrorThrown(SearchAllowableRecipientListType key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SearchAllowableRecipientListType key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
             alertDialogUtilLazy.get().dismissProgressDialog();

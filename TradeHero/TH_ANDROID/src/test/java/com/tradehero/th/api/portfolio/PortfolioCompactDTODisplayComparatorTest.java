@@ -8,14 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricMavenTestRunner.class)
-@Config(manifest = Config.NONE)
 public class PortfolioCompactDTODisplayComparatorTest
 {
     @Before public void setUp()

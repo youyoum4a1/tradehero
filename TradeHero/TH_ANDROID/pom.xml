@@ -38,9 +38,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.thoj.route</groupId>
+      <groupId>com.tradehero.route</groupId>
       <artifactId>route</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>0.2-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -114,16 +114,16 @@
       </exclusions>
     </dependency>
 
-      <dependency>
-          <groupId>com.squareup.okhttp</groupId>
-          <artifactId>okhttp</artifactId>
-          <version>1.6.0</version>
-      </dependency>
-      <dependency>
-          <groupId>com.squareup.okhttp</groupId>
-          <artifactId>okhttp-urlconnection</artifactId>
-          <version>1.6.0</version>
-      </dependency>
+    <dependency>
+        <groupId>com.squareup.okhttp</groupId>
+        <artifactId>okhttp</artifactId>
+        <version>1.6.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.squareup.okhttp</groupId>
+        <artifactId>okhttp-urlconnection</artifactId>
+        <version>1.6.0</version>
+    </dependency>
 
     <!--The current version, 1.3.0, has problem of conflicting with HTTPRequest, 2.0 will resolve it however it's still in beta-->
     <!--<dependency>-->
@@ -208,12 +208,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.squareup</groupId>
-      <artifactId>javawriter</artifactId>
-      <version>${javawriter.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.4.0</version>
@@ -228,7 +222,6 @@
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
-      <version>4.1.1.4</version>
       <scope>provided</scope>
     </dependency>
 
@@ -277,6 +270,7 @@
     <dependency>
       <groupId>com.squareup.retrofit</groupId>
       <artifactId>retrofit</artifactId>
+      <!-- Use 1.6.2-SNAPSHOT or more recent when available -->
       <version>1.5.1-TradeHero</version>
     </dependency>
 

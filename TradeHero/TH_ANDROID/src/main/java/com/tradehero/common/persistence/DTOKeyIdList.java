@@ -1,10 +1,10 @@
 package com.tradehero.common.persistence;
 
-import java.util.ArrayList;
+import com.tradehero.common.api.BaseArrayList;
 import java.util.Collection;
 
 public class DTOKeyIdList<ListedDTOKeyType extends DTOKey>
-        extends ArrayList<ListedDTOKeyType>
+        extends BaseArrayList<ListedDTOKeyType>
         implements DTO
 {
     //<editor-fold desc="Constructors">

@@ -31,7 +31,7 @@
 
   <style name="TradeHero.Menu.ItemTextIcon" parent="TextAppearance.Sherlock.Light.SearchResult">
     <item name="android:textStyle">bold</item>
-    <item name="android:textSize">20sp</item>
+    <item name="android:textSize">@dimen/text_xlarge</item>
   </style>
 
   <style name="TH"/>
@@ -42,7 +42,7 @@
   </style>
 
   <style name="TH.SmallTitle" parent="TH.Title">
-    <item name="android:textSize">14sp</item>
+    <item name="android:textSize">@dimen/text_small</item>
   </style>
 
   <style name="TH.Value">
@@ -51,7 +51,7 @@
   </style>
 
   <style name="TH.SmallValue" parent="TH.Value">
-    <item name="android:textSize">14sp</item>
+    <item name="android:textSize">@dimen/text_small</item>
   </style>
 
   <style name="TH.Btn_Price_Bar_Base">
@@ -65,7 +65,14 @@
   <style name="TH.Btn_Price_Bar" parent="TH.Btn_Price_Bar_Base">
     <item name="android:background">@drawable/basic_transparent_selector</item>
     <item name="android:textColor">@color/price_bar_text_default</item>
-    <item name="android:textSize">10sp</item>
+    <item name="android:textSize">@dimen/text_xsmall</item>
+  </style>
+
+  <style name="TH.Btn_Time_Span" parent="TH.Btn_Price_Bar_Base">
+    <item name="android:background">@drawable/basic_transparent_selector</item>
+    <item name="android:textColor">@color/price_bar_text_default</item>
+    <item name="android:textSize">@dimen/text_xsmall</item>
+    <item name="android:minHeight">@dimen/timespan_button_min_height</item>
   </style>
 
   <style name="TH.Btn_Price_Bar_Middle" parent="TH.Btn_Price_Bar_Base">
@@ -170,7 +177,7 @@
 
   <style name="TradeHero.Dashboard.ActionBar.Menu"
       parent="TextAppearance.Sherlock.Widget.ActionBar.Menu">
-    <item name="android:textSize">16sp</item>
+    <item name="android:textSize">@dimen/text_medium</item>
     <!--<item name="android:textStyle">bold</item>-->
     <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:textAllCaps">false</item>
@@ -222,24 +229,37 @@
 
   <style name="TH.Btn_BuySell_Action">
     <item name="android:layout_width">0dp</item>
-    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_weight">1</item>
-    <item name="android:textSize">14sp</item>
-    <item name="android:textColor">@color/tab_scroll_color</item>
+    <item name="android:textSize">@dimen/text_small</item>
+    <item name="android:textColor">@color/tradehero_blue</item>
     <item name="android:singleLine">true</item>
     <item name="android:ellipsize">middle</item>
     <item name="android:layout_marginLeft">5dp</item>
     <item name="android:layout_marginRight">5dp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:minHeight">@dimen/button_height_30</item>
     <item name="android:background">@drawable/basic_white_selector</item>
   </style>
 
+  <style name="TH.Btn_Invite_Action">
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textSize">@dimen/text_medium</item>
+    <item name="android:gravity">center</item>
+    <item name="android:paddingTop">5dp</item>
+    <item name="android:paddingBottom">5dp</item>
+    <item name="android:paddingLeft">10dp</item>
+    <item name="android:paddingRight">10dp</item>
+    <item name="android:minWidth">100dp</item>
+  </style>
+
   <style name="TH.Time_Text">
-    <item name="android:textSize">11sp</item>
+    <item name="android:textSize">@dimen/text_xsmall</item>
     <item name="android:textColor">#777</item>
   </style>
 
   <style name="TH.Loading_Error_Text">
-    <item name="android:textSize">16sp</item>
+    <item name="android:textSize">@dimen/text_medium</item>
     <item name="android:textColor">#777</item>
     <item name="android:textStyle">italic</item>
   </style>
@@ -249,21 +269,21 @@
 
   <style name="TH.BuySell_ViewPager_Button">
     <item name="android:layout_width">0dp</item>
-    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_weight">1</item>
     <item name="android:paddingTop">5dp</item>
     <item name="android:paddingBottom">5dp</item>
     <item name="android:textColor">@color/btn_twitter_color_end</item>
     <item name="android:gravity">center</item>
     <item name="android:background">@drawable/security_btn_buy</item>
-    <item name="android:textSize">12sp</item>
+    <item name="android:textSize">@dimen/text_xsmall</item>
   </style>
 
   <style name="TH.UserNameTitle">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/black</item>
-    <item name="android:textSize">15sp</item>
+    <item name="android:textSize">@dimen/text_medium</item>
     <item name="android:textStyle">bold</item>
     <item name="android:ellipsize">middle</item>
     <item name="android:singleLine">true</item>
@@ -311,7 +331,7 @@
     <item name="animatedDuration">2500</item>
     <item name="animatedInterval">50</item>
     <item name="showAnimation">true</item>
-    <item name="textSize">18sp</item>
+    <item name="textSize">@dimen/text_large</item>
   </style>
 
   <style name="TH.DiscussionActionButtons">
@@ -323,7 +343,7 @@
 
   <style name="TH.DiscussionActionButtons.Text" parent="TH.DiscussionActionButtons">
     <item name="android:textColor">@drawable/timeline_action_button_text_color_xml</item>
-    <item name="android:textSize">16sp</item>
+    <item name="android:textSize">@dimen/text_medium</item>
     <item name="android:layout_gravity">center_vertical</item>
     <item name="android:drawablePadding">@dimen/discussion_action_buttons_drawable_padding</item>
   </style>
@@ -332,14 +352,14 @@
     <item name="android:gravity">left|center_vertical</item>
     <item name="android:background">@drawable/textbox_light_background</item>
     <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>
-    <item name="android:textSize">14sp</item>
+    <item name="android:textSize">@dimen/text_small</item>
     <item name="android:inputType">text|textMultiLine|textImeMultiLine|textCapSentences|textAutoCorrect|textAutoComplete</item>
   </style>
 
   <style name="TH.DiscussionPostButtons">
     <item name="android:gravity">center</item>
     <item name="android:padding">@dimen/discussion_action_buttons_drawable_padding</item>
-    <item name="android:textSize">14sp</item>
+    <item name="android:textSize">@dimen/text_small</item>
     <item name="android:textStyle">bold</item>
     <item name="android:textColor">@color/tradehero_blue</item>
   </style>

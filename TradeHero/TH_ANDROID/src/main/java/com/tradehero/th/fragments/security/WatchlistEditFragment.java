@@ -32,8 +32,9 @@ import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +67,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCacheLazy;
 
@@ -282,12 +283,12 @@ public class WatchlistEditFragment extends DashboardFragment
         if (watchlistPositionCache.get().get(securityId) != null)
         {
             setActionBarTitle(getString(R.string.watchlist_edit_title));
-            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Edit);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Edit));
         }
         else
         {
             setActionBarTitle(getString(R.string.watchlist_add_title));
-            localyticsSession.tagEvent(LocalyticsConstants.Watchlist_Add);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Add));
         }
         querySecurity(securityId, andDisplay);
 
@@ -460,12 +461,12 @@ public class WatchlistEditFragment extends DashboardFragment
 
     protected class WatchlistEditSecurityCompactCacheListener implements DTOCacheNew.HurriedListener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onPreCachedDTOReceived(SecurityId key, @NotNull SecurityCompactDTO value)
+        @Override public void onPreCachedDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
         {
             onDTOReceived(key, value);
         }
 
-        @Override public void onDTOReceived(SecurityId key, @NotNull SecurityCompactDTO value)
+        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
         {
             if (progressBar != null)
             {
@@ -474,7 +475,7 @@ public class WatchlistEditFragment extends DashboardFragment
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
             if (progressBar != null)
             {

@@ -98,7 +98,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
             }
             else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
             {
-                zoneIcon.setImageResource(R.drawable.icn_info);
+                zoneIcon.setImageResource(R.drawable.ic_action_action_about);
             }
             else if (competitionZoneDTO != null)
             {

@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Bundle;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -68,6 +71,7 @@ public class THWebViewClient extends WebViewClient
             {
                 Timber.d("shouldOverrideUrlLoading Notifying parent with intent");
                 notifyThIntentPassed(thIntent);
+                return true;
             }
             else
             {
@@ -75,8 +79,25 @@ public class THWebViewClient extends WebViewClient
                 {
                     view.reload();
                 }
+                else if (uri.getHost().equalsIgnoreCase(context.getString(R.string.intent_host_web)))
+                {
+                    String redirectUrl = uri.getQueryParameter("url");
+                    if (redirectUrl != null)
+                    {
+                        redirectUrl = android.net.Uri.decode(redirectUrl);
+                    }
+                    if (redirectUrl != null && context instanceof DashboardNavigatorActivity)
+                    {
+                        Timber.d("Opening this page: %s", redirectUrl);
+                        DashboardNavigator navigator = ((DashboardNavigatorActivity) context).getDashboardNavigator();
+                        Bundle bundle = new Bundle();
+                        WebViewFragment.putUrl(bundle, redirectUrl);
+                        navigator.pushFragment(WebViewFragment.class, bundle);
+                        return false;
+                    }
+                }
+                return true;
             }
-            return true;
         }
 
         if (Uri.parse(url).getScheme().equals("market"))

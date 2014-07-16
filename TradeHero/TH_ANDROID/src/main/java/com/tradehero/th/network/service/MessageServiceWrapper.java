@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
@@ -10,7 +11,6 @@ import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
-import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.DTOProcessor;
@@ -98,7 +98,7 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Message Headers">
-    public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(MessageListKey messageListKey)
+    public ReadablePaginatedMessageHeaderDTO getMessageHeaders(MessageListKey messageListKey)
     {
         if (messageListKey instanceof TypedMessageListKey)
         {
@@ -109,7 +109,7 @@ public class MessageServiceWrapper
                 messageListKey.perPage);
     }
 
-    public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(TypedMessageListKey messageListKey)
+    public ReadablePaginatedMessageHeaderDTO getMessageHeaders(TypedMessageListKey messageListKey)
     {
         if (messageListKey instanceof RecipientTypedMessageListKey)
         {
@@ -122,7 +122,7 @@ public class MessageServiceWrapper
                 messageListKey.perPage);
     }
 
-    public ReadablePaginatedDTO<MessageHeaderDTO> getMessageHeaders(
+    public ReadablePaginatedMessageHeaderDTO getMessageHeaders(
             RecipientTypedMessageListKey messageListKey)
     {
         return messageService.getMessageHeaders(
@@ -132,14 +132,14 @@ public class MessageServiceWrapper
                 messageListKey.perPage);
     }
 
-    public MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> getMessageHeaders(MessageListKey messageListKey,
-            Callback<ReadablePaginatedDTO<MessageHeaderDTO>> callback)
+    public MiddleCallback<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(MessageListKey messageListKey,
+            Callback<ReadablePaginatedMessageHeaderDTO> callback)
     {
         if (messageListKey instanceof TypedMessageListKey)
         {
             return getMessageHeaders((TypedMessageListKey) messageListKey, callback);
         }
-        MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
         messageServiceAsync.getMessageHeaders(
                 messageListKey.page,
                 messageListKey.perPage,
@@ -147,14 +147,14 @@ public class MessageServiceWrapper
         return middleCallback;
     }
 
-    public MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> getMessageHeaders(
-            TypedMessageListKey messageListKey, Callback<ReadablePaginatedDTO<MessageHeaderDTO>> callback)
+    public MiddleCallback<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(
+            TypedMessageListKey messageListKey, Callback<ReadablePaginatedMessageHeaderDTO> callback)
     {
         if (messageListKey instanceof RecipientTypedMessageListKey)
         {
             return getMessageHeaders((RecipientTypedMessageListKey) messageListKey, callback);
         }
-        MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
         messageServiceAsync.getMessageHeaders(
                 messageListKey.discussionType.description,
                 null,
@@ -164,11 +164,11 @@ public class MessageServiceWrapper
         return middleCallback;
     }
 
-    public MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> getMessageHeaders(
+    public MiddleCallback<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(
             RecipientTypedMessageListKey messageListKey,
-            Callback<ReadablePaginatedDTO<MessageHeaderDTO>> callback)
+            Callback<ReadablePaginatedMessageHeaderDTO> callback)
     {
-        MiddleCallback<ReadablePaginatedDTO<MessageHeaderDTO>> middleCallback = new BaseMiddleCallback(callback);
+        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback(callback);
         messageServiceAsync.getMessageHeaders(
                 messageListKey.discussionType.description,
                 messageListKey.recipientId.key,

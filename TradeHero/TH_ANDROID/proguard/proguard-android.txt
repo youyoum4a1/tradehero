@@ -88,6 +88,12 @@
 -dontwarn dagger.internal.codegen.**
 -dontwarn com.squareup.javawriter.**
 
+# Otto
+-keepclassmembers class ** {
+  @com.squareup.otto.Subscribe public *;
+  @com.squareup.otto.Produce public *;
+}
+
 -keepnames class * implements java.io.Serializable
 
 -keepclassmembers class * implements java.io.Serializable {
@@ -112,8 +118,9 @@
 -assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
 -keep class !com.tradehero.** { *; }
+-dontwarn com.tencent.**
 -dontwarn **.VisibleForTesting
--dontwarn com.thoj.**
+-dontwarn com.tradehero.route.**
 -dontwarn com.handmark.**
 -dontwarn org.apache.**
 -dontwarn twitter4j.**

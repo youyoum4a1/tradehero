@@ -27,7 +27,6 @@ import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.shadowOf;
@@ -53,7 +52,9 @@ public class MainCompetitionFragmentTest
         // creating mock object for providerDTO
         ProviderDTO mockProviderDTO = new ProviderDTO();
         mockProviderDTO.id = providerId.key;
-        mockProviderDTO.associatedPortfolio = mock(PortfolioCompactDTO.class);
+        mockProviderDTO.associatedPortfolio = new PortfolioCompactDTO();
+        mockProviderDTO.associatedPortfolio.id = 24;
+        mockProviderDTO.associatedPortfolio.userId = 25;
 
         AdDTO adDTO = new AdDTO();
         adDTO.redirectUrl = TEST_ADS_WEB_URL;
@@ -63,7 +64,7 @@ public class MainCompetitionFragmentTest
         providerCache.put(providerId, mockProviderDTO);
     }
 
-    @Test public void shouldAbleToNavigateToMainCompetitionFragmentWithOutApplicablePortfolioId()
+    @Test public void shouldBeAbleToNavigateToMainCompetitionFragmentWithOutApplicablePortfolioId()
     {
         Bundle args = new Bundle();
 
@@ -146,7 +147,7 @@ public class MainCompetitionFragmentTest
         WebView webView = competitionWebViewFragment.getWebView();
         ShadowWebView shadowWebView = shadowOf(webView);
         assertThat(webView).isNotNull();
-        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&', currentUserId.toUserBaseKey()));
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&'));
     }
 
     @Test public void shouldGoToCompetitionPortfolioAfterClickOnCompetitionPortfolio()

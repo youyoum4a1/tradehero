@@ -7,15 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.actionbarsherlock.app.ActionBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnItemClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
-import com.thoj.route.Routable;
-import com.thoj.route.RouteProperty;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
-import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -23,12 +24,17 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
+import com.tradehero.th.fragments.billing.store.StoreItemDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemFactory;
+import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -43,13 +49,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected Integer showBillingAvailableRequestCode;
 
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject THRouter thRouter;
+    @Inject StoreItemFactory storeItemFactory;
 
-    @RouteProperty("action") Integer routeClickedPosition;
+    @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
-    private ListView listView;
+    @InjectView(R.id.store_option_list) protected ListView listView;
     private StoreItemAdapter storeItemAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -61,31 +68,23 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_store, container, false);
+        ButterKnife.inject(this, view);
         initViews(view);
         return view;
     }
 
     @Override protected void initViews(View view)
     {
-        listView = (ListView) view.findViewById(R.id.store_option_list);
         storeItemAdapter = new StoreItemAdapter(getActivity());
         if (listView != null)
         {
             listView.setAdapter(storeItemAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
-                {
-                    handlePositionClicked(position);
-                }
-            });
         }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(R.string.store_option_menu_title); // Add the changing cute icon
+        setActionBarTitle(R.string.store_option_menu_title);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -93,25 +92,24 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Store);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
+        storeItemAdapter.clear();
+        storeItemAdapter.addAll(storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS));
         storeItemAdapter.notifyDataSetChanged();
+
         cancelOthersAndShowBillingAvailable();
 
-        if (routeClickedPosition != null)
+        if (productDomainIdentifierOrdinal != null)
         {
-            handlePositionClicked(routeClickedPosition);
+            cancelOthersAndShowProductDetailList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
         }
     }
 
     @Override public void onDestroyView()
     {
-        if (listView != null)
-        {
-            listView.setOnItemClickListener(null);
-        }
-        listView = null;
         storeItemAdapter = null;
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -152,39 +150,45 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return request;
     }
 
-    private void handlePositionClicked(int position)
+    @OnItemClick(R.id.store_option_list)
+    protected void onStoreListItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
-        switch (position)
+        handlePositionClicked((StoreItemDTO) adapterView.getItemAtPosition(position));
+    }
+
+    private void handlePositionClicked(StoreItemDTO clickedItem)
+    {
+        if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
-            case StoreItemAdapter.POSITION_BUY_VIRTUAL_DOLLARS:
-                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
-                break;
+            cancelOthersAndShowProductDetailList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
+        }
+        else if (clickedItem instanceof StoreItemHasFurtherDTO)
+        {
+            pushFragment(((StoreItemHasFurtherDTO) clickedItem).furtherFragment);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled type " + clickedItem);
+        }
+    }
 
-            case StoreItemAdapter.POSITION_BUY_FOLLOW_CREDITS:
-                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
-                break;
-
-            case StoreItemAdapter.POSITION_BUY_STOCK_ALERTS:
-                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
-                break;
-
-            case StoreItemAdapter.POSITION_BUY_RESET_PORTFOLIO:
-                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
-                break;
-
-            case StoreItemAdapter.POSITION_MANAGE_HEROES:
-                pushHeroFragment();
-                break;
-
-            case StoreItemAdapter.POSITION_MANAGE_FOLLOWERS:
-                pushFollowerFragment();
-                break;
-            case StoreItemAdapter.POSITION_MANAGE_STOCK_ALERTS:
-                pushStockAlertFragment();
-                break;
-            default:
-                THToast.show("Clicked at position " + position);
-                break;
+    private void pushFragment(Class<? extends Fragment> fragmentClass)
+    {
+        if (fragmentClass.equals(AlertManagerFragment.class))
+        {
+            pushStockAlertFragment();
+        }
+        else if (fragmentClass.equals(HeroManagerFragment.class))
+        {
+            pushHeroFragment();
+        }
+        else if (fragmentClass.equals(FollowerManagerFragment.class))
+        {
+            pushFollowerFragment();
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled class " + fragmentClass);
         }
     }
 

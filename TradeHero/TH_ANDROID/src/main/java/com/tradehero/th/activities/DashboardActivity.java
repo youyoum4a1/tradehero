@@ -15,7 +15,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -43,7 +42,6 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
@@ -55,19 +53,20 @@ import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity,
         ResideMenu.OnMenuListener
 {
-    private final DashboardTabType INITIAL_TAB = DashboardTabType.TRENDING;
+    private final DashboardTabType INITIAL_TAB = DashboardTabType.HOME;
 
     private DashboardNavigator navigator;
 
@@ -84,10 +83,9 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
-    @Inject DTOCacheUtil dtoCacheUtil;
+    //@Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
@@ -97,12 +95,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject ResideMenu resideMenu;
 
     @Inject THRouter thRouter;
-
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
+    @Inject Analytics analytics;
 
-    private DTOCacheNew.Listener<NotificationKey, NotificationDTO> notificationFetchListener;
+    private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
+
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-
     private ProgressDialog progressDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -155,10 +153,18 @@ public class DashboardActivity extends SherlockFragmentActivity
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
         suggestUpgradeIfNecessary();
-        this.dtoCacheUtil.initialPrefetches();
+        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list, and this line is no use for it will update after login in prefetchesUponLogin
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
-        navigator.goToTab(INITIAL_TAB);
+        if (savedInstanceState == null && navigator.getCurrentFragment() == null)
+        {
+            navigator.goToTab(INITIAL_TAB);
+        }
+
+        if (getIntent() != null)
+        {
+            processNotificationDataIfPresence(getIntent().getExtras());
+        }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
@@ -282,9 +288,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onResume();
 
         launchActions();
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().open(custom_dimensions);
+
+        analytics.openSession();
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -292,6 +297,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onNewIntent(intent);
 
         Bundle extras = intent.getExtras();
+        processNotificationDataIfPresence(extras);
+    }
+
+    private void processNotificationDataIfPresence(Bundle extras)
+    {
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
             progressDialog = progressDialogUtil.get().show(this, "", "");
@@ -310,11 +320,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onPause()
     {
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().close(custom_dimensions);
-        localyticsSession.get().upload();
-
+        analytics.closeSession();
         super.onPause();
     }
 
@@ -405,12 +411,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             supportInvalidateOptionsMenu();
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
 
         }
@@ -436,25 +442,29 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
-    protected DTOCacheNew.Listener<NotificationKey, NotificationDTO> createNotificationFetchListener()
+    protected DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> createNotificationFetchListener()
     {
         return new NotificationFetchListener();
     }
 
     protected class NotificationFetchListener
-            implements DTOCacheNew.Listener<NotificationKey, NotificationDTO>
+            implements DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO>
     {
+        @Override public void onPreCachedDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
+        {
+            onDTOReceived(key, value);
+        }
+
         @Override
-        public void onDTOReceived(NotificationKey key, NotificationDTO value)
+        public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
         {
             onFinish();
 
-            NotificationClickHandler notificationClickHandler =
-                    new NotificationClickHandler(DashboardActivity.this, value);
+            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, value);
             notificationClickHandler.handleNotificationItemClicked();
         }
 
-        @Override public void onErrorThrown(NotificationKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
         {
             onFinish();
             THToast.show(new THException(error));

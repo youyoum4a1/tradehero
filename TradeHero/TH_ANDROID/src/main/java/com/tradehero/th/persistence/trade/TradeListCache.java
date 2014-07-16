@@ -1,56 +1,59 @@
 package com.tradehero.th.persistence.trade;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.OwnedTradeIdList;
-import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.network.service.TradeServiceWrapper;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class TradeListCache extends StraightDTOCacheNew<OwnedPositionId, OwnedTradeIdList>
+@Singleton public class TradeListCache extends StraightCutDTOCacheNew<OwnedPositionId, TradeDTOList, OwnedTradeIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 
     @NotNull private final TradeServiceWrapper tradeServiceWrapper;
     @NotNull private final TradeCache tradeCache;
-    @NotNull private final TradeIdCache tradeIdCache;
 
     //<editor-fold desc="Constructors">
     @Inject public TradeListCache(
             @NotNull TradeServiceWrapper tradeServiceWrapper,
-            @NotNull TradeCache tradeCache,
-            @NotNull TradeIdCache tradeIdCache)
+            @NotNull TradeCache tradeCache)
     {
         super(DEFAULT_MAX_SIZE);
         this.tradeServiceWrapper = tradeServiceWrapper;
         this.tradeCache = tradeCache;
-        this.tradeIdCache = tradeIdCache;
     }
     //</editor-fold>
 
-    @Override @NotNull public OwnedTradeIdList fetch(@NotNull OwnedPositionId key) throws Throwable
+    @Override @NotNull public TradeDTOList fetch(@NotNull OwnedPositionId key) throws Throwable
     {
-        return putInternal(key, tradeServiceWrapper.getTrades(key));
+        return tradeServiceWrapper.getTrades(key);
     }
 
-    @NotNull protected OwnedTradeIdList putInternal(
+    @NotNull @Override protected OwnedTradeIdList cutValue(
             @NotNull OwnedPositionId key,
-            @NotNull List<TradeDTO> fleshedValues)
+            @NotNull TradeDTOList value)
     {
-        OwnedTradeIdList tradeIds = new OwnedTradeIdList();
-        OwnedTradeId ownedTradeId;
-        for (@NotNull TradeDTO trade: fleshedValues)
+        tradeCache.put(value);
+        return new OwnedTradeIdList(value);
+    }
+
+    @Nullable @Override protected TradeDTOList inflateValue(
+            @NotNull OwnedPositionId key,
+            @Nullable OwnedTradeIdList cutValue)
+    {
+        if (cutValue == null)
         {
-            ownedTradeId = new OwnedTradeId(key, trade.id);
-            tradeIds.add(ownedTradeId);
-            tradeCache.put(ownedTradeId, trade);
-            tradeIdCache.put(trade.getTradeId(), ownedTradeId);
+            return null;
         }
-        put(key, tradeIds);
-        return tradeIds;
+        TradeDTOList value = tradeCache.get(cutValue);
+        if (value.hasNullItem())
+        {
+            return null;
+        }
+        return value;
     }
 }

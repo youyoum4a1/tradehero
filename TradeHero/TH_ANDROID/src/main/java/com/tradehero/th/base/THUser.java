@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
@@ -61,7 +62,7 @@ public class THUser
     @Inject static CredentialsSetPreference credentialsSetPreference;
     @Inject static CurrentUserId currentUserId;
 
-    @Inject static Lazy<SharedPreferences> sharedPreferences;
+    @Inject @ForUser static Lazy<SharedPreferences> sharedPreferences;
     @Inject static Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject static Lazy<SessionServiceWrapper> sessionServiceWrapper;
     @Inject static Lazy<UserProfileCache> userProfileCache;
@@ -234,7 +235,6 @@ public class THUser
 
             @Override public void failure(THException error)
             {
-                saveCredentialsToUserDefaults(credentialsDTO);
                 checkNeedForUpgrade(error);
                 checkNeedToRenewSocialToken(error, credentialsDTO);
                 callback.done(null, error);

@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -32,10 +33,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_exchanges_count_wrapper) @Optional protected View exchangesCountWrapper;
     @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
 
-	@Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
-	private                                   Target         topBackgroundTarget;
-	private                                   Target         topDefaultBackgroundTarget;
-	protected                                 Runnable       displayTopViewBackgroundRunnable;
+    @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
+    private Target topBackgroundTarget;
+    private Target topDefaultBackgroundTarget;
+    protected Runnable displayTopViewBackgroundRunnable;
 
     public UserProfileDetailViewHolder(View view)
     {
@@ -51,13 +52,13 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     @Override public void detachViews()
     {
-        super.detachViews();
         topBackgroundTarget = null;
 		topDefaultBackgroundTarget = null;
         if (profileTop != null)
         {
             profileTop.removeCallbacks(displayTopViewBackgroundRunnable);
         }
+        super.detachViews();
     }
 
     @Override public void display(final UserProfileDTO dto)
@@ -303,5 +304,11 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     protected class DefaultBackgroundTarget
 			extends BackgroundTarget
     {
+    }
+
+    @OnClick(R.id.user_profile_trade_count_wrapper) @Optional
+    @Override protected void notifyDefaultPortfolioClicked()
+    {
+        super.notifyDefaultPortfolioClicked();
     }
 }

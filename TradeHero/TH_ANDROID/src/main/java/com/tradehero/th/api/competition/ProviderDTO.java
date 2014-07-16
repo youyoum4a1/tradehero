@@ -11,6 +11,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ProviderDTO implements DTO
@@ -171,14 +172,14 @@ public class ProviderDTO implements DTO
         return advertisements != null && !advertisements.isEmpty();
     }
 
-    @JsonIgnore
-    public OwnedPortfolioId getAssociatedOwnedPortfolioId(UserBaseKey userBaseKey)
+    @JsonIgnore @Nullable
+    public OwnedPortfolioId getAssociatedOwnedPortfolioId(@NotNull UserBaseKey userBaseKey)
     {
         if (associatedPortfolio == null)
         {
             return null;
         }
-        return new OwnedPortfolioId(userBaseKey, associatedPortfolio);
+        return new OwnedPortfolioId(userBaseKey.key, associatedPortfolio.id);
     }
 
     @Override public String toString()

@@ -181,7 +181,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     {
         SendMessageToWX.Req weChatReq = new SendMessageToWX.Req();
         weChatReq.transaction = String.valueOf(
-                System.currentTimeMillis()); //not sure for transaction, maybe identify id?
+                System.currentTimeMillis()); //transaction is a main key
         weChatReq.scene = SendMessageToWX.Req.WXSceneTimeline;
         weChatReq.message = weChatMsg;
         return weChatReq;

@@ -28,8 +28,8 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -77,10 +77,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     @InjectView(R.id.vvolume) @Optional protected TextView mVolume;
     @InjectView(R.id.vavg_volume) @Optional protected TextView mAvgVolume;
 
-    @Inject protected SecurityCompactCache securityCompactCache;
-    @Inject protected Picasso picasso;
-    @Inject protected ChartDTOFactory chartDTOFactory;
-    @Inject protected THLocalyticsSession localyticsSession;
+    @Inject SecurityCompactCache securityCompactCache;
+    @Inject Picasso picasso;
+    @Inject ChartDTOFactory chartDTOFactory;
+    @Inject Analytics analytics;
     private Runnable chooseChartImageSizeTask;
     private Callback chartImageCallback;
 
@@ -140,7 +140,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         {
             @Override public void onTimeSpanButtonSelected(ChartTimeSpan selected)
             {
-                localyticsSession.tagEvent(LocalyticsConstants.PickChart, selected, securityId);
+                analytics.fireEvent(new ChartTimeEvent(securityId, selected));
                 linkWith(selected, true);
             }
         };

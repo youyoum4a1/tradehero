@@ -1,7 +1,7 @@
 package com.tradehero.th.api.security;
 
 import android.os.Bundle;
-import com.thoj.route.RouteProperty;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.common.billing.googleplay.Security;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;

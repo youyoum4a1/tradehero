@@ -139,14 +139,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         fetchCorrespondentProfile();
     }
 
+    @Override public void onDetach()
+    {
+        setActionBarSubtitle(null);
+        super.onDetach();
+    }
+
     @Override public void onDestroyOptionsMenu()
     {
-        SherlockFragmentActivity activity = getSherlockActivity();
-        if (activity != null)
-        {
-            ActionBar actionBar = activity.getSupportActionBar();
-            actionBar.setSubtitle(null);
-        }
+        setActionBarSubtitle(null);
         super.onDestroyOptionsMenu();
     }
 
@@ -241,12 +242,12 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e(error, "");
         }
@@ -313,22 +314,18 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             implements DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO>
     {
         @Override
-        public void onDTOReceived(MessageHeaderId key, MessageHeaderDTO value)
+        public void onDTOReceived(@NotNull MessageHeaderId key, @NotNull MessageHeaderDTO value)
         {
             Timber.d("MessageHeaderDTO=%s", value);
-            ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-            if (actionBar != null)
-            {
-                actionBar.setTitle(value.title);
-                actionBar.setSubtitle(value.subTitle);
-            }
+            setActionBarTitle(value.title);
+            setActionBarSubtitle(value.subTitle);
             if (value.unread)
             {
                 reportMessageRead(value);
             }
         }
 
-        @Override public void onErrorThrown(MessageHeaderId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull MessageHeaderId key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }

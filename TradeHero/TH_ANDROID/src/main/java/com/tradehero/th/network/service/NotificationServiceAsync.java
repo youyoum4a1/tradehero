@@ -1,7 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import java.util.Map;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -15,7 +15,7 @@ interface NotificationServiceAsync
     @GET("/notifications")
     void getNotifications(
             @QueryMap Map<String, Object> options,
-            Callback<PaginatedDTO<NotificationDTO>> callback);
+            Callback<PaginatedNotificationDTO> callback);
 
     @GET("/notifications/{pushId}")
     void getNotificationDetail(

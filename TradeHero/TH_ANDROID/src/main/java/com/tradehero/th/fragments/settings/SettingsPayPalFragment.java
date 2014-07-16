@@ -26,10 +26,12 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class SettingsPayPalFragment extends DashboardFragment
@@ -45,7 +47,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -62,13 +64,13 @@ public class SettingsPayPalFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.Settings_PayPal);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_PayPal));
     }
 
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.settings_paypal_header));
+        setActionBarTitle(getResources().getString(R.string.settings_paypal_header));
         super.onCreateOptionsMenu(menu, inflater);
     }
     //</editor-fold>
@@ -171,7 +173,7 @@ public class SettingsPayPalFragment extends DashboardFragment
         return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
             @Override
-            public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
             {
                 if (!isDetached())
                 {
@@ -179,7 +181,7 @@ public class SettingsPayPalFragment extends DashboardFragment
                 }
             }
 
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
             {
                 if (!isDetached())
                 {

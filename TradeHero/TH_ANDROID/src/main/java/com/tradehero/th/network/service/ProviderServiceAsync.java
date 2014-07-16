@@ -1,9 +1,8 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.HelpVideoDTO;
+import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import java.util.List;
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -48,6 +47,6 @@ interface ProviderServiceAsync
     @GET("/providers/{providerId}/helpVideos")
     void getHelpVideos(
             @Path("providerId") int providerId,
-            Callback<List<HelpVideoDTO>> callback);
+            Callback<HelpVideoDTOList> callback);
     //</editor-fold>
 }

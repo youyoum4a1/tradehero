@@ -21,7 +21,7 @@ import butterknife.Optional;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -29,10 +29,11 @@ import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
@@ -59,7 +60,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -321,9 +322,9 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
                 }
             };
 
-    protected class SecurityListLoaderCallback implements LoaderManager.LoaderCallbacks<SecurityIdList>
+    protected class SecurityListLoaderCallback implements LoaderManager.LoaderCallbacks<SecurityCompactDTOList>
     {
-        @Override public Loader<SecurityIdList> onCreateLoader(int id, Bundle args)
+        @Override public Loader<SecurityCompactDTOList> onCreateLoader(int id, Bundle args)
         {
             //Timber.d("onCreateLoader");
             if (id == getSecurityIdListLoaderId())
@@ -336,10 +337,10 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             throw new IllegalStateException("Unhandled loader id " + id);
         }
 
-        @Override public void onLoadFinished(Loader<SecurityIdList> securityIdListLoader, SecurityIdList securityIds)
+        @Override public void onLoadFinished(Loader<SecurityCompactDTOList> securityCompactDTOListLoader, SecurityCompactDTOList securityCompactDTOs)
         {
             //Timber.d("onLoadFinished");
-            handleSecurityItemReceived(securityIds);
+            handleSecurityItemReceived(securityCompactDTOs);
 
             if (listViewScrollListener != null)
             {
@@ -347,18 +348,18 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
             }
         }
 
-        @Override public void onLoaderReset(Loader<SecurityIdList> securityIdListLoader)
+        @Override public void onLoaderReset(Loader<SecurityCompactDTOList> securityCompactDTOListLoader)
         {
             // TODO
         }
     }
 
-    protected void handleSecurityItemReceived(SecurityIdList securityIds)
+    protected void handleSecurityItemReceived(@Nullable SecurityCompactDTOList securityCompactDTOs)
     {
         if (securityItemViewAdapter != null)
         {
             // It may have been nullified if coming out
-            securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
+            securityItemViewAdapter.setItems(securityCompactDTOs);
             securityItemViewAdapter.notifyDataSetChanged();
         }
     }

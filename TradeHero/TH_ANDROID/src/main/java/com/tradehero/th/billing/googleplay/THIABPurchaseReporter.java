@@ -53,7 +53,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
         {
-            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserId.toUserBaseKey());
+            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserId.toUserBaseKey()).getOwnedPortfolioId();
         }
         if (portfolioId == null)
         {

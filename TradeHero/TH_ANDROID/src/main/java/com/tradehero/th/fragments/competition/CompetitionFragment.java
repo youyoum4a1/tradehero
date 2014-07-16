@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
-import com.thoj.route.InjectRoute;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -84,11 +84,10 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     {
         this.providerDTO = providerDTO;
 
-        OwnedPortfolioId associatedPortfolioId =
-                new OwnedPortfolioId(currentUserId.toUserBaseKey(), providerDTO.associatedPortfolio);
+        OwnedPortfolioId associatedPortfolioId = providerDTO.associatedPortfolio.getOwnedPortfolioId();
         putApplicablePortfolioId(getArguments(), associatedPortfolioId);
 
-        prepareApplicableOwnedPortolioId();
+        prepareApplicableOwnedPortolioId(null);
 
         if (andDisplay)
         {
