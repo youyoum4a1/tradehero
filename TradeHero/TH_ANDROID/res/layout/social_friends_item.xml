@@ -11,8 +11,9 @@
     android:gravity="center_vertical"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:background="@drawable/list_item_bg"
+    android:background="@color/white"
     >
+  <!--View is not clickable so there's no point in using selector as the background. It will only confuse the user-->
 
   <ImageView
       android:id="@+id/social_item_logo"
