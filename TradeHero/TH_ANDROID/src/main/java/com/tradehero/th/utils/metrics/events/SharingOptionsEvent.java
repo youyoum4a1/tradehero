@@ -7,6 +7,9 @@ import java.util.Map;
 
 public final class SharingOptionsEvent extends SecurityEvent
 {
+    private static final String HAS_COMMENT_MAP_KEY = "hasComment";
+    private static final String PRICE_SELECT_METHOD = "lastSelectBy";
+
     private static final String SHARE_TO_FACEBOOK_MAP_KEY = "shareToFacebook";
     private static final String SHARE_TO_LINKEDIN_MAP_KEY = "shareToLinkedIn";
     private static final String SHARE_TO_TWITTER_MAP_KEY = "shareToTwitter";
@@ -43,8 +46,8 @@ public final class SharingOptionsEvent extends SecurityEvent
     @Override public Map<String, String> getAttributes()
     {
         Map<String, String> attributes = super.getAttributes();
-        attributes.put(AnalyticsConstants.HAS_COMMENT_MAP_KEY, hasComment ? "1" : "0");
-        attributes.put(AnalyticsConstants.PRICE_SELECT_METHOD, priceSelectMethod);
+        attributes.put(HAS_COMMENT_MAP_KEY, hasComment ? "1" : "0");
+        attributes.put(PRICE_SELECT_METHOD, priceSelectMethod);
 
         attributes.put(SHARE_TO_FACEBOOK_MAP_KEY, facebookEnabled ? "1" : "0");
         attributes.put(SHARE_TO_TWITTER_MAP_KEY, twitterEnabled ? "1" : "0");
@@ -52,7 +55,7 @@ public final class SharingOptionsEvent extends SecurityEvent
         attributes.put(SHARE_TO_WECHAT_MAP_KEY, weChatEnabled ? "1" : "0");
         attributes.put(SHARE_TO_WEIBO_MAP_KEY, weiboEnabled ? "1" : "0");
 
-        attributes.put(AnalyticsConstants.PROVIDER_ID_MAP_KEY, providerId.toString());
+        attributes.put(ProviderEvent.PROVIDER_ID_MAP_KEY, providerId.toString());
         return attributes;
     }
 

@@ -1,12 +1,12 @@
 package com.tradehero.th.utils.metrics.events;
 
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.Map;
 
 class SecurityEvent extends AnalyticsEvent
 {
-    private static final String SECURITY_ID_FORMAT = "%s:%s";
+    static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
 
     private final SecurityId securityId;
 
@@ -21,8 +21,7 @@ class SecurityEvent extends AnalyticsEvent
         Map<String, String> attributes = super.getAttributes();
         if (securityId != null)
         {
-            attributes.put(AnalyticsConstants.SECURITY_SYMBOL_MAP_KEY, String.format(SECURITY_ID_FORMAT, securityId.getExchange(),
-                    securityId.getSecuritySymbol()));
+            attributes.put(SECURITY_SYMBOL_MAP_KEY, SecurityUtils.getDisplayableSecurityName(securityId));
         }
         return attributes;
     }

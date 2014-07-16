@@ -124,11 +124,4 @@ public class AnalyticsConstants
     public static final String Trade_Sell = "Trade/Sell";//
     public static final String Twitter = "Twitter";//
     public static final String WeiBo = "WeiBo";//
-
-    //public static final String CHANNEL_MAP_KEY = "channel";
-    public static final String HAS_COMMENT_MAP_KEY = "hasComment";//
-    public static final String PRICE_SELECT_METHOD = "lastSelectBy";//
-    public static final String PROVIDER_ID_MAP_KEY = "providerId";//
-    public static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
-    public static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
 }
