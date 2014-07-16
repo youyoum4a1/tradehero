@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;

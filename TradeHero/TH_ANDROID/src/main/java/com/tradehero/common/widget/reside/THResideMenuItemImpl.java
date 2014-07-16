@@ -1,7 +1,7 @@
 package com.tradehero.common.widget.reside;
 
 import android.content.Context;
-import com.special.ResideMenu.ResideMenuItem;
+import com.special.residemenu.ResideMenuItem;
 
 public class THResideMenuItemImpl extends ResideMenuItem
     implements THResideMenuItem

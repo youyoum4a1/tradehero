@@ -1,1 +1,2 @@
-include ':TradeHero:TH_ANDROID'
+include ':TradeHero:TH_ANDROID', ':ResideMenu'
+project(':ResideMenu').projectDir = new File('AndroidResideMenu/ResideMenu')

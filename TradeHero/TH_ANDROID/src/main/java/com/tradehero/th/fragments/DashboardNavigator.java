@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.widget.TabHost;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;

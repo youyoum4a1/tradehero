@@ -20,7 +20,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.milestone.Milestone;

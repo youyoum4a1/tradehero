@@ -1,7 +1,7 @@
 package com.tradehero.th.ui;
 
 import android.content.Context;
-import com.special.ResideMenu.ResideMenu;
+import com.special.residemenu.ResideMenu;
 import com.tradehero.th.activities.DashboardActivity;
 import dagger.Module;
 import dagger.Provides;
