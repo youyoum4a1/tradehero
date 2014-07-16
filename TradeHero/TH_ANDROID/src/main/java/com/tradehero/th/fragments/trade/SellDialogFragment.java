@@ -19,11 +19,12 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
     {
         String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
 
-        String bPrice;
-        THSignedNumber bThSignedNumber;
-        bThSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, THSignedNumber.WITHOUT_SIGN, "");
-        bPrice = bThSignedNumber.toString();
-        return getString(R.string.buy_sell_button_buy, display, bPrice);
+        String sPrice;
+        THSignedNumber sthSignedNumber;
+        sthSignedNumber =
+                new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
+        sPrice = sthSignedNumber.toString();
+        return getString(R.string.buy_sell_button_sell, display, sPrice);
     }
 
     @Override protected int getCashLeftLabelResId()
