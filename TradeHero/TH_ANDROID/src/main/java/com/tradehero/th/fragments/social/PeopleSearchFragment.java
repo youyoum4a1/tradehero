@@ -33,8 +33,9 @@ import com.tradehero.th.persistence.user.UserBaseKeyListCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
 
     @Inject Lazy<UserSearchResultCache> userSearchResultCache;
     @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject THRouter thRouter;
 
     @InjectView(R.id.search_empty_container) View searchEmptyContainer;
@@ -516,7 +517,7 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
                     peopleItemViewAdapterItemViewAdapter.clear();
                 }
             }
-            localyticsSession.tagEvent(LocalyticsConstants.SearchResult_Stock);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
         }
 
         @Override public void onErrorThrown(@NotNull UserListType key, @NotNull Throwable error)

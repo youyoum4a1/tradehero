@@ -208,12 +208,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.squareup</groupId>
-      <artifactId>javawriter</artifactId>
-      <version>${javawriter.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.4.0</version>
@@ -276,8 +270,7 @@
     <dependency>
       <groupId>com.squareup.retrofit</groupId>
       <artifactId>retrofit</artifactId>
-      <!-- Use 1.6.2-SNAPSHOT or more recent when available -->
-      <version>1.5.1-TradeHero</version>
+      <version>1.6.1</version>
     </dependency>
 
     <dependency>

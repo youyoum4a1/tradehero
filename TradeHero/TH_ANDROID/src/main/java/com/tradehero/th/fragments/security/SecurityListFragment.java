@@ -29,7 +29,7 @@ import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +60,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<SecurityCompactCache> securityCompactCache;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

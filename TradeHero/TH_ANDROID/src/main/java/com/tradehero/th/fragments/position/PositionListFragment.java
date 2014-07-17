@@ -49,8 +49,9 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -80,7 +81,7 @@ public class PositionListFragment
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
     @Inject Lazy<SecurityIdCache> securityIdCache;
-    @Inject Lazy<THLocalyticsSession> thLocalyticsSessionLazy;
+    @Inject Analytics analytics;
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
 
@@ -847,8 +848,7 @@ public class PositionListFragment
             super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             displayHeaderView();
             fetchSimplePage(true);
-            thLocalyticsSessionLazy.get().tagSingleEvent(LocalyticsConstants.PremiumFollow_Success, LocalyticsConstants.FollowedFromScreen,
-                    LocalyticsConstants.PositionList);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
         }
     }
 

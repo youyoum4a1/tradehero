@@ -174,6 +174,7 @@ import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.ui.UIModule;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import dagger.Module;
@@ -188,7 +189,7 @@ import javax.inject.Singleton;
                 NetworkModule.class,
                 SocialNetworkModule.class,
                 UIModule.class,
-                UxModule.class,
+                MetricsModule.class,
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
@@ -399,11 +400,11 @@ import javax.inject.Singleton;
         complete = false,
         library = true // TODO remove this line
 )
-public class TradeHeroModule
+public class AppModule
 {
     private final Application application;
 
-    public TradeHeroModule(Application application)
+    public AppModule(Application application)
     {
         this.application = application;
     }

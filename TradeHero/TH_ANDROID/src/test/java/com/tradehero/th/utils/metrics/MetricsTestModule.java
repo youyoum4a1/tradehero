@@ -1,4 +1,4 @@
-package com.tradehero.th.ui;
+package com.tradehero.th.utils.metrics;
 
 import com.localytics.android.LocalyticsSession;
 import com.tapstream.sdk.Api;
@@ -13,15 +13,15 @@ import static org.mockito.Mockito.mock;
         complete = false,
         overrides = true
 )
-public class UxTestModule
+public class MetricsTestModule
 {
     @Provides @Singleton Api provideMockTapStream()
     {
         return mock(Api.class);
     }
 
-    @Provides @Singleton LocalyticsSession provideMockLocalyticsSession()
+    @Provides @Singleton Analytics provideMockLocalyticsSession()
     {
-        return mock(LocalyticsSession.class);
+        return mock(Analytics.class);
     }
 }

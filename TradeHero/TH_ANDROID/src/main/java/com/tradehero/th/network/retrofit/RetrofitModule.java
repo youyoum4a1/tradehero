@@ -54,11 +54,14 @@ import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.RetrofitConstants;
 import com.tradehero.th.widget.VotePair;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
+import retrofit.Endpoint;
+import retrofit.Endpoints;
 import retrofit.RestAdapter;
-import retrofit.Server;
 import retrofit.converter.Converter;
 
 @Module(
@@ -208,12 +211,12 @@ public class RetrofitModule
 
     @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
     {
-        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
+        return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 
     @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)
     {
-        return builder.setServer(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
+        return builder.setEndpoint(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
                 .setRequestInterceptor(requestHeaders)
                 .build()
                 .create(HomeService.class);
@@ -261,12 +264,12 @@ public class RetrofitModule
         return new JacksonConverter(objectMapper);
     }
 
-    @Provides @Singleton Server provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
+    @Provides @Singleton Endpoint provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
     {
-        return new Server(serverEndpointPreference.get());
+        return Endpoints.newFixedEndpoint(serverEndpointPreference.get());
     }
 
-    @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Server server)
+    @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Endpoint server)
     {
         return server.getUrl() + NetworkConstants.COMPETITION_PATH;
     }
@@ -283,9 +286,9 @@ public class RetrofitModule
                 .setLogLevel(RetrofitConstants.DEFAULT_SERVICE_LOG_LEVEL);
     }
 
-    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Server server, RequestHeaders requestHeaders)
+    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
     {
-        return builder.setServer(server).setRequestInterceptor(requestHeaders).build();
+        return builder.setEndpoint(server).setRequestInterceptor(requestHeaders).build();
     }
 
     //@Provides Client provideOkClient(Context context)

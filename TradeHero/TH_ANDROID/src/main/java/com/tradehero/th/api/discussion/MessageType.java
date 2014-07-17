@@ -3,14 +3,14 @@ package com.tradehero.th.api.discussion;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
 public enum MessageType
 {
-    PRIVATE(1, LocalyticsConstants.PrivateMessage),
-    BROADCAST_FREE_FOLLOWERS(2, R.string.follower_type_free, LocalyticsConstants.BroadcastFreeFollowers),
-    BROADCAST_PAID_FOLLOWERS(3,R.string.follower_type_premium, LocalyticsConstants.BroadcastPremiumFollowers),
-    BROADCAST_ALL_FOLLOWERS(4,R.string.follower_type_all, LocalyticsConstants.BroadcastAllFollowers);
+    PRIVATE(1, AnalyticsConstants.PrivateMessage),
+    BROADCAST_FREE_FOLLOWERS(2, R.string.follower_type_free, AnalyticsConstants.BroadcastFreeFollowers),
+    BROADCAST_PAID_FOLLOWERS(3,R.string.follower_type_premium, AnalyticsConstants.BroadcastPremiumFollowers),
+    BROADCAST_ALL_FOLLOWERS(4,R.string.follower_type_all, AnalyticsConstants.BroadcastAllFollowers);
 
     public final int typeId;
     public final int titleResource;
