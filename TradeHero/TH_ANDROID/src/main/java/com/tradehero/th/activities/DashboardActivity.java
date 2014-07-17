@@ -22,7 +22,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -105,8 +104,6 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ProgressDialog progressDialog;
-    private SystemStatusDTO mSystemStatusDTO;
-    private DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> systemStatusCacheListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -291,20 +288,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Override protected void onStart()
     {
         super.onStart();
-        systemStatusCacheListener = createSystemStatusCacheListener();
-        systemStatusCache.register(currentUserId.toUserBaseKey(), systemStatusCacheListener);
         systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
-    }
-
-    @Override protected void onStop()
-    {
-        detachSystemStatusCache();
-        systemStatusCacheListener = null;
-        super.onStop();
-    }
-    protected void detachSystemStatusCache()
-    {
-        systemStatusCache.unregister(systemStatusCacheListener);
     }
 
     @Override protected void onResume()
@@ -501,23 +485,6 @@ public class DashboardActivity extends SherlockFragmentActivity
                 progressDialog.hide();
             }
         }
-    }
-
-    protected class SystemStatusCacheListener implements DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO>
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SystemStatusDTO value)
-        {
-            mSystemStatusDTO = value;
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-        }
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> createSystemStatusCacheListener()
-    {
-        return new SystemStatusCacheListener();
     }
 
     @Override public void onLowMemory()
