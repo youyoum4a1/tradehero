@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trending;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -16,17 +15,18 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trade.view.QuickPriceButton;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.util.RobolectricBackgroundExecutorService;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -182,7 +182,6 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     private void performUserSetProgress(SeekBar mSeekBar, int newProgress)
     {
         Method privateSetProgressMethod = null;
-
         try
         {
             privateSetProgressMethod = ProgressBar.class.getDeclaredMethod("setProgress", Integer.TYPE, Boolean.TYPE);
@@ -426,8 +425,63 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         assertThat(edt.getSelectionStart()).isEqualTo(edt.getText().length());
     }
 
-    //TODO test whether it's generating correct sharing options
-    //TODO test on the analytics fired
+    @Test
+    public void testGenerateSharingOptionsHaveCorrectName()
+    {
+        SharingOptionsEvent sharingOptionsEvent = abstractTransactionDialogFragment.getSharingOptionEvent();
+
+        assertThat(sharingOptionsEvent.getName()).isEqualTo(AnalyticsConstants.Trade_Buy);
+
+        Map<String, String> map = sharingOptionsEvent.getAttributes();
+
+        for (Map.Entry<String, String> val : map.entrySet())
+        {
+            System.out.println(String.format("%s - %s", val.getKey(), val.getValue()));
+            assertThat(val.getKey()).isNotNull();
+            assertThat(val.getValue()).isNotNull();
+        }
+    }
+
+    @Test
+    public void testGenerateSharingOptionsHaveCorrectPriceSelectionMethod()
+    {
+        String key = "lastSelectBy";
+        String value = getMapValueFromSharingOptionsEvent(key);
+
+        assertThat(value).isNotNull();
+        assertThat(value).isEqualTo(AnalyticsConstants.Default);
+
+        //Slider
+        performUserSetProgress(abstractTransactionDialogFragment.getSeekBar(), 300);
+        value = getMapValueFromSharingOptionsEvent(key);
+        assertThat(value).isEqualTo(AnalyticsConstants.Slider);
+
+        //EditText
+        //TODO find a better way since this one assumes that the user click the editText before typing
+        abstractTransactionDialogFragment.getQuantityEditText().performClick();
+        abstractTransactionDialogFragment.getQuantityEditText().setText(String.valueOf(400));
+        value = getMapValueFromSharingOptionsEvent(key);
+        assertThat(value).isEqualTo(AnalyticsConstants.ManualQuantityInput);
+
+        //QuickSet
+        abstractTransactionDialogFragment.getQuickPriceButtonSet().getButtons().get(1).performClick();
+        value = getMapValueFromSharingOptionsEvent(key);
+        assertThat(value).isEqualTo(AnalyticsConstants.MoneySelection);
+    }
+
+    private String getMapValueFromSharingOptionsEvent(String key)
+    {
+        SharingOptionsEvent sharingOptionsEvent = abstractTransactionDialogFragment.getSharingOptionEvent();
+        Map<String, String> map = sharingOptionsEvent.getAttributes();
+
+        return map.get(key);
+    }
+
+    @Test
+    public void testGetRefCCYReturnsCorrectValue()
+    {
+        assertThat(abstractTransactionDialogFragment.getPriceCcy()).isEqualTo(quoteDTO.ask * quoteDTO.toUSDRate);
+    }
 
     //TODO test the value when quote = null
     //TODO test the subtitle - price Info

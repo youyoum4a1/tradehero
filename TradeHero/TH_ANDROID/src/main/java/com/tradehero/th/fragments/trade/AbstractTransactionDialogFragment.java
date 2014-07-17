@@ -6,7 +6,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -121,7 +124,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected UserProfileDTO userProfileDTO;
 
     private AlertDialog mSocialLinkingDialog;
-    private String mPriceSelectionMethod;
+    private String mPriceSelectionMethod = AnalyticsConstants.Default;
     private TextWatcher mQuantityTextWatcher;
 
     protected abstract String getLabel();
@@ -222,6 +225,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
         mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
         mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
+        mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
 
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
@@ -347,6 +351,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mSocialLinkingDialog;
     }
 
+    @OnClick(R.id.vquantity)
+    public void onQuantityClicked()
+    {
+        mPriceSelectionMethod = AnalyticsConstants.ManualQuantityInput;
+    }
+
     @OnClick(R.id.dialog_btn_cancel)
     public void onCancelClicked(View v)
     {
@@ -385,14 +395,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         updateSeekbar();
         updateQuantityView();
-        updateTradeValueAndCashShareLeft();
-        updateConfirmButton();
-    }
-
-    public void updateTransactionDialogForQuantity()
-    {
-        //Skip updating/ setText to quantityEditText or we'll have StackOverflow
-        updateSeekbar();
         updateTradeValueAndCashShareLeft();
         updateConfirmButton();
     }
@@ -730,6 +732,33 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         mTransactionDialog = null;
     }
 
+    private ActionMode.Callback createActionModeCallBackForQuantityEditText()
+    {
+        //We want to disable action mode since it's irrelevant
+        return new ActionMode.Callback()
+        {
+            @Override public boolean onCreateActionMode(ActionMode actionMode, Menu menu)
+            {
+                return false;
+            }
+
+            @Override public boolean onPrepareActionMode(ActionMode actionMode, Menu menu)
+            {
+                return false;
+            }
+
+            @Override public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem)
+            {
+                return false;
+            }
+
+            @Override public void onDestroyActionMode(ActionMode actionMode)
+            {
+
+            }
+        };
+    }
+
     private TextWatcher getQuantityTextChangeListener()
     {
         if (mQuantityTextWatcher == null)
@@ -755,9 +784,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
                     mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
                     mQuantityEditText.setText(String.valueOf(val));
+                    updateTransactionDialog();
                     mQuantityEditText.addTextChangedListener(mQuantityTextWatcher);
-
-                    updateTransactionDialogForQuantity();
                 }
             };
         }
@@ -793,9 +821,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             {
                 if (fromUser)
                 {
-                    mPriceSelectionMethod = AnalyticsConstants.Slider;
                     mTransactionQuantity = progress;
                     updateTransactionDialog();
+                    mPriceSelectionMethod = AnalyticsConstants.Slider;
                 }
             }
 
