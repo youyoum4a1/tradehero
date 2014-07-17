@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="contest_center_tab_active">活动中</string>
+  <string name="contest_center_tab_joined">已参加</string>
+</resources>
