@@ -337,6 +337,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mBtnShareWeChat;
     }
 
+    public EditText getQuantityEditText()
+    {
+        return mQuantityEditText;
+    }
+
     public AlertDialog getSocialLinkingDialog()
     {
         return mSocialLinkingDialog;
@@ -379,14 +384,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     public void updateTransactionDialog()
     {
         updateSeekbar();
-        updateQuantityView();
-        updateTradeValueAndCashShareLeft();
-        updateConfirmButton();
-    }
-
-    public void updateTransactionDialogForSeekbar()
-    {
-        //Skip updating/ setProgress to seekbar or we'll have StackOverflow
         updateQuantityView();
         updateTradeValueAndCashShareLeft();
         updateConfirmButton();
@@ -686,8 +683,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 .facebookEnabled(shareForTransaction(SocialNetworkEnum.FB))
                 .twitterEnabled(shareForTransaction(SocialNetworkEnum.TW))
                 .linkedInEnabled(shareForTransaction(SocialNetworkEnum.LN))
-                .wechatEnabled(mBtnShareWeChat != null && mBtnShareWeChat.isChecked())
-                .weiboEnabled(mBtnShareWb != null && mBtnShareWb.isChecked());
+                .wechatEnabled(shareForTransaction(SocialNetworkEnum.WECHAT))
+                .weiboEnabled(shareForTransaction(SocialNetworkEnum.WB));
         setBuyEventFor(builder);
 
         return builder.build();
@@ -751,18 +748,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
                 @Override public void afterTextChanged(Editable editable)
                 {
-                    int val = 0;
-                    try
-                    {
-                        val = Integer.parseInt(editable.toString());
-                        if (val > getMaxValue())
-                        {
-                            val = getMaxValue();
-                        }
-                    } catch (NumberFormatException e)
-                    {
-                        e.printStackTrace();
-                    }
+
+                    int val = getTradeQuantityFrom(editable.toString());
 
                     mTransactionQuantity = val;
 
@@ -777,24 +764,38 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mQuantityTextWatcher;
     }
 
+    private int getTradeQuantityFrom(@NotNull String string)
+    {
+        int val = 0;
+        try
+        {
+            val = Integer.parseInt(string.trim());
+            if (val > getMaxValue())
+            {
+                val = getMaxValue();
+            }
+            else if (val < 0)
+            {
+                val = 0;
+            }
+        } catch (NumberFormatException e)
+        {
+            e.printStackTrace();
+        }
+        return val;
+    }
+
     private SeekBar.OnSeekBarChangeListener createSeekBarListener()
     {
         return new SeekBar.OnSeekBarChangeListener()
         {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-
                 if (fromUser)
                 {
-                    mTransactionQuantity = progress;
                     mPriceSelectionMethod = AnalyticsConstants.Slider;
-                    updateTransactionDialogForSeekbar();
-                }
-                else
-                {
-                    //Do not update quantity
-                    updateTradeValueAndCashShareLeft();
-                    updateConfirmButton();
+                    mTransactionQuantity = progress;
+                    updateTransactionDialog();
                 }
             }
 

@@ -3,9 +3,11 @@ package com.tradehero.th.fragments.trending;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.security.TransactionFormDTO;
@@ -14,6 +16,8 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trade.view.QuickPriceButton;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.utils.THSignedNumber;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.inject.Inject;
@@ -21,6 +25,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.util.RobolectricBackgroundExecutorService;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -74,9 +80,9 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         int min = 10;
         for (int i = 0; i < 50; i++)
         {
-            int val = min + (int) (Math.random() * ((max - min) + 1));
+            int val = new Random().nextInt((max - min)) + min;
 
-            s.setProgress(val);
+            this.performUserSetProgress(s, val);
             assertThat(s.getProgress()).isEqualTo(val);
             assertThat(s.getProgress()).isGreaterThan(0);
 
@@ -84,6 +90,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
             assertThat(abstractTransactionDialogFragment.getTradeValueText()).isEqualTo(getSignedNumberString(value));
             assertThat(abstractTransactionDialogFragment.getQuantity()).isEqualTo(val);
+
             assertThat(abstractTransactionDialogFragment.getQuantityString()).isEqualTo(String.valueOf(val));
             assertThat(abstractTransactionDialogFragment.getCashShareLeft()).isEqualTo(getCashLeft(value));
             assertThat(abstractTransactionDialogFragment.getConfirmButton().isEnabled()).isEqualTo(true);
@@ -100,7 +107,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
         assertThat(btn.isEnabled()).isEqualTo(false);
 
-        abstractTransactionDialogFragment.getSeekBar().setProgress(0);
+        this.performUserSetProgress(abstractTransactionDialogFragment.getSeekBar(), 0);
 
         assertThat(btn.isEnabled()).isEqualTo(false);
     }
@@ -113,11 +120,13 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         assertThat(btn.isEnabled()).isEqualTo(false);
 
         SeekBar s = abstractTransactionDialogFragment.getSeekBar();
+        s.setPressed(true);
 
         int max = s.getMax();
 
-        int rand = new Random().nextInt(max);
-        abstractTransactionDialogFragment.getSeekBar().setProgress(rand);
+        int rand = new Random().nextInt(max) + 1;
+
+        this.performUserSetProgress(abstractTransactionDialogFragment.getSeekBar(), rand);
 
         assertThat(btn.isEnabled()).isEqualTo(true);
     }
@@ -132,7 +141,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     @Test
     public void testValueShouldMatch()
     {
-        abstractTransactionDialogFragment.getSeekBar().setProgress(500);
+        this.performUserSetProgress(abstractTransactionDialogFragment.getSeekBar(), 500);
         assertThat(abstractTransactionDialogFragment.getQuantity()).isEqualTo(500);
         assertThat(abstractTransactionDialogFragment.getQuantityString()).isEqualTo(String.valueOf(500));
     }
@@ -170,9 +179,24 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         //TODO
     }
 
+    private void performUserSetProgress(SeekBar mSeekBar, int newProgress)
+    {
+        Method privateSetProgressMethod = null;
+
+        try
+        {
+            privateSetProgressMethod = ProgressBar.class.getDeclaredMethod("setProgress", Integer.TYPE, Boolean.TYPE);
+            privateSetProgressMethod.setAccessible(true);
+            privateSetProgressMethod.invoke(mSeekBar, newProgress, true);
+        } catch (ReflectiveOperationException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     private String getCashLeft(double transactionValue)
     {
-        double cashLeft = CASH_BALANCE - transactionValue; //Since we starts with 100 000
+        double cashLeft = CASH_BALANCE - transactionValue;
 
         return getSignedNumberString(cashLeft);
     }
@@ -248,14 +272,12 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
         assertThat(abstractTransactionDialogFragment.getFacebookShareButton().isChecked()).isEqualTo(false);
         assertThat(transactionFormDTO.publishToFb).isEqualTo(false);
-        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.FB)).isEqualTo(false);
 
         abstractTransactionDialogFragment.getFacebookShareButton().performClick();
 
         transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
         assertThat(abstractTransactionDialogFragment.getFacebookShareButton().isChecked()).isEqualTo(true);
         assertThat(transactionFormDTO.publishToFb).isEqualTo(true);
-        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.FB)).isEqualTo(true);
     }
 
     @Test
@@ -310,10 +332,103 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.LN)).isEqualTo(true);
     }
 
+    @Test
+    public void testQuantityEditedShouldUpdateDialog()
+    {
+        EditText edt = abstractTransactionDialogFragment.getQuantityEditText();
+
+        assertThat(edt.getText().toString()).isEqualTo("0");
+
+        for (int i = 0; i < 10; i++)
+        {
+            int randInt = new Random().nextInt(abstractTransactionDialogFragment.getSeekBar().getMax()) + 1;
+            Double value = randInt * abstractTransactionDialogFragment.getPriceCcy();
+
+            edt.setText(String.valueOf(randInt));
+
+            assertThat(edt.getText().toString()).isEqualTo(String.valueOf(randInt));
+            assertThat(abstractTransactionDialogFragment.getSeekBar().getProgress()).isEqualTo(randInt);
+            assertThat(abstractTransactionDialogFragment.getSeekBar().getProgress()).isEqualTo(randInt);
+            assertThat(abstractTransactionDialogFragment.getTradeValueText()).isEqualTo(getSignedNumberString(value));
+            assertThat(abstractTransactionDialogFragment.getCashShareLeft()).isEqualTo(getCashLeft(value));
+        }
+    }
+
+    @Test
+    public void testQuantityShouldReturnsZeroOnInvalidInput()
+    {
+        EditText edt = abstractTransactionDialogFragment.getQuantityEditText();
+
+        assertThat(edt.getText().toString()).isEqualTo("0");
+
+        List<String> invalidInputs = new ArrayList<>();
+
+        invalidInputs.add("Autobots!");
+        invalidInputs.add("-+-");
+        invalidInputs.add("(╯°□°)╯︵ ┻━┻");
+        invalidInputs.add("2xe2;['\\],.");
+        invalidInputs.add("(҂‾ ▵‾)︻デ═一 \\(˚▽˚’!)/");
+        invalidInputs.add("      ");
+        invalidInputs.add("-1");
+        invalidInputs.add("0.123");
+
+        for (String invalid : invalidInputs)
+        {
+            edt.setText(invalid);
+            assertThat(edt.getText().toString()).isEqualTo(String.valueOf(0));
+            assertThat(abstractTransactionDialogFragment.getSeekBar().getProgress()).isEqualTo(0);
+            assertThat(abstractTransactionDialogFragment.getSeekBar().getProgress()).isEqualTo(0);
+            assertThat(abstractTransactionDialogFragment.getTradeValueText()).isEqualTo(getSignedNumberString(0));
+            assertThat(abstractTransactionDialogFragment.getCashShareLeft()).isEqualTo(getCashLeft(0));
+        }
+    }
+
+    @Test
+    public void testQuantityShouldReturnMaxValueOnGreaterInput()
+    {
+        int max = abstractTransactionDialogFragment.getSeekBar().getMax();
+
+        Double value = max * abstractTransactionDialogFragment.getPriceCcy();
+
+        int moreThanMax = max + new Random().nextInt(100);
+
+        EditText edt = abstractTransactionDialogFragment.getQuantityEditText();
+
+        edt.setText(String.valueOf(moreThanMax));
+
+        assertThat(edt.getText().toString()).isEqualTo(String.valueOf(max));
+        assertThat(abstractTransactionDialogFragment.getSeekBar().getProgress()).isEqualTo(max);
+        assertThat(abstractTransactionDialogFragment.getSeekBar().getProgress()).isEqualTo(max);
+        assertThat(abstractTransactionDialogFragment.getTradeValueText()).isEqualTo(getSignedNumberString(value));
+        assertThat(abstractTransactionDialogFragment.getCashShareLeft()).isEqualTo(getCashLeft(value));
+    }
+
+    @Test
+    public void testWhenSelectedCursorIsOnTheEnd()
+    {
+        EditText edt = abstractTransactionDialogFragment.getQuantityEditText();
+        edt.clearFocus();
+        edt.requestFocus();
+        edt.performClick();
+
+        assertThat(edt.getSelectionEnd()).isEqualTo(edt.getText().length());
+        assertThat(edt.getSelectionStart()).isEqualTo(edt.getText().length());
+    }
+
+    @Test
+    public void testWhenQuantityEditedCursorIsOnTheEnd()
+    {
+        EditText edt = abstractTransactionDialogFragment.getQuantityEditText();
+        int val = new Random().nextInt(abstractTransactionDialogFragment.getSeekBar().getMax()) + 1;
+        edt.setText(String.valueOf(val));
+
+        assertThat(edt.getSelectionEnd()).isEqualTo(edt.getText().length());
+        assertThat(edt.getSelectionStart()).isEqualTo(edt.getText().length());
+    }
+
     //TODO test whether it's generating correct sharing options
+    //TODO test on the analytics fired
 
     //TODO test the value when quote = null
-    //TODO test quantity edittext
     //TODO test the subtitle - price Info
-    //TODO test on the analytics fired
 }

@@ -89,6 +89,7 @@
         android:textColor="@color/tradehero_blue"
         android:inputType="number"
         android:numeric="integer"
+        android:longClickable="false"
         tools:text="0"
         />
 
