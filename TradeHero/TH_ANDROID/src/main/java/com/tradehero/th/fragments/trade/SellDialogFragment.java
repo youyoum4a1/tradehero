@@ -101,7 +101,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
 
     public Integer getMaxSellableShares()
     {
-        return
+        return positionDTOCompactList == null ? null :
                 positionDTOCompactList.getMaxSellableShares(
                         this.quoteDTO,
                         this.portfolioCompactDTO);

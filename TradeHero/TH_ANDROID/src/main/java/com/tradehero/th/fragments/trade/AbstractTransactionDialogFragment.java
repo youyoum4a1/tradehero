@@ -109,13 +109,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
     protected SecurityId securityId;
-    protected SecurityCompactDTO securityCompactDTO;
+    @Nullable protected SecurityCompactDTO securityCompactDTO;
     private PortfolioId portfolioId;
-    protected PortfolioCompactDTO portfolioCompactDTO;
+    @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
     private boolean isTransactionRunning;
     protected Integer mTransactionQuantity;
-    protected PositionDTOCompactList positionDTOCompactList;
+    @Nullable protected PositionDTOCompactList positionDTOCompactList;
 
     private BuySellTransactionListener buySellTransactionListener;
     protected UserProfileDTO userProfileDTO;
@@ -142,7 +142,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public abstract Double getPriceCcy();
 
-    public static AbstractTransactionDialogFragment newInstance(SecurityId securityId, PortfolioId portfolioId, QuoteDTO quoteDTO, boolean isBuy)
+    public static AbstractTransactionDialogFragment newInstance(@NotNull SecurityId securityId, @NotNull PortfolioId portfolioId, @NotNull QuoteDTO quoteDTO, boolean isBuy)
     {
         AbstractTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragment() : new SellDialogFragment();
         Bundle args = new Bundle();
@@ -216,7 +216,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     private void initViews()
     {
-        mStockNameTextView.setText(securityCompactDTO.name);
+        mStockNameTextView.setText(securityCompactDTO == null ? "-" : securityCompactDTO.name);
 
         mStockPriceTextView.setText(String.valueOf(getLabel()));
 
@@ -677,7 +677,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         SharingOptionsEvent.Builder builder = new SharingOptionsEvent.Builder()
                 .setSecurityId(securityId)
-                .setProviderId(portfolioCompactDTO.getProviderIdKey())
+                .setProviderId(portfolioCompactDTO == null ? null : portfolioCompactDTO.getProviderIdKey())
                 .setPriceSelectionMethod(mPriceSelectionMethod)
                 .hasComment(!mCommentsEditText.getText().toString().isEmpty())
                 .facebookEnabled(shareForTransaction(SocialNetworkEnum.FB))
