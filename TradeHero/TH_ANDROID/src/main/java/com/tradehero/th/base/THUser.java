@@ -11,10 +11,16 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.CurrentActivityHolder;
+import com.tradehero.th.api.form.FacebookUserFormDTO;
+import com.tradehero.th.api.form.LinkedinUserFormDTO;
+import com.tradehero.th.api.form.QQUserFormDTO;
+import com.tradehero.th.api.form.TwitterUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
+import com.tradehero.th.api.form.WeiboUserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginFormDTO;
+import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationMode;
@@ -159,8 +165,40 @@ public class THUser
                 break;
             case SignIn:
                 LoginFormDTO loginFormDTO = loginFormDTOProvider.get();
+                //use new DTO, combine login and social register
+                LoginSignUpFormDTO loginSignUpFormDTO = new LoginSignUpFormDTO(loginFormDTO);
+                if (userFormDTO instanceof WeiboUserFormDTO)
+                {
+                    loginSignUpFormDTO.weibo_access_token = ((WeiboUserFormDTO)userFormDTO).accessToken;
+                }
+                else if (userFormDTO instanceof FacebookUserFormDTO)
+                {
+                    loginSignUpFormDTO.facebook_access_token = ((FacebookUserFormDTO)userFormDTO).accessToken;
+                }
+                else if (userFormDTO instanceof TwitterUserFormDTO)
+                {
+                    loginSignUpFormDTO.twitter_access_token = ((TwitterUserFormDTO)userFormDTO).accessToken;
+                    loginSignUpFormDTO.twitter_access_token_secret = ((TwitterUserFormDTO)userFormDTO).accessTokenSecret;
+                }
+                else if (userFormDTO instanceof LinkedinUserFormDTO)
+                {
+                    loginSignUpFormDTO.linkedin_access_token = ((LinkedinUserFormDTO)userFormDTO).accessToken;
+                    loginSignUpFormDTO.linkedin_access_token_secret = ((LinkedinUserFormDTO)userFormDTO).accessTokenSecret;
+                }
+                else if (userFormDTO instanceof QQUserFormDTO)
+                {
+                    loginSignUpFormDTO.qq_access_token = ((QQUserFormDTO)userFormDTO).accessToken;
+                    loginSignUpFormDTO.qq_openid = ((QQUserFormDTO)userFormDTO).openid;
+                }
+                else
+                {
+                    loginSignUpFormDTO.isEmailLogin = true;
+                }
+
                 // TODO save middle callback?
-                sessionServiceWrapper.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(credentialsDTO, callback));
+                sessionServiceWrapper.get().signupAndLogin(authenticator.getAuthHeader(),
+                        loginSignUpFormDTO,
+                        createCallbackForSignInAsyncWithJson(credentialsDTO, callback));
                 break;
         }
     }
