@@ -37,19 +37,17 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
-    protected SystemStatusDTO systemStatusDTO;
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     protected Integer showProductDetailRequestCode;
     protected PremiumFollowUserAssistant premiumFollowUserAssistant;
-    private DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> systemStatusCacheListener;
     private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
-    @Inject protected SystemStatusCache systemStatusCache;
     @Inject protected THBillingInteractor userInteractor;
+    @Inject SystemStatusCache systemStatusCache;
 
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -74,7 +72,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
-        systemStatusCacheListener = createSystemStatusCacheListener();
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
@@ -92,13 +89,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return new BasePurchaseManagerFreeUserFollowedCallback();
     }
 
-    @Override public void onStart()
-    {
-        super.onStart();
-        systemStatusCache.register(currentUserId.toUserBaseKey(), systemStatusCacheListener);
-        systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
-    }
-
     @Override public void onResume()
     {
         super.onResume();
@@ -108,7 +98,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-        detachSystemStatusCache();
         detachPortfolioCompactListCache();
         detachPremiumFollowUserAssistant();
         detachRequestCode();
@@ -125,14 +114,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        systemStatusCacheListener = null;
         portfolioCompactListFetchListener = null;
         super.onDestroy();
-    }
-
-    protected void detachSystemStatusCache()
-    {
-        systemStatusCache.unregister(systemStatusCacheListener);
     }
 
     protected void detachPortfolioCompactListCache()
@@ -208,8 +191,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return purchaseApplicableOwnedPortfolioId;
     }
 
+    /** We assume that this function is called only when systemStatusDTO is available in the cache. systemStatusDTO is requested on
+     * DashboardActivity started, so that it is available in very early stage
+    */
     protected boolean alertsAreFree()
     {
+        SystemStatusDTO systemStatusDTO = systemStatusCache.get(currentUserId.toUserBaseKey());
         return systemStatusDTO != null && systemStatusDTO.alertsAreFree;
     }
 
@@ -274,23 +261,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         premiumFollowUserAssistant = new PremiumFollowUserAssistant(
                 createPremiumUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
         premiumFollowUserAssistant.launchUnFollow();
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> createSystemStatusCacheListener()
-    {
-        return new BasePurchaseManagementSystemStatusCacheListener();
-    }
-
-    protected class BasePurchaseManagementSystemStatusCacheListener implements DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO>
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SystemStatusDTO value)
-        {
-            BasePurchaseManagerFragment.this.systemStatusDTO = value;
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-        }
     }
 
     protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
