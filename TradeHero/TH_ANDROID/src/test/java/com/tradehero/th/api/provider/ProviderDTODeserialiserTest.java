@@ -2,6 +2,7 @@ package com.tradehero.th.api.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.BaseApiTest;
 import com.tradehero.th.api.competition.ProviderDTO;
 import java.io.IOException;
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(RobolectricMavenTestRunner.class)
 public class ProviderDTODeserialiserTest extends BaseApiTest
 {
-    @Inject protected ObjectMapper normalMapper;
+    @Inject @ForApp protected ObjectMapper normalMapper;
     private InputStream providerDTOBody1Stream;
 
     @Before

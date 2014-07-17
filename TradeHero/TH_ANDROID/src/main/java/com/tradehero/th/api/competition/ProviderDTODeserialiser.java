@@ -16,10 +16,11 @@ public class ProviderDTODeserialiser extends StdDeserializer<ProviderDTO>
 
     //<editor-fold desc="Constructors">
     @Inject protected ProviderDTODeserialiser(
+            @NotNull ObjectMapper innerMapper,
             @NotNull ProviderSpecificsPopulator providerSpecificsPopulator)
     {
         super(ProviderDTO.class);
-        this.innerMapper = new ObjectMapper();
+        this.innerMapper = innerMapper;
         this.providerSpecificsPopulator = providerSpecificsPopulator;
     }
     //</editor-fold>
