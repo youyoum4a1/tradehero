@@ -40,6 +40,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     protected Integer showProductDetailRequestCode;
     protected PremiumFollowUserAssistant premiumFollowUserAssistant;
+
     private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
 
     @Inject protected CurrentUserId currentUserId;
@@ -74,22 +75,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
-    {
-        return new BasePurchaseManagementPortfolioCompactListFetchListener();
-    }
-
-    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new BasePurchaseManagerPremiumUserFollowedListener();
-    }
-
-    protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
-    {
-        return new BasePurchaseManagerFreeUserFollowedCallback();
-    }
-
-    @Override public void onResume()
+   @Override public void onResume()
     {
         super.onResume();
 
@@ -104,7 +90,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         super.onStop();
     }
 
-    protected void detachRequestCode()
+    private void detachRequestCode()
     {
         if (showProductDetailRequestCode != null && userInteractor != null)
         {
@@ -118,12 +104,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         super.onDestroy();
     }
 
-    protected void detachPortfolioCompactListCache()
+    private void detachPortfolioCompactListCache()
     {
         portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
     }
 
-    protected void fetchPortfolioCompactList()
+    private void fetchPortfolioCompactList()
     {
         detachPortfolioCompactListCache();
         portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
@@ -194,13 +180,14 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     /** We assume that this function is called only when systemStatusDTO is available in the cache. systemStatusDTO is requested on
      * DashboardActivity started, so that it is available in very early stage
     */
-    protected boolean alertsAreFree()
+    protected final boolean alertsAreFree()
     {
         SystemStatusDTO systemStatusDTO = systemStatusCache.get(currentUserId.toUserBaseKey());
         return systemStatusDTO != null && systemStatusDTO.alertsAreFree;
     }
 
-    public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
+    //region IAP products listing
+    protected final void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
     {
         if (domain.equals(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS) && alertsAreFree())
         {
@@ -217,12 +204,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    public int showProductDetailListForPurchase(ProductIdentifierDomain domain)
+    private int showProductDetailListForPurchase(ProductIdentifierDomain domain)
     {
         return userInteractor.run(getShowProductDetailRequest(domain));
     }
 
-    public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    protected THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
     {
         THUIBillingRequest request = uiBillingRequestProvider.get();
         request.applicablePortfolioId = getApplicablePortfolioId();
@@ -241,13 +228,15 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         };
         return request;
     }
+    //endregion
 
-    public void premiumFollowUser(UserBaseKey heroId)
+    //region Following action
+    protected final void premiumFollowUser(UserBaseKey heroId)
     {
         premiumFollowUser(heroId, createPremiumUserFollowedListener());
     }
 
-    public void premiumFollowUser(UserBaseKey heroId,
+    protected final void premiumFollowUser(UserBaseKey heroId,
             PremiumFollowUserAssistant.OnUserFollowedListener followedListener)
     {
         detachPremiumFollowUserAssistant();
@@ -255,16 +244,28 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         premiumFollowUserAssistant.launchFollow();
     }
 
-    public void unfollowUser(UserBaseKey heroId)
+    protected final void unfollowUser(UserBaseKey heroId)
     {
         detachPremiumFollowUserAssistant();
         premiumFollowUserAssistant = new PremiumFollowUserAssistant(
                 createPremiumUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
         premiumFollowUserAssistant.launchUnFollow();
     }
+    //endregion
+
+    //region Creation and Listener
+    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    {
+        return new BasePurchaseManagementPortfolioCompactListFetchListener();
+    }
 
     protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
     {
+        protected BasePurchaseManagementPortfolioCompactListFetchListener()
+        {
+            // no unexpected creation
+        }
+
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
             prepareApplicableOwnedPortolioId(value.getDefaultPortfolio());
@@ -276,8 +277,18 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    protected class BasePurchaseManagerFreeUserFollowedCallback implements Callback<UserProfileDTO>
+    protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
     {
+        return new BasePurchaseManagerFreeUserFollowedCallback();
+    }
+
+    protected static class BasePurchaseManagerFreeUserFollowedCallback implements Callback<UserProfileDTO>
+    {
+        protected BasePurchaseManagerFreeUserFollowedCallback()
+        {
+            // no unexpected creation
+        }
+
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
             // Children classes should update the display
@@ -289,8 +300,18 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    protected class BasePurchaseManagerPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
+    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
+        return new BasePurchaseManagerPremiumUserFollowedListener();
+    }
+
+    protected static class BasePurchaseManagerPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
+    {
+        protected BasePurchaseManagerPremiumUserFollowedListener()
+        {
+            // no unexpected creation
+        }
+
         @Override
         public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
@@ -302,4 +323,5 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
             // Anything to do?
         }
     }
+    //endregion
 }
