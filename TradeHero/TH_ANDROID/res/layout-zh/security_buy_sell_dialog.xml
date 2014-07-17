@@ -78,14 +78,17 @@
         tools:text="US$ 0"
         />
 
-    <TextView
+    <com.tradehero.th.fragments.trade.view.TradeQuantityEditText
         android:id="@+id/vquantity"
         style="@style/TH.SmallValue"
+        android:background="@drawable/security_dialog_comment_bg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:textColor="#3720c0"
+        android:textColor="@color/tradehero_blue"
+        android:inputType="number"
+        android:numeric="integer"
         tools:text="0"
         />
 
@@ -139,6 +142,7 @@
       android:layout_height="32dp"
       android:layout_marginLeft="20dp"
       android:layout_marginRight="20dp"
+      style="@style/TH.SeekBar"
       />
 
   <com.tradehero.th.fragments.trade.view.QuickPriceButtonSet

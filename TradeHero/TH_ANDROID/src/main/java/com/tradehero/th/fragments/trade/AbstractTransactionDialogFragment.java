@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,16 +69,15 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected static final String KEY_QUOTE_DTO = AbstractTransactionDialogFragment.class.getName() + ".quote_dto";
 
     @InjectView(R.id.dialog_stock_name) protected TextView mStockNameTextView;
-    @InjectView(R.id.vtrade_value) protected TextView mTradeValueTextView;
-    @InjectView(R.id.vquantity) protected TextView mQuantityTextView;
     @InjectView(R.id.vcash_left) protected TextView mCashShareLeftTextView;
     @InjectView(R.id.dialog_cash_left) protected TextView mCashShareLeftLabelTextView;
+    @InjectView(R.id.vtrade_value) protected TextView mTradeValueTextView;
     @InjectView(R.id.dialog_price) protected TextView mStockPriceTextView;
-
     @InjectView(R.id.seek_bar) protected SeekBar mSeekBar;
 
     @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
+    @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
     @InjectView(R.id.comments) protected EditText mCommentsEditText;
 
     @InjectView(R.id.dialog_btn_add_cash) protected ImageButton mBtnAddCash;
@@ -121,6 +122,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     private AlertDialog mSocialLinkingDialog;
     private String mPriceSelectionMethod;
+    private TextWatcher mQuantityTextWatcher;
 
     protected abstract String getLabel();
 
@@ -218,7 +220,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
         mStockPriceTextView.setText(String.valueOf(getLabel()));
 
-        mQuantityTextView.setText(String.valueOf(mTransactionQuantity));
+        mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
+        mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
 
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
@@ -286,7 +289,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public String getQuantityString()
     {
-        return mQuantityTextView.getText().toString();
+        return mQuantityEditText.getText().toString();
     }
 
     public QuickPriceButtonSet getQuickPriceButtonSet()
@@ -375,16 +378,47 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public void updateTransactionDialog()
     {
-        mSeekBar.setProgress(mTransactionQuantity);
-        updateTransactionDialogForSeekbar();
+        updateSeekbar();
+        updateQuantityView();
+        updateTradeValueAndCashShareLeft();
+        updateConfirmButton();
     }
 
     public void updateTransactionDialogForSeekbar()
     {
         //Skip updating/ setProgress to seekbar or we'll have StackOverflow
+        updateQuantityView();
+        updateTradeValueAndCashShareLeft();
+        updateConfirmButton();
+    }
+
+    public void updateTransactionDialogForQuantity()
+    {
+        //Skip updating/ setText to quantityEditText or we'll have StackOverflow
+        updateSeekbar();
+        updateTradeValueAndCashShareLeft();
+        updateConfirmButton();
+    }
+
+    private void updateQuantityView()
+    {
+        mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
+        mQuantityEditText.setSelection(mQuantityEditText.getText().length());
+    }
+
+    private void updateSeekbar()
+    {
+        mSeekBar.setProgress(mTransactionQuantity);
+    }
+
+    private void updateTradeValueAndCashShareLeft()
+    {
         mCashShareLeftTextView.setText(getCashShareLeft());
         mTradeValueTextView.setText(getTradeValueText());
-        mQuantityTextView.setText(String.valueOf(mTransactionQuantity));
+    }
+
+    private void updateConfirmButton()
+    {
         mConfirm.setEnabled(mTransactionQuantity != 0 && (hasValidInfo()));
     }
 
@@ -495,6 +529,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         socialSharePreferenceHelperNew.load();
     }
 
+    public void onSuccessSocialLink(UserProfileDTO userProfileDTO, SocialNetworkEnum socialNetworkEnum)
+    {
+        linkWith(userProfileDTO);
+        setPublishEnable(socialNetworkEnum);
+    }
+
     public void setPublishEnable(SocialNetworkEnum socialNetwork)
     {
         socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetwork, true);
@@ -581,33 +621,33 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     public void askToLinkAccountToSocial(final SocialNetworkEnum socialNetwork)
     {
         mSocialLinkingDialog = alertDialogUtil.popWithOkCancelButton(
-            getActivity(),
-            getActivity().getApplicationContext().getString(R.string.link, socialNetwork.getName()),
-            getActivity().getApplicationContext().getString(R.string.link_description, socialNetwork.getName()),
-            R.string.link_now,
-            R.string.later,
-            new DialogInterface.OnClickListener()//Ok
-            {
-                @Override public void onClick(DialogInterface dialogInterface, int i)
+                getActivity(),
+                getActivity().getApplicationContext().getString(R.string.link, socialNetwork.getName()),
+                getActivity().getApplicationContext().getString(R.string.link_description, socialNetwork.getName()),
+                R.string.link_now,
+                R.string.later,
+                new DialogInterface.OnClickListener()//Ok
                 {
-                    linkSocialNetwork(socialNetwork);
-                }
-            },
-            new DialogInterface.OnClickListener()//Cancel
-            {
-                @Override public void onClick(DialogInterface dialogInterface, int i)
+                    @Override public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        linkSocialNetwork(socialNetwork);
+                    }
+                },
+                new DialogInterface.OnClickListener()//Cancel
                 {
-                    alertDialogUtil.dismissProgressDialog();
-                }
-            },
-            new DialogInterface.OnDismissListener()
-            {
-                @Override public void onDismiss(DialogInterface dialogInterface)
+                    @Override public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        alertDialogUtil.dismissProgressDialog();
+                    }
+                },
+                new DialogInterface.OnDismissListener()
                 {
-                    destroySocialLinkDialog();
+                    @Override public void onDismiss(DialogInterface dialogInterface)
+                    {
+                        destroySocialLinkDialog();
+                    }
                 }
-            }
-    );
+        );
     }
 
     private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
@@ -666,6 +706,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     @Override public void onDestroyView()
     {
+        mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
+        mQuantityTextWatcher = null;
         destroyTransactionDialog();
         destroySocialLinkDialog();
         detachBuySellMiddleCallback();
@@ -675,7 +717,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     private void destroySocialLinkDialog()
     {
-        if(mSocialLinkingDialog != null && mSocialLinkingDialog.isShowing())
+        if (mSocialLinkingDialog != null && mSocialLinkingDialog.isShowing())
         {
             mSocialLinkingDialog.dismiss();
         }
@@ -684,11 +726,55 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     private void destroyTransactionDialog()
     {
-        if(mTransactionDialog != null && mTransactionDialog.isShowing())
+        if (mTransactionDialog != null && mTransactionDialog.isShowing())
         {
             mTransactionDialog.dismiss();
         }
         mTransactionDialog = null;
+    }
+
+    private TextWatcher getQuantityTextChangeListener()
+    {
+        if (mQuantityTextWatcher == null)
+        {
+            mQuantityTextWatcher = new TextWatcher()
+            {
+                @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+                {
+
+                }
+
+                @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+                {
+
+                }
+
+                @Override public void afterTextChanged(Editable editable)
+                {
+                    int val = 0;
+                    try
+                    {
+                        val = Integer.parseInt(editable.toString());
+                        if (val > getMaxValue())
+                        {
+                            val = getMaxValue();
+                        }
+                    } catch (NumberFormatException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    mTransactionQuantity = val;
+
+                    mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
+                    mQuantityEditText.setText(String.valueOf(val));
+                    mQuantityEditText.addTextChangedListener(mQuantityTextWatcher);
+
+                    updateTransactionDialogForQuantity();
+                }
+            };
+        }
+        return mQuantityTextWatcher;
     }
 
     private SeekBar.OnSeekBarChangeListener createSeekBarListener()
@@ -697,12 +783,19 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
-                if(fromUser)
+
+                if (fromUser)
                 {
+                    mTransactionQuantity = progress;
                     mPriceSelectionMethod = AnalyticsConstants.Slider;
+                    updateTransactionDialogForSeekbar();
                 }
-                mTransactionQuantity = progress;
-                updateTransactionDialogForSeekbar();
+                else
+                {
+                    //Do not update quantity
+                    updateTradeValueAndCashShareLeft();
+                    updateConfirmButton();
+                }
             }
 
             @Override public void onStartTrackingTouch(SeekBar seekBar)
@@ -771,8 +864,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            linkWith(userProfileDTO);
-            setPublishEnable(socialNetworkEnum);
+            onSuccessSocialLink(userProfileDTO, socialNetworkEnum);
         }
 
         @Override public void failure(RetrofitError retrofitError)
