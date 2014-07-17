@@ -126,27 +126,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject ResideMenu resideMenu;
 
     //for dialog
-    private AlertDialog mBuySellDialog;
-    private TextView mTradeValueTextView;
-    private TextView mCashLeftValueTextView;
-    private TextView mQuantityTextView;
-    private TextView mCashLeftTextView;
-    private SeekBar mSlider;
-    private QuickPriceButtonSet mQuickPriceButtonSet;
-    private EditText mCommentsEditText;
-    private ToggleButton mBtnShareFacebook;
-    private ToggleButton mBtnShareTwitter;
-    private ToggleButton mBtnShareLinkedIn;
-    private ToggleButton mBtnShareWeChat;
-    private ToggleButton mBtnShareWb;
-    private ToggleButton mBtnLocation;
-    private ToggleButton mBtnSharePublic;
-    private Button mConfirmButton;
     private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
-    private boolean isBuying = false;
-    private boolean isSelling = false;
-    private boolean shareLocation = false;
-    private boolean sharePublic = false;
 
     @InjectView(R.id.quote_refresh_countdown) protected ProgressBar mQuoteRefreshProgressBar;
     @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
@@ -355,66 +335,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBottomViewPager = null;
 
         pushPortfolioFragmentRunnable = null;
-        if (mBuySellDialog != null)
-        {
-            mBuySellDialog.dismiss();
-            mBuySellDialog = null;
-        }
-        mTradeValueTextView = null;
-        mCashLeftValueTextView = null;
-        mQuantityTextView = null;
-        mCashLeftTextView = null;
-        if (mSlider != null)
-        {
-            mSlider.setOnSeekBarChangeListener(null);
-        }
-        mSlider = null;
-        if (mQuickPriceButtonSet != null)
-        {
-            mQuickPriceButtonSet.setListener(null);
-        }
-        mQuickPriceButtonSet = null;
-        mCommentsEditText = null;
-        if (mBtnShareFacebook != null)
-        {
-            mBtnShareFacebook.setOnClickListener(null);
-        }
-        mBtnShareFacebook = null;
-        if (mBtnShareTwitter != null)
-        {
-            mBtnShareTwitter.setOnClickListener(null);
-        }
-        mBtnShareTwitter = null;
-        if (mBtnShareLinkedIn != null)
-        {
-            mBtnShareLinkedIn.setOnClickListener(null);
-        }
-        mBtnShareLinkedIn = null;
-        if (mBtnShareWeChat != null)
-        {
-            mBtnShareWeChat.setOnClickListener(null);
-        }
-        mBtnShareWeChat = null;
-        if (mBtnShareWb != null)
-        {
-            mBtnShareWb.setOnClickListener(null);
-        }
-        mBtnShareWb = null;
-        if (mBtnLocation != null)
-        {
-            mBtnLocation.setOnClickListener(null);
-        }
-        mBtnLocation = null;
-        if (mBtnSharePublic != null)
-        {
-            mBtnSharePublic.setOnCheckedChangeListener(null);
-        }
-        mBtnSharePublic = null;
-        if (mConfirmButton != null)
-        {
-            mConfirmButton.setOnClickListener(null);
-        }
-        mConfirmButton = null;
 
         resideMenu.removeIgnoredView(mBottomViewPager);
         ButterKnife.reset(this);
@@ -494,7 +414,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             displaySelectedPortfolioContainer();
             displayPortfolioSelectorMenu();
             displaySelectedPortfolio();
-            displayQuickPriceButtonSet();
             displayBuySellSwitch();
             displayBuySellPrice();
         }
@@ -517,7 +436,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         setInitialSellQuantityIfCan();
         if (andDisplay)
         {
-            displayQuickPriceButtonSet();
         }
     }
 
@@ -530,7 +448,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             displayBuySellPrice();
             displayAsOf();
-            displayQuickPriceButtonSet();
             displayBuySellSwitch();
         }
     }
@@ -632,7 +549,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellPrice();
         displayBottomViewPager();
         displayStockName();
-        displayQuickPriceButtonSet();
         displayTriggerButton();
         loadStockLogo();
     }
@@ -794,45 +710,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
             mVpriceAsOf.setText(
                     getResources().getString(R.string.buy_sell_price_as_of) + " " + text);
-        }
-    }
-
-    public void displayQuickPriceButtonSet()
-    {
-        QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
-        if (buttonSetCopy != null)
-        {
-            if (quoteDTO == null)
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else if (isTransactionTypeBuy && quoteDTO.ask == null)
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else if (isTransactionTypeBuy)
-            {
-                buttonSetCopy.setEnabled(true);
-                if (this.userProfileDTO != null && userProfileDTO.portfolio != null)
-                {
-                    buttonSetCopy.setMaxPrice(userProfileDTO.portfolio.cashBalance);
-                }
-            }
-            else if (!isTransactionTypeBuy && (quoteDTO.bid == null || quoteDTO.toUSDRate == null))
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else if (!isTransactionTypeBuy)
-            {
-                buttonSetCopy.setEnabled(true);
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null)
-                {
-                    // TODO see other currencies
-                    buttonSetCopy.setMaxPrice(
-                            maxSellableShares * quoteDTO.bid * quoteDTO.toUSDRate);
-                }
-            }
         }
     }
 
@@ -1088,7 +965,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void setTransactionTypeBuy(boolean transactionTypeBuy)
     {
         super.setTransactionTypeBuy(transactionTypeBuy);
-        displayQuickPriceButtonSet();
         displayBuySellSwitch();
     }
 
@@ -1498,7 +1374,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             super.onDTOReceived(key, value);
             buildUsedMenuPortfolios();
             setInitialSellQuantityIfCan();
-            displayQuickPriceButtonSet();
         }
     }
 

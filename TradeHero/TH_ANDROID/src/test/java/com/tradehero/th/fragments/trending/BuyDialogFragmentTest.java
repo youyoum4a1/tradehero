@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trade.view.QuickPriceButton;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.utils.THSignedNumber;
@@ -245,16 +248,18 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
         assertThat(abstractTransactionDialogFragment.getFacebookShareButton().isChecked()).isEqualTo(false);
         assertThat(transactionFormDTO.publishToFb).isEqualTo(false);
+        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.FB)).isEqualTo(false);
 
         abstractTransactionDialogFragment.getFacebookShareButton().performClick();
 
         transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
         assertThat(abstractTransactionDialogFragment.getFacebookShareButton().isChecked()).isEqualTo(true);
         assertThat(transactionFormDTO.publishToFb).isEqualTo(true);
+        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.FB)).isEqualTo(true);
     }
 
     @Test
-    public void shouldAskForSocialLinking()
+    public void testShouldAskForSocialLinking()
     {
         abstractTransactionDialogFragment.getLinkedInShareButton().setPressed(true);
         abstractTransactionDialogFragment.getLinkedInShareButton().performClick();
@@ -277,15 +282,38 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
         TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
         assertThat(transactionFormDTO.publishToLi).isEqualTo(false);
-
     }
 
-    public void testSocialIsOnAfterLinkSuccessful()
+    public void testShouldCallServerForLinkWhenLinkNowIsClicked()
     {
         //TODO test if the user click link now!
     }
 
+    @Test
+    public void testSocialIsOnAfterLinkSuccessful()
+    {
+        CompoundButton btnLinkedIn = abstractTransactionDialogFragment.getLinkedInShareButton();
+
+        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+        assertThat(transactionFormDTO.publishToLi).isEqualTo(false);
+        assertThat(btnLinkedIn.isChecked()).isEqualTo(false);
+        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.LN)).isEqualTo(false);
+
+        UserProfileDTO newUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        newUserProfileDTO.liLinked = true;
+
+        abstractTransactionDialogFragment.onSuccessSocialLink(newUserProfileDTO, SocialNetworkEnum.LN);
+
+        transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+        assertThat(transactionFormDTO.publishToLi).isEqualTo(true);
+        assertThat(btnLinkedIn.isChecked()).isEqualTo(true);
+        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.LN)).isEqualTo(true);
+    }
+
+    //TODO test whether it's generating correct sharing options
+
     //TODO test the value when quote = null
+    //TODO test quantity edittext
     //TODO test the subtitle - price Info
     //TODO test on the analytics fired
 }
