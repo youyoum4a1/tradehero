@@ -35,7 +35,6 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -432,12 +431,16 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleResetPortfolioItemOnClick()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
+        createPurchaseActionInteractorBuilder()
+                .build()
+                .resetPortfolio();
     }
 
     private void handleExtraCashItemOnClick()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
+        createPurchaseActionInteractorBuilder()
+                .build()
+                .buyVirtualDollar();
     }
 
     private void handleEarnCreditItemOnClick()

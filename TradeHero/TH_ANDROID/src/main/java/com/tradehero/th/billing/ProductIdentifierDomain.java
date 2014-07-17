@@ -3,6 +3,7 @@ package com.tradehero.th.billing;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
+/** TODO make it default, or at least protected, not public :| **/
 public enum ProductIdentifierDomain
 {
     DOMAIN_VIRTUAL_DOLLAR(R.string.store_buy_virtual_dollar_window_title, AnalyticsConstants.BuyExtraCashDialog_Show),
