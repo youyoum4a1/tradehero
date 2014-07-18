@@ -19,12 +19,9 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     private final THUIBillingRequest billingRequest;
     private final UIBillingRequest.OnErrorListener errorListener;
     private final ProductIdentifierDomain productIdentifierDomain;
-    private final UserBaseKey userToFollow;
     private final PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
     private final Callback<UserProfileDTO> freeFollowedListener;
-    private final PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener;
 
-    private final OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     private final boolean alertsAreFree;
     private final PremiumFollowUserAssistant premiumFollowUserAssistant;
 
@@ -59,11 +56,8 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         this.billingRequest = billingRequest;
         this.errorListener = errorListener;
         this.productIdentifierDomain = productIdentifierDomain;
-        this.userToFollow = userToFollow;
         this.purchaseReportedListener = purchaseReportedListener;
         this.freeFollowedListener = freeFollowedListener;
-        this.premiumFollowedListener = premiumFollowedListener;
-        this.purchaseApplicableOwnedPortfolioId = purchaseApplicableOwnedPortfolioId;
         this.alertsAreFree = alertsAreFree;
 
         this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(premiumFollowedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
