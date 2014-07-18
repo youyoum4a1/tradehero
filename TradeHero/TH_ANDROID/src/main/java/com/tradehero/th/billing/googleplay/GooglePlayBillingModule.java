@@ -24,7 +24,16 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
-                THIABBillingInteractor.class
+                THIABBillingInteractor.class,
+
+                THIABPurchaseFetcher.class,
+                THIABBillingInventoryFetcher.class,
+                THIABPurchaser.class,
+                THIABPurchaseReporter.class,
+                THIABLogicHolderFull.class,
+                THIABPurchaseConsumer.class,
+                THBaseIABPurchaseReporterHolder.class,
+                THIABPurchaseFetchMilestone.class
         },
         staticInjections = {
         },
