@@ -14,7 +14,6 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 {
     protected Integer showProductDetailRequestCode;
 
-    private final Options options;
     private final THBillingInteractor billingInteractor;
     private final THUIBillingRequest billingRequest;
     private final UIBillingRequest.OnErrorListener errorListener;
@@ -30,7 +29,6 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
      * or any action related to purchasing
      *
      * TODO should create an interface for freeFollowedListener instead of using Callback interface from retrofit
-     * @param options
      * @param billingInteractor
      * @param billingRequest
      * @param errorListener
@@ -43,15 +41,13 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
      * @param premiumFollowedListener listener to be notified when premium follow action is completed
      * @param alertsAreFree
      */
-    protected THBasePurchaseActionInteractor(
-            Options options, THBillingInteractor billingInteractor, THUIBillingRequest billingRequest, UIBillingRequest.OnErrorListener errorListener,
+    protected THBasePurchaseActionInteractor(THBillingInteractor billingInteractor, THUIBillingRequest billingRequest, UIBillingRequest.OnErrorListener errorListener,
             ProductIdentifierDomain productIdentifierDomain, UserBaseKey userToFollow,
             OwnedPortfolioId purchaseApplicableOwnedPortfolioId,
             PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener, Callback<UserProfileDTO> freeFollowedListener,
             PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener,
             boolean alertsAreFree)
     {
-        this.options = options;
         this.billingInteractor = billingInteractor;
         this.billingRequest = billingRequest;
         this.errorListener = errorListener;
@@ -124,7 +120,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         premiumFollowUserAssistant.setUserFollowedListener(null);
     }
 
-    public static class Builder
+    public abstract static class Builder<T extends Builder<T>>
     {
         private THBillingInteractor billingInteractor;
         private PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener;
@@ -143,88 +139,90 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
         private THUIBillingRequest billingRequest;
 
+        protected abstract T self();
+
         public Builder setBillingInteractor(THBillingInteractor billingInteractor)
         {
             this.billingInteractor = billingInteractor;
-            return this;
+            return self();
         }
 
         public Builder setUserToFollow(UserBaseKey userToFollow)
         {
             this.userToFollow = userToFollow;
-            return this;
+            return self();
         }
 
         public Builder setPurchaseApplicableOwnedPortfolioId(OwnedPortfolioId purchaseApplicableOwnedPortfolioId)
         {
             this.purchaseApplicableOwnedPortfolioId = purchaseApplicableOwnedPortfolioId;
-            return this;
+            return self();
         }
 
         public Builder setFreeFollowedListener(Callback<UserProfileDTO> freeFollowedListener)
         {
             this.freeFollowedListener = freeFollowedListener;
-            return this;
+            return self();
         }
 
         public Builder setPremiumFollowedListener(PremiumFollowUserAssistant.OnUserFollowedListener userFollowedListener)
         {
             this.premiumFollowedListener = userFollowedListener;
-            return this;
+            return self();
         }
 
         public Builder startWithProgressDialog(boolean startWithProgressDialog)
         {
             this.startWithProgressDialog = startWithProgressDialog;
-            return this;
+            return self();
         }
 
         public Builder popIfBillingNotAvailable(boolean popIfBillingNotAvailable)
         {
             this.popIfBillingNotAvailable = popIfBillingNotAvailable;
-            return this;
+            return self();
         }
 
         public Builder popIfProductIdentifierFetchFailed(boolean popIfProductIdentifierFetchFailed)
         {
             this.popIfProductIdentifierFetchFailed = popIfProductIdentifierFetchFailed;
-            return this;
+            return self();
         }
 
         public Builder popIfInventoryFetchFailed(boolean popIfInventoryFetchFailed)
         {
             this.popIfInventoryFetchFailed = popIfInventoryFetchFailed;
-            return this;
+            return self();
         }
 
         public Builder popIfPurchaseFailed(boolean popIfPurchaseFailed)
         {
             this.popIfPurchaseFailed = popIfPurchaseFailed;
-            return this;
+            return self();
         }
 
         public Builder error(UIBillingRequest.OnErrorListener errorListener)
         {
             this.errorListener = errorListener;
-            return this;
+            return self();
         }
 
         public Builder product(ProductIdentifierDomain productIdentifierDomain)
         {
             this.productIdentifierDomain = productIdentifierDomain;
-            return this;
+            return self();
         }
 
         public Builder setPurchaseReportedListener(PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener)
         {
             this.purchaseReportedListener = purchaseReportedListener;
-            return this;
+            return self();
         }
 
         public Builder setAlertsFree(boolean isAlertsFree)
         {
             this.alertsAreFree = isAlertsFree;
-            return this;
+            return self();
         }
 
         /**
@@ -237,14 +235,14 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         public Builder setBillingRequest(THUIBillingRequest billingRequest)
         {
             this.billingRequest = billingRequest;
-            return this;
+            return self();
         }
 
         public THPurchaseActionInteractor build()
         {
             ensureSaneDefaults();
-            billingRequest.applicablePortfolioId = purchaseApplicableOwnedPortfolioId;
-            return new THBasePurchaseActionInteractor(createInteractorOptions(), billingInteractor, billingRequest, errorListener,
+            populateBillingRequest();
+            return new THBasePurchaseActionInteractor(billingInteractor, billingRequest, errorListener,
                     productIdentifierDomain,
                     userToFollow,
                     purchaseApplicableOwnedPortfolioId,
@@ -255,15 +253,14 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         }
 
         // TODO, look at {@link setBillingRequest()}
-        private Options createInteractorOptions()
+        private void populateBillingRequest()
         {
+            billingRequest.applicablePortfolioId = purchaseApplicableOwnedPortfolioId;
             billingRequest.startWithProgressDialog = startWithProgressDialog;
             billingRequest.popIfBillingNotAvailable = popIfBillingNotAvailable;
             billingRequest.popIfProductIdentifierFetchFailed = popIfProductIdentifierFetchFailed;
             billingRequest.popIfInventoryFetchFailed = popIfInventoryFetchFailed;
             billingRequest.popIfReportFailed = popIfPurchaseFailed;
-            return new Options(startWithProgressDialog, popIfBillingNotAvailable, popIfProductIdentifierFetchFailed, popIfInventoryFetchFailed,
-                    popIfPurchaseFailed);
         }
 
         private void ensureSaneDefaults()
@@ -318,47 +315,16 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
                 };
     }
 
-    private static class Options
+    private static class Builder2 extends Builder<Builder2>
     {
-        private boolean startWithProgressDialog;
-        private boolean popIfBillingNotAvailable;
-        private boolean popIfProductIdentifierFetchFailed;
-        private boolean popIfInventoryFetchFailed;
-        private boolean popIfPurchaseFailed;
 
-        private Options(boolean startWithProgressDialog, boolean popIfBillingNotAvailable, boolean popIfProductIdentifierFetchFailed,
-                boolean popIfInventoryFetchFailed, boolean popIfPurchaseFailed)
+        @Override protected Builder2 self()
         {
-            this.startWithProgressDialog = startWithProgressDialog;
-            this.popIfBillingNotAvailable = popIfBillingNotAvailable;
-            this.popIfProductIdentifierFetchFailed = popIfProductIdentifierFetchFailed;
-            this.popIfInventoryFetchFailed = popIfInventoryFetchFailed;
-            this.popIfPurchaseFailed = popIfPurchaseFailed;
+            return this;
         }
+    }
 
-        public boolean isStartWithProgressDialog()
-        {
-            return startWithProgressDialog;
-        }
-
-        public boolean isPopIfBillingNotAvailable()
-        {
-            return popIfBillingNotAvailable;
-        }
-
-        public boolean isPopIfProductIdentifierFetchFailed()
-        {
-            return popIfProductIdentifierFetchFailed;
-        }
-
-        public boolean isPopIfInventoryFetchFailed()
-        {
-            return popIfInventoryFetchFailed;
-        }
-
-        public boolean isPopIfPurchaseFailed()
-        {
-            return popIfPurchaseFailed;
-        }
+    public static Builder<?> builder() {
+        return new Builder2();
     }
 }

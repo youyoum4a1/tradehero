@@ -135,16 +135,15 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
-        return new THBasePurchaseActionInteractor.Builder()
+        return THBasePurchaseActionInteractor.builder()
                 .setBillingInteractor(userInteractor)
                 .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
                 .setBillingRequest(uiBillingRequestProvider.get())
-                // by default, all are true
-                //.startWithProgressDialog(true)
-                //.popIfBillingNotAvailable(true)
-                //.popIfProductIdentifierFetchFailed(true)
-                //.popIfInventoryFetchFailed(true)
-                //.popIfPurchaseFailed(true)
+                .startWithProgressDialog(true)
+                .popIfBillingNotAvailable(true)
+                .popIfProductIdentifierFetchFailed(true)
+                .popIfInventoryFetchFailed(true)
+                .popIfPurchaseFailed(true)
                 .setPremiumFollowedListener(createPremiumUserFollowedListener())
                 .error(new UIBillingRequest.OnErrorListener()
                 {
