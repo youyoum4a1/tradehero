@@ -20,8 +20,10 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
@@ -35,6 +37,9 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
+import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
@@ -56,6 +61,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
@@ -103,6 +109,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialLinkHelperFactory socialLinkHelperFactory;
     @Inject Analytics analytics;
+
+    @Inject THBillingInteractor userInteractor;
+    @Inject Provider<THUIBillingRequest> uiBillingRequestProvider;
 
     SocialLinkHelper socialLinkHelper;
     private ProgressDialog mTransactionDialog;
@@ -373,7 +382,24 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public void handleBtnAddCashPressed()
     {
-        THToast.show("What is the square root of fish? Yay!! Free Money!");
+        THBasePurchaseActionInteractor.builder()
+                .setBillingInteractor(userInteractor)
+                .setPurchaseApplicableOwnedPortfolioId(new OwnedPortfolioId(currentUserId.get(), portfolioId.key))
+                .setBillingRequest(uiBillingRequestProvider.get())
+                .startWithProgressDialog(true) // true by default
+                .popIfBillingNotAvailable(true)  // true by default
+                .popIfProductIdentifierFetchFailed(true) // true by default
+                .popIfInventoryFetchFailed(true) // true by default
+                .popIfPurchaseFailed(true) // true by default
+                .error(new UIBillingRequest.OnErrorListener()
+                {
+                    @Override public void onError(int requestCode, BillingException billingException)
+                    {
+                        Timber.e(billingException, "Store had error");
+                    }
+                })
+                .build()
+                .buyVirtualDollar();
     }
 
     public void updateTransactionDialog()

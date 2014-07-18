@@ -139,11 +139,11 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 .setBillingInteractor(userInteractor)
                 .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
                 .setBillingRequest(uiBillingRequestProvider.get())
-                .startWithProgressDialog(true)
-                .popIfBillingNotAvailable(true)
-                .popIfProductIdentifierFetchFailed(true)
-                .popIfInventoryFetchFailed(true)
-                .popIfPurchaseFailed(true)
+                .startWithProgressDialog(true) // true by default
+                .popIfBillingNotAvailable(true)  // true by default
+                .popIfProductIdentifierFetchFailed(true) // true by default
+                .popIfInventoryFetchFailed(true) // true by default
+                .popIfPurchaseFailed(true) // true by default
                 .setPremiumFollowedListener(createPremiumUserFollowedListener())
                 .error(new UIBillingRequest.OnErrorListener()
                 {
@@ -154,7 +154,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                 });
     }
 
-    //region Following action
+    // region Following action
     // should call this method where the action takes place
     @Deprecated
     protected final void premiumFollowUser(UserBaseKey heroId)
