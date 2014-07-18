@@ -11,12 +11,11 @@ import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
-import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
-import com.tradehero.th.billing.googleplay.THIABModule;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
@@ -196,7 +195,7 @@ import javax.inject.Singleton;
                 PreferenceModule.class,
                 ChartModule.class,
                 ActivityModule.class,
-                THIABModule.class,
+                BillingModule.class,
                 PushModule.class,
         },
         injects =
@@ -329,7 +328,6 @@ import javax.inject.Singleton;
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
-                        THIABBillingInteractor.class,
                         HeroesTabContentFragment.class,
                         PremiumHeroFragment.class,
                         FreeHeroFragment.class,

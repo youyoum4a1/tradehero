@@ -24,13 +24,15 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
+                THIABBillingInteractor.class
         },
         staticInjections = {
         },
         complete = false,
-        library = true
+        library = true,
+        overrides = true
 )
-public class THIABModule
+public class GooglePlayBillingModule
 {
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {
