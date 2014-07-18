@@ -249,6 +249,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         public THPurchaseActionInteractor build()
         {
             ensureSaneDefaults();
+            billingRequest.applicablePortfolioId = purchaseApplicableOwnedPortfolioId;
             return new THBasePurchaseActionInteractor(createInteractorOptions(), billingInteractor, billingRequest, errorListener,
                     productIdentifierDomain,
                     userToFollow,

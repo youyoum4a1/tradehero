@@ -137,6 +137,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         return new THBasePurchaseActionInteractor.Builder()
                 .setBillingInteractor(userInteractor)
+                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
                 .setBillingRequest(uiBillingRequestProvider.get())
                 // by default, all are true
                 //.startWithProgressDialog(true)
@@ -155,6 +156,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
 
     //region Following action
+    // should call this method where the action takes place
+    @Deprecated
     protected final void premiumFollowUser(UserBaseKey heroId)
     {
         THPurchaseActionInteractor thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
@@ -165,6 +168,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         thPurchaseActionInteractor.premiumFollowUser();
     }
 
+    // should call it where the action takes place
+    @Deprecated
     protected final void unfollowUser(UserBaseKey heroId)
     {
         THPurchaseActionInteractor thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
