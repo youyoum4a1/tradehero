@@ -581,7 +581,8 @@ public class TrendingFragment extends SecurityListFragment
         @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
         {
             refreshAdapterWithTiles(true);
-            openEnrollmentPageIfNecessary(value);
+            //close it , just like a bug if i have many competition not joined.
+            //openEnrollmentPageIfNecessary(value);
         }
 
         @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)

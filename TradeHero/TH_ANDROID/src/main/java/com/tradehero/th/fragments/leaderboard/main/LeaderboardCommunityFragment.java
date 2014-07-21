@@ -199,7 +199,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         // get the data
         fetchLeaderboardDefList();
-        fetchProviderIdList();
+        //fetchProviderIdList(); //feature2.3.0 remove provider list in this fragment
     }
 
     private void fetchLeaderboardDefList()

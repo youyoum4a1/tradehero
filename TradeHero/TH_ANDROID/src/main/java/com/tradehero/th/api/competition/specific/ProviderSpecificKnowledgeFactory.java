@@ -9,7 +9,6 @@ import com.tradehero.th.api.competition.specific.sgxtockwhiz.SgxStockWhizProvide
 import javax.inject.Inject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class ProviderSpecificKnowledgeFactory
 {
@@ -54,7 +53,9 @@ public class ProviderSpecificKnowledgeFactory
                     break;
 
                 default:
-                    Timber.e(new IllegalArgumentException(), "Unhandled ProviderId.key == %d", providerId.key);
+                    //Timber.e(new IllegalArgumentException(), "Unhandled ProviderId.key == %d", providerId.key);
+                    //created = new ProviderSpecificKnowledgeDTO();
+                    //break;
             }
         }
 

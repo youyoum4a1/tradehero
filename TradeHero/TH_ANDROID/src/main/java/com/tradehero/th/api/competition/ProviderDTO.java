@@ -2,11 +2,11 @@ package com.tradehero.th.api.competition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
-import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +60,17 @@ public class ProviderDTO implements DTO
     public String currencyDisplay;
     public String currencyISO;
 
+
     public PortfolioCompactDTO associatedPortfolio;
+
+    public Date startDateUtc;
+    public Date endDateUtc;
+    public String durationType;
+    public String totalPrize;
+    public boolean vip;
+
+
+
 
     // These 2 fields are populated exclusively on the client
     @JsonIgnore @Nullable public ProviderSpecificKnowledgeDTO specificKnowledge;
@@ -226,6 +236,11 @@ public class ProviderDTO implements DTO
                 ", currencyDisplay=" + currencyDisplay +
                 ", currencyISO=" + currencyISO +
                 ", associatedPortfolio=" + associatedPortfolio +
-                '}';
+                ", startDateUtc=" + startDateUtc +
+                ", endDateUtc=" + endDateUtc +
+                ", durationType=" + durationType +
+                ", totalPrize=" + totalPrize +
+                ", vip=" + vip +
+        '}';
     }
 }
