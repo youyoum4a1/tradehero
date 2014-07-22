@@ -41,7 +41,8 @@ public class ContestItemAdapter extends ArrayAdapter<CommunityPageDTO>
             {
                 return normalViewResourceId;
             }
-        }else if(item instanceof EmptyHeadLineDTO)
+        }
+        else if (item instanceof EmptyHeadLineDTO)
         {
             return R.layout.leaderboard_separator;
         }
@@ -53,7 +54,7 @@ public class ContestItemAdapter extends ArrayAdapter<CommunityPageDTO>
     {
 
         convertView = LayoutInflater.from(getContext()).inflate(getItemViewResId(position), viewGroup, false);
-        if(convertView instanceof DTOView)
+        if (convertView instanceof DTOView)
         {
             ((DTOView<CommunityPageDTO>) convertView).display(getItem(position));
         }
