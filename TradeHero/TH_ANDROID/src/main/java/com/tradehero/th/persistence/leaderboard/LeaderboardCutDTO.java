@@ -17,6 +17,7 @@ class LeaderboardCutDTO extends BaseHasExpiration
     public final int id;
     public final String name;
     public final LeaderboardUserIdList userIds;
+    public LeaderboardUserDTOList neighbours;
     public final int userIsAtPositionZeroBased;
     public final Date markUtc;
     public final int minPositionCount;
@@ -55,6 +56,7 @@ class LeaderboardCutDTO extends BaseHasExpiration
                 id,
                 name,
                 leaderboardUserDTOs,
+                neighbours,
                 userIsAtPositionZeroBased,
                 markUtc,
                 minPositionCount,
