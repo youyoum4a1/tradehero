@@ -252,19 +252,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        //switch (item.getItemId())
-        //{
-            //case R.id.menu_settings:
-            //    DashboardNavigator navigator =
-            //            ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
-            //    navigator.pushFragment(SettingsFragment.class);
-            //    return true;
-        //}
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override protected void initViews(View view)
     {
         if (userProfileView != null)

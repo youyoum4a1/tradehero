@@ -31,6 +31,7 @@
   <string name="settings_translations">翻译</string>
   <string name="settings_translations_language_preferred">优先语言</string>
   <string name="settings_translations_auto_translate">自动翻译</string>
+  <string name="settings_location">位置</string>
 
   <string name="settings_notifications">通知</string>
   <string name="settings_notifications_email">邮件通知</string>

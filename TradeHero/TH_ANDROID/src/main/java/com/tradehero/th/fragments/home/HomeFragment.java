@@ -78,7 +78,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject SocialServiceWrapper socialServiceWrapper;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;

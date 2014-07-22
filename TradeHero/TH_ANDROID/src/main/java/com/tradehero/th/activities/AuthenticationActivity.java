@@ -219,7 +219,9 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 authenticateWithQQ();
                 break;
             case R.id.txt_term_of_service_signin:
-                //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at https://www.tradehero.mobi/privacy ran insecure content from http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700,900.
+                //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at
+                //TODO https://www.tradehero.mobi/privacy ran insecure content from
+                //TODO http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700,900.
                 //Intent pWebView = new Intent(this, WebViewActivity.class);
                 //pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
                 //startActivity(pWebView);
