@@ -227,7 +227,14 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 //startActivity(pWebView);
                 Uri uri = Uri.parse(Constants.PRIVACY_TERMS_OF_SERVICE);
                 Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(it);
+                try
+                {
+                    startActivity(it);
+                }
+                catch (android.content.ActivityNotFoundException anfe)
+                {
+                    THToast.show("Unable to open url: " + uri);
+                }
                 break;
             case R.id.txt_term_of_service_termsofuse:
                 //Intent pWebView2 = new Intent(this, WebViewActivity.class);
@@ -235,7 +242,14 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 //startActivity(pWebView2);
                 Uri uri2 = Uri.parse(Constants.PRIVACY_TERMS_OF_USE);
                 Intent it2 = new Intent(Intent.ACTION_VIEW, uri2);
-                startActivity(it2);
+                try
+                {
+                    startActivity(it2);
+                }
+                catch (android.content.ActivityNotFoundException anfe)
+                {
+                    THToast.show("Unable to open url: " + uri2);
+                }
                 break;
         }
     }
