@@ -16,7 +16,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -81,12 +80,11 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Object item = parent.getItemAtPosition(position);
-        if (item instanceof LeaderboardDefKey)
+        if (item instanceof LeaderboardDefDTO)
         {
-            LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
-            if (dto != null)
+            if (item != null)
             {
-                pushLeaderboardListViewFragment(dto);
+                pushLeaderboardListViewFragment((LeaderboardDefDTO)item);
             }
         }
     }
