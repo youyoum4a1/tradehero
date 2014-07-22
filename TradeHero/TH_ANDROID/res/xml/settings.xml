@@ -124,6 +124,12 @@
         android:icon="@drawable/default_image"
       />
 
+    <Preference
+        android:key="@string/key_settings_location"
+        android:title="@string/settings_location"
+        android:icon="@drawable/default_image"
+        />
+
   </PreferenceCategory>
 
   <PreferenceCategory
