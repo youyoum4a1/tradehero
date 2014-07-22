@@ -10,13 +10,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
+import com.tradehero.th.billing.THPurchaseActionInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
@@ -28,8 +27,6 @@ import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
@@ -38,9 +35,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
-    protected Integer showProductDetailRequestCode;
-    protected PremiumFollowUserAssistant premiumFollowUserAssistant;
-
     private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
 
     @Inject protected CurrentUserId currentUserId;
@@ -85,17 +79,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onStop()
     {
         detachPortfolioCompactListCache();
-        detachPremiumFollowUserAssistant();
-        detachRequestCode();
         super.onStop();
-    }
-
-    private void detachRequestCode()
-    {
-        if (showProductDetailRequestCode != null && userInteractor != null)
-        {
-            userInteractor.forgetRequestCode(showProductDetailRequestCode);
-        }
     }
 
     @Override public void onDestroy()
@@ -139,37 +123,9 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
     {
         this.purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-        doActionFromIntent();
         if (andDisplay)
         {
         }
-    }
-
-    protected void doActionFromIntent()
-    {
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle thIntentBundle = args.getBundle(BUNDLE_KEY_THINTENT_BUNDLE);
-            if (thIntentBundle != null)
-            {
-                int action = thIntentBundle.getInt(THIABBillingInteractor.BUNDLE_KEY_ACTION);
-                if (action > 0)
-                {
-                    userInteractor.doAction(action);
-                }
-                args.remove(BUNDLE_KEY_THINTENT_BUNDLE);
-            }
-        }
-    }
-
-    private void detachPremiumFollowUserAssistant()
-    {
-        if (premiumFollowUserAssistant != null)
-        {
-            premiumFollowUserAssistant.setUserFollowedListener(null);
-        }
-        premiumFollowUserAssistant = null;
     }
 
     @Nullable public OwnedPortfolioId getApplicablePortfolioId()
@@ -177,83 +133,52 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         return purchaseApplicableOwnedPortfolioId;
     }
 
-    /** We assume that this function is called only when systemStatusDTO is available in the cache. systemStatusDTO is requested on
-     * DashboardActivity started, so that it is available in very early stage
-    */
-    protected final boolean alertsAreFree()
+    protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
-        SystemStatusDTO systemStatusDTO = systemStatusCache.get(currentUserId.toUserBaseKey());
-        return systemStatusDTO != null && systemStatusDTO.alertsAreFree;
+        return THBasePurchaseActionInteractor.builder()
+                .setBillingInteractor(userInteractor)
+                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
+                .setBillingRequest(uiBillingRequestProvider.get())
+                .startWithProgressDialog(true) // true by default
+                .popIfBillingNotAvailable(true)  // true by default
+                .popIfProductIdentifierFetchFailed(true) // true by default
+                .popIfInventoryFetchFailed(true) // true by default
+                .popIfPurchaseFailed(true) // true by default
+                .setPremiumFollowedListener(createPremiumUserFollowedListener())
+                .error(new UIBillingRequest.OnErrorListener()
+                {
+                    @Override public void onError(int requestCode, BillingException billingException)
+                    {
+                        Timber.e(billingException, "Store had error");
+                    }
+                });
     }
 
-    //region IAP products listing
-    protected final void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
-    {
-        if (domain.equals(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS) && alertsAreFree())
-        {
-            alertDialogUtil.popWithNegativeButton(
-                    getActivity(),
-                    R.string.store_alert_are_free_title,
-                    R.string.store_alert_are_free_description,
-                    R.string.ok);
-        }
-        else
-        {
-            detachRequestCode();
-            showProductDetailRequestCode = showProductDetailListForPurchase(domain);
-        }
-    }
-
-    private int showProductDetailListForPurchase(ProductIdentifierDomain domain)
-    {
-        return userInteractor.run(getShowProductDetailRequest(domain));
-    }
-
-    protected THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
-    {
-        THUIBillingRequest request = uiBillingRequestProvider.get();
-        request.applicablePortfolioId = getApplicablePortfolioId();
-        request.startWithProgressDialog = true;
-        request.popIfBillingNotAvailable = true;
-        request.popIfProductIdentifierFetchFailed = true;
-        request.popIfInventoryFetchFailed = true;
-        request.domainToPresent = domain;
-        request.popIfPurchaseFailed = true;
-        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
-        {
-            @Override public void onError(int requestCode, BillingException billingException)
-            {
-                Timber.e(billingException, "Store had error");
-            }
-        };
-        return request;
-    }
-    //endregion
-
-    //region Following action
+    // region Following action
+    // should call this method where the action takes place
+    @Deprecated
     protected final void premiumFollowUser(UserBaseKey heroId)
     {
-        premiumFollowUser(heroId, createPremiumUserFollowedListener());
+        THPurchaseActionInteractor thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
+                .setUserToFollow(heroId)
+                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
+                .build();
+
+        thPurchaseActionInteractor.premiumFollowUser();
     }
 
-    protected final void premiumFollowUser(UserBaseKey heroId,
-            PremiumFollowUserAssistant.OnUserFollowedListener followedListener)
-    {
-        detachPremiumFollowUserAssistant();
-        premiumFollowUserAssistant = new PremiumFollowUserAssistant(followedListener, heroId, purchaseApplicableOwnedPortfolioId);
-        premiumFollowUserAssistant.launchFollow();
-    }
-
+    // should call it where the action takes place
+    @Deprecated
     protected final void unfollowUser(UserBaseKey heroId)
     {
-        detachPremiumFollowUserAssistant();
-        premiumFollowUserAssistant = new PremiumFollowUserAssistant(
-                createPremiumUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
-        premiumFollowUserAssistant.launchUnFollow();
+        THPurchaseActionInteractor thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
+                .setUserToFollow(heroId)
+                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
+                .build();
+        thPurchaseActionInteractor.unfollowUser();
     }
     //endregion
 
-    //region Creation and Listener
     protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
     {
         return new BasePurchaseManagementPortfolioCompactListFetchListener();
@@ -277,51 +202,18 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
+    //region Creation and Listener
+    @Deprecated
     protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
     {
-        return new BasePurchaseManagerFreeUserFollowedCallback();
-    }
-
-    protected static class BasePurchaseManagerFreeUserFollowedCallback implements Callback<UserProfileDTO>
-    {
-        protected BasePurchaseManagerFreeUserFollowedCallback()
-        {
-            // no unexpected creation
-        }
-
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            // Children classes should update the display
-        }
-
-        @Override public void failure(RetrofitError error)
-        {
-            // Anything to do?
-        }
+        // default will be used when this one return null
+        return null;
     }
 
     protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        return new BasePurchaseManagerPremiumUserFollowedListener();
-    }
-
-    protected static class BasePurchaseManagerPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
-    {
-        protected BasePurchaseManagerPremiumUserFollowedListener()
-        {
-            // no unexpected creation
-        }
-
-        @Override
-        public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
-        {
-            // Children classes should update the display
-        }
-
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
-        {
-            // Anything to do?
-        }
+        // default will be used when this one return null
+        return null;
     }
     //endregion
 }

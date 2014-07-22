@@ -36,7 +36,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THIABBillingInteractor
+class THIABBillingInteractor
     extends
         THBaseBillingInteractor<
                 IABSKUListKey,

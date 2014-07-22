@@ -32,9 +32,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -261,10 +260,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THToast.show(R.string.error_alert_insufficient_info);
         }
-        else if (alertsAreFree())
-        {
-            saveAlert();
-        }
         else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
         {
             popPurchase();
@@ -277,29 +272,25 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void popPurchase()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+        createPurchaseActionInteractorBuilder()
+                .build()
+                .buyStockAlertSubscription();
     }
 
-    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
-        THUIBillingRequest uiBillingRequest = super.getShowProductDetailRequest(domain);
-        uiBillingRequest.startWithProgressDialog = true;
-        uiBillingRequest.popIfBillingNotAvailable = true;
-        uiBillingRequest.popIfProductIdentifierFetchFailed = true;
-        uiBillingRequest.popIfInventoryFetchFailed = true;
-        uiBillingRequest.popIfPurchaseFailed = true;
-        uiBillingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
-        {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
-            {
-                saveAlert();
-            }
+        return super.createPurchaseActionInteractorBuilder()
+                .setPurchaseReportedListener(new PurchaseReporter.OnPurchaseReportedListener()
+                {
+                    @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+                    {
+                        saveAlert();
+                    }
 
-            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-            {
-            }
-        };
-        return uiBillingRequest;
+                    @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+                    {
+                    }
+                });
     }
 
     protected void saveAlert()
