@@ -18,10 +18,10 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
         {
             for (@NotNull ProviderDTO providerDTO : providerDTOs)
             {
-                if(providerDTO.isUserEnrolled)
+                if (providerDTO.isUserEnrolled)
                 {
                     contestListAdapter.add(new ProviderCommunityPageDTO(providerDTO));
-                    if(providerDTO.vip)
+                    if (providerDTO.vip)
                     {
                         contestListAdapter.add(new EmptyHeadLineDTO());
                     }

@@ -16,6 +16,5 @@ public enum ContestCenterTabType
         this.titleRes = titleRes;
         this.tabClass = tabClass;
     }
-
 }
 

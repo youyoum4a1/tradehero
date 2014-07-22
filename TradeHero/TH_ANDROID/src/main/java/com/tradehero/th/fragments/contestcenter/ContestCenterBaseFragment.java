@@ -128,7 +128,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
 
     public void setContestCenterScreen(int viewId)
     {
-        if(contest_center_content_screen!=null)
+        if (contest_center_content_screen != null)
         {
             contest_center_content_screen.setDisplayedChildByLayoutId(viewId);
         }
@@ -268,7 +268,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
         }
     }
 
-
     abstract public void recreateAdapter();
+
     public abstract ContestCenterTabType getCCTabType();
 }

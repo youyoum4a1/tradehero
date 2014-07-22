@@ -94,7 +94,7 @@ public class ContestContentView extends RelativeLayout
             tvActionDurationType.setText(providerDTO.durationType);
             tvActionMoney.setText(providerDTO.totalPrize);
             tvActionName.setText(providerDTO.name);
-            tvActionDate.setText(DateUtils.getDisplayableDate(getResources(),providerDTO.startDateUtc,providerDTO.endDateUtc));
+            tvActionDate.setText(DateUtils.getDisplayableDate(getResources(), providerDTO.startDateUtc, providerDTO.endDateUtc));
         }
     }
 }

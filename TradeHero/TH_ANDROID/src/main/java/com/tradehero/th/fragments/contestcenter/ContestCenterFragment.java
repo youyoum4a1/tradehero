@@ -20,6 +20,7 @@ public class ContestCenterFragment extends DashboardFragment
 {
     private final int FRAGMENT_LAYOUT_ID = 10001;
     private FragmentTabHost mTabHost;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
