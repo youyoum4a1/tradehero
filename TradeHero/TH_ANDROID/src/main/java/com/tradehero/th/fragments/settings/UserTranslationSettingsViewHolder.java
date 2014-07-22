@@ -233,13 +233,13 @@ public class UserTranslationSettingsViewHolder
 
     protected class UserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull final UserBaseKey key, @NotNull final UserProfileDTO value)
         {
             updateLocation();
             userProfileCache.unregister(currentUserId.toUserBaseKey(), userProfileCacheListener);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
             Timber.e("Error fetching the user profile %s", key, error);
