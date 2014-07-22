@@ -89,6 +89,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
+    @Inject DeviceTokenHelper deviceTokenHelper;
 
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
@@ -121,7 +122,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (Constants.RELEASE)
         {
             Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.TAP_STREAM_TYPE.type));
+                    String.format("%s:%d", deviceTokenHelper.getDeviceType(), Constants.TAP_STREAM_TYPE.type));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
