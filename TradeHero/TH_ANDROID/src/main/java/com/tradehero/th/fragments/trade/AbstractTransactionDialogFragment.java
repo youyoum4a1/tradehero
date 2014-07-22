@@ -413,6 +413,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                         Timber.e(billingException, "Store had error");
                     }
                 })
+                .setPurchaseReportedListener(createPurchaseReportedListener())
                 .build()
                 .buyVirtualDollar();
     }
@@ -908,6 +909,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         };
     }
 
+    private BuySellPurchaseReportedListener createPurchaseReportedListener()
+    {
+        return new BuySellPurchaseReportedListener();
+    }
+
     private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
     {
         final SocialNetworkEnum socialNetworkEnum;
@@ -1025,8 +1031,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
                 UserProfileDTO updatedUserProfile)
         {
-            //linkWith(updatedUserProfile, true);
-            //updateTransactionDialog();
+            linkWith(updatedUserProfile);
+            updateTransactionDialog();
         }
 
         @Override

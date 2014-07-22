@@ -436,7 +436,6 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
         for (Map.Entry<String, String> val : map.entrySet())
         {
-            System.out.println(String.format("%s - %s", val.getKey(), val.getValue()));
             assertThat(val.getKey()).isNotNull();
             assertThat(val.getValue()).isNotNull();
         }
