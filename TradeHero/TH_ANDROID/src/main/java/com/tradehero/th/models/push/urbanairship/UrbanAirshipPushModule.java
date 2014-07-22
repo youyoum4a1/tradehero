@@ -1,14 +1,10 @@
 package com.tradehero.th.models.push.urbanairship;
 
-import com.tradehero.common.annotation.Temp;
-import com.tradehero.th.R;
 import com.tradehero.th.models.push.handlers.GcmDeletedHandler;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.models.push.handlers.PushNotificationHandler;
 import com.tradehero.th.models.push.handlers.PushReceivedHandler;
 import com.tradehero.th.models.push.handlers.RegistrationFinishedHandler;
-import com.urbanairship.push.CustomPushNotificationBuilder;
-import com.urbanairship.push.PushNotificationBuilder;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Arrays;
@@ -16,9 +12,12 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Singleton;
 
+//import com.urbanairship.push.CustomPushNotificationBuilder;
+//import com.urbanairship.push.PushNotificationBuilder;
+
 @Module(
         injects = {
-                UrbanAirshipIntentReceiver.class
+                //UrbanAirshipIntentReceiver.class
         },
         complete = false,
         library = true
@@ -40,22 +39,22 @@ public class UrbanAirshipPushModule
         }));
     }
 
-    @Provides @Temp PushNotificationBuilder provideCustomPushNotificationBuilder(RichNotificationBuilder richNotificationBuilder)
-    {
-        return richNotificationBuilder;
-    }
-
-    @Provides PushNotificationBuilder provideCustomPushNotificationBuilder()
-    {
-        CustomPushNotificationBuilder nb = new CustomPushNotificationBuilder();
-
-        nb.statusBarIconDrawableId = R.drawable.th_logo;
-
-        nb.layout = R.layout.notification;
-        nb.layoutIconDrawableId = R.drawable.notification_logo;
-        nb.layoutIconId = R.id.notification_icon;
-        nb.layoutSubjectId = R.id.notification_subject;
-        nb.layoutMessageId = R.id.message;
-        return nb;
-    }
+    //@Provides @Temp PushNotificationBuilder provideCustomPushNotificationBuilder(RichNotificationBuilder richNotificationBuilder)
+    //{
+    //    return richNotificationBuilder;
+    //}
+    //
+    //@Provides PushNotificationBuilder provideCustomPushNotificationBuilder()
+    //{
+    //    CustomPushNotificationBuilder nb = new CustomPushNotificationBuilder();
+    //
+    //    nb.statusBarIconDrawableId = R.drawable.th_logo;
+    //
+    //    nb.layout = R.layout.notification;
+    //    nb.layoutIconDrawableId = R.drawable.notification_logo;
+    //    nb.layoutIconId = R.id.notification_icon;
+    //    nb.layoutSubjectId = R.id.notification_subject;
+    //    nb.layoutMessageId = R.id.message;
+    //    return nb;
+    //}
 }
