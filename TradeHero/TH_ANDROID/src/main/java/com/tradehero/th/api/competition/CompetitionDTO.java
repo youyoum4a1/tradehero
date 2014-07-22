@@ -17,7 +17,7 @@ public class CompetitionDTO implements DTO
     public String iconActiveUrl;
     public String iconInactiveUrl;
     public String prizeValueWithCcy;
-    public LeaderboardUserDTO leaderboardUser;
+    @Nullable public LeaderboardUserDTO leaderboardUser;
 
     //<editor-fold desc="Constructors">
     public CompetitionDTO()

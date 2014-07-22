@@ -29,24 +29,6 @@ public class CompetitionZoneDTOUtil
     {
         if (providerDTO != null)
         {
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
-            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
-
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_TRADE_NOW);
-
-            if (providerDTO.specificResources != null
-                    && providerDTO.specificResources.tradeNowBtnImageResId > 0)
-            {
-                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, providerDTO.specificResources.tradeNowBtnImageResId, providerDTO.tradeButtonImageUrl));
-            }
-            else
-            {
-                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, 0, providerDTO.tradeButtonImageUrl));
-            }
-
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
-            preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
-
             if (providerDTO.hasAdvertisement())
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
@@ -54,6 +36,9 @@ public class CompetitionZoneDTOUtil
                 AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
                 preparedOrderedItems.add(new CompetitionZoneAdvertisementDTO(null, null, 0, pickedAdDTO));
             }
+
+            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
+            preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
 
             if (providerDTO.associatedPortfolio != null)
             {
@@ -85,7 +70,7 @@ public class CompetitionZoneDTOUtil
 
             if (competitionDTOs != null)
             {
-                for (CompetitionDTO competitionDTO: competitionDTOs)
+                for (CompetitionDTO competitionDTO : competitionDTOs)
                 {
                     if (competitionDTO != null)
                     {
@@ -98,11 +83,30 @@ public class CompetitionZoneDTOUtil
                 }
             }
 
+            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
+            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
+
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS);
             Timber.d("rules title " + context.getString(R.string.provider_competition_rules_title));
             preparedOrderedItems.add(new CompetitionZoneLegalDTO(
                     context.getString(R.string.provider_competition_rules_title),
                     context.getString(R.string.provider_competition_terms_title)));
+
+            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
+            preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
+
+            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_TRADE_NOW);
+
+            if (providerDTO.specificResources != null
+                    && providerDTO.specificResources.tradeNowBtnImageResId > 0)
+            {
+                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, providerDTO.specificResources.tradeNowBtnImageResId,
+                        providerDTO.tradeButtonImageUrl));
+            }
+            else
+            {
+                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, 0, providerDTO.tradeButtonImageUrl));
+            }
         }
     }
 }
