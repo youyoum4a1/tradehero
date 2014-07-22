@@ -112,7 +112,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         this.currentUserProfileDTO = currentUserProfileDTO;
     }
 
-    protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
+    protected void pushLeaderboardListViewFragment(@NotNull LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
         bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);

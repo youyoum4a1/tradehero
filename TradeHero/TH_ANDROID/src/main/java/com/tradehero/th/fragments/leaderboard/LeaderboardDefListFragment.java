@@ -52,8 +52,8 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @Override protected void initViews(View view)
     {
         leaderboardDefListAdapter = new ArrayDTOAdapterNew<LeaderboardDefDTO, LeaderboardDefView>(
-                        getActivity(),
-                        R.layout.leaderboard_definition_item_view);
+                getActivity(),
+                R.layout.leaderboard_definition_item_view);
         contentListView.setAdapter(leaderboardDefListAdapter);
     }
 
@@ -79,14 +79,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Object item = parent.getItemAtPosition(position);
-        if (item instanceof LeaderboardDefDTO)
-        {
-            if (item != null)
-            {
-                pushLeaderboardListViewFragment((LeaderboardDefDTO)item);
-            }
-        }
+        pushLeaderboardListViewFragment((LeaderboardDefDTO) parent.getItemAtPosition(position));
     }
 
     protected void refresh()
