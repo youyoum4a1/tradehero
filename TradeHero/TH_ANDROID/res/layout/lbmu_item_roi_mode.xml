@@ -93,9 +93,12 @@
           android:layout_height="wrap_content"
           android:paddingLeft="5dp"
           android:textColor="@color/gray_1"
+          android:visibility="gone"
           tools:text="(annualised: +1200%)"
           />
+
     </LinearLayout>
+
     <ImageView
         android:id="@+id/leaderboard_user_item_country_logo"
         android:layout_width="25dp"
@@ -106,6 +109,7 @@
         android:contentDescription="@null"
         android:layout_marginRight="10dp"
         />
+
   </RelativeLayout>
 
   <ImageView
