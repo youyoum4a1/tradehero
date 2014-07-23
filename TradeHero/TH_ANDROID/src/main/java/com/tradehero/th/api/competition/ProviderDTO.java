@@ -60,7 +60,6 @@ public class ProviderDTO implements DTO
     public String currencyDisplay;
     public String currencyISO;
 
-
     public PortfolioCompactDTO associatedPortfolio;
 
     public Date startDateUtc;
@@ -68,9 +67,6 @@ public class ProviderDTO implements DTO
     public String durationType;
     public String totalPrize;
     public boolean vip;
-
-
-
 
     // These 2 fields are populated exclusively on the client
     @JsonIgnore @Nullable public ProviderSpecificKnowledgeDTO specificKnowledge;

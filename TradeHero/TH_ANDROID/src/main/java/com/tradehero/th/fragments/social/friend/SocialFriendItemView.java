@@ -33,8 +33,6 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
-
-
     private UserFriendsDTO userFriendsDTO;
     private OnElementClickListener onElementClickListener;
 

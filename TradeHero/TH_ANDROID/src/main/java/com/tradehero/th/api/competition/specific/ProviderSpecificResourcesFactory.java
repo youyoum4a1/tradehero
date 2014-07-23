@@ -9,6 +9,7 @@ import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProvi
 import javax.inject.Inject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class ProviderSpecificResourcesFactory
 {
@@ -52,12 +53,11 @@ public class ProviderSpecificResourcesFactory
                     break;
 
                 default:
-                    //Timber.e(new IllegalArgumentException(), "Unhandled ProviderId.key == %d", providerId.key);
-                    //created = new ProviderSpecificResourcesDTO();
-                    //break;
+                    Timber.e("Unhandled ProviderId.key == %d", providerId.key);
+                    break;
             }
-
         }
+
         return created;
     }
 }
