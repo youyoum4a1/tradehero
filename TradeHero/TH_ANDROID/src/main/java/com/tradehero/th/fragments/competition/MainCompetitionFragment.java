@@ -18,6 +18,7 @@ import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -357,6 +358,17 @@ public class MainCompetitionFragment extends CompetitionFragment
                 competitionZoneDTO.competitionDTO.name);
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,
                 leaderboardDefDTO.desc);
+
+        LeaderboardUserDTO leaderboardUserDTO = competitionZoneDTO.competitionDTO.leaderboardUser;
+        if(leaderboardUserDTO != null)
+        {
+            CompetitionLeaderboardMarkUserListFragment.putCurrentUserRank(args, leaderboardUserDTO.ordinalPosition > 0? leaderboardUserDTO.ordinalPosition + 1 : null);
+            CompetitionLeaderboardMarkUserListFragment.putROIValueToBeShown(args, leaderboardUserDTO.roiInPeriod);
+        }
+        else
+        {
+            CompetitionLeaderboardMarkUserListFragment.putCurrentUserRank(args, CompetitionLeaderboardMarkUserListFragment.FLAG_USER_NOT_RANKED);
+        }
 
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
         if(ownedPortfolioId != null)

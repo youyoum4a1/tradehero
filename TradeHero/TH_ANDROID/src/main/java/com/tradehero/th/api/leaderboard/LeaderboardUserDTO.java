@@ -12,11 +12,10 @@ import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardUserDTO extends UserBaseDTO
-    implements ExpandableItem
+        implements ExpandableItem
 {
     private static final String LEADERBOARD_USER_POSITION = "LEADERBOARD_USER_POSITION";
     private static final String LEADERBOARD_ID = "LEADERBOARD_ID";
@@ -200,7 +199,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     @JsonIgnore
     public Integer getPosition()
     {
-        return (Integer)get(LEADERBOARD_USER_POSITION);
+        return (Integer) get(LEADERBOARD_USER_POSITION);
     }
 
     @JsonIgnore
@@ -212,13 +211,13 @@ public class LeaderboardUserDTO extends UserBaseDTO
     @JsonIgnore
     public Integer getLeaderboardId()
     {
-        return (Integer)get(LEADERBOARD_ID);
+        return (Integer) get(LEADERBOARD_ID);
     }
 
     @JsonIgnore
     public Boolean isIncludeFoF()
     {
-        return (Boolean)get(LEADERBOARD_INCLUDE_FOF);
+        return (Boolean) get(LEADERBOARD_INCLUDE_FOF);
     }
 
     @JsonIgnore
@@ -230,7 +229,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     @JsonIgnore
     @Override public boolean isExpanded()
     {
-        return (Boolean)get(ExpandableItem.class.getName(), false);
+        return (Boolean) get(ExpandableItem.class.getName(), false);
     }
 
     @JsonIgnore

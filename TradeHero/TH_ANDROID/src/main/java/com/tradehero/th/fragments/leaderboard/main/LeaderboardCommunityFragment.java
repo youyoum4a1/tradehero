@@ -321,6 +321,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     protected void recreateAdapter()
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
+        if(leaderboardDefListAdapter != null)
+        {
+            leaderboardDefListAdapter.clear();
+        }
         leaderboardDefListAdapter = createAdapter();
         if (providerDTOs != null)
         {
