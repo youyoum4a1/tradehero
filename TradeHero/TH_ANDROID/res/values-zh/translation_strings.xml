@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- We cannot have %3$s - %2$s as it returns weird results on right-to-left languages -->
+  <string name="translation_provided_by_bing">由 必应 提供</string>
+
+  <string name="translation_error_creating_languages">创建语言列表出错</string>
+  <string name="translation_error_saving_preference">保存出错</string>
+
+</resources>

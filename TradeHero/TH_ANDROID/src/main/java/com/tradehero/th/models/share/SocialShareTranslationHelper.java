@@ -6,6 +6,8 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTOFactory;
 import com.tradehero.th.api.translation.TranslationResult;
+import com.tradehero.th.api.translation.TranslationToken;
+import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import com.tradehero.th.fragments.news.NewsDialogFactory;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.network.share.SocialSharer;
@@ -13,43 +15,61 @@ import com.tradehero.th.persistence.translation.TranslationCache;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.persistence.translation.TranslationKeyFactory;
 import com.tradehero.th.persistence.translation.TranslationKeyList;
+import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenKey;
+import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import com.tradehero.th.utils.AlertDialogUtil;
+import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class SocialShareTranslationHelper extends SocialShareHelper
 {
-    protected final TranslationKeyFactory translationKeyFactory;
-    protected final AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory;
-    protected final TranslationCache translationCache;
+    @NotNull protected final TranslationKeyFactory translationKeyFactory;
+    @NotNull protected final AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory;
+    @NotNull protected final TranslationTokenCache translationTokenCache;
+    @NotNull protected final TranslationCache translationCache;
+    @NotNull protected final UserTranslationSettingPreference userTranslationSettingPreference;
 
+    protected DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
+    protected TranslationToken translationToken;
+    protected UserTranslationSettingDTO userTranslationSettingDTO;
     @Nullable private AbstractDiscussionCompactDTO toTranslate;
     private TranslationKeyList remainingKeys;
     private AbstractDiscussionCompactDTO translated;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialShareTranslationHelper(
-            Context applicationContext,
-            CurrentActivityHolder currentActivityHolder,
-            NewsDialogFactory newsDialogFactory,
-            AlertDialogUtil alertDialogUtil,
-            Provider<SocialSharer> socialSharerProvider,
-            TranslationKeyFactory translationKeyFactory,
-            AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory,
-            TranslationCache translationCache)
+            @NotNull Context applicationContext,
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull NewsDialogFactory newsDialogFactory,
+            @NotNull AlertDialogUtil alertDialogUtil,
+            @NotNull Provider<SocialSharer> socialSharerProvider,
+            @NotNull TranslationKeyFactory translationKeyFactory,
+            @NotNull AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory,
+            @NotNull TranslationTokenCache translationTokenCache,
+            @NotNull TranslationCache translationCache,
+            @NotNull UserTranslationSettingPreference userTranslationSettingPreference)
     {
         super(applicationContext, currentActivityHolder, newsDialogFactory, alertDialogUtil, socialSharerProvider);
         this.translationKeyFactory = translationKeyFactory;
         this.abstractDiscussionCompactDTOFactory = abstractDiscussionCompactDTOFactory;
+        this.translationTokenCache = translationTokenCache;
         this.translationCache = translationCache;
+        this.userTranslationSettingPreference = userTranslationSettingPreference;
+        translationTokenListener = createTranslationTokenListener();
+        fetchTranslationToken();
     }
     //</editor-fold>
 
     @Override public void onDetach()
     {
+        detachTranslationTokenCache();
         setMenuClickedListener(null);
+        translationTokenListener = null;
         super.onDetach();
     }
 
@@ -103,12 +123,23 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
     @NotNull public String getTargetLanguage()
     {
+        if (userTranslationSettingDTO != null)
+        {
+            return userTranslationSettingDTO.languageCode;
+        }
         return applicationContext.getResources().getConfiguration().locale.getLanguage();
+    }
+
+    public boolean isAutoTranslate()
+    {
+        return userTranslationSettingDTO != null
+                && userTranslationSettingDTO.autoTranslate;
     }
 
     public boolean canTranslate(@Nullable AbstractDiscussionCompactDTO discussionToTranslate)
     {
-        return discussionToTranslate != null &&
+        return translationToken != null &&
+                discussionToTranslate != null &&
                 translationKeyFactory.isValidLangCode(discussionToTranslate.langCode) &&
                 !discussionToTranslate.langCode.equals(getTargetLanguage());
     }
@@ -188,7 +219,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
     protected class SocialShareTranslationHelperTranslationCacheListener implements DTOCacheNew.Listener<TranslationKey, TranslationResult>
     {
-        @Override public void onDTOReceived(TranslationKey key, TranslationResult value)
+        @Override public void onDTOReceived(@NotNull TranslationKey key, @NotNull TranslationResult value)
         {
             notifyTranslatedOneAttribute(toTranslate, value);
             abstractDiscussionCompactDTOFactory.populateTranslation(translated, key, value);
@@ -196,7 +227,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             notifyAllDoneIfPossible();
         }
 
-        @Override public void onErrorThrown(TranslationKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull TranslationKey key, @NotNull Throwable error)
         {
             notifyTranslateFailed(toTranslate, error);
             remainingKeys.remove(key);
@@ -210,5 +241,59 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate, TranslationResult translationResult);
         void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate, AbstractDiscussionCompactDTO translated);
         void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate, Throwable error);
+    }
+
+    protected void fetchTranslationToken()
+    {
+        detachTranslationTokenCache();
+        TranslationTokenKey key = new TranslationTokenKey();
+        translationTokenCache.register(key, translationTokenListener);
+        translationTokenCache.getOrFetchAsync(key);
+    }
+
+    protected void detachTranslationTokenCache()
+    {
+        translationTokenCache.unregister(translationTokenListener);
+    }
+
+    protected DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> createTranslationTokenListener()
+    {
+        return new SettingsTranslationTokenListener();
+    }
+
+    protected class SettingsTranslationTokenListener implements DTOCacheNew.HurriedListener<TranslationTokenKey, TranslationToken>
+    {
+        @Override public void onPreCachedDTOReceived(@NotNull TranslationTokenKey key, @NotNull TranslationToken value)
+        {
+            onDTOReceived(key, value);
+        }
+
+        @Override public void onDTOReceived(@NotNull TranslationTokenKey key, @NotNull TranslationToken value)
+        {
+            linkWith(value);
+        }
+
+        @Override public void onErrorThrown(@NotNull TranslationTokenKey key, @NotNull Throwable error)
+        {
+            Timber.e("Failed", error);
+        }
+    }
+
+    protected void linkWith(@NotNull TranslationToken token)
+    {
+        this.translationToken = token;
+        try
+        {
+            linkWith(userTranslationSettingPreference.getOfSameTypeOrDefault(token));
+        }
+        catch (IOException e)
+        {
+            Timber.e(e, "Failed to get translation preferences");
+        }
+    }
+
+    protected void linkWith(@Nullable UserTranslationSettingDTO userTranslationSettingDTO)
+    {
+        this.userTranslationSettingDTO = userTranslationSettingDTO;
     }
 }

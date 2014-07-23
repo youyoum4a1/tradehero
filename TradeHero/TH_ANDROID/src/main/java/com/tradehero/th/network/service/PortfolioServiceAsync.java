@@ -1,10 +1,9 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import java.util.List;
 import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -19,7 +18,7 @@ interface PortfolioServiceAsync
     void getPortfolios(
             @Path("userId") int userId,
             @Query("includeWatchlist") Boolean includeWatchList,
-            Callback<List<PortfolioCompactDTO>> callback);
+            Callback<PortfolioCompactDTOList> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio">

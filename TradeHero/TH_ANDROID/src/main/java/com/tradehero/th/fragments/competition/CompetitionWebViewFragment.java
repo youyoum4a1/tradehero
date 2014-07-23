@@ -16,6 +16,7 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 @Routable(
         "providers-enroll/:providerId"
@@ -58,17 +59,14 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
     }
     //</editor-fold>
 
-    @Override protected String getLoadingUrl()
+    @Override @NotNull protected String getLoadingUrl()
     {
         String loadingUrl = super.getLoadingUrl();
         if (loadingUrl == null)
         {
             return providerUtil.getLandingPage(providerId, currentUserId.toUserBaseKey());
         }
-        else
-        {
-            return loadingUrl;
-        }
+        return loadingUrl;
     }
 
     @Override protected void onProgressChanged(WebView view, int newProgress)

@@ -26,7 +26,6 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -114,7 +113,7 @@ public class NewsHeadlineFragment
         Bundle bundle = new Bundle();
         if (abstractDiscussionCompactDTO != null&&((NewsItemCompactDTO) abstractDiscussionCompactDTO).url!=null)
         {
-            bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
+            WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
             getNavigator().pushFragment(WebViewFragment.class, bundle);
         }
         else

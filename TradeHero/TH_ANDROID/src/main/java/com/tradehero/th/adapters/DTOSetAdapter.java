@@ -8,15 +8,17 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class DTOSetAdapter<T> extends BaseAdapter
 {
-    protected final Context context;
+    @NotNull protected final Context context;
     protected Set<T> set;
     private ArrayList<T> items;
 
     //<editor-fold desc="Constructors">
-    public DTOSetAdapter(Context context)
+    public DTOSetAdapter(@NotNull Context context)
     {
         super();
         DaggerUtils.inject(this);
@@ -25,7 +27,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         items = new ArrayList<>();
     }
 
-    public DTOSetAdapter(Context context, Collection<T> objects)
+    public DTOSetAdapter(@NotNull Context context, @Nullable Collection<T> objects)
     {
         super();
         DaggerUtils.inject(this);
@@ -42,7 +44,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         items.clear();
     }
 
-    protected Set<T> createSet(Collection<T> objects)
+    @NotNull protected Set<T> createSet(@Nullable Collection<T> objects)
     {
         if (objects == null)
         {

@@ -15,17 +15,14 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class MessageItemView extends LinearLayout
-        implements DTOView<MessageHeaderId>
+        implements DTOView<MessageHeaderDTO>
 {
-    @Inject MessageHeaderCache messageHeaderCache;
     @Inject Picasso picasso;
     @Inject PrettyTime prettyTime;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
@@ -37,7 +34,6 @@ public class MessageItemView extends LinearLayout
     @InjectView(R.id.message_item_content) TextView mMessageContent;
     @InjectView(R.id.message_unread_flag) View mUnreadFlag;
 
-    private MessageHeaderId messageHeaderId;
     private MessageHeaderDTO messageHeaderDTO;
     private OnElementClickedListener elementClickedListener;
 
@@ -74,10 +70,9 @@ public class MessageItemView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(MessageHeaderId dto)
+    @Override public void display(MessageHeaderDTO dto)
     {
-        this.messageHeaderId = dto;
-        this.messageHeaderDTO = messageHeaderCache.get(dto);
+        this.messageHeaderDTO = dto;
         if (messageHeaderDTO != null)
         {
             setBackgroundColor(getResources().getColor(R.color.private_message_item_bg));
@@ -143,12 +138,12 @@ public class MessageItemView extends LinearLayout
         OnElementClickedListener userClickedListenerCopy = elementClickedListener;
         if (userClickedListenerCopy != null)
         {
-            userClickedListenerCopy.onUserClicked(messageHeaderId);
+            userClickedListenerCopy.onUserClicked(messageHeaderDTO);
         }
     }
 
     public static interface OnElementClickedListener
     {
-        void onUserClicked(MessageHeaderId messageHeaderId);
+        void onUserClicked(MessageHeaderDTO messageHeaderId);
     }
 }

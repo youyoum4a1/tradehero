@@ -8,25 +8,27 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MenuOwnedPortfolioIdFactory
 {
-    private final PortfolioCompactCache portfolioCompactCache;
-    private final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull private final PortfolioCompactCache portfolioCompactCache;
+    @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public MenuOwnedPortfolioIdFactory(
-            PortfolioCompactCache portfolioCompactCache,
-            PortfolioCompactListCache portfolioCompactListCache)
+            @NotNull PortfolioCompactCache portfolioCompactCache,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache)
     {
         this.portfolioCompactCache = portfolioCompactCache;
         this.portfolioCompactListCache = portfolioCompactListCache;
     }
     //</editor-fold>
 
-    public MenuOwnedPortfolioIdList createPortfolioMenus(
-            UserBaseKey forUser,
-            SecurityPositionDetailDTO securityPositionDetailDTO)
+    @NotNull public MenuOwnedPortfolioIdList createPortfolioMenus(
+            @NotNull UserBaseKey forUser,
+            @Nullable SecurityPositionDetailDTO securityPositionDetailDTO)
     {
         MenuOwnedPortfolioIdList menus = new MenuOwnedPortfolioIdList();
         MenuOwnedPortfolioId mainPortfolioMenu = createMainPortfolioMenu(forUser);
@@ -42,22 +44,17 @@ public class MenuOwnedPortfolioIdFactory
         return menus;
     }
 
-    public MenuOwnedPortfolioId createMainPortfolioMenu(UserBaseKey forUser)
+    @Nullable public MenuOwnedPortfolioId createMainPortfolioMenu(@NotNull UserBaseKey forUser)
     {
-        OwnedPortfolioId mainPortfolioId = portfolioCompactListCache.getDefaultPortfolio(forUser);
-        if (mainPortfolioId == null)
-        {
-            return null;
-        }
-        PortfolioCompactDTO mainPortfolio = portfolioCompactCache.get(mainPortfolioId.getPortfolioIdKey());
+        PortfolioCompactDTO mainPortfolio = portfolioCompactListCache.getDefaultPortfolio(forUser);
         if (mainPortfolio == null)
         {
             return null;
         }
-        return new MenuOwnedPortfolioId(mainPortfolioId, mainPortfolio);
+        return new MenuOwnedPortfolioId(mainPortfolio.getUserBaseKey(), mainPortfolio);
     }
 
-    public MenuOwnedPortfolioIdList createPortfolioMenus(OwnedPortfolioIdList ownedPortfolioIds)
+    @Nullable public MenuOwnedPortfolioIdList createPortfolioMenus(@Nullable OwnedPortfolioIdList ownedPortfolioIds)
     {
         if (ownedPortfolioIds == null)
         {
@@ -73,11 +70,11 @@ public class MenuOwnedPortfolioIdFactory
         return menuOwnedPortfolioIds;
     }
 
-    public MenuOwnedPortfolioIdList createProviderPortfolioMenus(
-            UserBaseKey forUser,
-            SecurityPositionDetailDTO securityPositionDetailDTO)
+    @Nullable public MenuOwnedPortfolioIdList createProviderPortfolioMenus(
+            @NotNull UserBaseKey forUser,
+            @Nullable SecurityPositionDetailDTO securityPositionDetailDTO)
     {
-        if (securityPositionDetailDTO == null || forUser == null)
+        if (securityPositionDetailDTO == null)
         {
             return null;
         }

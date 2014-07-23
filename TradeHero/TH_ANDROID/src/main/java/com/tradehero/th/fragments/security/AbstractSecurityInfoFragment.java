@@ -7,6 +7,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         extends SherlockFragment
@@ -50,7 +51,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         this.securityId = securityId;
     }
 
-    @Override public void onDTOReceived(SecurityId key, InfoType value)
+    @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull InfoType value)
     {
         if (key.equals(securityId))
         {
@@ -58,7 +59,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         }
     }
 
-    @Override public void onErrorThrown(SecurityId key, Throwable error)
+    @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
     {
         THToast.show(R.string.error_fetch_security_info);
     }

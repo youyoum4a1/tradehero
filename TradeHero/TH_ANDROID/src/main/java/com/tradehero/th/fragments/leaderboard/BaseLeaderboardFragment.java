@@ -112,7 +112,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         this.currentUserProfileDTO = currentUserProfileDTO;
     }
 
-    protected void pushLeaderboardListViewFragment(LeaderboardDefDTO dto)
+    protected void pushLeaderboardListViewFragment(@NotNull LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
         bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
@@ -184,12 +184,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             super();
         }
 
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             setCurrentUserProfileDTO(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to download current UserProfile", error);
             THToast.show(R.string.error_fetch_your_user_profile);

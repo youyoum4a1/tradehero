@@ -10,11 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -33,6 +31,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.base.Navigator;
@@ -48,6 +47,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
@@ -62,13 +62,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     @InjectView(R.id.discussion_post_content) EditText discussionPostContent;
     @InjectView(R.id.discussion_new_post_action_buttons) DiscussionPostActionButtonsView discussionPostActionButtonsView;
-    @InjectView(R.id.btn_wechat) ToggleButton mWeChatShareButton;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCache securityCompactCache;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject UserSearchResultCache userSearchResultCache;
-    @Inject SocialSharer socialSharer;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject RichTextCreator parser;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
@@ -196,6 +195,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             if (discussionFormDTO == null) return;
 
             discussionPostActionButtonsView.populate(discussionFormDTO);
+            discussionPostActionButtonsView.onPostDiscussion();
 
             unsetDiscussionEditMiddleCallback();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
@@ -360,9 +360,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
             linkWith(discussionDTO, true);
 
-            if (mWeChatShareButton.isChecked())
+            if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
             {
-                socialSharer.share(weChatDTOFactory.createFrom(discussionDTO)); // Proper callback?
+                socialSharerLazy.get().share(weChatDTOFactory.createFrom(discussionDTO)); // Proper callback?
             }
 
             isPosted = true;

@@ -17,25 +17,6 @@ abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType ext
     }
     //</editor-fold>
 
-    @Override @Nullable public DTOType get(@NotNull DTOKeyType key)
-    {
-        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
-        if (cacheValue == null)
-        {
-            return null;
-        }
-        @Nullable DTOType value = cacheValue.getValue();
-        if (value != null && !isValid(value))
-        {
-            if (cacheValue.getListenersCount() == 0)
-            {
-                invalidate(key);
-            }
-            return null;
-        }
-        return value;
-    }
-
     @Override @Nullable protected CacheValue<DTOKeyType, DTOType> getCacheValue(@NotNull DTOKeyType key)
     {
         return lruCache.get(key);

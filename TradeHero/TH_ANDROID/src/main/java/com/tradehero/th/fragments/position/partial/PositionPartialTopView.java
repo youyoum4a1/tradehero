@@ -26,6 +26,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class PositionPartialTopView extends LinearLayout
@@ -396,7 +397,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         return new SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO>()
         {
-            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+            @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
             {
                 if (key.equals(securityId))
                 {
@@ -404,7 +405,7 @@ public class PositionPartialTopView extends LinearLayout
                 }
             }
 
-            @Override public void onErrorThrown(SecurityId key, Throwable error)
+            @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
             {
                 THToast.show("There was an error when fetching the security information");
                 Timber.e("Error fetching the security %s", key, error);

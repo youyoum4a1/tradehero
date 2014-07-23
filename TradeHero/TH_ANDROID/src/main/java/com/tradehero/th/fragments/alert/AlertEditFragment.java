@@ -106,12 +106,12 @@ public class AlertEditFragment extends BaseAlertEditFragment
 
     protected class AlertEditFragmentAlertCacheListener implements DTOCacheNew.Listener<AlertId, AlertDTO>
     {
-        @Override public void onDTOReceived(AlertId key, AlertDTO value)
+        @Override public void onDTOReceived(@NotNull AlertId key, @NotNull AlertDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(AlertId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull AlertId key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
             Timber.e("Failed to get alertDTO", error);

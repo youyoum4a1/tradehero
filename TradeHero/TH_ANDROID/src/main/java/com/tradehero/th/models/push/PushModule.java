@@ -7,7 +7,7 @@ import com.tradehero.th.models.push.baidu.BaiduPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.dagger.ForUser;
+import com.tradehero.common.annotation.ForUser;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Provider;

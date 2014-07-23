@@ -364,5 +364,8 @@
     <item name="android:textColor">@color/tradehero_blue</item>
   </style>
 
+  <style name="TH.Spinner" parent="android:Widget.Holo.Light.Spinner">
+    <item name="android:background">@drawable/tradehero_spinner_background_holo_light</item>
+  </style>
 
 </resources>

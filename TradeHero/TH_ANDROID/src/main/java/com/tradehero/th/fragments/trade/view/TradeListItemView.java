@@ -22,7 +22,6 @@ import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.persistence.trade.TradeCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
@@ -41,7 +40,6 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     private boolean prettyDate = true;
     @Nullable private String strDisplay;
 
-    @Inject Lazy<TradeCache> tradeCache;
     @Inject Lazy<Picasso> picasso;
     @Inject TradeDTOUtils tradeDTOUtils;
     @Inject Lazy<PositionDTOUtils> positionDTOUtils;
@@ -117,7 +115,7 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         if (this.tradeItem != null)
         {
             this.position = positionCache.get().get(tradeItem.getModel().positionDTOKey);
-            this.trade = tradeCache.get().get(tradeItem.getModel().ownedTradeId);
+            this.trade = tradeItem.getModel().tradeDTO;
             if (position != null)
             {
                 SecurityId securityId = securityIdCache.get().get(position.getSecurityIntegerId());

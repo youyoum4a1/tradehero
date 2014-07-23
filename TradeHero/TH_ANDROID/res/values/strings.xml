@@ -179,6 +179,16 @@
   <string name="tap_stream_type_channel9_open" translatable="false">android-tradehero-channel9-open</string>
   <string name="tap_stream_type_channel10_install" translatable="false">android-tradehero-channel10-install</string>
   <string name="tap_stream_type_channel10_open" translatable="false">android-tradehero-channel10-open</string>
+  <string name="tap_stream_type_channel11_install" translatable="false">android-tradehero-channel11-install</string>
+  <string name="tap_stream_type_channel11_open" translatable="false">android-tradehero-channel11-open</string>
+  <string name="tap_stream_type_channel12_install" translatable="false">android-tradehero-channel12-install</string>
+  <string name="tap_stream_type_channel12_open" translatable="false">android-tradehero-channel12-open</string>
+  <string name="tap_stream_type_channel13_install" translatable="false">android-tradehero-channel13-install</string>
+  <string name="tap_stream_type_channel13_open" translatable="false">android-tradehero-channel13-open</string>
+  <string name="tap_stream_type_channel14_install" translatable="false">android-tradehero-channel14-install</string>
+  <string name="tap_stream_type_channel14_open" translatable="false">android-tradehero-channel14-open</string>
+  <string name="tap_stream_type_channel15_install" translatable="false">android-tradehero-channel15-install</string>
+  <string name="tap_stream_type_channel15_open" translatable="false">android-tradehero-channel15-open</string>
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>

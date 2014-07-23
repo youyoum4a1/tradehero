@@ -47,8 +47,10 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -62,26 +64,24 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, View.OnClickListener,
         ExpandingLayout.OnExpandListener
 {
-    @Inject @ForUserPhoto Transformation peopleIconTransformation;
-    @Inject Lazy<Picasso> picasso;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Lazy<Picasso> picasso;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject Analytics analytics;
     @Inject THRouter thRouter;
+    @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject Lazy<UserProfileCache> userProfileCache;
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
     protected OwnedPortfolioId applicablePortfolioId;
-
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     protected FollowDialogCombo followDialogCombo;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
     // data
     protected LeaderboardUserDTO leaderboardItem;
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -418,7 +418,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         // volatility
         String volatilityFormat = getContext().getString(R.string.leaderboard_volatility);
-        String volatility = String.format(volatilityFormat, leaderboardItem.getVolatility());
+        String volatility = String.format(volatilityFormat, leaderboardItem.getVolatility().floatValue());
         lbmuVolatility.setText(Html.fromHtml(volatility));
 
         // number of positions holding
@@ -516,17 +516,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 // TODO right now the icon is gone
                 break;
             case R.id.leaderboard_user_item_open_profile:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Profile);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
                 handleOpenProfileButtonClicked();
                 break;
 
             case R.id.leaderboard_user_item_open_positions_list:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Positions);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
                 handleOpenPositionListClicked();
                 break;
 
             case R.id.leaderboard_user_item_follow:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Follow);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
                 detachFollowDialogCombo();
                 followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER,
@@ -559,6 +559,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             alertDialogUtilLazy.get().dismissProgressDialog();
             LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
         }
 
         @Override public void failure(RetrofitError retrofitError)

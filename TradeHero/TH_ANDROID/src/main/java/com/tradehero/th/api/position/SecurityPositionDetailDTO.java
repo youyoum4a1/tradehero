@@ -7,6 +7,8 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SecurityPositionDetailDTO implements DTO
 {
@@ -33,7 +35,7 @@ public class SecurityPositionDetailDTO implements DTO
     }
     //</editor-fold>
 
-    public SecurityId getSecurityId()
+    @Nullable public SecurityId getSecurityId()
     {
         if (security == null)
         {
@@ -42,7 +44,7 @@ public class SecurityPositionDetailDTO implements DTO
         return security.getSecurityId();
     }
 
-    public OwnedPortfolioIdList getProviderAssociatedOwnedPortfolioIds(UserBaseKey forUser)
+    @Nullable public OwnedPortfolioIdList getProviderAssociatedOwnedPortfolioIds(@NotNull UserBaseKey forUser)
     {
         if (providers == null)
         {

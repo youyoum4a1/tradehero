@@ -86,7 +86,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
 
     public abstract void putParameters(Bundle args);
 
-    public Bundle getArgs()
+    @NotNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);

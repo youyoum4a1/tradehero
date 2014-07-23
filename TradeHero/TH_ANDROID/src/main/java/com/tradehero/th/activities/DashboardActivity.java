@@ -15,7 +15,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -54,8 +53,8 @@ import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -87,7 +86,6 @@ public class DashboardActivity extends SherlockFragmentActivity
     //@Inject DTOCacheUtil dtoCacheUtil;
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
@@ -97,12 +95,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject ResideMenu resideMenu;
 
     @Inject THRouter thRouter;
-
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
+    @Inject Analytics analytics;
 
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ProgressDialog progressDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -291,7 +289,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
         launchActions();
 
-        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        analytics.openSession();
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -322,9 +320,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
-        localyticsSession.get().upload();
-
+        analytics.closeSession();
         super.onPause();
     }
 
@@ -415,12 +411,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             supportInvalidateOptionsMenu();
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
 
         }
@@ -460,7 +456,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
 
         @Override
-        public void onDTOReceived(NotificationKey key, NotificationDTO value)
+        public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
         {
             onFinish();
 
@@ -468,7 +464,7 @@ public class DashboardActivity extends SherlockFragmentActivity
             notificationClickHandler.handleNotificationItemClicked();
         }
 
-        @Override public void onErrorThrown(NotificationKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
         {
             onFinish();
             THToast.show(new THException(error));

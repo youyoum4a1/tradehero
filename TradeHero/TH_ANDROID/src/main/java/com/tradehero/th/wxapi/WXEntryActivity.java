@@ -180,8 +180,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private SendMessageToWX.Req buildRequest(WXMediaMessage weChatMsg)
     {
         SendMessageToWX.Req weChatReq = new SendMessageToWX.Req();
-        weChatReq.transaction = String.valueOf(
-                System.currentTimeMillis()); //not sure for transaction, maybe identify id?
+        weChatReq.transaction = String.valueOf(System.currentTimeMillis());
+        //not sure for transaction, maybe identify id?
         if(weChatDTO.type==WeChatMessageType.Invite)
         {
             weChatReq.scene = SendMessageToWX.Req.WXSceneSession;
@@ -190,6 +190,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         {
             weChatReq.scene = SendMessageToWX.Req.WXSceneTimeline;
         }
+
         weChatReq.message = weChatMsg;
         return weChatReq;
     }

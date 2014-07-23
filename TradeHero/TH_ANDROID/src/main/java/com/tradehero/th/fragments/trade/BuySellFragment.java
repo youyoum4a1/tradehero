@@ -40,7 +40,6 @@ import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -49,6 +48,7 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -96,8 +96,11 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.BuySellEvent;
+import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
+import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Set;
@@ -114,8 +117,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         implements SecurityAlertAssistant.OnPopulatedListener, ViewPager.OnPageChangeListener,
         WithTutorial
 {
-    public static final String EVENT_CHART_IMAGE_CLICKED =
-            BuySellFragment.class.getName() + ".chartButtonClicked";
+    public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
     private static final String BUNDLE_KEY_SELECTED_PAGE_INDEX = ".selectedPage";
 
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;
@@ -171,7 +173,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject PortfolioCache portfolioCache;
     @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject MenuOwnedPortfolioIdFactory menuOwnedPortfolioIdFactory;
-    @Inject THLocalyticsSession localyticsSession;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
 
@@ -193,6 +194,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private int mQuantity = 0;
     private Bundle desiredArguments;
+    private String mPriceSelectionMethod;
 
     protected SecurityIdList watchedList;
 
@@ -205,7 +207,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
 
-
+    @Inject Analytics analytics;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -214,9 +216,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
     }
 
-    @Override protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
+    @Override protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
     {
-        return new BuySellPortfolioCompactListMilestoneListener();
+        return new BuySellPortfolioCompactListFetchListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -322,8 +324,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onStart()
     {
         super.onStart();
-        localyticsSession.tagEvent(LocalyticsConstants.BuySellPanel_Chart,
-                BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan(), securityId);
+        analytics.fireEvent(new ChartTimeEvent(securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
     }
 
     @Override public void onResume()
@@ -1232,7 +1233,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 throw new IllegalArgumentException("Unhandled button " + view.getId());
         }
         showBuySellDialog();
-
     }
 
     @OnClick(R.id.market_closed_icon)
@@ -1332,6 +1332,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                     mQuantity = progress;
                     mQuantityTextView.setText(String.valueOf(progress));
                     updateBuySellDialog();
+                    mPriceSelectionMethod = AnalyticsConstants.Slider;
                 }
             }
         };
@@ -1377,6 +1378,8 @@ public class BuySellFragment extends AbstractBuySellFragment
                     return userProfileCopy.liLinked;
                 case WB:
                     return userProfileCopy.wbLinked;
+                case WECHAT:
+                    return null;
                 default:
                     Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
                     return false;
@@ -1503,49 +1506,23 @@ public class BuySellFragment extends AbstractBuySellFragment
         //share
         mBtnShareFacebook = null;
         mBtnShareFacebook = (ToggleButton) view.findViewById(R.id.btn_share_fb);
-        if (mBtnShareFacebook != null)
-        {
-            mBtnShareFacebook.setTag(SocialNetworkEnum.FB);
-            mBtnShareFacebook.setChecked(initialShareButtonState(SocialNetworkEnum.FB));
-            mBtnShareFacebook.setOnCheckedChangeListener(createCheckedChangeListener());
-        }
+        initSocialButton(mBtnShareFacebook, SocialNetworkEnum.FB);
 
         mBtnShareTwitter = null;
         mBtnShareTwitter = (ToggleButton) view.findViewById(R.id.btn_share_tw);
-        if (mBtnShareTwitter != null)
-        {
-            mBtnShareTwitter.setTag(SocialNetworkEnum.TW);
-            mBtnShareTwitter.setChecked(initialShareButtonState(SocialNetworkEnum.TW));
-            mBtnShareTwitter.setOnCheckedChangeListener(createCheckedChangeListener());
-        }
+        initSocialButton(mBtnShareTwitter, SocialNetworkEnum.TW);
 
         mBtnShareLinkedIn = null;
         mBtnShareLinkedIn = (ToggleButton) view.findViewById(R.id.btn_share_li);
-        if (mBtnShareLinkedIn != null)
-        {
-            mBtnShareLinkedIn.setTag(SocialNetworkEnum.LN);
-            mBtnShareLinkedIn.setChecked(initialShareButtonState(SocialNetworkEnum.LN));
-            mBtnShareLinkedIn.setOnCheckedChangeListener(createCheckedChangeListener());
-        }
+        initSocialButton(mBtnShareLinkedIn, SocialNetworkEnum.LN);
 
         mBtnShareWeChat = null;
         mBtnShareWeChat = (ToggleButton) view.findViewById(R.id.btn_wechat);
-        if (mBtnShareWeChat != null)
-        {
-            mBtnShareWeChat.setTag(SocialNetworkEnum.WECHAT);
-            mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WECHAT));
-            mBtnShareWeChat.setOnCheckedChangeListener(createCheckedChangeListenerForWechat());
-        }
+        initSocialButton(mBtnShareWeChat, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
 
         mBtnShareWb = null;
         mBtnShareWb = (ToggleButton) view.findViewById(R.id.btn_share_wb);
-
-        if (mBtnShareWb != null)
-        {
-            mBtnShareWb.setTag(SocialNetworkEnum.WB);
-            mBtnShareWb.setChecked(initialShareButtonState(SocialNetworkEnum.WB));
-            mBtnShareWb.setOnCheckedChangeListener(createCheckedChangeListener());
-        }
+        initSocialButton(mBtnShareWb, SocialNetworkEnum.WB);
 
         mBtnLocation = null;
         mBtnLocation = (ToggleButton) view.findViewById(R.id.btn_location);
@@ -1599,6 +1576,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                         mBuySellDialog.dismiss();
                     }
                     socialSharePreferenceHelperNew.save();
+                    buySellReport();
                     launchBuySell();
                 }
             });
@@ -1613,6 +1591,40 @@ public class BuySellFragment extends AbstractBuySellFragment
         updateBuySellDialog();
         mBuySellDialog = builder.create();
         mBuySellDialog.show();
+    }
+
+    private void buySellReport()
+    {
+        SharingOptionsEvent sharingOptionsEvent = new SharingOptionsEvent.Builder()
+                .setBuyEvent(isTransactionTypeBuy)
+                .setSecurityId(securityId)
+                .setProviderId(portfolioCompactDTO.getProviderIdKey())
+                .setPriceSelectionMethod(mPriceSelectionMethod)
+                .hasComment(mCommentsEditText != null && !mCommentsEditText.getText().toString().isEmpty())
+                .facebookEnabled(mBtnShareFacebook != null && mBtnShareFacebook.isChecked())
+                .twitterEnabled(mBtnShareTwitter != null && mBtnShareTwitter.isChecked())
+                .linkedInEnabled(mBtnShareLinkedIn != null && mBtnShareLinkedIn.isChecked())
+                .wechatEnabled(mBtnShareWeChat != null && mBtnShareWeChat.isChecked())
+                .weiboEnabled(mBtnShareWb != null && mBtnShareWb.isChecked())
+                .build();
+
+        analytics.fireEvent(sharingOptionsEvent);
+    }
+
+    private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum)
+    {
+        initSocialButton(socialButton, socialNetworkEnum, createCheckedChangeListener());
+    }
+
+    private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum,
+            CompoundButton.OnCheckedChangeListener onCheckedChangedListener)
+    {
+        if (socialButton != null)
+        {
+            socialButton.setTag(socialNetworkEnum);
+            socialButton.setChecked(initialShareButtonState(socialNetworkEnum));
+            socialButton.setOnCheckedChangeListener(onCheckedChangedListener);
+        }
     }
 
     protected boolean initialShareButtonState(@NotNull SocialNetworkEnum socialNetworkEnum)
@@ -1653,6 +1665,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
             {
+                if(!compoundButton.isPressed())
+                {
+                    return;
+                }
                 SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
                 socialSharePreferenceHelperNew.updateSocialSharePreference(networkEnum, isChecked);
             }
@@ -1665,6 +1681,10 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
             {
+                if(!compoundButton.isPressed())
+                {
+                    return;
+                }
                 SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
                 Boolean socialLinked = isSocialLinked(networkEnum);
                 if (isChecked && (socialLinked == null || !socialLinked))
@@ -1700,6 +1720,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
+            linkWith(userProfileDTO, true);
             setPublishEnable(socialNetworkEnum);
         }
 
@@ -1898,8 +1919,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (securityPositionDetailDTO != null && securityPositionDetailDTO.portfolio != null)
         {
-            pushPortfolioFragment(new OwnedPortfolioId(currentUserId.toUserBaseKey(),
-                    securityPositionDetailDTO.portfolio.getPortfolioId()));
+            pushPortfolioFragment(new OwnedPortfolioId(
+                    currentUserId.get(),
+                    securityPositionDetailDTO.portfolio.id));
         }
         else
         {
@@ -1940,10 +1962,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private void trackBuyClickEvent()
     {
-        localyticsSession.tagEvent(
-                isTransactionTypeBuy ? LocalyticsConstants.Trade_Buy
-                        : LocalyticsConstants.Trade_Sell,
-                securityId);
+        analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
     }
 
     private QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
@@ -1974,6 +1993,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 Integer selectedQuantity = isTransactionTypeBuy ? mBuyQuantity : mSellQuantity;
                 mQuantity = selectedQuantity != null ? selectedQuantity : 0;
                 updateBuySellDialog();
+                mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
             }
         };
     }
@@ -1985,7 +2005,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (providerId != null)
         {
             args.putBundle(StockInfoFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE,
-                    this.providerId.getArgs());
+                    providerId.getArgs());
         }
         getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
     }
@@ -2075,21 +2095,14 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected class BuySellPortfolioCompactListMilestoneListener
-            extends BasePurchaseManagementPortfolioCompactListRetrievedListener
+    protected class BuySellPortfolioCompactListFetchListener extends BasePurchaseManagementPortfolioCompactListFetchListener
     {
-        @Override public void onComplete(Milestone milestone)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
-            super.onComplete(milestone);
+            super.onDTOReceived(key, value);
             buildUsedMenuPortfolios();
             setInitialSellQuantityIfCan();
             displayQuickPriceButtonSet();
-        }
-
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
-        {
-            Timber.e("Failed to fetch list of compact portfolio", throwable);
-            THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 
@@ -2121,7 +2134,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 UserProfileDTO updatedUserProfile)
         {
             linkWith(updatedUserProfile, true);
-            waitForPortfolioCompactListFetched(updatedUserProfile.getBaseKey());
             updateBuySellDialog();
         }
 
@@ -2178,7 +2190,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            if (retrofitError != null)
+            if (retrofitError != null && retrofitError.getResponse() != null)
             {
                 Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
             }

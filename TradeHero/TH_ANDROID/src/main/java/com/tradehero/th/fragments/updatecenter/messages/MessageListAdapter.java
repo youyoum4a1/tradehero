@@ -4,21 +4,50 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderId, MessageItemViewWrapper>
+public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, MessageItemViewWrapper>
 {
     private final int layoutResourceId;
     private MessageItemViewWrapper.OnElementClickedListener elementClickedListener;
+    @Nullable private Comparator<MessageHeaderDTO> comparator;
 
     //<editor-fold desc="Constructors">
-    public MessageListAdapter(Context context, Collection<MessageHeaderId> objects, int layoutResourceId)
+    public MessageListAdapter(
+            @NotNull Context context,
+            @Nullable Collection<MessageHeaderDTO> objects,
+            int layoutResourceId,
+            @Nullable Comparator<MessageHeaderDTO> comparator)
     {
         super(context, objects);
         this.layoutResourceId = layoutResourceId;
+        this.comparator = comparator;
     }
     //</editor-fold>
+
+    @Override @NotNull protected Set<MessageHeaderDTO> createSet(@Nullable Collection<MessageHeaderDTO> objects)
+    {
+        Set<MessageHeaderDTO> set;
+        if (comparator != null)
+        {
+            set = new TreeSet<>(comparator);
+            if (objects != null)
+            {
+                set.addAll(objects);
+            }
+        }
+        else
+        {
+            set = super.createSet(objects);
+        }
+        return set;
+    }
 
     @Override public MessageItemViewWrapper getView(int position, View convertView, ViewGroup parent)
     {
@@ -38,33 +67,33 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderId, Messa
         this.elementClickedListener = elementClickedListener;
     }
 
-    protected void handleUserClicked(MessageHeaderId messageHeaderId)
+    protected void handleUserClicked(MessageHeaderDTO messageHeaderDTO)
     {
-        notifyUserClicked(messageHeaderId);
+        notifyUserClicked(messageHeaderDTO);
     }
 
-    protected void handleDeleteClicked(MessageHeaderId messageHeaderId)
+    protected void handleDeleteClicked(MessageHeaderDTO messageHeaderDTO)
     {
-        notifyDeleteClicked(messageHeaderId);
+        notifyDeleteClicked(messageHeaderDTO);
     }
 
-    protected void notifyUserClicked(MessageHeaderId messageHeaderId)
+    protected void notifyUserClicked(MessageHeaderDTO messageHeaderDTO)
     {
         MessageItemViewWrapper.OnElementClickedListener elementClickedListenerCopy =
                 elementClickedListener;
         if (elementClickedListenerCopy != null)
         {
-            elementClickedListenerCopy.onUserClicked(messageHeaderId);
+            elementClickedListenerCopy.onUserClicked(messageHeaderDTO);
         }
     }
 
-    protected void notifyDeleteClicked(MessageHeaderId messageHeaderId)
+    protected void notifyDeleteClicked(MessageHeaderDTO messageHeaderDTO)
     {
         MessageItemViewWrapper.OnElementClickedListener elementClickedListener =
                 this.elementClickedListener;
         if (elementClickedListener != null)
         {
-            elementClickedListener.onDeleteClicked(messageHeaderId);
+            elementClickedListener.onDeleteClicked(messageHeaderDTO);
         }
     }
 
@@ -75,14 +104,14 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderId, Messa
 
     protected class MessageListAdapterOnElementClickedListener implements MessageItemViewWrapper.OnElementClickedListener
     {
-        @Override public void onUserClicked(MessageHeaderId messageHeaderId)
+        @Override public void onUserClicked(MessageHeaderDTO messageHeaderDTO)
         {
-            handleUserClicked(messageHeaderId);
+            handleUserClicked(messageHeaderDTO);
         }
 
-        @Override public void onDeleteClicked(MessageHeaderId messageHeaderId)
+        @Override public void onDeleteClicked(MessageHeaderDTO messageHeaderDTO)
         {
-            handleDeleteClicked(messageHeaderId);
+            handleDeleteClicked(messageHeaderDTO);
         }
     }
 }

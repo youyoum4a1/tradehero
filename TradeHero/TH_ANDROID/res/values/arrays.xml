@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
   <string-array name="servers" translatable="false">
     <item>Prod</item>
     <item>Staging</item>
@@ -9,6 +10,7 @@
     <item>XavShPC</item>
     <item>MaddyPC</item>
     <item>JackPC</item>
+    <item>JackPC2</item>
   </string-array>
 
   <string-array name="server_values" translatable="false">
@@ -19,7 +21,8 @@
     <item>http://192.168.20.49/api</item>
     <item>http://192.168.1.10/api</item>
     <item>https://192.168.1.123:44300/api</item>
-    <item>http://jackfortune.chinacloudapp.cn/TH_API/api/</item>
+    <item>http://jackfortune.chinacloudapp.cn/api</item>
+    <item>http://jackbao.cloudapp.net/api</item>
   </string-array>
 
   <string-array name="staffs" translatable="false">

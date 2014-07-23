@@ -15,7 +15,7 @@ public class LeaderboardFriendsCache extends StraightDTOCacheNew<LeaderboardFrie
 
     @NotNull private final LeaderboardServiceWrapper leaderboardServiceWrapper;
 
-    @Inject public LeaderboardFriendsCache(LeaderboardServiceWrapper leaderboardServiceWrapper)
+    @Inject public LeaderboardFriendsCache(@NotNull LeaderboardServiceWrapper leaderboardServiceWrapper)
     {
         super(DEFAULT_MAX_SIZE);
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;

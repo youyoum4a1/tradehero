@@ -12,12 +12,14 @@ import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UpdateCountryCodeDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeResultDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
@@ -29,6 +31,7 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
+import com.tradehero.th.models.user.DTOProcessorUpdateLocation;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
@@ -42,7 +45,6 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -123,6 +125,11 @@ import retrofit.client.Response;
     @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
     {
         return new DTOProcessorUserDeleted(userProfileCache, playerId);
+    }
+
+    @NotNull protected DTOProcessor<UpdateCountryCodeResultDTO> createUpdateLocationProcessor(@NotNull UserBaseKey playerId)
+    {
+        return new DTOProcessorUpdateLocation(userProfileCache, playerId);
     }
     //</editor-fold>
 
@@ -491,14 +498,17 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
-    public List<UserTransactionHistoryDTO> getUserTransactions(UserBaseKey userBaseKey)
+    @NotNull public UserTransactionHistoryDTOList getUserTransactions(
+            @NotNull UserBaseKey userBaseKey)
     {
         return userService.getUserTransactions(userBaseKey.key);
     }
 
-    public MiddleCallback<List<UserTransactionHistoryDTO>> getUserTransactions(UserBaseKey userBaseKey, Callback<List<UserTransactionHistoryDTO>> callback)
+    @NotNull public MiddleCallback<UserTransactionHistoryDTOList> getUserTransactions(
+            @NotNull UserBaseKey userBaseKey,
+            @Nullable Callback<UserTransactionHistoryDTOList> callback)
     {
-        MiddleCallback<List<UserTransactionHistoryDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<UserTransactionHistoryDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getUserTransactions(userBaseKey.key, middleCallback);
         return middleCallback;
     }
@@ -752,7 +762,6 @@ import retrofit.client.Response;
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.unfollow(userBaseKey.key, middleCallback);
         return middleCallback;
-
     }
     //</editor-fold>
 
@@ -768,6 +777,17 @@ import retrofit.client.Response;
     {
         BaseMiddleCallback<HeroDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getHeroes(heroKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Update Country Code">
+    public MiddleCallback<UpdateCountryCodeResultDTO> updateCountryCode(UserBaseKey userKey,
+            UpdateCountryCodeDTO updateCountryCodeDTO, Callback<UpdateCountryCodeResultDTO> callback)
+    {
+        MiddleCallback<UpdateCountryCodeResultDTO> middleCallback = new BaseMiddleCallback<>(callback,
+                createUpdateLocationProcessor(userKey));
+        userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
