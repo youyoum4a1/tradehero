@@ -3,9 +3,11 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
+import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
@@ -168,4 +170,34 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
+
+    //<editor-fold desc="Get Display Cells">
+    public ProviderDisplayCellDTOList getDisplayCells(@NotNull ProviderDisplayCellListKey providerDisplayCellListKey)
+    {
+        return this.getDisplayCells(providerDisplayCellListKey.getProviderId());
+    }
+
+    @NotNull public MiddleCallback<ProviderDisplayCellDTOList> getDisplayCells(
+            @NotNull ProviderDisplayCellListKey providerDisplayCellListKey,
+            @Nullable Callback<ProviderDisplayCellDTOList> callback)
+    {
+        return this.getDisplayCells(providerDisplayCellListKey.getProviderId(), callback);
+    }
+
+    public ProviderDisplayCellDTOList getDisplayCells(@NotNull ProviderId providerId)
+    {
+        return this.providerService.getDisplayCells(providerId.key);
+    }
+
+    @NotNull public MiddleCallback<ProviderDisplayCellDTOList> getDisplayCells(
+            @NotNull ProviderId providerId,
+            @Nullable Callback<ProviderDisplayCellDTOList> callback)
+    {
+        MiddleCallback<ProviderDisplayCellDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        this.providerServiceAsync.getDisplayCells(providerId.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+
 }
