@@ -15,6 +15,15 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
     {
         super();
     }
+
+    public UserFriendsWeiboDTO(boolean isHeadType,String strHeadType)
+    {
+        super();
+        this.isTypeHead = isHeadType;
+        this.strTypeHead = strHeadType;
+        this.name = "";
+        wbId = "0";
+    }
     //</editor-fold>
 
     @Override public int getNetworkLabelImage()
@@ -42,5 +51,10 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
         return super.equals(other) &&
                 other instanceof UserFriendsWeiboDTO &&
                 wbId.equals(((UserFriendsWeiboDTO) other).wbId);
+    }
+
+    @Override public SocialNetworkEnum getNetworkSocial()
+    {
+        return SocialNetworkEnum.WB;
     }
 }

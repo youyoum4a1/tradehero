@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.social.friend;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
@@ -25,8 +27,13 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     @InjectView(R.id.social_item_logo) ImageView friendLogo;
     @InjectView(R.id.social_item_title) TextView friendTitle;
     @InjectView(R.id.social_item_action_btn) TextView actionBtn;
+    @InjectView(R.id.social_friend_item_ll) LinearLayout socialFriendItem;
+    @InjectView(R.id.social_friend_headline) TextView headLine;
+    @InjectView(R.id.social_item_action_cb) CheckBox actionCb;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
+
+
 
     private UserFriendsDTO userFriendsDTO;
     private OnElementClickListener onElementClickListener;
@@ -72,6 +79,16 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
         }
     }
 
+    @OnClick(R.id.social_item_action_cb)
+    public void onActionCheckBoxClick(View v)
+    {
+        if (v.getId() == R.id.social_item_action_cb && onElementClickListener != null)
+        {
+            userFriendsDTO.isInviteChecked = actionCb.isChecked();
+            onElementClickListener.onCheckBoxClick(userFriendsDTO);
+        }
+    }
+
     public void setOnElementClickedListener(OnElementClickListener onElementClickListener)
     {
         this.onElementClickListener = onElementClickListener;
@@ -84,6 +101,30 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
         displayUserIcon();
         displayTitle();
         displayActionButton();
+        displayHeadLine();
+        displayByType();
+    }
+
+    private void displayHeadLine()
+    {
+        if(userFriendsDTO.isTypeHead)
+        {
+            headLine.setText(userFriendsDTO.strTypeHead);
+        }
+    }
+
+    private void displayByType()
+    {
+        if(userFriendsDTO.isTypeHead)
+        {
+            socialFriendItem.setVisibility(View.GONE);
+            headLine.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            socialFriendItem.setVisibility(View.VISIBLE);
+            headLine.setVisibility(View.GONE);
+        }
     }
 
     private void displayUserIcon()
@@ -144,13 +185,32 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
             actionBtn.setText(R.string.invite);
             actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
             actionBtn.setEnabled(!userFriendsDTO.alreadyInvited);
+            setWeiboCheckBox();
         }
         actionBtn.setPadding(pL, pT, pR, pB);
+
+    }
+
+    private void setWeiboCheckBox()
+    {
+        actionCb.setChecked(userFriendsDTO.isInviteChecked);
+
+        if(userFriendsDTO.getNetworkSocial() == SocialNetworkEnum.WB)
+        {
+            actionBtn.setVisibility(View.GONE);
+            actionCb.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            actionBtn.setVisibility(View.VISIBLE);
+            actionCb.setVisibility(View.GONE);
+        }
     }
 
     public static interface OnElementClickListener
     {
         void onFollowButtonClick(UserFriendsDTO userFriendsDTO);
         void onInviteButtonClick(UserFriendsDTO userFriendsDTO);
+        void onCheckBoxClick(UserFriendsDTO userFriendsDTO);
     }
 }
