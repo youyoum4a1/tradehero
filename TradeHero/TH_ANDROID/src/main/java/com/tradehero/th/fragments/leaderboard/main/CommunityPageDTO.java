@@ -1,5 +1,5 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
-interface CommunityPageDTO
+public interface CommunityPageDTO
 {
 }

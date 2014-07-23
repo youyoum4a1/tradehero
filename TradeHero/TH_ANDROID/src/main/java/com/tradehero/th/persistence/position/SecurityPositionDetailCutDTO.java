@@ -65,7 +65,10 @@ class SecurityPositionDetailCutDTO implements DTO
             this.portfolioId = null;
         }
 
-        providerCache.put(securityPositionDetailDTO.providers);
+        //there is old provider data structure updated here.
+        //no data: startDateUtc,endDateUtc,durationType,totalPrize,vip in providerDTO;
+        //providerCache.put(securityPositionDetailDTO.providers);
+
         this.providerIds = ProviderDTO.getProviderIds(securityPositionDetailDTO.providers);
 
         this.firstTradeAllTime = securityPositionDetailDTO.firstTradeAllTime;

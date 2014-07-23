@@ -3,12 +3,12 @@ package com.tradehero.th.fragments.leaderboard.main;
 import com.tradehero.th.api.competition.ProviderDTO;
 import org.jetbrains.annotations.NotNull;
 
-class ProviderCommunityPageDTO implements CommunityPageDTO
+public class ProviderCommunityPageDTO implements CommunityPageDTO
 {
     @NotNull public final ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
-    ProviderCommunityPageDTO(@NotNull ProviderDTO providerDTO)
+    public ProviderCommunityPageDTO(@NotNull ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
     }

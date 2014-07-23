@@ -10,7 +10,7 @@ import retrofit.http.Query;
 public interface ProviderService
 {
     //<editor-fold desc="Get Providers">
-    @GET("/providers") ProviderDTOList getProviders();
+    @GET("/providers?detailed=true") ProviderDTOList getProviders();
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">

@@ -30,6 +30,10 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
+import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
+import com.tradehero.th.fragments.contestcenter.ContestCenterBaseFragment;
+import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
+import com.tradehero.th.fragments.contestcenter.ContestCenterJoinedFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
@@ -385,6 +389,10 @@ import javax.inject.Singleton;
                         AlertDialogUtil.class,
                         LeaderboardFriendsItemView.class,
                         FriendsInvitationFragment.class,
+                        ContestCenterFragment.class,
+                        ContestCenterBaseFragment.class,
+                        ContestCenterActiveFragment.class,
+                        ContestCenterJoinedFragment.class,
                         FacebookSocialFriendsFragment.class,
                         TwitterSocialFriendsFragment.class,
                         LinkedInSocialFriendsFragment.class,
