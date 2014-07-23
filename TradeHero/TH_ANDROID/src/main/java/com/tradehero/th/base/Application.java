@@ -26,6 +26,7 @@ import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.IntentDaggerModule;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
@@ -86,7 +87,8 @@ public class Application extends PApplication
                 CompetitionWebViewFragment.class,
                 PositionListFragment.class,
                 TradeListFragment.class,
-                HomeFragment.class
+                HomeFragment.class,
+                WebViewFragment.class
         );
         thRouter.registerAlias("messages", "updatecenter/0");
         thRouter.registerAlias("notifications", "updatecenter/1");

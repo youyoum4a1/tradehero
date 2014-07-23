@@ -4,7 +4,8 @@ import dagger.Module;
 
 @Module(
         injects = {
-                THWebViewClientTest.class
+                THWebViewClientTest.class,
+                WebViewFragmentTest.class,
         },
         library = true,
         complete = false
