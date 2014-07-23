@@ -12,6 +12,8 @@ import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
+import com.tradehero.th.api.users.UpdateCountryCodeDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeResultDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
@@ -29,6 +31,7 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
+import com.tradehero.th.models.user.DTOProcessorUpdateLocation;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
@@ -122,6 +125,11 @@ import retrofit.client.Response;
     @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
     {
         return new DTOProcessorUserDeleted(userProfileCache, playerId);
+    }
+
+    @NotNull protected DTOProcessor<UpdateCountryCodeResultDTO> createUpdateLocationProcessor(@NotNull UserBaseKey playerId)
+    {
+        return new DTOProcessorUpdateLocation(userProfileCache, playerId);
     }
     //</editor-fold>
 
@@ -575,9 +583,16 @@ import retrofit.client.Response;
         }
         else if (friendsListKey.socialNetworkEnum != null)
         {
-            received = userService.getSocialFriends(
-                    friendsListKey.userBaseKey.key,
-                    friendsListKey.socialNetworkEnum);
+            if(friendsListKey.socialNetworkEnum == SocialNetworkEnum.WB)
+            {
+                received = userService.getSocialWeiboFriends(friendsListKey.userBaseKey.key);
+            }
+            else
+            {
+                received = userService.getSocialFriends(
+                        friendsListKey.userBaseKey.key,
+                        friendsListKey.socialNetworkEnum);
+            }
         }
         else
         {
@@ -657,6 +672,11 @@ import retrofit.client.Response;
     }
 
     public Response inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO)
+    {
+        return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
+    }
+
+    public Response inviteWeiboFriends(String msg,UserBaseKey userKey, InviteFormDTO inviteFormDTO)
     {
         return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
     }
@@ -742,7 +762,6 @@ import retrofit.client.Response;
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
         userServiceAsync.unfollow(userBaseKey.key, middleCallback);
         return middleCallback;
-
     }
     //</editor-fold>
 
@@ -758,6 +777,17 @@ import retrofit.client.Response;
     {
         BaseMiddleCallback<HeroDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.getHeroes(heroKey.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Update Country Code">
+    public MiddleCallback<UpdateCountryCodeResultDTO> updateCountryCode(UserBaseKey userKey,
+            UpdateCountryCodeDTO updateCountryCodeDTO, Callback<UpdateCountryCodeResultDTO> callback)
+    {
+        MiddleCallback<UpdateCountryCodeResultDTO> middleCallback = new BaseMiddleCallback<>(callback,
+                createUpdateLocationProcessor(userKey));
+        userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

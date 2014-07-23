@@ -22,7 +22,7 @@ public class DTOProcessorProviderReceived implements DTOProcessor<ProviderDTO>
 
     @Override public ProviderDTO process(ProviderDTO value)
     {
-        if (value != null && value.associatedPortfolio!=null)
+        if (value != null && value.associatedPortfolio != null)
         {
             compactProcessor.process(value.associatedPortfolio);
         }

@@ -115,6 +115,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                 leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
                 initHeaderView(headerView);
             }
+            View rankHeaderView = getUserRankHeaderView();
+            if (rankHeaderView != null)
+            {
+                leaderboardMarkUserListView.getRefreshableView().addHeaderView(rankHeaderView);
+            }
         }
     }
 

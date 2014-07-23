@@ -43,4 +43,9 @@ public class UserFriendsTwitterDTO extends UserFriendsDTO
                 other instanceof UserFriendsTwitterDTO &&
                 twId.equals(((UserFriendsTwitterDTO) other).twId);
     }
+
+    @Override public SocialNetworkEnum getNetworkSocial()
+    {
+        return SocialNetworkEnum.TW;
+    }
 }

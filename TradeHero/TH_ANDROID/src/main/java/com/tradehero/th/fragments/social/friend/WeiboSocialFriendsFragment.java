@@ -20,12 +20,12 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
     @Override
     protected boolean canInviteAll()
     {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean canInvite()
     {
-        return false;
+        return true;
     }
 }

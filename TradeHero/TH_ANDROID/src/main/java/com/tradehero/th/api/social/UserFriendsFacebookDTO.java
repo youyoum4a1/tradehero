@@ -43,4 +43,9 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
                 other instanceof UserFriendsFacebookDTO &&
                 fbId.equals(((UserFriendsFacebookDTO) other).fbId);
     }
+
+    @Override public SocialNetworkEnum getNetworkSocial()
+    {
+        return SocialNetworkEnum.FB;
+    }
 }

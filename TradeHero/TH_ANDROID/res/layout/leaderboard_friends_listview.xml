@@ -20,6 +20,7 @@
   <ListView
       android:id="@+id/leaderboard_mark_user_listview"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent"
+      android:listSelector="@color/transparent"/>
 
 </RelativeLayout>
