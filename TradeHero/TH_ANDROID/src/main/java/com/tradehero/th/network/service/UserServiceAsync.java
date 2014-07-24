@@ -9,7 +9,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeResultDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
@@ -276,7 +276,7 @@ interface UserServiceAsync
     @POST("/users/{userId}/updateCountryCode")
     void updateCountryCode(
             @Path("userId") int userId,
-            @Body UpdateCountryCodeDTO updateCountryCodeDTO,
-            Callback<UpdateCountryCodeResultDTO> callback);
+            @Body UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
+            Callback<UpdateCountryCodeDTO> callback);
     //</editor-fold>
 }

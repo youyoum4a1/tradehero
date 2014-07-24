@@ -18,7 +18,7 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeResultDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -36,7 +36,7 @@ public class LocationListFragment extends DashboardFragment
     private static String KEY_ITEM_TITLE = "key_item_title";
     private static String KEY_ITEM_IMAGE = "key_item_image";
     private SimpleAdapter mListAdapter;
-    private MiddleCallback<UpdateCountryCodeResultDTO> middleCallback;
+    private MiddleCallback<UpdateCountryCodeDTO> middleCallback;
     private ProgressDialog progressDialog;
 
     @Inject Context context;
@@ -82,6 +82,12 @@ public class LocationListFragment extends DashboardFragment
         listView.setAdapter(mListAdapter);
     }
 
+    @Override public void onStop()
+    {
+        detachMiddleCallback();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         listView.setEmptyView(null);
@@ -103,17 +109,20 @@ public class LocationListFragment extends DashboardFragment
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
         getProgressDialog().show();
-        detachMiddleCallback();
-        UpdateCountryCodeDTO updateCountryCodeDTO = new UpdateCountryCodeDTO();
-        updateCountryCodeDTO.countryCode = (String)((HashMap<String, Object>)(mListAdapter.getItem(position))).get(KEY_ITEM_TITLE);
-
-        middleCallback = userServiceWrapperLazy.get().updateCountryCode(
-                currentUserId.toUserBaseKey(), updateCountryCodeDTO, new UpdateCountryCodeCallback());
+        updateCountryCode((String)((HashMap<String, Object>)(mListAdapter.getItem(position))).get(KEY_ITEM_TITLE));
     }
 
-    private class UpdateCountryCodeCallback implements retrofit.Callback<UpdateCountryCodeResultDTO>
+    protected void updateCountryCode(String countryCode)
     {
-        @Override public void success(UpdateCountryCodeResultDTO updateCountryCodeResultDTO, Response response2)
+        UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);
+        detachMiddleCallback();
+        middleCallback = userServiceWrapperLazy.get().updateCountryCode(
+                currentUserId.toUserBaseKey(), updateCountryCodeFormDTO, new UpdateCountryCodeCallback());
+    }
+
+    private class UpdateCountryCodeCallback implements retrofit.Callback<UpdateCountryCodeDTO>
+    {
+        @Override public void success(UpdateCountryCodeDTO updateCountryCodeDTO, Response response2)
         {
             getProgressDialog().hide();
             getDashboardNavigator().popFragment();

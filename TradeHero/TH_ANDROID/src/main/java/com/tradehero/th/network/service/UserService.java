@@ -8,6 +8,8 @@ import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
@@ -221,5 +223,12 @@ public interface UserService
     //<editor-fold desc="Get Heroes">
     @GET("/users/{userId}/heroes") HeroDTOList getHeroes(
             @Path("userId") int userId);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Country Code">
+    @POST("/users/{userId}/updateCountryCode")
+    UpdateCountryCodeDTO updateCountryCode(
+            @Path("userId") int userId,
+            @Body UpdateCountryCodeFormDTO updateCountryCodeFormDTO);
     //</editor-fold>
 }

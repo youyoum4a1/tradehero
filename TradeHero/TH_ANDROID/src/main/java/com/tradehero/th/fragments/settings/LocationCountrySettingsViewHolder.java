@@ -97,7 +97,6 @@ public class LocationCountrySettingsViewHolder
         {
             THToast.show(R.string.error_fetch_your_user_profile);
             Timber.e("Error fetching the user profile %s", key, error);
-            userProfileCache.unregister(currentUserId.toUserBaseKey(), userProfileCacheListener);
         }
     }
 }

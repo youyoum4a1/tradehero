@@ -1,17 +1,17 @@
 package com.tradehero.th.models.user;
 
-import com.tradehero.th.api.users.UpdateCountryCodeResultDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
 
-public class DTOProcessorUpdateLocation implements DTOProcessor<UpdateCountryCodeResultDTO>
+public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountryCodeDTO>
 {
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final UserBaseKey playerId;
 
-    public DTOProcessorUpdateLocation(
+    public DTOProcessorUpdateCountryCode(
             @NotNull UserProfileCache userProfileCache,
             @NotNull UserBaseKey playerId)
     {
@@ -19,9 +19,9 @@ public class DTOProcessorUpdateLocation implements DTOProcessor<UpdateCountryCod
         this.playerId = playerId;
     }
 
-    @Override public UpdateCountryCodeResultDTO process(UpdateCountryCodeResultDTO value)
+    @Override public UpdateCountryCodeDTO process(UpdateCountryCodeDTO value)
     {
-        userProfileCache.invalidate(playerId);
+        userProfileCache.getOrFetchAsync(playerId, true);
         return value;
     }
 }

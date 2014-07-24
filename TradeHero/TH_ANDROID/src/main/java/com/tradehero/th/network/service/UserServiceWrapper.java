@@ -13,7 +13,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeResultDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
@@ -31,7 +31,7 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
-import com.tradehero.th.models.user.DTOProcessorUpdateLocation;
+import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
@@ -127,9 +127,9 @@ import retrofit.client.Response;
         return new DTOProcessorUserDeleted(userProfileCache, playerId);
     }
 
-    @NotNull protected DTOProcessor<UpdateCountryCodeResultDTO> createUpdateLocationProcessor(@NotNull UserBaseKey playerId)
+    @NotNull protected DTOProcessor<UpdateCountryCodeDTO> createUpdateCountryCodeProcessor(@NotNull UserBaseKey playerId)
     {
-        return new DTOProcessorUpdateLocation(userProfileCache, playerId);
+        return new DTOProcessorUpdateCountryCode(userProfileCache, playerId);
     }
     //</editor-fold>
 
@@ -776,12 +776,19 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">
-    public MiddleCallback<UpdateCountryCodeResultDTO> updateCountryCode(UserBaseKey userKey,
-            UpdateCountryCodeDTO updateCountryCodeDTO, Callback<UpdateCountryCodeResultDTO> callback)
+    public UpdateCountryCodeDTO updateCountryCode(UserBaseKey userKey,
+            UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
-        MiddleCallback<UpdateCountryCodeResultDTO> middleCallback = new BaseMiddleCallback<>(callback,
-                createUpdateLocationProcessor(userKey));
-        userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeDTO, middleCallback);
+        return createUpdateCountryCodeProcessor(userKey).process(
+                userService.updateCountryCode(userKey.key, updateCountryCodeFormDTO));
+    }
+
+    public MiddleCallback<UpdateCountryCodeDTO> updateCountryCode(UserBaseKey userKey,
+            UpdateCountryCodeFormDTO updateCountryCodeFormDTO, Callback<UpdateCountryCodeDTO> callback)
+    {
+        MiddleCallback<UpdateCountryCodeDTO> middleCallback = new BaseMiddleCallback<>(callback,
+                createUpdateCountryCodeProcessor(userKey));
+        userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeFormDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
