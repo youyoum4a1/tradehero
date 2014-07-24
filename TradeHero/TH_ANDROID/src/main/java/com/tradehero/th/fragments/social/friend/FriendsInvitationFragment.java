@@ -63,11 +63,11 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
-    FacebookSocialFriendHandler facebookSocialFriendHandler;
+    SocialFriendHandlerFacebook socialFriendHandlerFacebook;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
-    @Inject Provider<FacebookSocialFriendHandler> facebookSocialFriendHandlerProvider;
+    @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
     private UserFriendsDTOList userFriendsDTOs;
@@ -88,7 +88,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         socialFriendHandler = socialFriendHandlerProvider.get();
-        facebookSocialFriendHandler = facebookSocialFriendHandlerProvider.get();
+        socialFriendHandlerFacebook = facebookSocialFriendHandlerProvider.get();
     }
 
     @Override
@@ -397,7 +397,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         else if (userToInvite instanceof UserFriendsFacebookDTO)
         {
             //TODO do invite on the client side.
-            facebookSocialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+            socialFriendHandlerFacebook.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
         }
         else
         {

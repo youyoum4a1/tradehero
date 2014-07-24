@@ -13,7 +13,7 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
 import timber.log.Timber;
 
-public class WeiboSocialFriendsFragment extends SocialFriendsFragment
+public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
 {
     private AlertDialog mWeiboInviteDialog;
 

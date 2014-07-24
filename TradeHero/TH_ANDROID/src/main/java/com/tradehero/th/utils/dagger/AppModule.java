@@ -119,11 +119,11 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
-import com.tradehero.th.fragments.social.friend.FacebookSocialFriendsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.friend.LinkedInSocialFriendsFragment;
-import com.tradehero.th.fragments.social.friend.TwitterSocialFriendsFragment;
-import com.tradehero.th.fragments.social.friend.WeiboSocialFriendsFragment;
+import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentFacebook;
+import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentLinkedIn;
+import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentTwitter;
+import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
@@ -393,10 +393,10 @@ import javax.inject.Singleton;
                         ContestCenterBaseFragment.class,
                         ContestCenterActiveFragment.class,
                         ContestCenterJoinedFragment.class,
-                        FacebookSocialFriendsFragment.class,
-                        TwitterSocialFriendsFragment.class,
-                        LinkedInSocialFriendsFragment.class,
-                        WeiboSocialFriendsFragment.class,
+                        SocialFriendsFragmentFacebook.class,
+                        SocialFriendsFragmentTwitter.class,
+                        SocialFriendsFragmentLinkedIn.class,
+                        SocialFriendsFragmentWeibo.class,
 
                         HomeFragment.class,
                         HomeWebView.class,

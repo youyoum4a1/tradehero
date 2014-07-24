@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.social.friend;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 
-public class TwitterSocialFriendsFragment extends SocialFriendsFragment
+public class SocialFriendsFragmentTwitter extends SocialFriendsFragment
 {
     @Override
     protected SocialNetworkEnum getSocialNetwork()
