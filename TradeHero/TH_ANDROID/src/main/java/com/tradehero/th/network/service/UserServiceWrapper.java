@@ -88,7 +88,7 @@ import retrofit.client.Response;
     }
     //</editor-fold>
 
-    //<editor-fold desc="DTO Processors">
+    //<editor-fold desc="Sign-Up With Email">
     @NotNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
     {
         return new DTOProcessorSignInUpUserProfile(
@@ -97,38 +97,6 @@ import retrofit.client.Response;
                 dtoCacheUtil);
     }
 
-    @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
-    }
-
-    @NotNull protected DTOProcessor<UserProfileDTO> createFollowUserProcessor(@NotNull UserBaseKey userToFollow)
-    {
-        return new DTOProcessorFollowUser(
-                userProfileCache,
-                heroListCache.get(),
-                getPositionsCache,
-                userMessagingRelationshipCache,
-                userToFollow);
-    }
-
-    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
-    }
-
-    @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
-    }
-
-    @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUserDeleted(userProfileCache, playerId);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Sign-Up With Email">
     public UserProfileDTO signUpWithEmail(
             String authorization,
             UserFormDTO userFormDTO)
@@ -243,6 +211,11 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
+    @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    {
+        return new DTOProcessorUpdateUserProfile(userProfileCache);
+    }
+
     public UserProfileDTO updateProfile(
             UserBaseKey userBaseKey,
             UserFormDTO userFormDTO)
@@ -510,6 +483,11 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
+    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
+    {
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
+    }
+
     public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey,
             UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
@@ -530,6 +508,11 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay account">
+    @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
+    {
+        return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
+    }
+
     public UpdateAlipayAccountDTO updateAlipayAccount(
             UserBaseKey userBaseKey,
             UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
@@ -552,6 +535,10 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
+    @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
+    {
+        return new DTOProcessorUserDeleted(userProfileCache, playerId);
+    }
     public Response deleteUser(UserBaseKey userKey)
     {
         return createUserDeletedProcessor(userKey).process(userService.deleteUser(userKey.key));
@@ -693,6 +680,16 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
+    @NotNull protected DTOProcessor<UserProfileDTO> createFollowUserProcessor(@NotNull UserBaseKey userToFollow)
+    {
+        return new DTOProcessorFollowUser(
+                userProfileCache,
+                heroListCache.get(),
+                getPositionsCache,
+                userMessagingRelationshipCache,
+                userToFollow);
+    }
+
     public UserProfileDTO follow(@NotNull UserBaseKey userBaseKey)
     {
         return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key));
