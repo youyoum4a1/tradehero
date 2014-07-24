@@ -27,7 +27,7 @@ abstract public class UniqueFieldDTODeserialiser<DTOType> extends StdDeserialize
         super(baseClass);
         this.uniqueAttributes = uniqueAttributes;
         this.innerMapper = innerMapper;
-        innerMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.innerMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
     //</editor-fold>
 

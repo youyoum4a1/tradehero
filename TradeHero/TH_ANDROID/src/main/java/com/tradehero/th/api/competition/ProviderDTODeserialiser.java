@@ -2,6 +2,7 @@ package com.tradehero.th.api.competition;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.tradehero.th.api.competition.specific.ProviderSpecificsPopulator;
@@ -20,6 +21,7 @@ public class ProviderDTODeserialiser extends StdDeserializer<ProviderDTO>
     {
         super(ProviderDTO.class);
         this.innerMapper = new ObjectMapper();
+        this.innerMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.providerSpecificsPopulator = providerSpecificsPopulator;
     }
     //</editor-fold>
