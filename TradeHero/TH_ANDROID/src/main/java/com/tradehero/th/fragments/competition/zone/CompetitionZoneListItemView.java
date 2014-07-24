@@ -8,6 +8,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
@@ -89,6 +90,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
                     picasso.cancelRequest(zoneIcon);
                     picasso.load(competitionZoneWizardDTO.getIconUrl())
                             .fit()
+                            .centerInside()
                             .into(zoneIcon);
                 }
                 else
@@ -99,6 +101,19 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
             else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
             {
                 zoneIcon.setImageResource(R.drawable.ic_action_action_about);
+            }
+            else if (competitionZoneDTO instanceof CompetitionZoneDisplayCellDTO)
+            {
+                CompetitionZoneDisplayCellDTO displayCellDTO = (CompetitionZoneDisplayCellDTO) competitionZoneDTO;
+                String iconUrl = displayCellDTO.getIconUrl();
+                if (iconUrl != null)
+                {
+                    picasso.cancelRequest(zoneIcon);
+                    picasso.load(iconUrl)
+                            .fit()
+                            .centerInside()
+                            .into(zoneIcon);
+                }
             }
             else if (competitionZoneDTO != null)
             {

@@ -5,6 +5,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.List;
@@ -24,6 +25,7 @@ public class CompetitionZoneDTOUtil
             UserProfileCompactDTO portfolioUserProfileCompact,
             ProviderDTO providerDTO,
             List<CompetitionDTO> competitionDTOs,
+            List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
             List<Integer> preparedOrderedTypes,
             List<Object> preparedOrderedItems)
     {
@@ -53,6 +55,18 @@ public class CompetitionZoneDTOUtil
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
                 preparedOrderedItems.add(new CompetitionZoneVideoDTO(providerDTO.helpVideoText, null));
+            }
+
+            if (providerDisplayCellDTOs != null)
+            {
+                for (ProviderDisplayCellDTO providerDisplayCellDTO : providerDisplayCellDTOs)
+                {
+                    if (providerDisplayCellDTO != null)
+                    {
+                        preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
+                        preparedOrderedItems.add(new CompetitionZoneDisplayCellDTO(providerDisplayCellDTO));
+                    }
+                }
             }
 
             if (providerDTO.hasWizard())
@@ -94,19 +108,6 @@ public class CompetitionZoneDTOUtil
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
-
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_TRADE_NOW);
-
-            if (providerDTO.specificResources != null
-                    && providerDTO.specificResources.tradeNowBtnImageResId > 0)
-            {
-                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, providerDTO.specificResources.tradeNowBtnImageResId,
-                        providerDTO.tradeButtonImageUrl));
-            }
-            else
-            {
-                preparedOrderedItems.add(new CompetitionZoneTradeNowDTO(null, null, 0, providerDTO.tradeButtonImageUrl));
-            }
         }
     }
 }

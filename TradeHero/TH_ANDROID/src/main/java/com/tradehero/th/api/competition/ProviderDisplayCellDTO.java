@@ -6,12 +6,12 @@ import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
 
 public class ProviderDisplayCellDTO implements DTO
 {
-    int id;
-    int providerId;
-    String title;
-    String subtitle;
-    String imageUrl;
-    String redirectUrl;
+    public int id;
+    public int providerId;
+    public String title;
+    public String subtitle;
+    public String imageUrl;
+    public String redirectUrl;
 
     @Override public String toString()
     {
