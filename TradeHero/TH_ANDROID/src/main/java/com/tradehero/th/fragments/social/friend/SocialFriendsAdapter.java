@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.AbstractArrayAdapter;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
 import timber.log.Timber;
@@ -14,12 +15,22 @@ public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
     private Context mContext;
     private int mLayoutResourceId;
     private SocialFriendItemView.OnElementClickListener elementClickedListener;
+    private SocialNetworkEnum social;
+
 
     //<editor-fold desc="Constructors">
     public SocialFriendsAdapter(Context context, List<UserFriendsDTO> objects, int layoutResourceId) {
         super(context,0,objects);
         this.mContext = context;
         this.mLayoutResourceId = layoutResourceId;
+    }
+
+    //<editor-fold desc="Constructors">
+    public SocialFriendsAdapter(Context context, List<UserFriendsDTO> objects, int layoutResourceId,SocialNetworkEnum social) {
+        super(context,0,objects);
+        this.mContext = context;
+        this.mLayoutResourceId = layoutResourceId;
+        this.social = social;
     }
     //</editor-fold>
 
@@ -30,6 +41,7 @@ public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
             convertView = LayoutInflater.from(mContext).inflate(getViewResId(position), parent, false);
         }
         SocialFriendItemView dtoView = (SocialFriendItemView) convertView;
+        dtoView.social = this.social;
         dtoView.display(getItem(position));
         dtoView.setOnElementClickedListener(elementClickedListener);
         return dtoView;

@@ -33,6 +33,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
+    public SocialNetworkEnum social;
     private UserFriendsDTO userFriendsDTO;
     private OnElementClickListener onElementClickListener;
 
@@ -193,7 +194,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     {
         actionCb.setChecked(userFriendsDTO.isInviteChecked);
 
-        if(userFriendsDTO.getNetworkSocial() == SocialNetworkEnum.WB)
+        if(social!=null && social == SocialNetworkEnum.WB)
         {
             actionBtn.setVisibility(View.GONE);
             actionCb.setVisibility(View.VISIBLE);

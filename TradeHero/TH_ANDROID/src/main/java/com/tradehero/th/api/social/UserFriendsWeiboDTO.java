@@ -52,9 +52,4 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
                 other instanceof UserFriendsWeiboDTO &&
                 wbId.equals(((UserFriendsWeiboDTO) other).wbId);
     }
-
-    @Override public SocialNetworkEnum getNetworkSocial()
-    {
-        return SocialNetworkEnum.WB;
-    }
 }

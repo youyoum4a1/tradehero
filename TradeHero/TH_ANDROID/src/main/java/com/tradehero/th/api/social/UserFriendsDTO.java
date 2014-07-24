@@ -26,8 +26,6 @@ abstract public class UserFriendsDTO
 
     abstract public int getNetworkLabelImage();
 
-    abstract public SocialNetworkEnum getNetworkSocial();
-
     public String getProfilePictureURL()
     {
         return null;

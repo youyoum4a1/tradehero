@@ -252,7 +252,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private boolean checkMessageLengthLimit()
     {
-        return edtMessageInvite.getText().toString().length()>140?false:true;
+        return edtMessageInvite.getText().toString().length()>MAX_TEXT_LENGTH?false:true;
     }
 
     private void addMessageTextListener()
@@ -586,7 +586,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 new SocialFriendsAdapter(
                         getActivity(),
                         friendsDTOsCopy,
-                        R.layout.social_friends_item);
+                        R.layout.social_friends_item,getSocialNetwork());
         socialFriendsListAdapter.setOnElementClickedListener(this);
         friendsRootView.listView.setAdapter(socialFriendsListAdapter);
         friendsRootView.setInviteAllViewText(getString(R.string.invite));
@@ -599,7 +599,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 new SocialFriendsAdapter(
                         getActivity(),
                         friendsDTOsCopy,
-                        R.layout.social_friends_item);
+                        R.layout.social_friends_item,getSocialNetwork());
         socialFriendsListAdapter.setOnElementClickedListener(this);
         friendsRootView.listView.setAdapter(socialFriendsListAdapter);
     }

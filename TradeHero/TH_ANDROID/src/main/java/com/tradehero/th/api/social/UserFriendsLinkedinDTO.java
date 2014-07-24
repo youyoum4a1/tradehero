@@ -44,9 +44,4 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
                 other instanceof UserFriendsLinkedinDTO &&
                 liId.equals(((UserFriendsLinkedinDTO) other).liId);
     }
-
-    @Override public SocialNetworkEnum getNetworkSocial()
-    {
-        return SocialNetworkEnum.LN;
-    }
 }
