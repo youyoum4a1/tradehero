@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
@@ -19,54 +21,47 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.HashMap;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 public class LocationListFragment extends DashboardFragment
 {
-    private static String KEY_ITEM_TITLE = "key_item_title";
-    private static String KEY_ITEM_IMAGE = "key_item_image";
-    private SimpleAdapter mListAdapter;
+    private LocationAdapter mListAdapter;
     private MiddleCallback<UpdateCountryCodeDTO> middleCallback;
     private ProgressDialog progressDialog;
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected UserProfileDTO currentUserProfile;
 
     @Inject Context context;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+    @Inject ListedLocationDTOFactory listedLocationDTOFactory;
+    @Inject UserProfileCache userProfileCache;
 
     @InjectView(android.R.id.list) ListView listView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        ArrayList<HashMap<String, Object>> listItem = createCountryData();
-        mListAdapter = new SimpleAdapter(context, listItem, R.layout.settings_location_list_item,
-                new String[] {KEY_ITEM_TITLE, KEY_ITEM_IMAGE}, new int[] {R.id.country_name, R.id.country_logo});
-    }
-
-    private ArrayList<HashMap<String, Object>> createCountryData()
-    {
-        Country[] items = Country.values();
-        ArrayList<HashMap<String, Object>> listItem = new ArrayList<>();
-        for(int i=1;i<items.length;i++)
-        {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put(KEY_ITEM_TITLE, items[i].name());
-            map.put(KEY_ITEM_IMAGE, items[i].logoId);
-            listItem.add(map);
-        }
-        return listItem;
+        userProfileCacheListener = createUserProfileListener();
+        mListAdapter = new LocationAdapter(
+                context,
+                R.layout.settings_location_list_item);
+        mListAdapter.addAll(listedLocationDTOFactory.createListToShow());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -82,8 +77,21 @@ public class LocationListFragment extends DashboardFragment
         listView.setAdapter(mListAdapter);
     }
 
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setActionBarTitle(R.string.location_fragment_title);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        fetchUserProfile();
+    }
+
     @Override public void onStop()
     {
+        detachUserProfileCache();
         detachMiddleCallback();
         super.onStop();
     }
@@ -102,14 +110,76 @@ public class LocationListFragment extends DashboardFragment
         {
             mListAdapter = null;
         }
+        userProfileCacheListener = null;
         super.onDestroy();
+    }
+
+    private void detachUserProfileCache()
+    {
+        userProfileCache.unregister(userProfileCacheListener);
+    }
+
+    private void detachMiddleCallback()
+    {
+        if (middleCallback != null)
+        {
+            middleCallback.setPrimaryCallback(null);
+        }
+        middleCallback = null;
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    {
+        return new LocationListUserProfileListener();
+    }
+
+    protected class LocationListUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_your_user_profile);
+        }
+    }
+
+    protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    {
+        this.currentUserProfile = userProfileDTO;
+        if (userProfileDTO != null && userProfileDTO.countryCode != null)
+        {
+            try
+            {
+                mListAdapter.setCurrentCountry(Country.valueOf(userProfileDTO.countryCode));
+            }
+            catch (IllegalArgumentException e)
+            {
+                Timber.e(e, "Does not have country code for ", userProfileDTO.countryCode);
+                mListAdapter.setCurrentCountry(null);
+            }
+        }
+        else
+        {
+            mListAdapter.setCurrentCountry(null);
+        }
+        mListAdapter.notifyDataSetChanged();
     }
 
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
         getProgressDialog().show();
-        updateCountryCode((String)((HashMap<String, Object>)(mListAdapter.getItem(position))).get(KEY_ITEM_TITLE));
+        updateCountryCode(((ListedLocationDTO) adapterView.getItemAtPosition(position)).country.name());
     }
 
     protected void updateCountryCode(String countryCode)
@@ -133,15 +203,6 @@ public class LocationListFragment extends DashboardFragment
             THToast.show(new THException(retrofitError));
             getProgressDialog().hide();
         }
-    }
-
-    private void detachMiddleCallback()
-    {
-        if (middleCallback != null)
-        {
-            middleCallback.setPrimaryCallback(null);
-        }
-        middleCallback = null;
     }
 
     private ProgressDialog getProgressDialog()
