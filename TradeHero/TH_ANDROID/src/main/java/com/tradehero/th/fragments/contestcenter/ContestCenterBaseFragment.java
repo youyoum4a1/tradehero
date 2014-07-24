@@ -22,7 +22,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.leaderboard.main.ProviderCommunityPageDTO;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -204,9 +203,9 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
         {
             Object item = adapterView.getItemAtPosition(position);
-            if (item instanceof ProviderCommunityPageDTO)
+            if (item instanceof ProviderContestPageDTO)
             {
-                handleCompetitionItemClicked(((ProviderCommunityPageDTO) item).providerDTO);
+                handleCompetitionItemClicked(((ProviderContestPageDTO) item).providerDTO);
             }
             else
             {

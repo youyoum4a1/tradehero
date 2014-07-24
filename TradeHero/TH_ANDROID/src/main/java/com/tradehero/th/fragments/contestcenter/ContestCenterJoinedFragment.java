@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.contestcenter;
 
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.fragments.leaderboard.main.ProviderCommunityPageDTO;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,7 +19,7 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
             {
                 if (providerDTO.isUserEnrolled)
                 {
-                    contestListAdapter.add(new ProviderCommunityPageDTO(providerDTO));
+                    contestListAdapter.add(new ProviderContestPageDTO(providerDTO));
                     if (providerDTO.vip)
                     {
                         contestListAdapter.add(new EmptyHeadLineDTO());

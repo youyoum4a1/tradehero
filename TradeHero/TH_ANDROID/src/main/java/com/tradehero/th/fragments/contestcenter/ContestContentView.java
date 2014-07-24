@@ -12,8 +12,6 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.fragments.leaderboard.main.CommunityPageDTO;
-import com.tradehero.th.fragments.leaderboard.main.ProviderCommunityPageDTO;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
@@ -21,11 +19,11 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 public class ContestContentView extends RelativeLayout
-        implements DTOView<CommunityPageDTO>
+        implements DTOView<ContestPageDTO>
 {
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<ProviderCache> providerCache;
-    private CommunityPageDTO communityPageDTO;
+    private ContestPageDTO communityPageDTO;
     private ProviderDTO providerDTO;
 
     @InjectView(R.id.img_provider) ImageView imgActionProvider;
@@ -67,12 +65,12 @@ public class ContestContentView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(CommunityPageDTO dto)
+    @Override public void display(ContestPageDTO dto)
     {
         this.communityPageDTO = dto;
         if (communityPageDTO != null)
         {
-            linkWith(((ProviderCommunityPageDTO) communityPageDTO).providerDTO, true);
+            linkWith(((ProviderContestPageDTO) communityPageDTO).providerDTO, true);
         }
     }
 

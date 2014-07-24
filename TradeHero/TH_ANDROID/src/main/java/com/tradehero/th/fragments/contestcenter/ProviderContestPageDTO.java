@@ -1,14 +1,14 @@
-package com.tradehero.th.fragments.leaderboard.main;
+package com.tradehero.th.fragments.contestcenter;
 
 import com.tradehero.th.api.competition.ProviderDTO;
 import org.jetbrains.annotations.NotNull;
 
-class ProviderCommunityPageDTO implements CommunityPageDTO
+class ProviderContestPageDTO implements ContestPageDTO
 {
     @NotNull public final ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
-    public ProviderCommunityPageDTO(@NotNull ProviderDTO providerDTO)
+    public ProviderContestPageDTO(@NotNull ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
     }
@@ -25,10 +25,10 @@ class ProviderCommunityPageDTO implements CommunityPageDTO
         {
             return true;
         }
-        if (!(other instanceof ProviderCommunityPageDTO))
+        if (!(other instanceof ProviderContestPageDTO))
         {
             return false;
         }
-        return this.providerDTO.getProviderId().equals(((ProviderCommunityPageDTO) other).providerDTO.getProviderId());
+        return this.providerDTO.getProviderId().equals(((ProviderContestPageDTO) other).providerDTO.getProviderId());
     }
 }

@@ -7,12 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.fragments.leaderboard.main.CommunityPageDTO;
-import com.tradehero.th.fragments.leaderboard.main.ProviderCommunityPageDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-public class ContestItemAdapter extends ArrayAdapter<CommunityPageDTO>
+public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         implements StickyListHeadersAdapter
 {
     private final int vipViewResourceId;
@@ -30,10 +28,10 @@ public class ContestItemAdapter extends ArrayAdapter<CommunityPageDTO>
 
     public int getItemViewResId(int position)
     {
-        CommunityPageDTO item = getItem(position);
-        if (item instanceof ProviderCommunityPageDTO)
+        ContestPageDTO item = getItem(position);
+        if (item instanceof ProviderContestPageDTO)
         {
-            if (((ProviderCommunityPageDTO) item).providerDTO.vip)
+            if (((ProviderContestPageDTO) item).providerDTO.vip)
             {
                 return vipViewResourceId;
             }
@@ -56,7 +54,7 @@ public class ContestItemAdapter extends ArrayAdapter<CommunityPageDTO>
         convertView = LayoutInflater.from(getContext()).inflate(getItemViewResId(position), viewGroup, false);
         if (convertView instanceof DTOView)
         {
-            ((DTOView<CommunityPageDTO>) convertView).display(getItem(position));
+            ((DTOView<ContestPageDTO>) convertView).display(getItem(position));
         }
         return convertView;
     }
