@@ -12,7 +12,7 @@ public enum Country
     AI(R.drawable.square_ai, R.string.location_name_ai),
     AL(R.drawable.square_al, R.string.location_name_al),
     AM(R.drawable.square_am, R.string.location_name_am),
-    AN(R.drawable.square_an, R.string.location_name_an),
+    //AN(R.drawable.square_an, R.string.location_name_an), Appears unrecognised on the server
     AO(R.drawable.square_ao, R.string.location_name_ao),
     AQ(R.drawable.square_aq, R.string.location_name_aq),
     AR(R.drawable.square_ar, R.string.location_name_ar),
@@ -122,7 +122,7 @@ public enum Country
     KN(R.drawable.square_kn, R.string.location_name_kn),
     KP(R.drawable.square_kp, R.string.location_name_kp),
     KR(R.drawable.square_kr, R.string.location_name_kr),
-    KV(R.drawable.square_kv, R.string.location_name_kv),
+    //KV(R.drawable.square_kv, R.string.location_name_kv), // Appears unrecognised on the server
     KW(R.drawable.square_kw, R.string.location_name_kw),
     KY(R.drawable.square_ky, R.string.location_name_ky),
     KZ(R.drawable.square_kz, R.string.location_name_kz),
