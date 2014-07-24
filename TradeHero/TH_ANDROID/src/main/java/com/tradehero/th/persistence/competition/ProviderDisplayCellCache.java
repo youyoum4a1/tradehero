@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.competition;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
+import com.tradehero.th.api.competition.ProviderDisplayCellIdList;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
 import java.util.List;
 import javax.inject.Inject;
@@ -43,13 +44,13 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public ProviderDisplayCellDTOList get(@Nullable List<ProviderDisplayCellId> providerDisplayCellIds)
+    public ProviderDisplayCellDTOList get(@Nullable ProviderDisplayCellIdList providerDisplayCellIds)
     {
         if (providerDisplayCellIds == null)
         {
             return null;
         }
-        ProviderDisplayCellDTOList providerDisplayCellDTOs = new ProviderDisplayCellDTOList();
+        ProviderDisplayCellDTOList providerDisplayCellDTOs = new ProviderDisplayCellDTOList(providerDisplayCellIds.expirationDate);
         for (ProviderDisplayCellId providerDisplayCellId : providerDisplayCellIds)
         {
             providerDisplayCellDTOs.add(get(providerDisplayCellId));

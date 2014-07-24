@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
 
@@ -24,6 +25,7 @@ public class ProviderDisplayCellDTO implements DTO
                 '}';
     }
 
+    @JsonIgnore
     public ProviderDisplayCellId getProviderDisplayCellId()
     {
         return new ProviderDisplayCellId(id);

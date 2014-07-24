@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 @Singleton public class ProviderDisplayCellListCache
         extends StraightCutDTOCacheNew<ProviderDisplayCellListKey, ProviderDisplayCellDTOList, ProviderDisplayCellIdList>
 {
-
     public static final int DEFAULT_MAX_SIZE = 50;
 
     @NotNull private final ProviderServiceWrapper providerServiceWrapper;
