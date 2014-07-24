@@ -52,7 +52,8 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
         }
         if (countOfUnInvited != 0)
         {
-            listedSocialItems.add(countOfUnFollowed, new SocialFriendListItemHeaderDTO(getString(R.string.friends_can_be_invite, countOfUnInvited)));
+            listedSocialItems.add(countOfUnFollowed + (countOfUnFollowed == 0 ? 0 : 1),
+                    new SocialFriendListItemHeaderDTO(getString(R.string.friends_can_be_invite, countOfUnInvited)));
         }
 
         super.bindNormalData();
