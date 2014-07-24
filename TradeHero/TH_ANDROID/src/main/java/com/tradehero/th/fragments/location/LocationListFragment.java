@@ -160,7 +160,9 @@ public class LocationListFragment extends DashboardFragment
         {
             try
             {
-                mListAdapter.setCurrentCountry(Country.valueOf(userProfileDTO.countryCode));
+                Country currentCountry = Country.valueOf(userProfileDTO.countryCode);
+                mListAdapter.setCurrentCountry(currentCountry);
+                listView.smoothScrollToPosition(mListAdapter.getPosition(new ListedLocationDTO(currentCountry)));
             }
             catch (IllegalArgumentException e)
             {
@@ -191,12 +193,6 @@ public class LocationListFragment extends DashboardFragment
             // Nothing to do
             backToSettings();
             return;
-        }
-
-        UserProfileDTO cacheUserProfile = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (cacheUserProfile != null)
-        {
-            cacheUserProfile.countryCode = countryCode;
         }
 
         UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);

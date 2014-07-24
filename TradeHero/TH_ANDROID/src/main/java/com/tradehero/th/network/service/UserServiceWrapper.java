@@ -126,11 +126,6 @@ import retrofit.client.Response;
     {
         return new DTOProcessorUserDeleted(userProfileCache, playerId);
     }
-
-    @NotNull protected DTOProcessor<UpdateCountryCodeDTO> createUpdateCountryCodeProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUpdateCountryCode(userProfileCache, playerId);
-    }
     //</editor-fold>
 
     //<editor-fold desc="Sign-Up With Email">
@@ -776,18 +771,28 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">
-    public UpdateCountryCodeDTO updateCountryCode(UserBaseKey userKey,
-            UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
+    @NotNull protected DTOProcessor<UpdateCountryCodeDTO> createUpdateCountryCodeProcessor(
+            @NotNull UserBaseKey playerId,
+            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
-        return createUpdateCountryCodeProcessor(userKey).process(
+        return new DTOProcessorUpdateCountryCode(userProfileCache, playerId, updateCountryCodeFormDTO);
+    }
+
+    @NotNull public UpdateCountryCodeDTO updateCountryCode(
+            @NotNull UserBaseKey userKey,
+            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
+    {
+        return createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO).process(
                 userService.updateCountryCode(userKey.key, updateCountryCodeFormDTO));
     }
 
-    public MiddleCallback<UpdateCountryCodeDTO> updateCountryCode(UserBaseKey userKey,
-            UpdateCountryCodeFormDTO updateCountryCodeFormDTO, Callback<UpdateCountryCodeDTO> callback)
+    @NotNull public MiddleCallback<UpdateCountryCodeDTO> updateCountryCode(
+            @NotNull UserBaseKey userKey,
+            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
+            @Nullable Callback<UpdateCountryCodeDTO> callback)
     {
         MiddleCallback<UpdateCountryCodeDTO> middleCallback = new BaseMiddleCallback<>(callback,
-                createUpdateCountryCodeProcessor(userKey));
+                createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
         userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeFormDTO, middleCallback);
         return middleCallback;
     }

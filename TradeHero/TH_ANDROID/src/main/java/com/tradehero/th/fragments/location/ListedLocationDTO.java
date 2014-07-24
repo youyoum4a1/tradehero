@@ -14,4 +14,14 @@ class ListedLocationDTO implements DTO
         this.country = country;
     }
     //</editor-fold>
+
+    @Override public int hashCode()
+    {
+        return country.hashCode();
+    }
+
+    @Override public boolean equals(Object obj)
+    {
+        return obj instanceof ListedLocationDTO && ((ListedLocationDTO) obj).country.equals(country);
+    }
 }
