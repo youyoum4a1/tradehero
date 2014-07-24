@@ -105,7 +105,17 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
     {
         if (callback != null)
         {
-            getOrCreateCacheValue(key).registerListener(callback);
+            CacheValue<DTOKeyType, DTOType> cacheValue = getOrCreateCacheValue(key);
+            cacheValue.registerListener(callback);
+
+            // Now take care of the case where the listener has registered after the task has started
+            DTOType value = get(key);
+            if (value != null
+                    && callback instanceof HurriedListener
+                    && cacheValue.isRunning(cacheValue.fetchTask.get()))
+            {
+                ((HurriedListener<DTOKeyType, DTOType>) callback).onPreCachedDTOReceived(key, value);
+            }
         }
     }
 

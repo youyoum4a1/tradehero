@@ -87,6 +87,11 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 
         abstract public void getOrFetch(@NotNull final DTOKeyType key, boolean force);
 
+        protected boolean isRunning(@Nullable GetOrFetchTask<DTOKeyType, DTOType> fetchTask)
+        {
+            return fetchTask != null && fetchTask.getStatus() == AsyncTask.Status.RUNNING;
+        }
+
         protected boolean needsRecreate(@Nullable GetOrFetchTask<DTOKeyType, DTOType> fetchTask)
         {
             return fetchTask == null || fetchTask.isCancelled() || fetchTask.getStatus() == AsyncTask.Status.FINISHED;
