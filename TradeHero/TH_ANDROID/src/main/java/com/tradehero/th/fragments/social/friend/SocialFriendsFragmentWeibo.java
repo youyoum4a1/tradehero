@@ -11,10 +11,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import timber.log.Timber;
 
 public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
 {
+    @Inject Provider<SocialFriendHandlerWeibo> weiboSocialFriendHandlerProvider;
     private AlertDialog mWeiboInviteDialog;
 
     @Override
@@ -39,6 +42,15 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
     protected boolean canInvite()
     {
         return true;
+    }
+
+    @Override
+    protected void createFriendHandler()
+    {
+        if (socialFriendHandler == null)
+        {
+            socialFriendHandler = weiboSocialFriendHandlerProvider.get();
+        }
     }
 
     @Override protected void bindNormalData()
@@ -136,7 +148,7 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
     protected void handleInviteUsers(String msg, List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        socialFriendHandler.inviteWeiboFriends(msg, currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
+        ((SocialFriendHandlerWeibo) socialFriendHandler).inviteWeiboFriends(msg, currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
     }
 
     @Override protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)

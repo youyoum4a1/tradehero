@@ -116,14 +116,6 @@ import retrofit.client.Response;
         return inviteFriends(userKey, inviteFormDTO, callback);
     }
 
-    // TODO weibo friends invite
-    public MiddleCallback<Response> inviteWeiboFriends(String msg, @NotNull UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
-    {
-        InviteFormDTO inviteFormDTO = new InviteFormDTO(msg, true);
-        inviteFormDTO.addAll(users);
-        return inviteFriends(userKey, inviteFormDTO, callback);
-    }
-
     public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, RequestCallback<Response> callback)
     {
         if (callback != null)
