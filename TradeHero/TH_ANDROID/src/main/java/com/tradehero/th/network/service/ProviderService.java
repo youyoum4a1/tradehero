@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTOList;
+import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import retrofit.http.GET;
@@ -10,6 +11,7 @@ import retrofit.http.Query;
 public interface ProviderService
 {
     //<editor-fold desc="Get Providers">
+    @GET("/providers?detailed=false") ProviderCompactDTOList getProviderCompacts();
     @GET("/providers?detailed=true") ProviderDTOList getProviders();
     //</editor-fold>
 

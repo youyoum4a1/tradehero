@@ -7,18 +7,18 @@ import java.io.IOException;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class ProviderDTODeserialiser extends ProviderCompactDTODeserialiserBase<ProviderDTO>
+public class ProviderCompactDTODeserialiser extends ProviderCompactDTODeserialiserBase<ProviderCompactDTO>
 {
     //<editor-fold desc="Constructors">
-    @Inject protected ProviderDTODeserialiser(
+    @Inject protected ProviderCompactDTODeserialiser(
             @NotNull ProviderSpecificsPopulator providerSpecificsPopulator)
     {
         super(providerSpecificsPopulator);
     }
     //</editor-fold>
 
-    @Override protected ProviderDTO justDeserialize(JsonParser jp, DeserializationContext ctxt) throws IOException
+    @Override protected ProviderCompactDTO justDeserialize(JsonParser jp, DeserializationContext ctxt) throws IOException
     {
-        return innerMapper.readValue(jp, ProviderDTO.class);
+        return innerMapper.readValue(jp, ProviderCompactDTO.class);
     }
 }

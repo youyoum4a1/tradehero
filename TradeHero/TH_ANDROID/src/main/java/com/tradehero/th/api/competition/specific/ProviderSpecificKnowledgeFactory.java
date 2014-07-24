@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition.specific;
 
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpecificKnowledgeDTO;
@@ -21,12 +21,12 @@ public class ProviderSpecificKnowledgeFactory
     //</editor-fold>
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public ProviderSpecificKnowledgeDTO createKnowledge(@Nullable ProviderDTO providerDTO)
+    public ProviderSpecificKnowledgeDTO createKnowledge(@Nullable ProviderCompactDTO providerCompactDTO)
     {
         ProviderSpecificKnowledgeDTO created = null;
-        if (providerDTO != null)
+        if (providerCompactDTO != null)
         {
-            created = createKnowledge(providerDTO.getProviderId());
+            created = createKnowledge(providerCompactDTO.getProviderId());
         }
         return created;
     }

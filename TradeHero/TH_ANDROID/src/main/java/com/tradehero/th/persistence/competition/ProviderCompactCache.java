@@ -1,8 +1,8 @@
 package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class ProviderCache extends StraightDTOCacheNew<ProviderId, ProviderDTO>
+@Singleton public class ProviderCompactCache extends StraightDTOCacheNew<ProviderId, ProviderCompactDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
     @NotNull private final WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
     //<editor-fold desc="Constructors">
-    @Inject public ProviderCache(
+    @Inject public ProviderCompactCache(
             @NotNull Lazy<ProviderListCache> providerListCache,
             @NotNull CurrentUserId currentUserId,
             @NotNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory)
@@ -37,34 +37,34 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override @NotNull public ProviderDTO fetch(@NotNull ProviderId key) throws Throwable
+    @Override @NotNull public ProviderCompactDTO fetch(@NotNull ProviderId key) throws Throwable
     {
         // Just have the list cache download them all
         providerListCache.get().getOrFetchSync(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
         // By then, the list cache has updated this cache
-        ProviderDTO value = get(key);
+        ProviderCompactDTO value = get(key);
         if (value == null)
         {
-            throw new NullPointerException("Unavailable ProviderDTO.id=" + key.key);
+            throw new NullPointerException("Unavailable ProviderCompactDTO.id=" + key.key);
         }
         return value;
     }
 
-    @Override @Nullable public ProviderDTO put(@NotNull ProviderId key, @NotNull ProviderDTO value)
+    @Override @Nullable public ProviderCompactDTO put(@NotNull ProviderId key, @NotNull ProviderCompactDTO value)
     {
         warrantSpecificKnowledgeFactory.add(value);
         return super.put(key, value);
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public ProviderDTOList get(@Nullable List<ProviderId> providerIds)
+    public ProviderCompactDTOList get(@Nullable List<ProviderId> providerIds)
     {
         if (providerIds == null)
         {
             return null;
         }
 
-        ProviderDTOList fleshedValues = new ProviderDTOList();
+        ProviderCompactDTOList fleshedValues = new ProviderCompactDTOList();
 
         for (@NotNull ProviderId providerId: providerIds)
         {
@@ -75,18 +75,18 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public List<ProviderDTO> put(@Nullable List<? extends ProviderDTO> values)
+    public List<ProviderCompactDTO> put(@Nullable List<? extends ProviderCompactDTO> values)
     {
         if (values == null)
         {
             return null;
         }
 
-        List<ProviderDTO> previousValues = new ArrayList<>();
+        List<ProviderCompactDTO> previousValues = new ArrayList<>();
 
-        for (@NotNull ProviderDTO providerDTO: values)
+        for (@NotNull ProviderCompactDTO providerCompactDTO: values)
         {
-            previousValues.add(put(providerDTO.getProviderId(), providerDTO));
+            previousValues.add(put(providerCompactDTO.getProviderId(), providerCompactDTO));
         }
 
         return previousValues;

@@ -2,7 +2,7 @@ package com.tradehero.th.api.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricMavenTestRunner.class)
-public class ProviderDTODeserialiserTest
-    extends ProviderCompactDTODeserialiserTestBase<ProviderDTO>
+public class ProviderCompactDTODeserialiserTest
+    extends ProviderCompactDTODeserialiserTestBase<ProviderCompactDTO>
 {
     @Inject protected ObjectMapper normalMapper;
 
@@ -23,20 +23,20 @@ public class ProviderDTODeserialiserTest
         super.setUp();
     }
 
-    @Override protected ProviderDTO readValue(InputStream stream) throws IOException
+    @Override protected ProviderCompactDTO readValue(InputStream stream) throws IOException
     {
-        return normalMapper.readValue(stream, ProviderDTO.class);
+        return normalMapper.readValue(stream, ProviderCompactDTO.class);
     }
 
     @Test public void testNormalDeserialiseBody1() throws IOException
     {
-        ProviderDTO converted = baseTestNormalDeserialiseBody1();
-        assertEquals(ProviderDTO.class, converted.getClass());
+        ProviderCompactDTO converted = baseTestNormalDeserialiseBody1();
+        assertEquals(ProviderCompactDTO.class, converted.getClass());
     }
 
     @Test public void testSetSpecifics() throws IOException
     {
-        ProviderDTO converted = baseTestSetSpecifics();
-        assertEquals(ProviderDTO.class, converted.getClass());
+        ProviderCompactDTO converted = baseTestSetSpecifics();
+        assertEquals(ProviderCompactDTO.class, converted.getClass());
     }
 }
