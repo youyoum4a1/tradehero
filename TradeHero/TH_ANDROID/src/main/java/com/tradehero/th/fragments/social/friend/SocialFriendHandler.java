@@ -108,29 +108,19 @@ import retrofit.client.Response;
     }
 
     // TODO
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, @NotNull List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
 
         InviteFormDTO inviteFormDTO = new InviteFormDTO();
-        List<InviteDTO> usersToFollow = new ArrayList<>(users.size());
-        for (int i = 0; i < users.size(); i++)
-        {
-            usersToFollow.add(users.get(i).createInvite());
-        }
-        inviteFormDTO.users = usersToFollow;
+        inviteFormDTO.addAll(users);
         return inviteFriends(userKey, inviteFormDTO, callback);
     }
 
     // TODO weibo friends invite
-    public MiddleCallback<Response> inviteWeiboFriends(String msg, UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteWeiboFriends(String msg, @NotNull UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
-        InviteFormDTO inviteFormDTO = new InviteFormDTO(msg,true);
-        List<InviteDTO> usersToInvite = new ArrayList<>(users.size());
-        for (int i = 0; i < users.size(); i++)
-        {
-            usersToInvite.add(users.get(i).createInvite());
-        }
-        inviteFormDTO.users = usersToInvite;
+        InviteFormDTO inviteFormDTO = new InviteFormDTO(msg, true);
+        inviteFormDTO.addAll(users);
         return inviteFriends(userKey, inviteFormDTO, callback);
     }
 

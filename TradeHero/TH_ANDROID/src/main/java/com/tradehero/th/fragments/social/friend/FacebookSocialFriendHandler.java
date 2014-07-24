@@ -102,7 +102,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
     }
 
     @Override
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, @NotNull List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
         this.userBaseKey = userKey;
         this.users = users;
