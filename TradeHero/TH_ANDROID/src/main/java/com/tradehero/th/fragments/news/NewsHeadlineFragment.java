@@ -235,7 +235,7 @@ public class NewsHeadlineFragment
         showNewsList();
     }
 
-    @Override public void onErrorThrown(SecurityId securityId, Throwable error)
+    @Override public void onErrorThrown(@NotNull SecurityId securityId, @NotNull Throwable error)
     {
         super.onErrorThrown(securityId, error);
     }
