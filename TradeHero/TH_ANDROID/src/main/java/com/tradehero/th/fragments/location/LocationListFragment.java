@@ -81,6 +81,7 @@ public class LocationListFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(R.string.location_fragment_title);
+        setActionBarSubtitle(R.string.location_fragment_subtitle);
     }
 
     @Override public void onResume()
@@ -94,6 +95,12 @@ public class LocationListFragment extends DashboardFragment
         detachUserProfileCache();
         detachMiddleCallback();
         super.onStop();
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        setActionBarSubtitle(null);
+        super.onDestroyOptionsMenu();
     }
 
     @Override public void onDestroyView()
