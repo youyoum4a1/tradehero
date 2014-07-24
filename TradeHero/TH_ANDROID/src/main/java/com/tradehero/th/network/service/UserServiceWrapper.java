@@ -675,11 +675,6 @@ import retrofit.client.Response;
         return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
     }
 
-    public Response inviteWeiboFriends(String msg,UserBaseKey userKey, InviteFormDTO inviteFormDTO)
-    {
-        return createDTOProcessorFriendInvited().process(userService.inviteFriends(userKey.key, inviteFormDTO));
-    }
-
     public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorFriendInvited());

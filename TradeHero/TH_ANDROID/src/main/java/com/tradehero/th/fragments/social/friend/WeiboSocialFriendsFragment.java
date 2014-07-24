@@ -90,7 +90,7 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
                 if (checkMessageLengthLimit())
                 {
                     dissmissWeiboInviteDialog();
-                    inviteWeiboFriends(getWeiboInviteMessage(), usersToInvite);
+                    inviteFriends(getWeiboInviteMessage(), usersToInvite);
                 }
                 else
                 {
@@ -108,9 +108,8 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
         mWeiboInviteDialog.show();
     }
 
-    @Override protected void handleInviteCheckBoxUsers(List<UserFriendsDTO> usersToInvite)
+    @Override protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
     {
-        super.handleInviteCheckBoxUsers(usersToInvite);
         showWeiboInviteDialog(usersToInvite);
     }
 
@@ -122,7 +121,7 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
         }
     }
 
-    private void inviteWeiboFriends(String msg, List<UserFriendsDTO> usersToInvite)
+    protected void inviteFriends(String msg, List<UserFriendsDTO> usersToInvite)
     {
         List<UserFriendsDTO> usersUnInvited = usersToInvite;
         if (usersUnInvited == null || usersUnInvited.size() == 0)
@@ -130,7 +129,13 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
             THToast.show(R.string.social_no_friend_to_invite);
             return;
         }
-        handleWeiboInviteUsers(msg, usersUnInvited);
+        handleInviteUsers(msg, usersUnInvited);
+    }
+
+    protected void handleInviteUsers(String msg, List<UserFriendsDTO> usersToInvite)
+    {
+        createFriendHandler();
+        socialFriendHandler.inviteWeiboFriends(msg, currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
     }
 
     @Override protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)

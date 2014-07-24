@@ -157,18 +157,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
     }
 
-    protected void handleWeiboInviteUsers(String msg, List<UserFriendsDTO> usersToInvite)
-    {
-        createFriendHandler();
-        socialFriendHandler.inviteWeiboFriends(msg, currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
-    }
-
-    protected void handleInviteCheckBoxUsers(List<UserFriendsDTO> usersToInvite)
-    {
-        //open a dialog for weibo invite message input
-        Timber.d("Invite from weibo message input ...");
-    }
-
     protected String getWeiboInviteMessage()
     {
         if (edtMessageInvite != null)
@@ -275,7 +263,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             THToast.show(R.string.social_no_friend_to_invite);
             return;
         }
-        handleInviteCheckBoxUsers(usersCheckBoxInvited.getUserFriends());
+        handleInviteUsers(usersCheckBoxInvited.getUserFriends());
     }
 
     private void FollowAll()
