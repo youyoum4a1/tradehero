@@ -1,8 +1,11 @@
 package com.tradehero.th.fragments.social.friend;
 
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTOList;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SocialFriendListItemDTOList extends ArrayList<SocialFriendListItemDTO>
 {
@@ -12,7 +15,9 @@ public class SocialFriendListItemDTOList extends ArrayList<SocialFriendListItemD
         super();
     }
 
-    public SocialFriendListItemDTOList(Collection<? extends UserFriendsDTO> c, UserFriendsDTO typeQualifier)
+    public SocialFriendListItemDTOList(
+            @NotNull Collection<? extends UserFriendsDTO> c,
+            @Nullable UserFriendsDTO typeQualifier)
     {
         super();
         for (UserFriendsDTO userFriendsDTO : c)
@@ -21,4 +26,17 @@ public class SocialFriendListItemDTOList extends ArrayList<SocialFriendListItemD
         }
     }
     //</editor-fold>
+
+    @NotNull public UserFriendsDTOList getUserFriends()
+    {
+        UserFriendsDTOList found = new UserFriendsDTOList();
+        for (SocialFriendListItemDTO item : this)
+        {
+            if (item instanceof SocialFriendListItemUserDTO)
+            {
+                found.add(((SocialFriendListItemUserDTO) item).userFriendsDTO);
+            }
+        }
+        return found;
+    }
 }

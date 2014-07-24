@@ -5,7 +5,7 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 class SocialFriendListItemUserDTO implements SocialFriendListItemDTO
 {
     public UserFriendsDTO userFriendsDTO;
-    public boolean isChecked;
+    public boolean isSelected;
 
     //<editor-fold desc="Constructors">
     SocialFriendListItemUserDTO(UserFriendsDTO userFriendsDTO)

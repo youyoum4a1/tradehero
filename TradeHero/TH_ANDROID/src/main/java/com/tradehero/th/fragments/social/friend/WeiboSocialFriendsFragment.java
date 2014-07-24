@@ -41,7 +41,7 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
         return true;
     }
 
-    protected void bindNormalData()
+    @Override protected void bindNormalData()
     {
         int countOfUnFollowed = getCountOfUnFollowed();
         int countOfUnInvited = getCountOfUnInvited();
@@ -56,6 +56,11 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
         }
 
         super.bindNormalData();
+    }
+
+    @Override protected void inviteAll()
+    {
+        inviteAllSelected();
     }
 
     private void showWeiboInviteDialog(final List<UserFriendsDTO> usersToInvite)
@@ -85,7 +90,7 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
                 if (checkMessageLengthLimit())
                 {
                     dissmissWeiboInviteDialog();
-                    InviteWeiboFriends(getWeiboInviteMessage(), usersToInvite);
+                    inviteWeiboFriends(getWeiboInviteMessage(), usersToInvite);
                 }
                 else
                 {
@@ -117,7 +122,7 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
         }
     }
 
-    private void InviteWeiboFriends(String msg, List<UserFriendsDTO> usersToInvite)
+    private void inviteWeiboFriends(String msg, List<UserFriendsDTO> usersToInvite)
     {
         List<UserFriendsDTO> usersUnInvited = usersToInvite;
         if (usersUnInvited == null || usersUnInvited.size() == 0)
@@ -141,7 +146,7 @@ public class WeiboSocialFriendsFragment extends SocialFriendsFragment
         {
             for (UserFriendsDTO userdto : friendDTOList)
             {
-                userdto.isInviteChecked = false;
+                userdto.selected = false;
             }
             if (socialFriendsListAdapter != null)
             {

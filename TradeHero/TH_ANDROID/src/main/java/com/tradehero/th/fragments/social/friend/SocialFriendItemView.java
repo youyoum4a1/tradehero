@@ -91,7 +91,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
         {
             if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
             {
-                ((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.isInviteChecked = actionCb.isChecked();
+                ((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.selected = actionCb.isChecked();
                 onElementClickListener.onCheckBoxClick(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO);
             }
             else
@@ -212,11 +212,12 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
     {
         if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
         {
-            actionCb.setChecked(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.isInviteChecked);
+            actionCb.setChecked(((SocialFriendListItemUserDTO) socialFriendListItemDTO).isSelected);
         }
 
         // TODO change to be another test
-        if (socialFriendListItemDTO instanceof UserFriendsWeiboDTO)
+        if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO &&
+                ((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO instanceof UserFriendsWeiboDTO)
         {
             actionBtn.setVisibility(View.GONE);
             actionCb.setVisibility(View.VISIBLE);

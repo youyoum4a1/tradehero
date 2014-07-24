@@ -248,7 +248,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         if (v.getId() == R.id.social_invite_all)
         {
-            InviteAll();
+            inviteAll();
         }
         else if (v.getId() == R.id.social_follow_all)
         {
@@ -256,28 +256,26 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    private void InviteAll()
+    protected void inviteAll()
     {
-        if (getSocialNetwork() == SocialNetworkEnum.WB)
+        List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
+        if (usersUnInvited == null || usersUnInvited.size() == 0)
         {
-            List<UserFriendsDTO> usersCheckBoxInvited = findAllUsersCheckBoxInvited();
-            if (usersCheckBoxInvited == null || usersCheckBoxInvited.size() == 0)
-            {
-                THToast.show(R.string.social_no_friend_to_invite);
-                return;
-            }
-            handleInviteCheckBoxUsers(usersCheckBoxInvited);
+            THToast.show(R.string.social_no_friend_to_invite);
+            return;
         }
-        else
+        handleInviteUsers(usersUnInvited);
+    }
+
+    protected void inviteAllSelected()
+    {
+        SocialFriendListItemDTOList usersCheckBoxInvited = findAllUsersCheckBoxInvited();
+        if (usersCheckBoxInvited == null || usersCheckBoxInvited.size() == 0)
         {
-            List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
-            if (usersUnInvited == null || usersUnInvited.size() == 0)
-            {
-                THToast.show(R.string.social_no_friend_to_invite);
-                return;
-            }
-            handleInviteUsers(usersUnInvited);
+            THToast.show(R.string.social_no_friend_to_invite);
+            return;
         }
+        handleInviteCheckBoxUsers(usersCheckBoxInvited.getUserFriends());
     }
 
     private void FollowAll()
@@ -325,14 +323,15 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return null;
     }
 
-    @Nullable private List<UserFriendsDTO> findAllUsersCheckBoxInvited()
+    @Nullable protected SocialFriendListItemDTOList findAllUsersCheckBoxInvited()
     {
-        if (friendDTOList != null)
+        if (listedSocialItems != null)
         {
-            List<UserFriendsDTO> list = new ArrayList<>();
-            for (UserFriendsDTO o : friendDTOList)
+            SocialFriendListItemDTOList list = new SocialFriendListItemDTOList();
+            for (SocialFriendListItemDTO o : listedSocialItems)
             {
-                if (o.isInviteChecked)
+                if (o instanceof SocialFriendListItemUserDTO &&
+                        ((SocialFriendListItemUserDTO) o).isSelected)
                 {
                     list.add(o);
                 }
