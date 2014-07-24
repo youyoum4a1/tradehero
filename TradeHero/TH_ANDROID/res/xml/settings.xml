@@ -77,6 +77,12 @@
         />
 
     <Preference
+        android:key="@string/key_settings_location"
+        android:title="@string/settings_location"
+        android:icon="@drawable/default_image"
+        />
+
+    <Preference
         android:key="@string/key_settings_primary_paypal"
         android:title="@string/settings_primary_paypal"
         android:icon="@drawable/settings_paypal"
@@ -123,12 +129,6 @@
         android:title="@string/settings_translations_auto_translate"
         android:icon="@drawable/default_image"
       />
-
-    <Preference
-        android:key="@string/key_settings_location"
-        android:title="@string/settings_location"
-        android:icon="@drawable/default_image"
-        />
 
   </PreferenceCategory>
 

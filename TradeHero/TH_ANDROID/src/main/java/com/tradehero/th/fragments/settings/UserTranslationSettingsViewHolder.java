@@ -9,18 +9,12 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
-import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
 import javax.inject.Inject;
@@ -33,17 +27,13 @@ public class UserTranslationSettingsViewHolder
     @Inject LanguageDTOFactory languageDTOFactory;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
     @Inject TranslationTokenCache translationTokenCache;
-    @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
     private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
     protected UserTranslationSettingDTO userTranslationSettingDTO;
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     protected DashboardPreferenceFragment preferenceFragment;
     protected PreferenceCategory translationContainer;
     protected Preference translationPreferredLang;
     protected CheckBoxPreference translationAuto;
-    protected Preference locationPreference;
 
     public void initViews(DashboardPreferenceFragment preferenceFragment)
     {
@@ -81,29 +71,12 @@ public class UserTranslationSettingsViewHolder
                 }
             });
         }
-
-        locationPreference =
-                preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_location));
-        if (locationPreference != null)
-        {
-            locationPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleLocationClicked();
-                    return true;
-                }
-            });
-        }
         fetchTranslationToken();
-
-        userProfileCacheListener = new UserProfileCacheListener();
     }
 
     public void destroyViews()
     {
         detachTranslationTokenCache();
-        userProfileCache.unregister(currentUserId.toUserBaseKey(), userProfileCacheListener);
 
         if (translationAuto != null)
         {
@@ -115,11 +88,9 @@ public class UserTranslationSettingsViewHolder
             translationPreferredLang.setOnPreferenceClickListener(null);
         }
         translationPreferredLang = null;
-        locationPreference = null;
         translationContainer = null;
         translationTokenListener = null;
         preferenceFragment = null;
-        userProfileCacheListener = null;
     }
 
     protected void fetchTranslationToken()
@@ -185,23 +156,6 @@ public class UserTranslationSettingsViewHolder
                 languageDTO.name,
                 languageDTO.nameInOwnLang);
         translationPreferredLang.setSummary(lang);
-
-        userProfileCache.unregister(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
-    }
-
-    public void updateLocation()
-    {
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null && userProfileDTO.countryCode != null)
-        {
-            locationPreference.setSummary(userProfileDTO.countryCode);
-            if (Country.valueOf(userProfileDTO.countryCode) != null)
-            {
-                locationPreference.setIcon(Country.valueOf(userProfileDTO.countryCode).logoId);
-            }
-        }
     }
 
     protected void handleAutoTranslateClicked(boolean newValue)
@@ -224,26 +178,5 @@ public class UserTranslationSettingsViewHolder
     protected void handlePreferredLanguageClicked()
     {
         preferenceFragment.getNavigator().pushFragment(TranslatableLanguageListFragment.class);
-    }
-
-    protected void handleLocationClicked()
-    {
-        preferenceFragment.getNavigator().pushFragment(LocationListFragment.class);
-    }
-
-    protected class UserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
-        @Override public void onDTOReceived(@NotNull final UserBaseKey key, @NotNull final UserProfileDTO value)
-        {
-            updateLocation();
-            userProfileCache.unregister(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-            THToast.show(R.string.error_fetch_your_user_profile);
-            Timber.e("Error fetching the user profile %s", key, error);
-            userProfileCache.unregister(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        }
     }
 }

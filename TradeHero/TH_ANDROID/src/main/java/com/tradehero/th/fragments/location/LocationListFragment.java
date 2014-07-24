@@ -82,15 +82,11 @@ public class LocationListFragment extends DashboardFragment
         listView.setAdapter(mListAdapter);
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-    }
-
     @Override public void onDestroyView()
     {
         listView.setEmptyView(null);
         ButterKnife.reset(this);
+        progressDialog = null;
         super.onDestroyView();
     }
 
@@ -112,10 +108,10 @@ public class LocationListFragment extends DashboardFragment
         updateCountryCodeDTO.countryCode = (String)((HashMap<String, Object>)(mListAdapter.getItem(position))).get(KEY_ITEM_TITLE);
 
         middleCallback = userServiceWrapperLazy.get().updateCountryCode(
-                currentUserId.toUserBaseKey(), updateCountryCodeDTO, new TrackShareCallback());
+                currentUserId.toUserBaseKey(), updateCountryCodeDTO, new UpdateCountryCodeCallback());
     }
 
-    private class TrackShareCallback implements retrofit.Callback<UpdateCountryCodeResultDTO>
+    private class UpdateCountryCodeCallback implements retrofit.Callback<UpdateCountryCodeResultDTO>
     {
         @Override public void success(UpdateCountryCodeResultDTO updateCountryCodeResultDTO, Response response2)
         {

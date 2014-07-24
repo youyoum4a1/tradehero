@@ -103,6 +103,7 @@ import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
+import com.tradehero.th.fragments.settings.LocationCountrySettingsViewHolder;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
@@ -211,6 +212,7 @@ import javax.inject.Singleton;
                         ProfileInfoView.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
+                        LocationCountrySettingsViewHolder.class,
                         UserTranslationSettingsViewHolder.class,
                         TranslatableLanguageListFragment.class,
                         LocationListFragment.class,
