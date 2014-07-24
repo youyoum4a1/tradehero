@@ -19,11 +19,13 @@ public class ProviderDTODeserialiserTest extends BaseApiTest
 {
     @Inject protected ObjectMapper normalMapper;
     private InputStream providerDTOBody1Stream;
+    private InputStream providerDTOBody1WithFakeStream;
 
     @Before
     public void setUp() throws IOException
     {
         providerDTOBody1Stream = getClass().getResourceAsStream(getPackagePath() + "/ProviderDTOBody1.json");
+        providerDTOBody1WithFakeStream = getClass().getResourceAsStream(getPackagePath() + "/ProviderDTOBody1WithFake.json");
     }
 
     @Test
@@ -43,5 +45,12 @@ public class ProviderDTODeserialiserTest extends BaseApiTest
         assertThat(converted.specificResources.helpVideoLinkBackgroundResId).isGreaterThan(1);
         assertThat(converted.specificKnowledge).isNotNull();
         assertThat(converted.specificKnowledge.includeProviderPortfolioOnWarrants).isTrue();
+    }
+
+    @Test
+    public void testDoesNotCrashOnNewFields() throws IOException
+    {
+        ProviderDTO converted = normalMapper.readValue(providerDTOBody1WithFakeStream, ProviderDTO.class);
+        assertThat(converted.id).isEqualTo(3);
     }
 }
