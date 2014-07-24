@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.friend;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,7 +22,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -53,16 +51,16 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
 
     protected SocialFriendHandler socialFriendHandler;
-    private EditText edtMessageInvite;
-    private TextView tvMessageCount;
-    private Button btnMessageCancel;
-    private Button btnMessageComfirm;
-    private AlertDialog mWeiboInviteDialog;
+    protected EditText edtMessageInvite;
+    protected TextView tvMessageCount;
+    protected Button btnMessageCancel;
+    protected Button btnMessageComfirm;
 
     private FriendsListKey friendsListKey;
-    private UserFriendsDTOList friendDTOList;
+    protected UserFriendsDTOList friendDTOList;
+    protected SocialFriendListItemDTOList listedSocialItems;
     @Nullable private DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> friendsListCacheListener;
-    private SocialFriendsAdapter socialFriendsListAdapter;
+    protected SocialFriendsAdapter socialFriendsListAdapter;
     private final int MAX_TEXT_LENGTH = 140;
 
     @Override
@@ -169,74 +167,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         //open a dialog for weibo invite message input
         Timber.d("Invite from weibo message input ...");
-        showWeiboInviteDialog(usersToInvite);
     }
 
-    private void showWeiboInviteDialog(final List<UserFriendsDTO> usersToInvite)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.weibo_friends_invite_dialog, null);
-        edtMessageInvite = (EditText) view.findViewById(R.id.edtInviteMessage);
-        tvMessageCount = (TextView) view.findViewById(R.id.tvMessageCount);
-        btnMessageCancel = (Button) view.findViewById(R.id.btnCancle);
-        btnMessageComfirm = (Button) view.findViewById(R.id.btnComfirm);
-
-        btnMessageCancel.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                Timber.d("WeiboInviteDialog Canceled !");
-                mWeiboInviteDialog.dismiss();
-            }
-        });
-
-        btnMessageComfirm.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                Timber.d("WeiboInviteDialog Comfirmed");
-                if (checkMessageLengthLimit())
-                {
-                    dissmissWeiboInviteDialog();
-                    InviteWeiboFriends(getWeiboInviteMessage(), usersToInvite);
-                }
-                else
-                {
-                    THToast.show(R.string.weibo_message_length_error);
-                }
-            }
-        });
-
-        edtMessageInvite.setText(getString(R.string.weibo_friends_invite) + getStrMessageOfAtList(usersToInvite));
-        setMessageTextLength();
-        builder.setView(view);
-        builder.setCancelable(true);
-        addMessageTextListener();
-        mWeiboInviteDialog = builder.create();
-        mWeiboInviteDialog.show();
-    }
-
-    private void dissmissWeiboInviteDialog()
-    {
-        if (mWeiboInviteDialog != null)
-        {
-            mWeiboInviteDialog.dismiss();
-        }
-    }
-
-    private void InviteWeiboFriends(String msg, List<UserFriendsDTO> usersToInvite)
-    {
-        List<UserFriendsDTO> usersUnInvited = usersToInvite;
-        if (usersUnInvited == null || usersUnInvited.size() == 0)
-        {
-            THToast.show(R.string.social_no_friend_to_invite);
-            return;
-        }
-        handleWeiboInviteUsers(msg, usersUnInvited);
-    }
-
-    private String getWeiboInviteMessage()
+    protected String getWeiboInviteMessage()
     {
         if (edtMessageInvite != null)
         {
@@ -245,18 +178,18 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return null;
     }
 
-    private void setMessageTextLength()
+    protected void setMessageTextLength()
     {
         int length = edtMessageInvite.getText().toString().length();
         tvMessageCount.setText(getString(R.string.weibo_message_text_limit, length));
     }
 
-    private boolean checkMessageLengthLimit()
+    protected boolean checkMessageLengthLimit()
     {
         return edtMessageInvite.getText().toString().length() > MAX_TEXT_LENGTH ? false : true;
     }
 
-    private void addMessageTextListener()
+    protected void addMessageTextListener()
     {
         if (edtMessageInvite != null)
         {
@@ -280,7 +213,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    private String getStrMessageOfAtList(List<UserFriendsDTO> usersToInvite)
+    protected String getStrMessageOfAtList(List<UserFriendsDTO> usersToInvite)
     {
         if (usersToInvite == null)
         {
@@ -554,45 +487,17 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private void bindData()
     {
-        if (getSocialNetwork() == SocialNetworkEnum.WB)
-        {
-            bindWeiboData();
-        }
-        else
-        {
-            bindNormalData();
-        }
-    }
-
-    private void bindWeiboData()
-    {
-        //List<UserFriendsDTO> friendsDTOsCopy = new ArrayList<>(friendDTOList);
-        List<UserFriendsDTO> friendsDTOsCopy = friendDTOList;
-
-        int countOfUnFollowed = getCountOfUnFollowed();
-
-        int countOfUnInvited = getCountOfUnInvited();
-
-        if (countOfUnInvited != 0)
-        {
-            friendsDTOsCopy.add(countOfUnFollowed, new UserFriendsWeiboDTO(true, getString(R.string.friends_can_be_invite, countOfUnInvited)));
-        }
-
-        if (countOfUnFollowed != 0)
-        {
-            friendsDTOsCopy.add(0, new UserFriendsWeiboDTO(true, getString(R.string.friends_can_be_follow, countOfUnFollowed)));
-        }
-
+        listedSocialItems = new SocialFriendListItemDTOList(friendDTOList, (UserFriendsDTO) null);
         bindNormalData();
     }
 
-    private void bindNormalData()
+    protected void bindNormalData()
     {
-        List<UserFriendsDTO> friendsDTOsCopy = new ArrayList<>(friendDTOList);
+        List<SocialFriendListItemDTO> socialItemsCopy = new ArrayList<>(listedSocialItems);
         socialFriendsListAdapter =
                 new SocialFriendsAdapter(
                         getActivity(),
-                        friendsDTOsCopy,
+                        socialItemsCopy,
                         R.layout.social_friends_item);
         socialFriendsListAdapter.setOnElementClickedListener(this);
         friendsRootView.listView.setAdapter(socialFriendsListAdapter);
@@ -664,24 +569,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         //socialFriendsListAdapter.addAll(friendDTOList);
         //// TODO
         THToast.show(R.string.invite_friend_request_sent);
-        dissmissWeiboInviteDialog();
-        clearWeiboInviteStatus();
         checkUserType();
-    }
-
-    private void clearWeiboInviteStatus()
-    {
-        if (friendDTOList != null)
-        {
-            for (UserFriendsDTO userdto : friendDTOList)
-            {
-                userdto.isInviteChecked = false;
-            }
-            if (socialFriendsListAdapter != null)
-            {
-                socialFriendsListAdapter.notifyDataSetChanged();
-            }
-        }
     }
 
     private void handleFollowSuccess(@Nullable List<UserFriendsDTO> usersToFollow)
@@ -704,27 +592,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private void notifyChangeData()
     {
-        if (getSocialNetwork() == SocialNetworkEnum.WB)
-        {
-            if (friendDTOList != null)
-            {
-                for (int i = 0; i < friendDTOList.size(); i++)
-                {
-                    UserFriendsDTO user = friendDTOList.get(i);
-                    if (user.isTypeHead)
-                    {
-                        friendDTOList.remove(user);
-                        --i;
-                    }
-                }
-            }
-            bindData();
-        }
-        else
-        {
-            socialFriendsListAdapter.clear();
-            socialFriendsListAdapter.addAll(friendDTOList);
-        }
+        socialFriendsListAdapter.clear();
+        bindData();
     }
 
     protected void handleFollowError()

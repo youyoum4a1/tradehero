@@ -71,6 +71,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
     private UserFriendsDTOList userFriendsDTOs;
+    private SocialFriendListItemDTOList socialFriendListItemDTOs;
     private Runnable searchTask;
     private MiddleCallback searchCallback;
     private SocialLinkHelper socialLinkHelper;
@@ -183,12 +184,13 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void bindSearchData()
     {
+        socialFriendListItemDTOs = new SocialFriendListItemDTOList(userFriendsDTOs, (UserFriendsDTO) null);
         if (friendsListView.getAdapter() == null)
         {
             SocialFriendsAdapter socialFriendsListAdapter =
                     new SocialFriendsAdapter(
                             getActivity(),
-                            userFriendsDTOs,
+                            socialFriendListItemDTOs,
                             R.layout.social_friends_item);
             socialFriendsListAdapter.setOnElementClickedListener(this);
             friendsListView.setAdapter(socialFriendsListAdapter);
@@ -198,7 +200,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         {
             SocialFriendsAdapter socialFriendsListAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
             socialFriendsListAdapter.clear();
-            socialFriendsListAdapter.addAll(userFriendsDTOs);
+            socialFriendsListAdapter.addAll(socialFriendListItemDTOs);
         }
         showSearchList();
     }
@@ -378,8 +380,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         Timber.d("onCheckBoxClicked " + userFriendsDTO);
     }
 
-
-
     protected void handleFollowUsers(UserFriendsDTO userToFollow)
     {
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userToFollow);
@@ -422,8 +422,10 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
         SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
 
+        socialFriendListItemDTOs = new SocialFriendListItemDTOList(userFriendsDTOs, (UserFriendsDTO) null);
+
         socialFriendsAdapter.clear();
-        socialFriendsAdapter.addAll(userFriendsDTOs);
+        socialFriendsAdapter.addAll(socialFriendListItemDTOs);
     }
 
     class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>

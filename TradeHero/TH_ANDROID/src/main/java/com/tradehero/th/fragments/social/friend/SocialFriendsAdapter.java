@@ -9,15 +9,14 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
 import timber.log.Timber;
 
-public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO>
+public class SocialFriendsAdapter extends AbstractArrayAdapter<SocialFriendListItemDTO>
 {
-
     private Context mContext;
     private int mLayoutResourceId;
     private SocialFriendItemView.OnElementClickListener elementClickedListener;
 
     //<editor-fold desc="Constructors">
-    public SocialFriendsAdapter(Context context, List<UserFriendsDTO> objects, int layoutResourceId)
+    public SocialFriendsAdapter(Context context, List<SocialFriendListItemDTO> objects, int layoutResourceId)
     {
         super(context, 0, objects);
         this.mContext = context;
@@ -33,15 +32,30 @@ public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO>
             convertView = LayoutInflater.from(mContext).inflate(getViewResId(position), parent, false);
         }
         SocialFriendItemView dtoView = (SocialFriendItemView) convertView;
-        dtoView.display(getItem(position));
+        SocialFriendListItemDTO item = getItem(position);
+        dtoView.display(item);
         dtoView.setOnElementClickedListener(elementClickedListener);
         return dtoView;
     }
 
     @Override
-    protected String getItemNameForFilter(UserFriendsDTO item)
+    protected String getItemNameForFilter(SocialFriendListItemDTO item)
     {
-        return item.name;
+        if (item instanceof SocialFriendListItemUserDTO)
+        {
+            return ((SocialFriendListItemUserDTO) item).userFriendsDTO.name;
+        }
+        throw new IllegalArgumentException("Unhandled element type");
+    }
+
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        return getItem(position) instanceof SocialFriendListItemUserDTO;
     }
 
     protected int getViewResId(int position)
@@ -70,7 +84,6 @@ public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO>
 
     protected class SocialElementClickListener implements SocialFriendItemView.OnElementClickListener
     {
-
         @Override
         public void onFollowButtonClick(UserFriendsDTO userFriendsDTO)
         {

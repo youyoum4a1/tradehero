@@ -13,8 +13,6 @@ abstract public class UserFriendsDTO
     public String email; // Not provided from the server
     public boolean selected = false; // HACK not from server
 
-    public boolean isTypeHead = false; //is type head for weibo
-    public String strTypeHead = ""; //type head show string
     public boolean isInviteChecked  = false; // Invite CheckBox checked
 
     //<editor-fold desc="Constructors">

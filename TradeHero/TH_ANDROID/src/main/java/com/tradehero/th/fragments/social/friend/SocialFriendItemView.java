@@ -22,7 +22,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class SocialFriendItemView extends LinearLayout implements DTOView<UserFriendsDTO>
+public class SocialFriendItemView extends LinearLayout implements DTOView<SocialFriendListItemDTO>
 {
     @InjectView(R.id.social_item_logo) ImageView friendLogo;
     @InjectView(R.id.social_item_title) TextView friendTitle;
@@ -33,7 +33,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
-    private UserFriendsDTO userFriendsDTO;
+    private SocialFriendListItemDTO socialFriendListItemDTO;
     private OnElementClickListener onElementClickListener;
 
     //<editor-fold desc="Constructors">
@@ -66,13 +66,20 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     {
         if (v.getId() == R.id.social_item_action_btn && onElementClickListener != null)
         {
-            if (userFriendsDTO.isTradeHeroUser())
+            if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
             {
-                onElementClickListener.onFollowButtonClick(userFriendsDTO);
+                if (((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.isTradeHeroUser())
+                {
+                    onElementClickListener.onFollowButtonClick(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO);
+                }
+                else
+                {
+                    onElementClickListener.onInviteButtonClick(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO);
+                }
             }
             else
             {
-                onElementClickListener.onInviteButtonClick(userFriendsDTO);
+                throw new IllegalArgumentException("Unhandled type " + socialFriendListItemDTO);
             }
         }
     }
@@ -82,8 +89,15 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     {
         if (v.getId() == R.id.social_item_action_cb && onElementClickListener != null)
         {
-            userFriendsDTO.isInviteChecked = actionCb.isChecked();
-            onElementClickListener.onCheckBoxClick(userFriendsDTO);
+            if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
+            {
+                ((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.isInviteChecked = actionCb.isChecked();
+                onElementClickListener.onCheckBoxClick(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO);
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled type " + socialFriendListItemDTO);
+            }
         }
     }
 
@@ -93,9 +107,9 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     }
 
     @Override
-    public void display(UserFriendsDTO dto)
+    public void display(SocialFriendListItemDTO dto)
     {
-        this.userFriendsDTO = dto;
+        this.socialFriendListItemDTO = dto;
         displayUserIcon();
         displayTitle();
         displayActionButton();
@@ -105,15 +119,15 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
 
     private void displayHeadLine()
     {
-        if (userFriendsDTO.isTypeHead)
+        if (socialFriendListItemDTO instanceof SocialFriendListItemHeaderDTO)
         {
-            headLine.setText(userFriendsDTO.strTypeHead);
+            headLine.setText(((SocialFriendListItemHeaderDTO) socialFriendListItemDTO).header);
         }
     }
 
     private void displayByType()
     {
-        if (userFriendsDTO.isTypeHead)
+        if (socialFriendListItemDTO instanceof SocialFriendListItemHeaderDTO)
         {
             socialFriendItem.setVisibility(View.GONE);
             headLine.setVisibility(View.VISIBLE);
@@ -127,10 +141,10 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
 
     private void displayUserIcon()
     {
-        if (userFriendsDTO != null)
+        if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
         {
             displayDefaultUserIcon();
-            picasso.load(userFriendsDTO.getProfilePictureURL())
+            picasso.load(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.getProfilePictureURL())
                     .placeholder(friendLogo.getDrawable())
                     .transform(peopleIconTransformation)
                     .error(R.drawable.superman_facebook)
@@ -162,7 +176,10 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
 
     private void displayTitle()
     {
-        friendTitle.setText(userFriendsDTO.name);
+        if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
+        {
+            friendTitle.setText(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.name);
+        }
     }
 
     private void displayActionButton()
@@ -172,27 +189,34 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
         int pT = actionBtn.getPaddingTop();
         int pB = actionBtn.getPaddingBottom();
 
-        if (userFriendsDTO.isTradeHeroUser())
+        if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
         {
-            actionBtn.setText(R.string.follow);
-            actionBtn.setBackgroundResource(R.drawable.leaderboard_user_item_follow_action_button);
-            actionBtn.setEnabled(true);
-        }
-        else
-        {
-            actionBtn.setText(R.string.invite);
-            actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
-            actionBtn.setEnabled(!userFriendsDTO.alreadyInvited);
-            setWeiboCheckBox();
+            if (((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.isTradeHeroUser())
+            {
+                actionBtn.setText(R.string.follow);
+                actionBtn.setBackgroundResource(R.drawable.leaderboard_user_item_follow_action_button);
+                actionBtn.setEnabled(true);
+            }
+            else
+            {
+                actionBtn.setText(R.string.invite);
+                actionBtn.setBackgroundResource(R.drawable.yellow_rounded_button_selector);
+                actionBtn.setEnabled(!((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.alreadyInvited);
+                setWeiboCheckBox();
+            }
         }
         actionBtn.setPadding(pL, pT, pR, pB);
     }
 
     private void setWeiboCheckBox()
     {
-        actionCb.setChecked(userFriendsDTO.isInviteChecked);
+        if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
+        {
+            actionCb.setChecked(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.isInviteChecked);
+        }
 
-        if (userFriendsDTO instanceof UserFriendsWeiboDTO)
+        // TODO change to be another test
+        if (socialFriendListItemDTO instanceof UserFriendsWeiboDTO)
         {
             actionBtn.setVisibility(View.GONE);
             actionCb.setVisibility(View.VISIBLE);
