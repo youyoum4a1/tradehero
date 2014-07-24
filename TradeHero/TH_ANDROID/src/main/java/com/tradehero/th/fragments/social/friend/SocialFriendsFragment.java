@@ -159,7 +159,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
     }
 
-    protected void handleWeiboInviteUsers(String msg , List<UserFriendsDTO> usersToInvite)
+    protected void handleWeiboInviteUsers(String msg, List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
         socialFriendHandler.inviteWeiboFriends(msg, currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
@@ -196,10 +196,10 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             @Override public void onClick(View view)
             {
                 Timber.d("WeiboInviteDialog Comfirmed");
-                if(checkMessageLengthLimit())
+                if (checkMessageLengthLimit())
                 {
                     dissmissWeiboInviteDialog();
-                    InviteWeiboFriends(getWeiboInviteMessage(),usersToInvite);
+                    InviteWeiboFriends(getWeiboInviteMessage(), usersToInvite);
                 }
                 else
                 {
@@ -215,16 +215,17 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         addMessageTextListener();
         mWeiboInviteDialog = builder.create();
         mWeiboInviteDialog.show();
-    } 
+    }
+
     private void dissmissWeiboInviteDialog()
     {
-        if(mWeiboInviteDialog!=null)
+        if (mWeiboInviteDialog != null)
         {
             mWeiboInviteDialog.dismiss();
         }
     }
 
-    private void InviteWeiboFriends(String msg,List<UserFriendsDTO> usersToInvite)
+    private void InviteWeiboFriends(String msg, List<UserFriendsDTO> usersToInvite)
     {
         List<UserFriendsDTO> usersUnInvited = usersToInvite;
         if (usersUnInvited == null || usersUnInvited.size() == 0)
@@ -237,7 +238,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private String getWeiboInviteMessage()
     {
-        if(edtMessageInvite!=null)
+        if (edtMessageInvite != null)
         {
             return edtMessageInvite.getText().toString();
         }
@@ -247,17 +248,17 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     private void setMessageTextLength()
     {
         int length = edtMessageInvite.getText().toString().length();
-        tvMessageCount.setText(getString(R.string.weibo_message_text_limit,length));
+        tvMessageCount.setText(getString(R.string.weibo_message_text_limit, length));
     }
 
     private boolean checkMessageLengthLimit()
     {
-        return edtMessageInvite.getText().toString().length()>MAX_TEXT_LENGTH?false:true;
+        return edtMessageInvite.getText().toString().length() > MAX_TEXT_LENGTH ? false : true;
     }
 
     private void addMessageTextListener()
     {
-        if(edtMessageInvite!=null)
+        if (edtMessageInvite != null)
         {
             edtMessageInvite.addTextChangedListener(new TextWatcher()
             {
@@ -582,14 +583,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             friendsDTOsCopy.add(0, new UserFriendsWeiboDTO(true, getString(R.string.friends_can_be_follow, countOfUnFollowed)));
         }
 
-        socialFriendsListAdapter =
-                new SocialFriendsAdapter(
-                        getActivity(),
-                        friendsDTOsCopy,
-                        R.layout.social_friends_item,getSocialNetwork());
-        socialFriendsListAdapter.setOnElementClickedListener(this);
-        friendsRootView.listView.setAdapter(socialFriendsListAdapter);
-        friendsRootView.setInviteAllViewText(getString(R.string.invite));
+        bindNormalData();
     }
 
     private void bindNormalData()
@@ -599,7 +593,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 new SocialFriendsAdapter(
                         getActivity(),
                         friendsDTOsCopy,
-                        R.layout.social_friends_item,getSocialNetwork());
+                        R.layout.social_friends_item);
         socialFriendsListAdapter.setOnElementClickedListener(this);
         friendsRootView.listView.setAdapter(socialFriendsListAdapter);
     }
@@ -677,13 +671,13 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private void clearWeiboInviteStatus()
     {
-        if(friendDTOList!=null)
+        if (friendDTOList != null)
         {
-            for(UserFriendsDTO userdto:friendDTOList)
+            for (UserFriendsDTO userdto : friendDTOList)
             {
                 userdto.isInviteChecked = false;
             }
-            if(socialFriendsListAdapter!=null)
+            if (socialFriendsListAdapter != null)
             {
                 socialFriendsListAdapter.notifyDataSetChanged();
             }
@@ -710,14 +704,14 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private void notifyChangeData()
     {
-        if(getSocialNetwork() == SocialNetworkEnum.WB)
+        if (getSocialNetwork() == SocialNetworkEnum.WB)
         {
-            if(friendDTOList!=null)
+            if (friendDTOList != null)
             {
-                for(int i=0;i<friendDTOList.size();i++)
+                for (int i = 0; i < friendDTOList.size(); i++)
                 {
                     UserFriendsDTO user = friendDTOList.get(i);
-                    if(user.isTypeHead)
+                    if (user.isTypeHead)
                     {
                         friendDTOList.remove(user);
                         --i;

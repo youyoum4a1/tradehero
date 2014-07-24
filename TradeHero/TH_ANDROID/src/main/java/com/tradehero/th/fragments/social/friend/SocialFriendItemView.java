@@ -15,8 +15,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
@@ -33,7 +33,6 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
-    public SocialNetworkEnum social;
     private UserFriendsDTO userFriendsDTO;
     private OnElementClickListener onElementClickListener;
 
@@ -106,7 +105,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
 
     private void displayHeadLine()
     {
-        if(userFriendsDTO.isTypeHead)
+        if (userFriendsDTO.isTypeHead)
         {
             headLine.setText(userFriendsDTO.strTypeHead);
         }
@@ -114,7 +113,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
 
     private void displayByType()
     {
-        if(userFriendsDTO.isTypeHead)
+        if (userFriendsDTO.isTypeHead)
         {
             socialFriendItem.setVisibility(View.GONE);
             headLine.setVisibility(View.VISIBLE);
@@ -187,14 +186,13 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<UserFr
             setWeiboCheckBox();
         }
         actionBtn.setPadding(pL, pT, pR, pB);
-
     }
 
     private void setWeiboCheckBox()
     {
         actionCb.setChecked(userFriendsDTO.isInviteChecked);
 
-        if(social!=null && social == SocialNetworkEnum.WB)
+        if (userFriendsDTO instanceof UserFriendsWeiboDTO)
         {
             actionBtn.setVisibility(View.GONE);
             actionCb.setVisibility(View.VISIBLE);

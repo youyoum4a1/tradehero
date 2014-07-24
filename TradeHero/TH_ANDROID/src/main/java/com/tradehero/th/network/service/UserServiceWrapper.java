@@ -665,7 +665,6 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
-
     protected DTOProcessor<Response> createDTOProcessorFriendInvited()
     {
         return new DTOProcessorFriendInvited(this.leaderboardFriendsCache.get());
