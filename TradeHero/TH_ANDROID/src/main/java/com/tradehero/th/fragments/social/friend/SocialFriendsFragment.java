@@ -480,11 +480,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     protected void bindNormalData()
     {
-        List<SocialFriendListItemDTO> socialItemsCopy = new ArrayList<>(listedSocialItems);
+        //List<SocialFriendListItemDTO> socialItemsCopy = new ArrayList<>(listedSocialItems);
         socialFriendsListAdapter =
                 new SocialFriendsAdapter(
                         getActivity(),
-                        socialItemsCopy,
+                        listedSocialItems,
                         R.layout.social_friends_item);
         socialFriendsListAdapter.setOnElementClickedListener(this);
         friendsRootView.listView.setAdapter(socialFriendsListAdapter);

@@ -156,15 +156,17 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         super.handleInviteSuccess(usersToInvite);
         dissmissWeiboInviteDialog();
         clearWeiboInviteStatus();
+        setInviteAllViewCountText(getCountOfCheckBoxInvited());
     }
 
     private void clearWeiboInviteStatus()
     {
-        if (friendDTOList != null)
+        if (listedSocialItems != null)
         {
-            for (UserFriendsDTO userdto : friendDTOList)
+            for (SocialFriendListItemDTO o : listedSocialItems)
             {
-                userdto.selected = false;
+                if(o instanceof SocialFriendListItemUserDTO)
+                ((SocialFriendListItemUserDTO) o).isSelected = false;
             }
             if (socialFriendsListAdapter != null)
             {

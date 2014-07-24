@@ -91,7 +91,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
         {
             if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
             {
-                ((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.selected = actionCb.isChecked();
+                ((SocialFriendListItemUserDTO) socialFriendListItemDTO).isSelected = actionCb.isChecked();
                 onElementClickListener.onCheckBoxClick(((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO);
             }
             else

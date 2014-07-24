@@ -45,6 +45,10 @@ public class SocialFriendsAdapter extends AbstractArrayAdapter<SocialFriendListI
         {
             return ((SocialFriendListItemUserDTO) item).userFriendsDTO.name;
         }
+        else if(item instanceof SocialFriendListItemHeaderDTO)
+        {
+            return ((SocialFriendListItemHeaderDTO) item).name;
+        }
         throw new IllegalArgumentException("Unhandled element type");
     }
 
