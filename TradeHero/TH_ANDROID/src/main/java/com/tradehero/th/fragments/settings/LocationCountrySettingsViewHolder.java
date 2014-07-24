@@ -73,10 +73,23 @@ public class LocationCountrySettingsViewHolder
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (userProfileDTO != null && userProfileDTO.countryCode != null)
         {
-            locationPreference.setSummary(userProfileDTO.countryCode);
-            if (Country.valueOf(userProfileDTO.countryCode) != null)
+            Country currentCountry = null;
+            try
             {
-                locationPreference.setIcon(Country.valueOf(userProfileDTO.countryCode).logoId);
+                currentCountry = Country.valueOf(userProfileDTO.countryCode);
+            }
+            catch (IllegalArgumentException e)
+            {
+                Timber.e(e, "Unhandled countryCode %s", userProfileDTO.countryCode);
+            }
+            if (currentCountry != null)
+            {
+                String summary = preferenceFragment.getString(
+                        R.string.location_summary,
+                        userProfileDTO.countryCode,
+                        preferenceFragment.getString(currentCountry.locationName));
+                locationPreference.setSummary(summary);
+                locationPreference.setIcon(currentCountry.logoId);
             }
         }
     }
@@ -86,8 +99,13 @@ public class LocationCountrySettingsViewHolder
         preferenceFragment.getNavigator().pushFragment(LocationListFragment.class);
     }
 
-    protected class UserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class UserProfileCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, UserProfileDTO>
     {
+        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            updateLocation();
+        }
+
         @Override public void onDTOReceived(@NotNull final UserBaseKey key, @NotNull final UserProfileDTO value)
         {
             updateLocation();

@@ -182,8 +182,23 @@ public class LocationListFragment extends DashboardFragment
         updateCountryCode(((ListedLocationDTO) adapterView.getItemAtPosition(position)).country.name());
     }
 
-    protected void updateCountryCode(String countryCode)
+    protected void updateCountryCode(@NotNull String countryCode)
     {
+        String currentCountryCode = currentUserProfile != null ? currentUserProfile.countryCode : null;
+        if (currentCountryCode != null &&
+                countryCode.equals(currentCountryCode))
+        {
+            // Nothing to do
+            backToSettings();
+            return;
+        }
+
+        UserProfileDTO cacheUserProfile = userProfileCache.get(currentUserId.toUserBaseKey());
+        if (cacheUserProfile != null)
+        {
+            cacheUserProfile.countryCode = countryCode;
+        }
+
         UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);
         detachMiddleCallback();
         middleCallback = userServiceWrapperLazy.get().updateCountryCode(
@@ -194,8 +209,7 @@ public class LocationListFragment extends DashboardFragment
     {
         @Override public void success(UpdateCountryCodeDTO updateCountryCodeDTO, Response response2)
         {
-            getProgressDialog().hide();
-            getDashboardNavigator().popFragment();
+            backToSettings();
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -203,6 +217,12 @@ public class LocationListFragment extends DashboardFragment
             THToast.show(new THException(retrofitError));
             getProgressDialog().hide();
         }
+    }
+
+    private void backToSettings()
+    {
+        getProgressDialog().hide();
+        getDashboardNavigator().popFragment();
     }
 
     private ProgressDialog getProgressDialog()

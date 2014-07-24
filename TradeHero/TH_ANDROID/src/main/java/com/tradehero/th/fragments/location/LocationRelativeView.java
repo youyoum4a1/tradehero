@@ -4,13 +4,19 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
+import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 
 class LocationRelativeView extends RelativeLayout
     implements DTOView<ListedLocationDTO>
 {
+    private static final int BG_REGULAR = R.drawable.basic_white_selector;
+    private static final int BG_CURRENT = R.drawable.basic_green_selector;
+
     protected LocationViewHolder locationViewHolder;
+    protected ListedLocationDTO listedLocationDTO;
+    protected Country currentCountry;
 
     //<editor-fold desc="Constructors">
     public LocationRelativeView(Context context)
@@ -45,11 +51,27 @@ class LocationRelativeView extends RelativeLayout
 
     @Override public void display(ListedLocationDTO dto)
     {
+        this.listedLocationDTO = dto;
         locationViewHolder.display(dto);
+        display();
     }
 
-    public void setCurrentCountry(Country isCurrent)
+    public void setCurrentCountry(Country currentCountry)
     {
-        locationViewHolder.setCurrentCountry(isCurrent);
+        this.currentCountry = currentCountry;
+        locationViewHolder.setCurrentCountry(currentCountry);
+        display();
+    }
+
+    protected void display()
+    {
+        setBackgroundResource(isCurrentCountry() ? BG_CURRENT : BG_REGULAR);
+    }
+
+    protected boolean isCurrentCountry()
+    {
+        return listedLocationDTO != null &&
+                currentCountry != null &&
+                listedLocationDTO.country.equals(currentCountry);
     }
 }

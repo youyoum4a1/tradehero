@@ -11,7 +11,8 @@ import com.tradehero.th.api.market.Country;
 class LocationViewHolder implements DTOView<ListedLocationDTO>
 {
     @InjectView(R.id.country_logo) protected ImageView logo;
-    @InjectView(R.id.country_name) protected TextView code;
+    @InjectView(R.id.country_code) protected TextView code;
+    @InjectView(R.id.country_name) protected TextView name;
     @InjectView(R.id.location_tick_is_current) protected View currentView;
 
     protected ListedLocationDTO listedLocationDTO;
@@ -54,6 +55,19 @@ class LocationViewHolder implements DTOView<ListedLocationDTO>
                 code.setText(R.string.na);
             }
         }
+
+        if (name != null)
+        {
+            if (listedLocationDTO != null)
+            {
+                name.setText(listedLocationDTO.country.locationName);
+            }
+            else
+            {
+                name.setText(R.string.na);
+            }
+        }
+
         if (currentView != null)
         {
 
