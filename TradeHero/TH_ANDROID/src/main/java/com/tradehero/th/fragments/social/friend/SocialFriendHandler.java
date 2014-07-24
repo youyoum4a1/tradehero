@@ -118,11 +118,7 @@ import retrofit.client.Response;
             usersToFollow.add(users.get(i).createInvite());
         }
         inviteFormDTO.users = usersToFollow;
-        if (callback != null)
-        {
-            callback.onRequestStart();
-        }
-        return userService.get().inviteFriends(userKey, inviteFormDTO, callback);
+        return inviteFriends(userKey, inviteFormDTO, callback);
     }
 
     // TODO weibo friends invite
@@ -135,6 +131,11 @@ import retrofit.client.Response;
             usersToInvite.add(users.get(i).createInvite());
         }
         inviteFormDTO.users = usersToInvite;
+        return inviteFriends(userKey, inviteFormDTO, callback);
+    }
+
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, RequestCallback<Response> callback)
+    {
         if (callback != null)
         {
             callback.onRequestStart();

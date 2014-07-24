@@ -8,6 +8,7 @@ public class InviteFormDTO
     public List<InviteDTO> users;
     public boolean isWeiboInvite = false;
 
+    //<editor-fold desc="Constructors">
     public InviteFormDTO()
     {
         msg = "";
@@ -18,4 +19,5 @@ public class InviteFormDTO
         this.msg = msg;
         this.isWeiboInvite = isWeiboInvite;
     }
+    //</editor-fold>
 }
