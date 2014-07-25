@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.competition;
 
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
@@ -37,12 +38,18 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @Override @NotNull public ProviderDTO fetch(@NotNull ProviderId key) throws Throwable
+    @Override @NotNull public ProviderDTO fetch(@NotNull final ProviderId key) throws Throwable
     {
         // Just have the list cache download them all
-        providerListCache.get().getOrFetchSync(new ProviderListKey(ProviderListKey.ALL_PROVIDERS));
-        // By then, the list cache has updated this cache
-        ProviderDTO value = get(key);
+        ProviderDTO value = providerListCache.get().getOrFetchSync(
+                new ProviderListKey(ProviderListKey.ALL_PROVIDERS))
+                .findFirstWhere(new Predicate<ProviderDTO>()
+        {
+            @Override public boolean apply(ProviderDTO providerDTO)
+            {
+                return key.key.equals(providerDTO.id);
+            }
+        });
         if (value == null)
         {
             throw new NullPointerException("Unavailable ProviderDTO.id=" + key.key);
