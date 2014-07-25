@@ -47,7 +47,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public Date periodStartUtc;
     public Date periodEndUtc;
     @JsonProperty("stddev_positionRoiInPeriod")
-    public Double stdDevPositionRoiInPeriod;
+    @Nullable public Double stdDevPositionRoiInPeriod;
     @JsonProperty("sharpeRatioInPeriod_vsSP500")
     public Double sharpeRatioInPeriodVsSP500;
     public Double benchmarkRoiInPeriod;
@@ -126,7 +126,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
         return winRatio != null ? winRatio : 0;
     }
 
-    public Double getVolatility()
+    @Nullable public Double getVolatility()
     {
         return stdDevPositionRoiInPeriod;
     }
