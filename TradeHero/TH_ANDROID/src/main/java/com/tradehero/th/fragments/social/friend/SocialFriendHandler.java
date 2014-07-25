@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.social.friend;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.Window;
-import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -111,8 +111,8 @@ import retrofit.client.Response;
     public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, @NotNull List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
 
-        InviteFormDTO inviteFormDTO = new InviteFormDTO();
-        inviteFormDTO.addAll(users);
+        InviteFormDTO inviteFormDTO = new InviteFormUserDTO();
+        ((InviteFormUserDTO)inviteFormDTO).addAll(users);
         return inviteFriends(userKey, inviteFormDTO, callback);
     }
 

@@ -1,8 +1,10 @@
 package com.tradehero.th.api.social;
 
-public class InviteFormWeiboDTO extends InviteFormDTO
+public class InviteFormWeiboDTO implements InviteFormDTO
 {
-    public boolean isWeiboInvite = true;
+
+    public String msg;
+    public final boolean isWeiboInvite = true;
 
     //<editor-fold desc="Constructors">
     public InviteFormWeiboDTO(String msg)

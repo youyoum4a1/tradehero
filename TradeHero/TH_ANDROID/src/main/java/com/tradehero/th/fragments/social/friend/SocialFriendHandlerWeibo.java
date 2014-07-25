@@ -24,7 +24,7 @@ public class SocialFriendHandlerWeibo extends SocialFriendHandler
     public MiddleCallback<Response> inviteWeiboFriends(String msg, @NotNull UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
         InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(msg);
-        inviteFormDTO.addAll(users);
+        //inviteFormDTO.addAll(users);
         return inviteFriends(userKey, inviteFormDTO, callback);
     }
 }
