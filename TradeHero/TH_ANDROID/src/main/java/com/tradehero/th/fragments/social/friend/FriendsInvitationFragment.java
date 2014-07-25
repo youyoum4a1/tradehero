@@ -230,16 +230,15 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void inviteWechatFriends()
     {
-        Timber.d("InviteWechatFriends");
-        shareToWeChat();
-    }
-    public void shareToWeChat()
-    {
+        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
+        {
             WeChatDTO weChatDTO = new WeChatDTO();
             weChatDTO.id = 0;
             weChatDTO.type = WeChatMessageType.Invite;
-            weChatDTO.title = getString(R.string.share_to_wechat_invite_friends);
+            weChatDTO.title = getString(WeChatMessageType.Invite.getTitleResId(), userProfileDTO.referralCode);
             socialSharerLazy.get().share(weChatDTO); // TODO proper callback?
+        }
     }
 
     private void canclePendingSearchTask()

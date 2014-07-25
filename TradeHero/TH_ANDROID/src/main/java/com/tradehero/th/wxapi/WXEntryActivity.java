@@ -110,6 +110,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         if (weChatDTO != null && weChatDTO.title != null && !weChatDTO.title.isEmpty())
         {
             weChatMsg.title = weChatDTO.title;
+            weChatMsg.description = weChatDTO.title;
         }
         else
         {
