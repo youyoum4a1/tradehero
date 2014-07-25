@@ -448,7 +448,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         String value = getMapValueFromSharingOptionsEvent(key);
 
         assertThat(value).isNotNull();
-        assertThat(value).isEqualTo(AnalyticsConstants.Default);
+        assertThat(value).isEqualTo(AnalyticsConstants.DefaultPriceSelectionMethod);
 
         //Slider
         performUserSetProgress(abstractTransactionDialogFragment.getSeekBar(), 300);
