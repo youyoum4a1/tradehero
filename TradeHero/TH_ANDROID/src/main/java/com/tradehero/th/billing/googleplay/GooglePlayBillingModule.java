@@ -24,13 +24,24 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
+                THIABBillingInteractor.class,
+
+                THIABPurchaseFetcher.class,
+                THIABBillingInventoryFetcher.class,
+                THIABPurchaser.class,
+                THIABPurchaseReporter.class,
+                THIABLogicHolderFull.class,
+                THIABPurchaseConsumer.class,
+                THBaseIABPurchaseReporterHolder.class,
+                THIABPurchaseFetchMilestone.class
         },
         staticInjections = {
         },
         complete = false,
-        library = true
+        library = true,
+        overrides = true
 )
-public class THIABModule
+public class GooglePlayBillingModule
 {
     @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {

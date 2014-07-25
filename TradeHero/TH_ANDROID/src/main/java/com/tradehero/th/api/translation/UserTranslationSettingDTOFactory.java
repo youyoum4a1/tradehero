@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class UserTranslationSettingDTOFactory
     @Inject public UserTranslationSettingDTOFactory(
             @NotNull TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory,
             @NotNull Context applicationContext,
-            @NotNull ObjectMapper objectMapper)
+            @NotNull @ForApp ObjectMapper objectMapper)
     {
         this.translatableLanguageDTOFactoryFactory = translatableLanguageDTOFactoryFactory;
         this.applicationContext = applicationContext;

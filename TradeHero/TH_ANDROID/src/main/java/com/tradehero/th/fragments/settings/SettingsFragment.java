@@ -106,6 +106,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
     @Inject @ForPicasso LruCache lruCache;
+    // TODO something belong to Google Play should not be here, generic util class for all store is expected
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;

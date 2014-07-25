@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 public class UserFriendsDTODeserialiser extends UniqueFieldDTODeserialiser<UserFriendsDTO>
 {
     //<editor-fold desc="Constructors">
-    @Inject public UserFriendsDTODeserialiser()
+    @Inject public UserFriendsDTODeserialiser(@NotNull ObjectMapper objectMapper)
     {
-        super(new ObjectMapper(), createUniqueAttributes(), UserFriendsDTO.class);
+        super(objectMapper, createUniqueAttributes(), UserFriendsDTO.class);
 
     }
     //</editor-fold>

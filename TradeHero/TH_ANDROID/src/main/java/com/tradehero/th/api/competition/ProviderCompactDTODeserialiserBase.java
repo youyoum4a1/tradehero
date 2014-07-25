@@ -17,10 +17,11 @@ abstract public class ProviderCompactDTODeserialiserBase<ProviderCompactDTOType 
 
     //<editor-fold desc="Constructors">
     protected ProviderCompactDTODeserialiserBase(
+            @NotNull ObjectMapper objectMapper,
             @NotNull ProviderSpecificsPopulator providerSpecificsPopulator)
     {
         super(ProviderDTO.class);
-        this.innerMapper = new ObjectMapper();
+        this.innerMapper = objectMapper;
         this.innerMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.providerSpecificsPopulator = providerSpecificsPopulator;
     }

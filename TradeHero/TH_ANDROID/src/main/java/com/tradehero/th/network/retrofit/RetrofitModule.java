@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
@@ -241,14 +242,20 @@ public class RetrofitModule
         return deserialiser;
     }
 
-    @Provides @Singleton ObjectMapper provideObjectMapper(
+    @Provides ObjectMapper provideCommonObjectMapper()
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
+    }
+
+    @Provides @Singleton @ForApp ObjectMapper provideObjectMapper(
+            ObjectMapper objectMapper,
             UserFriendsDTOJacksonModule userFriendsDTOModule,
             PositionDTOJacksonModule positionDTOModule,
             ProviderCompactDTOJacksonModule providerCompactDTOModule,
             ProviderDTOJacksonModule providerDTOModule)
     {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
         objectMapper.registerModule(providerCompactDTOModule);

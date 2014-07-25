@@ -11,17 +11,7 @@ import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
-import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
-import com.tradehero.th.billing.googleplay.THIABModule;
-import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
-import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
-import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
-import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THIABPurchaser;
+import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -143,8 +133,11 @@ import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.fragments.timeline.UserProfileCompactViewHolder;
 import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
+import com.tradehero.th.fragments.trade.AbstractTransactionDialogFragment;
+import com.tradehero.th.fragments.trade.BuyDialogFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
+import com.tradehero.th.fragments.trade.SellDialogFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
@@ -202,7 +195,7 @@ import javax.inject.Singleton;
                 PreferenceModule.class,
                 ChartModule.class,
                 ActivityModule.class,
-                THIABModule.class,
+                BillingModule.class,
                 PushModule.class,
         },
         injects =
@@ -235,6 +228,9 @@ import javax.inject.Singleton;
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
+                        AbstractTransactionDialogFragment.class,
+                        BuyDialogFragment.class,
+                        SellDialogFragment.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
@@ -324,19 +320,9 @@ import javax.inject.Singleton;
                         IABServiceConnector.class,
                         IABBillingAvailableTester.class,
                         IABBillingInventoryFetcher.class,
-                        THIABPurchaseFetcher.class,
-                        THIABBillingInventoryFetcher.class,
-                        THIABPurchaser.class,
-                        THIABPurchaseReporter.class,
-                        THIABLogicHolderFull.class,
-                        THIABPurchaseConsumer.class,
-                        THBaseIABInventoryFetcherHolder.class,
-                        THBaseIABPurchaseReporterHolder.class,
-                        THIABPurchaseFetchMilestone.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
-                        THIABBillingInteractor.class,
                         HeroesTabContentFragment.class,
                         PremiumHeroFragment.class,
                         FreeHeroFragment.class,

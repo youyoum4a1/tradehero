@@ -46,6 +46,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowReferralCodeDialog;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.ui.ViewWrapper;
@@ -94,6 +95,7 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
     @Inject @FirstShowReferralCodeDialog BooleanPreference firstShowReferralCodeDialogPreference;
+    @Inject SystemStatusCache systemStatusCache;
 
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
@@ -319,6 +321,12 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
             getNavigator().pushFragment(fragmentClass);
         }
+    }
+
+    @Override protected void onStart()
+    {
+        super.onStart();
+        systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onResume()

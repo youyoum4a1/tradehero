@@ -118,12 +118,12 @@ public class THRouterTest
     //region Store
     @Test public void shouldOpenStoreScreenForStoreRoute()
     {
+        ShadowAlertDialog.reset();
         thRouter.open("store");
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(StoreScreenFragment.class);
 
         AlertDialog resetPortfolioDialog = ShadowAlertDialog.getLatestAlertDialog();
         assertThat(resetPortfolioDialog).isNull();
-
     }
 
     @Test public void shouldOpenStoreAndResetPortfolioDialog() throws Throwable

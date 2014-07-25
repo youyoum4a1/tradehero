@@ -241,12 +241,16 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         return new LeaderboardMarkUserListPremiumUserFollowedListener();
     }
 
-    protected class LeaderboardMarkUserListPremiumUserFollowedListener extends BasePurchaseManagerPremiumUserFollowedListener
+    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // nothing for now
         }
     }
 

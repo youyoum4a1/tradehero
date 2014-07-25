@@ -8,7 +8,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.json.JSONException;
 
-public class THIABPurchaser extends IABPurchaser<IABSKU, THIABProductDetail, THIABOrderId, THIABPurchaseOrder, THIABPurchase, IABException>
+class THIABPurchaser extends IABPurchaser<IABSKU, THIABProductDetail, THIABOrderId, THIABPurchaseOrder, THIABPurchase, IABException>
 {
     @Inject protected Lazy<THIABProductDetailCache> skuDetailCache;
 

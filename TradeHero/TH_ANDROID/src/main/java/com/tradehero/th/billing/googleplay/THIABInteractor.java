@@ -8,7 +8,7 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
 
-public interface THIABInteractor extends IABInteractor<
+interface THIABInteractor extends IABInteractor<
         IABSKUListKey,
         IABSKU,
         IABSKUList,

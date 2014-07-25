@@ -92,6 +92,7 @@ public class AnalyticsConstants
     public static final String BroadcastAllFollowers = "Broadcast All Followers";//
     public static final String BroadcastFreeFollowers = "Broadcast Free Followers";//
     public static final String BroadcastPremiumFollowers = "Broadcast Premium Followers";//
+    public static final String Default = "Default";//
     public static final String Email = "Email";//
     public static final String Facebook = "Facebook";//
     public static final String FollowedFromScreen = "FollowedFromScreen";
@@ -105,6 +106,7 @@ public class AnalyticsConstants
     public static final String LoginFormScreen = "LoginFormScreen";//
     public static final String Login_Register = "Login/Register";//
     public static final String LoginRegisterScreen = "LoginRegisterScreen";//
+    public static final String ManualQuantityInput = "Manual Quantity Input";//Select the quantity using numeric keypad
     public static final String MessageComposer_Show = "MessageComposer/Show";//
     public static final String MessageComposer_Send = "MessageComposer/Send";//
     public static final String MoneySelection = "MoneySelection";//
@@ -124,4 +126,5 @@ public class AnalyticsConstants
     public static final String Trade_Sell = "Trade/Sell";//
     public static final String Twitter = "Twitter";//
     public static final String WeiBo = "WeiBo";//
+
 }
