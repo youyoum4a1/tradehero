@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.friend;
 
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -22,7 +23,7 @@ public class SocialFriendHandlerWeibo extends SocialFriendHandler
 
     public MiddleCallback<Response> inviteWeiboFriends(String msg, @NotNull UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
-        InviteFormDTO inviteFormDTO = new InviteFormDTO(msg, true);
+        InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(msg);
         inviteFormDTO.addAll(users);
         return inviteFriends(userKey, inviteFormDTO, callback);
     }
