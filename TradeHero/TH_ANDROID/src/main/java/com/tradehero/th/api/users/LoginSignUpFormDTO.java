@@ -1,22 +1,13 @@
 package com.tradehero.th.api.users;
 
-/**
- * Created by tradehero on 14-7-16.
- */
-public class LoginSignUpFormDTO extends LoginFormDTO
-{
-    public String weibo_access_token;
-    public String qq_access_token;
-    public String qq_openid;
-    public String facebook_access_token;
-    public String linkedin_access_token;
-    public String linkedin_access_token_secret;
-    public String twitter_access_token;
-    public String twitter_access_token_secret;
-    public boolean isEmailLogin = false;
+import com.tradehero.th.api.misc.DeviceType;
 
-    public LoginSignUpFormDTO(LoginFormDTO loginFormDTO)
+abstract public class LoginSignUpFormDTO extends LoginFormDTO
+{
+    public boolean useOnlyHeroCount;
+
+    public LoginSignUpFormDTO(String deviceToken, DeviceType deviceType, String clientVersion)
     {
-        super(loginFormDTO.deviceToken, loginFormDTO.clientType, loginFormDTO.clientVersion);
+        super(deviceToken, deviceType, clientVersion);
     }
 }
