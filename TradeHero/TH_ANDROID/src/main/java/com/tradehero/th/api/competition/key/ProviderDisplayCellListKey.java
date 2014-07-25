@@ -1,29 +1,22 @@
 package com.tradehero.th.api.competition.key;
 
+import com.sun.javafx.beans.annotations.NonNull;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.competition.ProviderId;
+import org.jetbrains.annotations.NotNull;
 
 public class ProviderDisplayCellListKey implements DTOKey
 {
-    private final ProviderId providerId;
+    @NotNull private final ProviderId providerId;
 
     //<editor-fold desc="Constructor">
-    public ProviderDisplayCellListKey(ProviderId providerId)
+    public ProviderDisplayCellListKey(@NotNull ProviderId providerId)
     {
         this.providerId = providerId;
-        this.validate();
     }
     //</editor-fold>
 
-    public void validate()
-    {
-        if (this.providerId == null)
-        {
-            throw new IllegalArgumentException("ProviderId cannot be null");
-        }
-    }
-
-    public ProviderId getProviderId()
+    @NotNull public ProviderId getProviderId()
     {
         return providerId;
     }

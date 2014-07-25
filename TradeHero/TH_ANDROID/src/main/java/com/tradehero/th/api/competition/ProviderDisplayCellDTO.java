@@ -13,6 +13,12 @@ public class ProviderDisplayCellDTO implements DTO
     public String imageUrl;
     public String redirectUrl;
 
+    @JsonIgnore
+    public ProviderDisplayCellId getProviderDisplayCellId()
+    {
+        return new ProviderDisplayCellId(id);
+    }
+
     @Override public String toString()
     {
         return "ProviderDisplayCellDTO{"+
@@ -23,11 +29,5 @@ public class ProviderDisplayCellDTO implements DTO
                 ", imageUrl='" + imageUrl + '\'' +
                 ", redirectUrl='" + redirectUrl + '\'' +
                 '}';
-    }
-
-    @JsonIgnore
-    public ProviderDisplayCellId getProviderDisplayCellId()
-    {
-        return new ProviderDisplayCellId(id);
     }
 }

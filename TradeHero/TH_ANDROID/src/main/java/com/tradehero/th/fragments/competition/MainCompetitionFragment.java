@@ -117,7 +117,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             this.listView.setOnItemClickListener(createAdapterViewItemClickListener());
         }
-        placeAdapterInList();
+        createAdapter();
     }
 
     //<editor-fold desc="ActionBar">
@@ -173,6 +173,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         if (this.competitionZoneListItemAdapter != null)
         {
+            this.competitionZoneListItemAdapter.clear();
             this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
         }
         this.competitionZoneListItemAdapter = null;
@@ -211,69 +212,75 @@ public class MainCompetitionFragment extends CompetitionFragment
     protected void linkWith(UserProfileCompactDTO userProfileCompactDTO, boolean andDisplay)
     {
         this.portfolioUserCompactDTO = userProfileCompactDTO;
-        placeAdapterInList();
+        competitionZoneListItemAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
+        if (andDisplay)
+        {
+            displayListView();
+        }
     }
 
     @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
-        placeAdapterInList();
+        competitionZoneListItemAdapter.setProvider(providerDTO);
         if (andDisplay)
         {
             displayActionBarTitle();
             displayTradeNowButton();
+            displayListView();
         }
     }
 
     protected void linkWith(CompetitionDTOList competitionIds, boolean andDisplay)
     {
         this.competitionDTOs = competitionIds;
-        placeAdapterInList();
+        competitionZoneListItemAdapter.setCompetitionDTOs(competitionIds);
+        if (andDisplay)
+        {
+            displayListView();
+        }
     }
 
     protected void linkWith(ProviderDisplayCellDTOList providerDisplayCellDTOList, boolean andDisplay)
     {
         this.providerDisplayCellDTOList = providerDisplayCellDTOList;
-        placeAdapterInList();
+        competitionZoneListItemAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
+        if (andDisplay)
+        {
+            displayListView();
+        }
     }
 
-    protected void placeAdapterInList()
+    protected void createAdapter()
     {
+        this.competitionZoneListItemAdapter = new CompetitionZoneListItemAdapter(
+                getActivity(),
+                getActivity().getLayoutInflater(),
+                R.layout.competition_zone_item,
+                R.layout.competition_zone_trade_now,
+                R.layout.competition_zone_ads,
+                R.layout.competition_zone_header,
+                R.layout.competition_zone_portfolio,
+                R.layout.competition_zone_leaderboard_item,
+                R.layout.competition_zone_legal_mentions);
+        competitionZoneListItemAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
+
+        if (this.listView != null)
+        {
+            this.listView.setAdapter(this.competitionZoneListItemAdapter);
+        }
+    }
+
+    protected void displayListView()
+    {
+        Timber.d("displayListView %s %s %s %s",portfolioUserCompactDTO, providerDTO, competitionDTOs, providerDisplayCellDTOList);
         if (providerDTO != null && competitionDTOs != null && providerDisplayCellDTOList != null)
         {
             if (progressBar != null)
             {
                 progressBar.setVisibility(View.GONE);
             }
-            CompetitionZoneListItemAdapter newAdapter = new CompetitionZoneListItemAdapter(
-                    getActivity(),
-                    getActivity().getLayoutInflater(),
-                    R.layout.competition_zone_item,
-                    R.layout.competition_zone_trade_now,
-                    R.layout.competition_zone_ads,
-                    R.layout.competition_zone_header,
-                    R.layout.competition_zone_portfolio,
-                    R.layout.competition_zone_leaderboard_item,
-                    R.layout.competition_zone_legal_mentions);
-            newAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
-            newAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
-            newAdapter.setProvider(providerDTO);
-            newAdapter.setCompetitionDTOs(competitionDTOs);
-            newAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
-
-            CompetitionZoneListItemAdapter currentAdapterCopy = this.competitionZoneListItemAdapter;
-            if (currentAdapterCopy != null)
-            {
-                currentAdapterCopy.setParentOnLegalElementClicked(null);
-                currentAdapterCopy.clear();
-            }
-
-            this.competitionZoneListItemAdapter = newAdapter;
-
-            if (this.listView != null)
-            {
-                this.listView.setAdapter(this.competitionZoneListItemAdapter);
-            }
+            competitionZoneListItemAdapter.notifyDataSetChanged();
         }
     }
 
@@ -643,7 +650,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override public void onErrorThrown(@NotNull ProviderDisplayCellListKey key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_competition_display_cell_list));
-            Timber.e("Error fetching the list of competition info %s", key, error);
+            Timber.e("Error fetching the list of competition info cell %s", key, error);
         }
     }
 }

@@ -76,26 +76,28 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     public void setPortfolioUserProfileCompactDTO(UserProfileCompactDTO portfolioUserProfileCompactDTO)
     {
         this.portfolioUserProfileCompactDTO = portfolioUserProfileCompactDTO;
-        repopulateLists();
     }
 
     public void setProvider(ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
-        repopulateLists();
     }
 
     public void setCompetitionDTOs(List<CompetitionDTO> competitionDTOs)
     {
         this.competitionDTOs = competitionDTOs;
-        repopulateLists();
     }
 
 
     public void setDisplayCellDTOS(@Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOList)
     {
         this.providerDisplayCellDTOs = providerDisplayCellDTOList;
+    }
+
+    @Override public void notifyDataSetChanged()
+    {
         repopulateLists();
+        super.notifyDataSetChanged();
     }
 
     private void repopulateLists()
