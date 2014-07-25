@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.trending;
 
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
@@ -70,11 +70,15 @@ public abstract class AbstractTransactionDialogFragmentTest
         mockPortfolioCompactDTO.currencyISO = "USD";
         PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
         PortfolioDTO mockPortfolioDTO = new PortfolioDTO();
-        ProviderDTOList mockProvidersDTOList = new ProviderDTOList();
+        ProviderCompactDTOList mockProviderCompactsDTOList = new ProviderCompactDTOList();
         int firstTradeAllTime = 0;
 
         SecurityPositionDetailDTO mockPositionDetailDTO =
-                new SecurityPositionDetailDTO(mockSecurityCompactDTO, mockPositionsDTOCompactList, mockPortfolioDTO, mockProvidersDTOList,
+                new SecurityPositionDetailDTO(
+                        mockSecurityCompactDTO,
+                        mockPositionsDTOCompactList,
+                        mockPortfolioDTO,
+                        mockProviderCompactsDTOList,
                         firstTradeAllTime);
 
         securityCompactCache.put(securityId, mockSecurityCompactDTO);

@@ -69,7 +69,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
     }
 
-   @Override public void onResume()
+    @Override public void onResume()
     {
         super.onResume();
 
