@@ -136,7 +136,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected UserProfileDTO userProfileDTO;
 
     private AlertDialog mSocialLinkingDialog;
-    private String mPriceSelectionMethod = AnalyticsConstants.Default;
+    private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
 
     protected abstract String getLabel();
