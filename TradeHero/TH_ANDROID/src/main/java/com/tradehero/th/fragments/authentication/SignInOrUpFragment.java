@@ -9,10 +9,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 abstract public class SignInOrUpFragment extends AuthenticationFragment
 {
+    @Inject protected DeviceTokenHelper deviceTokenHelper;
+
     abstract protected int getViewId();
 
     abstract protected int getEmailSignUpViewId();
@@ -60,7 +63,7 @@ abstract public class SignInOrUpFragment extends AuthenticationFragment
 
     private void checkLocale()
     {
-        boolean isChineseLocale = DeviceTokenHelper.isChineseVersion();
+        boolean isChineseLocale = deviceTokenHelper.isChineseVersion();
         String language = MetaHelper.getLanguage(getActivity());
         Timber.d("language %s", language);
         if (isChineseLocale)
