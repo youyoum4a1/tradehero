@@ -1,6 +1,7 @@
 package com.tradehero.th.models.user.auth;
 
 import android.util.Base64;
+import com.tradehero.th.api.form.EmailUserFormDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import org.json.JSONException;
@@ -49,7 +50,7 @@ public class EmailCredentialsDTO extends BaseCredentialsDTO
 
     @Override public UserFormDTO createUserFormDTO()
     {
-        UserFormDTO userFormDTO = new UserFormDTO();
+        UserFormDTO userFormDTO = new EmailUserFormDTO();
         userFormDTO.email = email;
         userFormDTO.password = password;
         userFormDTO.passwordConfirmation = password;
