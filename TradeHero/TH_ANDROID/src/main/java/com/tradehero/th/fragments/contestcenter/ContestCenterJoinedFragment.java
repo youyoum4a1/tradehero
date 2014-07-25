@@ -4,9 +4,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by huhaiping on 14-7-17.
- */
 public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
 {
     @Override public void recreateAdapter()
@@ -20,7 +17,7 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
                 if (providerDTO.isUserEnrolled)
                 {
                     contestListAdapter.add(new ProviderContestPageDTO(providerDTO));
-                    if (providerDTO.vip)
+                    if (providerDTO.vip != null && providerDTO.vip)
                     {
                         contestListAdapter.add(new EmptyHeadLineDTO());
                     }

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
@@ -31,7 +32,8 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         ContestPageDTO item = getItem(position);
         if (item instanceof ProviderContestPageDTO)
         {
-            if (((ProviderContestPageDTO) item).providerDTO.vip)
+            ProviderDTO providerDTO = ((ProviderContestPageDTO) item).providerDTO;
+            if (providerDTO.vip != null && providerDTO.vip)
             {
                 return vipViewResourceId;
             }

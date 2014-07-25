@@ -1,6 +1,7 @@
 package com.tradehero.th.api.competition;
 
 import java.util.Date;
+import org.jetbrains.annotations.Nullable;
 
 public class ProviderDTO extends ProviderCompactDTO
 {
@@ -8,7 +9,7 @@ public class ProviderDTO extends ProviderCompactDTO
     public Date endDateUtc;
     public String durationType;
     public String totalPrize;
-    public boolean vip;
+    @Nullable public Boolean vip;
 
     @Override public String toString()
     {
