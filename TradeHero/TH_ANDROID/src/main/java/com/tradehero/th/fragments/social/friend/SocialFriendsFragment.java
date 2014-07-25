@@ -8,18 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -50,11 +51,17 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
 
     protected SocialFriendHandler socialFriendHandler;
+    protected EditText edtMessageInvite;
+    protected TextView tvMessageCount;
+    protected Button btnMessageCancel;
+    protected Button btnMessageComfirm;
 
     private FriendsListKey friendsListKey;
-    private UserFriendsDTOList friendDTOList;
+    protected UserFriendsDTOList friendDTOList;
+    protected SocialFriendListItemDTOList listedSocialItems;
     @Nullable private DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> friendsListCacheListener;
-    private SocialFriendsAdapter socialFriendsListAdapter;
+    protected SocialFriendsAdapter socialFriendsListAdapter;
+    private final int MAX_TEXT_LENGTH = 140;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -118,6 +125,25 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         handleFollowUsers(usersToFollow);
     }
 
+    @Override
+    public void onCheckBoxClick(UserFriendsDTO userFriendsDTO)
+    {
+        Timber.d("onCheckBoxClicked " + userFriendsDTO);
+        setInviteAllViewCountText(getCountOfCheckBoxInvited());
+    }
+
+    public void setInviteAllViewCountText(int count)
+    {
+        if (count > 0)
+        {
+            friendsRootView.setInviteAllViewText(getString(R.string.invite) + "(" + count + ")");
+        }
+        else
+        {
+            friendsRootView.setInviteAllViewText(getString(R.string.invite));
+        }
+    }
+
     protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
@@ -129,6 +155,67 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         createFriendHandler();
         socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
+    }
+
+    protected String getWeiboInviteMessage()
+    {
+        if (edtMessageInvite != null)
+        {
+            return edtMessageInvite.getText().toString();
+        }
+        return null;
+    }
+
+    protected void setMessageTextLength()
+    {
+        int length = edtMessageInvite.getText().toString().length();
+        tvMessageCount.setText(getString(R.string.weibo_message_text_limit, length));
+    }
+
+    protected boolean checkMessageLengthLimit()
+    {
+        return edtMessageInvite.getText().toString().length() > MAX_TEXT_LENGTH ? false : true;
+    }
+
+    protected void addMessageTextListener()
+    {
+        if (edtMessageInvite != null)
+        {
+            edtMessageInvite.addTextChangedListener(new TextWatcher()
+            {
+                @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+                {
+
+                }
+
+                @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+                {
+                    setMessageTextLength();
+                }
+
+                @Override public void afterTextChanged(Editable editable)
+                {
+
+                }
+            });
+        }
+    }
+
+    protected String getStrMessageOfAtList(List<UserFriendsDTO> usersToInvite)
+    {
+        if (usersToInvite == null)
+        {
+            return "";
+        }
+        else
+        {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < usersToInvite.size(); i++)
+            {
+                sb.append(" @" + usersToInvite.get(i).name);
+            }
+            return sb.toString();
+        }
     }
 
     protected SocialFriendHandler.RequestCallback createInviteCallback(List<UserFriendsDTO> usersToInvite)
@@ -149,24 +236,45 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         if (v.getId() == R.id.social_invite_all)
         {
-            List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
-            if (usersUnInvited == null || usersUnInvited.size() == 0)
-            {
-                THToast.show(R.string.social_no_friend_to_invite);
-                return;
-            }
-            handleInviteUsers(usersUnInvited);
+            inviteAll();
         }
         else if (v.getId() == R.id.social_follow_all)
         {
-            List<UserFriendsDTO> usersUnfollowed = findAllUsersUnfollowed();
-            if (usersUnfollowed == null || usersUnfollowed.size() == 0)
-            {
-                THToast.show(R.string.social_no_friend_to_follow);
-                return;
-            }
-            handleFollowUsers(usersUnfollowed);
+            FollowAll();
         }
+    }
+
+    protected void inviteAll()
+    {
+        List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
+        if (usersUnInvited == null || usersUnInvited.size() == 0)
+        {
+            THToast.show(R.string.social_no_friend_to_invite);
+            return;
+        }
+        handleInviteUsers(usersUnInvited);
+    }
+
+    protected void inviteAllSelected()
+    {
+        SocialFriendListItemDTOList usersCheckBoxInvited = findAllUsersCheckBoxInvited();
+        if (usersCheckBoxInvited == null || usersCheckBoxInvited.size() == 0)
+        {
+            THToast.show(R.string.social_no_friend_to_invite);
+            return;
+        }
+        handleInviteUsers(usersCheckBoxInvited.getUserFriends());
+    }
+
+    private void FollowAll()
+    {
+        List<UserFriendsDTO> usersUnfollowed = findAllUsersUnfollowed();
+        if (usersUnfollowed == null || usersUnfollowed.size() == 0)
+        {
+            THToast.show(R.string.social_no_friend_to_follow);
+            return;
+        }
+        handleFollowUsers(usersUnfollowed);
     }
 
     @Nullable private List<UserFriendsDTO> findAllUsersUnfollowed()
@@ -194,6 +302,24 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             for (UserFriendsDTO o : friendDTOList)
             {
                 if (!o.isTradeHeroUser())
+                {
+                    list.add(o);
+                }
+            }
+            return list;
+        }
+        return null;
+    }
+
+    @Nullable protected SocialFriendListItemDTOList findAllUsersCheckBoxInvited()
+    {
+        if (listedSocialItems != null)
+        {
+            SocialFriendListItemDTOList list = new SocialFriendListItemDTOList();
+            for (SocialFriendListItemDTO o : listedSocialItems)
+            {
+                if (o instanceof SocialFriendListItemUserDTO &&
+                        ((SocialFriendListItemUserDTO) o).isSelected)
                 {
                     list.add(o);
                 }
@@ -325,13 +451,40 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return true;
     }
 
+    protected int getCountOfUnFollowed()
+    {
+        List list = findAllUsersUnfollowed();
+        if (list != null) return list.size();
+        return 0;
+    }
+
+    protected int getCountOfUnInvited()
+    {
+        List list = findAllUsersUnInvited();
+        if (list != null) return list.size();
+        return 0;
+    }
+
+    protected int getCountOfCheckBoxInvited()
+    {
+        List list = findAllUsersCheckBoxInvited();
+        if (list != null) return list.size();
+        return 0;
+    }
+
     private void bindData()
     {
-        List<UserFriendsDTO> friendsDTOsCopy = new ArrayList<>(friendDTOList);
+        listedSocialItems = new SocialFriendListItemDTOList(friendDTOList, (UserFriendsDTO) null);
+        bindNormalData();
+    }
+
+    protected void bindNormalData()
+    {
+        //List<SocialFriendListItemDTO> socialItemsCopy = new ArrayList<>(listedSocialItems);
         socialFriendsListAdapter =
                 new SocialFriendsAdapter(
                         getActivity(),
-                        friendsDTOsCopy,
+                        listedSocialItems,
                         R.layout.social_friends_item);
         socialFriendsListAdapter.setOnElementClickedListener(this);
         friendsRootView.listView.setAdapter(socialFriendsListAdapter);
@@ -403,7 +556,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         //socialFriendsListAdapter.addAll(friendDTOList);
         //// TODO
         THToast.show(R.string.invite_friend_request_sent);
-
         checkUserType();
     }
 
@@ -417,12 +569,18 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 Timber.d("handleFollowSuccess remove: %s, result: %s", userFriendsDTO, removed);
             }
         }
-        socialFriendsListAdapter.clear();
-        socialFriendsListAdapter.addAll(friendDTOList);
+
+        notifyChangeData();
         // TODO
         THToast.show("Follow success");
 
         checkUserType();
+    }
+
+    private void notifyChangeData()
+    {
+        socialFriendsListAdapter.clear();
+        bindData();
     }
 
     protected void handleFollowError()

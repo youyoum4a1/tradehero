@@ -1,6 +1,6 @@
 package com.tradehero.th.models.security;
 
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -25,15 +25,15 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    public void add(@NotNull ProviderDTO providerDTO)
+    public void add(@NotNull ProviderCompactDTO providerCompactDTO)
     {
-        if (providerDTO.specificKnowledge != null &&
-                providerDTO.specificKnowledge.includeProviderPortfolioOnWarrants != null &&
-                providerDTO.specificKnowledge.includeProviderPortfolioOnWarrants)
+        if (providerCompactDTO.specificKnowledge != null &&
+                providerCompactDTO.specificKnowledge.includeProviderPortfolioOnWarrants != null &&
+                providerCompactDTO.specificKnowledge.includeProviderPortfolioOnWarrants)
         {
             warrantUsingProviders.put(
-                    providerDTO.getProviderId(),
-                    providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
+                    providerCompactDTO.getProviderId(),
+                    providerCompactDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
         }
     }
 

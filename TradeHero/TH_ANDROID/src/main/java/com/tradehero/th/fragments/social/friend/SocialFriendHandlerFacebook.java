@@ -38,7 +38,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class FacebookSocialFriendHandler extends SocialFriendHandler
+public class SocialFriendHandlerFacebook extends SocialFriendHandler
 {
     private static final int MAX_FACEBOOK_MESSAGE_LENGTH = 60;
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
@@ -55,7 +55,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
     RequestCallback<Response> callback;
 
     //<editor-fold desc="Constructors">
-    @Inject public FacebookSocialFriendHandler(
+    @Inject public SocialFriendHandlerFacebook(
             @NotNull Lazy<UserServiceWrapper> userService,
             @NotNull ProgressDialogUtil dialogUtil,
             @NotNull Lazy<FacebookUtils> facebookUtils,
@@ -102,7 +102,7 @@ public class FacebookSocialFriendHandler extends SocialFriendHandler
     }
 
     @Override
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, @NotNull List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
         this.userBaseKey = userKey;
         this.users = users;

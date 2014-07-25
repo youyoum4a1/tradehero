@@ -8,10 +8,12 @@ import javax.inject.Inject;
 
 public class PortfolioCompactDTOUtil
 {
+    //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactDTOUtil()
     {
         super();
     }
+    //</editor-fold>
 
     // TODO handle refCurrency different from USD
     public Integer getMaxPurchasableShares(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO)
@@ -19,7 +21,19 @@ public class PortfolioCompactDTOUtil
         return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, true);
     }
 
-    public Integer getMaxPurchasableShares(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO, boolean includeTransactionCost)
+    public Integer getMaxPurchasableShares(
+            PortfolioCompactDTO portfolioCompactDTO,
+            QuoteDTO quoteDTO,
+            boolean includeTransactionCost)
+    {
+        return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, includeTransactionCost, SecurityUtils.DEFAULT_TRANSACTION_COST);
+    }
+
+    public Integer getMaxPurchasableShares(
+            PortfolioCompactDTO portfolioCompactDTO,
+            QuoteDTO quoteDTO,
+            boolean includeTransactionCost,
+            double txnCostUsd)
     {
         if (quoteDTO == null || portfolioCompactDTO == null)
         {
@@ -31,7 +45,7 @@ public class PortfolioCompactDTOUtil
         {
             return null;
         }
-        return (int) Math.floor((cashUsd - (includeTransactionCost ? SecurityUtils.DEFAULT_TRANSACTION_COST : 0)) / askUsd);
+        return (int) Math.floor((cashUsd - (includeTransactionCost ? txnCostUsd : 0)) / askUsd);
     }
 
     public String getPortfolioSubtitle(Context context, PortfolioCompactDTO portfolioCompactDTO, String userName)

@@ -32,7 +32,7 @@ public class NetworkModule
     @Provides @Singleton @ServerEndpoint
     StringPreference provideEndpointPreference(@ForApp SharedPreferences sharedPreferences)
     {
-        return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.TRADEHERO_PROD_API_ENDPOINT);
+        return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.getApiEndPointInUse());
     }
 
     @Provides LoginFormDTO provideLoginFormDTO(DeviceTokenHelper deviceTokenHelper)

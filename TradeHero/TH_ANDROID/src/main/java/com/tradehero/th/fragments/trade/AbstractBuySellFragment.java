@@ -31,6 +31,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
@@ -470,12 +471,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected class AbstractBuySellSecurityPositionCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO>
     {
-        @Override public void onDTOReceived(final SecurityId key, final SecurityPositionDetailDTO value)
+        @Override public void onDTOReceived(@NotNull final SecurityId key, @NotNull final SecurityPositionDetailDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_detailed_security_info);
             Timber.e("Error fetching the security position detail %s", key, error);
@@ -489,12 +490,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull final UserBaseKey key, @NotNull final UserProfileDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
             Timber.e("Error fetching the user profile %s", key, error);

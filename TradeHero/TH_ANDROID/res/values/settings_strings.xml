@@ -20,6 +20,7 @@
   <string name="settings_primary_alipay">Alipay</string>
   <string name="settings_primary_transaction_history">Transaction History</string>
   <string name="settings_primary_restore_purchases">Restore Purchases</string>
+  <string name="settings_primary_referral_code">Referral Code</string>
   <string name="settings_misc_sign_out">Sign Out</string>
   <string name="settings_misc_sign_out_are_you_sure">Are you sure you want to sign out?</string>
   <string name="settings_misc_sign_out_no">No</string>
@@ -31,6 +32,7 @@
   <string name="settings_translations">Translations</string>
   <string name="settings_translations_language_preferred">Preferred Language</string>
   <string name="settings_translations_auto_translate">Auto-Translate</string>
+  <string name="settings_location">Location</string>
 
   <string name="settings_notifications">Notifications</string>
   <string name="settings_notifications_email">Email Notifications</string>

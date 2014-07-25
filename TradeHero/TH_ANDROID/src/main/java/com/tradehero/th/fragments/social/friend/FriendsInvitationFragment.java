@@ -13,14 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
-import com.tradehero.route.Routable;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
@@ -30,11 +30,11 @@ import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import java.util.Arrays;
@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -64,13 +63,15 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
-    FacebookSocialFriendHandler facebookSocialFriendHandler;
+    SocialFriendHandlerFacebook socialFriendHandlerFacebook;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
-    @Inject Provider<FacebookSocialFriendHandler> facebookSocialFriendHandlerProvider;
+    @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
 
     private UserFriendsDTOList userFriendsDTOs;
+    private SocialFriendListItemDTOList socialFriendListItemDTOs;
     private Runnable searchTask;
     private MiddleCallback searchCallback;
     private SocialLinkHelper socialLinkHelper;
@@ -87,7 +88,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         socialFriendHandler = socialFriendHandlerProvider.get();
-        facebookSocialFriendHandler = facebookSocialFriendHandlerProvider.get();
+        socialFriendHandlerFacebook = facebookSocialFriendHandlerProvider.get();
     }
 
     @Override
@@ -183,12 +184,13 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void bindSearchData()
     {
+        socialFriendListItemDTOs = new SocialFriendListItemDTOList(userFriendsDTOs, (UserFriendsDTO) null);
         if (friendsListView.getAdapter() == null)
         {
             SocialFriendsAdapter socialFriendsListAdapter =
                     new SocialFriendsAdapter(
                             getActivity(),
-                            userFriendsDTOs,
+                            socialFriendListItemDTOs,
                             R.layout.social_friends_item);
             socialFriendsListAdapter.setOnElementClickedListener(this);
             friendsListView.setAdapter(socialFriendsListAdapter);
@@ -198,7 +200,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         {
             SocialFriendsAdapter socialFriendsListAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
             socialFriendsListAdapter.clear();
-            socialFriendsListAdapter.addAll(userFriendsDTOs);
+            socialFriendsListAdapter.addAll(socialFriendListItemDTOs);
         }
         showSearchList();
     }
@@ -207,6 +209,12 @@ public class FriendsInvitationFragment extends DashboardFragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
+        if(item.socialNetwork == SocialNetworkEnum.WECHAT)
+        {
+            inviteWechatFriends();
+            return;
+        }
+
         boolean linked = checkLinkedStatus(item.socialNetwork);
         if (linked)
         {
@@ -218,6 +226,20 @@ public class FriendsInvitationFragment extends DashboardFragment
             //pushSettingsFragment();
             linkSocialNetwork(item.socialNetwork);
         }
+    }
+
+    private void inviteWechatFriends()
+    {
+        Timber.d("InviteWechatFriends");
+        shareToWeChat();
+    }
+    public void shareToWeChat()
+    {
+            WeChatDTO weChatDTO = new WeChatDTO();
+            weChatDTO.id = 0;
+            weChatDTO.type = WeChatMessageType.Invite;
+            weChatDTO.title = getString(R.string.share_to_wechat_invite_friends);
+            socialSharerLazy.get().share(weChatDTO); // TODO proper callback?
     }
 
     private void canclePendingSearchTask()
@@ -353,6 +375,11 @@ public class FriendsInvitationFragment extends DashboardFragment
         handleInviteUsers(userFriendsDTO);
     }
 
+    public void onCheckBoxClick(UserFriendsDTO userFriendsDTO)
+    {
+        Timber.d("onCheckBoxClicked " + userFriendsDTO);
+    }
+
     protected void handleFollowUsers(UserFriendsDTO userToFollow)
     {
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userToFollow);
@@ -370,7 +397,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         else if (userToInvite instanceof UserFriendsFacebookDTO)
         {
             //TODO do invite on the client side.
-            facebookSocialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+            socialFriendHandlerFacebook.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
         }
         else
         {
@@ -395,8 +422,10 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
         SocialFriendsAdapter socialFriendsAdapter = (SocialFriendsAdapter) friendsListView.getAdapter();
 
+        socialFriendListItemDTOs = new SocialFriendListItemDTOList(userFriendsDTOs, (UserFriendsDTO) null);
+
         socialFriendsAdapter.clear();
-        socialFriendsAdapter.addAll(userFriendsDTOs);
+        socialFriendsAdapter.addAll(socialFriendListItemDTOs);
     }
 
     class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>

@@ -48,5 +48,6 @@
   <string name="share_to_wechat_timeline_discussion">I트레이드히어로에 토론을 공유했습니다. 지금 트레이드히어로에 조인하여 함께 즐기세요.</string>
   <string name="share_to_wechat_timeline_timeline">트레이드히어로에 타임라인을 공유했습니다. 지금 트레이드히어로에 조인하여 함께 즐기세요.</string>
   <string name="share_to_wechat_timeline_trade">트레이드히어로에서 주식거래중입니다. 지금 트레이드히어로에 조인하여 함께 즐기세요.</string>
+  <string name="share_to_wechat_invite_friends">I\'ve enjoy tradehero, come and join us.</string>
   <string name="share_success">성공적으로 공유하였습니다</string>
 </resources>

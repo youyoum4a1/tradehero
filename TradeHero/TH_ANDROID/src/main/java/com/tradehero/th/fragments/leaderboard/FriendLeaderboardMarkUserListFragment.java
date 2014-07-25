@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -36,7 +37,7 @@ import retrofit.RetrofitError;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
-    @Nullable @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
+    @Nullable @Optional @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @Nullable @InjectView(R.id.progress) ProgressBar mProgress;
 
     @Nullable protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;

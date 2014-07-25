@@ -11,6 +11,7 @@ public class UserFormDTO
     public String firstName;
     public String lastName;
     public String displayName;
+    public String inviteCode;
 
     //notifications settings
     public Boolean pushNotificationsEnabled;
@@ -38,6 +39,7 @@ public class UserFormDTO
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", displayName='" + displayName + '\'' +
+                ", inviteCode='" + inviteCode + '\'' +
                 ", pushNotificationsEnabled=" + pushNotificationsEnabled +
                 ", emailNotificationsEnabled=" + emailNotificationsEnabled +
                 ", biography='" + biography + '\'' +

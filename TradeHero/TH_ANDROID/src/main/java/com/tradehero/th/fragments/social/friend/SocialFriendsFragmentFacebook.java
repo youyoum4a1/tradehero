@@ -8,11 +8,11 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import static com.tradehero.th.fragments.social.friend.FacebookSocialFriendHandler.RequestCallback;
+import static com.tradehero.th.fragments.social.friend.SocialFriendHandler.RequestCallback;
 
-public class FacebookSocialFriendsFragment extends SocialFriendsFragment
+public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 {
-    @Inject Provider<FacebookSocialFriendHandler> facebookSocialFriendHandlerProvider;
+    @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
 
     @Override
     protected SocialNetworkEnum getSocialNetwork()
@@ -54,7 +54,7 @@ public class FacebookSocialFriendsFragment extends SocialFriendsFragment
         return new FacebookInviteFriendCallback(usersToInvite);
     }
 
-    class FacebookInviteFriendCallback extends FacebookSocialFriendHandler.FacebookRequestCallback
+    class FacebookInviteFriendCallback extends SocialFriendHandlerFacebook.FacebookRequestCallback
     {
         final List<UserFriendsDTO> usersToInvite;
 

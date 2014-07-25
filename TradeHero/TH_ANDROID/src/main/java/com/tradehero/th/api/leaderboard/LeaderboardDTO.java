@@ -19,6 +19,7 @@ public class LeaderboardDTO extends BaseHasExpiration
     public int id;
     public String name;
     public LeaderboardUserDTOList users;
+    public LeaderboardUserDTOList neighbours;
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
@@ -40,6 +41,7 @@ public class LeaderboardDTO extends BaseHasExpiration
             int id,
             String name,
             LeaderboardUserDTOList users,
+            LeaderboardUserDTOList neighbours,
             int userIsAtPositionZeroBased,
             Date markUtc,
             int minPositionCount,
@@ -52,6 +54,7 @@ public class LeaderboardDTO extends BaseHasExpiration
         this.id = id;
         this.name = name;
         this.users = users;
+        this.neighbours = neighbours;
         this.userIsAtPositionZeroBased = userIsAtPositionZeroBased;
         this.markUtc = markUtc;
         this.minPositionCount = minPositionCount;

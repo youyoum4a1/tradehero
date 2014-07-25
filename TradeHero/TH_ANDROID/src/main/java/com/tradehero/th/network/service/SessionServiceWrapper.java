@@ -95,6 +95,11 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Login and social register">
+    public UserLoginDTO signupAndLogin(String authorization, LoginSignUpFormDTO loginSignUpFormDTO)
+    {
+        return sessionService.signupAndLogin(authorization, loginSignUpFormDTO);
+    }
+
     public MiddleCallback<UserLoginDTO> signupAndLogin(String authorization, LoginSignUpFormDTO loginSignUpFormDTO, Callback<UserLoginDTO> callback)
     {
         MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());

@@ -75,7 +75,7 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public List<ProviderDTO> put(@Nullable List<ProviderDTO> values)
+    public List<ProviderDTO> put(@Nullable List<? extends ProviderDTO> values)
     {
         if (values == null)
         {

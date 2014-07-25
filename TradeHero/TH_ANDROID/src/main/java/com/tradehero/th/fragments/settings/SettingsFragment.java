@@ -132,6 +132,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private CheckBoxPreference linkedInSharing;
     private CheckBoxPreference weiboSharing;
     private CheckBoxPreference qqSharing;
+    protected LocationCountrySettingsViewHolder locationCountrySettingsViewHolder;
     protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
@@ -180,6 +181,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         DaggerUtils.inject(this);
 
+        locationCountrySettingsViewHolder = new LocationCountrySettingsViewHolder();
         userTranslationSettingsViewHolder = new UserTranslationSettingsViewHolder();
         createSocialConnectLogInCallback();
 
@@ -293,6 +295,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroyView()
     {
+        locationCountrySettingsViewHolder.destroyViews();
         userTranslationSettingsViewHolder.destroyViews();
         detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
@@ -361,6 +364,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroy()
     {
+        locationCountrySettingsViewHolder = null;
         userTranslationSettingsViewHolder = null;
         socialConnectLogInCallback = null;
         this.currentUserProfileRetrievedMilestoneListener = null;
@@ -474,6 +478,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
+        // Location
+        locationCountrySettingsViewHolder.initViews(this);
+
         Preference paypalBlock = findPreference(getString(R.string.key_settings_primary_paypal));
         if (paypalBlock != null)
         {
@@ -525,6 +532,21 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         @Override public boolean onPreferenceClick(Preference preference)
                         {
                             handleRestorePurchaseClicked();
+                            return true;
+                        }
+                    });
+        }
+
+        Preference referralCodeBlock =
+                findPreference(getString(R.string.key_settings_primary_referral_code));
+        if (referralCodeBlock != null)
+        {
+            referralCodeBlock.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        @Override public boolean onPreferenceClick(Preference preference)
+                        {
+                            handleReferralCodeClicked();
                             return true;
                         }
                     });
@@ -988,6 +1010,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             billingInteractor.forgetRequestCode(restoreRequestCode);
         }
         restoreRequestCode = billingInteractor.run(createRestoreRequest());
+    }
+
+    private void handleReferralCodeClicked()
+    {
+        getNavigator().pushFragment(SettingsReferralCodeFragment.class);
     }
 
     protected THUIBillingRequest createRestoreRequest()

@@ -22,6 +22,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
@@ -78,7 +79,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject SocialServiceWrapper socialServiceWrapper;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
@@ -217,9 +217,9 @@ public final class HomeFragment extends BaseWebViewFragment
         Timber.d("windy: invite()");
         if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
         {
-            InviteFormDTO inviteFriendForm = new InviteFormDTO();
-            inviteFriendForm.users = new ArrayList<>();
-            inviteFriendForm.users.add(userFriendsDTO.createInvite());
+            InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
+            ((InviteFormUserDTO)inviteFriendForm).users = new ArrayList<>();
+            ((InviteFormUserDTO)inviteFriendForm).users.add(userFriendsDTO.createInvite());
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get()
@@ -244,9 +244,9 @@ public final class HomeFragment extends BaseWebViewFragment
 
     private void invite(UserFriendsDTO userDto)
     {
-        InviteFormDTO inviteFriendForm = new InviteFormDTO();
-        inviteFriendForm.users = new ArrayList<>();
-        inviteFriendForm.users.add(userDto.createInvite());
+        InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
+        ((InviteFormUserDTO)inviteFriendForm).users = new ArrayList<>();
+        ((InviteFormUserDTO)inviteFriendForm).users.add(userDto.createInvite());
         getProgressDialog().show();
         detachMiddleCallbackInvite();
         middleCallbackInvite = userServiceWrapperLazy.get()

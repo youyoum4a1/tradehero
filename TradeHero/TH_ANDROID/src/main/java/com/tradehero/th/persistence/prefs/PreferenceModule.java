@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.prefs;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
@@ -15,7 +16,6 @@ import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import dagger.Module;
 import dagger.Provides;
@@ -44,6 +44,7 @@ public class PreferenceModule
     private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_PUSH_IDENTIFIER_SENT_FLAG";
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
     private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
+    private static final String PREF_FIRST_SHOW_REFERRAL_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
     private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
@@ -144,5 +145,10 @@ public class PreferenceModule
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, true);
+    }
+
+    @Provides @Singleton @FirstShowReferralCodeDialog BooleanPreference provideFirstShowReferralCodeDialogPreference(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_REFERRAL_CODE_FLAG, true);
     }
 }

@@ -8,7 +8,8 @@ public enum WeChatMessageType
     CreateDiscussion(2, R.string.share_to_wechat_timeline_create_discussion),
     Discussion(3, R.string.share_to_wechat_timeline_discussion),
     Timeline(4, R.string.share_to_wechat_timeline_timeline),
-    Trade(5, R.string.share_to_wechat_timeline_trade);
+    Trade(5, R.string.share_to_wechat_timeline_trade),
+    Invite(6, R.string.share_to_wechat_invite_friends);
 
     private final int value;
     private final int titleResId;
