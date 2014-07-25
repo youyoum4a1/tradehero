@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class InviteFormUserDTO implements InviteFormDTO
+public class InviteFormUserDTO extends InviteFormMessageDTO implements InviteFormDTO
 {
-    public String msg;
     public List<InviteDTO> users;
 
     //<editor-fold desc="Constructors">
