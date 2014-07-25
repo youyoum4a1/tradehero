@@ -102,7 +102,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
     {
         return new ContestItemAdapter(
                 getActivity(),
-                R.layout.leaderboard_competition_item_view,
+                R.layout.contest_competition_item_view,
                 R.layout.contest_content_item_view);
     }
 

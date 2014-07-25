@@ -10,7 +10,7 @@
   <ImageView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:background="@drawable/launcher"
+      android:background="@drawable/contest_guide_finger"
       android:layout_marginTop="10dp"
       android:layout_marginLeft="50sp"
       android:layout_marginRight="50sp"
@@ -20,6 +20,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:gravity="center"
+      android:textSize="18sp"
       android:text="@string/contest_no_joined"
       />
 
