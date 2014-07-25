@@ -271,7 +271,7 @@ public class RetrofitModule
         return objectMapper;
     }
 
-    @Provides @Singleton Converter provideConverter(ObjectMapper objectMapper)
+    @Provides @Singleton Converter provideConverter(@ForApp ObjectMapper objectMapper)
     {
         return new JacksonConverter(objectMapper);
     }
