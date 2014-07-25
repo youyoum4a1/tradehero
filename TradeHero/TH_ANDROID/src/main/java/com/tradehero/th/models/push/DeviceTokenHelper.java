@@ -7,6 +7,7 @@ import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 import com.urbanairship.push.PushManager;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
@@ -16,7 +17,7 @@ public class DeviceTokenHelper
     @NotNull Context context;
 
     //<editor-fold desc="Constructors">
-    public DeviceTokenHelper(
+    @Inject public DeviceTokenHelper(
             @NotNull @SavedPushDeviceIdentifier StringPreference savedPushDeviceIdentifier,
             @NotNull Context context)
     {
