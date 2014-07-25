@@ -146,15 +146,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             linkWith(securityId, true);
         }
 
-        UserProfileDTO profileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (profileDTO != null)
-        {
-            linkWith(profileDTO, true);
-        }
-        else
-        {
-            requestUserProfile();
-        }
+        requestUserProfile();
     }
 
     //<editor-fold desc="ActionBar">
@@ -239,13 +231,15 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxPurchasableShares()
     {
-        return portfolioCompactDTOUtil.getMaxPurchasableShares(this.portfolioCompactDTO, this.quoteDTO);
+        return portfolioCompactDTOUtil.getMaxPurchasableShares(
+                this.portfolioCompactDTO,
+                this.quoteDTO);
     }
 
     public Integer getMaxSellableShares()
     {
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null && positionDTOCompactList != null)
+        if (ownedPortfolioId != null && positionDTOCompactList != null)
         {
             return positionDTOCompactList.getMaxSellableShares(
                     this.quoteDTO,
@@ -383,12 +377,17 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
+    protected void clampBuyQuantity(boolean andDisplay)
     {
-        this.mBuyQuantity = clampedBuyQuantity(buyQuantity);
+        linkWithBuyQuantity(mBuyQuantity, andDisplay);
     }
 
-    protected Integer clampedBuyQuantity(Integer candidate)
+    protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
+    {
+        this.mBuyQuantity = getClampedBuyQuantity(buyQuantity);
+    }
+
+    protected Integer getClampedBuyQuantity(Integer candidate)
     {
         Integer maxPurchasable = getMaxPurchasableShares();
         if (candidate == null || maxPurchasable == null)
@@ -398,17 +397,17 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return Math.min(candidate, maxPurchasable);
     }
 
-    protected void clampBuyQuantity(boolean andDisplay)
+    protected void clampSellQuantity(boolean andDisplay)
     {
-        linkWithBuyQuantity(mBuyQuantity, andDisplay);
+        linkWithSellQuantity(mSellQuantity, andDisplay);
     }
 
     protected void linkWithSellQuantity(Integer sellQuantity, boolean andDisplay)
     {
-        this.mSellQuantity = clampedSellQuantity(sellQuantity);
+        this.mSellQuantity = getClampedSellQuantity(sellQuantity);
     }
 
-    protected Integer clampedSellQuantity(Integer candidate)
+    protected Integer getClampedSellQuantity(Integer candidate)
     {
         Integer maxSellable = getMaxSellableShares();
         if (candidate == null || maxSellable == null || maxSellable == 0)
@@ -416,11 +415,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             return candidate;
         }
         return Math.min(candidate, maxSellable);
-    }
-
-    protected void clampSellQuantity(boolean andDisplay)
-    {
-        linkWithSellQuantity(mSellQuantity, andDisplay);
     }
 
     protected void prepareFreshQuoteHolder()
@@ -488,8 +482,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return new AbstractBuySellUserProfileCacheListener();
     }
 
-    protected class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, UserProfileDTO>
     {
+        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            linkWith(value, true);
+        }
+
         @Override public void onDTOReceived(@NotNull final UserBaseKey key, @NotNull final UserProfileDTO value)
         {
             linkWith(value, true);

@@ -156,8 +156,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public abstract Double getPriceCcy();
 
-    public static AbstractTransactionDialogFragment newInstance(@NotNull SecurityId securityId, @NotNull PortfolioId portfolioId,
-            @NotNull QuoteDTO quoteDTO, boolean isBuy)
+    public static AbstractTransactionDialogFragment newInstance(
+            @NotNull SecurityId securityId,
+            @NotNull PortfolioId portfolioId,
+            @NotNull QuoteDTO quoteDTO,
+            boolean isBuy)
     {
         AbstractTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragment() : new SellDialogFragment();
         Bundle args = new Bundle();

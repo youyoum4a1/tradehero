@@ -195,7 +195,7 @@
   <string name="invite_social_friend">Invite %s Friend</string>
   <string name="search_social_friend_hint">Search your friend</string>
 
-  <string name="social_friend_empty">Sorry,no friends</string>
+  <string name="social_friend_empty">Sorry, no friends</string>
   <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
   <string name="invite_from_weibo">Invite from Weibo</string>
   <string name="invite_from_wechat">Invite from Wechat</string>

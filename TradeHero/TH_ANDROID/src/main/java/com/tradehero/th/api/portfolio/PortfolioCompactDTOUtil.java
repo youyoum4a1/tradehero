@@ -3,7 +3,6 @@ package com.tradehero.th.api.portfolio;
 import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.utils.SecurityUtils;
 import javax.inject.Inject;
 
 public class PortfolioCompactDTOUtil
@@ -15,6 +14,7 @@ public class PortfolioCompactDTOUtil
     }
     //</editor-fold>
 
+    //<editor-fold desc="Max Purchasable Shares">
     // TODO handle refCurrency different from USD
     public Integer getMaxPurchasableShares(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO)
     {
@@ -24,29 +24,22 @@ public class PortfolioCompactDTOUtil
     public Integer getMaxPurchasableShares(
             PortfolioCompactDTO portfolioCompactDTO,
             QuoteDTO quoteDTO,
-            boolean includeTransactionCost)
-    {
-        return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, includeTransactionCost, SecurityUtils.DEFAULT_TRANSACTION_COST);
-    }
-
-    public Integer getMaxPurchasableShares(
-            PortfolioCompactDTO portfolioCompactDTO,
-            QuoteDTO quoteDTO,
-            boolean includeTransactionCost,
-            double txnCostUsd)
+            boolean includeTransactionCostUsd)
     {
         if (quoteDTO == null || portfolioCompactDTO == null)
         {
             return null;
         }
+        double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
         Double askUsd = quoteDTO.getAskUSD();
         double cashUsd = portfolioCompactDTO.getCashBalanceUsd();
         if (askUsd == null || askUsd == 0)
         {
             return null;
         }
-        return (int) Math.floor((cashUsd - (includeTransactionCost ? txnCostUsd : 0)) / askUsd);
+        return (int) Math.floor((cashUsd - (includeTransactionCostUsd ? txnCostUsd : 0)) / askUsd);
     }
+    //</editor-fold>
 
     public String getPortfolioSubtitle(Context context, PortfolioCompactDTO portfolioCompactDTO, String userName)
     {

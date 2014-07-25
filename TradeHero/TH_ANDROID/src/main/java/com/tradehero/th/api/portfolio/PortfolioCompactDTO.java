@@ -35,6 +35,7 @@ public class PortfolioCompactDTO implements DTO
     public String currencyDisplay;
     public String currencyISO;
     @Nullable public Double refCcyToUsdRate;
+    @Nullable public Double txnCostUsd;
 
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
@@ -115,6 +116,11 @@ public class PortfolioCompactDTO implements DTO
         return refCcyToUsdRate == null ? 1 : refCcyToUsdRate;
     }
 
+    @JsonIgnore public double getProperTxnCostUsd()
+    {
+        return txnCostUsd != null ? txnCostUsd : SecurityUtils.DEFAULT_TRANSACTION_COST_USD;
+    }
+
     @Override @NotNull public String toString()
     {
         return "[PortfolioCompactDTO " +
@@ -133,6 +139,7 @@ public class PortfolioCompactDTO implements DTO
                 ", markingAsOfUtc=" + markingAsOfUtc +
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", refCcyToUsdRate=" + refCcyToUsdRate +
+                ", txnCostUsd=" + txnCostUsd +
                 ", userId=" + userId +
                 ']';
     }
