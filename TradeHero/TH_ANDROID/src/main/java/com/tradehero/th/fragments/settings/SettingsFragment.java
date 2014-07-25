@@ -537,6 +537,21 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     });
         }
 
+        Preference referralCodeBlock =
+                findPreference(getString(R.string.key_settings_primary_referral_code));
+        if (referralCodeBlock != null)
+        {
+            referralCodeBlock.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        @Override public boolean onPreferenceClick(Preference preference)
+                        {
+                            handleReferralCodeClicked();
+                            return true;
+                        }
+                    });
+        }
+
         Preference resetHelpScreensBlock =
                 findPreference(getString(R.string.key_settings_misc_reset_help_screens));
         if (resetHelpScreensBlock != null)
@@ -995,6 +1010,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             billingInteractor.forgetRequestCode(restoreRequestCode);
         }
         restoreRequestCode = billingInteractor.run(createRestoreRequest());
+    }
+
+    private void handleReferralCodeClicked()
+    {
+        getNavigator().pushFragment(SettingsReferralCodeFragment.class);
     }
 
     protected THUIBillingRequest createRestoreRequest()

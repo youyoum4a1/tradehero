@@ -14,6 +14,7 @@ import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
+import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
@@ -155,6 +156,7 @@ import retrofit.client.Response;
                     userFormDTO.biography,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
+                    userFormDTO.inviteCode,
                     userFormDTO.email,
                     userFormDTO.emailNotificationsEnabled,
                     userFormDTO.firstName,
@@ -174,6 +176,7 @@ import retrofit.client.Response;
                     userFormDTO.biography,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
+                    userFormDTO.inviteCode,
                     userFormDTO.email,
                     userFormDTO.emailNotificationsEnabled,
                     userFormDTO.firstName,
@@ -791,6 +794,16 @@ import retrofit.client.Response;
         MiddleCallback<UpdateCountryCodeDTO> middleCallback = new BaseMiddleCallback<>(callback,
                 createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
         userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Update Referral Code">
+    public MiddleCallback<Response> updateReferralCode(UserBaseKey userKey,
+            UpdateReferralCodeDTO updateReferralCodeDTO, Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.updateReferralCode(userKey.key, updateReferralCodeDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

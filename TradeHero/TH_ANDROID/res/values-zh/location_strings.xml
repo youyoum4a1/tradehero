@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="location_fragment_title">选择您所处的位置</string>
+  <string name="location_fragment_subtitle">这将影响您的数据</string>
+
+  
+  <string name="location_name_cn">中国</string>
+
+</resources>

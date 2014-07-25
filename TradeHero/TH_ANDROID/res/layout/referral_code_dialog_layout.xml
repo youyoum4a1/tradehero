@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/common_margin_10"
+      android:gravity="center_horizontal"
+      android:text="@string/referral_code_title"
+      android:textStyle="bold"
+      android:textSize="@dimen/common_text_size_30"/>
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/common_margin_10"
+      android:gravity="center_horizontal"
+      android:text="@string/referral_code_message"
+      android:textSize="@dimen/common_text_size_25"/>
+
+  <EditText
+      android:id="@+id/referral_code"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/common_margin_10"
+      android:maxLength="6"
+      style="@style/TH.DiscussionTextBox"
+      android:textSize="@dimen/text_xlarge"
+      android:textStyle="bold"
+      android:textColor="@color/button_blue"/>
+
+  <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/light_grey"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="40dp"
+      android:orientation="horizontal"
+      android:background="@color/light_grey">
+
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="@string/cancel"
+        android:textSize="@dimen/text_small"
+        android:textColor="@color/black"
+        android:background="@drawable/basic_white_selector"/>
+
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/basic_white_selector"
+        android:text="@string/ok"
+        android:textSize="@dimen/text_medium"
+        android:textColor="@color/button_blue"
+        android:textStyle="bold"
+        android:layout_marginLeft="1dp"/>
+  </LinearLayout>
+</LinearLayout>

@@ -18,6 +18,7 @@
   <string name="key_settings_primary_alipay" translatable="false">key_settings_primary_alipay</string>
   <string name="key_settings_primary_transaction_history" translatable="false">key_settings_primary_transaction_history</string>
   <string name="key_settings_primary_restore_purchases" translatable="false">key_settings_primary_restore_purchases</string>
+  <string name="key_settings_primary_referral_code" translatable="false">key_settings_primary_referral_code</string>
 
   <string name="key_settings_translations_container" translatable="false">key_settings_translations_container</string>
   <string name="key_settings_translations_preferred_language" translatable="false">key_settings_translations_preferred_language</string>

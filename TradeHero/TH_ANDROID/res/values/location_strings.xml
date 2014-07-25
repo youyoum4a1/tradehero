@@ -3,7 +3,7 @@
 
   <string name="location_fragment_title">Pick your Location</string>
   <string name="location_fragment_subtitle">It affects what you see</string>
-  <string name="location_summary">%1$s - %2$s</string>
+  <string name="location_summary" translatable="false">%1$s - %2$s</string>
 
   <string name="location_name_none">None</string>
   <string name="location_name_ad">Andorra</string>

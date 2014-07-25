@@ -107,6 +107,7 @@ import com.tradehero.th.fragments.settings.LocationCountrySettingsViewHolder;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
+import com.tradehero.th.fragments.settings.SettingsReferralCodeFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
 import com.tradehero.th.fragments.settings.UserTranslationSettingsViewHolder;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
@@ -216,6 +217,7 @@ import javax.inject.Singleton;
                         UserTranslationSettingsViewHolder.class,
                         TranslatableLanguageListFragment.class,
                         LocationListFragment.class,
+                        SettingsReferralCodeFragment.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
                         ServerValidatedUsernameText.class,

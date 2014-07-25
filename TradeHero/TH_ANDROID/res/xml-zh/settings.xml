@@ -83,6 +83,13 @@
         />
 
     <Preference
+        android:enabled="true"
+        android:key="@string/key_settings_primary_referral_code"
+        android:title="@string/settings_primary_referral_code"
+        android:icon="@drawable/default_image"
+        />
+
+    <Preference
         android:key="@string/key_settings_misc_sign_out"
         android:title="@string/settings_misc_sign_out"
         android:icon="@drawable/settings_sign_out"
