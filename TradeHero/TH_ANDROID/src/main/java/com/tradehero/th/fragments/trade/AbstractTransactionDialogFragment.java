@@ -82,6 +82,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @InjectView(R.id.dialog_cash_left) protected TextView mCashShareLeftLabelTextView;
     @InjectView(R.id.vtrade_value) protected TextView mTradeValueTextView;
     @InjectView(R.id.dialog_price) protected TextView mStockPriceTextView;
+    @InjectView(R.id.dialog_portfolio) protected TextView mPortfolioTextView;
+
     @InjectView(R.id.seek_bar) protected SeekBar mSeekBar;
 
     @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
@@ -154,7 +156,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     public abstract Double getPriceCcy();
 
-    public static AbstractTransactionDialogFragment newInstance(@NotNull SecurityId securityId, @NotNull PortfolioId portfolioId, @NotNull QuoteDTO quoteDTO, boolean isBuy)
+    public static AbstractTransactionDialogFragment newInstance(@NotNull SecurityId securityId, @NotNull PortfolioId portfolioId,
+            @NotNull QuoteDTO quoteDTO, boolean isBuy)
     {
         AbstractTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragment() : new SellDialogFragment();
         Bundle args = new Bundle();
@@ -231,6 +234,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         mStockNameTextView.setText(securityCompactDTO == null ? "-" : securityCompactDTO.name);
 
         mStockPriceTextView.setText(String.valueOf(getLabel()));
+
+        mPortfolioTextView.setText(
+                getString(R.string.buy_sell_portfolio_selected_title) + " " + (portfolioCompactDTO == null ? "-" : portfolioCompactDTO.title));
 
         mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
         mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
