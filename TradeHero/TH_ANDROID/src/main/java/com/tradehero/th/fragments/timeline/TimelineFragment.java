@@ -876,7 +876,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         };
     }
 
-    public class FreeUserFollowedCallback extends BasePurchaseManagerFreeUserFollowedCallback
+    public class FreeUserFollowedCallback implements Callback<UserProfileDTO>
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
@@ -924,22 +924,26 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         @Override public void premiumFollowRequested(UserBaseKey heroId)
         {
-            premiumFollowUser(heroId, createPremiumUserFollowedForMessageListener());
+            premiumFollowUser(heroId);
         }
     }
 
-    protected class TimelinePremiumUserFollowedListener extends BasePurchaseManagerPremiumUserFollowedListener
+    protected class TimelinePremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             if (!mIsOtherProfile)
             {
                 linkWith(currentUserProfileDTO, true);
             }
             updateBottomButton();
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // Nothing for now
         }
     }
 

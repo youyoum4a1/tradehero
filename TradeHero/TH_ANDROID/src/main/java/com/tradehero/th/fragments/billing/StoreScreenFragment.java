@@ -102,7 +102,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         if (productDomainIdentifierOrdinal != null)
         {
-            cancelOthersAndShowProductDetailList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
+            createPurchaseActionInteractorBuilder()
+                    .build()
+                    .showProductsList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
         }
     }
 
@@ -160,7 +162,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
-            cancelOthersAndShowProductDetailList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
+            createPurchaseActionInteractorBuilder()
+                    .build()
+                    .showProductsList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {

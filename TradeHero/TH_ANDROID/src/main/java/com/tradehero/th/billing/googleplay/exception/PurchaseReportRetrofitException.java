@@ -2,11 +2,10 @@ package com.tradehero.th.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.IABResult;
 import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueException;
-import com.tradehero.th.billing.googleplay.THIABConstants;
 
 public class PurchaseReportRetrofitException extends IABOneResponseValueException
 {
-    public static final int VALID_RESPONSE = THIABConstants.PURCHASE_REPORT_RETROFIT_ERROR;
+    public static final int VALID_RESPONSE = THIABExceptionConstants.PURCHASE_REPORT_RETROFIT_ERROR;
 
     public PurchaseReportRetrofitException(IABResult r)
     {

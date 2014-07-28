@@ -16,7 +16,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -53,8 +52,8 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @Override protected void initViews(View view)
     {
         leaderboardDefListAdapter = new ArrayDTOAdapterNew<LeaderboardDefDTO, LeaderboardDefView>(
-                        getActivity(),
-                        R.layout.leaderboard_definition_item_view);
+                getActivity(),
+                R.layout.leaderboard_definition_item_view);
         contentListView.setAdapter(leaderboardDefListAdapter);
     }
 
@@ -80,15 +79,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Object item = parent.getItemAtPosition(position);
-        if (item instanceof LeaderboardDefKey)
-        {
-            LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
-            if (dto != null)
-            {
-                pushLeaderboardListViewFragment(dto);
-            }
-        }
+        pushLeaderboardListViewFragment((LeaderboardDefDTO) parent.getItemAtPosition(position));
     }
 
     protected void refresh()

@@ -110,6 +110,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         if (weChatDTO != null && weChatDTO.title != null && !weChatDTO.title.isEmpty())
         {
             weChatMsg.title = weChatDTO.title;
+            weChatMsg.description = weChatDTO.title;
         }
         else
         {
@@ -180,9 +181,17 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private SendMessageToWX.Req buildRequest(WXMediaMessage weChatMsg)
     {
         SendMessageToWX.Req weChatReq = new SendMessageToWX.Req();
-        weChatReq.transaction = String.valueOf(
-                System.currentTimeMillis()); //transaction is a main key
-        weChatReq.scene = SendMessageToWX.Req.WXSceneTimeline;
+        weChatReq.transaction = String.valueOf(System.currentTimeMillis());
+        //not sure for transaction, maybe identify id?
+        if(weChatDTO.type==WeChatMessageType.Invite)
+        {
+            weChatReq.scene = SendMessageToWX.Req.WXSceneSession;
+        }
+        else
+        {
+            weChatReq.scene = SendMessageToWX.Req.WXSceneTimeline;
+        }
+
         weChatReq.message = weChatMsg;
         return weChatReq;
     }

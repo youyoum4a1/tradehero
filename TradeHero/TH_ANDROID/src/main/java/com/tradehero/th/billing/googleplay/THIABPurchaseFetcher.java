@@ -6,7 +6,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import javax.inject.Inject;
 import org.json.JSONException;
 
-public class THIABPurchaseFetcher
+class THIABPurchaseFetcher
         extends IABPurchaseFetcher<IABSKU, THIABOrderId, THIABPurchase>
 {
     @Inject protected THIABPurchaseCache thiabPurchaseCache;

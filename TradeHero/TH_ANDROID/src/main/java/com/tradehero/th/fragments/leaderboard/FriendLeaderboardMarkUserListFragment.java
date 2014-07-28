@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -35,7 +36,7 @@ import retrofit.RetrofitError;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
-    @Nullable @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
+    @Nullable @Optional @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @Nullable @InjectView(R.id.progress) ProgressBar mProgress;
 
     @Nullable protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
@@ -239,12 +240,16 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         return new LeaderboardMarkUserListPremiumUserFollowedListener();
     }
 
-    protected class LeaderboardMarkUserListPremiumUserFollowedListener extends BasePurchaseManagerPremiumUserFollowedListener
+    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // nothing for now
         }
     }
 

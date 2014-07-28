@@ -8,7 +8,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
 
-public class THIABPurchaseFetchMilestone
+class THIABPurchaseFetchMilestone
         extends IABPurchaseFetchMilestone<
             IABSKU,
             THIABOrderId,

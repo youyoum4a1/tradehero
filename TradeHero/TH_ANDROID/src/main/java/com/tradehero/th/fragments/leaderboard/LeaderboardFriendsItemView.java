@@ -23,6 +23,7 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
@@ -355,9 +356,9 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             {
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Twitter));
             }
-            InviteFormDTO inviteFriendForm = new InviteFormDTO();
-            inviteFriendForm.users = new ArrayList<>();
-            inviteFriendForm.users.add(userFriendsDTO.createInvite());
+            InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
+            ((InviteFormUserDTO)inviteFriendForm).users = new ArrayList<>();
+            ((InviteFormUserDTO)inviteFriendForm).users.add(userFriendsDTO.createInvite());
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get()

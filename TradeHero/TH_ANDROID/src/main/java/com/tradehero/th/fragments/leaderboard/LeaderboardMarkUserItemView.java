@@ -417,8 +417,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
 
         // volatility
-        String volatilityFormat = getContext().getString(R.string.leaderboard_volatility);
-        String volatility = String.format(volatilityFormat, leaderboardItem.getVolatility().floatValue());
+        String volatility = getContext().getString(R.string.leaderboard_volatility, leaderboardItem.getVolatility());
         lbmuVolatility.setText(Html.fromHtml(volatility));
 
         // number of positions holding

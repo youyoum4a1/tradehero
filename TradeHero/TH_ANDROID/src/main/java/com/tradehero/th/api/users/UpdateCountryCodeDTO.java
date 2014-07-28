@@ -1,14 +1,13 @@
 package com.tradehero.th.api.users;
 
-/**
- * Created by tradehero on 14-7-21.
- */
 public class UpdateCountryCodeDTO
 {
-    public String countryCode;
+    public boolean updated;
 
+    //<editor-fold desc="Constructors">
     public UpdateCountryCodeDTO()
     {
         super();
     }
+    //</editor-fold>
 }

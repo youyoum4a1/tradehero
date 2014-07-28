@@ -184,16 +184,6 @@ abstract public class THBaseBillingInteractor<
         ProductDetailViewType,
         ProductDetailAdapterType> getBillingAlertDialogUtil();
 
-    @Override public void doAction(int action)
-    {
-        switch (action)
-        {
-            case ACTION_RESET_PORTFOLIO:
-                // TODO
-                break;
-        }
-    }
-
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         THBillingLogicHolderType logicHolder = getBillingLogicHolder();

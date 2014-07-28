@@ -13,7 +13,8 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeResultDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
+import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserListType;
@@ -31,7 +32,7 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
-import com.tradehero.th.models.user.DTOProcessorUpdateLocation;
+import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
@@ -88,7 +89,7 @@ import retrofit.client.Response;
     }
     //</editor-fold>
 
-    //<editor-fold desc="DTO Processors">
+    //<editor-fold desc="Sign-Up With Email">
     @NotNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
     {
         return new DTOProcessorSignInUpUserProfile(
@@ -97,43 +98,6 @@ import retrofit.client.Response;
                 dtoCacheUtil);
     }
 
-    @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache);
-    }
-
-    @NotNull protected DTOProcessor<UserProfileDTO> createFollowUserProcessor(@NotNull UserBaseKey userToFollow)
-    {
-        return new DTOProcessorFollowUser(
-                userProfileCache,
-                heroListCache.get(),
-                getPositionsCache,
-                userMessagingRelationshipCache,
-                userToFollow);
-    }
-
-    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
-    }
-
-    @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
-    }
-
-    @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUserDeleted(userProfileCache, playerId);
-    }
-
-    @NotNull protected DTOProcessor<UpdateCountryCodeResultDTO> createUpdateLocationProcessor(@NotNull UserBaseKey playerId)
-    {
-        return new DTOProcessorUpdateLocation(userProfileCache, playerId);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Sign-Up With Email">
     public UserProfileDTO signUpWithEmail(
             String authorization,
             UserFormDTO userFormDTO)
@@ -192,6 +156,7 @@ import retrofit.client.Response;
                     userFormDTO.biography,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
+                    userFormDTO.inviteCode,
                     userFormDTO.email,
                     userFormDTO.emailNotificationsEnabled,
                     userFormDTO.firstName,
@@ -211,6 +176,7 @@ import retrofit.client.Response;
                     userFormDTO.biography,
                     userFormDTO.deviceToken,
                     userFormDTO.displayName,
+                    userFormDTO.inviteCode,
                     userFormDTO.email,
                     userFormDTO.emailNotificationsEnabled,
                     userFormDTO.firstName,
@@ -248,6 +214,11 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
+    @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    {
+        return new DTOProcessorUpdateUserProfile(userProfileCache);
+    }
+
     public UserProfileDTO updateProfile(
             UserBaseKey userBaseKey,
             UserFormDTO userFormDTO)
@@ -515,6 +486,11 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
+    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey playerId)
+    {
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache, playerId);
+    }
+
     public UpdatePayPalEmailDTO updatePayPalEmail(UserBaseKey userBaseKey,
             UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
@@ -535,6 +511,11 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay account">
+    @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
+    {
+        return new DTOProcessorUpdateAlipayAccount(userProfileCache, playerId);
+    }
+
     public UpdateAlipayAccountDTO updateAlipayAccount(
             UserBaseKey userBaseKey,
             UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
@@ -557,6 +538,10 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
+    @NotNull protected DTOProcessor<Response> createUserDeletedProcessor(@NotNull UserBaseKey playerId)
+    {
+        return new DTOProcessorUserDeleted(userProfileCache, playerId);
+    }
     public Response deleteUser(UserBaseKey userKey)
     {
         return createUserDeletedProcessor(userKey).process(userService.deleteUser(userKey.key));
@@ -583,9 +568,16 @@ import retrofit.client.Response;
         }
         else if (friendsListKey.socialNetworkEnum != null)
         {
-            received = userService.getSocialFriends(
-                    friendsListKey.userBaseKey.key,
-                    friendsListKey.socialNetworkEnum);
+            if(friendsListKey.socialNetworkEnum == SocialNetworkEnum.WB)
+            {
+                received = userService.getSocialWeiboFriends(friendsListKey.userBaseKey.key);
+            }
+            else
+            {
+                received = userService.getSocialFriends(
+                        friendsListKey.userBaseKey.key,
+                        friendsListKey.socialNetworkEnum);
+            }
         }
         else
         {
@@ -658,7 +650,6 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
-
     protected DTOProcessor<Response> createDTOProcessorFriendInvited()
     {
         return new DTOProcessorFriendInvited(this.leaderboardFriendsCache.get());
@@ -692,6 +683,16 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
+    @NotNull protected DTOProcessor<UserProfileDTO> createFollowUserProcessor(@NotNull UserBaseKey userToFollow)
+    {
+        return new DTOProcessorFollowUser(
+                userProfileCache,
+                heroListCache.get(),
+                getPositionsCache,
+                userMessagingRelationshipCache,
+                userToFollow);
+    }
+
     public UserProfileDTO follow(@NotNull UserBaseKey userBaseKey)
     {
         return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key));
@@ -770,12 +771,39 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">
-    public MiddleCallback<UpdateCountryCodeResultDTO> updateCountryCode(UserBaseKey userKey,
-            UpdateCountryCodeDTO updateCountryCodeDTO, Callback<UpdateCountryCodeResultDTO> callback)
+    @NotNull protected DTOProcessor<UpdateCountryCodeDTO> createUpdateCountryCodeProcessor(
+            @NotNull UserBaseKey playerId,
+            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
-        MiddleCallback<UpdateCountryCodeResultDTO> middleCallback = new BaseMiddleCallback<>(callback,
-                createUpdateLocationProcessor(userKey));
-        userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeDTO, middleCallback);
+        return new DTOProcessorUpdateCountryCode(userProfileCache, playerId, updateCountryCodeFormDTO);
+    }
+
+    @NotNull public UpdateCountryCodeDTO updateCountryCode(
+            @NotNull UserBaseKey userKey,
+            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
+    {
+        return createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO).process(
+                userService.updateCountryCode(userKey.key, updateCountryCodeFormDTO));
+    }
+
+    @NotNull public MiddleCallback<UpdateCountryCodeDTO> updateCountryCode(
+            @NotNull UserBaseKey userKey,
+            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
+            @Nullable Callback<UpdateCountryCodeDTO> callback)
+    {
+        MiddleCallback<UpdateCountryCodeDTO> middleCallback = new BaseMiddleCallback<>(callback,
+                createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
+        userServiceAsync.updateCountryCode(userKey.key, updateCountryCodeFormDTO, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Update Referral Code">
+    public MiddleCallback<Response> updateReferralCode(UserBaseKey userKey,
+            UpdateReferralCodeDTO updateReferralCodeDTO, Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.updateReferralCode(userKey.key, updateReferralCodeDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

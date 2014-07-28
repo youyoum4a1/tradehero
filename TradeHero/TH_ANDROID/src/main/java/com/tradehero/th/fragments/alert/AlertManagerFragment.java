@@ -27,10 +27,9 @@ import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -136,7 +135,9 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+                createPurchaseActionInteractorBuilder()
+                        .build()
+                        .buyStockAlertSubscription();
             }
         });
 
@@ -217,27 +218,21 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         alertCompactListCache.unregister(alertCompactListListener);
     }
 
-    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
-        THUIBillingRequest uiBillingRequest = super.getShowProductDetailRequest(domain);
-        uiBillingRequest.startWithProgressDialog = true;
-        uiBillingRequest.popIfBillingNotAvailable = true;
-        uiBillingRequest.popIfProductIdentifierFetchFailed = true;
-        uiBillingRequest.popIfInventoryFetchFailed = true;
-        uiBillingRequest.popIfPurchaseFailed = true;
-        uiBillingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
-        {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
-            {
-                displayAlertCount();
-                displayAlertCountIcon();
-            }
+        return super.createPurchaseActionInteractorBuilder()
+                .setPurchaseReportedListener(new PurchaseReporter.OnPurchaseReportedListener()
+                {
+                    @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+                    {
+                        displayAlertCount();
+                        displayAlertCountIcon();
+                    }
 
-            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-            {
-            }
-        };
-        return uiBillingRequest;
+                    @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+                    {
+                    }
+                });
     }
 
     private void displayAlertCount()

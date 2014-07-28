@@ -9,7 +9,8 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeResultDTO;
+import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
+import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
@@ -46,6 +47,7 @@ interface UserServiceAsync
             @Field("biography") String biography,
             @Field("deviceToken") String deviceToken,
             @Field("displayName") String displayName,
+            @Field("inviteCode") String inviteCode,
             @Field("email") String email,
             @Field("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
             @Field("firstName") String firstName,
@@ -64,6 +66,7 @@ interface UserServiceAsync
             @Part("biography") String biography,
             @Part("deviceToken") String deviceToken,
             @Part("displayName") String displayName,
+            @Part("inviteCode") String inviteCode,
             @Part("email") String email,
             @Part("emailNotificationsEnabled") Boolean emailNotificationsEnabled,
             @Part("firstName") String firstName,
@@ -276,7 +279,15 @@ interface UserServiceAsync
     @POST("/users/{userId}/updateCountryCode")
     void updateCountryCode(
             @Path("userId") int userId,
-            @Body UpdateCountryCodeDTO updateCountryCodeDTO,
-            Callback<UpdateCountryCodeResultDTO> callback);
+            @Body UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
+            Callback<UpdateCountryCodeDTO> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Referral Code">
+    @POST("/users/{userId}/updateInviteCode")
+    void updateReferralCode(
+            @Path("userId") int userId,
+            @Body UpdateReferralCodeDTO updateReferralCodeDTO,
+            Callback<Response> callback);
     //</editor-fold>
 }

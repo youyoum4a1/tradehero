@@ -31,6 +31,7 @@
       android:headerDividersEnabled="true"
       android:smoothScrollbar="true"
       android:clipToPadding="false"
+      android:listSelector="@color/transparent"
       ptr:ptrAnimationStyle="flip"
       ptr:ptrMode="pullUpFromBottom"
       tools:background="@color/red"

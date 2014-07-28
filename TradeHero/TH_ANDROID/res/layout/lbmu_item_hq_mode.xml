@@ -200,6 +200,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:textColor="@color/gray_1"
+            android:visibility="gone"
             />
 
       </LinearLayout>
