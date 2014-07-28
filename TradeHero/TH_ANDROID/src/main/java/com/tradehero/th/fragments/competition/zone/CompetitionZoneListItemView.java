@@ -4,8 +4,11 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
@@ -14,9 +17,9 @@ import javax.inject.Inject;
 
 public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
 {
-    protected ImageView zoneIcon;
-    protected TextView title;
-    protected TextView description;
+    @InjectView(R.id.icn_competition_zone) protected ImageView zoneIcon;
+    @InjectView(R.id.competition_zone_title) protected TextView title;
+    @InjectView(R.id.competition_zone_description) protected TextView description;
 
     @Inject protected Picasso picasso;
 
@@ -52,9 +55,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
 
     protected void initViews()
     {
-        zoneIcon = (ImageView) findViewById(R.id.icn_competition_zone);
-        title = (TextView) findViewById(R.id.competition_zone_title);
-        description = (TextView) findViewById(R.id.competition_zone_description);
+        ButterKnife.inject(this);
     }
 
     public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
@@ -89,6 +90,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
                     picasso.cancelRequest(zoneIcon);
                     picasso.load(competitionZoneWizardDTO.getIconUrl())
                             .fit()
+                            .centerInside()
                             .into(zoneIcon);
                 }
                 else
@@ -99,6 +101,19 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
             else if (competitionZoneDTO instanceof CompetitionZoneVideoDTO)
             {
                 zoneIcon.setImageResource(R.drawable.ic_action_action_about);
+            }
+            else if (competitionZoneDTO instanceof CompetitionZoneDisplayCellDTO)
+            {
+                CompetitionZoneDisplayCellDTO displayCellDTO = (CompetitionZoneDisplayCellDTO) competitionZoneDTO;
+                String iconUrl = displayCellDTO.getIconUrl();
+                if (iconUrl != null)
+                {
+                    picasso.cancelRequest(zoneIcon);
+                    picasso.load(iconUrl)
+                            .fit()
+                            .centerInside()
+                            .into(zoneIcon);
+                }
             }
             else if (competitionZoneDTO != null)
             {

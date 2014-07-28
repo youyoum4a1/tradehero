@@ -5,6 +5,7 @@
   <string name="error_fetch_provider_info">There was an error when fetching the competition provider info.</string>
   <string name="error_fetch_provider_competition_list">There was an error when fetching the list of competitions</string>
   <string name="error_fetch_provider_competition_leaderboard_list">There was an error when fetching the list of competition leaderboards</string>
+  <string name="error_fetch_provider_competition_display_cell_list">There was an error when fetching the list of competition\'s items</string>
 
   <string name="provider_competition_portfolio_title">Competition Portfolio</string>
   <string name="provider_competition_portfolio_description">view your competition positions</string>
@@ -25,6 +26,8 @@
 
   <string name="competition_enrollment_web_view_done">Done</string>
   <string name="competition_portfolio_unsure">Unnamed Competition</string>
+
+  <string name="competition_trade_now">Trade Now!</string>
 
   <!-- Macquarie WarrantHero specific strings. providerId == 3-->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>

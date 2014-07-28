@@ -14,6 +14,8 @@
       android:textStyle="bold"
       android:textSize="@dimen/text_xsmall"
       android:text="@string/na"
+      android:paddingTop="@dimen/common_margin_4"
+      android:paddingBottom="@dimen/common_margin_4"
     />
 
 </com.tradehero.th.widget.list.BaseListHeaderView>

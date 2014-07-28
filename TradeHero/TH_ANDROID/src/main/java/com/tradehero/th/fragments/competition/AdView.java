@@ -22,7 +22,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 public class AdView extends RelativeLayout
-    implements DTOView<CompetitionZoneAdvertisementDTO>
+        implements DTOView<CompetitionZoneAdvertisementDTO>
 {
     @InjectView(R.id.banner) ImageView banner;
     private AdDTO adDTO;
@@ -110,6 +110,7 @@ public class AdView extends RelativeLayout
                 }
                 else
                 {
+                    picasso.get().cancelRequest(banner);
                     picasso.get().load(adDTO.bannerImageUrl)
                             .into(banner);
                 }

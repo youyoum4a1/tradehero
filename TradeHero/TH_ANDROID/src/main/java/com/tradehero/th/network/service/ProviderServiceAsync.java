@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -49,5 +50,12 @@ interface ProviderServiceAsync
     void getHelpVideos(
             @Path("providerId") int providerId,
             Callback<HelpVideoDTOList> callback);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Cells">
+    @GET("/providers/{providerId}/displaycells")
+    void getDisplayCells(
+            @Path("providerId") int providerId,
+            Callback<ProviderDisplayCellDTOList> callback);
     //</editor-fold>
 }
