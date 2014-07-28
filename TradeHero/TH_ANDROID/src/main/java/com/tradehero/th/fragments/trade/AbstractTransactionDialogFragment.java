@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
@@ -95,9 +96,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @InjectView(R.id.dialog_btn_confirm) protected Button mConfirm;
     @InjectView(R.id.dialog_btn_cancel) protected Button mCancel;
 
-    @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
+    @Optional @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
     @InjectView(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
-    @InjectView(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
+    @Optional @InjectView(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
     @InjectView(R.id.btn_share_wb) protected ToggleButton mBtnShareWb;
     @InjectView(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
 
