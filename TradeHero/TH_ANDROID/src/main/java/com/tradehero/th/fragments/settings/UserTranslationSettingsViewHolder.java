@@ -15,18 +15,17 @@ import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
-import com.tradehero.th.utils.DaggerUtils;
 import java.io.IOException;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class UserTranslationSettingsViewHolder
+public class UserTranslationSettingsViewHolder implements SettingViewHolder
 {
-    @Inject LanguageDTOFactory languageDTOFactory;
-    @Inject UserTranslationSettingPreference userTranslationSettingPreference;
-    @Inject TranslationTokenCache translationTokenCache;
+    @NotNull private final LanguageDTOFactory languageDTOFactory;
+    @NotNull private final UserTranslationSettingPreference userTranslationSettingPreference;
+    @NotNull private final TranslationTokenCache translationTokenCache;
     private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
     protected UserTranslationSettingDTO userTranslationSettingDTO;
 
@@ -35,9 +34,20 @@ public class UserTranslationSettingsViewHolder
     protected Preference translationPreferredLang;
     protected CheckBoxPreference translationAuto;
 
-    public void initViews(DashboardPreferenceFragment preferenceFragment)
+    //<editor-fold desc="Constrcutors">
+    @Inject public UserTranslationSettingsViewHolder(
+            @NotNull LanguageDTOFactory languageDTOFactory,
+            @NotNull UserTranslationSettingPreference userTranslationSettingPreference,
+            @NotNull TranslationTokenCache translationTokenCache)
     {
-        DaggerUtils.inject(this);
+        this.languageDTOFactory = languageDTOFactory;
+        this.userTranslationSettingPreference = userTranslationSettingPreference;
+        this.translationTokenCache = translationTokenCache;
+    }
+    //</editor-fold>
+
+    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    {
         this.preferenceFragment = preferenceFragment;
         translationTokenListener = createTranslationTokenListener();
 
@@ -74,7 +84,7 @@ public class UserTranslationSettingsViewHolder
         fetchTranslationToken();
     }
 
-    public void destroyViews()
+    @Override public void destroyViews()
     {
         detachTranslationTokenCache();
 
