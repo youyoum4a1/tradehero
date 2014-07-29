@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,13 +26,15 @@ public class HomeServiceWrapper
     //<editor-fold desc="Get Home Page Content">
     public Response getHomePageContent(@NotNull UserBaseKey userBaseKey)
     {
-        return homeService.getHomePageContent(userBaseKey.key);
+        return homeService.getHomePageContent(userBaseKey.key,
+                Constants.RELEASE ? null : true);
     }
 
     public MiddleCallback<Response> getHomePageContent(@NotNull UserBaseKey userBaseKey, @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
-        homeServiceAsync.getHomePageContent(userBaseKey.key, middleCallback);
+        homeServiceAsync.getHomePageContent(userBaseKey.key, middleCallback,
+                Constants.RELEASE ? null : true);
         return middleCallback;
     }
     //</editor-fold>
