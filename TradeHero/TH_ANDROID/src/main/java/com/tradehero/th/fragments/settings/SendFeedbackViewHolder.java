@@ -1,16 +1,13 @@
 package com.tradehero.th.fragments.settings;
 
 import android.content.Intent;
-import android.preference.Preference;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class SendFeedbackViewHolder extends BaseSettingViewHolder
+public class SendFeedbackViewHolder extends OneSettingViewHolder
 {
-    protected Preference sendFeedbackPref;
-
     //<editor-fold desc="Constructors">
     @Inject public SendFeedbackViewHolder()
     {
@@ -21,20 +18,8 @@ public class SendFeedbackViewHolder extends BaseSettingViewHolder
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
-        sendFeedbackPref =
-                preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_primary_send_feedback));
-        if (sendFeedbackPref != null)
+        if (clickablePref != null)
         {
-            sendFeedbackPref.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener()
-                    {
-                        @Override public boolean onPreferenceClick(Preference preference)
-                        {
-                            handleSendFeedbackClicked();
-                            return true;
-                        }
-                    });
-
             // TODO
             //sendFeedbackBlock.setOnLongClickListener(new View.OnLongClickListener()
             //{
@@ -45,16 +30,14 @@ public class SendFeedbackViewHolder extends BaseSettingViewHolder
             //    }
             //});
         }
-
     }
 
-    @Override public void destroyViews()
+    @Override protected int getStringKeyResId()
     {
-        this.sendFeedbackPref = null;
-        super.destroyViews();
+        return R.string.key_settings_primary_send_feedback;
     }
 
-    private void handleSendFeedbackClicked()
+    @Override protected void handlePrefClicked()
     {
         preferenceFragment.startActivity(
                 Intent.createChooser(VersionUtils.getSupportEmailIntent(preferenceFragment.getSherlockActivity()),

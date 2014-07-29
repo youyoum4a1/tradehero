@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
-import android.preference.Preference;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -10,10 +9,9 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class FaqViewHolder extends BaseSettingViewHolder
+public class FaqViewHolder extends OneSettingViewHolder
 {
     @NotNull private final Analytics analytics;
-    protected Preference settingFaq;
 
     //<editor-fold desc="Constructors">
     @Inject public FaqViewHolder(@NotNull Analytics analytics)
@@ -22,28 +20,12 @@ public class FaqViewHolder extends BaseSettingViewHolder
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override protected int getStringKeyResId()
     {
-        super.initViews(preferenceFragment);
-        settingFaq = preferenceFragment.findPreference(
-                preferenceFragment.getString(R.string.key_settings_primary_faq));
-        settingFaq.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                handleFaqClicked();
-                return true;
-            }
-        });
+        return R.string.key_settings_primary_faq;
     }
 
-    @Override public void destroyViews()
-    {
-        settingFaq = null;
-        super.destroyViews();
-    }
-
-    private void handleFaqClicked()
+    @Override protected void handlePrefClicked()
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_FAQ));
 

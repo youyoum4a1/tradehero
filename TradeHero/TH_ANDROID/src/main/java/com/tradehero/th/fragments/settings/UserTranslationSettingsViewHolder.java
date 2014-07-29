@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class UserTranslationSettingsViewHolder implements SettingViewHolder
+public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
 {
     @NotNull private final LanguageDTOFactory languageDTOFactory;
     @NotNull private final UserTranslationSettingPreference userTranslationSettingPreference;
@@ -29,12 +29,11 @@ public class UserTranslationSettingsViewHolder implements SettingViewHolder
     private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
     protected UserTranslationSettingDTO userTranslationSettingDTO;
 
-    protected DashboardPreferenceFragment preferenceFragment;
     protected PreferenceCategory translationContainer;
     protected Preference translationPreferredLang;
     protected CheckBoxPreference translationAuto;
 
-    //<editor-fold desc="Constrcutors">
+    //<editor-fold desc="Constructors">
     @Inject public UserTranslationSettingsViewHolder(
             @NotNull LanguageDTOFactory languageDTOFactory,
             @NotNull UserTranslationSettingPreference userTranslationSettingPreference,
@@ -48,7 +47,7 @@ public class UserTranslationSettingsViewHolder implements SettingViewHolder
 
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {
-        this.preferenceFragment = preferenceFragment;
+        super.initViews(preferenceFragment);
         translationTokenListener = createTranslationTokenListener();
 
         translationContainer = (PreferenceCategory) preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_translations_container));
@@ -100,7 +99,7 @@ public class UserTranslationSettingsViewHolder implements SettingViewHolder
         translationPreferredLang = null;
         translationContainer = null;
         translationTokenListener = null;
-        preferenceFragment = null;
+        super.destroyViews();
     }
 
     protected void fetchTranslationToken()
