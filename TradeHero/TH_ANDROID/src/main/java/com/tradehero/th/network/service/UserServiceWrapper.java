@@ -817,6 +817,12 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
+    public Response updateReferralCode(UserBaseKey userKey,
+            UpdateReferralCodeDTO updateReferralCodeDTO)
+    {
+        return userService.updateReferralCode(userKey.key, updateReferralCodeDTO);
+    }
+
     public MiddleCallback<Response> updateReferralCode(UserBaseKey userKey,
             UpdateReferralCodeDTO updateReferralCodeDTO, Callback<Response> callback)
     {

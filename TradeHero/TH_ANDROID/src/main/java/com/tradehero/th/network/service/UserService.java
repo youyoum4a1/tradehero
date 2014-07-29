@@ -10,6 +10,7 @@ import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
+import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
@@ -230,5 +231,12 @@ public interface UserService
     UpdateCountryCodeDTO updateCountryCode(
             @Path("userId") int userId,
             @Body UpdateCountryCodeFormDTO updateCountryCodeFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Update Referral Code">
+    @POST("/users/{userId}/updateInviteCode")
+    Response updateReferralCode(
+            @Path("userId") int userId,
+            @Body UpdateReferralCodeDTO updateReferralCodeDTO);
     //</editor-fold>
 }
