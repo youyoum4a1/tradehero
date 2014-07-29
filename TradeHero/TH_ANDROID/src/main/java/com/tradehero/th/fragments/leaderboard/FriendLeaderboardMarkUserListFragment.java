@@ -286,7 +286,8 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         {
             mProgress.setVisibility(View.INVISIBLE);
             leaderboardFriendsUserListAdapter.clear();
-            handleFriendsLeaderboardReceived(dto);        }
+            handleFriendsLeaderboardReceived(dto);
+        }
 
         @Override public void onErrorThrown(@NotNull LeaderboardFriendsKey key, @NotNull Throwable error)
         {
