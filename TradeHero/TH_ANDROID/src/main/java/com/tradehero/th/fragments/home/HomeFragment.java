@@ -174,11 +174,17 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             createFollowInHomePage();
         }
-        clearSocialData();
     }
 
-    private void clearSocialData()
+    @Override public void onPause()
     {
+        super.onPause();
+        resetRoutingData();
+    }
+
+    private void resetRoutingData()
+    {
+        // TODO Routing library should have a way to clear injected data, proposing: THRouter.reset(this)
         getArguments().clear();
         socialId = null;
         socialUserId = null;
