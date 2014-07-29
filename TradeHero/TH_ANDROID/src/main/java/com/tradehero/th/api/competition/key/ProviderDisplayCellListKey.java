@@ -1,6 +1,5 @@
 package com.tradehero.th.api.competition.key;
 
-import com.sun.javafx.beans.annotations.NonNull;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.competition.ProviderId;
 import org.jetbrains.annotations.NotNull;
