@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.competition;
 import android.content.Intent;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -316,7 +316,8 @@ public class MainCompetitionFragment extends CompetitionFragment
 
             int bgColor = graphicUtil.parseColor(providerDTO.hexColor);
             StateListDrawable stateListDrawable = graphicUtil.createStateListDrawable(getActivity(), bgColor);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+
+            if (SDKUtils.isJellyBeanOrHigher())
             {
                 btnTradeNow.setBackground(stateListDrawable);
             }
