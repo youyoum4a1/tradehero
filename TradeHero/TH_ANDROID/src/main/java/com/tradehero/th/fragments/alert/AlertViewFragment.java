@@ -23,6 +23,7 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -159,13 +160,14 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         switch (item.getItemId())
         {
             case R.id.alert_menu_edit:
-                if (alertId != null)
+                Bundle bundle = new Bundle();
+                OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+                if (applicablePortfolioId != null)
                 {
-                    Bundle bundle = new Bundle();
-                    AlertEditFragment.putApplicablePortfolioId(bundle, getApplicablePortfolioId());
-                    AlertEditFragment.putAlertId(bundle, alertId);
-                    getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
+                    AlertEditFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
                 }
+                AlertEditFragment.putAlertId(bundle, alertId);
+                getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
                 return true;
         }
         return super.onOptionsItemSelected(item);

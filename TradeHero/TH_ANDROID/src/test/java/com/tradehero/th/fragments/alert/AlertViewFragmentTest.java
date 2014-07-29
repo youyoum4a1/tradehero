@@ -17,7 +17,6 @@ import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import javax.inject.Inject;
 import org.junit.After;
