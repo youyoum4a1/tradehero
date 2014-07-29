@@ -80,7 +80,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
-    @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
     @Inject THRouter thRouter;
@@ -261,48 +260,52 @@ public final class HomeFragment extends BaseWebViewFragment
         stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
 
         Bundle params = new Bundle();
-        String messageToFacebookFriends = getActivity().getString(
-                R.string.invite_friend_facebook_tradehero_refer_friend_message);
-        if (messageToFacebookFriends.length() > 60)
+        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
         {
-            messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-        }
+            String messageToFacebookFriends = getActivity().getString(
+                    R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+            if (messageToFacebookFriends.length() > 60)
+            {
+                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+            }
 
-        params.putString("message", messageToFacebookFriends);
-        params.putString("to", stringBuilder.toString());
+            params.putString("message", messageToFacebookFriends);
+            params.putString("to", stringBuilder.toString());
 
-        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
-                params))
-                .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                {
-                    @Override
-                    public void onComplete(Bundle values, FacebookException error)
+            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+                    params))
+                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
-                        if (error != null)
+                        @Override
+                        public void onComplete(Bundle values, FacebookException error)
                         {
-                            if (error instanceof FacebookOperationCanceledException)
+                            if (error != null)
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
-                            }
-                        }
-                        else
-                        {
-                            final String requestId = values.getString("request");
-                            if (requestId != null)
-                            {
-                                THToast.show(R.string.invite_friend_request_sent);
-                                invite(userFriendsDTO);
+                                if (error instanceof FacebookOperationCanceledException)
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                             else
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                final String requestId = values.getString("request");
+                                if (requestId != null)
+                                {
+                                    THToast.show(R.string.invite_friend_request_sent);
+                                    invite(userFriendsDTO);
+                                }
+                                else
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                         }
-                    }
-                })
-                .build();
-        requestsDialog.show();
+                    })
+                    .build();
+            requestsDialog.show();
+        }
     }
 
     private void detachMiddleCallbackInvite()
@@ -428,7 +431,7 @@ public final class HomeFragment extends BaseWebViewFragment
             {
                 // TODO
                 handleFollowSuccess();
-                userProfileCache.put(userProfileDTO.getBaseKey(), userProfileDTO);
+                userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
 
                 return;
             }

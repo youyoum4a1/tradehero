@@ -200,56 +200,60 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         }
         Timber.d("list of fbIds: %s", stringBuilder.toString());
 
-        String messageToFacebookFriends = activity.getString(R.string.invite_friend_facebook_tradehero_refer_friend_message);
-        if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
+        UserProfileDTO userProfileDTO = userProfileCache.get(userBaseKey);
+        if (userProfileDTO != null)
         {
-            messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
-        }
+            String messageToFacebookFriends = activity.getString(R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+            if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
+            {
+                messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
+            }
 
-        Bundle params = new Bundle();
-        params.putString("message", messageToFacebookFriends);
-        params.putString("to", stringBuilder.toString());
+            Bundle params = new Bundle();
+            params.putString("message", messageToFacebookFriends);
+            params.putString("to", stringBuilder.toString());
 
-        //Session session = getFacebookSession();
-        Session session = Session.getActiveSession();
-        WebDialog requestsDialog = (
-                new WebDialog.RequestsDialogBuilder(activity,
-                        session,
-                        params))
-                .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                {
-
-                    @Override
-                    public void onComplete(Bundle values,
-                            FacebookException error)
+            //Session session = getFacebookSession();
+            Session session = Session.getActiveSession();
+            WebDialog requestsDialog = (
+                    new WebDialog.RequestsDialogBuilder(activity,
+                            session,
+                            params))
+                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
-                        if (error != null)
+
+                        @Override
+                        public void onComplete(Bundle values,
+                                FacebookException error)
                         {
-                            if (error instanceof FacebookOperationCanceledException)
+                            if (error != null)
                             {
-                                handleCaneled();
+                                if (error instanceof FacebookOperationCanceledException)
+                                {
+                                    handleCaneled();
+                                }
+                                else
+                                {
+                                    handleError();
+                                }
                             }
                             else
                             {
-                                handleError();
+                                final String requestId = values.getString("request");
+                                if (requestId != null)
+                                {
+                                    handleSuccess();
+                                }
+                                else
+                                {
+                                    handleCaneled();
+                                }
                             }
                         }
-                        else
-                        {
-                            final String requestId = values.getString("request");
-                            if (requestId != null)
-                            {
-                                handleSuccess();
-                            }
-                            else
-                            {
-                                handleCaneled();
-                            }
-                        }
-                    }
-                })
-                .build();
-        requestsDialog.show();
+                    })
+                    .build();
+            requestsDialog.show();
+        }
     }
 
     private void handleCaneled()
