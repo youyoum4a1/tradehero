@@ -10,6 +10,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -112,13 +113,17 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
             }
         });
 
-        edtMessageInvite.setText(getString(R.string.weibo_friends_invite) + getStrMessageOfAtList(usersToInvite));
-        setMessageTextLength();
-        builder.setView(view);
-        builder.setCancelable(true);
-        addMessageTextListener();
-        mWeiboInviteDialog = builder.create();
-        mWeiboInviteDialog.show();
+        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
+        {
+            edtMessageInvite.setText(getString(R.string.weibo_friends_invite, userProfileDTO.referralCode) + getStrMessageOfAtList(usersToInvite));
+            setMessageTextLength();
+            builder.setView(view);
+            builder.setCancelable(true);
+            addMessageTextListener();
+            mWeiboInviteDialog = builder.create();
+            mWeiboInviteDialog.show();
+        }
     }
 
     @Override protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
