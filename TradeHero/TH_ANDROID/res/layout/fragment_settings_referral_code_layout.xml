@@ -25,7 +25,7 @@
           android:layout_margin="@dimen/common_margin_10"
           android:gravity="center_horizontal"
           android:textSize="@dimen/text_xxlarge"
-          android:textColor="@color/button_blue"
+          android:textColor="@color/tradehero_blue"
           android:textColorHighlight="@color/light_grey_transparent"
           android:textStyle="bold"
           android:textIsSelectable="true"
@@ -43,15 +43,12 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <include
+        layout="@layout/referral_code_dialog_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin_10">
+        android:layout_margin="@dimen/common_margin_10"/>
 
-      <include
-          layout="@layout/referral_code_dialog_layout"/>
-
-    </LinearLayout>
 
   </LinearLayout>
 

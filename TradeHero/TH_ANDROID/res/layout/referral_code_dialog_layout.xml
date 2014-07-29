@@ -2,7 +2,6 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,7 +33,7 @@
       style="@style/TH.DiscussionTextBox"
       android:textSize="@dimen/text_xlarge"
       android:textStyle="bold"
-      android:textColor="@color/button_blue"/>
+      android:textColor="@color/tradehero_blue"/>
 
   <ImageView
       android:layout_width="match_parent"
@@ -64,9 +63,8 @@
         android:layout_weight="1"
         android:background="@drawable/basic_white_selector"
         android:text="@string/ok"
-        android:textSize="@dimen/text_medium"
-        android:textColor="@color/button_blue"
-        android:textStyle="bold"
+        android:textSize="@dimen/text_small"
+        android:textColor="@color/tradehero_blue"
         android:layout_marginLeft="1dp"/>
 
   </LinearLayout>
