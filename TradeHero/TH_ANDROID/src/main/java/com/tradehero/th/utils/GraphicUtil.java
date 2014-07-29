@@ -1,14 +1,20 @@
 package com.tradehero.th.utils;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.media.ExifInterface;
+import android.os.Build;
 import android.util.DisplayMetrics;
+import android.view.View;
+import com.tradehero.common.utils.SDKUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.tradehero.common.graphics.RotateTransformation;
@@ -268,5 +274,18 @@ public class GraphicUtil implements BitmapForProfileFactory
         states.addState(new int[] {android.R.attr.state_focused}, new ColorDrawable(focused)); //Focused
         states.addState(new int[] {}, new ColorDrawable(normal)); //normal
         return states;
+    }
+
+    @SuppressLint("NewApi")
+    public void setBackground(@NotNull View view, Drawable drawable)
+    {
+        if(SDKUtils.isJellyBeanOrHigher())
+        {
+            view.setBackground(drawable);
+        }
+        else
+        {
+            view.setBackgroundDrawable(drawable);
+        }
     }
 }

@@ -317,14 +317,7 @@ public class MainCompetitionFragment extends CompetitionFragment
             int bgColor = graphicUtil.parseColor(providerDTO.hexColor);
             StateListDrawable stateListDrawable = graphicUtil.createStateListDrawable(getActivity(), bgColor);
 
-            if (SDKUtils.isJellyBeanOrHigher())
-            {
-                btnTradeNow.setBackground(stateListDrawable);
-            }
-            else
-            {
-                btnTradeNow.setBackgroundDrawable(stateListDrawable);
-            }
+            graphicUtil.setBackground(btnTradeNow, stateListDrawable);
 
             int textColor = graphicUtil.parseColor(providerDTO.textHexColor, graphicUtil.getContrastingColor(bgColor));
             btnTradeNow.setTextColor(textColor);
