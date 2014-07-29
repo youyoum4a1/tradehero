@@ -3,19 +3,27 @@ package com.tradehero.th.models.discussion;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
 {
-    private final DiscussionCache discussionCache;
-    private final DiscussionKey stubKey;
+    @NotNull private final DiscussionCache discussionCache;
+    @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @Nullable private final DiscussionKey stubKey;
 
     public DTOProcessorDiscussionCreate(
-            DiscussionDTOFactory discussionDTOFactory,
-            DiscussionCache discussionCache, DiscussionKey stubKey)
+            @NotNull DiscussionDTOFactory discussionDTOFactory,
+            @NotNull DiscussionCache discussionCache,
+            @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
+            @Nullable DiscussionKey stubKey)
     {
         super(discussionDTOFactory);
         this.discussionCache = discussionCache;
+        this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.stubKey = stubKey;
     }
 
@@ -33,6 +41,7 @@ public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
         if (processed != null)
         {
             processed.stubKey = stubKey;
+            userMessagingRelationshipCache.invalidate(new UserBaseKey(discussionDTO.userId));
         }
         return processed;
     }

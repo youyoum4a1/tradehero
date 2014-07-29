@@ -3,7 +3,6 @@ package com.tradehero.th.models.discussion;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -40,11 +39,7 @@ public class DTOProcessorMessageRead implements DTOProcessor<Response>
         }
         if (readerId != null)
         {
-            UserProfileDTO userProfileDTO = userProfileCache.get(readerId);
-            if (userProfileDTO != null && userProfileDTO.unreadMessageThreadsCount > 0)
-            {
-                --userProfileDTO.unreadMessageThreadsCount;
-            }
+            userProfileCache.getOrFetchAsync(readerId, true);
         }
         return value;
     }

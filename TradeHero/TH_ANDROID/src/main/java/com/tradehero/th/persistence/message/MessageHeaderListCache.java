@@ -81,19 +81,6 @@ public class MessageHeaderListCache extends StraightCutDTOCacheNew<
         return value;
     }
 
-    /**
-     *
-     * @param data
-     */
-    private void updateUnreadMessageThreadCount(ReadablePaginatedDTO<MessageHeaderDTO> data)
-    {
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            userProfileDTO.unreadMessageThreadsCount =  data.unread;
-        }
-    }
-
     public void invalidateWithRecipient(@Nullable UserBaseKey userBaseKey)
     {
         for (MessageListKey messageListKey : new ArrayList<>(snapshot().keySet()))
