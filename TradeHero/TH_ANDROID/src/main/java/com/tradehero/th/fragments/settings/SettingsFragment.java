@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.support.v4.app.FragmentActivity;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +15,9 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
-import com.squareup.picasso.LruCache;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.milestone.Milestone;
-import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -51,7 +47,6 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
@@ -62,7 +57,6 @@ import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
-import com.tradehero.th.utils.dagger.ForPicasso;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -92,10 +86,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
-    @Inject @ForPicasso LruCache lruCache;
     // TODO something belong to Google Play should not be here, generic util class for all store is expected
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
-    @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
@@ -129,6 +121,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected ReferralCodeViewHolder referralCodeViewHolder;
     @Inject protected SignOutViewHolder signOutViewHolder;
     @Inject protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
+    @Inject protected ResetHelpScreensViewHolder resetHelpScreensViewHolder;
+    @Inject protected ClearCacheViewHolder clearCacheViewHolder;
+    @Inject protected AboutPrefViewHolder aboutPrefViewHolder;
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
@@ -311,6 +306,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         referralCodeViewHolder.destroyViews();
         signOutViewHolder.destroyViews();
         userTranslationSettingsViewHolder.destroyViews();
+        resetHelpScreensViewHolder.destroyViews();
+        clearCacheViewHolder.destroyViews();
+        aboutPrefViewHolder.destroyViews();
 
         detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
@@ -321,6 +319,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroy()
     {
+        aboutPrefViewHolder = null;
+        clearCacheViewHolder = null;
+        resetHelpScreensViewHolder = null;
         userTranslationSettingsViewHolder = null;
         signOutViewHolder = null;
         referralCodeViewHolder = null;
@@ -405,20 +406,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             }
         });
 
-        Preference settingAbout = findPreference(getString(R.string.key_settings_misc_about));
-
-        if (settingAbout != null)
-        {
-            settingAbout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleAboutClicked();
-                    return true;
-                }
-            });
-        }
-
         sendLoveViewHolder.initViews(this);
         sendFeedbackViewHolder.initViews(this);
         faqViewHolder.initViews(this);
@@ -445,48 +432,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                             return true;
                         }
                     });
-        }
-
-        Preference resetHelpScreensBlock =
-                findPreference(getString(R.string.key_settings_misc_reset_help_screens));
-        if (resetHelpScreensBlock != null)
-        {
-            resetHelpScreensBlock.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener()
-                    {
-                        @Override public boolean onPreferenceClick(Preference preference)
-                        {
-                            handleResetHelpScreensClicked();
-                            return true;
-                        }
-                    });
-        }
-
-        Preference clearCacheBlock =
-                findPreference(getString(R.string.key_settings_misc_clear_cache));
-        if (clearCacheBlock != null)
-        {
-            clearCacheBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleClearCacheClicked();
-                    return true;
-                }
-            });
-        }
-
-        Preference aboutBlock = findPreference(getString(R.string.key_settings_misc_about));
-        if (aboutBlock != null)
-        {
-            aboutBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleAboutClicked();
-                    return true;
-                }
-            });
         }
 
         // Sharing
@@ -593,6 +538,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             updateSocialConnectStatus();
         }
         // Otherwise we rely on the complete listener
+
+        resetHelpScreensViewHolder.initViews(this);
+        clearCacheViewHolder.initViews(this);
+        aboutPrefViewHolder.initViews(this);
     }
 
     private void initInfo()
@@ -854,65 +803,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                 updateNotificationStatus();
             }
         };
-    }
-
-    private void handleResetHelpScreensClicked()
-    {
-        resetHelpScreen.delete();
-        THToast.show(R.string.settings_misc_reset_help_screen);
-    }
-
-    private void handleClearCacheClicked()
-    {
-        progressDialog = progressDialogUtil.show(getActivity(),
-                R.string.settings_misc_cache_clearing_alert_title,
-                R.string.settings_misc_cache_clearing_alert_message);
-
-        new SlowedAsyncTask<Void, Void, Void>(500)
-        {
-            @Override protected Void doBackgroundAction(Void... voids)
-            {
-                flushCache();
-                return null;
-            }
-
-            @Override protected void onPostExecute(Void aVoid)
-            {
-                handleCacheCleared();
-            }
-        }.execute();
-    }
-
-    private void flushCache()
-    {
-        lruCache.clear();
-    }
-
-    private void handleCacheCleared()
-    {
-        FragmentActivity activity = getActivity();
-        if (activity != null)
-        {
-            progressDialog = progressDialogUtil.show(getActivity(),
-                    R.string.settings_misc_cache_cleared_alert_title,
-                    R.string.empty);
-            getView().postDelayed(new Runnable()
-            {
-                @Override public void run()
-                {
-                    ProgressDialog progressDialogCopy = progressDialog;
-                    if (progressDialogCopy != null)
-                    {
-                        progressDialogCopy.hide();
-                    }
-                }
-            }, 500);
-        }
-    }
-
-    private void handleAboutClicked()
-    {
-        getNavigator().pushFragment(AboutFragment.class);
     }
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>
