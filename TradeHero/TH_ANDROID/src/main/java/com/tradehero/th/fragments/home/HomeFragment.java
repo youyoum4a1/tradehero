@@ -185,10 +185,14 @@ public final class HomeFragment extends BaseWebViewFragment
     private void resetRoutingData()
     {
         // TODO Routing library should have a way to clear injected data, proposing: THRouter.reset(this)
-        getArguments().clear();
         socialId = null;
+        getArguments().remove("socialId");
+
         socialUserId = null;
+        getArguments().remove("socialUserId");
+
         userId = null;
+        getArguments().remove("userId");
     }
 
     //<editor-fold desc="Windy's stuff, to be refactored">
