@@ -164,11 +164,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Override public void onResume()
     {
         super.onResume();
-    }
-
-    @Override public void onCustomResume()
-    {
-        super.onCustomResume();
         thRouter.inject(this);
 
         if (socialId != null && socialUserId != null)
@@ -179,6 +174,15 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             createFollowInHomePage();
         }
+        clearSocialData();
+    }
+
+    private void clearSocialData()
+    {
+        getArguments().clear();
+        socialId = null;
+        socialUserId = null;
+        userId = null;
     }
 
     //<editor-fold desc="Windy's stuff, to be refactored">
