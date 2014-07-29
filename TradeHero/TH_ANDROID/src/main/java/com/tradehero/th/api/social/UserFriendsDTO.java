@@ -59,7 +59,7 @@ abstract public class UserFriendsDTO
     }
 
     @Override
-    public int compareTo(UserFriendsDTO another)
+    public int compareTo(@NotNull UserFriendsDTO another)
     {
         if (isTradeHeroUser())
         {
@@ -84,4 +84,6 @@ abstract public class UserFriendsDTO
             }
         }
     }
+
+
 }

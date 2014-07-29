@@ -28,14 +28,13 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityListFragment;
@@ -60,13 +59,16 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import dagger.Lazy;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -81,10 +83,10 @@ public class TrendingFragment extends SecurityListFragment
     @Inject Lazy<ProviderListCache> providerListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
-    @Inject THLocalyticsSession localyticsSession;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject DTOCacheUtil dtoCacheUtil;
+    @Inject Analytics analytics;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
 
@@ -139,7 +141,7 @@ public class TrendingFragment extends SecurityListFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Trade);
+        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
 
         // fetch user
         detachUserProfileCache();
@@ -429,12 +431,16 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleResetPortfolioItemOnClick()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO);
+        createPurchaseActionInteractorBuilder()
+                .build()
+                .resetPortfolio();
     }
 
     private void handleExtraCashItemOnClick()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
+        createPurchaseActionInteractorBuilder()
+                .build()
+                .buyVirtualDollar();
     }
 
     private void handleEarnCreditItemOnClick()
@@ -444,8 +450,8 @@ public class TrendingFragment extends SecurityListFragment
 
     private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
     {
-        localyticsSession.tagEvent(LocalyticsConstants.TrendingStock,
-                securityCompactDTO.getSecurityId());
+        analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
+
         Bundle args = new Bundle();
         args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
 
@@ -481,17 +487,17 @@ public class TrendingFragment extends SecurityListFragment
     }
     //</editor-fold>
 
-    @Override protected void handleSecurityItemReceived(SecurityIdList securityIds)
+    @Override protected void handleSecurityItemReceived(@Nullable SecurityCompactDTOList securityCompactDTOs)
     {
         if (AppTiming.trendingFilled == 0)
         {
             AppTiming.trendingFilled = System.currentTimeMillis();
         }
-        //Timber.d("handleSecurityItemReceived "+securityIds.toString());
+        //Timber.d("handleSecurityItemReceived "+securityCompactDTOs.toString());
         if (securityItemViewAdapter != null)
         {
             // It may have been nullified if coming out
-            securityItemViewAdapter.setItems(securityCompactCache.get().get(securityIds));
+            securityItemViewAdapter.setItems(securityCompactDTOs);
             refreshAdapterWithTiles(false);
         }
 
@@ -500,7 +506,7 @@ public class TrendingFragment extends SecurityListFragment
                 AppTiming.dashboardCreate - AppTiming.splashCreate,
                 AppTiming.trendingFilled - AppTiming.dashboardCreate);
 
-        dtoCacheUtil.initialPrefetches();
+        //dtoCacheUtil.initialPrefetches();
     }
 
     private void refreshAdapterWithTiles(boolean refreshTileTypes)
@@ -578,7 +584,8 @@ public class TrendingFragment extends SecurityListFragment
         @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
         {
             refreshAdapterWithTiles(true);
-            openEnrollmentPageIfNecessary(value);
+            //close it , just like a bug if i have many competition not joined.
+            //openEnrollmentPageIfNecessary(value);
         }
 
         @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)

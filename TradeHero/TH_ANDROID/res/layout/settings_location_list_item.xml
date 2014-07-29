@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.location.LocationRelativeView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/medium_logo_w_h"
+    android:background="@drawable/basic_white_selector"
+    android:paddingLeft="@dimen/common_margin_10"
+    android:paddingRight="@dimen/common_margin_10"
+    >
+
+  <ImageView
+      android:id="@+id/country_logo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_alignParentLeft="true"
+      android:contentDescription="@null"
+      tools:src="@drawable/square_aq"
+      />
+
+  <TextView
+      android:id="@+id/country_code"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@id/country_logo"
+      android:layout_centerVertical="true"
+      android:textSize="@dimen/common_text_size_25"
+      android:textColor="@color/black"
+      android:layout_marginLeft="@dimen/common_margin_10"
+      tools:text="AQ"
+      />
+
+  <TextView
+      android:id="@+id/country_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@id/country_code"
+      android:layout_centerVertical="true"
+      android:textSize="@dimen/common_text_size_25"
+      android:textColor="@color/black"
+      android:layout_marginLeft="@dimen/common_margin_10"
+      tools:text="AQ"
+      />
+
+  <ImageView
+      android:id="@+id/location_tick_is_current"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:src="@drawable/ic_tick_green"
+      android:visibility="gone"
+      android:contentDescription="@null"/>
+
+</com.tradehero.th.fragments.location.LocationRelativeView>

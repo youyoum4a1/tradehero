@@ -8,23 +8,27 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.Router;
 import com.tradehero.route.RouterOptions;
 import com.tradehero.route.RouterParams;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.home.HomeFragment;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public class THRouter extends Router
 {
+    @NotNull private final CurrentActivityHolder currentActivityHolder;
     private Map<String, String> aliases;
 
-    @Inject public THRouter(Context context)
+    @Inject public THRouter(
+            @NotNull Context context,
+            @NotNull CurrentActivityHolder currentActivityHolder)
     {
         super(context);
-
+        this.currentActivityHolder = currentActivityHolder;
         aliases = new LinkedHashMap<>();
     }
 
@@ -45,9 +49,10 @@ public class THRouter extends Router
         }
 
         RouterParams params = this.paramsForUrl(url);
-        if (params.routerOptions instanceof THRouterOptions)
+        Activity currentActivity = currentActivityHolder.getCurrentActivity();
+        if (currentActivity != null && params.routerOptions instanceof THRouterOptions)
         {
-            openFragment(params, extras, context);
+            openFragment(params, extras, currentActivity);
         }
         else
         {
@@ -99,11 +104,11 @@ public class THRouter extends Router
         this.routes.put(format, options);
     }
 
-    private void openFragment(RouterParams params, Bundle extras, Context context)
+    private void openFragment(RouterParams params, Bundle extras, Activity activity)
     {
-        if (context instanceof DashboardActivity && params != null)
+        if (activity instanceof DashboardActivity && params != null)
         {
-            DashboardNavigator navigator = ((DashboardActivity) context).getDashboardNavigator();
+            DashboardNavigator navigator = ((DashboardActivity) activity).getDashboardNavigator();
             THRouterOptions options = (THRouterOptions) params.routerOptions;
             Bundle args = new Bundle();
             if (extras != null)
@@ -117,18 +122,15 @@ public class THRouter extends Router
                     args.putString(param.getKey(), param.getValue());
                 }
             }
-            if (options.getOpenFragmentClass().equals(HomeFragment.class)
-                    && navigator.getCurrentFragment() != null
-                    && navigator.getCurrentFragment() instanceof HomeFragment)
+
+            Fragment currentFragment = navigator.getCurrentFragment();
+
+            /** If the opening fragment is active, and not yet detached, resume it with routing bundle **/
+            if (currentFragment != null && !currentFragment.isDetached() &&
+                    ((Object) currentFragment).getClass().equals(options.getOpenFragmentClass()))
             {
-                if (args.getString("SocialID") != null && args.getString("UserID") != null)
-                {//invite
-                    ((HomeFragment) navigator.getCurrentFragment()).createInviteInHomePage(args.getString("SocialID"), args.getString("UserID"));
-                }
-                else if (args.getString("UserID") != null)
-                {//follow
-                    ((HomeFragment) navigator.getCurrentFragment()).createFollowInHomePage(args.getString("UserID"));
-                }
+                currentFragment.getArguments().putAll(args);
+                currentFragment.onResume();
             }
             else
             {

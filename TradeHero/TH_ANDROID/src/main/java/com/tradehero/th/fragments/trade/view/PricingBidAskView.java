@@ -187,7 +187,12 @@ public class PricingBidAskView extends LinearLayout
         {
             return getResources().getString(R.string.buy_sell_ask_price_not_available);
         }
-        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, THSignedNumber.WITHOUT_SIGN, "");
+        THSignedNumber thSignedNumber = THSignedNumber.builder()
+                .number(quoteDTO.ask)
+                .money()
+                .withOutSign()
+                .currency("")
+                .build();
         return thSignedNumber.toString();
     }
 
@@ -210,7 +215,12 @@ public class PricingBidAskView extends LinearLayout
         {
             return getResources().getString(R.string.buy_sell_bid_price_not_available);
         }
-        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
+        THSignedNumber thSignedNumber = THSignedNumber.builder()
+                .number(quoteDTO.bid)
+                .money()
+                .withOutSign()
+                .currency("")
+                .build();
         return thSignedNumber.toString();
     }
 
@@ -232,15 +242,16 @@ public class PricingBidAskView extends LinearLayout
         Double priceRefCcy = quoteDTO == null ? null : quoteDTO.getPriceRefCcy(portfolioCompactDTO, buy);
         if (priceRefCcy == null)
         {
-            return "= " + portfolioCompactDTO.getCurrencyDisplayOrUsd();
+            return "= " + portfolioCompactDTO.getNiceCurrency();
         }
         else
         {
-            THSignedNumber thSignedNumber = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    priceRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    portfolioCompactDTO.getCurrencyDisplayOrUsd());
+            THSignedNumber thSignedNumber = THSignedNumber.builder()
+                    .number(priceRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(portfolioCompactDTO.getNiceCurrency())
+                    .build();
             return String.format("= %s", thSignedNumber.toString());
         }
     }

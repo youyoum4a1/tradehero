@@ -49,6 +49,9 @@ import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -73,15 +76,15 @@ public class PositionListFragment
     public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
+    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
     @Inject Lazy<GetPositionsCache> getPositionsCache;
     @Inject Lazy<PortfolioHeaderFactory> headerFactory;
-    @Inject UserProfileCache userProfileCache;
-    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
-    @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
+    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject Analytics analytics;
     @Inject PortfolioCache portfolioCache;
+    @Inject UserProfileCache userProfileCache;
 
-    private PortfolioHeaderView portfolioHeaderView;
     @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView;
@@ -91,6 +94,7 @@ public class PositionListFragment
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
 
+    private PortfolioHeaderView portfolioHeaderView;
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
@@ -147,7 +151,7 @@ public class PositionListFragment
         }
         else
         {
-            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey, injectedPortfolioId);
+            getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
 
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
@@ -487,7 +491,7 @@ public class PositionListFragment
 
     public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
     {
-        return ownedPortfolioId == null ? false : (ownedPortfolioId.portfolioId == null || ownedPortfolioId.portfolioId <= 0);
+        return ownedPortfolioId != null && ownedPortfolioId.portfolioId <= 0;
     }
 
     protected void fetchSimplePage()
@@ -837,13 +841,18 @@ public class PositionListFragment
     }
 
     protected class AbstractPositionListPremiumUserFollowedListener
-            extends BasePurchaseManagerPremiumUserFollowedListener
+            implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             displayHeaderView();
             fetchSimplePage(true);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // do nothing for now
         }
     }
 

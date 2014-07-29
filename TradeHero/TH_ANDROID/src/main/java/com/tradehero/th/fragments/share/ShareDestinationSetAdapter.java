@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ShareDestinationSetAdapter extends DTOSetAdapter<ShareDestination>
 {
@@ -22,18 +23,18 @@ public class ShareDestinationSetAdapter extends DTOSetAdapter<ShareDestination>
     @NotNull @Inject Comparator<ShareDestination> shareDestinationIndexResComparator;
 
     //<editor-fold desc="Constructors">
-    public ShareDestinationSetAdapter(Context context)
+    public ShareDestinationSetAdapter(@NotNull Context context)
     {
         super(context);
     }
 
-    public ShareDestinationSetAdapter(Context context, Collection<ShareDestination> objects)
+    public ShareDestinationSetAdapter(@NotNull Context context, @Nullable Collection<ShareDestination> objects)
     {
         super(context, objects);
     }
     //</editor-fold>
 
-    @Override protected Set<ShareDestination> createSet(Collection<ShareDestination> objects)
+    @Override @NotNull protected Set<ShareDestination> createSet(@Nullable Collection<ShareDestination> objects)
     {
         Set<ShareDestination> set = new TreeSet<>(shareDestinationIndexResComparator);
         if (objects != null)

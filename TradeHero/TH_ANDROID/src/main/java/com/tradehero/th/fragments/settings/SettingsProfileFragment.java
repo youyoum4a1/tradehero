@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -322,7 +323,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     protected void askImageFromCamera()
     {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, REQUEST_CAMERA);
+        try
+        {
+            startActivityForResult(cameraIntent, REQUEST_CAMERA);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            THToast.show(R.string.error_launch_camera);
+        }
     }
 
     @Override public void notifyValidation(ValidationMessage message)

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
@@ -19,6 +20,7 @@ import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZoneDTO, CompetitionZoneListItemView>
@@ -47,6 +49,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     private UserProfileCompactDTO portfolioUserProfileCompactDTO;
     private ProviderDTO providerDTO;
     private List<CompetitionDTO> competitionDTOs;
+    private List<ProviderDisplayCellDTO> providerDisplayCellDTOs;
 
     public CompetitionZoneListItemAdapter(Context context, LayoutInflater inflater, int zoneItemLayoutResId,
             int tradeNowResId, int adsResId, int headerResId, int portfolioResId, int leaderboardResId, int legalResId)
@@ -73,19 +76,28 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     public void setPortfolioUserProfileCompactDTO(UserProfileCompactDTO portfolioUserProfileCompactDTO)
     {
         this.portfolioUserProfileCompactDTO = portfolioUserProfileCompactDTO;
-        repopulateLists();
     }
 
     public void setProvider(ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
-        repopulateLists();
     }
 
     public void setCompetitionDTOs(List<CompetitionDTO> competitionDTOs)
     {
         this.competitionDTOs = competitionDTOs;
+    }
+
+
+    public void setDisplayCellDTOS(@Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOList)
+    {
+        this.providerDisplayCellDTOs = providerDisplayCellDTOList;
+    }
+
+    @Override public void notifyDataSetChanged()
+    {
         repopulateLists();
+        super.notifyDataSetChanged();
     }
 
     private void repopulateLists()
@@ -95,7 +107,7 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
             List<Integer> preparedOrderedTypes = new ArrayList<>();
             List<Object> preparedOrderedItems = new ArrayList<>();
 
-            this.competitionZoneDTOUtil.populateLists(context, portfolioUserProfileCompactDTO, providerDTO, competitionDTOs, preparedOrderedTypes, preparedOrderedItems);
+            this.competitionZoneDTOUtil.populateLists(context, portfolioUserProfileCompactDTO, providerDTO, competitionDTOs, providerDisplayCellDTOs, preparedOrderedTypes, preparedOrderedItems);
 
             this.orderedTypes = preparedOrderedTypes;
             this.orderedItems = preparedOrderedItems;
@@ -224,4 +236,5 @@ public class CompetitionZoneListItemAdapter extends ArrayDTOAdapter<CompetitionZ
     {
         this.parentOnLegalElementClicked = parentOnLegalElementClicked;
     }
+
 }

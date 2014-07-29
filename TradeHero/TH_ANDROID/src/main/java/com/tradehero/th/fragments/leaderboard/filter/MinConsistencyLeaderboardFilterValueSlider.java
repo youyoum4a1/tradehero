@@ -36,21 +36,23 @@ public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilte
 
     protected String getMaxValueText()
     {
-        THSignedNumber signedNumber = new THSignedNumber(
-                THSignedNumber.TYPE_MONEY,
-                (double) maxValue,
-                THSignedNumber.WITHOUT_SIGN,
-                "");
+        THSignedNumber signedNumber = THSignedNumber.builder()
+                .number((double) maxValue)
+                .money()
+                .withOutSign()
+                .currency("")
+                .build();
         return signedNumber.toString(2);
     }
 
     @Override protected String getCurrentValueText()
     {
-        THSignedNumber signedNumber = new THSignedNumber(
-                THSignedNumber.TYPE_MONEY,
-                (double) currentValue,
-                THSignedNumber.WITHOUT_SIGN,
-                "");
+        THSignedNumber signedNumber = THSignedNumber.builder()
+                .number((double) currentValue)
+                .money()
+                .withOutSign()
+                .currency("")
+                .build();
         return signedNumber.toString(2);
     }
 }

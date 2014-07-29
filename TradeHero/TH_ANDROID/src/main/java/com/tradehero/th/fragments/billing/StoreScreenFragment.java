@@ -32,8 +32,9 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -48,7 +49,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     protected Integer showBillingAvailableRequestCode;
 
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
@@ -91,7 +92,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Store);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         storeItemAdapter.clear();
         storeItemAdapter.addAll(storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS));
@@ -101,7 +102,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         if (productDomainIdentifierOrdinal != null)
         {
-            cancelOthersAndShowProductDetailList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
+            createPurchaseActionInteractorBuilder()
+                    .build()
+                    .showProductsList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
         }
     }
 
@@ -159,7 +162,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
-            cancelOthersAndShowProductDetailList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
+            createPurchaseActionInteractorBuilder()
+                    .build()
+                    .showProductsList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {

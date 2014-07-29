@@ -179,15 +179,26 @@
   <string name="tap_stream_type_channel9_open" translatable="false">android-tradehero-channel9-open</string>
   <string name="tap_stream_type_channel10_install" translatable="false">android-tradehero-channel10-install</string>
   <string name="tap_stream_type_channel10_open" translatable="false">android-tradehero-channel10-open</string>
+  <string name="tap_stream_type_channel11_install" translatable="false">android-tradehero-channel11-install</string>
+  <string name="tap_stream_type_channel11_open" translatable="false">android-tradehero-channel11-open</string>
+  <string name="tap_stream_type_channel12_install" translatable="false">android-tradehero-channel12-install</string>
+  <string name="tap_stream_type_channel12_open" translatable="false">android-tradehero-channel12-open</string>
+  <string name="tap_stream_type_channel13_install" translatable="false">android-tradehero-channel13-install</string>
+  <string name="tap_stream_type_channel13_open" translatable="false">android-tradehero-channel13-open</string>
+  <string name="tap_stream_type_channel14_install" translatable="false">android-tradehero-channel14-install</string>
+  <string name="tap_stream_type_channel14_open" translatable="false">android-tradehero-channel14-open</string>
+  <string name="tap_stream_type_channel15_install" translatable="false">android-tradehero-channel15-install</string>
+  <string name="tap_stream_type_channel15_open" translatable="false">android-tradehero-channel15-open</string>
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
   <string name="invite_social_friend">Invite %s Friend</string>
   <string name="search_social_friend_hint">Search your friend</string>
 
-  <string name="social_friend_empty">Sorry,no friends</string>
+  <string name="social_friend_empty">Sorry, no friends</string>
   <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
   <string name="invite_from_weibo">Invite from Weibo</string>
+  <string name="invite_from_wechat">Invite from Wechat</string>
   <string name="invite_from_linkedIn">Invite from LinkedIn</string>
   <string name="invite_from_twitter">Invite from Twitter</string>
   <string name="invite_from_facebook">Invite from Facebook</string>
@@ -197,7 +208,10 @@
 
   <plurals name="inbox_notification_title">
     <item quantity="one">1 New Message</item>
-    <item quantity="other">%d <b>New</b> Messages</item>
+    <item quantity="other">%d
+      <b>New</b>
+      Messages
+    </item>
   </plurals>
 
   <string name="inbox_summary">+%d more</string>
@@ -205,5 +219,18 @@
   <string name="notification_new_activities">You have %d new activities</string>
   <string name="friend_link_social_network">Please Link Social Network.</string>
   <string name="exit_app">Exit app</string>
+  <string name="referral_code_title">Claim your virtual dollars!</string>
+  <string name="referral_code_message">If you were referred by a friend, enter the referral code
+    here and get free 10,000 virtual dollars.
+  </string>
+  <string name="settings_referral_code_message">This is your own referral code. Share it with your
+    friends and get FREE Tradehero Dollars when they sign up !
+  </string>
 
+  <string name="friends_can_be_invite">%s friends can be invite</string>
+  <string name="friends_can_be_follow">%s friends can be follow</string>
+  <string name="weibo_message_text_limit">[%d/140]</string>
+  <string name="weibo_message_length_error">no more than 140 character</string>
+  <string name="weibo_friends_invite">I\'m playing TradeHero, Come and join me! Get special with my referral code %1$s!</string>
+  <string name="referral_dollars_claimed">Referral dollars claimed</string>
 </resources>

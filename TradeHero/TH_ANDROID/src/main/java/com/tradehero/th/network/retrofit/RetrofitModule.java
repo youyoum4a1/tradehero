@@ -4,9 +4,14 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
+import com.tradehero.th.api.competition.ProviderCompactDTODeserialiserBase;
+import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTODeserialiser;
 import com.tradehero.th.api.competition.ProviderDTOJacksonModule;
@@ -53,11 +58,14 @@ import com.tradehero.th.network.service.WeChatService;
 import com.tradehero.th.network.service.YahooNewsService;
 import com.tradehero.th.utils.RetrofitConstants;
 import com.tradehero.th.widget.VotePair;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
+import retrofit.Endpoint;
+import retrofit.Endpoints;
 import retrofit.RestAdapter;
-import retrofit.Server;
 import retrofit.converter.Converter;
 
 @Module(
@@ -202,12 +210,12 @@ public class RetrofitModule
 
     @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
     {
-        return builder.setServer(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
+        return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 
     @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)
     {
-        return builder.setServer(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
+        return builder.setEndpoint(NetworkConstants.TRADEHERO_PROD_ENDPOINT)
                 .setRequestInterceptor(requestHeaders)
                 .build()
                 .create(HomeService.class);
@@ -215,6 +223,11 @@ public class RetrofitModule
     //</editor-fold>
 
     @Provides JsonDeserializer<PositionDTO> providesPositionDTODeserialiser(PositionDTODeserialiser deserialiser)
+    {
+        return deserialiser;
+    }
+
+    @Provides JsonDeserializer<ProviderCompactDTO> providesProviderCompactDTODeserialiser(ProviderCompactDTODeserialiser deserialiser)
     {
         return deserialiser;
     }
@@ -229,15 +242,23 @@ public class RetrofitModule
         return deserialiser;
     }
 
-    @Provides @Singleton ObjectMapper provideObjectMapper(
-            UserFriendsDTOJacksonModule userFriendsDTOModule,
-            PositionDTOJacksonModule positionDTOModule,
-            ProviderDTOJacksonModule providerDTOModule)
+    @Provides ObjectMapper provideCommonObjectMapper()
     {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
+    }
+
+    @Provides @Singleton @ForApp ObjectMapper provideObjectMapper(
+            ObjectMapper objectMapper,
+            UserFriendsDTOJacksonModule userFriendsDTOModule,
+            PositionDTOJacksonModule positionDTOModule,
+            ProviderCompactDTOJacksonModule providerCompactDTOModule,
+            ProviderDTOJacksonModule providerDTOModule)
+    {
         objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
+        objectMapper.registerModule(providerCompactDTOModule);
         objectMapper.registerModule(providerDTOModule);
 
         // TODO confirm this is correct here
@@ -250,17 +271,17 @@ public class RetrofitModule
         return objectMapper;
     }
 
-    @Provides @Singleton Converter provideConverter(ObjectMapper objectMapper)
+    @Provides @Singleton Converter provideConverter(@ForApp ObjectMapper objectMapper)
     {
         return new JacksonConverter(objectMapper);
     }
 
-    @Provides @Singleton Server provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
+    @Provides @Singleton Endpoint provideApiServer(@ServerEndpoint StringPreference serverEndpointPreference)
     {
-        return new Server(serverEndpointPreference.get());
+        return Endpoints.newFixedEndpoint(serverEndpointPreference.get());
     }
 
-    @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Server server)
+    @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Endpoint server)
     {
         return server.getUrl() + NetworkConstants.COMPETITION_PATH;
     }
@@ -277,9 +298,9 @@ public class RetrofitModule
                 .setLogLevel(RetrofitConstants.DEFAULT_SERVICE_LOG_LEVEL);
     }
 
-    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Server server, RequestHeaders requestHeaders)
+    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
     {
-        return builder.setServer(server).setRequestInterceptor(requestHeaders).build();
+        return builder.setEndpoint(server).setRequestInterceptor(requestHeaders).build();
     }
 
     //@Provides Client provideOkClient(Context context)

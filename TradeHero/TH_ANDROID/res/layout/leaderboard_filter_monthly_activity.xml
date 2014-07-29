@@ -65,7 +65,7 @@
       android:id="@+id/leaderboard_filter_min_max_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/leaderboard_filter_header_description">
+      android:layout_below="@id/leaderboard_filter_header_description">
 
     <TextView
         android:id="@+id/leaderboard_filter_min"
@@ -89,14 +89,14 @@
       android:id="@+id/leaderboard_filter_value_slider"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/leaderboard_filter_min_max_container"
+      android:layout_below="@id/leaderboard_filter_min_max_container"
       />
 
   <RelativeLayout
       android:id="@+id/leaderboard_filter_min_max_description_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/leaderboard_filter_value_slider"
+      android:layout_below="@id/leaderboard_filter_value_slider"
       >
 
     <TextView

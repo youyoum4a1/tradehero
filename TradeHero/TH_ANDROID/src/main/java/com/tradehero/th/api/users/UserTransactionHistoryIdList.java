@@ -2,6 +2,7 @@ package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
 
 public class UserTransactionHistoryIdList extends DTOKeyIdList<UserTransactionHistoryId>
 {
@@ -11,14 +12,12 @@ public class UserTransactionHistoryIdList extends DTOKeyIdList<UserTransactionHi
         super();
     }
 
-    public UserTransactionHistoryIdList(int capacity)
+    public UserTransactionHistoryIdList(@NotNull Collection<? extends UserTransactionHistoryDTO> transactionHistoryDTOs)
     {
-        super(capacity);
-    }
-
-    public UserTransactionHistoryIdList(Collection<? extends UserTransactionHistoryId> collection)
-    {
-        super(collection);
+        for (@NotNull UserTransactionHistoryDTO transactionHistoryDTO : transactionHistoryDTOs)
+        {
+            add(transactionHistoryDTO.getUserTransactionHistoryId());
+        }
     }
     //</editor-fold>
 }

@@ -11,15 +11,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
+import com.tradehero.th.network.service.UserServiceWrapper;
+import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +33,9 @@ import org.jetbrains.annotations.Nullable;
 public class AlertDialogUtil
 {
     private ProgressDialog mProgressDialog;
+    private AlertDialog mReferralCodeDialog;
+
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
     @Inject public AlertDialogUtil()
     {
@@ -183,6 +192,19 @@ public class AlertDialogUtil
             @Nullable final DialogInterface.OnClickListener okClickListener,
             @Nullable final DialogInterface.OnClickListener cancelClickListener)
     {
+        return popWithOkCancelButton(context, title, description, okResId, cancelResId,
+                okClickListener, cancelClickListener, null);
+    }
+
+    @NotNull
+    public AlertDialog popWithOkCancelButton(
+            @NotNull final Context context,
+            @NotNull String title, @NotNull String description,
+            int okResId, int cancelResId,
+            @Nullable final DialogInterface.OnClickListener okClickListener,
+            @Nullable final DialogInterface.OnClickListener cancelClickListener,
+            @Nullable final DialogInterface.OnDismissListener onDismissListener)
+    {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
                 .setTitle(title)
@@ -191,7 +213,9 @@ public class AlertDialogUtil
                 .setCancelable(true)
                 .setNegativeButton(cancelResId, cancelClickListener)
                 .setPositiveButton(okResId, okClickListener);
+
         AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setOnDismissListener(onDismissListener);
         alertDialog.show();
         alertDialog.setCanceledOnTouchOutside(true);
         return alertDialog;
@@ -328,6 +352,45 @@ public class AlertDialogUtil
         {
             mProgressDialog.dismiss();
         }
+    }
+
+    public AlertDialog getReferralCodeDialog(Context context, final UserBaseKey userBaseKey, final DashboardActivity.TrackCallback trackCallback)
+    {
+        if (mReferralCodeDialog != null)
+        {
+            mReferralCodeDialog.dismiss();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.referral_code_dialog_layout, null);
+        builder.setView(view);
+        builder.setCancelable(false);
+        mReferralCodeDialog = builder.create();
+
+        final EditText editText = (EditText)view.findViewById(R.id.referral_code);
+        Button cancelButton = (Button)view.findViewById(R.id.btn_cancel);
+        cancelButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                mReferralCodeDialog.dismiss();
+            }
+        });
+        Button okButton = (Button)view.findViewById(R.id.btn_ok);
+        okButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                mReferralCodeDialog.dismiss();
+                if (editText.getText().toString().length() > 5)
+                {
+                    UpdateReferralCodeDTO updateReferralCodeDTO = new UpdateReferralCodeDTO(editText.getText().toString());
+                    userServiceWrapperLazy.get().updateReferralCode(userBaseKey, updateReferralCodeDTO, trackCallback);
+                }
+            }
+        });
+
+        return mReferralCodeDialog;
     }
 
     public static interface OnClickListener<DTOType>

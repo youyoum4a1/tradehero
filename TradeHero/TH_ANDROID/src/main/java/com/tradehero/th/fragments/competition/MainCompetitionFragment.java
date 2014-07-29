@@ -1,23 +1,34 @@
 package com.tradehero.th.fragments.competition;
 
+import android.content.Intent;
+import android.graphics.drawable.StateListDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -28,10 +39,10 @@ import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneTradeNowDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
@@ -40,9 +51,13 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserList
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionListCache;
+import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.GraphicUtil;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -52,8 +67,10 @@ import timber.log.Timber;
 )
 public class MainCompetitionFragment extends CompetitionFragment
 {
-    private ProgressBar progressBar;
-    AbsListView listView;
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.competition_zone_list) AbsListView listView;
+    @InjectView(R.id.btn_trade_now) Button btnTradeNow;
+
     private CompetitionZoneListItemAdapter competitionZoneListItemAdapter;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
@@ -62,19 +79,24 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject CompetitionListCache competitionListCache;
+    @Inject ProviderDisplayCellListCache providerDisplayListCellCache;
     @Inject ProviderUtil providerUtil;
+    @Inject GraphicUtil graphicUtil;
+    @Inject THIntentFactory thIntentFactory;
 
     protected UserProfileCompactDTO portfolioUserCompactDTO;
-
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected CompetitionDTOList competitionDTOs;
     private DTOCacheNew.Listener<ProviderId, CompetitionDTOList> competitionListCacheFetchListener;
+    private ProviderDisplayCellDTOList providerDisplayCellDTOList;
+    private DTOCacheNew.Listener<ProviderDisplayCellListKey, ProviderDisplayCellDTOList> displayCellListCacheFetchListener;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
         this.competitionListCacheFetchListener = createCompetitionListCacheListener();
+        this.displayCellListCacheFetchListener = createDisplayCellListCacheListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -86,17 +108,16 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override protected void initViews(View view)
     {
-        this.progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
+        ButterKnife.inject(this, view);
         if (this.progressBar != null)
         {
             this.progressBar.setVisibility(View.VISIBLE);
         }
-        this.listView = (AbsListView) view.findViewById(R.id.competition_zone_list);
         if (this.listView != null)
         {
             this.listView.setOnItemClickListener(createAdapterViewItemClickListener());
         }
-        placeAdapterInList();
+        createAdapter();
     }
 
     //<editor-fold desc="ActionBar">
@@ -118,6 +139,11 @@ public class MainCompetitionFragment extends CompetitionFragment
         detachCompetitionListCacheTask();
         competitionListCache.register(providerId, competitionListCacheFetchListener);
         competitionListCache.getOrFetchAsync(providerId);
+
+        detachDisplayCellListCacheTask();
+        ProviderDisplayCellListKey providerDisplayCellListKey = new ProviderDisplayCellListKey(providerId);
+        providerDisplayListCellCache.register(providerDisplayCellListKey, displayCellListCacheFetchListener);
+        providerDisplayListCellCache.getOrFetchAsync(providerDisplayCellListKey);
     }
 
     @Override public void onResume()
@@ -135,6 +161,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         detachUserProfileCache();
         detachCompetitionListCacheTask();
+        detachDisplayCellListCacheTask();
         super.onStop();
     }
 
@@ -146,6 +173,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         if (this.competitionZoneListItemAdapter != null)
         {
+            this.competitionZoneListItemAdapter.clear();
             this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
         }
         this.competitionZoneListItemAdapter = null;
@@ -176,35 +204,56 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionListCache.unregister(competitionListCacheFetchListener);
     }
 
+    private void detachDisplayCellListCacheTask()
+    {
+        providerDisplayListCellCache.unregister(displayCellListCacheFetchListener);
+    }
+
     protected void linkWith(UserProfileCompactDTO userProfileCompactDTO, boolean andDisplay)
     {
         this.portfolioUserCompactDTO = userProfileCompactDTO;
-        placeAdapterInList();
+        competitionZoneListItemAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
+        if (andDisplay)
+        {
+            displayListView();
+        }
     }
 
     @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
-        placeAdapterInList();
-        if (progressBar != null)
-        {
-            progressBar.setVisibility(View.GONE);
-        }
+        competitionZoneListItemAdapter.setProvider(providerDTO);
         if (andDisplay)
         {
             displayActionBarTitle();
+            displayTradeNowButton();
+            displayListView();
         }
     }
 
     protected void linkWith(CompetitionDTOList competitionIds, boolean andDisplay)
     {
         this.competitionDTOs = competitionIds;
-        placeAdapterInList();
+        competitionZoneListItemAdapter.setCompetitionDTOs(competitionIds);
+        if (andDisplay)
+        {
+            displayListView();
+        }
     }
 
-    protected void placeAdapterInList()
+    protected void linkWith(ProviderDisplayCellDTOList providerDisplayCellDTOList, boolean andDisplay)
     {
-        CompetitionZoneListItemAdapter newAdapter = new CompetitionZoneListItemAdapter(
+        this.providerDisplayCellDTOList = providerDisplayCellDTOList;
+        competitionZoneListItemAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
+        if (andDisplay)
+        {
+            displayListView();
+        }
+    }
+
+    protected void createAdapter()
+    {
+        this.competitionZoneListItemAdapter = new CompetitionZoneListItemAdapter(
                 getActivity(),
                 getActivity().getLayoutInflater(),
                 R.layout.competition_zone_item,
@@ -214,22 +263,24 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_portfolio,
                 R.layout.competition_zone_leaderboard_item,
                 R.layout.competition_zone_legal_mentions);
-        newAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
-        newAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
-        newAdapter.setProvider(providerDTO);
-        newAdapter.setCompetitionDTOs(competitionDTOs);
-
-        CompetitionZoneListItemAdapter currentAdapterCopy = this.competitionZoneListItemAdapter;
-        if (currentAdapterCopy != null)
-        {
-            currentAdapterCopy.setParentOnLegalElementClicked(null);
-        }
-
-        this.competitionZoneListItemAdapter = newAdapter;
+        competitionZoneListItemAdapter.setParentOnLegalElementClicked(new MainCompetitionLegalClickedListener());
 
         if (this.listView != null)
         {
             this.listView.setAdapter(this.competitionZoneListItemAdapter);
+        }
+    }
+
+    protected void displayListView()
+    {
+        Timber.d("displayListView %s %s %s %s",portfolioUserCompactDTO, providerDTO, competitionDTOs, providerDisplayCellDTOList);
+        if (providerDTO != null && competitionDTOs != null && providerDisplayCellDTOList != null)
+        {
+            if (progressBar != null)
+            {
+                progressBar.setVisibility(View.GONE);
+            }
+            competitionZoneListItemAdapter.notifyDataSetChanged();
         }
     }
 
@@ -251,14 +302,32 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
+    @OnClick(R.id.btn_trade_now)
+    public void handleTradeNowClicked()
+    {
+        pushTradeNowElement();
+    }
+
+    private void displayTradeNowButton()
+    {
+        if (providerDTO != null)
+        {
+            btnTradeNow.setVisibility(View.VISIBLE);
+
+            int bgColor = graphicUtil.parseColor(providerDTO.hexColor);
+            StateListDrawable stateListDrawable = graphicUtil.createStateListDrawable(getActivity(), bgColor);
+
+            graphicUtil.setBackground(btnTradeNow, stateListDrawable);
+
+            int textColor = graphicUtil.parseColor(providerDTO.textHexColor, graphicUtil.getContrastingColor(bgColor));
+            btnTradeNow.setTextColor(textColor);
+        }
+    }
+
     //<editor-fold desc="Click Handling">
     private void handleItemClicked(@NotNull CompetitionZoneDTO competitionZoneDTO)
     {
-        if (competitionZoneDTO instanceof CompetitionZoneTradeNowDTO)
-        {
-            pushTradeNowElement((CompetitionZoneTradeNowDTO) competitionZoneDTO);
-        }
-        else if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
+        if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
         {
             pushPortfolioElement((CompetitionZonePortfolioDTO) competitionZoneDTO);
         }
@@ -282,6 +351,10 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             pushAdvertisement((CompetitionZoneAdvertisementDTO) competitionZoneDTO);
         }
+        else if (competitionZoneDTO instanceof CompetitionZoneDisplayCellDTO)
+        {
+            handleDisplayCellClicked((CompetitionZoneDisplayCellDTO) competitionZoneDTO);
+        }
         // TODO others?
     }
 
@@ -291,13 +364,13 @@ public class MainCompetitionFragment extends CompetitionFragment
         if (adDTO != null && adDTO.redirectUrl != null)
         {
             Bundle args = new Bundle();
-            String url = providerUtil.appendUserId(adDTO.redirectUrl, '&', currentUserId.toUserBaseKey());
+            String url = providerUtil.appendUserId(adDTO.redirectUrl, '&');
             CompetitionWebViewFragment.putUrl(args, url);
             getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
         }
     }
 
-    private void pushTradeNowElement(@NotNull CompetitionZoneTradeNowDTO competitionZoneDTO)
+    private void pushTradeNowElement()
     {
         Bundle args = new Bundle();
         ProviderSecurityListFragment.putProviderId(args, providerId);
@@ -358,8 +431,20 @@ public class MainCompetitionFragment extends CompetitionFragment
         args.putString(CompetitionLeaderboardMarkUserListFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC,
                 leaderboardDefDTO.desc);
 
+        LeaderboardUserDTO leaderboardUserDTO = competitionZoneDTO.competitionDTO.leaderboardUser;
+        if (leaderboardUserDTO != null)
+        {
+            CompetitionLeaderboardMarkUserListFragment.putCurrentUserRank(args,
+                    leaderboardUserDTO.ordinalPosition > 0 ? leaderboardUserDTO.ordinalPosition + 1 : null);
+            CompetitionLeaderboardMarkUserListFragment.putROIValueToBeShown(args, leaderboardUserDTO.roiInPeriod);
+        }
+        else
+        {
+            CompetitionLeaderboardMarkUserListFragment.putCurrentUserRank(args, CompetitionLeaderboardMarkUserListFragment.FLAG_USER_NOT_RANKED);
+        }
+
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if(ownedPortfolioId != null)
+        if (ownedPortfolioId != null)
         {
             CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
@@ -388,6 +473,46 @@ public class MainCompetitionFragment extends CompetitionFragment
             CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
         }
         getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+    }
+
+    private void handleDisplayCellClicked(@NotNull CompetitionZoneDisplayCellDTO competitionZoneDisplayCellDTO)
+    {
+        String redirectUrl = competitionZoneDisplayCellDTO.getRedirectUrl();
+        if (redirectUrl != null)
+        {
+            Uri uri = Uri.parse(redirectUrl);
+            if (thIntentFactory.isHandlableScheme(uri.getScheme()))
+            {
+                if (uri.getHost().equalsIgnoreCase(getActivity().getString(R.string.intent_host_web)))
+                {
+                    String url = uri.getQueryParameter("url");
+                    if (url != null)
+                    {
+                        Timber.d("Opening this page: %s", url);
+                        Bundle bundle = new Bundle();
+                        CompetitionWebViewFragment.putUrl(bundle, url);
+                        this.webViewFragment = getDashboardNavigator().pushFragment(WebViewFragment.class, bundle);
+                        this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
+                    }
+                }
+                else
+                {
+                    //TODO Confirm with tho on how this router works
+                    try
+                    {
+                        thIntentFactory.create(getPassedIntent(redirectUrl));
+                    } catch (IndexOutOfBoundsException e)
+                    {
+                        Timber.e(e, "Failed to create intent with string %s", redirectUrl);
+                    }
+                }
+            }
+        }
+    }
+
+    public Intent getPassedIntent(String url)
+    {
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
     }
     //</editor-fold>
 
@@ -498,8 +623,28 @@ public class MainCompetitionFragment extends CompetitionFragment
 
         @Override public void onErrorThrown(@NotNull ProviderId key, @NotNull Throwable error)
         {
-            THToast.show(getString(R.string.error_fetch_provider_competition_leaderboard_list));
+            THToast.show(getString(R.string.error_fetch_provider_competition_list));
             Timber.e("Error fetching the list of competition info %s", key, error);
+        }
+    }
+
+    private DTOCacheNew.Listener<ProviderDisplayCellListKey, ProviderDisplayCellDTOList> createDisplayCellListCacheListener()
+    {
+        return new MainCompetitionDisplayCellListCacheListener();
+    }
+
+    private class MainCompetitionDisplayCellListCacheListener
+            implements DTOCacheNew.Listener<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>
+    {
+        @Override public void onDTOReceived(@NotNull ProviderDisplayCellListKey providerId, @NotNull ProviderDisplayCellDTOList value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull ProviderDisplayCellListKey key, @NotNull Throwable error)
+        {
+            THToast.show(getString(R.string.error_fetch_provider_competition_display_cell_list));
+            Timber.e("Error fetching the list of competition info cell %s", key, error);
         }
     }
 }

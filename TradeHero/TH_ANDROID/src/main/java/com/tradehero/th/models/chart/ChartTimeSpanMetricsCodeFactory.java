@@ -1,19 +1,18 @@
 package com.tradehero.th.models.chart;
 
 import org.jetbrains.annotations.NotNull;
-import javax.inject.Inject;
 
 public class ChartTimeSpanMetricsCodeFactory
 {
     //<editor-fold desc="Constructors">
-    @Inject public ChartTimeSpanMetricsCodeFactory()
+    public ChartTimeSpanMetricsCodeFactory()
     {
         super();
     }
     //</editor-fold>
 
     @NotNull
-    public String createCode(@NotNull ChartTimeSpan timeSpan)
+    public static String createCode(@NotNull ChartTimeSpan timeSpan)
     {
         if (timeSpan.duration <= ChartTimeSpan.DAY_1)
         {

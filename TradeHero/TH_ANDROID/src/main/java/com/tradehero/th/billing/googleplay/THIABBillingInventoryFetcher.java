@@ -6,7 +6,7 @@ import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import org.json.JSONException;
 
-public class THIABBillingInventoryFetcher
+class THIABBillingInventoryFetcher
         extends IABBillingInventoryFetcher<
         IABSKUListKey,
         IABSKU,

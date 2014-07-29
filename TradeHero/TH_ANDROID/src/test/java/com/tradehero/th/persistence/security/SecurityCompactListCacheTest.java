@@ -1,39 +1,23 @@
 package com.tradehero.th.persistence.security;
 
 import com.tradehero.RobolectricMavenTestRunner;
-import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
-import com.tradehero.th.network.service.SecurityServiceWrapper;
-import dagger.Lazy;
+import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
-@Config(manifest = Config.NONE)
 public class SecurityCompactListCacheTest
 {
-    private SecurityCompactListCache securityCompactListCache;
+    @Inject SecurityCompactListCache securityCompactListCache;
 
     @Before public void setUp()
     {
-        this.securityCompactListCache = new SecurityCompactListCache(new Lazy<SecurityServiceWrapper>()
-        {
-            @Override public SecurityServiceWrapper get()
-            {
-                return null;
-            }
-        }, new Lazy<SecurityCompactCache>()
-        {
-            @Override public SecurityCompactCache get()
-            {
-                return null;
-            }
-        });
     }
 
     @After public void tearDown()
@@ -44,7 +28,7 @@ public class SecurityCompactListCacheTest
     @Test public void basicAll_1_10NotEqualOthers()
     {
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 1, 10))).isNull();
-        securityCompactListCache.put(new TrendingBasicSecurityListType(null, 1, 10), new SecurityIdList());
+        securityCompactListCache.put(new TrendingBasicSecurityListType(null, 1, 10), new SecurityCompactDTOList());
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 1, 10))).isNotNull();
 
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 2, 10))).isNull();
@@ -61,7 +45,7 @@ public class SecurityCompactListCacheTest
     @Test public void basicAll_4_10NotEqualOthers()
     {
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 4, 10))).isNull();
-        securityCompactListCache.put(new TrendingBasicSecurityListType(null, 4, 10), new SecurityIdList());
+        securityCompactListCache.put(new TrendingBasicSecurityListType(null, 4, 10), new SecurityCompactDTOList());
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 4, 10))).isNotNull();
 
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 5, 10))).isNull();

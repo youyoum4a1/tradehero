@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -46,7 +44,6 @@ import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -62,8 +59,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
@@ -73,8 +68,9 @@ import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.dagger.ForPicasso;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -105,6 +101,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
     @Inject @ForPicasso LruCache lruCache;
+    // TODO something belong to Google Play should not be here, generic util class for all store is expected
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
@@ -114,10 +111,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<LinkedInUtils> linkedInUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject Lazy<QQUtils> qqUtils;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject MainCredentialsPreference mainCredentialsPreference;
 
     private MiddleCallback<UserProfileDTO> logoutCallback;
@@ -131,6 +127,12 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     private CheckBoxPreference linkedInSharing;
     private CheckBoxPreference weiboSharing;
     private CheckBoxPreference qqSharing;
+    @Inject protected SendLoveViewHolder sendLoveViewHolder;
+    @Inject protected SendFeedbackViewHolder sendFeedbackViewHolder;
+    @Inject protected FaqViewHolder faqViewHolder;
+    @Inject protected ProfilePreferenceViewHolder profilePreferenceViewHolder;
+    @Inject protected LocationCountrySettingsViewHolder locationCountrySettingsViewHolder;
+    @Inject protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
     private CheckBoxPreference pushNotification;
     private CheckBoxPreference emailNotification;
     private CheckBoxPreference pushNotificationSound;
@@ -288,8 +290,27 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     }
     //</editor-fold>
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Settings));
+        if (socialNetworkToConnectTo != null)
+        {
+            changeSharing(socialNetworkToConnectTo, true);
+            socialNetworkToConnectTo = null;
+        }
+    }
+
     @Override public void onDestroyView()
     {
+        sendFeedbackViewHolder.destroyViews();
+        sendLoveViewHolder.destroyViews();
+        faqViewHolder.destroyViews();
+        profilePreferenceViewHolder.destroyViews();
+        locationCountrySettingsViewHolder.destroyViews();
+        userTranslationSettingsViewHolder.destroyViews();
+
         detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
         detachLogoutCallback();
@@ -298,16 +319,19 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         super.onDestroyView();
     }
 
-    @Override public void onResume()
+    @Override public void onDestroy()
     {
-        super.onResume();
+        userTranslationSettingsViewHolder = null;
+        locationCountrySettingsViewHolder = null;
+        profilePreferenceViewHolder = null;
+        sendFeedbackViewHolder = null;
+        sendLoveViewHolder = null;
+        faqViewHolder = null;
 
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Settings);
-        if (socialNetworkToConnectTo != null)
-        {
-            changeSharing(socialNetworkToConnectTo, true);
-            socialNetworkToConnectTo = null;
-        }
+        socialConnectLogInCallback = null;
+        this.currentUserProfileRetrievedMilestoneListener = null;
+        this.purchaseRestorerFinishedListener = null;
+        super.onDestroy();
     }
 
     private void detachMiddleCallbackUpdateUserProfile()
@@ -355,14 +379,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         middleCallbackDisconnect = null;
     }
 
-    @Override public void onDestroy()
-    {
-        socialConnectLogInCallback = null;
-        this.currentUserProfileRetrievedMilestoneListener = null;
-        this.purchaseRestorerFinishedListener = null;
-        super.onDestroy();
-    }
-
     private BillingPurchaseRestorer.OnPurchaseRestorerListener createPurchaseRestorerListener()
     {
         return new BillingPurchaseRestorer.OnPurchaseRestorerListener()
@@ -393,16 +409,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             }
         });
 
-        Preference settingFaq = findPreference(getString(R.string.key_settings_primary_faq));
-        settingFaq.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-        {
-            @Override public boolean onPreferenceClick(Preference preference)
-            {
-                handleFaqClicked();
-                return true;
-            }
-        });
-
         Preference settingAbout = findPreference(getString(R.string.key_settings_misc_about));
 
         if (settingAbout != null)
@@ -417,57 +423,13 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             });
         }
 
-        Preference sendLoveBlock =
-                findPreference(getString(R.string.key_settings_primary_send_love));
-        if (sendLoveBlock != null)
-        {
-            sendLoveBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleSendLoveClicked();
-                    return true;
-                }
-            });
-        }
+        sendLoveViewHolder.initViews(this);
+        sendFeedbackViewHolder.initViews(this);
+        faqViewHolder.initViews(this);
+        profilePreferenceViewHolder.initViews(this);
 
-        Preference sendFeedbackBlock =
-                findPreference(getString(R.string.key_settings_primary_send_feedback));
-        if (sendFeedbackBlock != null)
-        {
-            sendFeedbackBlock.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener()
-                    {
-                        @Override public boolean onPreferenceClick(Preference preference)
-                        {
-                            handleSendFeedbackClicked();
-                            return true;
-                        }
-                    });
-
-            // TODO
-            //sendFeedbackBlock.setOnLongClickListener(new View.OnLongClickListener()
-            //{
-            //    @Override public boolean onLongClick(View view)
-            //    {
-            //        handleSendFeedbackLongClicked();
-            //        return true;
-            //    }
-            //});
-        }
-
-        Preference profileBlock = findPreference(getString(R.string.key_settings_primary_profile));
-        if (profileBlock != null)
-        {
-            profileBlock.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleProfileClicked();
-                    return true;
-                }
-            });
-        }
+        // Location
+        locationCountrySettingsViewHolder.initViews(this);
 
         Preference paypalBlock = findPreference(getString(R.string.key_settings_primary_paypal));
         if (paypalBlock != null)
@@ -520,6 +482,21 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                         @Override public boolean onPreferenceClick(Preference preference)
                         {
                             handleRestorePurchaseClicked();
+                            return true;
+                        }
+                    });
+        }
+
+        Preference referralCodeBlock =
+                findPreference(getString(R.string.key_settings_primary_referral_code));
+        if (referralCodeBlock != null)
+        {
+            referralCodeBlock.setOnPreferenceClickListener(
+                    new Preference.OnPreferenceClickListener()
+                    {
+                        @Override public boolean onPreferenceClick(Preference preference)
+                        {
+                            handleReferralCodeClicked();
                             return true;
                         }
                     });
@@ -611,6 +588,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
         }
+
+        // Translations
+        userTranslationSettingsViewHolder.initViews(this);
+
         // notification
         pushNotification = (CheckBoxPreference) findPreference(
                 getString(R.string.key_settings_notifications_push));
@@ -900,63 +881,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
-    private void handleSendLoveClicked()
-    {
-        THToast.show("Love");
-        final String appName = Constants.PLAYSTORE_APP_ID;
-        try
-        {
-            startActivity(
-                    new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
-        }
-        catch (android.content.ActivityNotFoundException anfe)
-        {
-            try
-            {
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
-            }
-            catch (Exception e)
-            {
-                Timber.e(e, "Cannot send to Google Play store");
-                alertDialogUtil.get().popWithNegativeButton(
-                        getActivity(),
-                        R.string.webview_error_no_browser_for_intent_title,
-                        R.string.webview_error_no_browser_for_intent_description,
-                        R.string.cancel);
-
-            }
-        }
-    }
-
-    private void handleSendFeedbackClicked()
-    {
-        startActivity(
-                Intent.createChooser(VersionUtils.getSupportEmailIntent(getSherlockActivity()),
-                        ""));
-    }
-
-    private void handleSendFeedbackLongClicked()
-    {
-        startActivity(Intent.createChooser(
-                VersionUtils.getSupportEmailIntent(getSherlockActivity(), true), ""));
-    }
-
-    private void handleFaqClicked()
-    {
-        localyticsSession.tagEvent(LocalyticsConstants.Settings_FAQ);
-
-        String faqUrl = getResources().getString(R.string.th_faq_url);
-        Bundle bundle = new Bundle();
-        WebViewFragment.putUrl(bundle, faqUrl);
-        getNavigator().pushFragment(WebViewFragment.class, bundle);
-    }
-
-    private void handleProfileClicked()
-    {
-        getNavigator().pushFragment(SettingsProfileFragment.class);
-    }
-
     private void handlePaypalClicked()
     {
         getNavigator().pushFragment(SettingsPayPalFragment.class);
@@ -979,6 +903,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             billingInteractor.forgetRequestCode(restoreRequestCode);
         }
         restoreRequestCode = billingInteractor.run(createRestoreRequest());
+    }
+
+    private void handleReferralCodeClicked()
+    {
+        getNavigator().pushFragment(SettingsReferralCodeFragment.class);
     }
 
     protected THUIBillingRequest createRestoreRequest()

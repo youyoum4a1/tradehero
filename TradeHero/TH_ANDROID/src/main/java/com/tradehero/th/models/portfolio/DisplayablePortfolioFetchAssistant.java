@@ -5,7 +5,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -95,20 +96,20 @@ public class DisplayablePortfolioFetchAssistant
         }
     }
 
-    private DTOCacheNew.Listener<UserBaseKey, OwnedPortfolioIdList> createOwnedPortfolioIdListListener()
+    private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createOwnedPortfolioIdListListener()
     {
-        return new DTOCacheNew.Listener<UserBaseKey, OwnedPortfolioIdList>()
+        return new DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>()
         {
-            @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull OwnedPortfolioIdList value)
+            @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
             {
                 Timber.d("Received id list for %s: %s", key, value);
                 FlaggedDisplayablePortfolioDTOList valueList = displayPortfolios.get(key);
                 if (valueList != null)
                 {
                     valueList.fetchingIds = false;
-                    for (OwnedPortfolioId ownedPortfolioId : value)
+                    for (@NotNull PortfolioCompactDTO portfolioCompactDTO : value)
                     {
-                        valueList.add(new FlaggedDisplayablePortfolioDTO(ownedPortfolioId));
+                        valueList.add(new FlaggedDisplayablePortfolioDTO(portfolioCompactDTO.getOwnedPortfolioId()));
                     }
                     populate();
                 }

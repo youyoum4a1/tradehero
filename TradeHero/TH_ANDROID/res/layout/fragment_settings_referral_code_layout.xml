@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin_10"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+      <TextView
+          android:id="@+id/settings_referral_code"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/common_margin_10"
+          android:gravity="center_horizontal"
+          android:textSize="@dimen/text_xxlarge"
+          android:textColor="@color/tradehero_blue"
+          android:textColorHighlight="@color/light_grey_transparent"
+          android:textStyle="bold"
+          android:textIsSelectable="true"
+          tools:text="006U6P"
+          />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/common_margin_10"
+          android:gravity="center_horizontal"
+          android:text="@string/settings_referral_code_message"
+          android:textSize="@dimen/common_text_size_25"
+          />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/referral_code_dialog_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin_10"/>
+
+    <LinearLayout
+        android:id="@+id/already_done_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin_10"
+        android:orientation="vertical"
+        android:alpha="0.5"
+        android:background="@color/white"
+        android:visibility="gone">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/common_margin_20"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:text="@string/referral_dollars_claimed"
+          android:textSize="@dimen/text_xlarge"
+          android:textStyle="bold"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</ScrollView>

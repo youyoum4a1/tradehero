@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.localytics.android.LocalyticsSession;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
@@ -27,8 +27,10 @@ import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.dagger.ForUser;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -40,8 +42,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
 
-    @Inject protected LocalyticsSession localyticsSession;
-
+    @Inject Analytics analytics;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject @ForUser SharedPreferences preferences;
 
@@ -114,6 +115,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                 leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
                 initHeaderView(headerView);
             }
+            View rankHeaderView = getUserRankHeaderView();
+            if (rankHeaderView != null)
+            {
+                leaderboardMarkUserListView.getRefreshableView().addHeaderView(rankHeaderView);
+            }
         }
     }
 
@@ -159,7 +165,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                localyticsSession.tagEvent(LocalyticsConstants.Leaderboard_Back);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Back));
                 break;
             case R.id.button_leaderboard_filter:
                 pushFilterFragmentIn();
@@ -368,12 +374,17 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected class LeaderboardMarkUserListPremiumUserFollowedListener extends BasePurchaseManagerPremiumUserFollowedListener
+    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // nothing for now
         }
     }
 }

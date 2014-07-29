@@ -3,9 +3,10 @@ package com.tradehero.th.network.retrofit;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
+import retrofit.Endpoint;
+import retrofit.Endpoints;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.Server;
 import retrofit.client.Client;
 import retrofit.converter.Converter;
 
@@ -26,15 +27,15 @@ public class RetrofitTestModule
     }
 
     /** Let's spam ourselves, not the real server **/
-    @Provides @Singleton Server provideApiServer()
+    @Provides @Singleton Endpoint provideApiServer()
     {
-        return new Server("http://localhost/");
+        return Endpoints.newFixedEndpoint("http://localhost/");
     }
 
-    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Server server, RequestHeaders requestHeaders)
+    @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
     {
         return builder
-                .setServer(server)
+                .setEndpoint(server)
                 .setRequestInterceptor(new MockRequestInterceptor(requestHeaders))
                 .build();
     }
