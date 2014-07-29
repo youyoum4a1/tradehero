@@ -1,15 +1,14 @@
 package com.tradehero.th.api.users;
 
-/**
- * Created by tradehero on 14-7-21.
- */
 public class UpdateReferralCodeDTO
 {
-    public String inviteCode;
+    public final String inviteCode;
 
+    //<editor-fold desc="Constructors">
     public UpdateReferralCodeDTO(String inviteCode)
     {
         super();
         this.inviteCode = inviteCode;
     }
+    //</editor-fold>
 }

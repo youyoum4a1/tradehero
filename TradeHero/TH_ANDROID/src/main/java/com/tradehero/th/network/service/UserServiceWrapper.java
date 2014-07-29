@@ -33,6 +33,7 @@ import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
+import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
@@ -817,17 +818,30 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
-    public Response updateReferralCode(UserBaseKey userKey,
-            UpdateReferralCodeDTO updateReferralCodeDTO)
+    @NotNull protected DTOProcessor<Response> createUpdateReferralCodeProcessor(
+            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
+            @NotNull UserBaseKey invitedUserId)
     {
-        return userService.updateReferralCode(userKey.key, updateReferralCodeDTO);
+        return new DTOProcessorUpdateReferralCode(userProfileCache, updateReferralCodeDTO, invitedUserId);
     }
 
-    public MiddleCallback<Response> updateReferralCode(UserBaseKey userKey,
-            UpdateReferralCodeDTO updateReferralCodeDTO, Callback<Response> callback)
+    @NotNull public Response updateReferralCode(
+            @NotNull UserBaseKey invitedUserId,
+            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.updateReferralCode(userKey.key, updateReferralCodeDTO, middleCallback);
+        return createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId).process(
+                userService.updateReferralCode(invitedUserId.key, updateReferralCodeDTO));
+    }
+
+    @NotNull public MiddleCallback<Response> updateReferralCode(
+            @NotNull UserBaseKey invitedUserId,
+            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
+            @Nullable Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
+        userServiceAsync.updateReferralCode(invitedUserId.key, updateReferralCodeDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>
