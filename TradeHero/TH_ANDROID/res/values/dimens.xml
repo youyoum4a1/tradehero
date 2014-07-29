@@ -7,7 +7,7 @@
   <dimen name="authentication_head_text_size">@dimen/text_large</dimen>
   <dimen name="authentication_text_size">@dimen/text_small</dimen>
   <dimen name="copyright_text_size">@dimen/text_xsmall</dimen>
-  <dimen name="textbox_light_background_radius">5dp</dimen>
+  <dimen name="textbox_light_background_radius">0dp</dimen>
   <dimen name="user_profile_corner_radius">0dp</dimen>
   <dimen name="dashboard_padding">0dp</dimen>
 
