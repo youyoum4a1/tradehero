@@ -164,12 +164,13 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 {
                     pl = 0.0;
                 }
-                THSignedNumber thPlSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_MONEY,
-                        pl,
-                        THSignedNumber.WITH_SIGN,
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
-                        THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
+                THSignedNumber thPlSinceInception = THSignedNumber.builder()
+                        .number(pl)
+                        .money()
+                        .withSign()
+                        .signTypePlusMinusAlways()
+                        .currency(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY)
+                        .build();
                 profitFromTrades.setText(thPlSinceInception.toString());
                 profitFromTrades.setTextColor(
                         context.getResources().getColor(thPlSinceInception.getColor()));
@@ -199,8 +200,11 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thTotalWealth = new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                        userProfileDTO.portfolio.totalValue, THSignedNumber.WITHOUT_SIGN);
+                THSignedNumber thTotalWealth = THSignedNumber.builder()
+                        .number(userProfileDTO.portfolio.totalValue)
+                        .money()
+                        .withOutSign()
+                        .build();
                 totalWealth.setText(thTotalWealth.toString());
             }
             else
@@ -216,8 +220,11 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thAdditionalCash = new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                        userProfileDTO.portfolio.getTotalExtraCash(), THSignedNumber.WITHOUT_SIGN);
+                THSignedNumber thAdditionalCash = THSignedNumber.builder()
+                        .number(userProfileDTO.portfolio.getTotalExtraCash())
+                        .money()
+                        .withOutSign()
+                        .build();
                 additionalCash.setText(thAdditionalCash.toString());
             }
             else
@@ -233,8 +240,11 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thCashOnHand = new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                        userProfileDTO.portfolio.cashBalance, THSignedNumber.WITHOUT_SIGN);
+                THSignedNumber thCashOnHand = THSignedNumber.builder()
+                        .number(userProfileDTO.portfolio.cashBalance)
+                        .money()
+                        .withOutSign()
+                        .build();
                 cashOnHand.setText(thCashOnHand.toString());
             }
             else

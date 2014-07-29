@@ -302,13 +302,20 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     {
         if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, THSignedNumber.WITHOUT_SIGN);
+            THSignedNumber thTargetPrice = THSignedNumber.builder()
+                    .number(alertDTO.targetPrice)
+                    .withOutSign()
+                    .money()
+                    .build();
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
-            THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
+            THSignedNumber thPriceMovement = THSignedNumber.builder()
+                    .number(alertDTO.priceMovement * 100)
+                    .percentage()
+                    .build();
             targetPrice.setText(thPriceMovement.toString(0));
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
@@ -316,7 +323,11 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void displayCurrentPrice()
     {
-        THSignedNumber thCurrentPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.security.lastPrice, THSignedNumber.WITHOUT_SIGN);
+        THSignedNumber thCurrentPrice = THSignedNumber.builder()
+                .number(alertDTO.security.lastPrice)
+                .money()
+                .withOutSign()
+                .build();
         currentPrice.setText(thCurrentPrice.toString());
     }
 

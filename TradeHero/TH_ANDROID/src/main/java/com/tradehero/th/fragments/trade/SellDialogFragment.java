@@ -24,7 +24,12 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
     @Override protected String getLabel()
     {
         String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
-        THSignedNumber sthSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
+        THSignedNumber sthSignedNumber = THSignedNumber.builder()
+                .number(quoteDTO.bid)
+                .money()
+                .withOutSign()
+                .currency("")
+                .build();
         String sPrice = sthSignedNumber.toString();
         return getString(R.string.buy_sell_button_sell, display, sPrice);
     }

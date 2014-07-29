@@ -177,16 +177,18 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         if (trade != null && position != null)
         {
             int textResId = trade.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
-            THSignedNumber tradeQuantity = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    (double) Math.abs(trade.quantity),
-                    THSignedNumber.WITHOUT_SIGN,
-                    "");
-            THSignedNumber tradeValue = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    trade.unitPriceRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    getCurrencyDisplay());
+            THSignedNumber tradeQuantity = THSignedNumber.builder()
+                    .number((double) Math.abs(trade.quantity))
+                    .money()
+                    .withOutSign()
+                    .currency("")
+                    .build();
+            THSignedNumber tradeValue = THSignedNumber.builder()
+                    .number(trade.unitPriceRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(getCurrencyDisplay())
+                    .build();
             return getContext().getString(
                     textResId,
                     tradeQuantity.toString(),
@@ -210,11 +212,12 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (trade != null)
         {
-            THSignedNumber tradeQuantityAfterTrade = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    (double) Math.abs(trade.quantityAfterTrade),
-                    THSignedNumber.WITHOUT_SIGN,
-                    "");
+            THSignedNumber tradeQuantityAfterTrade = THSignedNumber.builder()
+                    .number((double) Math.abs(trade.quantityAfterTrade))
+                    .money()
+                    .withOutSign()
+                    .currency("")
+                    .build();
             return getContext().getString(
                     tradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
                     tradeQuantityAfterTrade.toString());
@@ -357,11 +360,12 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (trade != null)
         {
-            THSignedNumber tradeValue = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    trade.quantity * trade.unitPriceRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    getCurrencyDisplay());
+            THSignedNumber tradeValue = THSignedNumber.builder()
+                    .number(trade.quantity * trade.unitPriceRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(getCurrencyDisplay())
+                    .build();
             return tradeValue.toString();
         }
         else

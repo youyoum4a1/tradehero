@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import java.text.DecimalFormat;
+import org.jetbrains.annotations.NotNull;
 
 public class THSignedNumber
 {
@@ -17,47 +18,109 @@ public class THSignedNumber
     private final boolean withSign;
     private final int signType;
     private final int type;
-    private String sign;
     private final String currency;
     private final Double number;
     private String formattedNumber;
     private int color;
 
+    public static abstract class Builder<BuilderType extends Builder<BuilderType>>
+    {
+        private Double number;
+        private int type = TYPE_MONEY;
+        private boolean withSign = WITH_SIGN;
+        private int signType = TYPE_SIGN_ARROW;
+        private String currency = null;
+
+        protected abstract BuilderType self();
+
+        public BuilderType money()
+        {
+            type = TYPE_MONEY;
+            return self();
+        }
+
+        public BuilderType percentage()
+        {
+            type = TYPE_PERCENTAGE;
+            return self();
+        }
+
+        public BuilderType number(double number)
+        {
+            this.number = number;
+            return self();
+        }
+
+        public BuilderType withSign()
+        {
+            withSign = WITH_SIGN;
+            return self();
+        }
+
+        public BuilderType withOutSign()
+        {
+            withSign = WITHOUT_SIGN;
+            return self();
+        }
+
+        public BuilderType signTypeArrow()
+        {
+            signType = TYPE_SIGN_ARROW;
+            return self();
+        }
+
+        public BuilderType signTypePlusMinusAlways()
+        {
+            signType = TYPE_SIGN_PLUS_MINUS_ALWAYS;
+            return self();
+        }
+
+        public BuilderType signTypeMinusOnly()
+        {
+            signType = TYPE_SIGN_MINUS_ONLY;
+            return self();
+        }
+
+        public BuilderType currency(String currency)
+        {
+            this.currency = currency;
+            return self();
+        }
+
+        public THSignedNumber build()
+        {
+            return new THSignedNumber(this);
+        }
+    }
+
+    private static class Builder2 extends Builder<Builder2>
+    {
+        @Override protected Builder2 self()
+        {
+            return this;
+        }
+    }
+
+    public static Builder<?> builder()
+    {
+        return new Builder2();
+    }
+
     //<editor-fold desc="Constructors">
-    public THSignedNumber(int type, Double number)
+    protected THSignedNumber(@NotNull Builder<?> builder)
     {
-        this(type, number, null);
-    }
+        this.withSign = builder.withSign;
+        this.signType = builder.signType;
+        this.type = builder.type;
+        this.number = builder.number;
 
-    public THSignedNumber(int type, Double number, boolean withSign)
-    {
-        this(type, number, withSign, null, TYPE_SIGN_ARROW);
-    }
-
-    public THSignedNumber(int type, Double number, String currency)
-    {
-        this(type, number, THSignedNumber.WITH_SIGN, currency, TYPE_SIGN_ARROW);
-    }
-
-    public THSignedNumber(int type, Double number, boolean withSign, String currency)
-    {
-        this(type, number, withSign, currency, TYPE_SIGN_ARROW);
-    }
-
-    public THSignedNumber(int type, Double number, boolean withSign, String currency, int signType)
-    {
-        this.type = type;
-        this.number = number;
-        this.withSign = withSign;
-        this.signType = signType;
-
-        if (type == TYPE_MONEY && currency == null)
+        if (type == TYPE_MONEY && builder.currency == null)
         {
             this.currency = SecurityUtils.getDefaultCurrency();
         }
         else
         {
-            this.currency = currency;
+            this.currency = builder.currency;
         }
     }
     //</editor-fold>
@@ -70,11 +133,6 @@ public class THSignedNumber
     public int getType()
     {
         return type;
-    }
-
-    public boolean isSigned()
-    {
-        return sign != null;
     }
 
     public String toString(int precision)
@@ -122,7 +180,7 @@ public class THSignedNumber
     // Private
     private String signedFormattedPercentage(int precision)
     {
-        sign = withSign ? getSignPrefix() : "";
+        String sign = withSign ? getSignPrefix() : "";
         if (precision < 0)
         {
             precision = precisionFromNumber();
@@ -160,7 +218,7 @@ public class THSignedNumber
 
     private String signedFormattedMoney(int precision)
     {
-        sign = withSign ? getSignPrefix() : "";
+        String sign = withSign ? getSignPrefix() : "";
         if (precision < 0)
         {
             precision = precisionFromNumber();

@@ -161,9 +161,10 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
 
     private void displayROIValue(double value)
     {
-        THSignedNumber thRoiSinceInception = new THSignedNumber(
-                THSignedNumber.TYPE_PERCENTAGE,
-                value * 100);
+        THSignedNumber thRoiSinceInception = THSignedNumber.builder()
+                .number(value * 100)
+                .percentage()
+                .build();
 
         mROILabel.setText(thRoiSinceInception.toString());
         mROILabel.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));

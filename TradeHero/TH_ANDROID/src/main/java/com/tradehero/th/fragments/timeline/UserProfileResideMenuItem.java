@@ -124,9 +124,10 @@ public class UserProfileResideMenuItem extends LinearLayout
                 {
                     userProfileDTO.portfolio.roiSinceInception = 0.0D;
                 }
-                THSignedNumber thRoiSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_PERCENTAGE,
-                        userProfileDTO.portfolio.roiSinceInception * 100);
+                THSignedNumber thRoiSinceInception = THSignedNumber.builder()
+                        .number(userProfileDTO.portfolio.roiSinceInception * 100)
+                        .percentage()
+                        .build();
 
                 userProfileRoi.setText(thRoiSinceInception.toString());
                 userProfileRoi.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));

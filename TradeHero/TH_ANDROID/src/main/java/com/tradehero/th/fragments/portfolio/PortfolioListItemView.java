@@ -357,12 +357,12 @@ public class PortfolioListItemView extends RelativeLayout
                     displayablePortfolioDTO.portfolioDTO != null &&
                     displayablePortfolioDTO.portfolioDTO.roiSinceInception != null)
             {
-                THSignedNumber roi = new THSignedNumber(
-                        THSignedNumber.TYPE_PERCENTAGE,
-                        displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100,
-                        THSignedNumber.WITH_SIGN,
-                        null,
-                        THSignedNumber.TYPE_SIGN_ARROW);
+                THSignedNumber roi = THSignedNumber.builder()
+                        .number(displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100)
+                        .percentage()
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
                 roiValue.setText(roi.toString(1));
                 roiValue.setTextColor(getResources().getColor(roi.getColor()));
                 roiValue.setVisibility(VISIBLE);

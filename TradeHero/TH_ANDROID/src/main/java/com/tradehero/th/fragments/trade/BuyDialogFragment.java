@@ -24,7 +24,12 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
     @Override protected String getLabel()
     {
         String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
-        THSignedNumber bThSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, THSignedNumber.WITHOUT_SIGN, "");
+        THSignedNumber bThSignedNumber = THSignedNumber.builder()
+                .number(quoteDTO.ask)
+                .money()
+                .withOutSign()
+                .currency("")
+                .build();
         String bPrice = bThSignedNumber.toString();
         return getString(R.string.buy_sell_button_buy, display, bPrice);
     }
@@ -45,9 +50,12 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
                 double value = mTransactionQuantity * priceRefCcy;
 
                 double cashAvailable = portfolioCompactDTO.cashBalance;
-                THSignedNumber thSignedNumber =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable - value,
-                                THSignedNumber.WITHOUT_SIGN, portfolioCompactDTO.currencyDisplay);
+                THSignedNumber thSignedNumber = THSignedNumber.builder()
+                        .number(cashAvailable - value)
+                        .money()
+                        .withOutSign()
+                        .currency(portfolioCompactDTO.currencyDisplay)
+                        .build();
                 cashLeftText = thSignedNumber.toString();
             }
         }

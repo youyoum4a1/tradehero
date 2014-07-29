@@ -35,8 +35,12 @@ public class PositionDTOUtils
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sumInvestedAmountRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(position.sumInvestedAmountRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -63,8 +67,12 @@ public class PositionDTOUtils
                 position.marketValueStartPeriodRefCcy != null &&
                 /* It appears iOS version does that */position.marketValueStartPeriodRefCcy > 0)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueStartPeriodRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(position.marketValueStartPeriodRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -102,11 +110,12 @@ public class PositionDTOUtils
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    position.realizedPLRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    refCurrency);
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(position.realizedPLRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -131,8 +140,12 @@ public class PositionDTOUtils
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.totalPLInPeriodRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(position.totalPLInPeriodRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -157,8 +170,12 @@ public class PositionDTOUtils
     {
         if (position != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(position.marketValueRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -196,11 +213,12 @@ public class PositionDTOUtils
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    position.unrealizedPLRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    refCurrency);
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(position.unrealizedPLRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -259,8 +277,12 @@ public class PositionDTOUtils
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
 
-            THSignedNumber formatSumPurchasesInPeriodRefCcy =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sum_purchasesInPeriodRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formatSumPurchasesInPeriodRefCcy = THSignedNumber.builder()
+                    .number(position.sum_purchasesInPeriodRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formatSumPurchasesInPeriodRefCcy.toString();
         }
         else
