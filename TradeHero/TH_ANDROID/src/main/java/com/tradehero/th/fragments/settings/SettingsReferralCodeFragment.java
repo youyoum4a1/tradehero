@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,6 +43,8 @@ public class SettingsReferralCodeFragment extends DashboardFragment implements V
     @InjectView(R.id.btn_cancel) Button mCancelButton;
     @InjectView(R.id.referral_code) EditText mInviteCode;
     @InjectView(R.id.settings_referral_code) TextView mReferralCode;
+    @InjectView(R.id.referral_code_dialog_key) LinearLayout mReferralCodeLayout;
+    @InjectView(R.id.already_done_key) LinearLayout mAlreadyDoneLayout;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -61,8 +64,8 @@ public class SettingsReferralCodeFragment extends DashboardFragment implements V
             mInviteCode.setText(userProfileDTO.inviteCode);
             if (userProfileDTO.inviteCode != null)
             {
-                mOKButton.setEnabled(false);
-                mInviteCode.setEnabled(false);
+                mReferralCodeLayout.setVisibility(View.GONE);
+                mAlreadyDoneLayout.setVisibility(View.VISIBLE);
             }
         }
         return view;
@@ -88,6 +91,8 @@ public class SettingsReferralCodeFragment extends DashboardFragment implements V
     {
         detachMiddleCallback();
         getProgressDialog().dismiss();
+        mOKButton.setOnClickListener(null);
+        mCancelButton.setOnClickListener(null);
         super.onDestroy();
     }
 
@@ -117,7 +122,8 @@ public class SettingsReferralCodeFragment extends DashboardFragment implements V
         {
             userProfileCache.invalidate(currentUserId.toUserBaseKey());
             getProgressDialog().dismiss();
-            getDashboardNavigator().popFragment();
+            mReferralCodeLayout.setVisibility(View.GONE);
+            mAlreadyDoneLayout.setVisibility(View.VISIBLE);
         }
 
         @Override public void failure(RetrofitError retrofitError)
