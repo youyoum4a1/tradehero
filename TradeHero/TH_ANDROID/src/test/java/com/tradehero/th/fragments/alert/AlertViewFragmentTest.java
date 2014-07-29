@@ -1,11 +1,9 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
-import android.widget.Switch;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
@@ -24,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.util.ActivityController;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -35,7 +32,6 @@ public class AlertViewFragmentTest
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject AlertCache alertCache;
-    private ActivityController<DashboardActivity> activityController;
     private DashboardNavigator dashboardNavigator;
     private AlertDTO cachedAlertDTO;
     private UserProfileDTO cachedProfileDTO;
@@ -63,8 +59,8 @@ public class AlertViewFragmentTest
         cachedProfileDTO.userAlertPlans = Collections.singletonList(userAlertPlan);
         userProfileCache.put(currentUserId.toUserBaseKey(), cachedProfileDTO);
 
-        activityController = Robolectric.buildActivity(DashboardActivity.class).create().start().resume();
-        dashboardNavigator = activityController.get().getDashboardNavigator();
+        DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
+        dashboardNavigator = activity.getDashboardNavigator();
     }
 
     @After public void tearDown()
@@ -96,9 +92,8 @@ public class AlertViewFragmentTest
 
         assertThat(alertViewFragment.alertUpdateMiddleCallback).isNull();
 
-        activityController.visible();
-        Switch toggle = (Switch) alertViewFragment.getView().findViewById(R.id.alert_toggle);
-        Robolectric.clickOn(toggle);
+        assertThat(alertViewFragment.alertToggle).isNotNull();
+        alertViewFragment.alertToggle.performClick();
 
         assertThat(alertViewFragment.alertUpdateMiddleCallback).isNotNull();
     }
