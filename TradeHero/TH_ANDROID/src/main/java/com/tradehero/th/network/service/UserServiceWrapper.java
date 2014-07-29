@@ -40,6 +40,9 @@ import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.competition.ProviderCompactCache;
+import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
@@ -64,6 +67,9 @@ import retrofit.client.Response;
     @NotNull private final Lazy<HeroListCache> heroListCache;
     @NotNull private final GetPositionsCache getPositionsCache;
     @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
+    @NotNull private final Lazy<ProviderListCache> providerListCache;
+    @NotNull private final Lazy<ProviderCache> providerCache;
+    @NotNull private final Lazy<ProviderCompactCache> providerCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -75,7 +81,10 @@ import retrofit.client.Response;
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
             @NotNull GetPositionsCache getPositionsCache,
-            @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache)
+            @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
+            @NotNull Lazy<ProviderListCache> providerListCache,
+            @NotNull Lazy<ProviderCache> providerCache,
+            @NotNull Lazy<ProviderCompactCache> providerCompactCache)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -86,6 +95,9 @@ import retrofit.client.Response;
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
         this.leaderboardFriendsCache = leaderboardFriendsCache;
+        this.providerListCache = providerListCache;
+        this.providerCache = providerCache;
+        this.providerCompactCache = providerCompactCache;
     }
     //</editor-fold>
 
@@ -775,7 +787,13 @@ import retrofit.client.Response;
             @NotNull UserBaseKey playerId,
             @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
-        return new DTOProcessorUpdateCountryCode(userProfileCache, playerId, updateCountryCodeFormDTO);
+        return new DTOProcessorUpdateCountryCode(
+                userProfileCache,
+                providerListCache.get(),
+                providerCache.get(),
+                providerCompactCache.get(),
+                playerId,
+                updateCountryCodeFormDTO);
     }
 
     @NotNull public UpdateCountryCodeDTO updateCountryCode(
