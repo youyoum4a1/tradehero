@@ -131,11 +131,10 @@ public class THRouter extends Router
                     ((Object) currentFragment).getClass().equals(options.getOpenFragmentClass()))
             {
                 currentFragment.getArguments().putAll(args);
-                if(currentFragment instanceof BaseFragment)
+                if (currentFragment instanceof BaseFragment)
                 {
-                    ((BaseFragment)currentFragment).onCustomResume();
+                    ((BaseFragment) currentFragment).onCustomResume();
                 }
-
             }
             else
             {

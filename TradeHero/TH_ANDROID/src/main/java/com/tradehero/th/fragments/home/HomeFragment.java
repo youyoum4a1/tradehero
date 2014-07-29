@@ -58,7 +58,6 @@ import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 @Routable({
         "refer-friend/:socialId/:socialUserId",
@@ -212,14 +211,14 @@ public final class HomeFragment extends BaseWebViewFragment
 
     public void follow(UserFriendsDTO userFriendsDTO)
     {
-        Timber.d("onFollowButtonClick %s", userFriendsDTO);
+        //Timber.d("onFollowButtonClick %s", userFriendsDTO);
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
         handleFollowUsers(usersToFollow);
     }
 
     private void invite()
     {
-        Timber.d("windy: invite()");
+        //Timber.d("windy: invite()");
         if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
         {
             InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
@@ -235,8 +234,8 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             if (Session.getActiveSession() == null)
             {
-                Timber.d("windy: Session.getActiveSession() = " + Session.getActiveSession());
-                Timber.d("windy: facebookUtils.get.login()...");
+                //Timber.d("windy: Session.getActiveSession() = " + Session.getActiveSession());
+                //Timber.d("windy: facebookUtils.get.login()...");
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
                         new TrackFacebookCallback());
             }
