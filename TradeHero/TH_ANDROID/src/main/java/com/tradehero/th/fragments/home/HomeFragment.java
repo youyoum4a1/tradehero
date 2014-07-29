@@ -149,7 +149,7 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             case R.id.btn_fresh:
                 webView.reload();
-                userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+                userProfileCacheLazy.get().getOrFetchAsync(currentUserId.toUserBaseKey(), true);
                 return true;
         }
         return super.onOptionsItemSelected(item);
