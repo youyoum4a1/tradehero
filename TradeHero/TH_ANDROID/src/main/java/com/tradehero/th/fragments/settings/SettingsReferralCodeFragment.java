@@ -46,11 +46,6 @@ public class SettingsReferralCodeFragment extends DashboardFragment implements V
     @InjectView(R.id.referral_code_dialog_key) LinearLayout mReferralCodeLayout;
     @InjectView(R.id.already_done_key) LinearLayout mAlreadyDoneLayout;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_settings_referral_code_layout, container, false);
@@ -71,19 +66,11 @@ public class SettingsReferralCodeFragment extends DashboardFragment implements V
         return view;
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
+        detachMiddleCallback();
+        progressDialog = null;
         super.onDestroyView();
     }
 
