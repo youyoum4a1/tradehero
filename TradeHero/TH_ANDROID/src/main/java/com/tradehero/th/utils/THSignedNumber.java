@@ -248,34 +248,18 @@ public class THSignedNumber
                 );
     }
 
-    private int precisionFromNumber()
+    protected int precisionFromNumber()
     {
         int precision;
         double absNumber = Math.abs(number);
 
-        if (absNumber >= 1000)
+        if (absNumber == 0)
         {
             precision = 0;
         }
-        else if (absNumber >= 100)
-        {
-            precision = 1;
-        }
-        else if (absNumber >= 10)
-        {
-            precision = 2;
-        }
-        else if (absNumber >= 1)
-        {
-            precision = 3;
-        }
-        else if (absNumber >= 0.0001)
-        {
-            precision = 4;
-        }
         else
         {
-            precision = 1;
+            precision = Math.max(0, 3 - (int) Math.floor(Math.log10(absNumber)));
         }
         return precision;
     }
