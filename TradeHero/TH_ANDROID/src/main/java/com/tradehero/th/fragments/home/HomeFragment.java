@@ -165,6 +165,11 @@ public final class HomeFragment extends BaseWebViewFragment
     @Override public void onResume()
     {
         super.onResume();
+    }
+
+    @Override public void onCustomResume()
+    {
+        super.onCustomResume();
         thRouter.inject(this);
 
         if (socialId != null && socialUserId != null)
@@ -218,8 +223,8 @@ public final class HomeFragment extends BaseWebViewFragment
         if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
         {
             InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
-            ((InviteFormUserDTO)inviteFriendForm).users = new ArrayList<>();
-            ((InviteFormUserDTO)inviteFriendForm).users.add(userFriendsDTO.createInvite());
+            ((InviteFormUserDTO) inviteFriendForm).users = new ArrayList<>();
+            ((InviteFormUserDTO) inviteFriendForm).users.add(userFriendsDTO.createInvite());
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get()
@@ -245,8 +250,8 @@ public final class HomeFragment extends BaseWebViewFragment
     private void invite(UserFriendsDTO userDto)
     {
         InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
-        ((InviteFormUserDTO)inviteFriendForm).users = new ArrayList<>();
-        ((InviteFormUserDTO)inviteFriendForm).users.add(userDto.createInvite());
+        ((InviteFormUserDTO) inviteFriendForm).users = new ArrayList<>();
+        ((InviteFormUserDTO) inviteFriendForm).users.add(userDto.createInvite());
         getProgressDialog().show();
         detachMiddleCallbackInvite();
         middleCallbackInvite = userServiceWrapperLazy.get()
