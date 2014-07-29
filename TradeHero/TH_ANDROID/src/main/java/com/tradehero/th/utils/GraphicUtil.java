@@ -1,7 +1,6 @@
 package com.tradehero.th.utils;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -11,19 +10,18 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.media.ExifInterface;
-import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.View;
-import com.tradehero.common.utils.SDKUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.tradehero.common.graphics.RotateTransformation;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GraphicUtil implements BitmapForProfileFactory
 {
