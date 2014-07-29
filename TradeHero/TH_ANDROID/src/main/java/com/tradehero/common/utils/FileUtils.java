@@ -45,10 +45,8 @@ public class FileUtils
     public static String getPath(@NotNull final Context context, @NotNull final Uri uri)
     {
 
-        final boolean isKitKat = Build.VERSION.SDK_INT >= 19 /*Build.VERSION_CODES.KITKAT*/;
-
         // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(/*context, */uri))
+        if (SDKUtils.isKitKatOrHigher() && DocumentsContract.isDocumentUri(/*context, */uri))
         {
             // ExternalStorageProvider
             if (isExternalStorageDocument(uri))

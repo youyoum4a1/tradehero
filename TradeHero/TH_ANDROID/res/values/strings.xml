@@ -195,7 +195,7 @@
   <string name="invite_social_friend">Invite %s Friend</string>
   <string name="search_social_friend_hint">Search your friend</string>
 
-  <string name="social_friend_empty">Sorry,no friends</string>
+  <string name="social_friend_empty">Sorry, no friends</string>
   <string name="search_social_friend_empty">Sorry, do not find anybody you search.</string>
   <string name="invite_from_weibo">Invite from Weibo</string>
   <string name="invite_from_wechat">Invite from Wechat</string>
@@ -231,5 +231,5 @@
   <string name="friends_can_be_follow">%s friends can be follow</string>
   <string name="weibo_message_text_limit">[%d/140]</string>
   <string name="weibo_message_length_error">no more than 140 character</string>
-  <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！</string>
+  <string name="weibo_friends_invite">I\'m playing TradeHero, Come and join me! Get special with my referral code %1$s!</string>
 </resources>

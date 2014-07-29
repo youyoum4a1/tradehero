@@ -18,18 +18,18 @@ public class PaginatedUserFriendsDTOListDeserialiserTest extends BaseApiTest
 {
     @Inject @ForApp ObjectMapper normalMapper;
 
-    private InputStream securityCompactDTOBody1Stream;
+    private InputStream paginatedUserFriendsDTOListBody1;
 
     @Before
     public void setUp() throws IOException
     {
-        securityCompactDTOBody1Stream = getClass().getResourceAsStream(getPackagePath() + "/PaginatedUserFriendsDTOListBody1.json");
+        paginatedUserFriendsDTOListBody1 = getClass().getResourceAsStream(getPackagePath() + "/PaginatedUserFriendsDTOListBody1.json");
     }
 
     @Test
     public void testNormalDeserialiseBody1() throws IOException
     {
-        PaginatedUserFriendsDTOList converted = normalMapper.readValue(securityCompactDTOBody1Stream, PaginatedUserFriendsDTOList.class);
+        PaginatedUserFriendsDTOList converted = normalMapper.readValue(paginatedUserFriendsDTOListBody1, PaginatedUserFriendsDTOList.class);
 
         assertThat(((UserFriendsFacebookDTO) converted.getData().get(0)).fbId).isEqualTo("100000000532388");
 

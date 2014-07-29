@@ -10,7 +10,6 @@ public class ProviderDTO extends ProviderCompactDTO
     public String durationType;
     public String totalPrize;
     @Nullable public Boolean vip;
-    @Nullable public Double txnCostUsd;
 
     @Override public String toString()
     {
@@ -21,7 +20,6 @@ public class ProviderDTO extends ProviderCompactDTO
                 ", durationType=" + durationType +
                 ", totalPrize=" + totalPrize +
                 ", vip=" + vip +
-                ", txnCostUsd=" + txnCostUsd +
         '}';
     }
 }

@@ -38,13 +38,18 @@ public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
         if (zoneIcon != null)
         {
             boolean loaded = false;
+            picasso.cancelRequest(zoneIcon);
+            
             if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
             {
                 UserProfileCompactDTO profileDTO = ((CompetitionZonePortfolioDTO) competitionZoneDTO).userProfileCompactDTO;
-                if (profileDTO != null && profileDTO.largePicture != null)
+                if (profileDTO != null && profileDTO.picture != null)
                 {
-                    picasso.load(profileDTO.largePicture)
+
+                    picasso.load(profileDTO.picture)
                             .transform(zoneIconTransformation)
+                            .centerInside()
+                            .fit()
                             .into(zoneIcon);
                     loaded = true;
                 }
@@ -54,6 +59,8 @@ public class CompetitionZonePortfolioView extends CompetitionZoneListItemView
             {
                 picasso.load(R.drawable.superman_facebook)
                         .transform(zoneIconTransformation)
+                        .centerInside()
+                        .fit()
                         .into(zoneIcon);
             }
         }

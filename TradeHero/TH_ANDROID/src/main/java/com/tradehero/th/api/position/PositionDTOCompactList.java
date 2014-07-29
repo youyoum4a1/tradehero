@@ -33,14 +33,39 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return sum;
     }
 
+    //<editor-fold desc="Max Net Sell Proceeds USD">
     /**
      * If it returns a negative number it means it will eat into the cash available.
      * @param quoteDTO
      * @param portfolioId
-     * @param includeTransactionCost
+     * @param includeTransactionCostUsd
      * @return
      */
-    public Double getMaxNetSellProceedsUsd(QuoteDTO quoteDTO, PortfolioId portfolioId, boolean includeTransactionCost)
+    public Double getMaxNetSellProceedsUsd(
+            QuoteDTO quoteDTO,
+            PortfolioId portfolioId,
+            boolean includeTransactionCostUsd)
+    {
+        return getMaxNetSellProceedsUsd(
+                quoteDTO,
+                portfolioId,
+                includeTransactionCostUsd,
+                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
+    }
+
+    /**
+     * If it returns a negative number it means it will eat into the cash available.
+     * @param quoteDTO
+     * @param portfolioId
+     * @param includeTransactionCostUsd
+     * @param txnCostUsd
+     * @return
+     */
+    public Double getMaxNetSellProceedsUsd(
+            QuoteDTO quoteDTO,
+            PortfolioId portfolioId,
+            boolean includeTransactionCostUsd,
+            double txnCostUsd)
     {
         if (quoteDTO == null || portfolioId == null || portfolioId.key == null)
         {
@@ -52,22 +77,30 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         {
             return null;
         }
-        return shareCount * bidUsd - (includeTransactionCost ? SecurityUtils.DEFAULT_TRANSACTION_COST : 0);
+        return shareCount * bidUsd - (includeTransactionCostUsd ? txnCostUsd : 0);
     }
+    //</editor-fold>
 
-    public Integer getMaxSellableShares(QuoteDTO quoteDTO, PortfolioCompactDTO portfolioCompactDTO)
+    //<editor-fold desc="Max Sellable Shares">
+    public Integer getMaxSellableShares(
+            QuoteDTO quoteDTO,
+            PortfolioCompactDTO portfolioCompactDTO)
     {
         return getMaxSellableShares(quoteDTO, portfolioCompactDTO, true);
     }
 
-    public Integer getMaxSellableShares(QuoteDTO quoteDTO, PortfolioCompactDTO portfolioCompactDTO, boolean includeTransactionCost)
+    public Integer getMaxSellableShares(
+            QuoteDTO quoteDTO,
+            PortfolioCompactDTO portfolioCompactDTO,
+            boolean includeTransactionCost)
     {
         if (quoteDTO == null || portfolioCompactDTO == null)
         {
             return null;
         }
+        double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
         Integer shareCount = getShareCountIn(portfolioCompactDTO.getPortfolioId());
-        Double netSellProceedsUsd = getMaxNetSellProceedsUsd(quoteDTO, portfolioCompactDTO.getPortfolioId(), includeTransactionCost);
+        Double netSellProceedsUsd = getMaxNetSellProceedsUsd(quoteDTO, portfolioCompactDTO.getPortfolioId(), includeTransactionCost, txnCostUsd);
         if (netSellProceedsUsd == null)
         {
             return null;
@@ -77,4 +110,5 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         // If we are underwater after a sell, we cannot sell
         return netSellProceedsUsd < 0 ? 0 : shareCount;
     }
+    //</editor-fold>
 }

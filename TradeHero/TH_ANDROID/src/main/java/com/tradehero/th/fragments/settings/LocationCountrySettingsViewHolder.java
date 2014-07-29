@@ -10,23 +10,31 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class LocationCountrySettingsViewHolder
+public class LocationCountrySettingsViewHolder implements SettingViewHolder
 {
-    @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final UserProfileCache userProfileCache;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     protected DashboardPreferenceFragment preferenceFragment;
     protected Preference locationPreference;
 
-    public void initViews(DashboardPreferenceFragment preferenceFragment)
+    //<editor-fold desc="Constructors">
+    @Inject public LocationCountrySettingsViewHolder(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache)
     {
-        DaggerUtils.inject(this);
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
+    }
+    //</editor-fold>
+
+    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    {
         this.preferenceFragment = preferenceFragment;
 
         locationPreference =
@@ -47,7 +55,7 @@ public class LocationCountrySettingsViewHolder
         fetchUserProfile();
     }
 
-    public void destroyViews()
+    @Override public void destroyViews()
     {
         detachUserProfileCache();
 

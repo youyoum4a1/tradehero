@@ -6,7 +6,6 @@
     android:id="@+id/contest_center_content_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
     >
 
   <ProgressBar
@@ -20,7 +19,9 @@
       android:id="@android:id/list"
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
-      android:layout_marginTop="@dimen/leaderboard_separator_height_negated"
+      android:paddingTop="10dp"
+      android:paddingBottom="10dp"
+      android:clipToPadding="false"
       app:hasStickyHeaders="false"
       />
 

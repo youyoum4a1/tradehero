@@ -14,6 +14,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import java.text.SimpleDateFormat;
@@ -34,6 +35,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
+    @Inject GraphicUtil graphicUtil;
+
     private Target topBackgroundTarget;
     private Target topDefaultBackgroundTarget;
     protected Runnable displayTopViewBackgroundRunnable;
@@ -287,8 +290,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (profileTop != null)
             {
-                profileTop.setBackgroundDrawable(
-							new BitmapDrawable(context.getResources(), bitmap));
+                graphicUtil.setBackground(profileTop, new BitmapDrawable(context.getResources(), bitmap));
             }
         }
 

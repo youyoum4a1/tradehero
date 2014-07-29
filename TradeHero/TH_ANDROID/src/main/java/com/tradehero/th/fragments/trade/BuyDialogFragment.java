@@ -102,7 +102,9 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
 
     public Integer getMaxPurchasableShares()
     {
-        return portfolioCompactDTOUtil.getMaxPurchasableShares(portfolioCompactDTO, quoteDTO);
+        return portfolioCompactDTOUtil.getMaxPurchasableShares(
+                portfolioCompactDTO,
+                quoteDTO);
     }
 
     protected boolean hasValidInfoForBuy()

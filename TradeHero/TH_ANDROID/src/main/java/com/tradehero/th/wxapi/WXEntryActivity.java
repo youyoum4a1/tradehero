@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.Window;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -276,5 +277,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             THToast.show(new THException(retrofitError));
             finish();
         }
+    }
+
+    /*
+        Fixed a bug by WeChat SDK
+        https://www.pivotaltracker.com/story/show/75789704
+     */
+    @Override public boolean onTouchEvent(MotionEvent event)
+    {
+        finish();
+        return super.onTouchEvent(event);
     }
 }

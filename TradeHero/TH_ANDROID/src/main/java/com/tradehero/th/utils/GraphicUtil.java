@@ -1,20 +1,27 @@
 package com.tradehero.th.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.media.ExifInterface;
 import android.util.DisplayMetrics;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.view.View;
 import com.tradehero.common.graphics.RotateTransformation;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GraphicUtil implements BitmapForProfileFactory
 {
@@ -159,5 +166,124 @@ public class GraphicUtil implements BitmapForProfileFactory
         {
         }
         return null;
+    }
+
+    public int parseColor(@Nullable String argbHexColorString)
+    {
+        return parseColor(argbHexColorString, Color.WHITE);
+    }
+
+    public int parseColor(@Nullable String argbHexColorString, int defaultColor)
+    {
+        if (argbHexColorString != null && !argbHexColorString.startsWith("#"))
+        {
+            argbHexColorString = "#" + argbHexColorString;
+        }
+
+        int color;
+        try
+        {
+            color = Color.parseColor(argbHexColorString);
+        } catch (Exception e)
+        {
+            color = defaultColor;
+        }
+        return color;
+    }
+
+    public int getContrastingColor(int color)
+    {
+        //Reference http://stackoverflow.com/questions/1855884/determine-font-color-based-on-background-color
+
+        int d = 0;
+
+        if (isBright(color))
+        {
+            d = 0; // bright colors - return black
+        }
+        else
+        {
+            d = 255; // dark colors - return white
+        }
+
+        return Color.rgb(d, d, d);
+    }
+
+    private boolean isBright(int color)
+    {
+        // Counting the perceptive luminance - human eye favors green color...
+        double a = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
+        if (a < 0.5)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public int getLighterColor(int color)
+    {
+        float hsvVals[] = new float[3];
+        Color.colorToHSV(color, hsvVals);
+        hsvVals[2] = 0.5f * (1f + hsvVals[2]);
+        return Color.HSVToColor(hsvVals);
+    }
+
+    public int getDarkerColor(int color)
+    {
+        float hsvVals[] = new float[3];
+        Color.colorToHSV(color, hsvVals);
+        hsvVals[2] = 0.5f * hsvVals[2];
+        return Color.HSVToColor(hsvVals);
+    }
+
+    public StateListDrawable createStateListDrawable(@NotNull Context context, int normal)
+    {
+        int pressed;
+        if (isBright(normal))
+        {
+            pressed = getDarkerColor(normal);
+        }
+        else
+        {
+            pressed = getLighterColor(normal);
+        }
+        return createStateListDrawable(context, normal, pressed);
+    }
+
+    public StateListDrawable createStateListDrawable(@NotNull Context context, int normal, int pressed)
+    {
+        int focused;
+        if (isBright(normal))
+        {
+            focused = getLighterColor(normal);
+        }
+        else
+        {
+            focused = getDarkerColor(normal);
+        }
+        return createStateListDrawable(context, normal, pressed, focused);
+    }
+
+    public StateListDrawable createStateListDrawable(@NotNull Context context, int normal, int pressed, int focused)
+    {
+        StateListDrawable states = new StateListDrawable();
+        states.setExitFadeDuration(context.getResources().getInteger(android.R.integer.config_mediumAnimTime));
+        states.addState(new int[] {android.R.attr.state_pressed}, new ColorDrawable(pressed)); //Pressed
+        states.addState(new int[] {android.R.attr.state_focused}, new ColorDrawable(focused)); //Focused
+        states.addState(new int[] {}, new ColorDrawable(normal)); //normal
+        return states;
+    }
+
+    @SuppressLint("NewApi")
+    public void setBackground(@NotNull View view, Drawable drawable)
+    {
+        if(SDKUtils.isJellyBeanOrHigher())
+        {
+            view.setBackground(drawable);
+        }
+        else
+        {
+            view.setBackgroundDrawable(drawable);
+        }
     }
 }

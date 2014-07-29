@@ -593,6 +593,10 @@
         <artifactId>android-maven-plugin</artifactId>
         <configuration>
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
+          <dex>
+            <multiDex>true</multiDex>
+            <mainDexList>maindexlist.txt</mainDexList>
+          </dex>
         </configuration>
         <extensions>true</extensions>
       </plugin>

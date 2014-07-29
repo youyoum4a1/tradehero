@@ -131,4 +131,9 @@ public class BaseFragment extends SherlockFragment
             actionBar.setSubtitle(subtitle);
         }
     }
+
+    public void onCustomResume()
+    {
+
+    }
 }

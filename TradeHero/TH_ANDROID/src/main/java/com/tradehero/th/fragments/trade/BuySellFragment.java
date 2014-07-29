@@ -1146,8 +1146,11 @@ public class BuySellFragment extends AbstractBuySellFragment
             }
         };
 
-        AbstractTransactionDialogFragment abstractTransactionDialogFragment = BuyDialogFragment.newInstance(securityId,
-                purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(), quoteDTO, isTransactionTypeBuy);
+        AbstractTransactionDialogFragment abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
+                securityId,
+                purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
+                quoteDTO,
+                isTransactionTypeBuy);
         abstractTransactionDialogFragment.show(getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
         abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
         {
