@@ -192,7 +192,7 @@ public class THSignedNumber
 
     private int precisionFromNumber()
     {
-        int precision = 4;
+        int precision;
         double absNumber = Math.abs(number);
 
         if (absNumber >= 1000)
