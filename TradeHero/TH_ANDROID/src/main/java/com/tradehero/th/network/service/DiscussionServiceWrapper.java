@@ -33,6 +33,7 @@ import retrofit.Callback;
     @NotNull private final Lazy<DiscussionCache> discussionCache;
     @NotNull private final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
 
+    //<editor-fold desc="Constructors">
     @Inject public DiscussionServiceWrapper(
             @NotNull DiscussionService discussionService,
             @NotNull DiscussionServiceAsync discussionServiceAsync,
@@ -46,6 +47,7 @@ import retrofit.Callback;
         this.discussionCache = discussionCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
     }
+    //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
     protected DTOProcessor<DiscussionDTO> createDiscussionProcessor()

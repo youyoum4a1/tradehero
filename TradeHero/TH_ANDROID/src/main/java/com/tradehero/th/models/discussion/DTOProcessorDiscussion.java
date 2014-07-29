@@ -9,11 +9,13 @@ public class DTOProcessorDiscussion implements DTOProcessor<DiscussionDTO>
 {
     @NotNull private final DiscussionDTOFactory discussionDTOFactory;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorDiscussion(
             @NotNull DiscussionDTOFactory discussionDTOFactory)
     {
         this.discussionDTOFactory = discussionDTOFactory;
     }
+    //</editor-fold>
 
     @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
     {

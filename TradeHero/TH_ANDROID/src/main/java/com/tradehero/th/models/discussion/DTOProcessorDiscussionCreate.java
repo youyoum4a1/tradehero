@@ -15,6 +15,7 @@ public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
     @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
     @Nullable private final DiscussionKey stubKey;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorDiscussionCreate(
             @NotNull DiscussionDTOFactory discussionDTOFactory,
             @NotNull DiscussionCache discussionCache,
@@ -26,6 +27,7 @@ public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.stubKey = stubKey;
     }
+    //</editor-fold>
 
     @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
     {
