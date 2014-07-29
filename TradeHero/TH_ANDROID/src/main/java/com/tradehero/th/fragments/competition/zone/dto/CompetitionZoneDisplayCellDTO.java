@@ -15,19 +15,9 @@ public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
     }
     //</editor-fold>
 
-    @Override public int hashCode()
+    public ProviderDisplayCellDTO getProviderDisplayCellDTO()
     {
-        return super.hashCode() ^
-                providerDisplayCellDTO.getProviderDisplayCellId().hashCode() ^
-                providerDisplayCellDTO.redirectUrl.hashCode();
-    }
-
-    @Override public String toString()
-    {
-        return "CompetitionZoneDTO{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return providerDisplayCellDTO;
     }
 
     public String getIconUrl()
@@ -38,5 +28,36 @@ public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
     public String getRedirectUrl()
     {
         return providerDisplayCellDTO.redirectUrl;
+    }
+
+    @Override public int hashCode()
+    {
+        return super.hashCode() ^
+                providerDisplayCellDTO.getProviderDisplayCellId().hashCode();
+    }
+
+    @Override public boolean equals(Object o)
+    {
+        if (o == null)
+        {
+            return false;
+        }
+        if (o == this)
+        {
+            return true;
+        }
+        if (o instanceof CompetitionZoneDisplayCellDTO)
+        {
+            return ((CompetitionZoneDisplayCellDTO) o).getProviderDisplayCellDTO().equals(this.providerDisplayCellDTO);
+        }
+        return false;
+    }
+
+    @Override public String toString()
+    {
+        return "CompetitionZoneDTO{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
