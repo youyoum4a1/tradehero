@@ -1,0 +1,106 @@
+package com.tradehero.th.fragments.alert;
+
+import android.os.Bundle;
+import android.widget.Switch;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.common.annotation.ForApp;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.alert.AlertDTO;
+import com.tradehero.th.api.alert.AlertPlanDTO;
+import com.tradehero.th.api.alert.UserAlertPlanDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.persistence.alert.AlertCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.inject.Inject;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.util.ActivityController;
+
+import static org.fest.assertions.api.Assertions.assertThat;
+
+@RunWith(RobolectricMavenTestRunner.class)
+public class AlertViewFragmentTest
+{
+    @Inject @ForApp ObjectMapper mapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
+    @Inject AlertCache alertCache;
+    private ActivityController<DashboardActivity> activityController;
+    private DashboardNavigator dashboardNavigator;
+    private AlertDTO cachedAlertDTO;
+    private UserProfileDTO cachedProfileDTO;
+
+    protected String getPackagePath(Class<?> klass)
+    {
+        return '/' + klass.getPackage().getName().replace('.', '/');
+    }
+
+    @Before public void setUp() throws IOException
+    {
+        currentUserId.set(2207);
+        cachedAlertDTO = mapper.readValue(
+                getClass().getResourceAsStream(getPackagePath(AlertDTO.class) + "/AlertDTOBody1.json"),
+                AlertDTO.class);
+        alertCache.put(cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()), cachedAlertDTO);
+
+        InputStream profileStream = getClass().getResourceAsStream(getPackagePath(UserProfileDTO.class) + "/UserProfileDTO1.json");
+        cachedProfileDTO = mapper.readValue(
+                profileStream,
+                UserProfileDTO.class);
+        UserAlertPlanDTO userAlertPlan = new UserAlertPlanDTO();
+        userAlertPlan.alertPlan = new AlertPlanDTO();
+        userAlertPlan.alertPlan.numberOfAlerts = 1;
+        cachedProfileDTO.userAlertPlans = Collections.singletonList(userAlertPlan);
+        userProfileCache.put(currentUserId.toUserBaseKey(), cachedProfileDTO);
+
+        activityController = Robolectric.buildActivity(DashboardActivity.class).create().start().resume();
+        dashboardNavigator = activityController.get().getDashboardNavigator();
+    }
+
+    @After public void tearDown()
+    {
+        alertCache.invalidateAll();
+        userProfileCache.invalidateAll();
+    }
+
+    @Test public void launchWillPopulateFromCache()
+    {
+        Bundle args = new Bundle();
+        AlertViewFragment.putAlertId(args, cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()));
+        AlertViewFragment alertViewFragment = dashboardNavigator.pushFragment(AlertViewFragment.class, args);
+
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasks();
+
+        assertThat(alertViewFragment.alertDTO.id).isEqualTo(cachedAlertDTO.id);
+    }
+
+    @Test public void clickOnOffWillSetMiddleCallback()
+    {
+        Bundle args = new Bundle();
+        AlertViewFragment.putAlertId(args, cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()));
+        AlertViewFragment alertViewFragment = dashboardNavigator.pushFragment(AlertViewFragment.class, args);
+
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasks();
+
+        assertThat(alertViewFragment.alertUpdateMiddleCallback).isNull();
+
+        activityController.visible();
+        Switch toggle = (Switch) alertViewFragment.getView().findViewById(R.id.alert_toggle);
+        Robolectric.clickOn(toggle);
+
+        assertThat(alertViewFragment.alertUpdateMiddleCallback).isNotNull();
+    }
+}

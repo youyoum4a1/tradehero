@@ -34,7 +34,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCache;
-import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -61,7 +60,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private StickyListHeadersListView priceChangeHistoryList;
 
-    @Inject protected Lazy<AlertCompactCache> alertCompactCache;
     @Inject protected Lazy<AlertCache> alertCache;
     protected DTOCacheNew.Listener<AlertId, AlertDTO> alertCacheListener;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
@@ -72,7 +70,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Inject protected CurrentUserId currentUserId;
 
     private View headerView;
-    private AlertDTO alertDTO;
+    protected AlertDTO alertDTO;
     private SecurityCompactDTO securityCompactDTO;
     private AlertEventAdapter alertEventAdapter;
     private AlertId alertId;
@@ -80,7 +78,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
     private THCallback<AlertCompactDTO> alertUpdateCallback;
-    private MiddleCallback<AlertCompactDTO> alertUpdateMiddleCallback;
+    protected MiddleCallback<AlertCompactDTO> alertUpdateMiddleCallback;
 
     public static void putAlertId(@NotNull Bundle args, @NotNull AlertId alertId)
     {
@@ -207,6 +205,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void linkWith(AlertId alertId, boolean andDisplay)
     {
+        this.alertId = alertId;
         if (alertId != null)
         {
             detachAlertFetchTask();
@@ -222,7 +221,10 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         this.alertDTO = alertDTO;
 
         alertEventAdapter.clear();
-        alertEventAdapter.addAll(alertDTO.alertEvents);
+        if (alertDTO.alertEvents != null)
+        {
+            alertEventAdapter.addAll(alertDTO.alertEvents);
+        }
         alertEventAdapter.notifyDataSetChanged();
 
         if (alertDTO.security != null)
@@ -252,7 +254,9 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             {
                 UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
 
-                if (alertToggle.isChecked() && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
+                if (alertToggle.isChecked()
+                        && userProfileDTO != null
+                        && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
                 {
                     // TODO
                     //userInteractor.conditionalPopBuyStockAlerts();
@@ -348,24 +352,19 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void handleAlertToggleChanged(boolean alertActive)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+        progressDialog.setCanceledOnTouchOutside(true);
 
-        if (userProfileDTO != null)
+        if (alertDTO != null)
         {
-            progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
-            progressDialog.setCanceledOnTouchOutside(true);
-
-            if (alertDTO != null)
-            {
-                AlertFormDTO alertFormDTO = new AlertFormDTO();
-                alertFormDTO.securityId = alertDTO.security.id;
-                alertFormDTO.targetPrice = alertDTO.targetPrice;
-                alertFormDTO.upOrDown = alertDTO.upOrDown;
-                alertFormDTO.priceMovement = alertDTO.priceMovement;
-                alertFormDTO.active = alertActive;
-                detachAlertUpdateMiddleCallback();
-                alertUpdateMiddleCallback = alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
-            }
+            AlertFormDTO alertFormDTO = new AlertFormDTO();
+            alertFormDTO.securityId = alertDTO.security.id;
+            alertFormDTO.targetPrice = alertDTO.targetPrice;
+            alertFormDTO.upOrDown = alertDTO.upOrDown;
+            alertFormDTO.priceMovement = alertDTO.priceMovement;
+            alertFormDTO.active = alertActive;
+            detachAlertUpdateMiddleCallback();
+            alertUpdateMiddleCallback = alertServiceWrapper.get().updateAlert(alertId, alertFormDTO, alertUpdateCallback);
         }
     }
 
