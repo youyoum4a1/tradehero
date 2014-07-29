@@ -83,10 +83,13 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject HomeContentCache homeContentCache;
     @Inject THRouter thRouter;
 
-    @RouteProperty("socialId") String socialId;
-    @RouteProperty("socialUserId") String socialUserId;
+    @RouteProperty(ROUTER_SOCIALID) String socialId;
+    @RouteProperty(ROUTER_SOCIALUSERID) String socialUserId;
+    @RouteProperty(ROUTER_USERID) Integer userId;
 
-    @RouteProperty("userId") Integer userId;
+    public static final String ROUTER_SOCIALID = "socialId";
+    public static final String ROUTER_SOCIALUSERID = "socialUserId";
+    public static final String ROUTER_USERID = "userId";
 
     protected SocialFriendHandler socialFriendHandler;
     private ProgressDialog progressDialog;
@@ -185,14 +188,16 @@ public final class HomeFragment extends BaseWebViewFragment
     private void resetRoutingData()
     {
         // TODO Routing library should have a way to clear injected data, proposing: THRouter.reset(this)
+        Bundle b = getArguments();
+        if(b!=null)
+        {
+            b.remove(ROUTER_SOCIALID);
+            b.remove(ROUTER_SOCIALUSERID);
+            b.remove(ROUTER_USERID);
+        }
         socialId = null;
-        getArguments().remove("socialId");
-
         socialUserId = null;
-        getArguments().remove("socialUserId");
-
         userId = null;
-        getArguments().remove("userId");
     }
 
     //<editor-fold desc="Windy's stuff, to be refactored">
