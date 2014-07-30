@@ -26,9 +26,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
         THSignedNumber sthSignedNumber = THSignedNumber.builder()
                 .number(quoteDTO.bid)
-                .money()
                 .withOutSign()
-                .currency("")
                 .build();
         String sPrice = sthSignedNumber.toString();
         return getString(R.string.buy_sell_button_sell, display, sPrice);

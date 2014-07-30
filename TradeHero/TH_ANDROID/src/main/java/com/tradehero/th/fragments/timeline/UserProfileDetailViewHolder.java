@@ -15,7 +15,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -113,9 +112,11 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         if (profileTop != null && topDefaultBackgroundTarget != null
                 && profileTop.getWidth() > 0 && profileTop.getHeight() > 0)
         {
-            picasso.load(R.drawable.superman_facebook).transform(peopleBackgroundTransformation)
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(peopleBackgroundTransformation)
                     .resize(profileTop.getWidth(), profileTop.getHeight())
-                    .centerCrop().into(topDefaultBackgroundTarget);
+                    .centerCrop()
+                    .into(topDefaultBackgroundTarget);
         }
     }
 
@@ -169,16 +170,14 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                         .money()
                         .withSign()
                         .signTypePlusMinusAlways()
-                        .currency(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY)
+                        .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 profitFromTrades.setText(thPlSinceInception.toString());
-                profitFromTrades.setTextColor(
-                        context.getResources().getColor(thPlSinceInception.getColor()));
+                profitFromTrades.setTextColor(thPlSinceInception.getColor());
                 if (profitValue != null)
                 {
                     profitValue.setText(thPlSinceInception.toString());
-                    profitValue.setTextColor(
-                            context.getResources().getColor(thPlSinceInception.getColor()));
+                    profitValue.setTextColor(thPlSinceInception.getColor());
                 }
             }
             else
@@ -203,7 +202,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 THSignedNumber thTotalWealth = THSignedNumber.builder()
                         .number(userProfileDTO.portfolio.totalValue)
                         .money()
-                        .withOutSign()
+                        .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 totalWealth.setText(thTotalWealth.toString());
             }
@@ -223,7 +222,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 THSignedNumber thAdditionalCash = THSignedNumber.builder()
                         .number(userProfileDTO.portfolio.getTotalExtraCash())
                         .money()
-                        .withOutSign()
+                        .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 additionalCash.setText(thAdditionalCash.toString());
             }
@@ -243,7 +242,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 THSignedNumber thCashOnHand = THSignedNumber.builder()
                         .number(userProfileDTO.portfolio.cashBalance)
                         .money()
-                        .withOutSign()
+                        .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 cashOnHand.setText(thCashOnHand.toString());
             }

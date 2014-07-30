@@ -14,7 +14,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
 
@@ -85,11 +84,11 @@ public class UserProfileCompactViewHolder
                         .money()
                         .withSign()
                         .signTypePlusMinusAlways()
-                        .currency(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY)
+                        .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 profitValue.setText(thPlSinceInception.toString());
                 profitValue.setTextColor(
-                        context.getResources().getColor(thPlSinceInception.getColor()));
+                        context.getResources().getColor(thPlSinceInception.getColorResId()));
             }
             else
             {
@@ -140,7 +139,7 @@ public class UserProfileCompactViewHolder
                         .build();
                 roiSinceInception.setText(thRoiSinceInception.toString());
                 roiSinceInception.setTextColor(
-                        context.getResources().getColor(thRoiSinceInception.getColor()));
+                        context.getResources().getColor(thRoiSinceInception.getColorResId()));
             }
             else
             {

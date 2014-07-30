@@ -8,8 +8,8 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import java.util.Date;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
@@ -108,7 +108,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
             return "0";
         }
 
-        return NumberDisplayUtils.formatWithRelevantDigits(starRating, 0);
+        return THSignedNumber.builder().number(starRating).withOutSign().build().toString();
     }
 
     public int getCommentsCount()

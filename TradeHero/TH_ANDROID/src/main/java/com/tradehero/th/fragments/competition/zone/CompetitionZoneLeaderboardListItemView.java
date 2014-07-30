@@ -114,7 +114,7 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
                             .build();
 
                     roiView.setText(thRoi.toString());
-                    roiView.setTextColor(getResources().getColor(thRoi.getColor()));
+                    roiView.setTextColor(getResources().getColor(thRoi.getColorResId()));
                 }
                 else
                 {

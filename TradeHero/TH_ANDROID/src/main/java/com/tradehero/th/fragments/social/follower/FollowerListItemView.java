@@ -223,7 +223,7 @@ public class FollowerListItemView extends RelativeLayout
                         .build();
                 revenueInfo.setText(thRoiSinceInception.toString());
                 revenueInfo.setTextColor(
-                        getContext().getResources().getColor(thRoiSinceInception.getColor()));
+                        getContext().getResources().getColor(thRoiSinceInception.getColorResId()));
 
                 //revenueInfo.setText(String.format(getResources().getString(R.string.manage_followers_revenue_follower), SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, userFollowerDTO.totalRevenue));
             }

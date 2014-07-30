@@ -159,7 +159,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
                 .build();
 
         mROILabel.setText(thRoiSinceInception.toString());
-        mROILabel.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
+        mROILabel.setTextColor(getResources().getColor(thRoiSinceInception.getColorResId()));
     }
 
     protected DashboardNavigator getNavigator()

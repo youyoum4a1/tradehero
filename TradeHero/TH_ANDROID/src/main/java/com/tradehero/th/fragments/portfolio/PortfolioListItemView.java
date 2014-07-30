@@ -363,8 +363,8 @@ public class PortfolioListItemView extends RelativeLayout
                         .withSign()
                         .signTypeArrow()
                         .build();
-                roiValue.setText(roi.toString(1));
-                roiValue.setTextColor(getResources().getColor(roi.getColor()));
+                roiValue.setText(roi.toString());
+                roiValue.setTextColor(getResources().getColor(roi.getColorResId()));
                 roiValue.setVisibility(VISIBLE);
             }
             else if (displayablePortfolioDTO != null &&

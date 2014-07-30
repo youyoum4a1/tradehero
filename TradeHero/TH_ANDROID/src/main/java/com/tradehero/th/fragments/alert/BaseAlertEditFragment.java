@@ -453,7 +453,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                     .number(alertDTO.priceMovement * 100)
                     .percentage()
                     .build();
-            targetPrice.setText(thPriceMovement.toString(0));
+            targetPrice.setText(thPriceMovement.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
     }
@@ -575,7 +575,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                 .percentage()
                 .withSign()
                 .build();
-        percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString(0) : "-"));
+        percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString() : "-"));
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
         {

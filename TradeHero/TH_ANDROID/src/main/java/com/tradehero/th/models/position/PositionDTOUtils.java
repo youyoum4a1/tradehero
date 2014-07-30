@@ -6,7 +6,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.utils.ColorUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.THSignedNumber;
 import javax.inject.Inject;
 
@@ -252,9 +251,14 @@ public class PositionDTOUtils
         }
         else
         {
-            String roiText = NumberDisplayUtils.getArrowPrefix(roiValue);
-            roiText += NumberDisplayUtils.formatWithRelevantDigits(Math.abs(roiValue * 100.0), 3) + "%";
-            textView.setText(roiText);
+            THSignedNumber roiNumber = THSignedNumber.builder()
+                    .number(Math.abs(roiValue * 100.0))
+                    .percentage()
+                    .withSign()
+                    .signTypeArrow()
+                    .relevantDigitCount(3)
+                    .build();
+            textView.setText(roiNumber.toString());
             textView.setTextColor(
                     ColorUtils.getProperColorForNumber(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
         }

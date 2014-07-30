@@ -828,18 +828,23 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void pushPrivateMessageFragment()
     {
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator == null)
+        {
+            return;
+        }
         if (messageThreadHeaderDTO != null)
         {
             Bundle args = new Bundle();
             ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
             ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(messageThreadHeaderDTO));
-            getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+            navigator.pushFragment(NewPrivateMessageFragment.class, args);
         }
         else
         {
             Bundle args = new Bundle();
             NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-            getDashboardNavigator().pushFragment(NewPrivateMessageFragment.class, args);
+            navigator.pushFragment(NewPrivateMessageFragment.class, args);
         }
     }
 

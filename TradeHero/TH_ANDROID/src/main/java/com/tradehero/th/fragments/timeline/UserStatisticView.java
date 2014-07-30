@@ -15,7 +15,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -102,11 +102,15 @@ public class UserStatisticView extends LinearLayout
 
     private void showExpandAnimation()
     {
-        String digitsWinRatio =
-                NumberDisplayUtils.formatWithRelevantDigits(leaderboardUserDTO.getWinRatio() * 100, 3);
+        String digitsWinRatio = THSignedNumber.builder()
+                .number(leaderboardUserDTO.getWinRatio() * 100)
+                .percentage()
+                .withOutSign()
+                .relevantDigitCount(3)
+                .build().toString();
         if (winRateGauge != null)
         {
-            winRateGauge.setContentText(digitsWinRatio + "%");
+            winRateGauge.setContentText(digitsWinRatio);
             winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
             winRateGauge.setAnimiationFlag(true);
             winRateGauge.setTargetValue((float) leaderboardUserDTO.getWinRatio() * 100);
@@ -146,11 +150,14 @@ public class UserStatisticView extends LinearLayout
 
     private void showValueWithoutAnimation()
     {
-        String digitsWinRatio =
-                NumberDisplayUtils.formatWithRelevantDigits(leaderboardUserDTO.getWinRatio() * 100, 3);
+        String digitsWinRatio = THSignedNumber.builder()
+                .number(leaderboardUserDTO.getWinRatio() * 100)
+                .relevantDigitCount(3)
+                .withOutSign()
+                .build().toString();
         if (winRateGauge != null)
         {
-            winRateGauge.setContentText(digitsWinRatio + "%");
+            winRateGauge.setContentText(digitsWinRatio);
             winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
             winRateGauge.setAnimiationFlag(false);
             winRateGauge.setCurrentValue((float) leaderboardUserDTO.getWinRatio() * 100);

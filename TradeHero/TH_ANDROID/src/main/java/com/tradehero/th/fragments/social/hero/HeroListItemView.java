@@ -10,7 +10,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -277,7 +276,7 @@ public class HeroListItemView extends RelativeLayout
                         .build();
                 revenueInfo.setText(thRoiSinceInception.toString());
                 revenueInfo.setTextColor(
-                        getContext().getResources().getColor(thRoiSinceInception.getColor()));
+                        getContext().getResources().getColor(thRoiSinceInception.getColorResId()));
             }
             else
             {

@@ -130,7 +130,7 @@ public class UserProfileResideMenuItem extends LinearLayout
                         .build();
 
                 userProfileRoi.setText(thRoiSinceInception.toString());
-                userProfileRoi.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
+                userProfileRoi.setTextColor(getResources().getColor(thRoiSinceInception.getColorResId()));
             }
             else
             {

@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
@@ -27,6 +28,7 @@
         android:shadowDy="1"
         android:shadowRadius="1"
         android:layout_centerVertical="true"
+        tools:text="4"
         />
 
     <ImageView
@@ -34,7 +36,7 @@
         android:layout_height="@dimen/leaderboard_user_view_profile_width"
         android:layout_width="@dimen/leaderboard_user_view_profile_width"
         android:contentDescription="@null"
-        android:src="@null"
+        tools:src="@drawable/superman_facebook"
         android:layout_toRightOf="@id/leaderboard_user_item_position"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
@@ -51,6 +53,7 @@
         android:shadowColor="@color/light_grey"
         android:shadowDy="1"
         android:shadowRadius="1"
+        tools:text="Superman"
         />
 
     <LinearLayout
@@ -66,7 +69,8 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_user_sharpe_ratio"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          android:textColor="@color/light_grey"
+          />
 
       <LinearLayout
           android:layout_width="wrap_content"

@@ -189,9 +189,7 @@ public class PricingBidAskView extends LinearLayout
         }
         THSignedNumber thSignedNumber = THSignedNumber.builder()
                 .number(quoteDTO.ask)
-                .money()
                 .withOutSign()
-                .currency("")
                 .build();
         return thSignedNumber.toString();
     }
@@ -217,9 +215,7 @@ public class PricingBidAskView extends LinearLayout
         }
         THSignedNumber thSignedNumber = THSignedNumber.builder()
                 .number(quoteDTO.bid)
-                .money()
                 .withOutSign()
-                .currency("")
                 .build();
         return thSignedNumber.toString();
     }

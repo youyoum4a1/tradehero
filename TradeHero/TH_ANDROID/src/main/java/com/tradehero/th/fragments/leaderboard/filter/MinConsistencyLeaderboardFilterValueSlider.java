@@ -38,21 +38,17 @@ public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilte
     {
         THSignedNumber signedNumber = THSignedNumber.builder()
                 .number((double) maxValue)
-                .money()
                 .withOutSign()
-                .currency("")
                 .build();
-        return signedNumber.toString(2);
+        return signedNumber.toString();
     }
 
     @Override protected String getCurrentValueText()
     {
         THSignedNumber signedNumber = THSignedNumber.builder()
                 .number((double) currentValue)
-                .money()
                 .withOutSign()
-                .currency("")
                 .build();
-        return signedNumber.toString(2);
+        return signedNumber.toString();
     }
 }

@@ -161,7 +161,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
                 .money()
                 .build();
         gainLoss.setFirstValue(firstNumber.toString());
-        gainLoss.setSecondValue(secondNumber.toString(0));
+        gainLoss.setSecondValue(secondNumber.toString());
         gainLoss.setTitle(getContext().getString(getAbsoluteGain() >= 0 ? R.string.watchlist_gain : R.string.watchlist_loss));
         gainLoss.invalidate();
     }

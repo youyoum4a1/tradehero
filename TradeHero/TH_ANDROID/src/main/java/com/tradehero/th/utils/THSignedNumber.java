@@ -1,10 +1,17 @@
 package com.tradehero.th.utils;
 
+import com.tradehero.th.R;
+import com.tradehero.th.base.Application;
 import java.text.DecimalFormat;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class THSignedNumber
 {
+    public static final int DESIRED_RELEVANT_DIGIT_COUNT = 4;
+
+    //<editor-fold desc="Constants">
+    public static final int TYPE_PLAIN = 0;
     public static final int TYPE_PERCENTAGE = 1;
     public static final int TYPE_MONEY = 2;
 
@@ -14,24 +21,39 @@ public class THSignedNumber
 
     public static final boolean WITH_SIGN = true;
     public static final boolean WITHOUT_SIGN = false;
+    //</editor-fold>
 
     private final boolean withSign;
     private final int signType;
     private final int type;
     private final String currency;
     private final Double number;
-    private String formattedNumber;
-    private int color;
+    private final int relevantDigitCount;
+    private final String formattedNumber;
+    private final int colorResId;
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
     {
         private Double number;
-        private int type = TYPE_MONEY;
+        private int type = TYPE_PLAIN;
         private boolean withSign = WITH_SIGN;
-        private int signType = TYPE_SIGN_ARROW;
-        private String currency = null;
+        private int signType = TYPE_SIGN_MINUS_ONLY;
+        @Nullable private String currency = null;
+        private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
 
         protected abstract BuilderType self();
+
+        protected boolean isValid()
+        {
+            return number != null
+                    && (type == TYPE_MONEY || currency == null);
+        }
+
+        public BuilderType plain()
+        {
+            type = TYPE_PLAIN;
+            return self();
+        }
 
         public BuilderType money()
         {
@@ -87,6 +109,12 @@ public class THSignedNumber
             return self();
         }
 
+        public BuilderType relevantDigitCount(int relevantDigitCount)
+        {
+            this.relevantDigitCount = relevantDigitCount;
+            return self();
+        }
+
         public THSignedNumber build()
         {
             return new THSignedNumber(this);
@@ -113,6 +141,12 @@ public class THSignedNumber
         this.signType = builder.signType;
         this.type = builder.type;
         this.number = builder.number;
+        this.relevantDigitCount = builder.relevantDigitCount;
+
+        if (!builder.isValid())
+        {
+            throw new IllegalArgumentException("Invalid builder");
+        }
 
         if (type == TYPE_MONEY && builder.currency == null)
         {
@@ -122,80 +156,79 @@ public class THSignedNumber
         {
             this.currency = builder.currency;
         }
+        colorResId = ColorUtils.getColorResourceIdForNumber(number);
+        formattedNumber = getFormatted();
     }
     //</editor-fold>
 
+    public int getColorResId()
+    {
+        return colorResId;
+    }
+
     public int getColor()
     {
-        return color;
+        return Application.context().getResources().getColor(getColorResId());
     }
 
-    public int getType()
+    protected String getFormatted()
     {
-        return type;
-    }
-
-    public String toString(int precision)
-    {
-        if (formattedNumber != null)
-        {
-            return formattedNumber;
-        }
-
         switch (type)
         {
+            case TYPE_PLAIN:
+                return createFormattedPlain();
             case TYPE_PERCENTAGE:
-                formattedNumber = signedFormattedPercentage(precision);
-                break;
+                return createFormattedPercentage();
             case TYPE_MONEY:
-                formattedNumber = signedFormattedMoney(precision);
-        }
-
-        return formattedNumber;
-    }
-
-    @Override public String toString()
-    {
-        return toString(-1);
-    }
-
-    private String getSignPrefix()
-    {
-        switch (signType)
-        {
-            case TYPE_SIGN_ARROW:
-                return NumberDisplayUtils.getArrowPrefix(number);
-
-            case TYPE_SIGN_MINUS_ONLY:
-                return NumberDisplayUtils.getMinusOnlyPrefix(number);
-
-            case TYPE_SIGN_PLUS_MINUS_ALWAYS:
-                return NumberDisplayUtils.getPlusMinusPrefix(number);
+                return createFormattedMoney();
 
             default:
-                throw new IllegalArgumentException("Unhandled signType: " + signType);
+                throw new IllegalArgumentException("Unhandled THSignedNumber type " + type);
         }
     }
 
-    // Private
-    private String signedFormattedPercentage(int precision)
+    protected String createPlainNumber()
     {
-        String sign = withSign ? getSignPrefix() : "";
-        if (precision < 0)
-        {
-            precision = precisionFromNumber();
-        }
+        int precision = getPrecisionFromNumber();
 
-        color = ColorUtils.getColorResourceIdForNumber(number);
-        String numberFormat = "%s%." + precision + "f";
-
-        String trailingZeroRemovedNumber = String.format(numberFormat, sign, Math.abs(number));
-        trailingZeroRemovedNumber = removeTrailingZeros(trailingZeroRemovedNumber);
-
-        return  trailingZeroRemovedNumber + "%";
+        DecimalFormat df = new DecimalFormat(getStringFormat(precision).toString());
+        String formatted = df.format(Math.abs(number));
+        return removeTrailingZeros(formatted);
     }
 
-    private String removeTrailingZeros(String formattedNumber)
+    protected String createFormattedPlain()
+    {
+        return String.format(
+                "%s%s",
+                getConditionalSignPrefix(),
+                createPlainNumber());
+    }
+
+    protected String createFormattedPercentage()
+    {
+        return String.format(
+                "%s%s%s",
+                getConditionalSignPrefix(),
+                createPlainNumber(),
+                Application.getResourceString(R.string.percentage_suffix));
+    }
+
+    protected String createFormattedMoney()
+    {
+        return String.format(
+                "%s%s%s%s",
+                getConditionalSignPrefix(),
+                currency,
+                getCurrencySpace(),
+                createPlainNumber());
+    }
+
+    protected String getCurrencySpace()
+    {
+        return currency == null || currency.isEmpty() ? "" : " ";
+    }
+
+    public static String removeTrailingZeros(String formattedNumber)
     {
         if (formattedNumber != null && formattedNumber.contains("."))
         {
@@ -216,13 +249,13 @@ public class THSignedNumber
         return formattedNumber;
     }
 
-    private String signedFormattedMoney(int precision)
+    @Override public String toString()
     {
-        String sign = withSign ? getSignPrefix() : "";
-        if (precision < 0)
-        {
-            precision = precisionFromNumber();
-        }
+        return formattedNumber;
+    }
+
+    public static StringBuilder getStringFormat(int precision)
+    {
         StringBuilder sb = new StringBuilder();
         sb.append("#,###");
         if (precision > 0)
@@ -233,22 +266,16 @@ public class THSignedNumber
                 sb.append('#');
             }
         }
-        DecimalFormat df = new DecimalFormat(sb.toString());
-
-        color = ColorUtils.getColorResourceIdForNumber(number);
-        String numberFormat = "%s%s %s";
-
-        String trailingZeroRemovedNumber = df.format(Math.abs(number));
-        trailingZeroRemovedNumber = removeTrailingZeros(trailingZeroRemovedNumber);
-
-        return String.format(numberFormat,
-                sign,
-                currency,
-                trailingZeroRemovedNumber
-                );
+        return sb;
     }
 
-    protected int precisionFromNumber()
+    //<editor-fold desc="Precision">
+    protected int getPrecisionFromNumber()
+    {
+        return getPrecisionFromNumber(number, relevantDigitCount);
+    }
+
+    public static int getPrecisionFromNumber(double number, int relevantDigitCount)
     {
         int precision;
         double absNumber = Math.abs(number);
@@ -259,8 +286,68 @@ public class THSignedNumber
         }
         else
         {
-            precision = Math.max(0, 3 - (int) Math.floor(Math.log10(absNumber)));
+            precision = Math.max(0, relevantDigitCount - 1 - (int) Math.floor(Math.log10(absNumber)));
         }
         return precision;
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Prefix Signs">
+    protected String getConditionalSignPrefix()
+    {
+        return withSign ? getSignPrefix() : "";
+    }
+
+    protected String getSignPrefix()
+    {
+        switch (signType)
+        {
+            case TYPE_SIGN_ARROW:
+                return getArrowPrefix(number);
+
+            case TYPE_SIGN_MINUS_ONLY:
+                return getMinusOnlyPrefix(number);
+
+            case TYPE_SIGN_PLUS_MINUS_ALWAYS:
+                return getPlusMinusPrefix(number);
+
+            default:
+                throw new IllegalArgumentException("Unhandled signType: " + signType);
+        }
+    }
+
+    public static String getArrowPrefix(double value)
+    {
+        return Application.getResourceString(getArrowPrefixResId(value));
+    }
+
+    public static int getArrowPrefixResId(double value)
+    {
+        return value > 0 ? R.string.arrow_prefix_positive :
+                value < 0 ? R.string.arrow_prefix_negative :
+                        R.string.arrow_prefix_zero;
+    }
+
+    public static String getMinusOnlyPrefix(double value)
+    {
+        return Application.getResourceString(getMinusOnlyPrefixResId(value));
+    }
+
+    public static int getMinusOnlyPrefixResId(double value)
+    {
+        return value < 0 ? R.string.sign_prefix_negative : R.string.sign_prefix_zero;
+    }
+
+    public static String getPlusMinusPrefix(double value)
+    {
+        return Application.getResourceString(getPlusMinusPrefixResId(value));
+    }
+
+    public static int getPlusMinusPrefixResId(double value)
+    {
+        return value > 0 ? R.string.sign_prefix_positive :
+                value < 0 ? R.string.sign_prefix_negative :
+                        R.string.sign_prefix_zero;
+    }
+    //</editor-fold>
 }
