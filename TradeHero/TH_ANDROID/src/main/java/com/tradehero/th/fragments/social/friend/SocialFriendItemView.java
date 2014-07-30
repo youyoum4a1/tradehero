@@ -101,6 +101,15 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
         }
     }
 
+    @OnClick(R.id.social_friend_item_ll)
+    public void onActionItemViewClick(View v)
+    {
+        if (v.getId() == R.id.social_friend_item_ll && isNeedCheckBoxShow())
+        {
+            actionCb.performClick();
+        }
+    }
+
     public void setOnElementClickedListener(OnElementClickListener onElementClickListener)
     {
         this.onElementClickListener = onElementClickListener;
@@ -115,6 +124,12 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
         displayActionButton();
         displayHeadLine();
         displayByType();
+        setItemViewClickable();
+    }
+
+    private void setItemViewClickable()
+    {
+        socialFriendItem.setClickable(isNeedCheckBoxShow());
     }
 
     private void displayHeadLine()
@@ -208,6 +223,13 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
         actionBtn.setPadding(pL, pT, pR, pB);
     }
 
+    private boolean isNeedCheckBoxShow()
+    {
+        return (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO &&
+                ((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO instanceof UserFriendsWeiboDTO
+                && (!((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO.isTradeHeroUser()));
+    }
+
     private void setWeiboCheckBox()
     {
         if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
@@ -216,8 +238,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
         }
 
         // TODO change to be another test
-        if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO &&
-                ((SocialFriendListItemUserDTO) socialFriendListItemDTO).userFriendsDTO instanceof UserFriendsWeiboDTO)
+        if (isNeedCheckBoxShow())
         {
             actionBtn.setVisibility(View.GONE);
             actionCb.setVisibility(View.VISIBLE);
@@ -232,7 +253,9 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
     public static interface OnElementClickListener
     {
         void onFollowButtonClick(UserFriendsDTO userFriendsDTO);
+
         void onInviteButtonClick(UserFriendsDTO userFriendsDTO);
+
         void onCheckBoxClick(UserFriendsDTO userFriendsDTO);
     }
 }
