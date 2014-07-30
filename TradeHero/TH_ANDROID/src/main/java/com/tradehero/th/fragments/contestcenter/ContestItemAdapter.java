@@ -52,7 +52,6 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
     @SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-
         convertView = LayoutInflater.from(getContext()).inflate(getItemViewResId(position), viewGroup, false);
         if (convertView instanceof DTOView)
         {

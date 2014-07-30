@@ -27,7 +27,7 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
 
         contestListView.setAdapter(contestListAdapter);
 
-        if (isNojoinedContest())
+        if (isNotJoinedContest())
         {
             setContestCenterScreen(R.id.contest_no_joined);
         }
@@ -38,7 +38,7 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
         return ContestCenterTabType.JOINED;
     }
 
-    public boolean isNojoinedContest()
+    public boolean isNotJoinedContest()
     {
         if (providerDTOs != null)
         {

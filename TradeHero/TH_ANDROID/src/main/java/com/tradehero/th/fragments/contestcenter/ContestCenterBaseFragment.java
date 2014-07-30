@@ -30,21 +30,22 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import dagger.Lazy;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
-/**
- * Created by huhaiping on 14-7-18.
- */
-public abstract class ContestCenterBaseFragment extends DashboardFragment implements View.OnClickListener
+public abstract class ContestCenterBaseFragment extends DashboardFragment
+        implements View.OnClickListener
 {
     @Inject Lazy<ProviderListCache> providerListCache;
-    @InjectView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
+
+    @InjectView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
     @InjectView(android.R.id.list) StickyListHeadersListView contestListView;
 
     public ContestItemAdapter contestListAdapter;
@@ -99,30 +100,18 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
         }
     }
 
-    /*
-    make usre vip provider is in the front of the list
-     */
+    /** make sure vip provider is in the front of the list */
     private void sortProviderByVip()
     {
-        if(providerDTOs == null)return;
-        ProviderDTOList tempList = new ProviderDTOList();
-        for(ProviderDTO p : providerDTOs)
+        if (providerDTOs == null) return;
+        Collections.sort(providerDTOs, new Comparator<ProviderDTO>()
         {
-            if(p.vip)
+            @Override public int compare(ProviderDTO lhs, ProviderDTO rhs)
             {
-                tempList.add(p);
+                return (lhs != null && lhs.vip != null && lhs.vip) ? 1 : 0;
             }
-        }
-        for(ProviderDTO p : providerDTOs)
-        {
-            if(!p.vip)
-            {
-                tempList.add(p);
-            }
-        }
-        providerDTOs = tempList;
+        });
     }
-
 
     protected ContestItemAdapter createAdapter()
     {

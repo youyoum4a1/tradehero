@@ -26,6 +26,6 @@ public class ContestCenterActiveFragment extends ContestCenterBaseFragment
 
     @Override public ContestCenterTabType getCCTabType()
     {
-        return ContestCenterTabType.ACTIVIE;
+        return ContestCenterTabType.ACTIVE;
     }
 }
