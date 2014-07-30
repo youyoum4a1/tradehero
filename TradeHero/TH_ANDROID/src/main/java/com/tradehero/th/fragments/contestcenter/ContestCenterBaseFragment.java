@@ -87,6 +87,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
         @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
         {
             providerDTOs = value;
+            sortProviderByVip();
             recreateAdapter();
         }
 
@@ -97,6 +98,31 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
             Timber.e("Failed retrieving the list of competition providers", error);
         }
     }
+
+    /*
+    make usre vip provider is in the front of the list
+     */
+    private void sortProviderByVip()
+    {
+        if(providerDTOs == null)return;
+        ProviderDTOList tempList = new ProviderDTOList();
+        for(ProviderDTO p : providerDTOs)
+        {
+            if(p.vip)
+            {
+                tempList.add(p);
+            }
+        }
+        for(ProviderDTO p : providerDTOs)
+        {
+            if(!p.vip)
+            {
+                tempList.add(p);
+            }
+        }
+        providerDTOs = tempList;
+    }
+
 
     protected ContestItemAdapter createAdapter()
     {

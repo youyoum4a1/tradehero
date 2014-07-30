@@ -25,11 +25,12 @@ public class TradeDTOUtils
     {
         if (tradeDTO != null)
         {
-            THSignedNumber formattedNumber = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    tradeDTO.realizedPLAfterTradeRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    refCurrency);
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(tradeDTO.realizedPLAfterTradeRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -48,11 +49,12 @@ public class TradeDTOUtils
     {
         if (tradeDTO != null)
         {
-            THSignedNumber formattedNumber = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    tradeDTO.realizedPLAfterTradeRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    refCurrency);
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(tradeDTO.realizedPLAfterTradeRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else

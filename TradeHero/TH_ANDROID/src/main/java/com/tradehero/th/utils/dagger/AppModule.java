@@ -95,13 +95,11 @@ import com.tradehero.th.fragments.security.WarrantSecurityItemView;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.InviteFriendFragment;
-import com.tradehero.th.fragments.settings.LocationCountrySettingsViewHolder;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.settings.SettingsReferralCodeFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
-import com.tradehero.th.fragments.settings.UserTranslationSettingsViewHolder;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
@@ -173,7 +171,6 @@ import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.ui.UIModule;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.NumberDisplayUtils;
@@ -208,8 +205,6 @@ import javax.inject.Singleton;
                         ProfileInfoView.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
-                        LocationCountrySettingsViewHolder.class,
-                        UserTranslationSettingsViewHolder.class,
                         TranslatableLanguageListFragment.class,
                         LocationListFragment.class,
                         SettingsReferralCodeFragment.class,
@@ -334,7 +329,6 @@ import javax.inject.Singleton;
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
-                        WatchlistRetrievedMilestone.class,
                         WatchlistPositionFragment.class,
                         WatchlistItemView.class,
                         WatchlistPortfolioHeaderView.class,

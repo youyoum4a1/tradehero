@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.settings;
 
-import android.preference.Preference;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -10,50 +9,46 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class LocationCountrySettingsViewHolder
+public class LocationCountrySettingsViewHolder extends OneSettingViewHolder
 {
-    @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCache;
+    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final UserProfileCache userProfileCache;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
-    protected DashboardPreferenceFragment preferenceFragment;
-    protected Preference locationPreference;
-
-    public void initViews(DashboardPreferenceFragment preferenceFragment)
+    //<editor-fold desc="Constructors">
+    @Inject public LocationCountrySettingsViewHolder(
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache)
     {
-        DaggerUtils.inject(this);
-        this.preferenceFragment = preferenceFragment;
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
+    }
+    //</editor-fold>
 
-        locationPreference =
-                preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_location));
-        if (locationPreference != null)
-        {
-            locationPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleLocationClicked();
-                    return true;
-                }
-            });
-        }
+    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    {
+        super.initViews(preferenceFragment);
 
         userProfileCacheListener = new UserProfileCacheListener();
         fetchUserProfile();
     }
 
-    public void destroyViews()
+    @Override public void destroyViews()
     {
         detachUserProfileCache();
 
-        locationPreference = null;
-        preferenceFragment = null;
         userProfileCacheListener = null;
+        super.destroyViews();
+
+    }
+
+    @Override protected int getStringKeyResId()
+    {
+        return R.string.key_settings_location;
     }
 
     protected void detachUserProfileCache()
@@ -88,13 +83,13 @@ public class LocationCountrySettingsViewHolder
                         R.string.location_summary,
                         userProfileDTO.countryCode,
                         preferenceFragment.getString(currentCountry.locationName));
-                locationPreference.setSummary(summary);
-                locationPreference.setIcon(currentCountry.logoId);
+                clickablePref.setSummary(summary);
+                clickablePref.setIcon(currentCountry.logoId);
             }
         }
     }
 
-    protected void handleLocationClicked()
+    protected void handlePrefClicked()
     {
         preferenceFragment.getNavigator().pushFragment(LocationListFragment.class);
     }

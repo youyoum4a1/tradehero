@@ -659,8 +659,12 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
                 else
                 {
-                    bthSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, THSignedNumber.WITHOUT_SIGN, "");
+                    bthSignedNumber = THSignedNumber.builder()
+                            .number(quoteDTO.ask)
+                            .money()
+                            .withOutSign()
+                            .currency("")
+                            .build();
                     bPrice = bthSignedNumber.toString();
                 }
 
@@ -670,8 +674,12 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
                 else
                 {
-                    sthSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
+                    sthSignedNumber = THSignedNumber.builder()
+                            .number(quoteDTO.bid)
+                            .money()
+                            .withOutSign()
+                            .currency("")
+                            .build();
                     sPrice = sthSignedNumber.toString();
                 }
             }

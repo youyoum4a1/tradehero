@@ -33,6 +33,7 @@ import com.tradehero.th.models.social.DTOProcessorFriendInvited;
 import com.tradehero.th.models.user.DTOProcessorFollowUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
+import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserDeleted;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
@@ -40,6 +41,9 @@ import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtil;
+import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.competition.ProviderCompactCache;
+import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
@@ -64,6 +68,9 @@ import retrofit.client.Response;
     @NotNull private final Lazy<HeroListCache> heroListCache;
     @NotNull private final GetPositionsCache getPositionsCache;
     @NotNull private final Lazy<LeaderboardFriendsCache> leaderboardFriendsCache;
+    @NotNull private final Lazy<ProviderListCache> providerListCache;
+    @NotNull private final Lazy<ProviderCache> providerCache;
+    @NotNull private final Lazy<ProviderCompactCache> providerCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -75,7 +82,10 @@ import retrofit.client.Response;
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
             @NotNull Lazy<HeroListCache> heroListCache,
             @NotNull GetPositionsCache getPositionsCache,
-            @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache)
+            @NotNull Lazy<LeaderboardFriendsCache> leaderboardFriendsCache,
+            @NotNull Lazy<ProviderListCache> providerListCache,
+            @NotNull Lazy<ProviderCache> providerCache,
+            @NotNull Lazy<ProviderCompactCache> providerCompactCache)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -86,6 +96,9 @@ import retrofit.client.Response;
         this.heroListCache = heroListCache;
         this.getPositionsCache = getPositionsCache;
         this.leaderboardFriendsCache = leaderboardFriendsCache;
+        this.providerListCache = providerListCache;
+        this.providerCache = providerCache;
+        this.providerCompactCache = providerCompactCache;
     }
     //</editor-fold>
 
@@ -775,7 +788,13 @@ import retrofit.client.Response;
             @NotNull UserBaseKey playerId,
             @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
-        return new DTOProcessorUpdateCountryCode(userProfileCache, playerId, updateCountryCodeFormDTO);
+        return new DTOProcessorUpdateCountryCode(
+                userProfileCache,
+                providerListCache.get(),
+                providerCache.get(),
+                providerCompactCache.get(),
+                playerId,
+                updateCountryCodeFormDTO);
     }
 
     @NotNull public UpdateCountryCodeDTO updateCountryCode(
@@ -799,11 +818,30 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
-    public MiddleCallback<Response> updateReferralCode(UserBaseKey userKey,
-            UpdateReferralCodeDTO updateReferralCodeDTO, Callback<Response> callback)
+    @NotNull protected DTOProcessor<Response> createUpdateReferralCodeProcessor(
+            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
+            @NotNull UserBaseKey invitedUserId)
     {
-        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.updateReferralCode(userKey.key, updateReferralCodeDTO, middleCallback);
+        return new DTOProcessorUpdateReferralCode(userProfileCache, updateReferralCodeDTO, invitedUserId);
+    }
+
+    @NotNull public Response updateReferralCode(
+            @NotNull UserBaseKey invitedUserId,
+            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO)
+    {
+        return createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId).process(
+                userService.updateReferralCode(invitedUserId.key, updateReferralCodeDTO));
+    }
+
+    @NotNull public MiddleCallback<Response> updateReferralCode(
+            @NotNull UserBaseKey invitedUserId,
+            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
+            @Nullable Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
+        userServiceAsync.updateReferralCode(invitedUserId.key, updateReferralCodeDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

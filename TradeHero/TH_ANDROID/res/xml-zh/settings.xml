@@ -110,7 +110,7 @@
     <CheckBoxPreference
         android:key="@string/key_settings_translations_auto_translate"
         android:title="@string/settings_translations_auto_translate"
-        android:icon="@drawable/default_image"
+        android:icon="@drawable/logo_bing"
       />
 
     <Preference

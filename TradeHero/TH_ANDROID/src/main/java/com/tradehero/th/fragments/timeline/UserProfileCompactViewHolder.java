@@ -80,12 +80,13 @@ public class UserProfileCompactViewHolder
                 {
                     pl = 0.0;
                 }
-                THSignedNumber thPlSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_MONEY,
-                        pl,
-                        THSignedNumber.WITH_SIGN,
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
-                        THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
+                THSignedNumber thPlSinceInception = THSignedNumber.builder()
+                        .number(pl)
+                        .money()
+                        .withSign()
+                        .signTypePlusMinusAlways()
+                        .currency(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY)
+                        .build();
                 profitValue.setText(thPlSinceInception.toString());
                 profitValue.setTextColor(
                         context.getResources().getColor(thPlSinceInception.getColor()));
@@ -133,9 +134,10 @@ public class UserProfileCompactViewHolder
                     && userProfileDTO.portfolio != null
                     && userProfileDTO.portfolio.roiSinceInception != null)
             {
-                THSignedNumber thRoiSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_PERCENTAGE,
-                        userProfileDTO.portfolio.roiSinceInception * 100);
+                THSignedNumber thRoiSinceInception = THSignedNumber.builder()
+                        .number(userProfileDTO.portfolio.roiSinceInception * 100)
+                        .percentage()
+                        .build();
                 roiSinceInception.setText(thRoiSinceInception.toString());
                 roiSinceInception.setTextColor(
                         context.getResources().getColor(thRoiSinceInception.getColor()));

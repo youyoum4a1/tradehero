@@ -384,21 +384,27 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuPeriod.setText(period);
 
         // display Roi
-        THSignedNumber roi = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
-                leaderboardItem.roiInPeriod * 100);
+        THSignedNumber roi = THSignedNumber.builder()
+                .number(leaderboardItem.roiInPeriod * 100)
+                .percentage()
+                .build();
         lbmuRoi.setText(roi.toString());
         lbmuRoi.setTextColor(getResources().getColor(roi.getColor()));
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
-                leaderboardItem.roiAnnualizedInPeriod * 100);
+        THSignedNumber roiAnnualizedVal = THSignedNumber.builder()
+                .number(leaderboardItem.roiAnnualizedInPeriod * 100)
+                .percentage()
+                .build();
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE,
-                leaderboardItem.getBenchmarkRoiInPeriod() * 100);
+        THSignedNumber benchmarkRoiInPeriodVal = THSignedNumber.builder()
+                .number(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
+                .percentage()
+                .build();
         String benchmarkRoiInPeriodFormat =
                 getContext().getString(R.string.leaderboard_benchmark_roi_format);
         String benchmarkRoiInPeriod =
@@ -408,8 +414,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // sharpe ratio
         if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
         {
-            lbmuSharpeRatio.setText(new THSignedNumber(THSignedNumber.TYPE_MONEY,
-                    leaderboardItem.sharpeRatioInPeriodVsSP500, THSignedNumber.WITHOUT_SIGN).toString());
+            lbmuSharpeRatio.setText(THSignedNumber.builder()
+                    .number(leaderboardItem.sharpeRatioInPeriodVsSP500)
+                    .money()
+                    .withOutSign()
+                    .build()
+                    .toString());
         }
         else
         {
@@ -470,9 +480,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (lbmuPl != null && leaderboardItem != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, leaderboardItem.PLinPeriodRefCcy,
-                            THSignedNumber.WITHOUT_SIGN, getLbmuPlCurrencyDisplay());
+            THSignedNumber formattedNumber = THSignedNumber.builder()
+                    .number(leaderboardItem.PLinPeriodRefCcy)
+                    .money()
+                    .withOutSign()
+                    .currency(getLbmuPlCurrencyDisplay())
+                    .build();
             lbmuPl.setText(formattedNumber.toString());
         }
     }

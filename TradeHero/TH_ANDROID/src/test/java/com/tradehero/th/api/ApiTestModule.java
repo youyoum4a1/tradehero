@@ -1,5 +1,6 @@
 package com.tradehero.th.api;
 
+import com.tradehero.th.api.alert.ApiAlertTestModule;
 import com.tradehero.th.api.competition.ApiCompetitionTestModule;
 import com.tradehero.th.api.discussion.ApiDiscussionTestModule;
 import com.tradehero.th.api.form.ApiFormTestModule;
@@ -14,6 +15,7 @@ import dagger.Module;
 
 @Module(
         includes = {
+                ApiAlertTestModule.class,
                 ApiCompetitionTestModule.class,
                 ApiDiscussionTestModule.class,
                 ApiFormTestModule.class,

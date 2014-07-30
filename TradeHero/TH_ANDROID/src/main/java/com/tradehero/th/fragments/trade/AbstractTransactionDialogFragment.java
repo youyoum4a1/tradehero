@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
@@ -95,9 +96,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @InjectView(R.id.dialog_btn_confirm) protected Button mConfirm;
     @InjectView(R.id.dialog_btn_cancel) protected Button mCancel;
 
-    @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
+    @Optional @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
     @InjectView(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
-    @InjectView(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
+    @Optional @InjectView(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
     @InjectView(R.id.btn_share_wb) protected ToggleButton mBtnShareWb;
     @InjectView(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
 
@@ -135,7 +136,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected UserProfileDTO userProfileDTO;
 
     private AlertDialog mSocialLinkingDialog;
-    private String mPriceSelectionMethod = AnalyticsConstants.Default;
+    private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
 
     protected abstract String getLabel();
@@ -295,9 +296,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             if (priceRefCcy != null && portfolioCompactDTO != null)
             {
                 double value = mTransactionQuantity * priceRefCcy;
-                THSignedNumber thTradeValue =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
-                                portfolioCompactDTO.currencyDisplay);
+                THSignedNumber thTradeValue = THSignedNumber.builder()
+                        .number(value)
+                        .money()
+                        .withOutSign()
+                        .currency(portfolioCompactDTO.currencyDisplay)
+                        .build();
                 valueText = thTradeValue.toString();
             }
         }

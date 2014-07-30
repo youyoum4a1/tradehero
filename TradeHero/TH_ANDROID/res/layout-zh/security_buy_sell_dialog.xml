@@ -42,7 +42,7 @@
         android:id="@+id/dialog_portfolio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dialog_price"
+        android:layout_below="@id/dialog_price"
         android:layout_toLeftOf="@+id/dialog_btn_add_cash"
         android:layout_alignParentLeft="true"
         tools:text="投资组合: Main Portfolio"

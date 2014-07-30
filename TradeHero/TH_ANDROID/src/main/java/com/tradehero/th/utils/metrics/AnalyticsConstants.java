@@ -93,6 +93,7 @@ public class AnalyticsConstants
     public static final String BroadcastFreeFollowers = "Broadcast Free Followers";//
     public static final String BroadcastPremiumFollowers = "Broadcast Premium Followers";//
     public static final String Default = "Default";//
+    public static final String DefaultPriceSelectionMethod = Default;//
     public static final String Email = "Email";//
     public static final String Facebook = "Facebook";//
     public static final String FollowedFromScreen = "FollowedFromScreen";

@@ -360,23 +360,23 @@ public class PositionPartialTopView extends LinearLayout
                 Boolean closed = positionDTO.isClosed();
                 if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
                 {
-                    number = new THSignedNumber(
-                            THSignedNumber.TYPE_MONEY,
-                            positionDTO.realizedPLRefCcy,
-                            THSignedNumber.WITH_SIGN,
-                            /*portfolioDTO*/positionDTO.getNiceCurrency(),
-                            THSignedNumber.TYPE_SIGN_MINUS_ONLY
-                            );
+                    number = THSignedNumber.builder()
+                            .number(positionDTO.realizedPLRefCcy)
+                            .money()
+                            .withSign()
+                            .signTypeMinusOnly()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build();
                 }
                 else if (closed != null && !closed)
                 {
-                    number = new THSignedNumber(
-                            THSignedNumber.TYPE_MONEY,
-                            positionDTO.marketValueRefCcy,
-                            THSignedNumber.WITH_SIGN,
-                            /*portfolioDTO*/positionDTO.getNiceCurrency(),
-                            THSignedNumber.TYPE_SIGN_MINUS_ONLY
-                    );
+                    number = THSignedNumber.builder()
+                            .number(positionDTO.marketValueRefCcy)
+                            .money()
+                            .withSign()
+                            .signTypeMinusOnly()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build();
                 }
 
             }

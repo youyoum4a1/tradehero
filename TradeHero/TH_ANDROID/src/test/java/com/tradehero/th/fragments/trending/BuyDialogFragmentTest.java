@@ -202,9 +202,12 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
     private String getSignedNumberString(double value)
     {
-        THSignedNumber thTradeValue =
-                new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
-                        "US$");
+        THSignedNumber thTradeValue = THSignedNumber.builder()
+                .number(value)
+                .money()
+                .withOutSign()
+                .currency("US$")
+                .build();
         return thTradeValue.toString();
     }
 
@@ -448,7 +451,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         String value = getMapValueFromSharingOptionsEvent(key);
 
         assertThat(value).isNotNull();
-        assertThat(value).isEqualTo(AnalyticsConstants.Default);
+        assertThat(value).isEqualTo(AnalyticsConstants.DefaultPriceSelectionMethod);
 
         //Slider
         performUserSetProgress(abstractTransactionDialogFragment.getSeekBar(), 300);

@@ -57,8 +57,8 @@
       android:id="@+id/leaderboard_current_user_rank_roi"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/leaderboard_current_user_rank_display_name"
-      android:layout_alignLeft="@+id/leaderboard_current_user_rank_display_name"
+      android:layout_below="@id/leaderboard_current_user_rank_display_name"
+      android:layout_alignLeft="@id/leaderboard_current_user_rank_display_name"
       tools:text="+87%"
       />
 

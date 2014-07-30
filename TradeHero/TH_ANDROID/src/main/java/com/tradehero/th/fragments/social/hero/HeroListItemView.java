@@ -271,9 +271,10 @@ public class HeroListItemView extends RelativeLayout
         {
             if (heroDTO != null && heroDTO.roiSinceInception != null)
             {
-                THSignedNumber thRoiSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_PERCENTAGE,
-                        heroDTO.roiSinceInception * 100);
+                THSignedNumber thRoiSinceInception = THSignedNumber.builder()
+                        .number(heroDTO.roiSinceInception * 100)
+                        .percentage()
+                        .build();
                 revenueInfo.setText(thRoiSinceInception.toString());
                 revenueInfo.setTextColor(
                         getContext().getResources().getColor(thRoiSinceInception.getColor()));

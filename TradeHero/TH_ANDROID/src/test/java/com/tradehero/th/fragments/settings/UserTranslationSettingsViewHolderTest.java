@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;

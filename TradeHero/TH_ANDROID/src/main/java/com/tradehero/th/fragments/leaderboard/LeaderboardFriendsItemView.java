@@ -22,7 +22,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
@@ -55,7 +54,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import java.util.ArrayList;
 import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
@@ -356,9 +354,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             {
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Twitter));
             }
-            InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
-            ((InviteFormUserDTO)inviteFriendForm).users = new ArrayList<>();
-            ((InviteFormUserDTO)inviteFriendForm).users.add(userFriendsDTO.createInvite());
+            InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
+            inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get()
@@ -385,48 +382,52 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
 
-        Bundle params = new Bundle();
-        String messageToFacebookFriends = getContext().getString(
-                R.string.invite_friend_facebook_tradehero_refer_friend_message);
-        if (messageToFacebookFriends.length() > 60)
+        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
         {
-            messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-        }
+            Bundle params = new Bundle();
+            String messageToFacebookFriends = getContext().getString(
+                    R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+            if (messageToFacebookFriends.length() > 60)
+            {
+                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+            }
 
-        params.putString("message", messageToFacebookFriends);
-        params.putString("to", stringBuilder.toString());
+            params.putString("message", messageToFacebookFriends);
+            params.putString("to", stringBuilder.toString());
 
-        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
-                params))
-                .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                {
-                    @Override
-                    public void onComplete(Bundle values, FacebookException error)
+            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+                    params))
+                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
-                        if (error != null)
+                        @Override
+                        public void onComplete(Bundle values, FacebookException error)
                         {
-                            if (error instanceof FacebookOperationCanceledException)
+                            if (error != null)
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
-                            }
-                        }
-                        else
-                        {
-                            final String requestId = values.getString("request");
-                            if (requestId != null)
-                            {
-                                THToast.show(R.string.invite_friend_request_sent);
+                                if (error instanceof FacebookOperationCanceledException)
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                             else
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                final String requestId = values.getString("request");
+                                if (requestId != null)
+                                {
+                                    THToast.show(R.string.invite_friend_request_sent);
+                                }
+                                else
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                         }
-                    }
-                })
-                .build();
-        requestsDialog.show();
+                    })
+                    .build();
+            requestsDialog.show();
+        }
     }
 
     private void detachMiddleCallbackInvite()

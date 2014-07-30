@@ -325,7 +325,7 @@ public class UpdateCenterFragment extends DashboardFragment
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }

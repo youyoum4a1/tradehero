@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments;
 
+import com.tradehero.th.fragments.alert.FragmentAlertTestModule;
 import com.tradehero.th.fragments.billing.FragmentBillingTestModule;
 import com.tradehero.th.fragments.competition.FragmentCompetitionTestModule;
 import com.tradehero.th.fragments.security.FragmentSecurityTestModule;
@@ -15,6 +16,7 @@ import dagger.Module;
 
 @Module(
         includes = {
+                FragmentAlertTestModule.class,
                 FragmentBillingTestModule.class,
                 FragmentCompetitionTestModule.class,
                 FragmentSecurityTestModule.class,
@@ -25,7 +27,7 @@ import dagger.Module;
                 FragmentTranslationTestModule.class,
                 FragmentTrendingTestModule.class,
                 FragmentUpdateCenterTestModule.class,
-                FragmentWebTestModule.class
+                FragmentWebTestModule.class,
         },
         complete = false,
         library = true

@@ -629,7 +629,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             hasMorePage = true;
             onRefreshCompleted();
-            Timber.d("refresh onErrorThrown");
+            Timber.e("refresh onErrorThrown", error);
             if (getListAdapter() != null && getListAdapter().getCount() > 0)
             {
                 //when already fetch the data,do not show error view
