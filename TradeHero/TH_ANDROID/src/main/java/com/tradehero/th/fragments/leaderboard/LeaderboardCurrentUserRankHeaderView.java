@@ -38,7 +38,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     private UserProfileDTO userProfileDTO;
 
     protected Integer mCurrentRank;
-    protected Double mRoiSinceInception;
+    protected Double mRoiSinceInception = 0.0D;
 
     public LeaderboardCurrentUserRankHeaderView(Context context)
     {
@@ -70,14 +70,6 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
         if (!isInEditMode())
         {
             userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-            if (userProfileDTO != null)
-            {
-                mRoiSinceInception = userProfileDTO.roiSinceInception;
-            }
-            else
-            {
-                mRoiSinceInception = 0.0D;
-            }
         }
     }
 
@@ -142,7 +134,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     {
         mCurrentRankLabel.setText(String.valueOf(mCurrentRank));
         //Set the ROI from the user profile cache
-        displayROIValue(userProfileDTO.portfolio.roiSinceInception);
+        displayROIValue(mRoiSinceInception);
     }
 
     protected void displayUserNotRanked()
