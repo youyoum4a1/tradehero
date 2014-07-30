@@ -598,7 +598,10 @@ public class InviteFriendFragment extends DashboardFragment
                         selectedLinkedInFriends = null;
                         getProgressDialog().show();
                         detachMiddleCallbackInvite();
-                        middleCallbackInvite = userServiceWrapper.get().inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm, inviteFriendCallback);
+                        middleCallbackInvite = userServiceWrapper.get().inviteFriends(
+                                currentUserId.toUserBaseKey(),
+                                inviteFriendForm,
+                                inviteFriendCallback);
                     }
                 case FB:
                     if (Session.getActiveSession() == null)
