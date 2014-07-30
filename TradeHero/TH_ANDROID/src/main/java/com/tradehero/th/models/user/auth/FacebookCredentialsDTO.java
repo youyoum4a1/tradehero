@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
+import timber.log.Timber;
 
 public class FacebookCredentialsDTO extends BaseCredentialsDTO
 {
@@ -53,9 +54,15 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
         super.populate(object);
         object.put(SocialAuthenticationProvider.ID_KEY, id);
         object.put(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY, accessToken);
-        object.put(
-                FacebookAuthenticationProvider.EXPIRATION_DATE_KEY,
-                FacebookAuthenticationProvider.preciseDateFormat.format(expirationDate));
+        try
+        {
+            object.put(FacebookAuthenticationProvider.EXPIRATION_DATE_KEY,
+                    FacebookAuthenticationProvider.preciseDateFormat.format(expirationDate));
+        }
+        catch (IllegalArgumentException e)
+        {
+            Timber.e(e, "When parsing %s", expirationDate);
+        }
     }
 
     @Override public UserFormDTO createUserFormDTO()
