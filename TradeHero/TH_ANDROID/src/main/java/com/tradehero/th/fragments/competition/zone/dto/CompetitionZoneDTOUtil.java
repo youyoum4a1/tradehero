@@ -6,6 +6,7 @@ import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.Arrays;
@@ -16,6 +17,9 @@ import timber.log.Timber;
 
 public class CompetitionZoneDTOUtil
 {
+
+    @Inject PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+
     //<editor-fold desc="Constructors">
     @Inject public CompetitionZoneDTOUtil()
     {
@@ -46,10 +50,11 @@ public class CompetitionZoneDTOUtil
 
             if (providerDTO.associatedPortfolio != null)
             {
+                String subtitle = portfolioCompactDTOUtil.getPortfolioSubtitle(context, providerDTO.associatedPortfolio, null);
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO);
                 preparedOrderedItems.add(new CompetitionZonePortfolioDTO(
                         context.getString(R.string.provider_competition_portfolio_title),
-                        context.getString(R.string.provider_competition_portfolio_description),
+                        subtitle,
                         portfolioUserProfileCompact));
             }
 
