@@ -75,4 +75,19 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         return getItemViewType(position);
     }
     //</editor-fold>
+
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        ContestPageDTO item = getItem(position);
+        if (item instanceof ProviderContestPageDTO)
+        {
+            return true;
+        }
+        return false;
+    }
 }
