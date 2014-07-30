@@ -1,11 +1,10 @@
 package com.tradehero.th.api.competition;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import java.util.Comparator;
 import org.jetbrains.annotations.Nullable;
 
 public class CompetitionDTO implements DTO
@@ -61,4 +60,35 @@ public class CompetitionDTO implements DTO
         }
         return null;
     }
+
+    public static final Comparator<CompetitionDTO> RestrictionLeaderboardComparator = new Comparator<CompetitionDTO>()
+    {
+        @Override public int compare(CompetitionDTO lhs, CompetitionDTO rhs)
+        {
+            if (lhs.leaderboard == null || rhs.leaderboard == null)
+            {
+                return 0;
+            }
+            if (!lhs.leaderboard.isTimeRestrictedLeaderboard() || !rhs.leaderboard.isTimeRestrictedLeaderboard())
+            {
+                return 0;
+            }
+
+            if (lhs.leaderboard.getTimeRestrictionRangeInMillis() == 0 || rhs.leaderboard.getTimeRestrictionRangeInMillis() == 0)
+            {
+                return 0;
+            }
+
+            int compare = (int) (rhs.leaderboard.getTimeRestrictionRangeInMillis() - lhs.leaderboard.getTimeRestrictionRangeInMillis());
+            if (compare == 0)
+            {
+                compare = rhs.leaderboard.fromUtcRestricted.compareTo(lhs.leaderboard.fromUtcRestricted);
+                if (compare == 0)
+                {
+                    compare = rhs.leaderboard.toUtcRestricted.compareTo(lhs.leaderboard.toUtcRestricted);
+                }
+            }
+            return compare;
+        }
+    };
 }

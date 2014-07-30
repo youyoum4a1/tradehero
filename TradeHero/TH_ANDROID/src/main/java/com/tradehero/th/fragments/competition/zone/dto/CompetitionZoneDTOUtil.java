@@ -8,6 +8,8 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -84,6 +86,7 @@ public class CompetitionZoneDTOUtil
 
             if (competitionDTOs != null)
             {
+                Collections.sort(competitionDTOs, CompetitionDTO.RestrictionLeaderboardComparator);
                 for (CompetitionDTO competitionDTO : competitionDTOs)
                 {
                     if (competitionDTO != null)
