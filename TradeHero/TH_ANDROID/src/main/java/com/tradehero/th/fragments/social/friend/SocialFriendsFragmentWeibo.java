@@ -153,7 +153,7 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
     protected void handleInviteUsers(String msg, List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        ((SocialFriendHandlerWeibo) socialFriendHandler).inviteWeiboFriends(msg, currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
+        ((SocialFriendHandlerWeibo) socialFriendHandler).inviteWeiboFriends(msg, currentUserId.toUserBaseKey() /*, usersToInvite*/, createInviteCallback(usersToInvite));
     }
 
     @Override protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)

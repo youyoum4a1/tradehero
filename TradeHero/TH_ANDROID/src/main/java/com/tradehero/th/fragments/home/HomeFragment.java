@@ -21,7 +21,6 @@ import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -50,7 +49,6 @@ import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
@@ -230,19 +228,16 @@ public final class HomeFragment extends BaseWebViewFragment
 
     public void follow(UserFriendsDTO userFriendsDTO)
     {
-        //Timber.d("onFollowButtonClick %s", userFriendsDTO);
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
         handleFollowUsers(usersToFollow);
     }
 
     private void invite()
     {
-        //Timber.d("windy: invite()");
         if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
         {
-            InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
-            ((InviteFormUserDTO) inviteFriendForm).users = new ArrayList<>();
-            ((InviteFormUserDTO) inviteFriendForm).users.add(userFriendsDTO.createInvite());
+            InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
+            inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get()
@@ -253,8 +248,6 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             if (Session.getActiveSession() == null)
             {
-                //Timber.d("windy: Session.getActiveSession() = " + Session.getActiveSession());
-                //Timber.d("windy: facebookUtils.get.login()...");
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
                         new TrackFacebookCallback());
             }
@@ -267,9 +260,8 @@ public final class HomeFragment extends BaseWebViewFragment
 
     private void invite(UserFriendsDTO userDto)
     {
-        InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
-        ((InviteFormUserDTO) inviteFriendForm).users = new ArrayList<>();
-        ((InviteFormUserDTO) inviteFriendForm).users.add(userDto.createInvite());
+        InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
+        inviteFriendForm.add(userDto);
         getProgressDialog().show();
         detachMiddleCallbackInvite();
         middleCallbackInvite = userServiceWrapperLazy.get()

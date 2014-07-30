@@ -111,8 +111,8 @@ import retrofit.client.Response;
     public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, @NotNull List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
 
-        InviteFormDTO inviteFormDTO = new InviteFormUserDTO();
-        ((InviteFormUserDTO)inviteFormDTO).addAll(users);
+        InviteFormUserDTO inviteFormDTO = new InviteFormUserDTO();
+        inviteFormDTO.addAll(users);
         return inviteFriends(userKey, inviteFormDTO, callback);
     }
 

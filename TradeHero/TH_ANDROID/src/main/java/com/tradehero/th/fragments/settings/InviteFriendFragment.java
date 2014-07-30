@@ -26,7 +26,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteContactEntryDTO;
-import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
@@ -424,13 +423,13 @@ public class InviteFriendFragment extends DashboardFragment
     {
         if (selectedContacts != null && !selectedContacts.isEmpty())
         {
-            InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
-            ((InviteFormUserDTO)inviteFriendForm).users = new ArrayList<>();
+            InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
+            inviteFriendForm.users = new ArrayList<>();
             for (UserFriendsDTO userFriendsDTO : selectedContacts)
             {
                 InviteContactEntryDTO inviteDTO = new InviteContactEntryDTO();
                 inviteDTO.email = userFriendsDTO.email;
-                ((InviteFormUserDTO)inviteFriendForm).users.add(inviteDTO);
+                inviteFriendForm.users.add(inviteDTO);
             }
             getProgressDialog().show();
             detachMiddleCallbackInvite();
@@ -590,11 +589,11 @@ public class InviteFriendFragment extends DashboardFragment
                 case LN:
                     if (selectedLinkedInFriends != null && !selectedLinkedInFriends.isEmpty())
                     {
-                        InviteFormDTO inviteFriendForm = new InviteFormUserDTO();
-                        ((InviteFormUserDTO)inviteFriendForm).users = new ArrayList<>();
+                        InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
+                        inviteFriendForm.users = new ArrayList<>();
                         for (UserFriendsLinkedinDTO userFriendsDTO : selectedLinkedInFriends)
                         {
-                            ((InviteFormUserDTO)inviteFriendForm).users.add(userFriendsDTO.createInvite());
+                            inviteFriendForm.add(userFriendsDTO);
                         }
                         selectedLinkedInFriends = null;
                         getProgressDialog().show();
