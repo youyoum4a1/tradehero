@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.friend.SocialFriendItemView
+<com.tradehero.th.fragments.social.friend.SocialFriendUserView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     >
-
-  <TextView
-      android:id="@+id/social_friend_headline"
-      android:layout_width="fill_parent"
-      android:layout_height="24dp"
-      android:background="@color/gray_1"
-      android:gravity="center_vertical"
-      android:paddingLeft="10dp"
-      android:visibility="gone"
-      tools:text="head line"
-      />
 
   <LinearLayout
       android:id="@+id/social_friend_item_ll"
@@ -75,4 +64,4 @@
 
   </LinearLayout>
 
-</com.tradehero.th.fragments.social.friend.SocialFriendItemView>
+</com.tradehero.th.fragments.social.friend.SocialFriendUserView>
