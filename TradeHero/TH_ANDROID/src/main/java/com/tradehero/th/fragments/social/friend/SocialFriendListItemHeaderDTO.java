@@ -12,4 +12,13 @@ class SocialFriendListItemHeaderDTO implements SocialFriendListItemDTO
         name = "";
     }
     //</editor-fold>
+
+    /**
+     * This is used to filter in the adapter
+     * @return
+     */
+    @Override public final String toString()
+    {
+        return name;
+    }
 }
