@@ -77,7 +77,10 @@ public class AlertViewFragmentTest
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
+        Robolectric.runUiThreadTasks();
 
+        assertThat(cachedAlertDTO).isNotNull();
+        assertThat(alertViewFragment.alertDTO).isNotNull();
         assertThat(alertViewFragment.alertDTO.id).isEqualTo(cachedAlertDTO.id);
     }
 
