@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -19,6 +20,7 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -38,7 +40,6 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
 public abstract class ContestCenterBaseFragment extends DashboardFragment
-        implements View.OnClickListener
 {
     @Inject Lazy<ProviderListCache> providerListCache;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
@@ -127,17 +128,13 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     private void handleFailToReceiveLeaderboardDefKeyList()
     {
         setContestCenterScreen(R.id.error);
-        View displayedChild = contest_center_content_screen.getChildAt(contest_center_content_screen.getDisplayedChild());
-        displayedChild.setOnClickListener(this);
     }
 
-    @Override public void onClick(View v)
+    @OnClick(R.id.error)
+    protected void handleErrorClicked()
     {
-        if (v.getId() == R.id.error)
-        {
-            setContestCenterScreen(R.id.progress);
-            loadContestData();
-        }
+        setContestCenterScreen(R.id.progress);
+        loadContestData();
     }
 
     public void setContestCenterScreen(int viewId)
@@ -182,6 +179,12 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         currentDisplayedChildLayoutId = contest_center_content_screen.getDisplayedChildLayoutId();
         contestListView.setOnItemClickListener(null);
         super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
     }
 
     @Override public void onDestroy()
@@ -231,11 +234,16 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     private void handleCompetitionItemClicked(ProviderDTO providerDTO)
     {
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator == null)
+        {
+            return;
+        }
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
+            navigator.pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -246,7 +254,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
-            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = navigator.pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }
