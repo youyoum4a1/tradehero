@@ -61,10 +61,22 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
         DaggerUtils.inject(this);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
+    }
+
     @OnClick(R.id.social_item_action_btn)
     public void onActionButtonClick(View v)
     {
-        if (v.getId() == R.id.social_item_action_btn && onElementClickListener != null)
+        if (onElementClickListener != null)
         {
             if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
             {
@@ -87,7 +99,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
     @OnClick(R.id.social_item_action_cb)
     public void onActionCheckBoxClick(View v)
     {
-        if (v.getId() == R.id.social_item_action_cb && onElementClickListener != null)
+        if (onElementClickListener != null)
         {
             if (socialFriendListItemDTO instanceof SocialFriendListItemUserDTO)
             {
@@ -104,7 +116,7 @@ public class SocialFriendItemView extends LinearLayout implements DTOView<Social
     @OnClick(R.id.social_friend_item_ll)
     public void onActionItemViewClick(View v)
     {
-        if (v.getId() == R.id.social_friend_item_ll && isNeedCheckBoxShow())
+        if (isNeedCheckBoxShow())
         {
             actionCb.performClick();
         }
