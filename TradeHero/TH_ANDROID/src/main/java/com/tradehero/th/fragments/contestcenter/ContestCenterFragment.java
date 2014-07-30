@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.contestcenter;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -12,12 +13,13 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.updatecenter.TitleTabView;
+import com.tradehero.th.utils.GraphicUtil;
+import javax.inject.Inject;
 
-/**
- * Created by huhaiping on 14-7-17.
- */
 public class ContestCenterFragment extends DashboardFragment
 {
+    @Inject GraphicUtil graphicUtil;
+
     private final int FRAGMENT_LAYOUT_ID = 10001;
     private FragmentTabHost mTabHost;
 
@@ -50,6 +52,7 @@ public class ContestCenterFragment extends DashboardFragment
     {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        graphicUtil.setBackground(mTabHost.getTabWidget(), Color.WHITE);
         Bundle args = getArguments();
         if (args == null)
         {

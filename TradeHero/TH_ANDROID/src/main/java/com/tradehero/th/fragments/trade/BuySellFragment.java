@@ -1321,15 +1321,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     public void selectPage(int position)
     {
         selectedPageIndex = position;
-        mInfoTextView.setEnabled(position != 0);
-        mDiscussTextView.setEnabled(position != 1);
-        mNewsTextView.setEnabled(position != 2);
-        mInfoTextView.setTextColor(getResources().getColor(
-                position == 0 ? R.color.white : R.color.btn_twitter_color_end));
-        mDiscussTextView.setTextColor(getResources().getColor(
-                position == 1 ? R.color.white : R.color.btn_twitter_color_end));
-        mNewsTextView.setTextColor(getResources().getColor(
-                position == 2 ? R.color.white : R.color.btn_twitter_color_end));
+        mInfoTextView.setSelected(position == 0);
+        mDiscussTextView.setSelected(position == 1);
+        mNewsTextView.setSelected(position == 2);
 
         if (selectedPageIndex == 0)
         {

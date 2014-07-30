@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="leaderboard_buttonlist_radius">0dp</dimen>
+  <dimen name="leaderboard_buttonlist_radius">1dp</dimen>
   <dimen name="leaderboard_button_border_padding">0dp</dimen>
   <dimen name="leaderboard_title_text_size">@dimen/text_medium</dimen>
   <dimen name="leaderboard_position_text_size">@dimen/text_xlarge</dimen>
