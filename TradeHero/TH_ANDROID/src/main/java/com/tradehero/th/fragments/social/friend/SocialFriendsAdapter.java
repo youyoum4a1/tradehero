@@ -30,9 +30,9 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
     public SocialFriendItemView getView(int position, View convertView, ViewGroup parent)
     {
         SocialFriendItemView itemView = super.getView(position, convertView, parent);
-        if (convertView instanceof SocialFriendUserView)
+        if (itemView instanceof SocialFriendUserView)
         {
-            ((SocialFriendUserView) convertView).setOnElementClickedListener(createUserClickedListener());
+            ((SocialFriendUserView) itemView).setOnElementClickedListener(createUserClickedListener());
         }
         return itemView;
     }
@@ -85,6 +85,16 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         }
     }
 
+    protected void handleCheckBoxEvent(@NotNull UserFriendsDTO userFriendsDTO)
+    {
+        SocialFriendUserView.OnElementClickListener listenerCopy = elementClickedListener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onCheckBoxClick(userFriendsDTO);
+        }
+    }
+
+
     protected SocialFriendUserView.OnElementClickListener createUserClickedListener()
     {
         return new SocialElementClickListener();
@@ -108,6 +118,7 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         public void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO)
         {
             Timber.d("onCheckBoxClicked " + userFriendsDTO);
+            handleCheckBoxEvent(userFriendsDTO);
         }
     }
 }
