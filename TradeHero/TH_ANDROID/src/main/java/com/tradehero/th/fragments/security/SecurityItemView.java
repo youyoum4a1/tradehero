@@ -25,7 +25,7 @@ import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;

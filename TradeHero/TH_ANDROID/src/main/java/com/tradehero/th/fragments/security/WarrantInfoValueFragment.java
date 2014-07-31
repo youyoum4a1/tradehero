@@ -19,7 +19,7 @@ import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;

@@ -7,7 +7,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 
 abstract public class AbstractPositionPartialBottomOpenView<
         PositionDTOType extends PositionDTO,

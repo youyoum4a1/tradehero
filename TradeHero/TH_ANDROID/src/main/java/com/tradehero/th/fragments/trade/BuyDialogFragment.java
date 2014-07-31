@@ -4,7 +4,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 
 public class BuyDialogFragment extends AbstractTransactionDialogFragment

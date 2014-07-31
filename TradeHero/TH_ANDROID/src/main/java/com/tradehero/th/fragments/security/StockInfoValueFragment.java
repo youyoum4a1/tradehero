@@ -10,7 +10,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>

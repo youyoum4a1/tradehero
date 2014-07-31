@@ -23,7 +23,7 @@ import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;

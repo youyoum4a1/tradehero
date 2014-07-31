@@ -9,7 +9,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertEventDTO;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 
 public class AlertEventItemView extends LinearLayout
         implements DTOView<AlertEventDTO>

@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.tradehero.th.models.number;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import org.junit.Test;

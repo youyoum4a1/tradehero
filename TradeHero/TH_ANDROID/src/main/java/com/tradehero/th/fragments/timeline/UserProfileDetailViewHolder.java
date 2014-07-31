@@ -15,7 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 

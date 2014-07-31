@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 
 public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilterValueSlider
 {

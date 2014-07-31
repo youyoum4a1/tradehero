@@ -1,7 +1,9 @@
-package com.tradehero.th.utils;
+package com.tradehero.th.models.number;
 
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
+import com.tradehero.th.utils.ColorUtils;
+import com.tradehero.th.utils.SecurityUtils;
 import java.text.DecimalFormat;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
