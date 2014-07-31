@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnFocusChanged;
 import butterknife.Optional;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -40,16 +41,21 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
+import com.tradehero.th.fragments.discussion.TransactionEditCommentFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -60,7 +66,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
@@ -78,6 +83,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
     protected static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
     protected static final String KEY_QUOTE_DTO = AbstractTransactionDialogFragment.class.getName() + ".quote_dto";
+    private static final String DIALOG_HIDDEN = "hidden";
 
     @InjectView(R.id.dialog_stock_name) protected TextView mStockNameTextView;
     @InjectView(R.id.vcash_left) protected TextView mCashShareLeftTextView;
@@ -129,7 +135,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private PortfolioId portfolioId;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
-    private boolean isTransactionRunning;
     protected Integer mTransactionQuantity = 0;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
 
@@ -217,6 +222,17 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         super.onViewCreated(view, savedInstanceState);
         init();
         initViews();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
+        if (!(getDashboardNavigator().getCurrentFragment() instanceof BuySellFragment))
+        {
+            getDialog().hide();
+        }
     }
 
     private void init()
@@ -392,6 +408,18 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         launchBuySell();
     }
 
+    @OnFocusChanged(R.id.comments) void onCommentAreaClicked(View commentTextBox, boolean checked)
+    {
+        if (checked)
+        {
+            Bundle bundle = new Bundle();
+            SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
+            getDashboardNavigator().pushFragment(TransactionEditCommentFragment.class, bundle);
+
+            getDialog().hide();
+        }
+    }
+
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
     {
         this.buySellTransactionListener = buySellTransactionListener;
@@ -503,8 +531,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                         R.string.processing, R.string.alert_dialog_please_wait);
 
                 buySellMiddleCallback = getTransactionMiddleCallback(transactionFormDTO);
-
-                isTransactionRunning = true;
             }
             else
             {
@@ -998,11 +1024,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
             if (isBuy)
             {
-                isTransactionRunning = false;
             }
             else
             {
-                isTransactionRunning = false;
             }
 
             if (buySellTransactionListener != null)
@@ -1059,5 +1083,15 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         void onTransactionSuccessful(boolean isBuy);
 
         void onTransactionFailed(boolean isBuy, THException error);
+    }
+
+    protected DashboardNavigator getDashboardNavigator()
+    {
+        DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
+        if (activity != null)
+        {
+            return activity.getDashboardNavigator();
+        }
+        return null;
     }
 }

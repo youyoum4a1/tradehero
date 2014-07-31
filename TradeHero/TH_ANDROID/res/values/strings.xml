@@ -235,4 +235,6 @@
   <string name="weibo_message_length_error">no more than 140 character</string>
   <string name="weibo_friends_invite">I\'m playing TradeHero, Come and join me! Get special with my referral code %1$s!</string>
   <string name="referral_dollars_claimed">Referral dollars claimed</string>
+  <string name="done">Done</string>
+  <string name="trade_comment">Trade Comment</string>
 </resources>
