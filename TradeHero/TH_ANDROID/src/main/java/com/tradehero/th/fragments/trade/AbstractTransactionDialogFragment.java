@@ -130,7 +130,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
     private boolean isTransactionRunning;
-    protected Integer mTransactionQuantity;
+    protected Integer mTransactionQuantity = 0;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
 
     private BuySellTransactionListener buySellTransactionListener;

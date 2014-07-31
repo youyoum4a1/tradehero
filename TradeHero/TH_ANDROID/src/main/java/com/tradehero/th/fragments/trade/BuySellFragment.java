@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -123,6 +125,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
+    @InjectView(R.id.bottom_button) protected ViewGroup mBuySellBtnContainer;
     @InjectView(R.id.btn_buy) protected Button mBuyBtn;
     @InjectView(R.id.btn_sell) protected Button mSellBtn;
     @InjectView(R.id.btn_add_trigger) protected Button mBtnAddTrigger;
@@ -160,7 +163,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     private int selectedPageIndex;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
-    private ProgressDialog transactionDialog;
     SocialLinkHelper socialLinkHelper;
     @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
@@ -236,6 +238,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
 
         selectPage(selectedPageIndex);
+
+        mBuySellBtnContainer.setVisibility(View.GONE);
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -437,8 +441,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         setInitialSellQuantityIfCan();
         if (andDisplay)
         {
-            displayBuySellPrice();
             displayAsOf();
+            displayBuySellPrice();
+            displayBuySellContainer();
             displayBuySellSwitch();
         }
     }
@@ -713,9 +718,20 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
     }
 
+    public void displayBuySellContainer()
+    {
+        if (mBuySellBtnContainer.getVisibility() == View.GONE)
+        {
+            Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
+            slideIn.setFillAfter(true);
+            mBuySellBtnContainer.setVisibility(View.VISIBLE);
+            mBuySellBtnContainer.startAnimation(slideIn);
+        }
+    }
+
     public void displayBuySellSwitch()
     {
-        boolean supportSell = false;
+        boolean supportSell;
         if (positionDTOCompactList == null
                 || positionDTOCompactList.size() == 0
                 || purchaseApplicableOwnedPortfolioId == null)
@@ -1140,37 +1156,48 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     public void showBuySellDialog()
     {
-        pushPortfolioFragmentRunnable = null;
-        pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
+        if (quoteDTO != null)
         {
-            @Override
-            public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+            pushPortfolioFragmentRunnable = null;
+            pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
             {
-                BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
-            }
-        };
-
-        AbstractTransactionDialogFragment abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
-                securityId,
-                purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
-                quoteDTO,
-                isTransactionTypeBuy);
-        abstractTransactionDialogFragment.show(getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
-        abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
-        {
-            @Override public void onTransactionSuccessful(boolean isBuy)
-            {
-                if (pushPortfolioFragmentRunnable != null)
+                @Override
+                public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
                 {
-                    pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+                    BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
                 }
-            }
+            };
 
-            @Override public void onTransactionFailed(boolean isBuy, THException error)
+            AbstractTransactionDialogFragment abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
+                    securityId,
+                    purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
+                    quoteDTO,
+                    isTransactionTypeBuy);
+            abstractTransactionDialogFragment.show(getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
+            abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
             {
+                @Override public void onTransactionSuccessful(boolean isBuy)
+                {
+                    if (pushPortfolioFragmentRunnable != null)
+                    {
+                        pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+                    }
+                }
 
-            }
-        });
+                @Override public void onTransactionFailed(boolean isBuy, THException error)
+                {
+
+                }
+            });
+        }
+        else
+        {
+            alertDialogUtil.popWithNegativeButton(
+                    getActivity(),
+                    R.string.buy_sell_no_quote_title,
+                    R.string.buy_sell_no_quote_message,
+                    R.string.buy_sell_no_quote_cancel);
+        }
     }
 
     public void shareToWeChat()
