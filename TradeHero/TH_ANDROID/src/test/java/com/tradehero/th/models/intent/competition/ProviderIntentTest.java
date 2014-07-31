@@ -3,14 +3,13 @@ package com.tradehero.th.models.intent.competition;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
-import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
-import static org.junit.Assert.assertEquals;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class ProviderIntentTest
@@ -28,16 +27,16 @@ public class ProviderIntentTest
     @Test public void constructorSetsPath()
     {
         THIntent intent = new ProviderIntent();
-        Assert.assertEquals("tradehero://providers", intent.getData() + "");
+        assertThat(intent.getData() + "").isEqualTo("tradehero://providers");
     }
 
     @Test public void uriPathIsWellFormed()
     {
-        assertEquals("tradehero://providers", new ProviderIntent().getUriPath());
+        assertThat(new ProviderIntent().getUriPath()).isEqualTo("tradehero://providers");
     }
 
     @Test public void typeIsDashboard()
     {
-        assertEquals(DashboardTabType.COMMUNITY, new ProviderIntent().getDashboardType());
+        assertThat(new ProviderIntent().getDashboardType()).isEqualTo(DashboardTabType.COMMUNITY);
     }
 }

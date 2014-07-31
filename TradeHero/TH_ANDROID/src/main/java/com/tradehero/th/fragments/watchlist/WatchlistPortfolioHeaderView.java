@@ -202,7 +202,10 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
             for (SecurityId securityId: securityIdList)
             {
                 WatchlistPositionDTO watchlistItem = watchlistPositionCache.get().get(securityId);
-                if (watchlistItem != null && watchlistItem.securityDTO != null)
+                if (watchlistItem != null
+                        && watchlistItem.securityDTO != null
+                        && watchlistItem.securityDTO.getLastPriceInUSD() != null
+                        && watchlistItem.shares != null)
                 {
                     totalValue += watchlistItem.securityDTO.getLastPriceInUSD() * watchlistItem.shares;
                 }

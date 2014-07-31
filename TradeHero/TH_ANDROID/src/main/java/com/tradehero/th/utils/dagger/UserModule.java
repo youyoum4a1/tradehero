@@ -28,7 +28,7 @@ public class UserModule
 {
     private static final String PREF_CURRENT_USER_ID_KEY = "PREF_CURRENT_USER_ID_KEY";
 
-    @Provides @Singleton CurrentUserId provideCurrentUser(SharedPreferences sharedPreferences)
+    @Provides @Singleton CurrentUserId provideCurrentUser(@ForUser SharedPreferences sharedPreferences)
     {
         return new CurrentUserId(sharedPreferences, PREF_CURRENT_USER_ID_KEY, 0);
     }

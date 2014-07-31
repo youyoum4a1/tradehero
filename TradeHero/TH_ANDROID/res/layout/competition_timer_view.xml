@@ -17,14 +17,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/competition_leaderboard_timer_time_left_1"
-        android:textSize="10sp"
+        android:textSize="@dimen/text_xsmall"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/competition_leaderboard_timer_time_left_2"
-        android:textSize="10sp"
+        android:textSize="@dimen/text_xsmall"
         />
 
   </LinearLayout>
@@ -34,7 +34,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/na"
-      android:textSize="20sp"
+      android:textSize="@dimen/text_xlarge"
       />
 
   <TextView
@@ -43,6 +43,7 @@
       android:text="@string/competition_leaderboard_timer_days"
       android:paddingLeft="8dp"
       android:paddingRight="8dp"
+      android:textSize="@dimen/text_small"
       />
 
   <TextView
@@ -50,14 +51,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/na"
-      android:textSize="20sp"
+      android:textSize="@dimen/text_xlarge"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/competition_leaderboard_timer_time_separator"
-      android:textSize="20sp"
+      android:textSize="@dimen/text_xlarge"
       />
 
   <TextView
@@ -65,14 +66,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/na"
-      android:textSize="20sp"
+      android:textSize="@dimen/text_xlarge"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/competition_leaderboard_timer_time_separator"
-      android:textSize="20sp"
+      android:textSize="@dimen/text_xlarge"
       />
 
   <TextView
@@ -80,7 +81,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/na"
-      android:textSize="20sp"
+      android:textSize="@dimen/text_xlarge"
       />
 
 </LinearLayout>

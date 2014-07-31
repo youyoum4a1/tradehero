@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -18,9 +17,9 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
-import com.tradehero.th.api.competition.ProviderIdList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
@@ -98,7 +97,7 @@ public class TrendingFragment extends SecurityListFragment
     @NotNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
     private ExtraTileAdapter wrapperAdapter;
-    private DTOCacheNew.Listener<ProviderListKey, ProviderIdList> providerListCallback;
+    private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListCallback;
     private BaseWebViewFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
@@ -569,35 +568,34 @@ public class TrendingFragment extends SecurityListFragment
     }
 
     //<editor-fold desc="Provider List Listener">
-    protected DTOCacheNew.Listener<ProviderListKey, ProviderIdList> createProviderListFetchListener()
+    protected DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> createProviderListFetchListener()
     {
         return new TrendingProviderListFetchListener();
     }
 
-    protected class TrendingProviderListFetchListener implements DTOCacheNew.Listener<ProviderListKey, ProviderIdList>
+    protected class TrendingProviderListFetchListener implements DTOCacheNew.Listener<ProviderListKey, ProviderDTOList>
     {
-        @Override public void onDTOReceived(ProviderListKey key, ProviderIdList value)
+        @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
         {
             refreshAdapterWithTiles(true);
             openEnrollmentPageIfNecessary(value);
         }
 
-        @Override public void onErrorThrown(ProviderListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_provider_competition_list);
         }
     }
     //</editor-fold>
 
-    private void openEnrollmentPageIfNecessary(ProviderIdList providerIds)
+    private void openEnrollmentPageIfNecessary(ProviderDTOList providerDTOs)
     {
-        for (ProviderId providerId : providerIds)
+        for (@NotNull ProviderDTO providerDTO : providerDTOs)
         {
-            final ProviderDTO providerDTO = providerCache.get().get(providerId);
-            if (providerDTO != null && enrollmentScreenOpened != null && !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(
-                    providerId.key))
+            if (!providerDTO.isUserEnrolled
+                    && !enrollmentScreenOpened.contains(providerDTO.id))
             {
-                enrollmentScreenOpened.add(providerId.key);
+                enrollmentScreenOpened.add(providerDTO.id);
 
                 removeCallbacksIfCan(handleCompetitionRunnable);
                 handleCompetitionRunnable = createHandleCompetitionRunnable(providerDTO);

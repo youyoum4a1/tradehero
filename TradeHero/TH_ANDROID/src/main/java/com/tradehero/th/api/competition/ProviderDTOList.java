@@ -31,4 +31,14 @@ public class ProviderDTOList extends BaseArrayList<ProviderDTO>
         }
         return ownedPortfolioIds;
     }
+
+    @NotNull public ProviderIdList createKeys()
+    {
+        ProviderIdList list = new ProviderIdList();
+        for (@NotNull ProviderDTO providerDTO : this)
+        {
+            list.add(providerDTO.getProviderId());
+        }
+        return list;
+    }
 }

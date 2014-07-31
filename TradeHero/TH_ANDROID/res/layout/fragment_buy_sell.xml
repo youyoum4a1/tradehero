@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:text="@string/buy_sell_portfolio_selected_title"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:layout_centerVertical="true"/>
 
     <ImageView
@@ -53,7 +53,7 @@
         android:layout_toLeftOf="@id/portfolio_drop_down_hint"
         android:layout_toRightOf="@id/selected_title_anchor"
         tools:text="Main Portfolio"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:layout_centerVertical="true"/>
 
   </RelativeLayout>
@@ -120,7 +120,7 @@
         android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_toRightOf="@id/logo_layout"
         android:text="@string/buy_sell_loading_ask_price"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:textColor="@color/font_roi"
         />
 
@@ -133,7 +133,7 @@
         android:layout_below="@id/buy_price"
         android:layout_marginTop="-5dp"
         android:layout_marginLeft="@dimen/common_margin_10"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:textColor="@color/red"
         android:text="@string/buy_sell_loading_ask_price"
         />
@@ -147,7 +147,7 @@
         android:layout_toRightOf="@id/logo_layout"
         android:layout_marginLeft="@dimen/common_margin_10"
         tools:text="06 Feb 05:00"
-        android:textSize="13sp"
+        android:textSize="@dimen/text_small"
         android:textColor="#4e4e4e"
         android:layout_marginTop="-4dp"/>
 

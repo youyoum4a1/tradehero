@@ -10,8 +10,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -494,7 +492,7 @@ public class PositionListFragment
 
     protected void fetchSimplePage()
     {
-        fetchSimplePage(false);
+        fetchSimplePage(true);
     }
 
     protected void fetchSimplePage(boolean force)

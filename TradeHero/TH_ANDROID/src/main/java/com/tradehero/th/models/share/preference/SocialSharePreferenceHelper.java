@@ -1,11 +1,8 @@
-package com.tradehero.th.utils;
+package com.tradehero.th.models.share.preference;
 
 import android.content.SharedPreferences;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 
-/**
- * Created by huhaiping on 14-7-8.
- */
 public class SocialSharePreferenceHelper
 {
     public static final String PREFERENCE_NAME = PreferenceModule.PREF_SOCIAL_SHARE_FLAG;
@@ -19,7 +16,7 @@ public class SocialSharePreferenceHelper
     public static void saveValue(SharedPreferences preferences, String key, Boolean value)
     {
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(key,value);
+        editor.putBoolean(key, value);
         editor.commit();
     }
 }

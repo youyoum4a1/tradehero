@@ -1,22 +1,22 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
-import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderDTO;
 import org.jetbrains.annotations.NotNull;
 
 class ProviderCommunityPageDTO implements CommunityPageDTO
 {
-    @NotNull public final ProviderId providerId;
+    @NotNull public final ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
-    ProviderCommunityPageDTO(@NotNull ProviderId providerId)
+    ProviderCommunityPageDTO(@NotNull ProviderDTO providerDTO)
     {
-        this.providerId = providerId;
+        this.providerDTO = providerDTO;
     }
     //</editor-fold>
 
     @Override public int hashCode()
     {
-        return providerId.hashCode();
+        return providerDTO.getProviderId().hashCode();
     }
 
     @Override public boolean equals(Object other)
@@ -29,10 +29,6 @@ class ProviderCommunityPageDTO implements CommunityPageDTO
         {
             return false;
         }
-        if (this.providerId == ((ProviderCommunityPageDTO) other).providerId)
-        {
-            return true;
-        }
-        return this.providerId.equals(((ProviderCommunityPageDTO) other).providerId);
+        return this.providerDTO.getProviderId().equals(((ProviderCommunityPageDTO) other).providerDTO.getProviderId());
     }
 }

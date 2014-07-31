@@ -23,9 +23,11 @@
   <TextView
       android:id="@+id/trending_filter_spinner_item_label"
       android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_centerInParent="true"
-      android:textSize="16sp"
+      android:layout_toRightOf="@id/trending_filter_spinner_item_icon"
+      android:gravity="center"
+      android:textSize="@dimen/text_medium"
       android:maxLines="1"
       tools:text="US NYSE - NYSE"
       />

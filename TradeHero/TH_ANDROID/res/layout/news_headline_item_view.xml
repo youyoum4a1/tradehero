@@ -41,7 +41,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:textStyle="bold"
-          android:textSize="17sp"
+          android:textSize="@dimen/text_large"
           android:singleLine="true"
           tools:text="Google to be bought by private equity"
           />
@@ -82,7 +82,7 @@
           android:id="@+id/news_title_description"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:textSize="15sp"
+          android:textSize="@dimen/text_medium"
           tools:text="A big one"
           android:textColor="#444"
           android:maxLines="4"

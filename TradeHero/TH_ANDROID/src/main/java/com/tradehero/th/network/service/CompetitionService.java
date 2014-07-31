@@ -1,10 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import java.util.List;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -15,7 +14,7 @@ public interface CompetitionService
 {
     //<editor-fold desc="Get Competitions">
     @GET("/providers/{providerId}/competitions")
-    List<CompetitionDTO> getCompetitions(
+    CompetitionDTOList getCompetitions(
             @Path("providerId") int providerId);
     //</editor-fold>
 

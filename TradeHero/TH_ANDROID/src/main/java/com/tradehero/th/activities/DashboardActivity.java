@@ -55,7 +55,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -159,6 +159,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (savedInstanceState == null && navigator.getCurrentFragment() == null)
         {
             navigator.goToTab(INITIAL_TAB);
+        }
+
+        if (getIntent() != null)
+        {
+            processNotificationDataIfPresence(getIntent().getExtras());
         }
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
@@ -283,9 +288,8 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onResume();
 
         launchActions();
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().open(custom_dimensions);
+
+        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -293,6 +297,11 @@ public class DashboardActivity extends SherlockFragmentActivity
         super.onNewIntent(intent);
 
         Bundle extras = intent.getExtras();
+        processNotificationDataIfPresence(extras);
+    }
+
+    private void processNotificationDataIfPresence(Bundle extras)
+    {
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
             progressDialog = progressDialogUtil.get().show(this, "", "");
@@ -311,9 +320,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onPause()
     {
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.get().close(custom_dimensions);
+        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.get().upload();
 
         super.onPause();

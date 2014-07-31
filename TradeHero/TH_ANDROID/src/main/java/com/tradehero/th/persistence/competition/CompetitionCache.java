@@ -2,9 +2,9 @@ package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,14 +54,14 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public List<CompetitionDTO> get(@Nullable List<CompetitionId> competitionIds)
+    public CompetitionDTOList get(@Nullable List<CompetitionId> competitionIds)
     {
         if (competitionIds == null)
         {
             return null;
         }
 
-        List<CompetitionDTO> fleshedValues = new ArrayList<>();
+        CompetitionDTOList fleshedValues = new CompetitionDTOList();
         for (@NotNull CompetitionId competitionId: competitionIds)
         {
             fleshedValues.add(get(competitionId));
@@ -70,14 +70,14 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public List<CompetitionDTO> put(@Nullable List<CompetitionDTO> values)
+    public CompetitionDTOList put(@Nullable List<CompetitionDTO> values)
     {
         if (values == null)
         {
             return null;
         }
 
-        List<CompetitionDTO> previousValues = new ArrayList<>();
+        CompetitionDTOList previousValues = new CompetitionDTOList();
         for (@NotNull CompetitionDTO competitionDTO: values)
         {
             previousValues.add(put(competitionDTO.getCompetitionId(), competitionDTO));

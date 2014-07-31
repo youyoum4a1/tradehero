@@ -10,8 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class THIntentTest
@@ -28,57 +27,57 @@ public class THIntentTest
 
     @Test public void defaultActionIsView()
     {
-        assertEquals(Intent.ACTION_VIEW, THIntent.getDefaultAction());
-        assertEquals(Intent.ACTION_VIEW, new SimpleTHIntent().getAction());
+        assertThat(THIntent.getDefaultAction()).isEqualTo(Intent.ACTION_VIEW);
+        assertThat(new SimpleTHIntent().getAction()).isEqualTo(Intent.ACTION_VIEW);
     }
 
     @Test public void constructorSetsPath()
     {
         THIntent intent = new SimpleTHIntent();
-        assertEquals("tradehero://", intent.getData() + "");
+        assertThat(intent.getData() + "").isEqualTo("tradehero://");
     }
 
     @Test public void canConvertStringAndInteger()
     {
-        assertEquals("tradehero", THIntent.getString(R.string.intent_scheme));
-        assertEquals("tradehero://", THIntent.getString(R.string.intent_uri_base, THIntent.getString(R.string.intent_scheme)));
+        assertThat(THIntent.getString(R.string.intent_scheme)).isEqualTo("tradehero");
+        assertThat(THIntent.getString(R.string.intent_uri_base, THIntent.getString(R.string.intent_scheme))).isEqualTo("tradehero://");
 
-        assertEquals(0, THIntent.getInteger(R.integer.intent_uri_path_index_action));
+        assertThat(THIntent.getInteger(R.integer.intent_uri_path_index_action)).isEqualTo(0);
     }
 
     @Test public void baseUriPathIsFixed()
     {
-        assertEquals("tradehero://", THIntent.getBaseUriPath());
+        assertThat(THIntent.getBaseUriPath()).isEqualTo("tradehero://");
     }
 
     @Test public void uriPathIsFixed()
     {
-        assertEquals("tradehero://", new SimpleTHIntent().getUriPath());
+        assertThat(new SimpleTHIntent().getUriPath()).isEqualTo("tradehero://");
     }
 
     @Test public void uriIsParsed()
     {
         Uri uri = new SimpleTHIntent().getUri();
-        assertEquals("tradehero", uri.getScheme());
+        assertThat(uri.getScheme()).isEqualTo("tradehero");
     }
 
     @Test public void hostUriIsWellFormed()
     {
-        assertEquals("tradehero://profile", THIntent.getHostUriPath(R.string.intent_host_profile));
+        assertThat(THIntent.getHostUriPath(R.string.intent_host_profile)).isEqualTo("tradehero://profile");
     }
 
     @Test public void actionUriIsWellFormed()
     {
-        assertEquals("tradehero://profile/open", THIntent.getActionUriPath(R.string.intent_host_profile, R.string.intent_action_portfolio_open));
+        assertThat(THIntent.getActionUriPath(R.string.intent_host_profile, R.string.intent_action_portfolio_open)).isEqualTo("tradehero://profile/open");
     }
 
     @Test public void actionFragmentIsNull()
     {
-        assertNull(new SimpleTHIntent().getActionFragment());
+        assertThat(new SimpleTHIntent().getActionFragment()).isNull();
     }
 
     @Test public void getBundleIsEmpty()
     {
-        assertEquals(0, new SimpleTHIntent().getBundle().size());
+        assertThat(new SimpleTHIntent().getBundle().size()).isEqualTo(0);
     }
 }

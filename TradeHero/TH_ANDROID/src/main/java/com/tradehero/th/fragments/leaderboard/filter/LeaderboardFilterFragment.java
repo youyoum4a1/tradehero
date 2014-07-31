@@ -73,7 +73,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.leaderboard_filter_menu, menu);
-        setActionBarTitle(getString(R.string.leaderboard_filter_menu_title));
+        setActionBarTitle(R.string.leaderboard_filter_menu_title);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

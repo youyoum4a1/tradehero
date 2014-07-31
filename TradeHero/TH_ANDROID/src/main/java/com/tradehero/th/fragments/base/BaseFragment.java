@@ -64,7 +64,7 @@ public class BaseFragment extends SherlockFragment
         }
         else
         {
-            Timber.e("getActivity is Null on %s", Log.getStackTraceString(new Exception()));
+            Timber.e(new Exception(),"getActivity is Null");
             return null;
         }
     }

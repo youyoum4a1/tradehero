@@ -24,9 +24,8 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
 import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
@@ -52,9 +51,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         super.onCreate(savedInstanceState);
 
         DaggerUtils.inject(this);
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.open(custom_dimensions);
+        localyticsSession.open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.tagScreen(LocalyticsConstants.Register_Form);
         localyticsSession.tagEvent(LocalyticsConstants.RegisterFormScreen);
         localyticsSession.tagEventMethod(LocalyticsConstants.SignUp_Tap, LocalyticsConstants.Email);
@@ -164,9 +161,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             backButton.setOnClickListener(null);
             backButton = null;
         }
-        List custom_dimensions = new ArrayList();
-        custom_dimensions.add(Constants.TAP_STREAM_TYPE.name());
-        localyticsSession.close(custom_dimensions);
+        localyticsSession.close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
         localyticsSession.upload();
         super.onDestroyView();
     }

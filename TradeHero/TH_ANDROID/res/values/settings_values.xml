@@ -5,7 +5,7 @@
   <dimen name="settings_about_text_margin">10dp</dimen>
 
   <style name="TradeHero_Settings_About_Text">
-    <item name="android:textSize">18sp</item>
+    <item name="android:textSize">@dimen/text_xlarge</item>
     <item name="android:textColor">@color/settings_about_font_colour</item>
     <item name="android:textAllCaps">false</item>
     <item name="android:background">@null</item>

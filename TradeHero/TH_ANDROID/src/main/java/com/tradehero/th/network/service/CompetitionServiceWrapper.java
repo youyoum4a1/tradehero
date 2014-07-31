@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
@@ -11,7 +11,6 @@ import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -41,16 +40,16 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Competitions">
-    public List<CompetitionDTO> getCompetitions(@NotNull ProviderId providerId)
+    public CompetitionDTOList getCompetitions(@NotNull ProviderId providerId)
     {
         return this.competitionService.getCompetitions(providerId.key);
     }
 
-    @NotNull public MiddleCallback<List<CompetitionDTO>> getCompetitions(
+    @NotNull public MiddleCallback<CompetitionDTOList> getCompetitions(
             @NotNull ProviderId providerId,
-            @Nullable Callback<List<CompetitionDTO>> callback)
+            @Nullable Callback<CompetitionDTOList> callback)
     {
-        MiddleCallback<List<CompetitionDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<CompetitionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         this.competitionServiceAsync.getCompetitions(providerId.key, middleCallback);
         return middleCallback;
     }

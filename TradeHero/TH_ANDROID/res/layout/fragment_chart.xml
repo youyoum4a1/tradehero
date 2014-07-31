@@ -90,7 +90,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_type"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -102,7 +102,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="Put"
-              android:textSize="13sp" />
+              android:textSize="@dimen/text_small" />
 
         </TableRow>
 
@@ -120,7 +120,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_code"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -132,7 +132,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="T1IW"
-              android:textSize="13sp" />
+              android:textSize="@dimen/text_small" />
 
         </TableRow>
 
@@ -150,7 +150,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_expiry"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -162,7 +162,7 @@
               android:layout_weight="1"
               android:gravity="left"
               tools:text="1 Apr 14"
-              android:textSize="13sp" />
+              android:textSize="@dimen/text_small" />
 
         </TableRow>
 
@@ -178,7 +178,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_previous_close"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -190,7 +190,7 @@
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               tools:text="US$ 567.8"/>
 
         </TableRow>
@@ -206,7 +206,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_open"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -218,7 +218,7 @@
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               tools:text="US$ 564.1"/>
 
         </TableRow>
@@ -234,7 +234,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_days_high"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -246,7 +246,7 @@
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               tools:text="US$ 571.9"/>
 
         </TableRow>
@@ -262,7 +262,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_days_low"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -274,7 +274,7 @@
               android:layout_weight="1"
               android:gravity="left"
               android:text=""
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               tools:text="US$ 563.9"/>
 
         </TableRow>
@@ -301,7 +301,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_strike_price"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -313,7 +313,7 @@
               android:layout_weight="1"
               android:gravity="right"
               tools:text="SG$ 2.000"
-              android:textSize="13sp" />
+              android:textSize="@dimen/text_small" />
 
         </TableRow>
 
@@ -331,7 +331,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_underlying"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -343,7 +343,7 @@
               android:layout_weight="1"
               android:gravity="right"
               tools:text="Ascendas REOT"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               />
 
         </TableRow>
@@ -362,7 +362,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/warrant_info_issuer"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -374,7 +374,7 @@
               android:layout_weight="1"
               android:gravity="right"
               tools:text="MB"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               />
 
         </TableRow>
@@ -391,7 +391,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_pe_ratio"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -403,7 +403,7 @@
               android:layout_weight="1"
               android:gravity="right"
               android:text=""
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               tools:text="14.11"/>
 
         </TableRow>
@@ -419,7 +419,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_eps"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -431,7 +431,7 @@
               android:layout_weight="1"
               android:gravity="right"
               android:text=""
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               tools:text="40.23"
               />
 
@@ -448,7 +448,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_volume"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -459,7 +459,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               tools:text="13,938,402"
               />
 
@@ -476,7 +476,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:text="@string/security_avg_volume"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               android:gravity="left"
               />
 
@@ -487,7 +487,7 @@
               android:layout_height="wrap_content"
               android:layout_weight="1"
               android:gravity="right"
-              android:textSize="13sp"
+              android:textSize="@dimen/text_small"
               tools:text="10,840,800"
               />
 

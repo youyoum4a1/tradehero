@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:textSize="13sp"
+        android:textSize="@dimen/text_small"
         android:textOn="@string/buy_sell_confirm_share_public"
         android:textOff="@string/buy_sell_confirm_share_private"
         android:textColor="@color/authentication_button_light"

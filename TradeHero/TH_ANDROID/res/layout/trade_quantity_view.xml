@@ -50,7 +50,7 @@
         android:gravity="right"
         android:paddingRight="@dimen/trade_screen_info_title_padding_right"
         android:text="@string/buy_sell_price_as_of"
-        android:textSize="10sp"
+        android:textSize="@dimen/text_xxsmall"
         />
 
     <TextView
@@ -62,7 +62,7 @@
         android:gravity="left"
         tools:text="06 Feb 05:00"
         android:textStyle="bold"
-        android:textSize="10sp"
+        android:textSize="@dimen/text_xxsmall"
         />
 
   </TableRow>

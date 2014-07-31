@@ -3,17 +3,12 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import dagger.Lazy;
-import javax.inject.Inject;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 
 public class LeaderboardDefView extends AbstractLeaderboardDefView
-        implements DTOView<LeaderboardDefKey>
+        implements DTOView<LeaderboardDefDTO>
 {
-    @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
-
-    private LeaderboardDefKey leaderboardDefKey;
+    private LeaderboardDefDTO leaderboardDefDTO;
 
     //<editor-fold desc="Constructors">
     public LeaderboardDefView(Context context)
@@ -32,12 +27,9 @@ public class LeaderboardDefView extends AbstractLeaderboardDefView
     }
     //</editor-fold>
 
-    @Override public void display(LeaderboardDefKey dto)
+    @Override public void display(LeaderboardDefDTO dto)
     {
-        this.leaderboardDefKey = dto;
-        if (leaderboardDefKey != null)
-        {
-            linkWith(leaderboardDefCache.get().get(leaderboardDefKey), true);
-        }
+        this.leaderboardDefDTO = dto;
+        linkWith(leaderboardDefDTO, true);
     }
 }

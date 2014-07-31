@@ -3,14 +3,13 @@ package com.tradehero.th.models.intent.portfolio;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
-import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
-import static org.junit.Assert.assertEquals;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class PortfolioIntentTest
@@ -28,16 +27,16 @@ public class PortfolioIntentTest
     @Test public void constructorSetsPath()
     {
         THIntent intent = new PortfolioIntent();
-        Assert.assertEquals("tradehero://portfolio", intent.getData() + "");
+        assertThat(intent.getData() + "").isEqualTo("tradehero://portfolio");
     }
 
     @Test public void uriPathIsWellFormed()
     {
-        assertEquals("tradehero://portfolio", new PortfolioIntent().getUriPath());
+        assertThat(new PortfolioIntent().getUriPath()).isEqualTo("tradehero://portfolio");
     }
 
     @Test public void typeIsDashboard()
     {
-        assertEquals(DashboardTabType.TIMELINE, new PortfolioIntent().getDashboardType());
+        assertThat(new PortfolioIntent().getDashboardType()).isEqualTo(DashboardTabType.TIMELINE);
     }
 }

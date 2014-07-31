@@ -37,7 +37,7 @@
       android:layout_toRightOf="@id/logo"
       android:layout_below="@id/stock_symbol"
       android:paddingLeft="5dp"
-      android:textSize="12sp"
+      android:textSize="@dimen/text_xsmall"
       tools:text="alert description"
       />
 
@@ -48,7 +48,7 @@
       android:layout_toRightOf="@id/logo"
       android:layout_below="@id/alert_description"
       android:paddingLeft="5dp"
-      android:textSize="12sp"
+      android:textSize="@dimen/text_xsmall"
       tools:text="alert status"
       />
 

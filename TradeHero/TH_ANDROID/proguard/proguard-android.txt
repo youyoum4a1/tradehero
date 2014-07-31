@@ -112,6 +112,7 @@
 -assumenosideeffects class com.tradehero.common.utils.THLog { *; }
 
 -keep class !com.tradehero.** { *; }
+-dontwarn com.tencent.**
 -dontwarn **.VisibleForTesting
 -dontwarn com.tradehero.route.**
 -dontwarn com.handmark.**

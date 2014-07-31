@@ -4,9 +4,9 @@
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="activity_vertical_margin">16dp</dimen>
   <dimen name="authentication_button_radius">8dp</dimen>
-  <dimen name="authentication_head_text_size">18sp</dimen>
-  <dimen name="authentication_text_size">14sp</dimen>
-  <dimen name="copyright_text_size">12sp</dimen>
+  <dimen name="authentication_head_text_size">@dimen/text_large</dimen>
+  <dimen name="authentication_text_size">@dimen/text_small</dimen>
+  <dimen name="copyright_text_size">@dimen/text_xsmall</dimen>
   <dimen name="textbox_light_background_radius">5dp</dimen>
   <dimen name="user_profile_corner_radius">0dp</dimen>
   <dimen name="dashboard_padding">0dp</dimen>
@@ -42,7 +42,7 @@
   <dimen name="discussion_action_buttons_vertical_padding">3dp</dimen>
   <dimen name="discussion_action_buttons_drawable_padding">6dp</dimen>
   <dimen name="timeline_action_buttons_vertical_padding_big">10dp</dimen>
-  <dimen name="leaderboard_fof_text_size">12sp</dimen>
+  <dimen name="leaderboard_fof_text_size">@dimen/text_xsmall</dimen>
   <dimen name="notification_margin">10dp</dimen>
   <dimen name="notification_logo_width">40dp</dimen>
   <dimen name="notification_padding_top">10dp</dimen>
@@ -84,13 +84,12 @@
   <dimen name="invite_friend_announcement_height">60dp</dimen>
   <dimen name="invite_friend_announcement_horizontal_padding">15dp</dimen>
   <dimen name="refer_friend_invite_button_padding">10dp</dimen>
-  <dimen name="watchlist_item_shares_font_size">12sp</dimen>
+  <dimen name="watchlist_item_shares_font_size">@dimen/text_xsmall</dimen>
   <dimen name="refer_friend_action_button_vertical_padding">5dp</dimen>
   <dimen name="refer_friend_source_drawable_padding">3dp</dimen>
-  <dimen name="timeline_item_date">@dimen/text_small</dimen>
-  <dimen name="text_small">12sp</dimen>
+  <dimen name="timeline_item_date">@dimen/text_xsmall</dimen>
   <dimen name="stock_symbol_header">@dimen/text_header</dimen>
-  <dimen name="text_header">15sp</dimen>
+  <dimen name="text_header">@dimen/text_medium</dimen>
   <dimen name="alert_company_name">@dimen/text_small</dimen>
   <dimen name="alert_item_view_logo_width">80dp</dimen>
   <dimen name="leaderboard_bottom_padding">50dp</dimen>
@@ -117,7 +116,7 @@
 
   <dimen name="news_item_action_padding_t_b">10dp</dimen>
   <dimen name="news_item_action_padding_l_r">10dp</dimen>
-  <dimen name="news_detail_date_size">11sp</dimen>
+  <dimen name="news_detail_date_size">@dimen/text_xsmall</dimen>
 
   <dimen name="notification_horizontal_margin">10dp</dimen>
   <dimen name="notification_vertical_margin">0dp</dimen>
@@ -128,6 +127,16 @@
   <dimen name="timeline_belt_height">40dp</dimen>
   <dimen name="comment_count_drawable_padding">4dp</dimen>
   <dimen name="notification_logo_padding">5dp</dimen>
+
+  <!--Text sizes-->
+  <dimen name="text_xxsmall">10sp</dimen> <!-- Not advised to use this size. It's very small! -->
+  <dimen name="text_xsmall">12sp</dimen>
+  <dimen name="text_small">14sp</dimen>
+  <dimen name="text_medium">16sp</dimen>
+  <dimen name="text_large">18sp</dimen>
+  <dimen name="text_xlarge">20sp</dimen>
+  <dimen name="text_xxlarge">25sp</dimen>
+  <dimen name="text_xxxlarge">30sp</dimen>
 
   <!--common margin should not change-->
   <dimen name="common_margin_1">1dp</dimen>
@@ -156,7 +165,7 @@
   <dimen name="guide_close_margin">15dp</dimen>
   <dimen name="security_logo_midium">60dp</dimen>
   <dimen name="button_height_30">30dp</dimen>
-  <dimen name="leaderboard_numerical_label_text_size">11sp</dimen>
+  <dimen name="leaderboard_numerical_label_text_size">@dimen/text_xsmall</dimen>
 
   <dimen name="discussion_separator_thickness">0.5dp</dimen>
   <dimen name="discussion_list_padding">60dp</dimen>

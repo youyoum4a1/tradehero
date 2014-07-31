@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             tools:text="xavier"
             />
 
@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_medium"
             android:textColor="@color/gray_normal"
             tools:text="Hero (Free)"
             />
@@ -84,7 +84,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/common_margin_10"
             android:text="@string/upgrade_now"
-            android:textSize="15sp"
+            android:textSize="@dimen/text_medium"
             android:textColor="@color/number_green"
             tools:background="@color/light_grey"
             />
