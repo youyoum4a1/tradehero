@@ -20,14 +20,10 @@ public class CompetitionDTORestrictionComparator implements Comparator<Competiti
             return 0;
         }
 
-        int compare = (int) (rhs.leaderboard.getTimeRestrictionRangeInMillis() - lhs.leaderboard.getTimeRestrictionRangeInMillis());
+        int compare = rhs.leaderboard.toUtcRestricted.compareTo(lhs.leaderboard.toUtcRestricted);
         if (compare == 0)
         {
-            compare = rhs.leaderboard.fromUtcRestricted.compareTo(lhs.leaderboard.fromUtcRestricted);
-            if (compare == 0)
-            {
-                compare = rhs.leaderboard.toUtcRestricted.compareTo(lhs.leaderboard.toUtcRestricted);
-            }
+            compare = rhs.leaderboard.getTimeRestrictionRangeInMillis() > lhs.leaderboard.getTimeRestrictionRangeInMillis()? 1 : -1;
         }
         return compare;
     }
