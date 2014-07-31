@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer name="pulse_duration">1600</integer>
+  <integer name="zoom_in_delay">100</integer>
+  <integer name="dismiss_duration">800</integer>
+</resources>
