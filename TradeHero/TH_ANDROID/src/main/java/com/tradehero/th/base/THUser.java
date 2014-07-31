@@ -1,7 +1,6 @@
 package com.tradehero.th.base;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothClass;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
