@@ -198,7 +198,7 @@ public class FollowerListItemView extends RelativeLayout
         {
             Timber.d("getCountryLogoId country:%s",country);
             return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException|NullPointerException ex)
+        } catch (IllegalArgumentException ex)
         {
             return defaultResId;
         }

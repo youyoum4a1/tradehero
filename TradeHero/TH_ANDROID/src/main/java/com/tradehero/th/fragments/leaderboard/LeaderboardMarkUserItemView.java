@@ -352,17 +352,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    public int getCountryLogoId(String country)
+    public int getCountryLogoId(@NotNull String country)
     {
         return getCountryLogoId(R.drawable.default_image, country);
     }
 
-    public int getCountryLogoId(int defaultResId, String country)
+    public int getCountryLogoId(int defaultResId, @NotNull String country)
     {
         try
         {
             return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException|NullPointerException ex)
+        } catch (IllegalArgumentException ex)
         {
             return defaultResId;
         }
