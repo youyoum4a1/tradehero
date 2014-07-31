@@ -82,24 +82,36 @@ public class PremiumFollowUserAssistant implements
         notifyFollowFailed(key, error);
     }
 
+    protected void notifyFollowFailed(UserBaseKey userToFollow, Throwable error)
+    {
+        haveInteractorForget();
+        OnUserFollowedListener userFollowedListenerCopy = userFollowedListener;
+        if (userFollowedListenerCopy != null)
+        {
+            userFollowedListenerCopy.onUserFollowFailed(userToFollow, error);
+        }
+    }
+
+    protected void follow()
+    {
+        if (this.currentUserProfile.ccBalance > 0)
+        {
+            alertDialogUtilLazy.get().showProgressDialog(currentActivityHolderLazy.get()
+                    .getCurrentContext(), currentActivityHolderLazy.get().getCurrentContext()
+                    .getString(R.string.following_this_hero));
+            userServiceWrapper.follow(userToFollow, this);
+        }
+        else
+        {
+            haveInteractorForget();
+            requestCode = billingInteractor.run(createPurchaseCCRequest());
+        }
+    }
+
     @Override public void success(UserProfileDTO userProfileDTO, Response response)
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
-        heroListCacheLazy.get().invalidate(userProfileDTO.getBaseKey());
-        updateUserProfileCache(userProfileDTO);
         notifyFollowSuccess(userToFollow, userProfileDTO);
-    }
-
-    /**
-     * newly added method
-     */
-    private void updateUserProfileCache(UserProfileDTO userProfileDTO)
-    {
-        if (userProfileCache != null && currentUserId != null)
-        {
-            UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-            userProfileCache.put(userBaseKey, userProfileDTO);
-        }
     }
 
     @Override public void failure(RetrofitError error)
@@ -118,16 +130,6 @@ public class PremiumFollowUserAssistant implements
         }
     }
 
-    protected void notifyFollowFailed(UserBaseKey userToFollow, Throwable error)
-    {
-        haveInteractorForget();
-        OnUserFollowedListener userFollowedListenerCopy = userFollowedListener;
-        if (userFollowedListenerCopy != null)
-        {
-            userFollowedListenerCopy.onUserFollowFailed(userToFollow, error);
-        }
-    }
-
     protected void haveInteractorForget()
     {
         if (requestCode != null)
@@ -135,22 +137,6 @@ public class PremiumFollowUserAssistant implements
             billingInteractor.forgetRequestCode(requestCode);
         }
         requestCode = null;
-    }
-
-    protected void follow()
-    {
-        if (this.currentUserProfile.ccBalance > 0)
-        {
-            alertDialogUtilLazy.get().showProgressDialog(currentActivityHolderLazy.get()
-                    .getCurrentContext(), currentActivityHolderLazy.get().getCurrentContext()
-                    .getString(R.string.following_this_hero));
-            userServiceWrapper.follow(userToFollow, this);
-        }
-        else
-        {
-            haveInteractorForget();
-            requestCode = billingInteractor.run(createPurchaseCCRequest());
-        }
     }
 
     protected void unFollow()
