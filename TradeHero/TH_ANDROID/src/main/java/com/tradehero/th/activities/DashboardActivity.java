@@ -206,11 +206,17 @@ public class DashboardActivity extends SherlockFragmentActivity
     {
         @Override public void success(Response response, Response response2)
         {
+            alertDialogUtil.get().dismissProgressDialog();
+            if (mReferralCodeDialog != null)
+            {
+                mReferralCodeDialog.dismiss();
+            }
             userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
+            alertDialogUtil.get().dismissProgressDialog();
             THToast.show(new THException(retrofitError));
         }
     }

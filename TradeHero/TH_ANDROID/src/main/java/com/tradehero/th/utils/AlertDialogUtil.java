@@ -302,7 +302,7 @@ public class AlertDialogUtil
         }
     }
 
-    public AlertDialog getReferralCodeDialog(@NotNull Context context, final UserBaseKey userBaseKey, final DashboardActivity.TrackCallback trackCallback)
+    public AlertDialog getReferralCodeDialog(@NotNull final Context context, final UserBaseKey userBaseKey, final DashboardActivity.TrackCallback trackCallback)
     {
         if (mReferralCodeDialog != null)
         {
@@ -329,12 +329,9 @@ public class AlertDialogUtil
         {
             @Override public void onClick(View view)
             {
-                mReferralCodeDialog.dismiss();
-                if (editText.getText().toString().length() > 5)
-                {
-                    UpdateReferralCodeDTO updateReferralCodeDTO = new UpdateReferralCodeDTO(editText.getText().toString());
-                    userServiceWrapperLazy.get().updateReferralCode(userBaseKey, updateReferralCodeDTO, trackCallback);
-                }
+                showProgressDialog(context);
+                UpdateReferralCodeDTO updateReferralCodeDTO = new UpdateReferralCodeDTO(editText.getText().toString());
+                userServiceWrapperLazy.get().updateReferralCode(userBaseKey, updateReferralCodeDTO, trackCallback);
             }
         });
 
