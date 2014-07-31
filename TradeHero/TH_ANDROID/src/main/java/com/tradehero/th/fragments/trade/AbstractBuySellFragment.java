@@ -32,6 +32,7 @@ import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
@@ -69,7 +70,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     protected FreshQuoteHolder freshQuoteHolder;
-    protected QuoteDTO quoteDTO;
+    @Nullable protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
 
     protected boolean isTransactionTypeBuy = true;

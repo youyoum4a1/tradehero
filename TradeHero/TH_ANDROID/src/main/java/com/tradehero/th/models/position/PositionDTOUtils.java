@@ -5,9 +5,10 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.ColorUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class PositionDTOUtils
@@ -35,8 +36,11 @@ public class PositionDTOUtils
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sumInvestedAmountRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.sumInvestedAmountRefCcy)
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -63,8 +67,11 @@ public class PositionDTOUtils
                 position.marketValueStartPeriodRefCcy != null &&
                 /* It appears iOS version does that */position.marketValueStartPeriodRefCcy > 0)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueStartPeriodRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.marketValueStartPeriodRefCcy)
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -102,11 +109,11 @@ public class PositionDTOUtils
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    position.realizedPLRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    refCurrency);
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.realizedPLRefCcy)
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -131,8 +138,11 @@ public class PositionDTOUtils
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.totalPLInPeriodRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.totalPLInPeriodRefCcy)
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -157,8 +167,11 @@ public class PositionDTOUtils
     {
         if (position != null)
         {
-            THSignedNumber formattedNumber =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.marketValueRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.marketValueRefCcy)
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -196,11 +209,11 @@ public class PositionDTOUtils
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    position.unrealizedPLRefCcy,
-                    THSignedNumber.WITHOUT_SIGN,
-                    refCurrency);
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.unrealizedPLRefCcy)
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formattedNumber.toString();
         }
         else
@@ -234,9 +247,13 @@ public class PositionDTOUtils
         }
         else
         {
-            String roiText = NumberDisplayUtils.getArrowPrefix(roiValue);
-            roiText += NumberDisplayUtils.formatWithRelevantDigits(Math.abs(roiValue * 100.0), 3) + "%";
-            textView.setText(roiText);
+            THSignedNumber roiNumber = THSignedPercentage.builder()
+                    .value(Math.abs(roiValue * 100.0))
+                    .withSign()
+                    .signTypeArrow()
+                    .relevantDigitCount(3)
+                    .build();
+            textView.setText(roiNumber.toString());
             textView.setTextColor(
                     ColorUtils.getProperColorForNumber(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
         }
@@ -259,8 +276,11 @@ public class PositionDTOUtils
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
 
-            THSignedNumber formatSumPurchasesInPeriodRefCcy =
-                    new THSignedNumber(THSignedNumber.TYPE_MONEY, position.sum_purchasesInPeriodRefCcy, THSignedNumber.WITHOUT_SIGN, refCurrency);
+            THSignedNumber formatSumPurchasesInPeriodRefCcy = THSignedMoney.builder()
+                    .value(position.sum_purchasesInPeriodRefCcy)
+                    .withOutSign()
+                    .currency(refCurrency)
+                    .build();
             return formatSumPurchasesInPeriodRefCcy.toString();
         }
         else

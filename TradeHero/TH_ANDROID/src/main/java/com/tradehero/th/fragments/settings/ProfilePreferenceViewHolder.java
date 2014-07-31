@@ -1,49 +1,23 @@
 package com.tradehero.th.fragments.settings;
 
-import android.preference.Preference;
 import com.tradehero.th.R;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
-public class ProfilePreferenceViewHolder implements SettingViewHolder
+public class ProfilePreferenceViewHolder extends OneSettingViewHolder
 {
-    protected DashboardPreferenceFragment preferenceFragment;
-    protected Preference profilePref;
-
     //<editor-fold desc="Constructors">
     @Inject public ProfilePreferenceViewHolder()
     {
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override protected int getStringKeyResId()
     {
-        this.preferenceFragment = preferenceFragment;
-
-        profilePref = preferenceFragment.findPreference(
-                preferenceFragment.getString(R.string.key_settings_primary_profile));
-        if (profilePref != null)
-        {
-            profilePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleProfileClicked();
-                    return true;
-                }
-            });
-        }
+        return R.string.key_settings_primary_profile;
     }
 
-    @Override public void destroyViews()
-    {
-        this.preferenceFragment = null;
-        this.profilePref = null;
-    }
-
-    private void handleProfileClicked()
+    @Override protected void handlePrefClicked()
     {
         preferenceFragment.getNavigator().pushFragment(SettingsProfileFragment.class);
     }
-
 }

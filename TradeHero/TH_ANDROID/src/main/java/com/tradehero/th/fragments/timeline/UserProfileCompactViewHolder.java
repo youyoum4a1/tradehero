@@ -13,9 +13,10 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class UserProfileCompactViewHolder
@@ -80,15 +81,15 @@ public class UserProfileCompactViewHolder
                 {
                     pl = 0.0;
                 }
-                THSignedNumber thPlSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_MONEY,
-                        pl,
-                        THSignedNumber.WITH_SIGN,
-                        SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY,
-                        THSignedNumber.TYPE_SIGN_PLUS_MINUS_ALWAYS);
+                THSignedNumber thPlSinceInception = THSignedMoney.builder()
+                        .value(pl)
+                        .withSign()
+                        .signTypePlusMinusAlways()
+                        .currency(userProfileDTO.portfolio.getNiceCurrency())
+                        .build();
                 profitValue.setText(thPlSinceInception.toString());
                 profitValue.setTextColor(
-                        context.getResources().getColor(thPlSinceInception.getColor()));
+                        context.getResources().getColor(thPlSinceInception.getColorResId()));
             }
             else
             {
@@ -133,12 +134,12 @@ public class UserProfileCompactViewHolder
                     && userProfileDTO.portfolio != null
                     && userProfileDTO.portfolio.roiSinceInception != null)
             {
-                THSignedNumber thRoiSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_PERCENTAGE,
-                        userProfileDTO.portfolio.roiSinceInception * 100);
+                THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
+                        .value(userProfileDTO.portfolio.roiSinceInception * 100)
+                        .build();
                 roiSinceInception.setText(thRoiSinceInception.toString());
                 roiSinceInception.setTextColor(
-                        context.getResources().getColor(thRoiSinceInception.getColor()));
+                        context.getResources().getColor(thRoiSinceInception.getColorResId()));
             }
             else
             {

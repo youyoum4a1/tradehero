@@ -10,7 +10,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -24,9 +23,10 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -271,12 +271,12 @@ public class HeroListItemView extends RelativeLayout
         {
             if (heroDTO != null && heroDTO.roiSinceInception != null)
             {
-                THSignedNumber thRoiSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_PERCENTAGE,
-                        heroDTO.roiSinceInception * 100);
+                THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
+                        .value(heroDTO.roiSinceInception * 100)
+                        .build();
                 revenueInfo.setText(thRoiSinceInception.toString());
                 revenueInfo.setTextColor(
-                        getContext().getResources().getColor(thRoiSinceInception.getColor()));
+                        getContext().getResources().getColor(thRoiSinceInception.getColorResId()));
             }
             else
             {

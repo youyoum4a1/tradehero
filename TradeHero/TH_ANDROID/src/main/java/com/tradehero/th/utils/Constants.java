@@ -8,6 +8,8 @@ public class Constants
     // TODO fix
     public static final boolean RELEASE = false; // !BuildConfig.DEBUG;
 
+    public static final boolean USE_BETA_HOME_PAGE = true;
+
     public static final boolean FOR_QA = false;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;

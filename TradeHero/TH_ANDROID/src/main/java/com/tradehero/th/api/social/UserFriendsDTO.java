@@ -84,6 +84,4 @@ abstract public class UserFriendsDTO
             }
         }
     }
-
-
 }

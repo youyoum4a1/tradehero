@@ -33,6 +33,7 @@ import retrofit.Callback;
     @NotNull private final LeaderboardServiceAsync leaderboardServiceAsync;
     @NotNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
+    //<editor-fold desc="Constructors">
     @Inject public LeaderboardServiceWrapper(
             @NotNull LeaderboardService leaderboardService,
             @NotNull LeaderboardServiceAsync leaderboardServiceAsync,
@@ -43,6 +44,7 @@ import retrofit.Callback;
         this.leaderboardServiceAsync = leaderboardServiceAsync;
         this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
+    //</editor-fold>
 
     protected DTOProcessor<GetPositionsDTO> createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
     {

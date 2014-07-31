@@ -4,7 +4,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 
 public class SellDialogFragment extends AbstractTransactionDialogFragment
@@ -24,7 +24,10 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
     @Override protected String getLabel()
     {
         String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
-        THSignedNumber sthSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
+        THSignedNumber sthSignedNumber = THSignedNumber.builder()
+                .value(quoteDTO.bid)
+                .withOutSign()
+                .build();
         String sPrice = sthSignedNumber.toString();
         return getString(R.string.buy_sell_button_sell, display, sPrice);
     }

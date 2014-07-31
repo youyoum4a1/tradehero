@@ -39,12 +39,14 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -379,7 +381,10 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             return; // TODO better than that
         }
-        THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, THSignedNumber.WITHOUT_SIGN);
+        THSignedNumber thTargetPrice = THSignedMoney.builder()
+                .value(alertDTO.targetPrice)
+                .withOutSign()
+                .build();
         targetPrice.setText(thTargetPrice.toString());
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
@@ -435,14 +440,19 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, THSignedNumber.WITHOUT_SIGN);
+            THSignedNumber thTargetPrice = THSignedMoney.builder()
+                    .value(alertDTO.targetPrice)
+                    .withOutSign()
+                    .build();
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
-            THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
-            targetPrice.setText(thPriceMovement.toString(0));
+            THSignedNumber thPriceMovement = THSignedPercentage.builder()
+                    .value(alertDTO.priceMovement * 100)
+                    .build();
+            targetPrice.setText(thPriceMovement.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
     }
@@ -466,11 +476,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             THSignedNumber thCurrentPrice = null;
             if (securityCompactDTO != null)
             {
-                thCurrentPrice = new THSignedNumber(
-                        THSignedNumber.TYPE_MONEY,
-                        securityCompactDTO.lastPrice,
-                        THSignedNumber.WITHOUT_SIGN,
-                        securityCompactDTO.currencyDisplay);
+                thCurrentPrice = THSignedMoney.builder()
+                        .value(securityCompactDTO.lastPrice)
+                        .withOutSign()
+                        .currency(securityCompactDTO.currencyDisplay)
+                        .build();
             }
             currentPrice.setText(thCurrentPrice == null ? "-" : thCurrentPrice.toString());
         }
@@ -558,17 +568,19 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void updatePercentageChangeValues(boolean isChecked)
     {
-        THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, (double) getSeekingMovementPercentage(), THSignedNumber.WITH_SIGN);
-        percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString(0) : "-"));
+        THSignedNumber thPercentageChange = THSignedPercentage.builder()
+                .value((double) getSeekingMovementPercentage())
+                .withSign()
+                .build();
+        percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString() : "-"));
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
         {
-            THSignedNumber thPercentageChangePriceValue = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    getSeekingMovementPrice(),
-                    THSignedNumber.WITHOUT_SIGN,
-                    securityCompactDTO.currencyDisplay
-            );
+            THSignedNumber thPercentageChangePriceValue = THSignedMoney.builder()
+                    .value(getSeekingMovementPrice())
+                    .withOutSign()
+                    .currency(securityCompactDTO.currencyDisplay)
+                    .build();
             percentageChangePriceValue.setText(getFormattedPercentageChangeTargetValue(isChecked ? thPercentageChangePriceValue.toString() : "-"));
         }
 
@@ -617,7 +629,10 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         Double seekingTargetPrice = getSeekingTargetPrice();
         if (seekingTargetPrice != null)
         {
-            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, seekingTargetPrice, THSignedNumber.WITHOUT_SIGN);
+            THSignedNumber thSignedNumber = THSignedMoney.builder()
+                    .value(seekingTargetPrice)
+                    .withOutSign()
+                    .build();
             targetPriceChange.setText(getFormattedTargetPriceChange(handlerEnabled ? thSignedNumber.toString() : "-"));
             targetPriceSeekBar.setEnabled(targetPriceToggle.isChecked());
         }

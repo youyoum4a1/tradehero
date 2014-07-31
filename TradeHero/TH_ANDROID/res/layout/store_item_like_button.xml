@@ -9,9 +9,9 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:background="@drawable/basic_white_selector"
-    android:clickable="true"
-    android:addStatesFromChildren="false"
   >
+    <!--android:clickable="true"-->
+    <!--android:addStatesFromChildren="false"-->
 
   <ImageView
       android:id="@+id/icon"
@@ -26,8 +26,6 @@
 
   <ImageView
       android:id="@+id/btn_buy_now"
-      android:duplicateParentState="false"
-      android:clickable="true"
       android:layout_width="125dp"
       android:layout_height="48dp"
       android:layout_alignParentRight="true"
@@ -38,6 +36,8 @@
       android:background="@null"
       android:contentDescription="@null"
       />
+      <!--android:duplicateParentState="false"-->
+      <!--android:clickable="true"-->
 
   <TextView
       android:id="@+id/title"

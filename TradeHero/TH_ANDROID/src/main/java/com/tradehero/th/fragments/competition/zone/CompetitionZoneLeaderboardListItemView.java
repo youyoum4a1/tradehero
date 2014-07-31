@@ -9,7 +9,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {
@@ -108,12 +109,12 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
                 LeaderboardUserDTO leaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
                 if(leaderboardUserDTO != null)
                 {
-                    THSignedNumber thRoi = new THSignedNumber(
-                            THSignedNumber.TYPE_PERCENTAGE,
-                            leaderboardUserDTO.roiInPeriod * 100);
+                    THSignedNumber thRoi = THSignedPercentage.builder()
+                            .value(leaderboardUserDTO.roiInPeriod * 100)
+                            .build();
 
                     roiView.setText(thRoi.toString());
-                    roiView.setTextColor(getResources().getColor(thRoi.getColor()));
+                    roiView.setTextColor(getResources().getColor(thRoi.getColorResId()));
                 }
                 else
                 {

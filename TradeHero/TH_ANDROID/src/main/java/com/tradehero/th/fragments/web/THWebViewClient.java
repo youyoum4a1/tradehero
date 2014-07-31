@@ -78,6 +78,7 @@ public class THWebViewClient extends WebViewClient
                 if (uri.getHost().equalsIgnoreCase(context.getString(R.string.intent_host_home)))
                 {
                     view.reload();
+                    return true;
                 }
                 else if (uri.getHost().equalsIgnoreCase(context.getString(R.string.intent_host_web)))
                 {
@@ -93,10 +94,10 @@ public class THWebViewClient extends WebViewClient
                         Bundle bundle = new Bundle();
                         WebViewFragment.putUrl(bundle, redirectUrl);
                         navigator.pushFragment(WebViewFragment.class, bundle);
-                        return false;
+                        return true;
                     }
                 }
-                return true;
+                return false;
             }
         }
 

@@ -11,7 +11,6 @@ import com.tradehero.route.RouterParams;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.BaseFragment;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -131,10 +130,7 @@ public class THRouter extends Router
                     ((Object) currentFragment).getClass().equals(options.getOpenFragmentClass()))
             {
                 currentFragment.getArguments().putAll(args);
-                if (currentFragment instanceof BaseFragment)
-                {
-                    ((BaseFragment) currentFragment).onCustomResume();
-                }
+                currentFragment.onResume();
             }
             else
             {

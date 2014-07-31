@@ -20,7 +20,7 @@ public class ContestCenterFragment extends DashboardFragment
 {
     @Inject GraphicUtil graphicUtil;
 
-    private final int FRAGMENT_LAYOUT_ID = 10001;
+    private static final int FRAGMENT_LAYOUT_ID = 10001;
     private FragmentTabHost mTabHost;
 
     @Override
@@ -50,7 +50,7 @@ public class ContestCenterFragment extends DashboardFragment
 
     private View addTabs()
     {
-        mTabHost = new FragmentTabHost(getActivity());
+        FragmentTabHost mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         graphicUtil.setBackground(mTabHost.getTabWidget(), Color.WHITE);
         Bundle args = getArguments();

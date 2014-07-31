@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 
 public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilterValueSlider
 {
@@ -36,21 +36,19 @@ public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilte
 
     protected String getMaxValueText()
     {
-        THSignedNumber signedNumber = new THSignedNumber(
-                THSignedNumber.TYPE_MONEY,
-                (double) maxValue,
-                THSignedNumber.WITHOUT_SIGN,
-                "");
-        return signedNumber.toString(2);
+        THSignedNumber signedNumber = THSignedNumber.builder()
+                .value((double) maxValue)
+                .withOutSign()
+                .build();
+        return signedNumber.toString();
     }
 
     @Override protected String getCurrentValueText()
     {
-        THSignedNumber signedNumber = new THSignedNumber(
-                THSignedNumber.TYPE_MONEY,
-                (double) currentValue,
-                THSignedNumber.WITHOUT_SIGN,
-                "");
-        return signedNumber.toString(2);
+        THSignedNumber signedNumber = THSignedNumber.builder()
+                .value((double) currentValue)
+                .withOutSign()
+                .build();
+        return signedNumber.toString();
     }
 }

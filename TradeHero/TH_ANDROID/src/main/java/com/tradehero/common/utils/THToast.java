@@ -41,9 +41,12 @@ public class THToast
 
     private static void toastOnUIThread(String message)
     {
-        Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, toastPosition);
-        toast.show();
+        if (message != null)
+        {
+            Toast toast = Toast.makeText(Application.context(), message, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, toastPosition);
+            toast.show();
+        }
     }
 
     public static void show(int resourceId)

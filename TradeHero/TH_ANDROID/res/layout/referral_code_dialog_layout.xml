@@ -2,6 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/referral_code_dialog_key"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

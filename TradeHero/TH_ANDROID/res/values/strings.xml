@@ -189,6 +189,8 @@
   <string name="tap_stream_type_channel14_open" translatable="false">android-tradehero-channel14-open</string>
   <string name="tap_stream_type_channel15_install" translatable="false">android-tradehero-channel15-install</string>
   <string name="tap_stream_type_channel15_open" translatable="false">android-tradehero-channel15-open</string>
+  <string name="tap_stream_type_ftp_install" translatable="false">android-tradehero-ftp-install</string>
+  <string name="tap_stream_type_ftp_open" translatable="false">android-tradehero-ftp-open</string>
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
@@ -232,4 +234,5 @@
   <string name="weibo_message_text_limit">[%d/140]</string>
   <string name="weibo_message_length_error">no more than 140 character</string>
   <string name="weibo_friends_invite">I\'m playing TradeHero, Come and join me! Get special with my referral code %1$s!</string>
+  <string name="referral_dollars_claimed">Referral dollars claimed</string>
 </resources>

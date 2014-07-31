@@ -51,7 +51,8 @@ public class WatchlistEditFragment extends DashboardFragment
     private TextView securityDesc;
     private EditText watchPrice;
     private EditText watchQuantity;
-    @Nullable private SecurityId securityKeyId;
+    @NotNull private SecurityId securityKeyId;
+    private SecurityCompactDTO securityCompactDTO;
     private TextView watchAction;
     private TextView deleteButton;
     @Nullable private ProgressDialog progressBar;
@@ -73,7 +74,12 @@ public class WatchlistEditFragment extends DashboardFragment
 
     public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
-        args.putBundle(WatchlistEditFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    }
+
+    @NotNull public static SecurityId getSecurityId(@NotNull Bundle args)
+    {
+        return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE));
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -101,6 +107,7 @@ public class WatchlistEditFragment extends DashboardFragment
         watchAction = (TextView) view.findViewById(R.id.edit_watchlist_item_done);
         if (watchAction != null)
         {
+            watchAction.setEnabled(false);
             watchAction.setOnClickListener(createOnWatchButtonClickedListener());
         }
         deleteButton = (TextView) view.findViewById(R.id.edit_watchlist_item_delete);
@@ -145,31 +152,22 @@ public class WatchlistEditFragment extends DashboardFragment
                  throw new Exception(getString(R.string.watchlist_quantity_should_not_be_zero));
             }
             // add new watchlist
-            SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityKeyId);
-            if (securityCompactDTO != null)
-            {
-                WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
+            WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
 
-                WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().get(securityCompactDTO.getSecurityId());
-                detachMiddleCallbackUpdate();
-                if (existingWatchlistPosition != null)
-                {
-                    middleCallbackUpdate = watchlistServiceWrapper.updateWatchlistEntry(
-                            existingWatchlistPosition.getPositionCompactId(),
-                            watchPositionItemForm,
-                            createWatchlistUpdateCallback());
-                }
-                else
-                {
-                    middleCallbackUpdate = watchlistServiceWrapper.createWatchlistEntry(
-                            watchPositionItemForm,
-                            createWatchlistUpdateCallback());
-                }
+            WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().get(securityCompactDTO.getSecurityId());
+            detachMiddleCallbackUpdate();
+            if (existingWatchlistPosition != null)
+            {
+                middleCallbackUpdate = watchlistServiceWrapper.updateWatchlistEntry(
+                        existingWatchlistPosition.getPositionCompactId(),
+                        watchPositionItemForm,
+                        createWatchlistUpdateCallback());
             }
             else
             {
-                Timber.e(new Exception("SecurityCompactDTO from cache was null"),"");
-                dismissProgress();
+                middleCallbackUpdate = watchlistServiceWrapper.createWatchlistEntry(
+                        watchPositionItemForm,
+                        createWatchlistUpdateCallback());
             }
         }
         catch (NumberFormatException ex)
@@ -229,12 +227,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        Bundle args = getArguments();
-        if (args.containsKey(BUNDLE_KEY_SECURITY_ID_BUNDLE))
-        {
-            linkWith(new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
-        }
+        linkWith(getSecurityId(getArguments()), true);
     }
 
     @Override public void onDestroyView()
@@ -334,6 +327,8 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void linkWith(@NotNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
+        this.securityCompactDTO = securityCompactDTO;
+        watchAction.setEnabled(true);
         if (andDisplay)
         {
             if (securityDesc != null)

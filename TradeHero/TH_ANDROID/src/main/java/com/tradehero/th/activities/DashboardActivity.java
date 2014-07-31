@@ -189,7 +189,7 @@ public class DashboardActivity extends SherlockFragmentActivity
             UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
             if (userProfileDTO != null)
             {
-                if (userProfileDTO.inviteCode != null)
+                if (userProfileDTO.inviteCode != null && !userProfileDTO.inviteCode.isEmpty())
                 {
                     return;
                 }

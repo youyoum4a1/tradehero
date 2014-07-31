@@ -8,10 +8,10 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
@@ -93,7 +93,10 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mPreviousClose.setText(String.format("%s %,.3f", value.currencyDisplay, value.previousClose));
+                mPreviousClose.setText(THSignedMoney.builder()
+                        .value(value.previousClose)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
     }
@@ -108,10 +111,12 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mOpen.setText(String.format("%s %,.2f", value.currencyDisplay, value.open));
+                mOpen.setText(THSignedMoney.builder()
+                        .value(value.open)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
-        //double open = YUtils.parseQuoteValue(yQuotes.get("Open"));
     }
 
     public void displayDaysHigh()
@@ -124,10 +129,12 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mDaysHigh.setText(String.format("%s %,.2f", value.currencyDisplay, value.high));
+                mDaysHigh.setText(THSignedMoney.builder()
+                        .value(value.high)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
-        //double daysHigh = YUtils.parseQuoteValue(yQuotes.get("Day's High"));
     }
 
     public void displayDaysLow()
@@ -140,10 +147,12 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mDaysLow.setText(String.format("%s %,.2f", value.currencyDisplay, value.low));
+                mDaysLow.setText(THSignedMoney.builder()
+                        .value(value.low)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
-        //double daysLow = YUtils.parseQuoteValue(yQuotes.get("Day's Low"));
     }
 
     public void displayMarketCap()
@@ -156,7 +165,10 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mMarketCap.setText(String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, NumberDisplayUtils.formatWithRelevantDigits(value.marketCap, 4)));
+                mMarketCap.setText(THSignedMoney.builder()
+                        .value(value.marketCap)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
     }
@@ -171,10 +183,12 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mPERatio.setText(String.format("%,.2f", value.pe));
+                mPERatio.setText(THSignedNumber.builder()
+                        .value(value.pe)
+                        .withOutSign()
+                        .build().toString());
             }
         }
-        //double peRatio = YUtils.parseQuoteValue(yQuotes.get("P/E Ratio"));
     }
 
     public void displayEps()
@@ -187,7 +201,10 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mEps.setText(String.format("%,.3f", value.eps));
+                mEps.setText(THSignedNumber.builder()
+                        .value(value.eps)
+                        .withOutSign()
+                        .build().toString());
             }
         }
     }
@@ -202,10 +219,11 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mVolume.setText(String.format("%,.0f", value.volume));
+                mVolume.setText(THSignedNumber.builder()
+                        .value(value.volume)
+                        .build().toString());
             }
         }
-        //double volume = YUtils.parseQuoteValue(yQuotes.get("Volume"));
     }
 
     public void displayAvgVolume()
@@ -218,10 +236,11 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mAvgVolume.setText(String.format("%,.0f", value.averageDailyVolume));
+                mAvgVolume.setText(THSignedNumber.builder()
+                        .value(value.averageDailyVolume)
+                        .build().toString());
             }
         }
-        //double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
     }
     //</editor-fold>
 }

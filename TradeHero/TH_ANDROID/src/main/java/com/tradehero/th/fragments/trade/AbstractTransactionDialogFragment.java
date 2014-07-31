@@ -49,6 +49,7 @@ import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -59,7 +60,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
@@ -129,7 +130,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
     private boolean isTransactionRunning;
-    protected Integer mTransactionQuantity;
+    protected Integer mTransactionQuantity = 0;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
 
     private BuySellTransactionListener buySellTransactionListener;
@@ -296,9 +297,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             if (priceRefCcy != null && portfolioCompactDTO != null)
             {
                 double value = mTransactionQuantity * priceRefCcy;
-                THSignedNumber thTradeValue =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
-                                portfolioCompactDTO.currencyDisplay);
+                THSignedNumber thTradeValue = THSignedMoney.builder()
+                        .value(value)
+                        .withOutSign()
+                        .currency(portfolioCompactDTO.currencyDisplay)
+                        .build();
                 valueText = thTradeValue.toString();
             }
         }

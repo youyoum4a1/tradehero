@@ -30,6 +30,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -274,7 +275,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         AlertViewFragment.putAlertId(bundle, alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()));
-        getDashboardNavigator().pushFragment(AlertViewFragment.class, bundle);
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(AlertViewFragment.class, bundle);
+        }
     }
 
     private void handleManageSubscriptionClicked()
