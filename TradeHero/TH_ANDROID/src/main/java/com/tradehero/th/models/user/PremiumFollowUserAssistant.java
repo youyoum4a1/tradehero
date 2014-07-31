@@ -10,9 +10,9 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
@@ -25,8 +25,10 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject Provider<THUIBillingRequest> billingRequestProvider;
+    @Inject protected THBillingInteractor billingInteractor;
     protected UserProfileDTO currentUserProfile;
     protected final OwnedPortfolioId applicablePortfolioId;
+    @Nullable protected Integer requestCode;
 
     public PremiumFollowUserAssistant(
             @NotNull UserBaseKey userToFollow,
@@ -35,7 +37,6 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
     {
         super(userToFollow, userFollowedListener);
         this.applicablePortfolioId = applicablePortfolioId;
-        DaggerUtils.inject(this);
     }
 
     public void launchFollow()
@@ -67,6 +68,27 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
             //noinspection unchecked
             requestCode = billingInteractor.run(createPurchaseCCRequest());
         }
+    }
+
+    protected void haveInteractorForget()
+    {
+        if (requestCode != null)
+        {
+            billingInteractor.forgetRequestCode(requestCode);
+        }
+        requestCode = null;
+    }
+
+    @Override protected void notifyFollowFailed(@NotNull UserBaseKey userToFollow, @NotNull Throwable error)
+    {
+        haveInteractorForget();
+        super.notifyFollowFailed(userToFollow, error);
+    }
+
+    @Override protected void notifyFollowSuccess(@NotNull UserBaseKey userToFollow, @NotNull UserProfileDTO currentUserProfile)
+    {
+        haveInteractorForget();
+        super.notifyFollowSuccess(userToFollow, currentUserProfile);
     }
 
     protected THUIBillingRequest createPurchaseCCRequest()

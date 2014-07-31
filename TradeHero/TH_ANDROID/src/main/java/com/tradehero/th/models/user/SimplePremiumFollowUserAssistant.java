@@ -5,9 +5,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +20,9 @@ public class SimplePremiumFollowUserAssistant implements Callback<UserProfileDTO
 {
     @Inject protected Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject protected UserServiceWrapper userServiceWrapper;
-    @Inject protected THBillingInteractor billingInteractor;
     @Inject protected Lazy<CurrentActivityHolder> currentActivityHolderLazy;
     @Nullable private OnUserFollowedListener userFollowedListener;
     @NotNull protected final UserBaseKey userToFollow;
-    @Nullable protected Integer requestCode;
 
     //<editor-fold desc="Constructors">
     public SimplePremiumFollowUserAssistant(
@@ -34,6 +32,7 @@ public class SimplePremiumFollowUserAssistant implements Callback<UserProfileDTO
         super();
         this.userToFollow = userToFollow;
         this.userFollowedListener = userFollowedListener;
+        DaggerUtils.inject(this);
     }
     //</editor-fold>
 
@@ -75,7 +74,6 @@ public class SimplePremiumFollowUserAssistant implements Callback<UserProfileDTO
             @NotNull UserBaseKey userToFollow,
             @NotNull UserProfileDTO currentUserProfile)
     {
-        haveInteractorForget();
         OnUserFollowedListener userFollowedListenerCopy = userFollowedListener;
         if (userFollowedListenerCopy != null)
         {
@@ -87,21 +85,11 @@ public class SimplePremiumFollowUserAssistant implements Callback<UserProfileDTO
             @NotNull UserBaseKey userToFollow,
             @NotNull Throwable error)
     {
-        haveInteractorForget();
         OnUserFollowedListener userFollowedListenerCopy = userFollowedListener;
         if (userFollowedListenerCopy != null)
         {
             userFollowedListenerCopy.onUserFollowFailed(userToFollow, error);
         }
-    }
-
-    protected void haveInteractorForget()
-    {
-        if (requestCode != null)
-        {
-            billingInteractor.forgetRequestCode(requestCode);
-        }
-        requestCode = null;
     }
 
     public static interface OnUserFollowedListener
