@@ -4,6 +4,7 @@ import dagger.Module;
 
 @Module(
         injects = {
+                PremiumFollowUserAssistantTest.class,
                 SimplePremiumFollowUserAssistantTest.class,
         },
         complete = false,

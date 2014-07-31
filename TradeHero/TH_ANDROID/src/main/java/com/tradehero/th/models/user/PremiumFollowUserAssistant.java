@@ -30,6 +30,7 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
     protected final OwnedPortfolioId applicablePortfolioId;
     @Nullable protected Integer requestCode;
 
+    //<editor-fold desc="Constructors">
     public PremiumFollowUserAssistant(
             @NotNull UserBaseKey userToFollow,
             @Nullable OnUserFollowedListener userFollowedListener,
@@ -38,8 +39,9 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
         super(userToFollow, userFollowedListener);
         this.applicablePortfolioId = applicablePortfolioId;
     }
+    //</editor-fold>
 
-    public void launchFollow()
+    @Override public void launchFollow()
     {
         userProfileCache.register(currentUserId.toUserBaseKey(), this);
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
@@ -116,7 +118,7 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
             public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
                     UserProfileDTO updatedUserPortfolio)
             {
-                notifyFollowSuccess(userToFollow, updatedUserPortfolio);
+                PremiumFollowUserAssistant.super.launchFollow();
             }
 
             @Override
