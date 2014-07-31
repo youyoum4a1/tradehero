@@ -17,7 +17,7 @@ import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.SDKUtils;
+import com.tradehero.common.utils.SimpleCounterUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -67,6 +67,8 @@ import timber.log.Timber;
 )
 public class MainCompetitionFragment extends CompetitionFragment
 {
+    private static final int EXPECTED_COUNT = 2;
+
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.competition_zone_list) AbsListView listView;
     @InjectView(R.id.btn_trade_now) Button btnTradeNow;
@@ -90,6 +92,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private DTOCacheNew.Listener<ProviderId, CompetitionDTOList> competitionListCacheFetchListener;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
     private DTOCacheNew.Listener<ProviderDisplayCellListKey, ProviderDisplayCellDTOList> displayCellListCacheFetchListener;
+    private SimpleCounterUtils simpleCounterUtils;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -97,6 +100,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
         this.competitionListCacheFetchListener = createCompetitionListCacheListener();
         this.displayCellListCacheFetchListener = createDisplayCellListCacheListener();
+        simpleCounterUtils = createSimpleCounterUtils();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -135,6 +139,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         userProfileCacheListener = createProfileCacheListener();
         userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+
+        simpleCounterUtils.reset();
 
         detachCompetitionListCacheTask();
         competitionListCache.register(providerId, competitionListCacheFetchListener);
@@ -187,6 +193,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         this.competitionListCacheFetchListener = null;
         this.webViewTHIntentPassedListener = null;
+        simpleCounterUtils.setListener(null);
+        simpleCounterUtils = null;
         super.onDestroy();
     }
 
@@ -215,7 +223,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionZoneListItemAdapter.setPortfolioUserProfileCompactDTO(portfolioUserCompactDTO);
         if (andDisplay)
         {
-            displayListView();
         }
     }
 
@@ -227,7 +234,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             displayActionBarTitle();
             displayTradeNowButton();
-            displayListView();
         }
     }
 
@@ -237,7 +243,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionZoneListItemAdapter.setCompetitionDTOs(competitionIds);
         if (andDisplay)
         {
-            displayListView();
         }
     }
 
@@ -247,7 +252,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionZoneListItemAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
         if (andDisplay)
         {
-            displayListView();
         }
     }
 
@@ -273,8 +277,8 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     protected void displayListView()
     {
-        Timber.d("displayListView %s %s %s %s",portfolioUserCompactDTO, providerDTO, competitionDTOs, providerDisplayCellDTOList);
-        if (providerDTO != null && competitionDTOs != null && providerDisplayCellDTOList != null)
+        Timber.d("displayListView %s %s %s %s", portfolioUserCompactDTO, providerDTO, competitionDTOs, providerDisplayCellDTOList);
+        if (providerDTO != null)
         {
             if (progressBar != null)
             {
@@ -480,6 +484,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         String redirectUrl = competitionZoneDisplayCellDTO.getRedirectUrl();
         if (redirectUrl != null)
         {
+            //thRouter.open(redirectUrl); TODO implement this when router is updated
             Uri uri = Uri.parse(redirectUrl);
             if (thIntentFactory.isHandlableScheme(uri.getScheme()))
             {
@@ -508,6 +513,17 @@ public class MainCompetitionFragment extends CompetitionFragment
                 }
             }
         }
+    }
+
+    public SimpleCounterUtils createSimpleCounterUtils()
+    {
+        return new SimpleCounterUtils(EXPECTED_COUNT, new SimpleCounterUtils.SimpleCounter()
+        {
+            @Override public void onCountFinished(int count)
+            {
+                displayListView();
+            }
+        });
     }
 
     public Intent getPassedIntent(String url)
@@ -619,12 +635,14 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override public void onDTOReceived(@NotNull ProviderId providerId, @NotNull CompetitionDTOList value)
         {
             linkWith(value, true);
+            simpleCounterUtils.increment();
         }
 
         @Override public void onErrorThrown(@NotNull ProviderId key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_competition_list));
             Timber.e("Error fetching the list of competition info %s", key, error);
+            simpleCounterUtils.increment();
         }
     }
 
@@ -639,12 +657,14 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override public void onDTOReceived(@NotNull ProviderDisplayCellListKey providerId, @NotNull ProviderDisplayCellDTOList value)
         {
             linkWith(value, true);
+            simpleCounterUtils.increment();
         }
 
         @Override public void onErrorThrown(@NotNull ProviderDisplayCellListKey key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_provider_competition_display_cell_list));
             Timber.e("Error fetching the list of competition info cell %s", key, error);
+            simpleCounterUtils.increment();
         }
     }
 }

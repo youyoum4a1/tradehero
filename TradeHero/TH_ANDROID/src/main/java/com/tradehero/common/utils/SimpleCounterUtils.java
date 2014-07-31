@@ -1,8 +1,50 @@
 package com.tradehero.common.utils;
 
-/**
- * Created by malvin on 7/31/14.
- */
+import org.jetbrains.annotations.NotNull;
+
 public class SimpleCounterUtils
 {
+    private final int expectedCount;
+    private int currentCount;
+    @NotNull private SimpleCounter simpleCounter;
+
+    public SimpleCounterUtils(int expectedCount, @NotNull SimpleCounter simpleCounterListener)
+    {
+        this.expectedCount = expectedCount;
+        this.simpleCounter = simpleCounterListener;
+    }
+
+    public void increment()
+    {
+        currentCount++;
+        check();
+    }
+
+    public void reset()
+    {
+        currentCount = 0;
+    }
+
+    public int getCurrentCount()
+    {
+        return currentCount;
+    }
+
+    private void check()
+    {
+        if (currentCount == expectedCount)
+        {
+            simpleCounter.onCountFinished(currentCount);
+        }
+    }
+
+    public void setListener(SimpleCounter listener)
+    {
+        this.simpleCounter = listener;
+    }
+
+    public interface SimpleCounter
+    {
+        void onCountFinished(int count);
+    }
 }
