@@ -11,7 +11,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -44,6 +43,7 @@ import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFra
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
@@ -60,7 +60,6 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -86,7 +85,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<CurrentUserId> currentUserIdLazy;
     @Inject Lazy<PortfolioCache> portfolioCache;
     @Inject Lazy<PortfolioCompactListCache> portfolioCompactListCache;
@@ -801,7 +800,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             @Override public void onClick(View v)
             {
                 detachFollowDialogCombo();
-                followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                         mFollowType, createFollowRequestedListener());
             }
         });
@@ -814,7 +813,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
                 {
                     detachFollowDialogCombo();
-                    followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                    followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                             UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
                             createFollowForMessageRequestedListener());
                 }
@@ -876,7 +875,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void freeFollow(UserBaseKey heroId, Callback<UserProfileDTO> followCallback)
     {
-        alertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
+        heroAlertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get().freeFollow(heroId, followCallback);
@@ -898,7 +897,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Profile));
         }
@@ -906,7 +905,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 

@@ -208,7 +208,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 break;
             case R.id.leaderboard_user_item_follow:
                 THToast.show("TODO");
-                //alertDialogUtilLazy.get().showFollowDialog(getContext(), userFriendsDTO,
+                //heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userFriendsDTO,
                 //        UserProfileDTOUtil.IS_NOT_FOLLOWER,
                 //        new LeaderBoardFollowRequestedListener());
                 break;

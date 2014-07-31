@@ -3,18 +3,33 @@ package com.tradehero.th.fragments.social.hero;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.LayoutInflater;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.fragments.social.FollowDialogView;
+import com.tradehero.th.models.social.FollowDialogCombo;
+import com.tradehero.th.models.social.OnFollowRequestedListener;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HeroAlertDialogUtil extends AlertDialogUtil
 {
-    @Inject public HeroAlertDialogUtil()
+    //<editor-fold desc="Constructors">
+    @Inject public HeroAlertDialogUtil(@NotNull Lazy<UserServiceWrapper> userServiceWrapperLazy)
     {
-        super();
+        super(userServiceWrapperLazy);
     }
+    //</editor-fold>
 
-    public AlertDialog popAlertFollowHero(Context context, DialogInterface.OnClickListener okClickListener)
+    public AlertDialog popAlertFollowHero(
+            @NotNull Context context,
+            @Nullable DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(
                 context,
@@ -25,7 +40,9 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
                 okClickListener);
     }
 
-    public AlertDialog popAlertUnfollowHero(Context context, DialogInterface.OnClickListener okClickListener)
+    public AlertDialog popAlertUnfollowHero(
+            @NotNull Context context,
+            @Nullable DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(
                 context,
@@ -36,7 +53,10 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
                 okClickListener);
     }
 
-    public AlertDialog popAlertNoMoreMessageFollow(Context context, DialogInterface.OnClickListener okClickListener, String heroName)
+    public AlertDialog popAlertNoMoreMessageFollow(
+            @NotNull Context context,
+            @Nullable DialogInterface.OnClickListener okClickListener,
+            @Nullable String heroName)
     {
         return popWithOkCancelButton(
                 context,
@@ -45,5 +65,54 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
                 R.string.private_message_expired_free_message_ok,
                 R.string.private_message_expired_free_message_cancel,
                 okClickListener);
+    }
+
+    public FollowDialogCombo showFollowDialog(
+            @NotNull final Context context,
+            @Nullable UserBaseDTO userBaseDTO,
+            final int followType,
+            @NotNull final OnFollowRequestedListener followRequestedListener)
+    {
+        if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+        {
+            return null;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        FollowDialogView followDialogView = (FollowDialogView) inflater.inflate(R.layout.follow_dialog, null);
+        followDialogView.setFollowType(followType);
+        followDialogView.display(userBaseDTO);
+
+        builder.setView(followDialogView);
+        builder.setCancelable(true);
+
+        final AlertDialog mFollowDialog = builder.create();
+        mFollowDialog.show();
+
+        followDialogView.setFollowRequestedListener(new OnFollowRequestedListener()
+        {
+            @Override public void freeFollowRequested(UserBaseKey heroId)
+            {
+                onFinish();
+                if (followType != UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                {
+                    followRequestedListener.freeFollowRequested(heroId);
+                }
+            }
+
+            @Override public void premiumFollowRequested(UserBaseKey heroId)
+            {
+                onFinish();
+                followRequestedListener.premiumFollowRequested(heroId);
+            }
+
+            private void onFinish()
+            {
+                mFollowDialog.dismiss();
+            }
+        });
+
+        return new FollowDialogCombo(mFollowDialog, followDialogView);
     }
 }

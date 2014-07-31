@@ -17,13 +17,13 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -48,7 +48,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject Picasso picasso;
     @Inject Analytics analytics;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
@@ -119,7 +119,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
         detachFollowDialogCombo();
-        followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
+        followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
                 new OtherUserPortfolioFollowRequestedListener());
     }
@@ -139,7 +139,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     protected void freeFollow(UserBaseKey heroId)
     {
-        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
+        heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get()
@@ -177,7 +177,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
@@ -187,7 +187,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 

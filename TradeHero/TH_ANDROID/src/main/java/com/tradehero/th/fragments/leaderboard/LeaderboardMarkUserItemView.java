@@ -31,6 +31,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
@@ -42,7 +43,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
@@ -66,7 +66,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         ExpandingLayout.OnExpandListener
 {
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
@@ -549,7 +549,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             case R.id.leaderboard_user_item_follow:
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
                 detachFollowDialogCombo();
-                followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
+                followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER,
                         new LeaderBoardFollowRequestedListener());
                 break;
@@ -577,7 +577,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
             LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
@@ -586,7 +586,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
@@ -598,7 +598,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     protected void freeFollow(UserBaseKey heroId)
     {
-        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
+        heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
                 R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =

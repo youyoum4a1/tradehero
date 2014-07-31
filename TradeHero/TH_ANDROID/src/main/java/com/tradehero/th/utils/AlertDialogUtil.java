@@ -18,12 +18,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.fragments.social.FollowDialogView;
-import com.tradehero.th.models.social.FollowDialogCombo;
-import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -35,12 +30,15 @@ public class AlertDialogUtil
     private ProgressDialog mProgressDialog;
     private AlertDialog mReferralCodeDialog;
 
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @NotNull private final Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
-    @Inject public AlertDialogUtil()
+    //<editor-fold desc="Constructors">
+    @Inject public AlertDialogUtil(@NotNull Lazy<UserServiceWrapper> userServiceWrapperLazy)
     {
         super();
+        this.userServiceWrapperLazy = userServiceWrapperLazy;
     }
+    //</editor-fold>
 
     @NotNull
     public DialogInterface.OnClickListener createDefaultCancelListener()
@@ -272,55 +270,6 @@ public class AlertDialogUtil
         }
     }
 
-    public FollowDialogCombo showFollowDialog(
-            @NotNull final Context context,
-            @Nullable UserBaseDTO userBaseDTO,
-            final int followType,
-            @NotNull final OnFollowRequestedListener followRequestedListener)
-    {
-        if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-        {
-            return null;
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-        LayoutInflater inflater = LayoutInflater.from(context);
-        FollowDialogView followDialogView = (FollowDialogView) inflater.inflate(R.layout.follow_dialog, null);
-        followDialogView.setFollowType(followType);
-        followDialogView.display(userBaseDTO);
-
-        builder.setView(followDialogView);
-        builder.setCancelable(true);
-
-        final AlertDialog mFollowDialog = builder.create();
-        mFollowDialog.show();
-
-        followDialogView.setFollowRequestedListener(new OnFollowRequestedListener()
-        {
-            @Override public void freeFollowRequested(UserBaseKey heroId)
-            {
-                onFinish();
-                if (followType != UserProfileDTOUtil.IS_FREE_FOLLOWER)
-                {
-                    followRequestedListener.freeFollowRequested(heroId);
-                }
-            }
-
-            @Override public void premiumFollowRequested(UserBaseKey heroId)
-            {
-                onFinish();
-                followRequestedListener.premiumFollowRequested(heroId);
-            }
-
-            private void onFinish()
-            {
-                mFollowDialog.dismiss();
-            }
-        });
-
-        return new FollowDialogCombo(mFollowDialog, followDialogView);
-    }
-
     public void showProgressDialog(@NotNull final Context context)
     {
         if (mProgressDialog != null)
@@ -354,7 +303,7 @@ public class AlertDialogUtil
         }
     }
 
-    public AlertDialog getReferralCodeDialog(Context context, final UserBaseKey userBaseKey, final DashboardActivity.TrackCallback trackCallback)
+    public AlertDialog getReferralCodeDialog(@NotNull Context context, final UserBaseKey userBaseKey, final DashboardActivity.TrackCallback trackCallback)
     {
         if (mReferralCodeDialog != null)
         {
