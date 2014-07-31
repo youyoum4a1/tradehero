@@ -84,7 +84,7 @@ public class LocationCountrySettingsViewHolder extends OneSettingViewHolder
                         userProfileDTO.countryCode,
                         preferenceFragment.getString(currentCountry.locationName));
                 clickablePref.setSummary(summary);
-                clickablePref.setIcon(currentCountry.logoId);
+                // TODO superimpose flag?
             }
         }
     }
