@@ -52,6 +52,12 @@ public enum TapStreamType
     Channel8(42, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel8_install, R.string.tap_stream_type_channel8_open),
     Channel9(43, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel9_install, R.string.tap_stream_type_channel9_open),
     Channel10(44, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel10_install, R.string.tap_stream_type_channel10_open),
+    Channel11(45, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel11_install, R.string.tap_stream_type_channel11_open),
+    Channel12(46, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel12_install, R.string.tap_stream_type_channel12_open),
+    Channel13(47, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel13_install, R.string.tap_stream_type_channel13_open),
+    Channel14(48, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel14_install, R.string.tap_stream_type_channel14_open),
+    Channel15(49, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_channel15_install, R.string.tap_stream_type_channel15_open),
+    Ftp(50, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_ftp_install, R.string.tap_stream_type_ftp_open),
     ;
 
     public final int type;

@@ -2,11 +2,10 @@ package com.tradehero.th.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.IABResult;
 import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueException;
-import com.tradehero.th.billing.googleplay.THIABConstants;
 
 public class MissingCachedProductDetailException extends IABOneResponseValueException
 {
-    public static final int VALID_RESPONSE = THIABConstants.MISSING_CACHED_DETAIL;
+    public static final int VALID_RESPONSE = THIABExceptionConstants.MISSING_CACHED_DETAIL;
 
     public MissingCachedProductDetailException(IABResult r)
     {

@@ -30,12 +30,16 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     }
     //</editor-fold>
 
+    //<editor-fold desc="Max Purchasable Shares">
     public Integer getMaxPurchasableShares(UserProfileDTO userProfileDTO, QuoteDTO quoteDTO)
     {
         return getMaxPurchasableShares(userProfileDTO, quoteDTO, true);
     }
 
-    public Integer getMaxPurchasableShares(UserProfileDTO userProfileDTO, QuoteDTO quoteDTO, boolean includeTransactionCost)
+    public Integer getMaxPurchasableShares(
+            UserProfileDTO userProfileDTO,
+            QuoteDTO quoteDTO,
+            boolean includeTransactionCost)
     {
         if (userProfileDTO == null || userProfileDTO.portfolio == null)
         {
@@ -43,6 +47,7 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         }
         return portfolioCompactDTOUtil.getMaxPurchasableShares(userProfileDTO.portfolio, quoteDTO, includeTransactionCost);
     }
+    //</editor-fold>
 
     public ArrayList<IABSKU> getSubscribedAlerts(UserProfileDTO userProfileDTO)
     {

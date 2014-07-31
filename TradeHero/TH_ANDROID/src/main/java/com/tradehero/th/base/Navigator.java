@@ -87,6 +87,7 @@ public class Navigator
     {
         return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, shouldAddToBackStack, DEFAULT_SHOW_HOME_KEY_AS_UP);
     }
+
     public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName,
             Boolean shouldAddToBackStack, Boolean showHomeAsUp)
     {
@@ -142,6 +143,11 @@ public class Navigator
     {
         Timber.d("Pop Keyboard visible %b", DeviceUtil.isKeyboardVisible(context));
         Timber.d("Popping fragment, count: %d", manager.getBackStackEntryCount());
+
+        if (DeviceUtil.isKeyboardVisible(context) && context instanceof Activity)
+        {
+            DeviceUtil.dismissKeyboard((Activity) context);
+        }
 
         if (isBackStackEmpty())
         {

@@ -15,6 +15,11 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
     {
         super();
     }
+
+    public UserFriendsWeiboDTO(@NotNull String wbId)
+    {
+        this.wbId = wbId;
+    }
     //</editor-fold>
 
     @Override public int getNetworkLabelImage()

@@ -13,7 +13,6 @@ import com.tradehero.th.billing.googleplay.exception.PurchaseReportRetrofitExcep
 import com.tradehero.th.billing.googleplay.exception.PurchaseReportedToOtherUserException;
 import com.tradehero.th.billing.googleplay.exception.UnhandledSKUDomainException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserService;
@@ -28,7 +27,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class THIABPurchaseReporter extends BasePurchaseReporter<
+class THIABPurchaseReporter extends BasePurchaseReporter<
         IABSKU,
         THIABOrderId,
         THIABPurchase,
@@ -53,7 +52,7 @@ public class THIABPurchaseReporter extends BasePurchaseReporter<
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
         {
-            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserId.toUserBaseKey());
+            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserId.toUserBaseKey()).getOwnedPortfolioId();
         }
         if (portfolioId == null)
         {

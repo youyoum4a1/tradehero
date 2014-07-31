@@ -1,17 +1,19 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.users.UserTransactionHistoryDTO;
-import com.tradehero.th.api.users.UserTransactionHistoryId;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryIdList;
 import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserTransactionHistoryListCache extends StraightDTOCacheNew<UserTransactionHistoryListType, UserTransactionHistoryIdList>
+@Singleton public class UserTransactionHistoryListCache extends StraightCutDTOCacheNew<
+        UserTransactionHistoryListType,
+        UserTransactionHistoryDTOList,
+        UserTransactionHistoryIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
@@ -29,24 +31,32 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override @NotNull public UserTransactionHistoryIdList fetch(@NotNull UserTransactionHistoryListType key)
+    @Override @NotNull public UserTransactionHistoryDTOList fetch(@NotNull UserTransactionHistoryListType key)
     {
-        return putInternal(key, userServiceWrapper.getUserTransactions(key));
+        return userServiceWrapper.getUserTransactions(key);
     }
 
-    @NotNull protected UserTransactionHistoryIdList putInternal(
+    @NotNull @Override protected UserTransactionHistoryIdList cutValue(
             @NotNull UserTransactionHistoryListType key,
-            @NotNull  List<UserTransactionHistoryDTO> fleshedValues)
+            @NotNull UserTransactionHistoryDTOList value)
     {
-        UserTransactionHistoryIdList userTransactionHistoryIds = new UserTransactionHistoryIdList();
-        UserTransactionHistoryId userTransactionHistoryId;
-        for (@NotNull UserTransactionHistoryDTO userTransactionHistoryDTO: fleshedValues)
+        userTransactionHistoryCache.put(value);
+        return new UserTransactionHistoryIdList(value);
+    }
+
+    @Nullable @Override protected UserTransactionHistoryDTOList inflateValue(
+            @NotNull UserTransactionHistoryListType key,
+            @Nullable UserTransactionHistoryIdList cutValue)
+    {
+        if (cutValue == null)
         {
-            userTransactionHistoryId = userTransactionHistoryDTO.getUserTransactionHistoryId();
-            userTransactionHistoryIds.add(userTransactionHistoryId);
-            userTransactionHistoryCache.put(userTransactionHistoryId, userTransactionHistoryDTO);
+            return null;
         }
-        put(key, userTransactionHistoryIds);
-        return userTransactionHistoryIds;
+        UserTransactionHistoryDTOList value = userTransactionHistoryCache.get(cutValue);
+        if (value.hasNullItem())
+        {
+            return null;
+        }
+        return value;
     }
 }

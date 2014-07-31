@@ -22,6 +22,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -70,13 +71,13 @@ public class PremiumFollowUserAssistant implements
         this.userFollowedListener = userFollowedListener;
     }
 
-    @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+    @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
     {
         this.currentUserProfile = value;
         follow();
     }
 
-    @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+    @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
     {
         notifyFollowFailed(key, error);
     }

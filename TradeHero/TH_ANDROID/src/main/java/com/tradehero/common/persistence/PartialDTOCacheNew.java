@@ -3,7 +3,6 @@ package com.tradehero.common.persistence;
 import java.lang.ref.WeakReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheNew<DTOKeyType, DTOType>
@@ -36,6 +35,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     @Override public boolean isValid(@NotNull DTOType value)
     {
+        //noinspection RedundantIfStatement
         if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
         {
             return false;
@@ -64,6 +64,25 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return previous;
     }
 
+    @Override @Nullable public DTOType get(@NotNull DTOKeyType key)
+    {
+        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
+        if (cacheValue == null)
+        {
+            return null;
+        }
+        @Nullable DTOType value = cacheValue.getValue();
+        if (value != null && !isValid(value))
+        {
+            if (cacheValue.getListenersCount() == 0)
+            {
+                invalidate(key);
+            }
+            return null;
+        }
+        return value;
+    }
+
     @Override @NotNull public DTOType getOrFetchSync(@NotNull DTOKeyType key) throws Throwable
     {
         return getOrFetchSync(key, DEFAULT_FORCE_UPDATE);
@@ -86,7 +105,8 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
     {
         if (callback != null)
         {
-            getOrCreateCacheValue(key).registerListener(callback);
+            CacheValue<DTOKeyType, DTOType> cacheValue = getOrCreateCacheValue(key);
+            cacheValue.registerListener(callback);
         }
     }
 
@@ -107,6 +127,12 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
 
     @Override public void getOrFetchAsync(@NotNull final DTOKeyType key, final boolean forceUpdateCache)
     {
+        @Nullable DTOType cached = get(key);
+        if (cached != null)
+        {
+            notifyHurriedListenersPreReceived(key, cached);
+        }
+
         getOrCreateCacheValue(key).getOrFetch(key, forceUpdateCache);
     }
 
@@ -134,7 +160,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         }
         //</editor-fold>
 
-        public void getOrFetch(@NotNull DTOKeyType key, boolean force)
+        @Override public void getOrFetch(@NotNull DTOKeyType key, boolean force)
         {
             @Nullable GetOrFetchTask<DTOKeyType, DTOType> myFetchTask = fetchTask.get();
             if (needsRecreate(myFetchTask))
@@ -177,16 +203,6 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
             return getCacheClass();
         }
 
-        @Override protected void onPreExecute()
-        {
-            super.onPreExecute();
-            @Nullable DTOType cached = PartialDTOCacheNew.this.get(key);
-            if (cached != null)
-            {
-                notifyHurriedListenersPreReceived(key, cached);
-            }
-        }
-
         @Override @Nullable protected DTOType doInBackground(Void... voids)
         {
             DTOType gotOrFetched = null;
@@ -205,6 +221,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         {
             super.onPostExecute(value);
 
+            //noinspection StatementWithEmptyBody
             if (isCancelled())
             {
                 // Nothing to do

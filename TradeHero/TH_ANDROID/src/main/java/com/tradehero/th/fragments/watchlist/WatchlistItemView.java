@@ -36,14 +36,16 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
@@ -60,7 +62,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
@@ -156,7 +158,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                 }
                 morePopupMenu.show();
 
-                localyticsSession.tagEvent(LocalyticsConstants.Watchlist_More_Tap);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
             }
         };
     }
@@ -422,7 +424,10 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             shares = 0;
         }
 
-        THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, formattedPrice, THSignedNumber.WITHOUT_SIGN, currencyDisplay);
+        THSignedNumber thSignedNumber = THSignedMoney.builder(formattedPrice)
+                .withOutSign()
+                .currency(currencyDisplay)
+                .build();
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.watchlist_number_of_shares),
                 shares, thSignedNumber.toString()

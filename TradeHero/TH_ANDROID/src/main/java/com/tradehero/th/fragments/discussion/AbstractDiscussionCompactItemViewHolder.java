@@ -24,8 +24,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
 {
-    public static final boolean IS_AUTO_TRANSLATE = false;
-
     public static enum TranslationStatus
     {
         ORIGINAL(R.string.discussion_translate_button),
@@ -139,7 +137,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
 
     public boolean isAutoTranslate()
     {
-        return IS_AUTO_TRANSLATE;
+        return socialShareHelper.isAutoTranslate();
     }
 
     public void linkWithTranslated(DiscussionDTOType translatedDiscussionDTO, boolean andDisplay)

@@ -5,6 +5,7 @@ import dagger.Module;
 @Module(
         injects = {
                 FriendListAdapterTest.class,
+                UserTranslationSettingsViewHolderTest.class,
         },
         complete = false,
         library = true

@@ -45,8 +45,9 @@ import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +62,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Inject Lazy<ProviderListCache> providerListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
 
@@ -111,7 +112,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        localyticsSession.tagEvent(LocalyticsConstants.TabBar_Community);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
 
         // We came back into view so we have to forget the web fragment
         detachWebFragment();
@@ -177,7 +178,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     protected class LeaderboardCommunityUserProfileCacheListener extends BaseLeaderboardFragmentProfileCacheListener
     {
-        @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             super.onDTOReceived(key, value);
             loadLeaderboardData();
@@ -198,7 +199,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         // get the data
         fetchLeaderboardDefList();
-        fetchProviderIdList();
+        //fetchProviderIdList(); //feature2.3.0 remove provider list in this fragment
     }
 
     private void fetchLeaderboardDefList()
@@ -320,6 +321,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     protected void recreateAdapter()
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
+        if(leaderboardDefListAdapter != null)
+        {
+            leaderboardDefListAdapter.clear();
+        }
         leaderboardDefListAdapter = createAdapter();
         if (providerDTOs != null)
         {
@@ -366,7 +371,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
         {
             DrillDownLeaderboardDefDTO drillDownLeaderboardDefDTO = (DrillDownLeaderboardDefDTO) leaderboardDefDTO;
-            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_DrillDown);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_DrillDown));
             if (drillDownLeaderboardDefDTO instanceof SectorContainerLeaderboardDefDTO)
             {
                 pushLeaderboardDefSector();
@@ -382,7 +387,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         }
         else
         {
-            localyticsSession.tagEvent(LocalyticsConstants.Leaderboards_ShowLeaderboard);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
             pushLeaderboardListViewFragment(leaderboardDefDTO);
         }
     }
@@ -400,10 +405,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             // HACK Just in case the user eventually enrolls
             portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
             Bundle args = new Bundle();
-            args.putString(CompetitionWebViewFragment.BUNDLE_KEY_URL, providerUtil.getLandingPage(
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
-            args.putBoolean(CompetitionWebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, true);
+            CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
             webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }

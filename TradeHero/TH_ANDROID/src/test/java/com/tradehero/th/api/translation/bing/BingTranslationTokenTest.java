@@ -2,6 +2,7 @@ package com.tradehero.th.api.translation.bing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.BaseApiTest;
 import com.tradehero.th.api.translation.TranslationToken;
 import java.io.IOException;
@@ -12,12 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricMavenTestRunner.class)
 public class BingTranslationTokenTest extends BaseApiTest
 {
-    @Inject ObjectMapper normalMapper;
+    @Inject @ForApp ObjectMapper normalMapper;
 
     private InputStream bingTranslationTokenBody1Stream;
 

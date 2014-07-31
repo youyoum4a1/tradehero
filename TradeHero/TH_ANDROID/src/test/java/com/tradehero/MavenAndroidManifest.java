@@ -43,21 +43,24 @@ public class MavenAndroidManifest extends AndroidManifest
 
     @Override protected List<FsFile> findLibraries()
     {
-        // Try unpack folder from Maven/IntelliJ
-        FsFile unpack = getBaseDir().join(TestConstants.LIBRARIES_GENERATED_FOLDER);
-        if (unpack.exists())
+        // Try unpack folder from Maven/IntelliJ, when one folder is found with unpacked libraries, use it and exit
+        for (String generatedPath: TestConstants.LIBRARIES_POSSIBLE_GENERATED_FOLDER)
         {
-            FsFile[] libs = unpack.listFiles(new FsFile.Filter()
+            FsFile unpack = getBaseDir().join(generatedPath);
+            if (unpack.exists())
             {
-                @Override public boolean accept(FsFile fsFile)
+                FsFile[] libs = unpack.listFiles(new FsFile.Filter()
                 {
-                    return (fsFile != null) && (fsFile.isDirectory());
-                }
-            });
+                    @Override public boolean accept(FsFile fsFile)
+                    {
+                        return (fsFile != null) && (fsFile.isDirectory());
+                    }
+                });
 
-            if (libs != null)
-            {
-                return asList(libs);
+                if (libs != null)
+                {
+                    return asList(libs);
+                }
             }
         }
         return emptyList();

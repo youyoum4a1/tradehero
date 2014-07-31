@@ -9,10 +9,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractor;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardMarkUserListAdapter extends
@@ -87,19 +88,19 @@ public class LeaderboardMarkUserListAdapter extends
     {
         return new LeaderboardMarkUserItemView.OnFollowRequestedListener()
         {
-            @Override public void onFollowRequested(UserBaseKey userBaseKey)
+            @Override public void onFollowRequested(@NotNull UserBaseDTO userBaseDTO)
             {
-                notifyFollowRequested(userBaseKey);
+                notifyFollowRequested(userBaseDTO);
             }
         };
     }
 
-    protected void notifyFollowRequested(UserBaseKey userBaseKey)
+    protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
     {
         LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
-            followRequestedListenerCopy.onFollowRequested(userBaseKey);
+            followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
     }
 }

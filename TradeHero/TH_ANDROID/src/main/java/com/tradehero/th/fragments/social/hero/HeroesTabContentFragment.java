@@ -20,7 +20,6 @@ import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
@@ -274,7 +273,9 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     private void handleBuyMoreClicked()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        createPurchaseActionInteractorBuilder()
+                .build()
+                .buyFollowCredits();
     }
 
     private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
@@ -450,7 +451,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             if (key.equals(HeroesTabContentFragment.this.followerId))
             {
@@ -458,7 +459,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             }
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e("Could not fetch user profile", error);
             THToast.show(R.string.error_fetch_user_profile);

@@ -118,6 +118,16 @@
 
     </FrameLayout>
 
+    <EditText
+        android:id="@+id/authentication_sign_up_referral_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_15"
+        android:hint="@string/user_profile_referral_code"
+        android:inputType="text"
+        style="@style/TradeHero.Authentication.EditText"
+        android:textSize="@dimen/common_text_size_30"
+        android:background="@drawable/authentication_edit_text"/>
 
     <RelativeLayout
         android:id="@+id/layout_optional"

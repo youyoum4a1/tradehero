@@ -28,6 +28,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import java.util.Collection;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class SecurityDiscussionView extends BetterViewAnimator
@@ -163,7 +164,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
     private boolean shouldAppend = false;
 
-    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList discussionKeyList)
+    @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList discussionKeyList)
     {
         onFinish();
 
@@ -187,7 +188,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
         }
     }
 
-    @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
+    @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
     {
         onFinish();
 
@@ -210,14 +211,14 @@ public class SecurityDiscussionView extends BetterViewAnimator
 
     private class SecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO securityCompactDTO)
+        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO securityCompactDTO)
         {
             discussionListKey = new DiscussionListKey(DiscussionType.SECURITY, securityCompactDTO.id);
             nextPageDelta = 0;
             fetchNextPageIfNecessary(true);
         }
 
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }

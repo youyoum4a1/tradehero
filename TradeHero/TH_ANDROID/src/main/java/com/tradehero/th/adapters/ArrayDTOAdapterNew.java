@@ -22,7 +22,6 @@ public class ArrayDTOAdapterNew<
         this.layoutResourceId = layoutResourceId;
     }
 
-    @SuppressWarnings("unchecked")
     @Override public ViewType getView(int position, View convertView, ViewGroup viewGroup)
     {
         if (convertView == null)
@@ -30,6 +29,7 @@ public class ArrayDTOAdapterNew<
             convertView = LayoutInflater.from(getContext()).inflate(getViewResId(position), viewGroup, false);
         }
 
+        //noinspection unchecked
         ViewType dtoView = (ViewType) convertView;
         dtoView.display(getItem(position));
         return dtoView;
@@ -50,7 +50,7 @@ public class ArrayDTOAdapterNew<
         return DEFAULT_VIEW_TYPE;
     }
 
-    public int getViewResId(int position)
+    public int getViewResId(@SuppressWarnings("UnusedParameters") int position)
     {
         return layoutResourceId;
     }

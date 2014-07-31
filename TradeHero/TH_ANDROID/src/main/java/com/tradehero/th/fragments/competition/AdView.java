@@ -22,7 +22,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 
 public class AdView extends RelativeLayout
-    implements DTOView<CompetitionZoneAdvertisementDTO>
+        implements DTOView<CompetitionZoneAdvertisementDTO>
 {
     @InjectView(R.id.banner) ImageView banner;
     private AdDTO adDTO;
@@ -33,7 +33,7 @@ public class AdView extends RelativeLayout
         {
             Bundle bundle = new Bundle();
             String url = adDTO.redirectUrl + String.format("&userId=%d", currentUserId.get());
-            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, url);
+            WebViewFragment.putUrl(bundle, url);
             getNavigator().pushFragment(WebViewFragment.class, bundle);
         }
     }
@@ -110,6 +110,7 @@ public class AdView extends RelativeLayout
                 }
                 else
                 {
+                    picasso.get().cancelRequest(banner);
                     picasso.get().load(adDTO.bannerImageUrl)
                             .into(banner);
                 }

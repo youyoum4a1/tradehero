@@ -57,6 +57,7 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.authentication_sign_up_password) ValidatedPasswordText password;
     @InjectView(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
     @InjectView(R.id.authentication_sign_up_username) ServerValidatedUsernameText displayName;
+    @InjectView(R.id.authentication_sign_up_referral_code) EditText referralCode;
     @InjectView(R.id.et_firstname) EditText firstName;
     @InjectView(R.id.et_lastname) EditText lastName;
     @InjectView(R.id.image_optional) @Optional ImageView profileImage;
@@ -218,6 +219,7 @@ public class ProfileInfoView extends LinearLayout
         password = null;
         confirmPassword = null;
         displayName = null;
+        referralCode = null;
         firstName = null;
         lastName = null;
         progressDialog = null;
@@ -265,6 +267,7 @@ public class ProfileInfoView extends LinearLayout
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD, password.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_PASSWORD_CONFIRM, confirmPassword.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_DISPLAY_NAME, displayName.getText());
+        populateUserFormMapFromEditable(map, UserFormFactory.KEY_INVITE_CODE, referralCode.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_FIRST_NAME, firstName.getText());
         populateUserFormMapFromEditable(map, UserFormFactory.KEY_LAST_NAME, lastName.getText());
         if (newImagePath != null)
@@ -314,14 +317,19 @@ public class ProfileInfoView extends LinearLayout
     public void populate(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
-        this.firstName.setText(userProfileDTO.firstName);
-        this.lastName.setText(userProfileDTO.lastName);
-        this.displayName.setText(userProfileDTO.displayName);
-        this.displayName.setOriginalUsernameValue(userProfileDTO.displayName);
-        String currentEmail = this.email.getText().toString();
+        firstName.setText(userProfileDTO.firstName);
+        lastName.setText(userProfileDTO.lastName);
+        displayName.setText(userProfileDTO.displayName);
+        displayName.setOriginalUsernameValue(userProfileDTO.displayName);
+        referralCode.setText(userProfileDTO.inviteCode);
+        if (userProfileDTO.inviteCode != null)
+        {
+            referralCode.setEnabled(false);
+        }
+        String currentEmail = email.getText().toString();
         if (currentEmail == null || currentEmail.isEmpty())
         {
-            this.email.setText(userProfileDTO.email);
+            email.setText(userProfileDTO.email);
         }
         displayProfileImage();
     }

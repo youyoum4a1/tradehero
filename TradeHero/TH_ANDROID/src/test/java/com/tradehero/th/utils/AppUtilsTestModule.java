@@ -7,6 +7,7 @@ import dagger.Module;
         },
         injects = {
                 ColorUtilsTest.class,
+                NumberDisplayUtilsTest.class,
         },
         complete = false,
         library = true

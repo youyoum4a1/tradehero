@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -139,6 +140,7 @@
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
+          tools:text="US$ -4.5"
           />
 
     </LinearLayout>
@@ -163,6 +165,7 @@
           android:layout_weight="2"
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
+          tools:text="period"
           />
 
     </LinearLayout>
@@ -179,7 +182,8 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_user_roi"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          android:textColor="@color/light_grey"
+          />
 
       <LinearLayout
           android:layout_width="0dp"
@@ -192,6 +196,7 @@
             android:id="@+id/lbmu_roi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            tools:text="45%"
             />
 
         <TextView
@@ -200,6 +205,8 @@
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:textColor="@color/gray_1"
+            android:visibility="gone"
+            tools:text="87%"
             />
 
       </LinearLayout>
@@ -227,6 +234,7 @@
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textColor="@color/gray_1"
+          tools:text="61%"
           />
 
     </LinearLayout>
@@ -243,7 +251,8 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_user_sharpe_ratio"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          android:textColor="@color/light_grey"
+          />
 
       <LinearLayout
           android:layout_width="0dp"
@@ -257,6 +266,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            tools:text="3.89"
             />
 
         <TextView
@@ -265,6 +275,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:textColor="@color/gray_1"
+            tools:text="4.5"
             />
 
       </LinearLayout>
@@ -297,6 +308,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            tools:text="56"
             />
 
         <TextView
@@ -305,6 +317,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:textColor="@color/gray_1"
+            tools:text="145"
             />
 
       </LinearLayout>
@@ -323,7 +336,8 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_avg_days_held"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          android:textColor="@color/light_grey"
+          />
 
       <LinearLayout
           android:layout_width="0dp"
@@ -337,6 +351,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            tools:text="119"
             />
 
         <TextView
@@ -345,6 +360,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:textColor="@color/gray_1"
+            tools:text="90%"
             />
 
       </LinearLayout>
@@ -372,6 +388,7 @@
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textStyle="bold"
+          tools:text="12"
           />
 
     </LinearLayout>
@@ -397,6 +414,7 @@
           android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textStyle="bold"
+          tools:text="45"
           />
 
     </LinearLayout>

@@ -1,57 +1,33 @@
 package com.tradehero.th.models.portfolio;
 
-import android.os.Bundle;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class MenuOwnedPortfolioId extends OwnedPortfolioId implements CharSequence
+public class MenuOwnedPortfolioId extends OwnedPortfolioId
+        implements CharSequence
 {
-    public final String title;
+    @Nullable public final String title;
 
     //<editor-fold desc="Constructors">
-    public MenuOwnedPortfolioId(Integer userId, Integer portfolioId, String title)
+    public MenuOwnedPortfolioId(int userId, int portfolioId, @Nullable String title)
     {
         super(userId, portfolioId);
         this.title = title;
     }
 
-    public MenuOwnedPortfolioId(UserBaseKey userBaseKey, PortfolioId portfolioId, String title)
+    public MenuOwnedPortfolioId(@NotNull UserBaseKey userBaseKey, @NotNull PortfolioCompactDTO portfolioCompactDTO)
     {
-        super(userBaseKey, portfolioId);
-        this.title = title;
+        super(userBaseKey.key, portfolioCompactDTO.id);
+        this.title = portfolioCompactDTO.title;
     }
 
-    public MenuOwnedPortfolioId(OwnedPortfolioId ownedPortfolioId, String title)
-    {
-        super(ownedPortfolioId);
-        this.title = title;
-    }
-
-    public MenuOwnedPortfolioId(UserBaseKey userBaseKey, PortfolioCompactDTO portfolioCompactDTO)
-    {
-        super(userBaseKey, portfolioCompactDTO);
-        this.title = portfolioCompactDTO == null ? null : portfolioCompactDTO.title;
-    }
-
-    public MenuOwnedPortfolioId(OwnedPortfolioId ownedPortfolioId, PortfolioCompactDTO portfolioCompactDTO)
+    public MenuOwnedPortfolioId(@NotNull OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioCompactDTO portfolioCompactDTO)
     {
         super(ownedPortfolioId);
         this.title = portfolioCompactDTO == null ? null : portfolioCompactDTO.title;
-    }
-
-    public MenuOwnedPortfolioId(UserBaseDTO userBaseDTO, PortfolioCompactDTO portfolioCompactDTO)
-    {
-        super(userBaseDTO, portfolioCompactDTO);
-        this.title = portfolioCompactDTO == null ? null : portfolioCompactDTO.title;
-    }
-
-    public MenuOwnedPortfolioId(Bundle args, String title)
-    {
-        super(args);
-        this.title = title;
     }
     //</editor-fold>
 
@@ -66,12 +42,12 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId implements CharSequen
         return title == null ? 'a' : title.charAt(index);
     }
 
-    @Override public CharSequence subSequence(int start, int end)
+    @Override @Nullable public CharSequence subSequence(int start, int end)
     {
         return title == null ? null : title.subSequence(start, end);
     }
 
-    @Override public String toString()
+    @Override @NotNull public String toString()
     {
         return title == null ? "" : title;
     }
@@ -79,17 +55,18 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId implements CharSequen
 
     @Override public int hashCode()
     {
-        return super.hashCode() ^ title.hashCode();
+        return super.hashCode()
+                ^ (title == null ? 0 : title.hashCode());
     }
 
-    @Override public boolean equals(OwnedPortfolioId other)
+    @Override public boolean equals(@NotNull OwnedPortfolioId other)
     {
         return getClass().isInstance(other) && equals(getClass().cast(other));
     }
 
-    public boolean equals(MenuOwnedPortfolioId other)
+    public boolean equals(@NotNull MenuOwnedPortfolioId other)
     {
-        return super.equals(other) && other != null &&
+        return super.equals(other) &&
                 (title == null ? other.title == null : title.equals(other.title));
     }
 }

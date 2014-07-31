@@ -6,15 +6,15 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class PositionDTODeserialiser extends UniqueFieldDTODeserialiser<PositionDTO>
 {
     //<editor-fold desc="Constructors">
-    @Inject public PositionDTODeserialiser()
+    @Inject public PositionDTODeserialiser(@NotNull ObjectMapper objectMapper)
     {
         // We provide a new ObjectMapper to avoid infinite loop.
-        super(new ObjectMapper(), createUniqueAttributes(), PositionDTO.class);
-
+        super(objectMapper, createUniqueAttributes(), PositionDTO.class);
     }
     //</editor-fold>
 

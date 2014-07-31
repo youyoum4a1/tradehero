@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -30,6 +29,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
         implements AdapterView.OnItemClickListener
@@ -159,8 +159,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
             SearchAllowableRecipientListType,
             PaginatedDTO<AllowableRecipientDTO>>
     {
-        @Override public void onDTOReceived(SearchAllowableRecipientListType key,
-                PaginatedDTO<AllowableRecipientDTO> value)
+        @Override public void onDTOReceived(@NotNull SearchAllowableRecipientListType key,
+                @NotNull PaginatedDTO<AllowableRecipientDTO> value)
         {
             //mRelationsList = userProfileCompactCache.get(value.getData());
             mRelationsList = value.getData();
@@ -169,7 +169,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
             mRelationsListItemAdapter.notifyDataSetChanged();
         }
 
-        @Override public void onErrorThrown(SearchAllowableRecipientListType key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SearchAllowableRecipientListType key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
             alertDialogUtilLazy.get().dismissProgressDialog();
@@ -183,20 +183,24 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected class AllRelationsFollowRequestedListener implements OnPremiumFollowRequestedListener
     {
-        @Override public void premiumFollowRequested(UserBaseKey userBaseKey)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
         {
             handleFollowRequested(userBaseKey);
         }
     }
 
     protected class AllRelationsPremiumUserFollowedListener
-            extends BasePurchaseManagerPremiumUserFollowedListener
+            implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             downloadRelations();
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // nothing for now
         }
     }
 }

@@ -6,6 +6,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import org.jetbrains.annotations.NotNull;
 
 public class DTOProcessorAddCash extends DTOProcessorUpdateUserProfile
 {
@@ -27,7 +28,7 @@ public class DTOProcessorAddCash extends DTOProcessorUpdateUserProfile
         this.ownedPortfolioId = ownedPortfolioId;
     }
 
-    @Override public UserProfileDTO process(UserProfileDTO userProfileDTO)
+    @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
         portfolioCompactListCache.invalidate(ownedPortfolioId.getUserBaseKey());

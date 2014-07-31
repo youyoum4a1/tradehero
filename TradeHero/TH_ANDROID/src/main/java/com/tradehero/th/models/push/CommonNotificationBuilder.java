@@ -45,11 +45,11 @@ public class CommonNotificationBuilder implements THNotificationBuilder
     }
 
     /**
-     * Launch necessary action to have notificationDTO available in the cache, give notificationId. If notificationDTO is already available in the
+     * Launch necessary action to have notificationDTO available in the cache, given notificationId. If notificationDTO is already available in the
      * cache, will start build notification UI.
      *
-     * @param notificationId
-     * @return
+     * @param notificationId given notificationId
+     * @return null when notificationDTO is not in the cache, otherwise, return Notification ui data
      */
     @Override public Notification buildNotification(int notificationId)
     {
@@ -94,6 +94,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             notificationGroupHolder.put(groupId, notificationDTOs);
             notification = notificationBuilder
                     .setContentText(notificationDTO.text)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationDTO.text))
                     .build();
         }
         else
@@ -118,7 +119,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
                 style.addLine(notificationDTOs.get(i).text);
             }
 
-            // If we have more messages to show then the EXTRA_MESSAGES_TO_SHOW, add a summary
+            // If we have more messages to show then the EXTRA_MESSAGES_TO_SHOW, add a code
             if (totalUnreadCount > maxGroupNotifications.get())
             {
                 style.setSummaryText(context.getString(R.string.inbox_summary, totalUnreadCount - maxGroupNotifications.get()));
@@ -188,7 +189,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
      * we cannot use notificationId to be a unique key for notification, indeed, the unique key should be generated from the
      *
      * @param notificationDTO NotificationDTO that already in the cache
-     * @return
+     * @return unique id across all notificationDTO
      */
     private int uniquifyNotificationId(NotificationDTO notificationDTO)
     {

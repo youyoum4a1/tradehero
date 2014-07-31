@@ -32,23 +32,25 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import timber.log.Timber;
 
@@ -260,10 +262,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THToast.show(R.string.error_alert_insufficient_info);
         }
-        else if (alertsAreFree())
-        {
-            saveAlert();
-        }
         else if (securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()).freeAlertSlots <= 0)
         {
             popPurchase();
@@ -276,29 +274,25 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void popPurchase()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+        createPurchaseActionInteractorBuilder()
+                .build()
+                .buyStockAlertSubscription();
     }
 
-    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
-        THUIBillingRequest uiBillingRequest = super.getShowProductDetailRequest(domain);
-        uiBillingRequest.startWithProgressDialog = true;
-        uiBillingRequest.popIfBillingNotAvailable = true;
-        uiBillingRequest.popIfProductIdentifierFetchFailed = true;
-        uiBillingRequest.popIfInventoryFetchFailed = true;
-        uiBillingRequest.popIfPurchaseFailed = true;
-        uiBillingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
-        {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
-            {
-                saveAlert();
-            }
+        return super.createPurchaseActionInteractorBuilder()
+                .setPurchaseReportedListener(new PurchaseReporter.OnPurchaseReportedListener()
+                {
+                    @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+                    {
+                        saveAlert();
+                    }
 
-            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-            {
-            }
-        };
-        return uiBillingRequest;
+                    @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+                    {
+                    }
+                });
     }
 
     protected void saveAlert()
@@ -387,7 +381,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             return; // TODO better than that
         }
-        THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, THSignedNumber.WITHOUT_SIGN);
+        THSignedNumber thTargetPrice = THSignedMoney.builder(alertDTO.targetPrice)
+                .withOutSign()
+                .build();
         targetPrice.setText(thTargetPrice.toString());
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
@@ -443,14 +439,17 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = new THSignedNumber(THSignedNumber.TYPE_MONEY, alertDTO.targetPrice, THSignedNumber.WITHOUT_SIGN);
+            THSignedNumber thTargetPrice = THSignedMoney.builder(alertDTO.targetPrice)
+                    .withOutSign()
+                    .build();
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
-            THSignedNumber thPriceMovement = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, alertDTO.priceMovement * 100);
-            targetPrice.setText(thPriceMovement.toString(0));
+            THSignedNumber thPriceMovement = THSignedPercentage.builder(alertDTO.priceMovement * 100)
+                    .build();
+            targetPrice.setText(thPriceMovement.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
     }
@@ -474,11 +473,10 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             THSignedNumber thCurrentPrice = null;
             if (securityCompactDTO != null)
             {
-                thCurrentPrice = new THSignedNumber(
-                        THSignedNumber.TYPE_MONEY,
-                        securityCompactDTO.lastPrice,
-                        THSignedNumber.WITHOUT_SIGN,
-                        securityCompactDTO.currencyDisplay);
+                thCurrentPrice = THSignedMoney.builder(securityCompactDTO.lastPrice)
+                        .withOutSign()
+                        .currency(securityCompactDTO.currencyDisplay)
+                        .build();
             }
             currentPrice.setText(thCurrentPrice == null ? "-" : thCurrentPrice.toString());
         }
@@ -566,17 +564,17 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void updatePercentageChangeValues(boolean isChecked)
     {
-        THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, (double) getSeekingMovementPercentage(), THSignedNumber.WITH_SIGN);
-        percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString(0) : "-"));
+        THSignedNumber thPercentageChange = THSignedPercentage.builder((double) getSeekingMovementPercentage())
+                .withSign()
+                .build();
+        percentageChange.setText(getFormattedPercentageChange(isChecked ? thPercentageChange.toString() : "-"));
 
         if (securityCompactDTO != null && securityCompactDTO.lastPrice != null)
         {
-            THSignedNumber thPercentageChangePriceValue = new THSignedNumber(
-                    THSignedNumber.TYPE_MONEY,
-                    getSeekingMovementPrice(),
-                    THSignedNumber.WITHOUT_SIGN,
-                    securityCompactDTO.currencyDisplay
-            );
+            THSignedNumber thPercentageChangePriceValue = THSignedMoney.builder(getSeekingMovementPrice())
+                    .withOutSign()
+                    .currency(securityCompactDTO.currencyDisplay)
+                    .build();
             percentageChangePriceValue.setText(getFormattedPercentageChangeTargetValue(isChecked ? thPercentageChangePriceValue.toString() : "-"));
         }
 
@@ -625,7 +623,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         Double seekingTargetPrice = getSeekingTargetPrice();
         if (seekingTargetPrice != null)
         {
-            THSignedNumber thSignedNumber = new THSignedNumber(THSignedNumber.TYPE_MONEY, seekingTargetPrice, THSignedNumber.WITHOUT_SIGN);
+            THSignedNumber thSignedNumber = THSignedMoney.builder(seekingTargetPrice)
+                    .withOutSign()
+                    .build();
             targetPriceChange.setText(getFormattedTargetPriceChange(handlerEnabled ? thSignedNumber.toString() : "-"));
             targetPriceSeekBar.setEnabled(targetPriceToggle.isChecked());
         }
@@ -671,13 +671,13 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected class BaseAlertEditSecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
         {
             hideDialog();
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
             hideDialog();
             THToast.show(new THException(error));

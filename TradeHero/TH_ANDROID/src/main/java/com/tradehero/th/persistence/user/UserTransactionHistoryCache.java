@@ -2,14 +2,12 @@ package com.tradehero.th.persistence.user;
 
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserTransactionHistoryDTO;
+import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryId;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @Singleton public class UserTransactionHistoryCache extends StraightDTOCacheNew<UserTransactionHistoryId, UserTransactionHistoryDTO>
 {
@@ -27,15 +25,21 @@ import org.jetbrains.annotations.Nullable;
         throw new IllegalArgumentException("There is no fetch on this cache");
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
-    public List<UserTransactionHistoryDTO> get(@Nullable List<UserTransactionHistoryId> baseKeys)
+    @NotNull public UserTransactionHistoryDTOList put(
+            @NotNull List<UserTransactionHistoryDTO> transactionHistoryDTOs)
     {
-        if (baseKeys == null)
+        UserTransactionHistoryDTOList previous = new UserTransactionHistoryDTOList();
+        for (@NotNull UserTransactionHistoryDTO transactionHistoryDTO : transactionHistoryDTOs)
         {
-            return null;
+            previous.add(put(transactionHistoryDTO.getUserTransactionHistoryId(), transactionHistoryDTO));
         }
+        return previous;
+    }
 
-        List<UserTransactionHistoryDTO> UserTransactionHistoryDTOs = new ArrayList<>();
+    @NotNull public UserTransactionHistoryDTOList get(
+            @NotNull List<UserTransactionHistoryId> baseKeys)
+    {
+        UserTransactionHistoryDTOList UserTransactionHistoryDTOs = new UserTransactionHistoryDTOList();
         for (@NotNull UserTransactionHistoryId baseKey: baseKeys)
         {
             UserTransactionHistoryDTOs.add(get(baseKey));

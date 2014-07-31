@@ -3,19 +3,23 @@ package com.tradehero.th.fragments.competition;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.AbsListView;
-import android.widget.ListAdapter;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.AdDTO;
+import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
+import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -27,7 +31,6 @@ import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.shadowOf;
@@ -40,6 +43,8 @@ public class MainCompetitionFragmentTest
     private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";
     private DashboardNavigator dashboardNavigator;
     @Inject ProviderCache providerCache;
+    @Inject ProviderDisplayCellListCache providerDisplayCellListCache;
+    @Inject CompetitionListCache competitionListCache;
     @Inject ProviderUtil providerUtil;
     @Inject CurrentUserId currentUserId;
     private ProviderId providerId;
@@ -53,7 +58,9 @@ public class MainCompetitionFragmentTest
         // creating mock object for providerDTO
         ProviderDTO mockProviderDTO = new ProviderDTO();
         mockProviderDTO.id = providerId.key;
-        mockProviderDTO.associatedPortfolio = mock(PortfolioCompactDTO.class);
+        mockProviderDTO.associatedPortfolio = new PortfolioCompactDTO();
+        mockProviderDTO.associatedPortfolio.id = 24;
+        mockProviderDTO.associatedPortfolio.userId = 25;
 
         AdDTO adDTO = new AdDTO();
         adDTO.redirectUrl = TEST_ADS_WEB_URL;
@@ -61,9 +68,16 @@ public class MainCompetitionFragmentTest
         mockProviderDTO.advertisements.add(adDTO);
 
         providerCache.put(providerId, mockProviderDTO);
+
+        CompetitionDTOList competitionDTOList = new CompetitionDTOList();
+        competitionListCache.put(providerId, competitionDTOList);
+
+        ProviderDisplayCellDTOList providerDisplayCellDTOList = new ProviderDisplayCellDTOList();
+        providerDisplayCellListCache.put(new ProviderDisplayCellListKey(providerId), providerDisplayCellDTOList);
+
     }
 
-    @Test public void shouldAbleToNavigateToMainCompetitionFragmentWithOutApplicablePortfolioId()
+    @Test public void shouldBeAbleToNavigateToMainCompetitionFragmentWithOutApplicablePortfolioId()
     {
         Bundle args = new Bundle();
 
@@ -84,25 +98,7 @@ public class MainCompetitionFragmentTest
         MainCompetitionFragment.putProviderId(args, providerId);
         MainCompetitionFragment mainCompetitionFragment = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
 
-        AbsListView competitionListView = mainCompetitionFragment.listView;
-        ListAdapter competitionListAdapter = competitionListView.getAdapter();
-
-        int firstTradeNowButtonPosition = -1;
-
-        for (int i = 0; i < competitionListAdapter.getCount(); ++i)
-        {
-            if (competitionListAdapter.getItemViewType(i) == CompetitionZoneListItemAdapter.ITEM_TYPE_TRADE_NOW)
-            {
-                firstTradeNowButtonPosition = i;
-                break;
-            }
-        }
-        assertThat(firstTradeNowButtonPosition).isGreaterThan(-1);
-
-        competitionListView.performItemClick(
-                competitionListAdapter.getView(firstTradeNowButtonPosition, null, null),
-                firstTradeNowButtonPosition,
-                competitionListAdapter.getItemId(firstTradeNowButtonPosition));
+        mainCompetitionFragment.btnTradeNow.performClick();
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(ProviderSecurityListFragment.class);
     }
 
@@ -117,8 +113,16 @@ public class MainCompetitionFragmentTest
 
         MainCompetitionFragment mainCompetitionFragment = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
 
+
         AbsListView competitionListView = mainCompetitionFragment.listView;
         assertThat(competitionListView).isNotNull();
+
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
 
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
@@ -146,7 +150,7 @@ public class MainCompetitionFragmentTest
         WebView webView = competitionWebViewFragment.getWebView();
         ShadowWebView shadowWebView = shadowOf(webView);
         assertThat(webView).isNotNull();
-        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&', currentUserId.toUserBaseKey()));
+        assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&'));
     }
 
     @Test public void shouldGoToCompetitionPortfolioAfterClickOnCompetitionPortfolio()
@@ -161,6 +165,13 @@ public class MainCompetitionFragmentTest
 
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
+
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
 
         int firstPortfolioButtonPosition = -1;
 
@@ -228,6 +239,13 @@ public class MainCompetitionFragmentTest
 
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
+
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        Robolectric.runBackgroundTasks();
+        Robolectric.runUiThreadTasksIncludingDelayedTasks();
 
         int firstWizardButtonPosition = -1;
 
