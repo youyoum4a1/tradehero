@@ -361,8 +361,7 @@ public class PositionPartialTopView extends LinearLayout
                 Boolean closed = positionDTO.isClosed();
                 if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
                 {
-                    number = THSignedMoney.builder()
-                            .value(positionDTO.realizedPLRefCcy)
+                    number = THSignedMoney.builder(positionDTO.realizedPLRefCcy)
                             .withSign()
                             .signTypeMinusOnly()
                             .currency(positionDTO.getNiceCurrency())
@@ -370,8 +369,7 @@ public class PositionPartialTopView extends LinearLayout
                 }
                 else if (closed != null && !closed)
                 {
-                    number = THSignedMoney.builder()
-                            .value(positionDTO.marketValueRefCcy)
+                    number = THSignedMoney.builder(positionDTO.marketValueRefCcy)
                             .withSign()
                             .signTypeMinusOnly()
                             .currency(positionDTO.getNiceCurrency())

@@ -203,8 +203,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
     private String getSignedNumberString(double value)
     {
-        THSignedNumber thTradeValue = THSignedMoney.builder()
-                .value(value)
+        THSignedNumber thTradeValue = THSignedMoney.builder(value)
                 .withOutSign()
                 .currency("US$")
                 .build();

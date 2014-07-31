@@ -109,8 +109,8 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
                 LeaderboardUserDTO leaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
                 if(leaderboardUserDTO != null)
                 {
-                    THSignedNumber thRoi = THSignedPercentage.builder()
-                            .value(leaderboardUserDTO.roiInPeriod * 100)
+                    THSignedNumber thRoi = THSignedPercentage
+                            .builder(leaderboardUserDTO.roiInPeriod * 100)
                             .build();
 
                     roiView.setText(thRoi.toString());

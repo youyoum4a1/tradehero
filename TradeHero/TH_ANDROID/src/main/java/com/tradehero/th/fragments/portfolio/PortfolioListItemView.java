@@ -358,8 +358,7 @@ public class PortfolioListItemView extends RelativeLayout
                     displayablePortfolioDTO.portfolioDTO != null &&
                     displayablePortfolioDTO.portfolioDTO.roiSinceInception != null)
             {
-                THSignedNumber roi = THSignedPercentage.builder()
-                        .value(displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100)
+                THSignedNumber roi = THSignedPercentage.builder(displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100)
                         .withSign()
                         .signTypeArrow()
                         .build();

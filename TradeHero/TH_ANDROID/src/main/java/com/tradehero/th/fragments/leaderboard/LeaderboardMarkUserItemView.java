@@ -382,8 +382,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuPeriod.setText(period);
 
         // display Roi
-        THSignedNumber roi = THSignedPercentage.builder()
-                .value(leaderboardItem.roiInPeriod * 100)
+        THSignedNumber roi = THSignedPercentage
+                .builder(leaderboardItem.roiInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -392,8 +392,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuRoi.setTextColor(getResources().getColor(roi.getColorResId()));
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = THSignedPercentage.builder()
-                .value(leaderboardItem.roiAnnualizedInPeriod * 100)
+        THSignedNumber roiAnnualizedVal = THSignedPercentage
+                .builder(leaderboardItem.roiAnnualizedInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -403,8 +403,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage.builder()
-                .value(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
+        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage
+                .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -418,8 +418,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // sharpe ratio
         if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
         {
-            lbmuSharpeRatio.setText(THSignedNumber.builder()
-                    .value(leaderboardItem.sharpeRatioInPeriodVsSP500)
+            lbmuSharpeRatio.setText(THSignedNumber
+                    .builder(leaderboardItem.sharpeRatioInPeriodVsSP500)
                     .build()
                     .toString());
         }
@@ -447,27 +447,27 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // Number of trades in Period
         if (lbmuNumberTradesInPeriod != null)
         {
-            lbmuNumberTradesInPeriod.setText(THSignedNumber.builder()
-                    .value(leaderboardItem.numberOfTradesInPeriod)
+            lbmuNumberTradesInPeriod.setText(THSignedNumber
+                    .builder(leaderboardItem.numberOfTradesInPeriod)
                     .build().toString());
         }
 
         // average days held
-        lbmuAvgDaysHeld.setText(THSignedNumber.builder()
-                .value(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
+        lbmuAvgDaysHeld.setText(THSignedNumber
+                .builder(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
                 .relevantDigitCount(3)
                 .build().toString());
-        lbmuWinRatio.setText(THSignedPercentage.builder()
-                .value(leaderboardItem.getWinRatio() * 100)
+        lbmuWinRatio.setText(THSignedPercentage
+                .builder(leaderboardItem.getWinRatio() * 100)
                 .relevantDigitCount(3)
                 .build().toString());
 
         // followers & comments count
-        lbmuFollowersCount.setText(THSignedNumber.builder()
-                .value(leaderboardItem.getTotalFollowersCount())
+        lbmuFollowersCount.setText(THSignedNumber
+                .builder(leaderboardItem.getTotalFollowersCount())
                 .build().toString());
-        lbmuCommentsCount.setText(THSignedNumber.builder()
-                .value(leaderboardItem.getCommentsCount())
+        lbmuCommentsCount.setText(THSignedNumber
+                .builder(leaderboardItem.getCommentsCount())
                 .build().toString());
     }
 
@@ -491,8 +491,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (lbmuPl != null && leaderboardItem != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .value(leaderboardItem.PLinPeriodRefCcy)
+            THSignedNumber formattedNumber = THSignedMoney
+                    .builder(leaderboardItem.PLinPeriodRefCcy)
                     .withOutSign()
                     .currency(getLbmuPlCurrencyDisplay())
                     .build();

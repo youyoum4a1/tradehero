@@ -113,8 +113,7 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceFallDescription(double targetPrice)
     {
-        THSignedNumber thPriceRaise = THSignedMoney.builder()
-                .value(targetPrice)
+        THSignedNumber thPriceRaise = THSignedMoney.builder(targetPrice)
                 .withOutSign()
                 .build();
         return Html.fromHtml(String.format(
@@ -125,8 +124,7 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceRaiseDescription(double targetPrice)
     {
-        THSignedNumber thPriceRaise = THSignedMoney.builder()
-                .value(targetPrice)
+        THSignedNumber thPriceRaise = THSignedMoney.builder(targetPrice)
                 .withOutSign()
                 .build();
         return Html.fromHtml(String.format(
@@ -137,9 +135,7 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceMovementDescription(double percentage)
     {
-        THSignedNumber thPercentageChange = THSignedPercentage.builder()
-                .value(percentage)
-                .build();
+        THSignedNumber thPercentageChange = THSignedPercentage.builder(percentage).build();
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.stock_alert_when_price_move),
                 thPercentageChange.toString()
