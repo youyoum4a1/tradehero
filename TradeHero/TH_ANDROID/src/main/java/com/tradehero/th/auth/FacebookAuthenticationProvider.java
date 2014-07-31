@@ -150,6 +150,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
                     if (facebook.isSessionValid())
                     {
                         extendAccessToken(activity, currentOperationCallback);
+                        return;
                     }
                     createAndExecuteMeRequest(session);
                 }
