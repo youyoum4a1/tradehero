@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -24,33 +25,26 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.models.social.FollowDialogCombo;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
@@ -58,32 +52,25 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserItemView extends RelativeLayout
-        implements DTOView<LeaderboardUserDTO>, View.OnClickListener,
+        implements DTOView<LeaderboardUserDTO>,
         ExpandingLayout.OnExpandListener
 {
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
-    @Inject Lazy<UserProfileCache> userProfileCache;
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
     protected OwnedPortfolioId applicablePortfolioId;
-    protected FollowDialogCombo followDialogCombo;
     // data
     protected LeaderboardUserDTO leaderboardItem;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -121,11 +108,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         super(context);
     }
 
-    @Override protected void onVisibilityChanged(View changedView, int visibility)
-    {
-        super.onVisibilityChanged(changedView, visibility);
-    }
-
     public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -154,27 +136,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             DaggerUtils.inject(lbmuFoF);
         }
 
-        TextView lbmuOpenProfile = (TextView) findViewById(R.id.leaderboard_user_item_open_profile);
-        if (lbmuOpenProfile != null)
-        {
-            lbmuOpenProfile.setOnClickListener(this);
-        }
-        TextView lbmuOpenPositionsList =
-                (TextView) findViewById(R.id.leaderboard_user_item_open_positions_list);
-        if (lbmuOpenPositionsList != null)
-        {
-            lbmuOpenPositionsList.setOnClickListener(this);
-        }
-
-        if (lbmuProfilePicture != null)
-        {
-            lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
-        }
-
-        if (expandingLayout != null)
-        {
-            expandingLayout.setOnExpandListener(this);
-        }
+        lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        expandingLayout.setOnExpandListener(this);
     }
 
     @Override protected void onAttachedToWindow()
@@ -185,18 +148,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
         }
-        if (lbmuPositionInfo != null)
-        {
-            lbmuPositionInfo.setOnClickListener(this);
-        }
-        if (lbmuFollowUser != null)
-        {
-            lbmuFollowUser.setOnClickListener(this);
-        }
-        if (lbmuProfilePicture != null)
-        {
-            lbmuProfilePicture.setOnClickListener(this);
-        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -205,28 +156,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuFoF.setMovementMethod(null);
         }
-        if (lbmuPositionInfo != null)
-        {
-            lbmuPositionInfo.setOnClickListener(null);
-        }
-        if (lbmuFollowUser != null)
-        {
-            lbmuFollowUser.setOnClickListener(null);
-        }
         loadDefaultUserImage();
 
         if (lbmuProfilePicture != null)
         {
             lbmuProfilePicture.setImageDrawable(null);
         }
-        if (lbmuProfilePicture != null)
-        {
-            lbmuProfilePicture.setOnClickListener(null);
-        }
 
-        detachFreeFollowMiddleCallback();
-        detachFollowDialogCombo();
-
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -530,86 +467,43 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    @Override public void onClick(View view)
+    @OnClick(R.id.leaderboard_user_item_info)
+    protected void handleUserInfoClicked()
     {
-        switch (view.getId())
-        {
-            case R.id.leaderboard_user_item_info:
-                // TODO right now the icon is gone
-                break;
-            case R.id.leaderboard_user_item_open_profile:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
-                handleOpenProfileButtonClicked();
-                break;
-
-            case R.id.leaderboard_user_item_open_positions_list:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
-                handleOpenPositionListClicked();
-                break;
-
-            case R.id.leaderboard_user_item_follow:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
-                detachFollowDialogCombo();
-                followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
-                        UserProfileDTOUtil.IS_NOT_FOLLOWER,
-                        new LeaderBoardFollowRequestedListener());
-                break;
-            case R.id.leaderboard_user_item_profile_picture:
-                handleUserIconClicked();
-                break;
-        }
+        // Nothing?
     }
 
-    public class LeaderBoardFollowRequestedListener
-            implements com.tradehero.th.models.social.OnFollowRequestedListener
+    @OnClick(R.id.leaderboard_user_item_open_profile)
+    protected void handleProfileClicked()
     {
-        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            freeFollow(heroId);
-        }
-
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
-        {
-            follow(heroId);
-        }
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
+        handleOpenProfileButtonClicked();
     }
 
-    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
+    @OnClick(R.id.leaderboard_user_item_open_positions_list)
+    protected void handlePositionButtonClicked()
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
-            LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
-        }
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
+        handleOpenPositionListClicked();
     }
 
-    private void handleUserIconClicked()
+    @OnClick(R.id.leaderboard_user_item_follow)
+    protected void handleFollowButtonClicked()
+    {
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
+        follow(leaderboardItem);
+    }
+
+    @OnClick(R.id.leaderboard_user_item_profile_picture)
+    protected void handleUserIconClicked()
     {
         //OtherTimelineFragment.viewProfile((DashboardActivity) getContext(), null);
         handleOpenProfileButtonClicked();
     }
 
-    protected void freeFollow(@NotNull UserBaseKey heroId)
+    protected void follow(@NotNull UserBaseDTO userBaseDTO)
     {
-        heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
-                R.string.following_this_hero));
-        detachFreeFollowMiddleCallback();
-        freeFollowMiddleCallback =
-                userServiceWrapperLazy.get()
-                        .freeFollow(heroId, new FreeFollowCallback());
-    }
-
-    protected void follow(@NotNull UserBaseKey heroId)
-    {
-        notifyFollowRequested(heroId);
+        notifyFollowRequested(userBaseDTO);
     }
 
     private void handleOpenPositionListClicked()
@@ -700,36 +594,17 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(userProfileDTO, true);
     }
 
-    protected void notifyFollowRequested(@NotNull UserBaseKey heroId)
+    protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
-            followRequestedListenerCopy.onFollowRequested(heroId);
+            followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
     }
 
     public static interface OnFollowRequestedListener
     {
-        void onFollowRequested(UserBaseKey userBaseKey);
-    }
-
-    private void detachFreeFollowMiddleCallback()
-    {
-        if (freeFollowMiddleCallback != null)
-        {
-            freeFollowMiddleCallback.setPrimaryCallback(null);
-        }
-        freeFollowMiddleCallback = null;
-    }
-
-    protected void detachFollowDialogCombo()
-    {
-        FollowDialogCombo followDialogComboCopy = followDialogCombo;
-        if (followDialogComboCopy != null)
-        {
-            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
-        }
-        followDialogCombo = null;
+        void onFollowRequested(UserBaseDTO userBaseKey);
     }
 }
