@@ -4,53 +4,36 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class PremiumFollowUserAssistant implements
-        Callback<UserProfileDTO>,
-        DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
+        implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
 {
     @Inject protected UserProfileCache userProfileCache;
     @Inject protected CurrentUserId currentUserId;
-    protected UserProfileDTO currentUserProfile;
-    @Inject protected UserServiceWrapper userServiceWrapper;
-    protected final UserBaseKey userToFollow;
-    protected final OwnedPortfolioId applicablePortfolioId;
-    @Inject protected THBillingInteractor billingInteractor;
     @Inject Provider<THUIBillingRequest> billingRequestProvider;
-    @Inject protected Lazy<HeroListCache> heroListCacheLazy;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    private OnUserFollowedListener userFollowedListener;
-    protected Integer requestCode;
-    @Inject Lazy<CurrentActivityHolder> currentActivityHolderLazy;
+    protected UserProfileDTO currentUserProfile;
+    protected final OwnedPortfolioId applicablePortfolioId;
 
-    public PremiumFollowUserAssistant(OnUserFollowedListener userFollowedListener,
-            UserBaseKey userToFollow, OwnedPortfolioId applicablePortfolioId)
+    public PremiumFollowUserAssistant(
+            @NotNull UserBaseKey userToFollow,
+            @Nullable OnUserFollowedListener userFollowedListener,
+            OwnedPortfolioId applicablePortfolioId)
     {
-        this.userFollowedListener = userFollowedListener;
-        this.userToFollow = userToFollow;
+        super(userToFollow, userFollowedListener);
         this.applicablePortfolioId = applicablePortfolioId;
         DaggerUtils.inject(this);
     }
@@ -61,20 +44,10 @@ public class PremiumFollowUserAssistant implements
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    public void launchUnFollow()
-    {
-        unFollow();
-    }
-
-    public void setUserFollowedListener(OnUserFollowedListener userFollowedListener)
-    {
-        this.userFollowedListener = userFollowedListener;
-    }
-
     @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
     {
         this.currentUserProfile = value;
-        follow();
+        checkBalanceAndFollow();
     }
 
     @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -82,66 +55,18 @@ public class PremiumFollowUserAssistant implements
         notifyFollowFailed(key, error);
     }
 
-    protected void notifyFollowFailed(UserBaseKey userToFollow, Throwable error)
-    {
-        haveInteractorForget();
-        OnUserFollowedListener userFollowedListenerCopy = userFollowedListener;
-        if (userFollowedListenerCopy != null)
-        {
-            userFollowedListenerCopy.onUserFollowFailed(userToFollow, error);
-        }
-    }
-
-    protected void follow()
+    protected void checkBalanceAndFollow()
     {
         if (this.currentUserProfile.ccBalance > 0)
         {
-            alertDialogUtilLazy.get().showProgressDialog(currentActivityHolderLazy.get()
-                    .getCurrentContext(), currentActivityHolderLazy.get().getCurrentContext()
-                    .getString(R.string.following_this_hero));
-            userServiceWrapper.follow(userToFollow, this);
+            super.launchFollow();
         }
         else
         {
             haveInteractorForget();
+            //noinspection unchecked
             requestCode = billingInteractor.run(createPurchaseCCRequest());
         }
-    }
-
-    @Override public void success(UserProfileDTO userProfileDTO, Response response)
-    {
-        alertDialogUtilLazy.get().dismissProgressDialog();
-        notifyFollowSuccess(userToFollow, userProfileDTO);
-    }
-
-    @Override public void failure(RetrofitError error)
-    {
-        alertDialogUtilLazy.get().dismissProgressDialog();
-        notifyFollowFailed(userToFollow, error);
-    }
-
-    protected void notifyFollowSuccess(UserBaseKey userToFollow, UserProfileDTO currentUserProfile)
-    {
-        haveInteractorForget();
-        OnUserFollowedListener userFollowedListenerCopy = userFollowedListener;
-        if (userFollowedListenerCopy != null)
-        {
-            userFollowedListenerCopy.onUserFollowSuccess(userToFollow, currentUserProfile);
-        }
-    }
-
-    protected void haveInteractorForget()
-    {
-        if (requestCode != null)
-        {
-            billingInteractor.forgetRequestCode(requestCode);
-        }
-        requestCode = null;
-    }
-
-    protected void unFollow()
-    {
-        userServiceWrapper.unfollow(userToFollow, this);
     }
 
     protected THUIBillingRequest createPurchaseCCRequest()
@@ -181,12 +106,5 @@ public class PremiumFollowUserAssistant implements
             }
         };
         return billingRequest;
-    }
-
-    public static interface OnUserFollowedListener
-    {
-        void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO);
-
-        void onUserFollowFailed(UserBaseKey userFollowed, Throwable error);
     }
 }

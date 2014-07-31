@@ -56,7 +56,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         this.freeFollowedListener = freeFollowedListener;
         this.alertsAreFree = alertsAreFree;
 
-        this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(premiumFollowedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
+        this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
     }
 
     @Override public int showProductsList(ProductIdentifierDomain domain)
