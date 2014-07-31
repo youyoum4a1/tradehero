@@ -18,12 +18,13 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -360,9 +361,7 @@ public class PositionPartialTopView extends LinearLayout
                 Boolean closed = positionDTO.isClosed();
                 if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
                 {
-                    number = THSignedNumber.builder()
-                            .number(positionDTO.realizedPLRefCcy)
-                            .money()
+                    number = THSignedMoney.builder(positionDTO.realizedPLRefCcy)
                             .withSign()
                             .signTypeMinusOnly()
                             .currency(positionDTO.getNiceCurrency())
@@ -370,9 +369,7 @@ public class PositionPartialTopView extends LinearLayout
                 }
                 else if (closed != null && !closed)
                 {
-                    number = THSignedNumber.builder()
-                            .number(positionDTO.marketValueRefCcy)
-                            .money()
+                    number = THSignedMoney.builder(positionDTO.marketValueRefCcy)
                             .withSign()
                             .signTypeMinusOnly()
                             .currency(positionDTO.getNiceCurrency())

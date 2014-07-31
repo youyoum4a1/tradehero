@@ -24,6 +24,7 @@ import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTOFactory;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
@@ -80,6 +81,7 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
     @Inject THRouter thRouter;
+    @Inject Lazy<UserFriendsDTOFactory> userFriendsDTOFactory;
 
     @RouteProperty(ROUTER_SOCIALID) String socialId;
     @RouteProperty(ROUTER_SOCIALUSERID) String socialUserId;
@@ -186,12 +188,12 @@ public final class HomeFragment extends BaseWebViewFragment
     private void resetRoutingData()
     {
         // TODO Routing library should have a way to clear injected data, proposing: THRouter.reset(this)
-        Bundle b = getArguments();
-        if(b!=null)
+        Bundle args = getArguments();
+        if (args != null)
         {
-            b.remove(ROUTER_SOCIALID);
-            b.remove(ROUTER_SOCIALUSERID);
-            b.remove(ROUTER_USERID);
+            args.remove(ROUTER_SOCIALID);
+            args.remove(ROUTER_SOCIALUSERID);
+            args.remove(ROUTER_USERID);
         }
         socialId = null;
         socialUserId = null;
@@ -201,21 +203,7 @@ public final class HomeFragment extends BaseWebViewFragment
     //<editor-fold desc="Windy's stuff, to be refactored">
     private void createInviteInHomePage()
     {
-        if (socialId.equals("fb"))
-        {
-            userFriendsDTO = new UserFriendsFacebookDTO();
-            ((UserFriendsFacebookDTO) userFriendsDTO).fbId = socialUserId;
-        }
-        else if (socialId.equals("li"))
-        {
-            userFriendsDTO = new UserFriendsLinkedinDTO();
-            ((UserFriendsLinkedinDTO) userFriendsDTO).liId = socialUserId;
-        }
-        else if (socialId.equals("tw"))
-        {
-            userFriendsDTO = new UserFriendsTwitterDTO();
-            ((UserFriendsTwitterDTO) userFriendsDTO).twId = socialUserId;
-        }
+        userFriendsDTO = userFriendsDTOFactory.get().createFrom(socialId, socialUserId);
         invite();
     }
 

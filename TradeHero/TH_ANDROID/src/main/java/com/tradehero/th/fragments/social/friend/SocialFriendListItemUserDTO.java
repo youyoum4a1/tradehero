@@ -13,4 +13,13 @@ class SocialFriendListItemUserDTO implements SocialFriendListItemDTO
         this.userFriendsDTO = userFriendsDTO;
     }
     //</editor-fold>
+
+    /**
+     * This is used to filter in the adapter
+     * @return
+     */
+    @Override public final String toString()
+    {
+        return userFriendsDTO.name;
+    }
 }

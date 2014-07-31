@@ -10,6 +10,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
@@ -60,7 +62,15 @@ public class AboutFragment extends DashboardFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        getSherlockActivity().getSupportActionBar().show();
+        SherlockFragmentActivity activity = getSherlockActivity();
+        if (activity != null)
+        {
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null)
+            {
+                actionBar.show();
+            }
+        }
         super.onDestroyOptionsMenu();
     }
 

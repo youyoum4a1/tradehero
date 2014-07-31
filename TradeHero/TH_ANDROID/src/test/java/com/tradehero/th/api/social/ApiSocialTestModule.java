@@ -7,6 +7,7 @@ import dagger.Module;
         injects = {
                 PaginatedUserFriendsDTOListDeserialiserTest.class,
                 UserFriendsDTODeserialiserTest.class,
+                UserFriendsDTOFactoryTest.class,
         },
         complete = false,
         library = true

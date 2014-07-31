@@ -13,9 +13,10 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class UserProfileCompactViewHolder
@@ -80,16 +81,14 @@ public class UserProfileCompactViewHolder
                 {
                     pl = 0.0;
                 }
-                THSignedNumber thPlSinceInception = THSignedNumber.builder()
-                        .number(pl)
-                        .money()
+                THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
                         .withSign()
                         .signTypePlusMinusAlways()
-                        .currency(SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY)
+                        .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 profitValue.setText(thPlSinceInception.toString());
                 profitValue.setTextColor(
-                        context.getResources().getColor(thPlSinceInception.getColor()));
+                        context.getResources().getColor(thPlSinceInception.getColorResId()));
             }
             else
             {
@@ -134,13 +133,11 @@ public class UserProfileCompactViewHolder
                     && userProfileDTO.portfolio != null
                     && userProfileDTO.portfolio.roiSinceInception != null)
             {
-                THSignedNumber thRoiSinceInception = THSignedNumber.builder()
-                        .number(userProfileDTO.portfolio.roiSinceInception * 100)
-                        .percentage()
+                THSignedNumber thRoiSinceInception = THSignedPercentage.builder(userProfileDTO.portfolio.roiSinceInception * 100)
                         .build();
                 roiSinceInception.setText(thRoiSinceInception.toString());
                 roiSinceInception.setTextColor(
-                        context.getResources().getColor(thRoiSinceInception.getColor()));
+                        context.getResources().getColor(thRoiSinceInception.getColorResId()));
             }
             else
             {

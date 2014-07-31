@@ -36,12 +36,13 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -423,9 +424,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
             shares = 0;
         }
 
-        THSignedNumber thSignedNumber = THSignedNumber.builder()
-                .number(formattedPrice)
-                .money()
+        THSignedNumber thSignedNumber = THSignedMoney.builder(formattedPrice)
                 .withOutSign()
                 .currency(currencyDisplay)
                 .build();

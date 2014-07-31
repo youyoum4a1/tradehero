@@ -9,7 +9,8 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertEventDTO;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 
 public class AlertEventItemView extends LinearLayout
         implements DTOView<AlertEventDTO>
@@ -43,9 +44,8 @@ public class AlertEventItemView extends LinearLayout
 
     @Override public void display(AlertEventDTO alertEventDTO)
     {
-        THSignedNumber thSecurityPrice = THSignedNumber.builder()
-                .number(alertEventDTO.securityPrice)
-                .money()
+        THSignedNumber thSecurityPrice = THSignedMoney
+                .builder(alertEventDTO.securityPrice)
                 .withOutSign()
                 .build();
         eventName.setText(thSecurityPrice.toString());

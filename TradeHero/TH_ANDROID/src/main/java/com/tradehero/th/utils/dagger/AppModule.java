@@ -173,7 +173,6 @@ import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.ui.UIModule;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
@@ -394,7 +393,6 @@ import javax.inject.Singleton;
         staticInjections =
                 {
                         THUser.class,
-                        NumberDisplayUtils.class,
                 },
         complete = false,
         library = true // TODO remove this line

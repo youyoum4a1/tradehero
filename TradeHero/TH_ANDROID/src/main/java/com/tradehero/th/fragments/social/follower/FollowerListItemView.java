@@ -21,11 +21,13 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
@@ -174,7 +176,7 @@ public class FollowerListItemView extends RelativeLayout
     {
         if (country != null)
         {
-            if (userFollowerDTO != null)
+            if (userFollowerDTO != null && userFollowerDTO.countryCode != null)
             {
                 country.setImageResource(getCountryLogoId(userFollowerDTO.countryCode));
             }
@@ -185,18 +187,18 @@ public class FollowerListItemView extends RelativeLayout
         }
     }
 
-    public int getCountryLogoId(String country)
+    public int getCountryLogoId(@NotNull String country)
     {
         return getCountryLogoId(0, country);
     }
 
-    public int getCountryLogoId(int defaultResId, String country)
+    public int getCountryLogoId(int defaultResId, @NotNull String country)
     {
         try
         {
             Timber.d("getCountryLogoId country:%s",country);
             return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException ex)
+        } catch (IllegalArgumentException|NullPointerException ex)
         {
             return defaultResId;
         }
@@ -217,13 +219,12 @@ public class FollowerListItemView extends RelativeLayout
 
             if (userFollowerDTO != null)
             {
-                THSignedNumber thRoiSinceInception = THSignedNumber.builder()
-                        .number(userFollowerDTO.roiSinceInception * 100)
-                        .percentage()
+                THSignedNumber thRoiSinceInception = THSignedPercentage
+                        .builder(userFollowerDTO.roiSinceInception * 100)
                         .build();
                 revenueInfo.setText(thRoiSinceInception.toString());
                 revenueInfo.setTextColor(
-                        getContext().getResources().getColor(thRoiSinceInception.getColor()));
+                        getContext().getResources().getColor(thRoiSinceInception.getColorResId()));
 
                 //revenueInfo.setText(String.format(getResources().getString(R.string.manage_followers_revenue_follower), SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, userFollowerDTO.totalRevenue));
             }

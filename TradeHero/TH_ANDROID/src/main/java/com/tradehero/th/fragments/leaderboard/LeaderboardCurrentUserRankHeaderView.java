@@ -15,9 +15,10 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +39,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     private UserProfileDTO userProfileDTO;
 
     protected Integer mCurrentRank;
-    protected Double mRoiSinceInception;
+    protected Double mRoiSinceInception = 0.0D;
 
     public LeaderboardCurrentUserRankHeaderView(Context context)
     {
@@ -70,14 +71,6 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
         if (!isInEditMode())
         {
             userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-            if (userProfileDTO != null)
-            {
-                mRoiSinceInception = userProfileDTO.roiSinceInception;
-            }
-            else
-            {
-                mRoiSinceInception = 0.0D;
-            }
         }
     }
 
@@ -142,7 +135,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     {
         mCurrentRankLabel.setText(String.valueOf(mCurrentRank));
         //Set the ROI from the user profile cache
-        displayROIValue(userProfileDTO.portfolio.roiSinceInception);
+        displayROIValue(mRoiSinceInception);
     }
 
     protected void displayUserNotRanked()
@@ -161,13 +154,10 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
 
     private void displayROIValue(double value)
     {
-        THSignedNumber thRoiSinceInception = THSignedNumber.builder()
-                .number(value * 100)
-                .percentage()
-                .build();
+        THSignedNumber thRoiSinceInception = THSignedPercentage.builder(value * 100).build();
 
         mROILabel.setText(thRoiSinceInception.toString());
-        mROILabel.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
+        mROILabel.setTextColor(getResources().getColor(thRoiSinceInception.getColorResId()));
     }
 
     protected DashboardNavigator getNavigator()

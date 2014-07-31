@@ -3,12 +3,13 @@ package com.tradehero.th.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import com.tradehero.th.R;
-import com.tradehero.th.base.Application;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class NumberDisplayUtils
 {
-    public static final int[] SUFFIX_IDS =
+    @NotNull private final Context context;
+    protected final int[] SUFFIX_IDS =
     {
         R.string.number_presentation_unit_suffix,
         R.string.number_presentation_thousand_suffix,
@@ -18,50 +19,21 @@ public class NumberDisplayUtils
     };
 
     // These suffixes are used in tests...
-    private static final String[] FALLBACK_SUFFIXES = {"", "k", "M", "B", "Tr"};
+    protected final String[] FALLBACK_SUFFIXES = {"", "k", "M", "B", "Tr"};
 
-    @Inject static public Context context;
-
-    public static int getPlusMinusPrefixResId(double value)
+    //<editor-fold desc="Constructors">
+    @Inject public NumberDisplayUtils(@NotNull Context context)
     {
-        return value > 0 ? R.string.sign_prefix_positive :
-                value < 0 ? R.string.sign_prefix_negative :
-                        R.string.sign_prefix_zero;
+        this.context = context;
     }
+    //</editor-fold>
 
-    public static String getPlusMinusPrefix(double value)
-    {
-        return Application.getResourceString(getPlusMinusPrefixResId(value));
-    }
-
-    public static int getMinusOnlyPrefixResId(double value)
-    {
-        return value < 0 ? R.string.sign_prefix_negative : R.string.sign_prefix_zero;
-    }
-
-    public static String getMinusOnlyPrefix(double value)
-    {
-        return Application.getResourceString(getMinusOnlyPrefixResId(value));
-    }
-
-    public static int getArrowPrefixResId(double value)
-    {
-        return value > 0 ? R.string.arrow_prefix_positive :
-                value < 0 ? R.string.arrow_prefix_negative :
-                R.string.arrow_prefix_zero;
-    }
-
-    public static String getArrowPrefix(double value)
-    {
-        return Application.getResourceString(getArrowPrefixResId(value));
-    }
-
-    public static String formatWithRelevantDigits(double number, int relevantDigits)
+    public String formatWithRelevantDigits(double number, int relevantDigits)
     {
         return formatWithRelevantDigits(number, relevantDigits, null);
     }
 
-    public static String formatWithRelevantDigits(double number, int relevantDigits, String prefix)
+    public String formatWithRelevantDigits(double number, int relevantDigits, String prefix)
     {
         double absVal = Math.abs(number);
         if (absVal > 999999999999999d)

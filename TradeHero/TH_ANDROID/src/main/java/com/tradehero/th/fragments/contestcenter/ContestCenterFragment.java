@@ -18,8 +18,7 @@ import com.tradehero.th.fragments.updatecenter.TitleTabView;
  */
 public class ContestCenterFragment extends DashboardFragment
 {
-    private final int FRAGMENT_LAYOUT_ID = 10001;
-    private FragmentTabHost mTabHost;
+    private static final int FRAGMENT_LAYOUT_ID = 10001;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -48,7 +47,7 @@ public class ContestCenterFragment extends DashboardFragment
 
     private View addTabs()
     {
-        mTabHost = new FragmentTabHost(getActivity());
+        FragmentTabHost mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         Bundle args = getArguments();
         if (args == null)

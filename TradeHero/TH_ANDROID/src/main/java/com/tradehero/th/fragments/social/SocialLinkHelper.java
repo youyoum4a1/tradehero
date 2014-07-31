@@ -118,9 +118,12 @@ public abstract class SocialLinkHelper
                     UserFormFactory.create(json),
                     createSocialLinkingCallback());
 
-            progressDialog.setMessage(
-                    String.format(currentActivityHolder.getCurrentContext().getString(R.string.authentication_connecting_tradehero),
-                            getSocialNetwork().getName()));
+            if (progressDialog != null)
+            {
+                progressDialog.setMessage(
+                        String.format(currentActivityHolder.getCurrentContext().getString(R.string.authentication_connecting_tradehero),
+                                getSocialNetwork().getName()));
+            }
             return false;
         }
     }

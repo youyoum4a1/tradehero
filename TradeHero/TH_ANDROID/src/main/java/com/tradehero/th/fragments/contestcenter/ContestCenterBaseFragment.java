@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -19,6 +20,7 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -30,21 +32,21 @@ import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import dagger.Lazy;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
-/**
- * Created by huhaiping on 14-7-18.
- */
-public abstract class ContestCenterBaseFragment extends DashboardFragment implements View.OnClickListener
+public abstract class ContestCenterBaseFragment extends DashboardFragment
 {
     @Inject Lazy<ProviderListCache> providerListCache;
-    @InjectView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
     @Inject protected PortfolioCompactListCache portfolioCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
+
+    @InjectView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
     @InjectView(android.R.id.list) StickyListHeadersListView contestListView;
 
     public ContestItemAdapter contestListAdapter;
@@ -99,30 +101,21 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
         }
     }
 
-    /*
-    make usre vip provider is in the front of the list
-     */
+    /** make sure vip provider is in the front of the list */
     private void sortProviderByVip()
     {
-        if(providerDTOs == null)return;
-        ProviderDTOList tempList = new ProviderDTOList();
-        for(ProviderDTO p : providerDTOs)
+        if (providerDTOs == null) return;
+        Collections.sort(providerDTOs, new Comparator<ProviderDTO>()
         {
-            if(p.vip)
+            @Override public int compare(ProviderDTO lhs, ProviderDTO rhs)
             {
-                tempList.add(p);
+                //return (lhs != null && lhs.vip != null && lhs.vip) ? 1 : 0;
+                if(lhs.vip == rhs.vip)return 0 ;
+                else if(lhs.vip && (!rhs.vip)) return -1;
+                else return 1;
             }
-        }
-        for(ProviderDTO p : providerDTOs)
-        {
-            if(!p.vip)
-            {
-                tempList.add(p);
-            }
-        }
-        providerDTOs = tempList;
+        });
     }
-
 
     protected ContestItemAdapter createAdapter()
     {
@@ -138,17 +131,13 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
     private void handleFailToReceiveLeaderboardDefKeyList()
     {
         setContestCenterScreen(R.id.error);
-        View displayedChild = contest_center_content_screen.getChildAt(contest_center_content_screen.getDisplayedChild());
-        displayedChild.setOnClickListener(this);
     }
 
-    @Override public void onClick(View v)
+    @OnClick(R.id.error)
+    protected void handleErrorClicked()
     {
-        if (v.getId() == R.id.error)
-        {
-            setContestCenterScreen(R.id.progress);
-            loadContestData();
-        }
+        setContestCenterScreen(R.id.progress);
+        loadContestData();
     }
 
     public void setContestCenterScreen(int viewId)
@@ -195,6 +184,12 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
         super.onStop();
     }
 
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
     @Override public void onDestroy()
     {
         providerListFetchListener = null;
@@ -233,6 +228,10 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
             {
                 handleCompetitionItemClicked(((ProviderContestPageDTO) item).providerDTO);
             }
+            else if(item instanceof EmptyHeadLineDTO)
+            {
+                Timber.d("EmptyHeadLineDTO is clicked");
+            }
             else
             {
                 throw new IllegalArgumentException("Unhandled item type " + item);
@@ -242,11 +241,16 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
 
     private void handleCompetitionItemClicked(ProviderDTO providerDTO)
     {
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator == null)
+        {
+            return;
+        }
         if (providerDTO != null && providerDTO.isUserEnrolled)
         {
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
+            navigator.pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
         {
@@ -257,7 +261,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment implem
                     providerDTO.getProviderId(),
                     currentUserId.toUserBaseKey()));
             CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
-            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+            webFragment = navigator.pushFragment(CompetitionWebViewFragment.class, args);
             webFragment.setThIntentPassedListener(thIntentPassedListener);
         }
     }

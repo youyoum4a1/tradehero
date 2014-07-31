@@ -42,7 +42,7 @@ public class FollowDialogView extends LinearLayout
     @Inject Lazy<Picasso> picasso;
 
     @Nullable private UserBaseDTO userBaseDTO;
-    private OnFollowRequestedListener followRequestedListener;
+    @Nullable private OnFollowRequestedListener followRequestedListener;
 
     //<editor-fold desc="Constructors">
     public FollowDialogView(Context context)
@@ -72,6 +72,7 @@ public class FollowDialogView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -85,18 +86,18 @@ public class FollowDialogView extends LinearLayout
         this.userBaseDTO = userBaseDTO;
 
         displayUserPhoto();
-
         displayUserName();
     }
 
     @OnClick({
             R.id.btn_free,
             R.id.free_follow})
-    void onFreeFollowClicked(View view)
+    void onFreeFollowClicked()
     {
-        if (followRequestedListener != null)
+        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        if (followRequestedListenerCopy != null && userBaseDTO != null)
         {
-            followRequestedListener.freeFollowRequested(userBaseDTO.getBaseKey());
+            followRequestedListenerCopy.freeFollowRequested(userBaseDTO.getBaseKey());
         }
     }
 
@@ -104,11 +105,12 @@ public class FollowDialogView extends LinearLayout
             R.id.btn_premium,
             R.id.premium_follow
     })
-    void onPremiumFollowButtonClicked(View view)
+    void onPremiumFollowButtonClicked()
     {
-        if (followRequestedListener != null)
+        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        if (followRequestedListenerCopy != null && userBaseDTO != null)
         {
-            followRequestedListener.premiumFollowRequested(userBaseDTO.getBaseKey());
+            followRequestedListenerCopy.premiumFollowRequested(userBaseDTO.getBaseKey());
         }
     }
 
@@ -176,7 +178,7 @@ public class FollowDialogView extends LinearLayout
         }
     }
 
-    public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(@Nullable OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }

@@ -15,6 +15,7 @@ public class DTOProcessorFollowUser extends DTOProcessorUpdateUserProfile
     @NotNull protected final UserMessagingRelationshipCache userMessagingRelationshipCache;
     @NotNull protected final UserBaseKey userToFollow;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorFollowUser(
             @NotNull UserProfileCache userProfileCache,
             @NotNull HeroListCache heroListCache,
@@ -28,8 +29,9 @@ public class DTOProcessorFollowUser extends DTOProcessorUpdateUserProfile
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.userToFollow = userToFollow;
     }
+    //</editor-fold>
 
-    @Override public UserProfileDTO process(UserProfileDTO userProfileDTO)
+    @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
         heroListCache.invalidate(userToFollow);

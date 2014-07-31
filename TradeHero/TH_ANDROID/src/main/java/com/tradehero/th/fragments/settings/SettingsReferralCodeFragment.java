@@ -128,7 +128,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         {
             mReferralCode.setText(userProfileDTO.referralCode);
             mInviteCode.setText(userProfileDTO.inviteCode);
-            if (userProfileDTO.inviteCode != null)
+            if (userProfileDTO.inviteCode != null && !userProfileDTO.inviteCode.isEmpty())
             {
                 mReferralCodeLayout.setVisibility(View.GONE);
                 mAlreadyDoneLayout.setVisibility(View.VISIBLE);

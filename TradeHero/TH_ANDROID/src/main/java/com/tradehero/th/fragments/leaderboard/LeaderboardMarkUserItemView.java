@@ -31,22 +31,23 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -55,6 +56,7 @@ import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -65,7 +67,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         ExpandingLayout.OnExpandListener
 {
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
+    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
@@ -104,14 +106,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.lbmu_volatility) TextView lbmuVolatility;
     @InjectView(R.id.lbmu_number_of_trades) TextView lbmuNumberOfTrades;
     @InjectView(R.id.lbmu_period) TextView lbmuPeriod;
-    @InjectView(R.id.leaderboard_user_item_fof) MarkdownTextView lbmuFoF;
-    @InjectView(R.id.lbmu_number_trades_in_period) TextView lbmuNumberTradesInPeriod;
-    @InjectView(R.id.leaderboard_user_item_follow) @Optional View lbmuFollowUser;
-    @InjectView(R.id.leaderboard_user_item_following) @Optional View lbmuFollowingUser;
+    @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
+    @InjectView(R.id.lbmu_number_trades_in_period) @Optional @Nullable TextView lbmuNumberTradesInPeriod;
+    @InjectView(R.id.leaderboard_user_item_follow) @Optional @Nullable View lbmuFollowUser;
+    @InjectView(R.id.leaderboard_user_item_following) @Optional @Nullable View lbmuFollowingUser;
 
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
-    @InjectView(R.id.leaderboard_user_item_country_logo) @Optional ImageView countryLogo;
-    @InjectView(R.id.user_statistic_view) @Optional UserStatisticView userStatisticView;
+    @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
+    @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -265,9 +267,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     private void linkWith(LeaderboardUserDTO expandableItem, boolean andDisplay)
     {
         this.leaderboardItem = expandableItem;
-        if (leaderboardItem != null)
-        {
-        }
 
         if (andDisplay)
         {
@@ -363,7 +362,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         try
         {
             return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException ex)
+        } catch (IllegalArgumentException|NullPointerException ex)
         {
             return defaultResId;
         }
@@ -384,26 +383,32 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuPeriod.setText(period);
 
         // display Roi
-        THSignedNumber roi = THSignedNumber.builder()
-                .number(leaderboardItem.roiInPeriod * 100)
-                .percentage()
+        THSignedNumber roi = THSignedPercentage
+                .builder(leaderboardItem.roiInPeriod * 100)
+                .withSign()
+                .signTypeArrow()
+                .relevantDigitCount(3)
                 .build();
         lbmuRoi.setText(roi.toString());
-        lbmuRoi.setTextColor(getResources().getColor(roi.getColor()));
+        lbmuRoi.setTextColor(getResources().getColor(roi.getColorResId()));
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = THSignedNumber.builder()
-                .number(leaderboardItem.roiAnnualizedInPeriod * 100)
-                .percentage()
+        THSignedNumber roiAnnualizedVal = THSignedPercentage
+                .builder(leaderboardItem.roiAnnualizedInPeriod * 100)
+                .withSign()
+                .signTypeArrow()
+                .relevantDigitCount(3)
                 .build();
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = THSignedNumber.builder()
-                .number(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
-                .percentage()
+        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage
+                .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
+                .withSign()
+                .signTypeArrow()
+                .relevantDigitCount(3)
                 .build();
         String benchmarkRoiInPeriodFormat =
                 getContext().getString(R.string.leaderboard_benchmark_roi_format);
@@ -414,10 +419,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // sharpe ratio
         if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
         {
-            lbmuSharpeRatio.setText(THSignedNumber.builder()
-                    .number(leaderboardItem.sharpeRatioInPeriodVsSP500)
-                    .money()
-                    .withOutSign()
+            lbmuSharpeRatio.setText(THSignedNumber
+                    .builder(leaderboardItem.sharpeRatioInPeriodVsSP500)
                     .build()
                     .toString());
         }
@@ -443,21 +446,30 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
 
         // Number of trades in Period
-        lbmuNumberTradesInPeriod.setText(
-                String.format("%,d", leaderboardItem.numberOfTradesInPeriod));
+        if (lbmuNumberTradesInPeriod != null)
+        {
+            lbmuNumberTradesInPeriod.setText(THSignedNumber
+                    .builder(leaderboardItem.numberOfTradesInPeriod)
+                    .build().toString());
+        }
 
         // average days held
-        lbmuAvgDaysHeld.setText(NumberDisplayUtils.formatWithRelevantDigits(
-                (double) leaderboardItem.avgHoldingPeriodMins / (60 * 24), 3));
-        String winRatioFormat = getContext().getString(R.string.leaderboard_win_ratio);
-        String digitsWinRatio =
-                NumberDisplayUtils.formatWithRelevantDigits(leaderboardItem.getWinRatio() * 100, 3);
-        String winRatio = String.format(winRatioFormat, digitsWinRatio);
-        lbmuWinRatio.setText(digitsWinRatio + "%");
+        lbmuAvgDaysHeld.setText(THSignedNumber
+                .builder(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
+                .relevantDigitCount(3)
+                .build().toString());
+        lbmuWinRatio.setText(THSignedPercentage
+                .builder(leaderboardItem.getWinRatio() * 100)
+                .relevantDigitCount(3)
+                .build().toString());
 
         // followers & comments count
-        lbmuFollowersCount.setText("" + leaderboardItem.getTotalFollowersCount());
-        lbmuCommentsCount.setText("" + leaderboardItem.getCommentsCount());
+        lbmuFollowersCount.setText(THSignedNumber
+                .builder(leaderboardItem.getTotalFollowersCount())
+                .build().toString());
+        lbmuCommentsCount.setText(THSignedNumber
+                .builder(leaderboardItem.getCommentsCount())
+                .build().toString());
     }
 
     @Override public void onExpand(boolean expand)
@@ -480,9 +492,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (lbmuPl != null && leaderboardItem != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(leaderboardItem.PLinPeriodRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney
+                    .builder(leaderboardItem.PLinPeriodRefCcy)
                     .withOutSign()
                     .currency(getLbmuPlCurrencyDisplay())
                     .build();
@@ -506,7 +517,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             Boolean isFollowing = isCurrentUserFollowing();
             boolean showButton = isFollowing == null || !isFollowing;
             lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
-            boolean enableButton = isFollowing != null && !isFollowing;
         }
     }
 
@@ -540,7 +550,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             case R.id.leaderboard_user_item_follow:
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
                 detachFollowDialogCombo();
-                followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
+                followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER,
                         new LeaderBoardFollowRequestedListener());
                 break;
@@ -553,12 +563,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     public class LeaderBoardFollowRequestedListener
             implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
         {
             freeFollow(heroId);
         }
 
-        @Override public void premiumFollowRequested(UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
         {
             follow(heroId);
         }
@@ -568,7 +578,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
             LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
@@ -577,7 +587,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
@@ -587,9 +597,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         handleOpenProfileButtonClicked();
     }
 
-    protected void freeFollow(UserBaseKey heroId)
+    protected void freeFollow(@NotNull UserBaseKey heroId)
     {
-        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
+        heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
                 R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
@@ -597,7 +607,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                         .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow(UserBaseKey heroId)
+    protected void follow(@NotNull UserBaseKey heroId)
     {
         notifyFollowRequested(heroId);
     }
@@ -690,7 +700,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(userProfileDTO, true);
     }
 
-    protected void notifyFollowRequested(UserBaseKey heroId)
+    protected void notifyFollowRequested(@NotNull UserBaseKey heroId)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)

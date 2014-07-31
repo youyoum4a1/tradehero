@@ -31,6 +31,10 @@
   <string name="buy_sell_market_status">Market status</string>
   <string name="buy_sell_toggle">Toggle Buy/Sell mode</string>
 
+  <string name="buy_sell_no_quote_title">Unable to Transact</string>
+  <string name="buy_sell_no_quote_message">No stock quote available.</string>
+  <string name="buy_sell_no_quote_cancel">Okay</string>
+
   <string name="buy_sell_portfolio_selected_title">Portfolio:</string>
 
   <string name="alert_dialog_buy_sell_order_null_title">This is embarrassing</string>

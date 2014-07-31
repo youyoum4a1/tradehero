@@ -52,7 +52,6 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
     @SuppressWarnings("unchecked")
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-
         convertView = LayoutInflater.from(getContext()).inflate(getItemViewResId(position), viewGroup, false);
         if (convertView instanceof DTOView)
         {
@@ -76,4 +75,19 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         return getItemViewType(position);
     }
     //</editor-fold>
+
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        ContestPageDTO item = getItem(position);
+        if (item instanceof ProviderContestPageDTO)
+        {
+            return true;
+        }
+        return false;
+    }
 }

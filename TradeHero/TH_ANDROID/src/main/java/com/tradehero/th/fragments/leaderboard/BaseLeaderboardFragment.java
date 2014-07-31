@@ -8,8 +8,12 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -18,6 +22,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.tradehero.th.persistence.leaderboard.UserOnLeaderboardCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -37,10 +42,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Inject LeaderboardSortHelper leaderboardSortHelper;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
+    @Inject UserOnLeaderboardCache userOnLeaderboardCache;
 
     protected LeaderboardDefKey leaderboardDefKey;
     protected UserProfileDTO currentUserProfileDTO;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO> userOnLeaderboardCacheListener;
 
     protected int currentRank;
     protected Double roiToBeShown;
@@ -73,9 +80,9 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return args.getInt(BUNDLE_KEY_LEADERBOARD_CURRENT_RANK, 0);
     }
 
-    public static void putROIValueToBeShown(@NotNull Bundle args,@Nullable Double roi)
+    public static void putROIValueToBeShown(@NotNull Bundle args, @Nullable Double roi)
     {
-        if(roi != null)
+        if (roi != null)
         {
             args.putDouble(BUNDLE_KEY_LEADERBOARD_ROI_VALUE_TO_BE_SHOWN, roi);
         }
@@ -95,6 +102,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         leaderboardDefKey = getLeadboardDefKey(getArguments());
         this.userProfileCacheListener = createUserProfileListener();
+        this.userOnLeaderboardCacheListener = createUserOnLeaderboardListener();
         this.currentRank = getCurrentUserRank(getArguments());
         this.roiToBeShown = getROIValueToBeShown(getArguments());
     }
@@ -118,17 +126,20 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         super.onResume();
         fetchCurrentUserProfile();
+        fetchUserOnLeaderboard();
     }
 
     @Override public void onStop()
     {
         detachUserProfileCache();
+        detachUserOnLeaderboardCacheListener();
         super.onStop();
     }
 
     @Override public void onDestroy()
     {
         this.userProfileCacheListener = null;
+        this.userOnLeaderboardCacheListener = null;
         super.onDestroy();
     }
 
@@ -146,11 +157,31 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         }
     }
 
+    protected void detachUserOnLeaderboardCacheListener()
+    {
+        if (userOnLeaderboardCacheListener != null)
+        {
+            userOnLeaderboardCache.unregister(userOnLeaderboardCacheListener);
+        }
+    }
+
     protected void fetchCurrentUserProfile()
     {
         detachUserProfileCache();
         userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    protected void fetchUserOnLeaderboard()
+    {
+        if (shouldShowUserRank())
+        {
+            detachUserOnLeaderboardCacheListener();
+            UserOnLeaderboardKey userOnLeaderboardKey =
+                    new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
+            userOnLeaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
+            userOnLeaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
+        }
     }
 
     protected int getMenuResource()
@@ -224,11 +255,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
-    {
-        return new BaseLeaderboardFragmentProfileCacheListener();
-    }
-
     /**
      * returns true if we should show the user's current ranking.
      *
@@ -263,15 +289,39 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return null;
     }
 
+    protected void userIsRanked(int rankZeroBased, double roiInPeriod)
+    {
+        currentRank = rankZeroBased + 1;
+        roiToBeShown = roiInPeriod;
+    }
+
+    protected void userIsNotRanked()
+    {
+        currentRank = FLAG_USER_NOT_RANKED;
+    }
+
     protected void initCurrentRankHeaderView()
     {
-        mRankHeaderView.setRank(currentRank);
-        mRankHeaderView.setRoiToBeShown(roiToBeShown);
+        if (mRankHeaderView != null)
+        {
+            mRankHeaderView.setRank(currentRank);
+            mRankHeaderView.setRoiToBeShown(roiToBeShown);
+        }
     }
 
     protected int getCurrentRankLayoutResId()
     {
         return R.layout.leaderboard_current_user_rank_header_view;
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    {
+        return new BaseLeaderboardFragmentProfileCacheListener();
+    }
+
+    protected DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO> createUserOnLeaderboardListener()
+    {
+        return new BaseLeaderboardFragmentUserOnLeaderboardCacheListener();
     }
 
     protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
@@ -290,6 +340,35 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         {
             Timber.e("Failed to download current UserProfile", error);
             THToast.show(R.string.error_fetch_your_user_profile);
+        }
+    }
+
+    protected class BaseLeaderboardFragmentUserOnLeaderboardCacheListener implements DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO>
+    {
+
+        @Override public void onDTOReceived(@NotNull UserOnLeaderboardKey key, @NotNull LeaderboardDTO value)
+        {
+            if (value.users != null && value.users.size() == 1)
+            {
+                LeaderboardUserDTO leaderboardUserDTO = value.users.get(0);
+                if (leaderboardUserDTO.ordinalPosition >= 0)
+                {
+                    userIsRanked(leaderboardUserDTO.ordinalPosition, leaderboardUserDTO.roiInPeriod);
+                }
+            }
+            else
+            {
+                userIsNotRanked();
+            }
+            initCurrentRankHeaderView();
+        }
+
+        @Override public void onErrorThrown(@NotNull UserOnLeaderboardKey key, @NotNull Throwable error)
+        {
+            Timber.e("Failed to download current User position on leaderboard", error);
+            THToast.show(R.string.error_fetch_user_on_leaderboard);
+            userIsNotRanked();
+            initCurrentRankHeaderView();
         }
     }
 }

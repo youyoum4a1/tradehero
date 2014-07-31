@@ -21,9 +21,11 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
@@ -111,9 +113,7 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceFallDescription(double targetPrice)
     {
-        THSignedNumber thPriceRaise = THSignedNumber.builder()
-                .number(targetPrice)
-                .money()
+        THSignedNumber thPriceRaise = THSignedMoney.builder(targetPrice)
                 .withOutSign()
                 .build();
         return Html.fromHtml(String.format(
@@ -124,9 +124,7 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceRaiseDescription(double targetPrice)
     {
-        THSignedNumber thPriceRaise = THSignedNumber.builder()
-                .number(targetPrice)
-                .money()
+        THSignedNumber thPriceRaise = THSignedMoney.builder(targetPrice)
                 .withOutSign()
                 .build();
         return Html.fromHtml(String.format(
@@ -137,10 +135,7 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceMovementDescription(double percentage)
     {
-        THSignedNumber thPercentageChange = THSignedNumber.builder()
-                .number(percentage)
-                .percentage()
-                .build();
+        THSignedNumber thPercentageChange = THSignedPercentage.builder(percentage).build();
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.stock_alert_when_price_move),
                 thPercentageChange.toString()

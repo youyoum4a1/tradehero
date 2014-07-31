@@ -16,6 +16,11 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
     {
         super();
     }
+
+    public UserFriendsLinkedinDTO(@NotNull String liId)
+    {
+        this.liId = liId;
+    }
     //</editor-fold>
 
     @Override public int getNetworkLabelImage()
