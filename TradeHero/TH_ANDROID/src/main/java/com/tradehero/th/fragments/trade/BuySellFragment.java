@@ -659,7 +659,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 else
                 {
                     bthSignedNumber = THSignedNumber.builder()
-                            .number(quoteDTO.ask)
+                            .value(quoteDTO.ask)
                             .withOutSign()
                             .build();
                     bPrice = bthSignedNumber.toString();
@@ -672,7 +672,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 else
                 {
                     sthSignedNumber = THSignedNumber.builder()
-                            .number(quoteDTO.bid)
+                            .value(quoteDTO.bid)
                             .withOutSign()
                             .build();
                     sPrice = sthSignedNumber.toString();

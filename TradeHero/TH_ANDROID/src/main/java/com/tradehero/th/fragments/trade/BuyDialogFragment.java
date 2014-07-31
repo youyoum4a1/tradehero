@@ -26,7 +26,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
     {
         String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
         THSignedNumber bThSignedNumber = THSignedNumber.builder()
-                .number(quoteDTO.ask)
+                .value(quoteDTO.ask)
                 .withOutSign()
                 .build();
         String bPrice = bThSignedNumber.toString();
@@ -50,7 +50,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
 
                 double cashAvailable = portfolioCompactDTO.cashBalance;
                 THSignedNumber thSignedNumber = THSignedMoney.builder()
-                        .number(cashAvailable - value)
+                        .value(cashAvailable - value)
                         .withOutSign()
                         .currency(portfolioCompactDTO.currencyDisplay)
                         .build();

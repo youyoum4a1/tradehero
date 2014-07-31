@@ -305,7 +305,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         if (alertDTO.priceMovement == null)
         {
             THSignedNumber thTargetPrice = THSignedMoney.builder()
-                    .number(alertDTO.targetPrice)
+                    .value(alertDTO.targetPrice)
                     .withOutSign()
                     .build();
             targetPrice.setText(thTargetPrice.toString());
@@ -314,7 +314,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         else
         {
             THSignedNumber thPriceMovement = THSignedPercentage.builder()
-                    .number(alertDTO.priceMovement * 100)
+                    .value(alertDTO.priceMovement * 100)
                     .build();
             targetPrice.setText(thPriceMovement.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
@@ -324,7 +324,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     private void displayCurrentPrice()
     {
         THSignedNumber thCurrentPrice = THSignedMoney.builder()
-                .number(alertDTO.security.lastPrice)
+                .value(alertDTO.security.lastPrice)
                 .withOutSign()
                 .build();
         currentPrice.setText(thCurrentPrice.toString());

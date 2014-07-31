@@ -281,7 +281,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                     securityCompactDTO.lastPrice))
             {
                 lastPrice.setText(THSignedNumber.builder()
-                                .number(securityCompactDTO.lastPrice)
+                                .value(securityCompactDTO.lastPrice)
                                 .withOutSign()
                             .build().toString());
             }

@@ -298,7 +298,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             {
                 double value = mTransactionQuantity * priceRefCcy;
                 THSignedNumber thTradeValue = THSignedMoney.builder()
-                        .number(value)
+                        .value(value)
                         .withOutSign()
                         .currency(portfolioCompactDTO.currencyDisplay)
                         .build();

@@ -126,7 +126,7 @@ public class UserProfileResideMenuItem extends LinearLayout
                     userProfileDTO.portfolio.roiSinceInception = 0.0D;
                 }
                 THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
-                        .number(userProfileDTO.portfolio.roiSinceInception * 100)
+                        .value(userProfileDTO.portfolio.roiSinceInception * 100)
                         .build();
 
                 userProfileRoi.setText(thRoiSinceInception.toString());

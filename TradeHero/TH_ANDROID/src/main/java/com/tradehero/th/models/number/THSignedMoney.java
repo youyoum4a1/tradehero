@@ -11,7 +11,7 @@ public class THSignedMoney extends THSignedNumber
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
             extends THSignedNumber.Builder<BuilderType>
     {
-        @Nullable private String currency = null;
+        @Nullable private String currency;
 
         public BuilderType currency(String currency)
         {

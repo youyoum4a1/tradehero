@@ -425,7 +425,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         }
 
         THSignedNumber thSignedNumber = THSignedMoney.builder()
-                .number(formattedPrice)
+                .value(formattedPrice)
                 .withOutSign()
                 .currency(currencyDisplay)
                 .build();

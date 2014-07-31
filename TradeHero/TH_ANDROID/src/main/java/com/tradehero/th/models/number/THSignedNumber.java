@@ -3,10 +3,8 @@ package com.tradehero.th.models.number;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.ColorUtils;
-import com.tradehero.th.utils.SecurityUtils;
 import java.text.DecimalFormat;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class THSignedNumber
 {
@@ -23,14 +21,14 @@ public class THSignedNumber
 
     private final boolean withSign;
     private final int signType;
-    private final Double number;
+    private final Double value;
     private final int relevantDigitCount;
     private String formattedNumber;
     private Integer colorResId;
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
     {
-        private Double number;
+        private Double value;
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
@@ -39,12 +37,12 @@ public class THSignedNumber
 
         protected boolean isValid()
         {
-            return number != null;
+            return value != null;
         }
 
-        public BuilderType number(double number)
+        public BuilderType value(double number)
         {
-            this.number = number;
+            this.value = number;
             return self();
         }
 
@@ -108,7 +106,7 @@ public class THSignedNumber
     {
         this.withSign = builder.withSign;
         this.signType = builder.signType;
-        this.number = builder.number;
+        this.value = builder.value;
         this.relevantDigitCount = builder.relevantDigitCount;
 
         if (!builder.isValid())
@@ -122,7 +120,7 @@ public class THSignedNumber
     {
         if (colorResId == null)
         {
-            colorResId = ColorUtils.getColorResourceIdForNumber(number);
+            colorResId = ColorUtils.getColorResourceIdForNumber(value);
         }
         return colorResId;
     }
@@ -154,7 +152,7 @@ public class THSignedNumber
         int precision = getPrecisionFromNumber();
 
         DecimalFormat df = new DecimalFormat(getStringFormat(precision).toString());
-        String formatted = df.format(Math.abs(number));
+        String formatted = df.format(Math.abs(value));
         return removeTrailingZeros(formatted);
     }
 
@@ -197,7 +195,7 @@ public class THSignedNumber
     //<editor-fold desc="Precision">
     protected int getPrecisionFromNumber()
     {
-        return getPrecisionFromNumber(number, relevantDigitCount);
+        return getPrecisionFromNumber(value, relevantDigitCount);
     }
 
     public static int getPrecisionFromNumber(double number, int relevantDigitCount)
@@ -228,13 +226,13 @@ public class THSignedNumber
         switch (signType)
         {
             case TYPE_SIGN_ARROW:
-                return getArrowPrefix(number);
+                return getArrowPrefix(value);
 
             case TYPE_SIGN_MINUS_ONLY:
-                return getMinusOnlyPrefix(number);
+                return getMinusOnlyPrefix(value);
 
             case TYPE_SIGN_PLUS_MINUS_ALWAYS:
-                return getPlusMinusPrefix(number);
+                return getPlusMinusPrefix(value);
 
             default:
                 throw new IllegalArgumentException("Unhandled signType: " + signType);

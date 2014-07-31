@@ -82,7 +82,7 @@ public class UserProfileCompactViewHolder
                     pl = 0.0;
                 }
                 THSignedNumber thPlSinceInception = THSignedMoney.builder()
-                        .number(pl)
+                        .value(pl)
                         .withSign()
                         .signTypePlusMinusAlways()
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
@@ -135,7 +135,7 @@ public class UserProfileCompactViewHolder
                     && userProfileDTO.portfolio.roiSinceInception != null)
             {
                 THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
-                        .number(userProfileDTO.portfolio.roiSinceInception * 100)
+                        .value(userProfileDTO.portfolio.roiSinceInception * 100)
                         .build();
                 roiSinceInception.setText(thRoiSinceInception.toString());
                 roiSinceInception.setTextColor(

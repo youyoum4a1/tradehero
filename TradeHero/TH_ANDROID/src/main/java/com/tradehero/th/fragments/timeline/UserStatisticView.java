@@ -104,7 +104,7 @@ public class UserStatisticView extends LinearLayout
     private void showExpandAnimation()
     {
         String digitsWinRatio = THSignedPercentage.builder()
-                .number(leaderboardUserDTO.getWinRatio() * 100)
+                .value(leaderboardUserDTO.getWinRatio() * 100)
                 .withOutSign()
                 .relevantDigitCount(3)
                 .build().toString();
@@ -151,7 +151,7 @@ public class UserStatisticView extends LinearLayout
     private void showValueWithoutAnimation()
     {
         String digitsWinRatio = THSignedNumber.builder()
-                .number(leaderboardUserDTO.getWinRatio() * 100)
+                .value(leaderboardUserDTO.getWinRatio() * 100)
                 .relevantDigitCount(3)
                 .withOutSign()
                 .build().toString();

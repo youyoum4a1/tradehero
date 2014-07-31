@@ -219,7 +219,7 @@ public class FollowerListItemView extends RelativeLayout
             if (userFollowerDTO != null)
             {
                 THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
-                        .number(userFollowerDTO.roiSinceInception * 100)
+                        .value(userFollowerDTO.roiSinceInception * 100)
                         .build();
                 revenueInfo.setText(thRoiSinceInception.toString());
                 revenueInfo.setTextColor(

@@ -383,7 +383,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         // display Roi
         THSignedNumber roi = THSignedPercentage.builder()
-                .number(leaderboardItem.roiInPeriod * 100)
+                .value(leaderboardItem.roiInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -393,7 +393,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         // display Roi annualized
         THSignedNumber roiAnnualizedVal = THSignedPercentage.builder()
-                .number(leaderboardItem.roiAnnualizedInPeriod * 100)
+                .value(leaderboardItem.roiAnnualizedInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -404,7 +404,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         // benchmark roi
         THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage.builder()
-                .number(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
+                .value(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -419,7 +419,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
         {
             lbmuSharpeRatio.setText(THSignedNumber.builder()
-                    .number(leaderboardItem.sharpeRatioInPeriodVsSP500)
+                    .value(leaderboardItem.sharpeRatioInPeriodVsSP500)
                     .build()
                     .toString());
         }
@@ -448,26 +448,26 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (lbmuNumberTradesInPeriod != null)
         {
             lbmuNumberTradesInPeriod.setText(THSignedNumber.builder()
-                    .number(leaderboardItem.numberOfTradesInPeriod)
+                    .value(leaderboardItem.numberOfTradesInPeriod)
                     .build().toString());
         }
 
         // average days held
         lbmuAvgDaysHeld.setText(THSignedNumber.builder()
-                .number(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
+                .value(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
                 .relevantDigitCount(3)
                 .build().toString());
         lbmuWinRatio.setText(THSignedPercentage.builder()
-                .number(leaderboardItem.getWinRatio() * 100)
+                .value(leaderboardItem.getWinRatio() * 100)
                 .relevantDigitCount(3)
                 .build().toString());
 
         // followers & comments count
         lbmuFollowersCount.setText(THSignedNumber.builder()
-                .number(leaderboardItem.getTotalFollowersCount())
+                .value(leaderboardItem.getTotalFollowersCount())
                 .build().toString());
         lbmuCommentsCount.setText(THSignedNumber.builder()
-                .number(leaderboardItem.getCommentsCount())
+                .value(leaderboardItem.getCommentsCount())
                 .build().toString());
     }
 
@@ -492,7 +492,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         if (lbmuPl != null && leaderboardItem != null)
         {
             THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .number(leaderboardItem.PLinPeriodRefCcy)
+                    .value(leaderboardItem.PLinPeriodRefCcy)
                     .withOutSign()
                     .currency(getLbmuPlCurrencyDisplay())
                     .build();

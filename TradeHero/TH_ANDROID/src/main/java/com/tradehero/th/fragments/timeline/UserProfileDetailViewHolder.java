@@ -167,7 +167,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                     pl = 0.0;
                 }
                 THSignedNumber thPlSinceInception = THSignedMoney.builder()
-                        .number(pl)
+                        .value(pl)
                         .withSign()
                         .signTypePlusMinusAlways()
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
@@ -200,7 +200,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
                 THSignedNumber thTotalWealth = THSignedMoney.builder()
-                        .number(userProfileDTO.portfolio.totalValue)
+                        .value(userProfileDTO.portfolio.totalValue)
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 totalWealth.setText(thTotalWealth.toString());
@@ -219,7 +219,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
                 THSignedNumber thAdditionalCash = THSignedMoney.builder()
-                        .number(userProfileDTO.portfolio.getTotalExtraCash())
+                        .value(userProfileDTO.portfolio.getTotalExtraCash())
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 additionalCash.setText(thAdditionalCash.toString());
@@ -238,7 +238,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
                 THSignedNumber thCashOnHand = THSignedMoney.builder()
-                        .number(userProfileDTO.portfolio.cashBalance)
+                        .value(userProfileDTO.portfolio.cashBalance)
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 cashOnHand.setText(thCashOnHand.toString());

@@ -37,7 +37,7 @@ public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilte
     protected String getMaxValueText()
     {
         THSignedNumber signedNumber = THSignedNumber.builder()
-                .number((double) maxValue)
+                .value((double) maxValue)
                 .withOutSign()
                 .build();
         return signedNumber.toString();
@@ -46,7 +46,7 @@ public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilte
     @Override protected String getCurrentValueText()
     {
         THSignedNumber signedNumber = THSignedNumber.builder()
-                .number((double) currentValue)
+                .value((double) currentValue)
                 .withOutSign()
                 .build();
         return signedNumber.toString();

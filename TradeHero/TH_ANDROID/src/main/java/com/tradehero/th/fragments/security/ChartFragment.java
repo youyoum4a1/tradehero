@@ -496,7 +496,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mStrikePrice.setText(THSignedMoney.builder()
-                        .number(warrantDTO.strikePrice)
+                        .value(warrantDTO.strikePrice)
                         .currency(warrantDTO.strikePriceCcy)
                         .build().toString());
             }
@@ -544,7 +544,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mPreviousClose.setText(THSignedMoney.builder()
-                        .number(value.previousClose)
+                        .value(value.previousClose)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -562,7 +562,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mOpen.setText(THSignedMoney.builder()
-                        .number(value.open)
+                        .value(value.open)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -580,7 +580,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mDaysHigh.setText(THSignedMoney.builder()
-                        .number(value.high)
+                        .value(value.high)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -598,7 +598,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mDaysLow.setText(THSignedMoney.builder()
-                        .number(value.low)
+                        .value(value.low)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -616,7 +616,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mPERatio.setText(THSignedNumber.builder()
-                        .number(value.pe)
+                        .value(value.pe)
                         .build().toString());
             }
         }
@@ -633,7 +633,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mEps.setText(THSignedNumber.builder()
-                        .number(value.eps)
+                        .value(value.eps)
                         .build().toString());
             }
         }
@@ -650,7 +650,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mVolume.setText(THSignedNumber.builder()
-                        .number(value.volume)
+                        .value(value.volume)
                         .build().toString());
             }
         }
@@ -667,7 +667,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             else
             {
                 mAvgVolume.setText(THSignedNumber.builder()
-                        .number(value.averageDailyVolume)
+                        .value(value.averageDailyVolume)
                         .build().toString());
             }
         }

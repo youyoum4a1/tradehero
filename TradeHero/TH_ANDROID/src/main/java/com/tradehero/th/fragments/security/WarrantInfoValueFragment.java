@@ -20,7 +20,6 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -268,7 +267,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             {
                 mStrikePrice.setText(
                         THSignedMoney.builder()
-                                .number(warrantDTO.strikePrice)
+                                .value(warrantDTO.strikePrice)
                                 .currency(warrantDTO.strikePriceCcy)
                                 .withOutSign()
                                 .build().toString()

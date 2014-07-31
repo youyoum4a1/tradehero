@@ -27,7 +27,7 @@ public class TradeDTOUtils
         if (tradeDTO != null)
         {
             THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .number(tradeDTO.realizedPLAfterTradeRefCcy)
+                    .value(tradeDTO.realizedPLAfterTradeRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -50,7 +50,7 @@ public class TradeDTOUtils
         if (tradeDTO != null)
         {
             THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .number(tradeDTO.realizedPLAfterTradeRefCcy)
+                    .value(tradeDTO.realizedPLAfterTradeRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();

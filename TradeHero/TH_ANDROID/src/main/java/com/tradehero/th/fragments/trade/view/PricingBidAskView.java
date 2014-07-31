@@ -189,7 +189,7 @@ public class PricingBidAskView extends LinearLayout
             return getResources().getString(R.string.buy_sell_ask_price_not_available);
         }
         THSignedNumber thSignedNumber = THSignedNumber.builder()
-                .number(quoteDTO.ask)
+                .value(quoteDTO.ask)
                 .withOutSign()
                 .build();
         return thSignedNumber.toString();
@@ -215,7 +215,7 @@ public class PricingBidAskView extends LinearLayout
             return getResources().getString(R.string.buy_sell_bid_price_not_available);
         }
         THSignedNumber thSignedNumber = THSignedNumber.builder()
-                .number(quoteDTO.bid)
+                .value(quoteDTO.bid)
                 .withOutSign()
                 .build();
         return thSignedNumber.toString();
@@ -244,7 +244,7 @@ public class PricingBidAskView extends LinearLayout
         else
         {
             THSignedNumber thSignedNumber = THSignedMoney.builder()
-                    .number(priceRefCcy)
+                    .value(priceRefCcy)
                     .withOutSign()
                     .currency(portfolioCompactDTO.getNiceCurrency())
                     .build();
