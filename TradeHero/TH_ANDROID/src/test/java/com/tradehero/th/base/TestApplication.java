@@ -12,6 +12,7 @@ import com.facebook.LoginActivity;
 import com.tradehero.TestModule;
 import com.tradehero.common.log.SystemOutTree;
 import com.tradehero.th.utils.DaggerUtils;
+import dagger.internal.loaders.GeneratedAdapters;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +28,6 @@ import static org.robolectric.Robolectric.shadowOf;
 public class TestApplication extends Application
         implements TestLifecycleApplication
 {
-    private static final String DAGGER_INJECT_ADAPTER_CLASS_SUFFIX = "$$InjectAdapter";
-
     @Override protected void init()
     {
         super.init();
@@ -84,7 +83,7 @@ public class TestApplication extends Application
     {
         try
         {
-            Class.forName(test.getClass().getName() + DAGGER_INJECT_ADAPTER_CLASS_SUFFIX);
+            Class.forName(test.getClass().getName() + GeneratedAdapters.INJECT_ADAPTER_SUFFIX);
             DaggerUtils.inject(test);
         }
         catch (ClassNotFoundException e)

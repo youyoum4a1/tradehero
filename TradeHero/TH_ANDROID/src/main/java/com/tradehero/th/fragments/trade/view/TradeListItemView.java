@@ -17,13 +17,14 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -178,14 +179,11 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         {
             int textResId = trade.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
             THSignedNumber tradeQuantity = THSignedNumber.builder()
-                    .number((double) Math.abs(trade.quantity))
-                    .money()
+                    .value((double) Math.abs(trade.quantity))
                     .withOutSign()
-                    .currency("")
                     .build();
-            THSignedNumber tradeValue = THSignedNumber.builder()
-                    .number(trade.unitPriceRefCcy)
-                    .money()
+            THSignedNumber tradeValue = THSignedMoney.builder()
+                    .value(trade.unitPriceRefCcy)
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();
@@ -213,10 +211,8 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         if (trade != null)
         {
             THSignedNumber tradeQuantityAfterTrade = THSignedNumber.builder()
-                    .number((double) Math.abs(trade.quantityAfterTrade))
-                    .money()
+                    .value((double) Math.abs(trade.quantityAfterTrade))
                     .withOutSign()
-                    .currency("")
                     .build();
             return getContext().getString(
                     tradeItem.isLastTrade() ? R.string.trade_holding_quantity_verbose : R.string.trade_held_quantity_verbose,
@@ -360,9 +356,8 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (trade != null)
         {
-            THSignedNumber tradeValue = THSignedNumber.builder()
-                    .number(trade.quantity * trade.unitPriceRefCcy)
-                    .money()
+            THSignedNumber tradeValue = THSignedMoney.builder()
+                    .value(trade.quantity * trade.unitPriceRefCcy)
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();

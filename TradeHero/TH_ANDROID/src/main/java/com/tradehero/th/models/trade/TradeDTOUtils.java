@@ -4,8 +4,9 @@ import android.content.res.Resources;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.utils.ColorUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class TradeDTOUtils
@@ -25,9 +26,8 @@ public class TradeDTOUtils
     {
         if (tradeDTO != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(tradeDTO.realizedPLAfterTradeRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(tradeDTO.realizedPLAfterTradeRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -49,9 +49,8 @@ public class TradeDTOUtils
     {
         if (tradeDTO != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(tradeDTO.realizedPLAfterTradeRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(tradeDTO.realizedPLAfterTradeRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();

@@ -10,6 +10,7 @@ public class UserOnLeaderboardKey implements DTOKey
     @NotNull public final LeaderboardKey leaderboardKey;
     @NotNull public final UserBaseKey userBaseKey;
 
+    //<editor-fold desc="Constructors">
     public UserOnLeaderboardKey(
             @NotNull LeaderboardKey leaderboardKey,
             @NotNull UserBaseKey userBaseKey)
@@ -17,6 +18,7 @@ public class UserOnLeaderboardKey implements DTOKey
         this.leaderboardKey = leaderboardKey;
         this.userBaseKey = userBaseKey;
     }
+    //</editor-fold>
 
     @Override public int hashCode()
     {

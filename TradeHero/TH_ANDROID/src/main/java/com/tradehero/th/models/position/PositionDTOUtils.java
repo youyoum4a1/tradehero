@@ -5,9 +5,10 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.ColorUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class PositionDTOUtils
@@ -35,9 +36,8 @@ public class PositionDTOUtils
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(position.sumInvestedAmountRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.sumInvestedAmountRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -67,9 +67,8 @@ public class PositionDTOUtils
                 position.marketValueStartPeriodRefCcy != null &&
                 /* It appears iOS version does that */position.marketValueStartPeriodRefCcy > 0)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(position.marketValueStartPeriodRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.marketValueStartPeriodRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -110,9 +109,8 @@ public class PositionDTOUtils
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(position.realizedPLRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.realizedPLRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -140,9 +138,8 @@ public class PositionDTOUtils
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(position.totalPLInPeriodRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.totalPLInPeriodRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -170,9 +167,8 @@ public class PositionDTOUtils
     {
         if (position != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(position.marketValueRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.marketValueRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -213,9 +209,8 @@ public class PositionDTOUtils
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
-                    .number(position.unrealizedPLRefCcy)
-                    .money()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
+                    .value(position.unrealizedPLRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -252,9 +247,13 @@ public class PositionDTOUtils
         }
         else
         {
-            String roiText = NumberDisplayUtils.getArrowPrefix(roiValue);
-            roiText += NumberDisplayUtils.formatWithRelevantDigits(Math.abs(roiValue * 100.0), 3) + "%";
-            textView.setText(roiText);
+            THSignedNumber roiNumber = THSignedPercentage.builder()
+                    .value(Math.abs(roiValue * 100.0))
+                    .withSign()
+                    .signTypeArrow()
+                    .relevantDigitCount(3)
+                    .build();
+            textView.setText(roiNumber.toString());
             textView.setTextColor(
                     ColorUtils.getProperColorForNumber(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
         }
@@ -277,9 +276,8 @@ public class PositionDTOUtils
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
 
-            THSignedNumber formatSumPurchasesInPeriodRefCcy = THSignedNumber.builder()
-                    .number(position.sum_purchasesInPeriodRefCcy)
-                    .money()
+            THSignedNumber formatSumPurchasesInPeriodRefCcy = THSignedMoney.builder()
+                    .value(position.sum_purchasesInPeriodRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();

@@ -41,7 +41,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 public abstract class SocialFriendsFragment extends DashboardFragment
-        implements SocialFriendItemView.OnElementClickListener, View.OnClickListener
+        implements SocialFriendUserView.OnElementClickListener, View.OnClickListener
 {
     @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
     @InjectView(R.id.search_social_friends) EditText searchEdit;
@@ -110,7 +110,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public void onInviteButtonClick(UserFriendsDTO userFriendsDTO)
+    public void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
     {
         List<UserFriendsDTO> usersToInvite = Arrays.asList(userFriendsDTO);
         handleInviteUsers(usersToInvite);
@@ -118,7 +118,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public void onFollowButtonClick(UserFriendsDTO userFriendsDTO)
+    public void onFollowButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
     {
         Timber.d("onFollowButtonClick %s", userFriendsDTO);
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
@@ -126,7 +126,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public void onCheckBoxClick(UserFriendsDTO userFriendsDTO)
+    public void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO)
     {
         Timber.d("onCheckBoxClicked " + userFriendsDTO);
         setInviteAllViewCountText(getCountOfCheckBoxInvited());
@@ -485,7 +485,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 new SocialFriendsAdapter(
                         getActivity(),
                         listedSocialItems,
-                        R.layout.social_friends_item);
+                        R.layout.social_friends_item,
+                        R.layout.social_friends_item_header);
         socialFriendsListAdapter.setOnElementClickedListener(this);
         friendsRootView.listView.setAdapter(socialFriendsListAdapter);
     }

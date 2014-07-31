@@ -11,7 +11,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 
 public class PricingBidAskView extends LinearLayout
 {
@@ -188,10 +189,8 @@ public class PricingBidAskView extends LinearLayout
             return getResources().getString(R.string.buy_sell_ask_price_not_available);
         }
         THSignedNumber thSignedNumber = THSignedNumber.builder()
-                .number(quoteDTO.ask)
-                .money()
+                .value(quoteDTO.ask)
                 .withOutSign()
-                .currency("")
                 .build();
         return thSignedNumber.toString();
     }
@@ -216,10 +215,8 @@ public class PricingBidAskView extends LinearLayout
             return getResources().getString(R.string.buy_sell_bid_price_not_available);
         }
         THSignedNumber thSignedNumber = THSignedNumber.builder()
-                .number(quoteDTO.bid)
-                .money()
+                .value(quoteDTO.bid)
                 .withOutSign()
-                .currency("")
                 .build();
         return thSignedNumber.toString();
     }
@@ -246,9 +243,8 @@ public class PricingBidAskView extends LinearLayout
         }
         else
         {
-            THSignedNumber thSignedNumber = THSignedNumber.builder()
-                    .number(priceRefCcy)
-                    .money()
+            THSignedNumber thSignedNumber = THSignedMoney.builder()
+                    .value(priceRefCcy)
                     .withOutSign()
                     .currency(portfolioCompactDTO.getNiceCurrency())
                     .build();

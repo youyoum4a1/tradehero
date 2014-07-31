@@ -3,8 +3,9 @@ package com.tradehero.th.fragments.trade;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 
 public class BuyDialogFragment extends AbstractTransactionDialogFragment
@@ -25,10 +26,8 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
     {
         String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
         THSignedNumber bThSignedNumber = THSignedNumber.builder()
-                .number(quoteDTO.ask)
-                .money()
+                .value(quoteDTO.ask)
                 .withOutSign()
-                .currency("")
                 .build();
         String bPrice = bThSignedNumber.toString();
         return getString(R.string.buy_sell_button_buy, display, bPrice);
@@ -50,9 +49,8 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
                 double value = mTransactionQuantity * priceRefCcy;
 
                 double cashAvailable = portfolioCompactDTO.cashBalance;
-                THSignedNumber thSignedNumber = THSignedNumber.builder()
-                        .number(cashAvailable - value)
-                        .money()
+                THSignedNumber thSignedNumber = THSignedMoney.builder()
+                        .value(cashAvailable - value)
                         .withOutSign()
                         .currency(portfolioCompactDTO.currencyDisplay)
                         .build();

@@ -32,13 +32,15 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -302,30 +304,27 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     {
         if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = THSignedNumber.builder()
-                    .number(alertDTO.targetPrice)
+            THSignedNumber thTargetPrice = THSignedMoney.builder()
+                    .value(alertDTO.targetPrice)
                     .withOutSign()
-                    .money()
                     .build();
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
-            THSignedNumber thPriceMovement = THSignedNumber.builder()
-                    .number(alertDTO.priceMovement * 100)
-                    .percentage()
+            THSignedNumber thPriceMovement = THSignedPercentage.builder()
+                    .value(alertDTO.priceMovement * 100)
                     .build();
-            targetPrice.setText(thPriceMovement.toString(0));
+            targetPrice.setText(thPriceMovement.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
     }
 
     private void displayCurrentPrice()
     {
-        THSignedNumber thCurrentPrice = THSignedNumber.builder()
-                .number(alertDTO.security.lastPrice)
-                .money()
+        THSignedNumber thCurrentPrice = THSignedMoney.builder()
+                .value(alertDTO.security.lastPrice)
                 .withOutSign()
                 .build();
         currentPrice.setText(thCurrentPrice.toString());

@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -49,7 +50,7 @@ import timber.log.Timber;
 
 @Routable("refer-friends")
 public class FriendsInvitationFragment extends DashboardFragment
-        implements AdapterView.OnItemClickListener, SocialFriendItemView.OnElementClickListener
+        implements AdapterView.OnItemClickListener, SocialFriendUserView.OnElementClickListener
 {
     @InjectView(R.id.search_social_friends) EditText searchTextView;
     @InjectView(R.id.social_friend_type_list) ListView socialListView;
@@ -191,7 +192,8 @@ public class FriendsInvitationFragment extends DashboardFragment
                     new SocialFriendsAdapter(
                             getActivity(),
                             socialFriendListItemDTOs,
-                            R.layout.social_friends_item);
+                            R.layout.social_friends_item,
+                            R.layout.social_friends_item_header);
             socialFriendsListAdapter.setOnElementClickedListener(this);
             friendsListView.setAdapter(socialFriendsListAdapter);
             friendsListView.setEmptyView(friendsListEmptyView);
@@ -363,18 +365,18 @@ public class FriendsInvitationFragment extends DashboardFragment
     }
 
     @Override
-    public void onFollowButtonClick(UserFriendsDTO userFriendsDTO)
+    public void onFollowButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
     {
         handleFollowUsers(userFriendsDTO);
     }
 
     @Override
-    public void onInviteButtonClick(UserFriendsDTO userFriendsDTO)
+    public void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
     {
         handleInviteUsers(userFriendsDTO);
     }
 
-    public void onCheckBoxClick(UserFriendsDTO userFriendsDTO)
+    public void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO)
     {
         Timber.d("onCheckBoxClicked " + userFriendsDTO);
     }

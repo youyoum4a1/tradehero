@@ -13,10 +13,13 @@ public class ContestCenterActiveFragment extends ContestCenterBaseFragment
         {
             for (@NotNull ProviderDTO providerDTO : providerDTOs)
             {
-                contestListAdapter.add(new ProviderContestPageDTO(providerDTO));
-                if (providerDTO.vip != null && providerDTO.vip)
+                if (!providerDTO.isUserEnrolled)
                 {
-                    contestListAdapter.add(new EmptyHeadLineDTO());
+                    contestListAdapter.add(new ProviderContestPageDTO(providerDTO));
+                    if (providerDTO.vip != null && providerDTO.vip)
+                    {
+                        contestListAdapter.add(new EmptyHeadLineDTO());
+                    }
                 }
             }
         }
@@ -26,6 +29,6 @@ public class ContestCenterActiveFragment extends ContestCenterBaseFragment
 
     @Override public ContestCenterTabType getCCTabType()
     {
-        return ContestCenterTabType.ACTIVIE;
+        return ContestCenterTabType.ACTIVE;
     }
 }

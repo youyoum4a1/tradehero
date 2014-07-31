@@ -25,9 +25,10 @@ import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
@@ -494,10 +495,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mStrikePrice.setText(getString(
-                        R.string.warrant_info_strike_price_value_display,
-                        warrantDTO.strikePriceCcy,
-                        NumberDisplayUtils.formatWithRelevantDigits(warrantDTO.strikePrice, 4)));
+                mStrikePrice.setText(THSignedMoney.builder()
+                        .value(warrantDTO.strikePrice)
+                        .currency(warrantDTO.strikePriceCcy)
+                        .build().toString());
             }
         }
     }
@@ -542,7 +543,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mPreviousClose.setText(String.format("%s %,.3f", value.currencyDisplay, value.previousClose.doubleValue()));
+                mPreviousClose.setText(THSignedMoney.builder()
+                        .value(value.previousClose)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
     }
@@ -557,10 +561,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mOpen.setText(String.format("%s %,.2f", value.currencyDisplay, value.open.doubleValue()));
+                mOpen.setText(THSignedMoney.builder()
+                        .value(value.open)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
-        //double open = YUtils.parseQuoteValue(yQuotes.get("Open"));
     }
 
     public void displayDaysHigh()
@@ -573,10 +579,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mDaysHigh.setText(String.format("%s %,.2f", value.currencyDisplay, value.high.doubleValue()));
+                mDaysHigh.setText(THSignedMoney.builder()
+                        .value(value.high)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
-        //double daysHigh = YUtils.parseQuoteValue(yQuotes.get("Day's High"));
     }
 
     public void displayDaysLow()
@@ -589,10 +597,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mDaysLow.setText(String.format("%s %,.2f", value.currencyDisplay, value.low.doubleValue()));
+                mDaysLow.setText(THSignedMoney.builder()
+                        .value(value.low)
+                        .currency(value.currencyDisplay)
+                        .build().toString());
             }
         }
-        //double daysLow = YUtils.parseQuoteValue(yQuotes.get("Day's Low"));
     }
 
     public void displayPERatio()
@@ -605,10 +615,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mPERatio.setText(String.format("%,.2f", value.pe.doubleValue()));
+                mPERatio.setText(THSignedNumber.builder()
+                        .value(value.pe)
+                        .build().toString());
             }
         }
-        //double peRatio = YUtils.parseQuoteValue(yQuotes.get("P/E Ratio"));
     }
 
     public void displayEps()
@@ -621,7 +632,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mEps.setText(String.format("%,.3f", value.eps.doubleValue()));
+                mEps.setText(THSignedNumber.builder()
+                        .value(value.eps)
+                        .build().toString());
             }
         }
     }
@@ -636,10 +649,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mVolume.setText(String.format("%,.0f", value.volume.doubleValue()));
+                mVolume.setText(THSignedNumber.builder()
+                        .value(value.volume)
+                        .build().toString());
             }
         }
-        //double volume = YUtils.parseQuoteValue(yQuotes.get("Volume"));
     }
 
     public void displayAvgVolume()
@@ -652,10 +666,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mAvgVolume.setText(String.format("%,.0f", value.averageDailyVolume.doubleValue()));
+                mAvgVolume.setText(THSignedNumber.builder()
+                        .value(value.averageDailyVolume)
+                        .build().toString());
             }
         }
-        //double avgVolume = YUtils.parseQuoteValue(yQuotes.get("Average Daily Volume"));
     }
 }
 

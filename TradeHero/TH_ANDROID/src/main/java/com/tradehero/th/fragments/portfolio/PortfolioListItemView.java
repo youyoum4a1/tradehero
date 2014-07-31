@@ -30,13 +30,14 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -357,14 +358,13 @@ public class PortfolioListItemView extends RelativeLayout
                     displayablePortfolioDTO.portfolioDTO != null &&
                     displayablePortfolioDTO.portfolioDTO.roiSinceInception != null)
             {
-                THSignedNumber roi = THSignedNumber.builder()
-                        .number(displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100)
-                        .percentage()
+                THSignedNumber roi = THSignedPercentage.builder()
+                        .value(displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100)
                         .withSign()
                         .signTypeArrow()
                         .build();
-                roiValue.setText(roi.toString(1));
-                roiValue.setTextColor(getResources().getColor(roi.getColor()));
+                roiValue.setText(roi.toString());
+                roiValue.setTextColor(getResources().getColor(roi.getColorResId()));
                 roiValue.setVisibility(VISIBLE);
             }
             else if (displayablePortfolioDTO != null &&

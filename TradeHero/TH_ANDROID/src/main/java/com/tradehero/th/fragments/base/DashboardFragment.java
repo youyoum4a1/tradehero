@@ -8,8 +8,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -108,7 +106,11 @@ abstract public class DashboardFragment extends BaseFragment
             case android.R.id.home:
                 if (shouldShowHomeAsUp())
                 {
-                    getDashboardNavigator().popFragment();
+                    DashboardNavigator navigator = getDashboardNavigator();
+                    if (navigator != null)
+                    {
+                        navigator.popFragment();
+                    }
                 }
                 else
                 {
@@ -140,15 +142,13 @@ abstract public class DashboardFragment extends BaseFragment
         return getKeyShowHomeAsUp(getArguments());
     }
 
-    //suggest use DashboardNavigator
-    @Deprecated
-    protected Navigator getNavigator()
+    @Nullable protected DashboardNavigator getDashboardNavigator()
     {
-        return ((NavigatorActivity) getActivity()).getNavigator();
-    }
-
-    protected DashboardNavigator getDashboardNavigator()
-    {
-        return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+        @Nullable DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
+        if (activity != null)
+        {
+            return activity.getDashboardNavigator();
+        }
+        return null;
     }
 }

@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.settings;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.preference.Preference;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
@@ -10,11 +9,9 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class SendLoveViewHolder extends BaseSettingViewHolder
+public class SendLoveViewHolder extends OneSettingViewHolder
 {
     @NotNull private final AlertDialogUtil alertDialogUtil;
-
-    protected Preference sendLovePref;
 
     //<editor-fold desc="Constructors">
     @Inject public SendLoveViewHolder(@NotNull AlertDialogUtil alertDialogUtil)
@@ -24,33 +21,12 @@ public class SendLoveViewHolder extends BaseSettingViewHolder
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override protected int getStringKeyResId()
     {
-        super.initViews(preferenceFragment);
-
-        sendLovePref =
-                preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_primary_send_love));
-        if (sendLovePref != null)
-        {
-            sendLovePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override public boolean onPreferenceClick(Preference preference)
-                {
-                    handleSendLoveClicked();
-                    return true;
-                }
-            });
-        }
-
+        return R.string.key_settings_primary_send_love;
     }
 
-    @Override public void destroyViews()
-    {
-        this.sendLovePref = null;
-        super.destroyViews();
-    }
-
-    private void handleSendLoveClicked()
+    @Override protected void handlePrefClicked()
     {
         final String appName = Constants.PLAYSTORE_APP_ID;
         try

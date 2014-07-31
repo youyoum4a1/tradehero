@@ -14,7 +14,8 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trade.view.QuickPriceButton;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import java.lang.reflect.Method;
@@ -202,9 +203,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
     private String getSignedNumberString(double value)
     {
-        THSignedNumber thTradeValue = THSignedNumber.builder()
-                .number(value)
-                .money()
+        THSignedNumber thTradeValue = THSignedMoney.builder()
+                .value(value)
                 .withOutSign()
                 .currency("US$")
                 .build();

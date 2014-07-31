@@ -21,9 +21,18 @@ public class InviteFormUserDTO extends InviteFormMessageDTO implements InviteFor
         {
             users = new ArrayList<>();
         }
-        for(@NotNull UserFriendsDTO userFriendsDTO : userFriendsDTOs)
+        for (@NotNull UserFriendsDTO userFriendsDTO : userFriendsDTOs)
         {
             users.add(userFriendsDTO.createInvite());
         }
+    }
+
+    public void add(@NotNull UserFriendsDTO userFriendsDTO)
+    {
+        if (users == null)
+        {
+            users = new ArrayList<>();
+        }
+        users.add(userFriendsDTO.createInvite());
     }
 }

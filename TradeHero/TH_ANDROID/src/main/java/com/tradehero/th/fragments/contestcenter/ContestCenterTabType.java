@@ -5,7 +5,7 @@ import com.tradehero.th.R;
 
 public enum ContestCenterTabType
 {
-    ACTIVIE(R.string.contest_center_tab_active, ContestCenterActiveFragment.class),
+    ACTIVE(R.string.contest_center_tab_active, ContestCenterActiveFragment.class),
     JOINED(R.string.contest_center_tab_joined, ContestCenterJoinedFragment.class);
 
     public final int titleRes;

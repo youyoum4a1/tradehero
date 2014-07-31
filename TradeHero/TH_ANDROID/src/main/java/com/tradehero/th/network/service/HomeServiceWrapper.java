@@ -27,14 +27,14 @@ public class HomeServiceWrapper
     public Response getHomePageContent(@NotNull UserBaseKey userBaseKey)
     {
         return homeService.getHomePageContent(userBaseKey.key,
-                Constants.RELEASE ? null : true);
+                Constants.USE_BETA_HOME_PAGE ? true : null);
     }
 
     public MiddleCallback<Response> getHomePageContent(@NotNull UserBaseKey userBaseKey, @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         homeServiceAsync.getHomePageContent(userBaseKey.key, middleCallback,
-                Constants.RELEASE ? null : true);
+                Constants.USE_BETA_HOME_PAGE ? true : null);
         return middleCallback;
     }
     //</editor-fold>
