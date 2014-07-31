@@ -27,6 +27,7 @@ import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
@@ -175,7 +176,7 @@ public class FollowerListItemView extends RelativeLayout
     {
         if (country != null)
         {
-            if (userFollowerDTO != null)
+            if (userFollowerDTO != null && userFollowerDTO.countryCode != null)
             {
                 country.setImageResource(getCountryLogoId(userFollowerDTO.countryCode));
             }
@@ -186,12 +187,12 @@ public class FollowerListItemView extends RelativeLayout
         }
     }
 
-    public int getCountryLogoId(String country)
+    public int getCountryLogoId(@NotNull String country)
     {
         return getCountryLogoId(0, country);
     }
 
-    public int getCountryLogoId(int defaultResId, String country)
+    public int getCountryLogoId(int defaultResId, @NotNull String country)
     {
         try
         {
