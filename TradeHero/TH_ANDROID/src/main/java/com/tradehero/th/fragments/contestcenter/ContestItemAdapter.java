@@ -9,25 +9,39 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.utils.DaggerUtils;
+import org.jetbrains.annotations.NotNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         implements StickyListHeadersAdapter
 {
-    private final int vipViewResourceId;
-    private final int normalViewResourceId;
+    public static final int TYPE_NORMAL = 0;
+    public static final int TYPE_VIP = 1;
+    public static final int TYPE_HEADER = 2;
 
-    public ContestItemAdapter(Context context,
+    @NotNull private Integer[] typeToResIds;
+
+    //<editor-fold desc="Constructors">
+    public ContestItemAdapter(
+            @NotNull Context context,
             int vipViewResourceId,
             int normalViewResourceId)
     {
         super(context, 0);
-        this.vipViewResourceId = vipViewResourceId;
-        this.normalViewResourceId = normalViewResourceId;
+        typeToResIds = new Integer[3];
+        typeToResIds[TYPE_HEADER] = R.layout.leaderboard_separator;
+        typeToResIds[TYPE_VIP] = vipViewResourceId;
+        typeToResIds[TYPE_NORMAL] = normalViewResourceId;
         DaggerUtils.inject(this);
     }
+    //</editor-fold>
 
-    public int getItemViewResId(int position)
+    @Override public int getViewTypeCount()
+    {
+        return typeToResIds.length;
+    }
+
+    @Override public int getItemViewType(int position)
     {
         ContestPageDTO item = getItem(position);
         if (item instanceof ProviderContestPageDTO)
@@ -35,26 +49,34 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
             ProviderDTO providerDTO = ((ProviderContestPageDTO) item).providerDTO;
             if (providerDTO.vip != null && providerDTO.vip)
             {
-                return vipViewResourceId;
+                return TYPE_VIP;
             }
             else
             {
-                return normalViewResourceId;
+                return TYPE_NORMAL;
             }
         }
         else if (item instanceof EmptyHeadLineDTO)
         {
-            return R.layout.leaderboard_separator;
+            return TYPE_HEADER;
         }
-        throw new IllegalArgumentException("Unhandled item " + getItem(position));
+        throw new IllegalArgumentException("Unhandled item " + item);
     }
 
-    @SuppressWarnings("unchecked")
+    public int getItemViewResId(int position)
+    {
+        return typeToResIds[getItemViewType(position)];
+    }
+
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        convertView = LayoutInflater.from(getContext()).inflate(getItemViewResId(position), viewGroup, false);
+        if (convertView == null)
+        {
+            convertView = LayoutInflater.from(getContext()).inflate(getItemViewResId(position), viewGroup, false);
+        }
         if (convertView instanceof DTOView)
         {
+            //noinspection unchecked
             ((DTOView<ContestPageDTO>) convertView).display(getItem(position));
         }
         return convertView;
@@ -83,11 +105,6 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
 
     @Override public boolean isEnabled(int position)
     {
-        ContestPageDTO item = getItem(position);
-        if (item instanceof ProviderContestPageDTO)
-        {
-            return true;
-        }
-        return false;
+        return getItem(position) instanceof ProviderContestPageDTO;
     }
 }
