@@ -287,7 +287,7 @@ public class RelationsListItemView extends RelativeLayout
         {
             return Country.valueOf(country).logoId;
         }
-        catch (IllegalArgumentException ex)
+        catch (IllegalArgumentException|NullPointerException ex)
         {
             Timber.e(ex, "No country for %s", country);
         }
