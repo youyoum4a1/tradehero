@@ -56,6 +56,7 @@ import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -562,12 +563,12 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     public class LeaderBoardFollowRequestedListener
             implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
         {
             freeFollow(heroId);
         }
 
-        @Override public void premiumFollowRequested(UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
         {
             follow(heroId);
         }
@@ -596,7 +597,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         handleOpenProfileButtonClicked();
     }
 
-    protected void freeFollow(UserBaseKey heroId)
+    protected void freeFollow(@NotNull UserBaseKey heroId)
     {
         heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
                 R.string.following_this_hero));
@@ -606,7 +607,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                         .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow(UserBaseKey heroId)
+    protected void follow(@NotNull UserBaseKey heroId)
     {
         notifyFollowRequested(heroId);
     }
@@ -699,7 +700,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(userProfileDTO, true);
     }
 
-    protected void notifyFollowRequested(UserBaseKey heroId)
+    protected void notifyFollowRequested(@NotNull UserBaseKey heroId)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)

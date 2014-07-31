@@ -157,7 +157,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     // region Following action
     // should call this method where the action takes place
     @Deprecated
-    protected final void premiumFollowUser(UserBaseKey heroId)
+    protected final void premiumFollowUser(@NotNull UserBaseKey heroId)
     {
         THPurchaseActionInteractor thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
                 .setUserToFollow(heroId)
@@ -169,7 +169,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     // should call it where the action takes place
     @Deprecated
-    protected final void unfollowUser(UserBaseKey heroId)
+    protected final void unfollowUser(@NotNull UserBaseKey heroId)
     {
         THPurchaseActionInteractor thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
                 .setUserToFollow(heroId)

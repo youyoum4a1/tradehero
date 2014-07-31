@@ -11,9 +11,7 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,9 +19,9 @@ import org.jetbrains.annotations.Nullable;
 public class HeroAlertDialogUtil extends AlertDialogUtil
 {
     //<editor-fold desc="Constructors">
-    @Inject public HeroAlertDialogUtil(@NotNull Lazy<UserServiceWrapper> userServiceWrapperLazy)
+    @Inject public HeroAlertDialogUtil()
     {
-        super(userServiceWrapperLazy);
+        super();
     }
     //</editor-fold>
 
@@ -88,11 +86,13 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
         builder.setCancelable(true);
 
         final AlertDialog mFollowDialog = builder.create();
+        mFollowDialog.setCancelable(true);
+        mFollowDialog.setCanceledOnTouchOutside(true);
         mFollowDialog.show();
 
         followDialogView.setFollowRequestedListener(new OnFollowRequestedListener()
         {
-            @Override public void freeFollowRequested(UserBaseKey heroId)
+            @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
             {
                 onFinish();
                 if (followType != UserProfileDTOUtil.IS_FREE_FOLLOWER)
@@ -101,7 +101,7 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
                 }
             }
 
-            @Override public void premiumFollowRequested(UserBaseKey heroId)
+            @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
             {
                 onFinish();
                 followRequestedListener.premiumFollowRequested(heroId);

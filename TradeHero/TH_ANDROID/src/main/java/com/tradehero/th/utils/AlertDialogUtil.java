@@ -30,13 +30,12 @@ public class AlertDialogUtil
     private ProgressDialog mProgressDialog;
     private AlertDialog mReferralCodeDialog;
 
-    @NotNull private final Lazy<UserServiceWrapper> userServiceWrapperLazy;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
     //<editor-fold desc="Constructors">
-    @Inject public AlertDialogUtil(@NotNull Lazy<UserServiceWrapper> userServiceWrapperLazy)
+    @Inject public AlertDialogUtil()
     {
         super();
-        this.userServiceWrapperLazy = userServiceWrapperLazy;
     }
     //</editor-fold>
 

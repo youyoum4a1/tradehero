@@ -873,7 +873,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return 0;
     }
 
-    protected void freeFollow(UserBaseKey heroId, Callback<UserProfileDTO> followCallback)
+    protected void freeFollow(@NotNull UserBaseKey heroId, @Nullable Callback<UserProfileDTO> followCallback)
     {
         heroAlertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
@@ -920,12 +920,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     public class TimelineFollowRequestedListener implements OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
         {
             freeFollow(heroId, createFreeUserFollowedCallback());
         }
 
-        @Override public void premiumFollowRequested(UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
         {
             premiumFollowUser(heroId);
         }
@@ -933,12 +933,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     public class TimelineFollowForMessageRequestedListener implements OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
         {
             freeFollow(heroId, createFreeFollowForMessageCallback());
         }
 
-        @Override public void premiumFollowRequested(UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
         {
             premiumFollowUser(heroId);
         }
