@@ -12,5 +12,7 @@ public class THSignedPercentageTest
     @Test public void properToString()
     {
         assertThat(THSignedPercentage.builder().value(0.87).withOutSign().build().toString()).isEqualTo("0.87%");
+        assertThat(THSignedPercentage.builder().value(0.87).withOutSign().relevantDigitCount(1).build().toString()).isEqualTo("0.9%");
+        assertThat(THSignedPercentage.builder().value(-0.87).relevantDigitCount(1).build().toString()).isEqualTo("-0.9%");
     }
 }

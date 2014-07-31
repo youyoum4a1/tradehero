@@ -15,7 +15,7 @@ public class THSignedNumberTest
         THSignedNumber.builder().build();
     }
 
-    @Test public void precisionAsExpected()
+    @Test public void precisionAsExpectedDefault()
     {
         assertThat(THSignedNumber.builder().value(10000).build().getPrecisionFromNumber()).isEqualTo(0);
         assertThat(THSignedNumber.builder().value(4130).build().getPrecisionFromNumber()).isEqualTo(0);
@@ -85,9 +85,22 @@ public class THSignedNumberTest
         assertThat(THSignedNumber.builder().value(-123).withSign().signTypePlusMinusAlways().build().getSignPrefix()).isEqualTo("-");
     }
 
+    @Test public void properRelevantDigitCount()
+    {
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(-1).build().toString()).isEqualTo("3");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(0).build().toString()).isEqualTo("3");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(1).build().toString()).isEqualTo("3");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(2).build().toString()).isEqualTo("2.8");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(3).build().toString()).isEqualTo("2.81");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(4).build().toString()).isEqualTo("2.813");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(5).build().toString()).isEqualTo("2.8125");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(6).build().toString()).isEqualTo("2.81255");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(7).build().toString()).isEqualTo("2.812546");
+        assertThat(THSignedNumber.builder().value(2.812546).withOutSign().relevantDigitCount(8).build().toString()).isEqualTo("2.812546");
+    }
+
     @Test public void properToString()
     {
         assertThat(THSignedNumber.builder().value(0.8).withOutSign().build().toString()).isEqualTo("0.8");
-        assertThat(THSignedNumber.builder().value(2.8).withOutSign().relevantDigitCount(1).build().toString()).isEqualTo("3");
     }
 }

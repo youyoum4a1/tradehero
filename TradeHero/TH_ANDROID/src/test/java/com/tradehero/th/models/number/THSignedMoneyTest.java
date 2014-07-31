@@ -21,5 +21,6 @@ public class THSignedMoneyTest
     {
         assertThat(THSignedMoney.builder().value(0.8).withOutSign().currency("").build().toString()).isEqualTo("0.8");
         assertThat(THSignedMoney.builder().value(2.8).withOutSign().currency("SD").build().toString()).isEqualTo("SD 2.8");
+        assertThat(THSignedMoney.builder().value(-2.8).currency("SD").build().toString()).isEqualTo("-SD 2.8");
     }
 }
