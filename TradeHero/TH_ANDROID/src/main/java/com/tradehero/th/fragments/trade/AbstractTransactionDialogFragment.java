@@ -49,6 +49,7 @@ import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -296,9 +297,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             if (priceRefCcy != null && portfolioCompactDTO != null)
             {
                 double value = mTransactionQuantity * priceRefCcy;
-                THSignedNumber thTradeValue = THSignedNumber.builder()
+                THSignedNumber thTradeValue = THSignedMoney.builder()
                         .number(value)
-                        .money()
                         .withOutSign()
                         .currency(portfolioCompactDTO.currencyDisplay)
                         .build();

@@ -35,6 +35,8 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -380,9 +382,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuPeriod.setText(period);
 
         // display Roi
-        THSignedNumber roi = THSignedNumber.builder()
+        THSignedNumber roi = THSignedPercentage.builder()
                 .number(leaderboardItem.roiInPeriod * 100)
-                .percentage()
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -391,9 +392,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuRoi.setTextColor(getResources().getColor(roi.getColorResId()));
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = THSignedNumber.builder()
+        THSignedNumber roiAnnualizedVal = THSignedPercentage.builder()
                 .number(leaderboardItem.roiAnnualizedInPeriod * 100)
-                .percentage()
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -403,9 +403,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = THSignedNumber.builder()
+        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage.builder()
                 .number(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
-                .percentage()
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -458,9 +457,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 .number(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
                 .relevantDigitCount(3)
                 .build().toString());
-        lbmuWinRatio.setText(THSignedNumber.builder()
+        lbmuWinRatio.setText(THSignedPercentage.builder()
                 .number(leaderboardItem.getWinRatio() * 100)
-                .percentage()
                 .relevantDigitCount(3)
                 .build().toString());
 
@@ -493,9 +491,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (lbmuPl != null && leaderboardItem != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
                     .number(leaderboardItem.PLinPeriodRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(getLbmuPlCurrencyDisplay())
                     .build();

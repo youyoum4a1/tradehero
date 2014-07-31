@@ -13,10 +13,6 @@ public class THSignedNumber
     public static final int DESIRED_RELEVANT_DIGIT_COUNT = 4;
 
     //<editor-fold desc="Constants">
-    public static final int TYPE_PLAIN = 0;
-    public static final int TYPE_PERCENTAGE = 1;
-    public static final int TYPE_MONEY = 2;
-
     public static final int TYPE_SIGN_ARROW = 0;
     public static final int TYPE_SIGN_PLUS_MINUS_ALWAYS = 1;
     public static final int TYPE_SIGN_MINUS_ONLY = 2;
@@ -27,46 +23,23 @@ public class THSignedNumber
 
     private final boolean withSign;
     private final int signType;
-    private final int type;
-    private final String currency;
     private final Double number;
     private final int relevantDigitCount;
-    private final String formattedNumber;
-    private final int colorResId;
+    private String formattedNumber;
+    private Integer colorResId;
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
     {
         private Double number;
-        private int type = TYPE_PLAIN;
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
-        @Nullable private String currency = null;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
 
         protected abstract BuilderType self();
 
         protected boolean isValid()
         {
-            return number != null
-                    && (type == TYPE_MONEY || currency == null);
-        }
-
-        public BuilderType plain()
-        {
-            type = TYPE_PLAIN;
-            return self();
-        }
-
-        public BuilderType money()
-        {
-            type = TYPE_MONEY;
-            return self();
-        }
-
-        public BuilderType percentage()
-        {
-            type = TYPE_PERCENTAGE;
-            return self();
+            return number != null;
         }
 
         public BuilderType number(double number)
@@ -105,12 +78,6 @@ public class THSignedNumber
             return self();
         }
 
-        public BuilderType currency(String currency)
-        {
-            this.currency = currency;
-            return self();
-        }
-
         public BuilderType relevantDigitCount(int relevantDigitCount)
         {
             this.relevantDigitCount = relevantDigitCount;
@@ -141,7 +108,6 @@ public class THSignedNumber
     {
         this.withSign = builder.withSign;
         this.signType = builder.signType;
-        this.type = builder.type;
         this.number = builder.number;
         this.relevantDigitCount = builder.relevantDigitCount;
 
@@ -149,22 +115,15 @@ public class THSignedNumber
         {
             throw new IllegalArgumentException("Invalid builder");
         }
-
-        if (type == TYPE_MONEY && builder.currency == null)
-        {
-            this.currency = SecurityUtils.getDefaultCurrency();
-        }
-        else
-        {
-            this.currency = builder.currency;
-        }
-        colorResId = ColorUtils.getColorResourceIdForNumber(number);
-        formattedNumber = getFormatted();
     }
     //</editor-fold>
 
     public int getColorResId()
     {
+        if (colorResId == null)
+        {
+            colorResId = ColorUtils.getColorResourceIdForNumber(number);
+        }
         return colorResId;
     }
 
@@ -173,20 +132,21 @@ public class THSignedNumber
         return Application.context().getResources().getColor(getColorResId());
     }
 
+    @Override public String toString()
+    {
+        if (formattedNumber == null)
+        {
+            formattedNumber = getFormatted();
+        }
+        return formattedNumber;
+    }
+
     protected String getFormatted()
     {
-        switch (type)
-        {
-            case TYPE_PLAIN:
-                return createFormattedPlain();
-            case TYPE_PERCENTAGE:
-                return createFormattedPercentage();
-            case TYPE_MONEY:
-                return createFormattedMoney();
-
-            default:
-                throw new IllegalArgumentException("Unhandled THSignedNumber type " + type);
-        }
+        return String.format(
+                "%s%s",
+                getConditionalSignPrefix(),
+                createPlainNumber());
     }
 
     protected String createPlainNumber()
@@ -196,38 +156,6 @@ public class THSignedNumber
         DecimalFormat df = new DecimalFormat(getStringFormat(precision).toString());
         String formatted = df.format(Math.abs(number));
         return removeTrailingZeros(formatted);
-    }
-
-    protected String createFormattedPlain()
-    {
-        return String.format(
-                "%s%s",
-                getConditionalSignPrefix(),
-                createPlainNumber());
-    }
-
-    protected String createFormattedPercentage()
-    {
-        return String.format(
-                "%s%s%s",
-                getConditionalSignPrefix(),
-                createPlainNumber(),
-                Application.getResourceString(R.string.percentage_suffix));
-    }
-
-    protected String createFormattedMoney()
-    {
-        return String.format(
-                "%s%s%s%s",
-                getConditionalSignPrefix(),
-                currency,
-                getCurrencySpace(),
-                createPlainNumber());
-    }
-
-    protected String getCurrencySpace()
-    {
-        return currency == null || currency.isEmpty() ? "" : " ";
     }
 
     public static String removeTrailingZeros(String formattedNumber)
@@ -248,11 +176,6 @@ public class THSignedNumber
                 formattedNumber = formattedNumber.substring(0, length);
             }
         }
-        return formattedNumber;
-    }
-
-    @Override public String toString()
-    {
         return formattedNumber;
     }
 

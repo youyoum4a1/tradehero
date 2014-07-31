@@ -16,6 +16,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -266,9 +267,8 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             else
             {
                 mStrikePrice.setText(
-                        THSignedNumber.builder()
+                        THSignedMoney.builder()
                                 .number(warrantDTO.strikePrice)
-                                .money()
                                 .currency(warrantDTO.strikePriceCcy)
                                 .withOutSign()
                                 .build().toString()

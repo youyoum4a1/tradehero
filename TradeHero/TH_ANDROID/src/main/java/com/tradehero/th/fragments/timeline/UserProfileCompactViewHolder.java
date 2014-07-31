@@ -13,6 +13,8 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
@@ -79,9 +81,8 @@ public class UserProfileCompactViewHolder
                 {
                     pl = 0.0;
                 }
-                THSignedNumber thPlSinceInception = THSignedNumber.builder()
+                THSignedNumber thPlSinceInception = THSignedMoney.builder()
                         .number(pl)
-                        .money()
                         .withSign()
                         .signTypePlusMinusAlways()
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
@@ -133,9 +134,8 @@ public class UserProfileCompactViewHolder
                     && userProfileDTO.portfolio != null
                     && userProfileDTO.portfolio.roiSinceInception != null)
             {
-                THSignedNumber thRoiSinceInception = THSignedNumber.builder()
+                THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
                         .number(userProfileDTO.portfolio.roiSinceInception * 100)
-                        .percentage()
                         .build();
                 roiSinceInception.setText(thRoiSinceInception.toString());
                 roiSinceInception.setTextColor(

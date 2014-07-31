@@ -32,6 +32,8 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCache;
@@ -302,19 +304,17 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     {
         if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = THSignedNumber.builder()
+            THSignedNumber thTargetPrice = THSignedMoney.builder()
                     .number(alertDTO.targetPrice)
                     .withOutSign()
-                    .money()
                     .build();
             targetPrice.setText(thTargetPrice.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
-            THSignedNumber thPriceMovement = THSignedNumber.builder()
+            THSignedNumber thPriceMovement = THSignedPercentage.builder()
                     .number(alertDTO.priceMovement * 100)
-                    .percentage()
                     .build();
             targetPrice.setText(thPriceMovement.toString());
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
@@ -323,9 +323,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void displayCurrentPrice()
     {
-        THSignedNumber thCurrentPrice = THSignedNumber.builder()
+        THSignedNumber thCurrentPrice = THSignedMoney.builder()
                 .number(alertDTO.security.lastPrice)
-                .money()
                 .withOutSign()
                 .build();
         currentPrice.setText(thCurrentPrice.toString());

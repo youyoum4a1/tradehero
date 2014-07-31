@@ -23,6 +23,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -270,9 +271,8 @@ public class HeroListItemView extends RelativeLayout
         {
             if (heroDTO != null && heroDTO.roiSinceInception != null)
             {
-                THSignedNumber thRoiSinceInception = THSignedNumber.builder()
+                THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
                         .number(heroDTO.roiSinceInception * 100)
-                        .percentage()
                         .build();
                 revenueInfo.setText(thRoiSinceInception.toString());
                 revenueInfo.setTextColor(

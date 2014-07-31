@@ -16,6 +16,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
@@ -150,15 +152,13 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
 
     private void displayGainLoss()
     {
-        THSignedNumber firstNumber = THSignedNumber.builder()
+        THSignedNumber firstNumber = THSignedPercentage.builder()
                 .number(getAbsoluteGain())
-                .percentage()
                 .withOutSign()
                 .build();
 
-        THSignedNumber secondNumber = THSignedNumber.builder()
+        THSignedNumber secondNumber = THSignedMoney.builder()
                 .number(getAbsoluteGain())
-                .money()
                 .build();
         gainLoss.setFirstValue(firstNumber.toString());
         gainLoss.setSecondValue(secondNumber.toString());

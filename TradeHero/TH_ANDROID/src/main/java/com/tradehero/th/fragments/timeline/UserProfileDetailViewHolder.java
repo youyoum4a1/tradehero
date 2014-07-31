@@ -14,6 +14,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.models.number.THSignedNumber;
 import java.text.SimpleDateFormat;
@@ -165,9 +166,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                 {
                     pl = 0.0;
                 }
-                THSignedNumber thPlSinceInception = THSignedNumber.builder()
+                THSignedNumber thPlSinceInception = THSignedMoney.builder()
                         .number(pl)
-                        .money()
                         .withSign()
                         .signTypePlusMinusAlways()
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
@@ -199,9 +199,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thTotalWealth = THSignedNumber.builder()
+                THSignedNumber thTotalWealth = THSignedMoney.builder()
                         .number(userProfileDTO.portfolio.totalValue)
-                        .money()
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 totalWealth.setText(thTotalWealth.toString());
@@ -219,9 +218,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thAdditionalCash = THSignedNumber.builder()
+                THSignedNumber thAdditionalCash = THSignedMoney.builder()
                         .number(userProfileDTO.portfolio.getTotalExtraCash())
-                        .money()
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 additionalCash.setText(thAdditionalCash.toString());
@@ -239,9 +237,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thCashOnHand = THSignedNumber.builder()
+                THSignedNumber thCashOnHand = THSignedMoney.builder()
                         .number(userProfileDTO.portfolio.cashBalance)
-                        .money()
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 cashOnHand.setText(thCashOnHand.toString());

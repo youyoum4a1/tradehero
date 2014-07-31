@@ -25,6 +25,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -124,9 +125,8 @@ public class UserProfileResideMenuItem extends LinearLayout
                 {
                     userProfileDTO.portfolio.roiSinceInception = 0.0D;
                 }
-                THSignedNumber thRoiSinceInception = THSignedNumber.builder()
+                THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
                         .number(userProfileDTO.portfolio.roiSinceInception * 100)
-                        .percentage()
                         .build();
 
                 userProfileRoi.setText(thRoiSinceInception.toString());

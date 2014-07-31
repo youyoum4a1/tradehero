@@ -15,6 +15,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -153,9 +154,8 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
 
     private void displayROIValue(double value)
     {
-        THSignedNumber thRoiSinceInception = THSignedNumber.builder()
+        THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
                 .number(value * 100)
-                .percentage()
                 .build();
 
         mROILabel.setText(thRoiSinceInception.toString());

@@ -5,6 +5,8 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
@@ -34,9 +36,8 @@ public class PositionDTOUtils
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
                     .number(position.sumInvestedAmountRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -66,9 +67,8 @@ public class PositionDTOUtils
                 position.marketValueStartPeriodRefCcy != null &&
                 /* It appears iOS version does that */position.marketValueStartPeriodRefCcy > 0)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
                     .number(position.marketValueStartPeriodRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -109,9 +109,8 @@ public class PositionDTOUtils
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
                     .number(position.realizedPLRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -139,9 +138,8 @@ public class PositionDTOUtils
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
                     .number(position.totalPLInPeriodRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -169,9 +167,8 @@ public class PositionDTOUtils
     {
         if (position != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
                     .number(position.marketValueRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -212,9 +209,8 @@ public class PositionDTOUtils
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedNumber.builder()
+            THSignedNumber formattedNumber = THSignedMoney.builder()
                     .number(position.unrealizedPLRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -251,9 +247,8 @@ public class PositionDTOUtils
         }
         else
         {
-            THSignedNumber roiNumber = THSignedNumber.builder()
+            THSignedNumber roiNumber = THSignedPercentage.builder()
                     .number(Math.abs(roiValue * 100.0))
-                    .percentage()
                     .withSign()
                     .signTypeArrow()
                     .relevantDigitCount(3)
@@ -281,9 +276,8 @@ public class PositionDTOUtils
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
 
-            THSignedNumber formatSumPurchasesInPeriodRefCcy = THSignedNumber.builder()
+            THSignedNumber formatSumPurchasesInPeriodRefCcy = THSignedMoney.builder()
                     .number(position.sum_purchasesInPeriodRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(refCurrency)
                     .build();

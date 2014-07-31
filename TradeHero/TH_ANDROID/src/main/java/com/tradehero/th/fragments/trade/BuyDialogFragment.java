@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.trade;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
@@ -48,9 +49,8 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
                 double value = mTransactionQuantity * priceRefCcy;
 
                 double cashAvailable = portfolioCompactDTO.cashBalance;
-                THSignedNumber thSignedNumber = THSignedNumber.builder()
+                THSignedNumber thSignedNumber = THSignedMoney.builder()
                         .number(cashAvailable - value)
-                        .money()
                         .withOutSign()
                         .currency(portfolioCompactDTO.currencyDisplay)
                         .build();

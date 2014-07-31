@@ -17,6 +17,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.fragments.trade.TradeListItemAdapter;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.trade.TradeDTOUtils;
 import com.tradehero.th.persistence.position.PositionCache;
@@ -181,9 +182,8 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
                     .number((double) Math.abs(trade.quantity))
                     .withOutSign()
                     .build();
-            THSignedNumber tradeValue = THSignedNumber.builder()
+            THSignedNumber tradeValue = THSignedMoney.builder()
                     .number(trade.unitPriceRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();
@@ -356,9 +356,8 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (trade != null)
         {
-            THSignedNumber tradeValue = THSignedNumber.builder()
+            THSignedNumber tradeValue = THSignedMoney.builder()
                     .number(trade.quantity * trade.unitPriceRefCcy)
-                    .money()
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();

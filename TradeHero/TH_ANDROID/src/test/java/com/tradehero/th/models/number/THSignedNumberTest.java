@@ -15,12 +15,6 @@ public class THSignedNumberTest
         THSignedNumber.builder().build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void cannotHandleNonMoneyWithCurrency()
-    {
-        THSignedNumber.builder().number(123).currency("").build();
-    }
-
     @Test public void precisionAsExpected()
     {
         assertThat(THSignedNumber.builder().number(10000).build().getPrecisionFromNumber()).isEqualTo(0);
@@ -91,18 +85,9 @@ public class THSignedNumberTest
         assertThat(THSignedNumber.builder().number(-123).withSign().signTypePlusMinusAlways().build().getSignPrefix()).isEqualTo("-");
     }
 
-    @Test public void currencyBehaviour()
-    {
-        assertThat(THSignedNumber.builder().number(123).withOutSign().money().currency(null).build().toString()).isEqualTo("US$ 123");
-        assertThat(THSignedNumber.builder().number(123).withOutSign().money().currency("").build().toString()).isEqualTo("123");
-        assertThat(THSignedNumber.builder().number(123).withOutSign().money().currency("SGD").build().toString()).isEqualTo("SGD 123");
-        assertThat(THSignedNumber.builder().number(123).withOutSign().build().toString()).isEqualTo("123");
-    }
-
     @Test public void properToString()
     {
-        assertThat(THSignedNumber.builder().number(0.87).percentage().withOutSign().build().toString()).isEqualTo("0.87%");
-        assertThat(THSignedNumber.builder().number(0.8).money().withOutSign().currency("").build().toString()).isEqualTo("0.8");
-        assertThat(THSignedNumber.builder().number(2.8).money().withOutSign().currency("SD").build().toString()).isEqualTo("SD 2.8");
+        assertThat(THSignedNumber.builder().number(0.8).withOutSign().build().toString()).isEqualTo("0.8");
+        assertThat(THSignedNumber.builder().number(2.8).withOutSign().relevantDigitCount(1).build().toString()).isEqualTo("3");
     }
 }

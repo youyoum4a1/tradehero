@@ -18,6 +18,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -360,9 +361,8 @@ public class PositionPartialTopView extends LinearLayout
                 Boolean closed = positionDTO.isClosed();
                 if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
                 {
-                    number = THSignedNumber.builder()
+                    number = THSignedMoney.builder()
                             .number(positionDTO.realizedPLRefCcy)
-                            .money()
                             .withSign()
                             .signTypeMinusOnly()
                             .currency(positionDTO.getNiceCurrency())
@@ -370,9 +370,8 @@ public class PositionPartialTopView extends LinearLayout
                 }
                 else if (closed != null && !closed)
                 {
-                    number = THSignedNumber.builder()
+                    number = THSignedMoney.builder()
                             .number(positionDTO.marketValueRefCcy)
-                            .money()
                             .withSign()
                             .signTypeMinusOnly()
                             .currency(positionDTO.getNiceCurrency())

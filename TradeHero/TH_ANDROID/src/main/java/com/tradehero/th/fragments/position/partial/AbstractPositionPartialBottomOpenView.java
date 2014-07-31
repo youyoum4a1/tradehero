@@ -7,6 +7,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 
 abstract public class AbstractPositionPartialBottomOpenView<
@@ -159,9 +160,8 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null && positionDTO.averagePriceRefCcy != null)
             {
-                THSignedNumber ThAveragePriceRefCcy = THSignedNumber.builder()
+                THSignedNumber ThAveragePriceRefCcy = THSignedMoney.builder()
                         .number(positionDTO.averagePriceRefCcy)
-                        .money()
                         .withOutSign()
                         .currency(positionDTO.getNiceCurrency())
                         .build();

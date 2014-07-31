@@ -10,6 +10,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {
@@ -108,9 +109,8 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
                 LeaderboardUserDTO leaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
                 if(leaderboardUserDTO != null)
                 {
-                    THSignedNumber thRoi = THSignedNumber.builder()
+                    THSignedNumber thRoi = THSignedPercentage.builder()
                             .number(leaderboardUserDTO.roiInPeriod * 100)
-                            .percentage()
                             .build();
 
                     roiView.setText(thRoi.toString());

@@ -25,6 +25,7 @@ import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -494,9 +495,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mStrikePrice.setText(THSignedNumber.builder()
+                mStrikePrice.setText(THSignedMoney.builder()
                         .number(warrantDTO.strikePrice)
-                        .money()
                         .currency(warrantDTO.strikePriceCcy)
                         .build().toString());
             }
@@ -543,9 +543,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mPreviousClose.setText(THSignedNumber.builder()
+                mPreviousClose.setText(THSignedMoney.builder()
                         .number(value.previousClose)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -562,9 +561,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mOpen.setText(THSignedNumber.builder()
+                mOpen.setText(THSignedMoney.builder()
                         .number(value.open)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -581,9 +579,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mDaysHigh.setText(THSignedNumber.builder()
+                mDaysHigh.setText(THSignedMoney.builder()
                         .number(value.high)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -600,9 +597,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             }
             else
             {
-                mDaysLow.setText(THSignedNumber.builder()
+                mDaysLow.setText(THSignedMoney.builder()
                         .number(value.low)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }

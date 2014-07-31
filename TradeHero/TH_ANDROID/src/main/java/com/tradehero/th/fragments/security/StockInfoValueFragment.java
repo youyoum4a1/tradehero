@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -92,9 +93,8 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mPreviousClose.setText(THSignedNumber.builder()
+                mPreviousClose.setText(THSignedMoney.builder()
                         .number(value.previousClose)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -111,9 +111,8 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mOpen.setText(THSignedNumber.builder()
+                mOpen.setText(THSignedMoney.builder()
                         .number(value.open)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -130,9 +129,8 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mDaysHigh.setText(THSignedNumber.builder()
+                mDaysHigh.setText(THSignedMoney.builder()
                         .number(value.high)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -149,9 +147,8 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mDaysLow.setText(THSignedNumber.builder()
+                mDaysLow.setText(THSignedMoney.builder()
                         .number(value.low)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -168,9 +165,8 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mMarketCap.setText(THSignedNumber.builder()
+                mMarketCap.setText(THSignedMoney.builder()
                         .number(value.marketCap)
-                        .money()
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
