@@ -119,7 +119,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return inflater.inflate(R.layout.leaderboard_empty_view, container, false);
     }
 
-    protected void inflateHeaderView(LayoutInflater inflater, ViewGroup container)
+    protected void inflateHeaderView(
+            @NotNull LayoutInflater inflater,
+            @SuppressWarnings("UnusedParameters") ViewGroup container)
     {
         if (leaderboardMarkUserListView != null)
         {
@@ -197,27 +199,32 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
-        if (leaderboardMarkUserListAdapter == null)
-        {
-            leaderboardMarkUserListAdapter = createLeaderboardMarkUserAdapter();
-            leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
-            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-            leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
-            leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
-            leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
-            leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
-        }
-
-        Bundle loaderBundle = new Bundle(getArguments());
-        leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
-                leaderboardDefKey.key, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+        prepareLeaderboardMarkUserAdapter();
     }
 
     protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
                 getActivity(), getActivity().getLayoutInflater(), leaderboardDefKey.key, R.layout.lbmu_item_roi_mode);
+    }
+
+    protected void prepareLeaderboardMarkUserAdapter()
+    {
+        if (leaderboardMarkUserListAdapter != null)
+        {
+            leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
+        }
+        leaderboardMarkUserListAdapter = createLeaderboardMarkUserAdapter();
+        leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
+        leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+        leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
+        leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
+        leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
+        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+
+        Bundle loaderBundle = new Bundle(getArguments());
+        leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
+                leaderboardDefKey.key, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
     }
 
     @Override public void onResume()
@@ -304,11 +311,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if (leaderboardMarkUserListAdapter != null)
-        {
-            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
-        }
+        prepareLeaderboardMarkUserAdapter();
     }
 
     public void initialLoad()
