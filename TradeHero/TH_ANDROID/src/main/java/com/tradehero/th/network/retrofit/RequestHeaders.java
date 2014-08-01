@@ -41,6 +41,7 @@ public class RequestHeaders implements RequestInterceptor
         }
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
+        request.addHeader(Constants.ACCEPT_ENCODING, Constants.ACCEPT_ENCODING_GZIP);
         request.addHeader(Constants.TH_CLIENT_TYPE, String.valueOf(deviceTokenHelper.getDeviceType().getServerValue()));
     }
 
