@@ -3,10 +3,10 @@ package com.tradehero.th.fragments.settings;
 import com.tradehero.th.R;
 import javax.inject.Inject;
 
-public class AlipayViewHolder extends OneSettingViewHolder
+public class AlipaySettingViewHolder extends OneSettingViewHolder
 {
     //<editor-fold desc="Constructors">
-    @Inject public AlipayViewHolder()
+    @Inject public AlipaySettingViewHolder()
     {
     }
     //</editor-fold>

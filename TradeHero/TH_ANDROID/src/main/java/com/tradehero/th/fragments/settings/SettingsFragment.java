@@ -116,7 +116,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected ProfilePreferenceViewHolder profilePreferenceViewHolder;
     @Inject protected LocationCountrySettingsViewHolder locationCountrySettingsViewHolder;
     @Inject protected PayPalSettingViewHolder payPalSettingViewHolder;
-    @Inject protected AlipayViewHolder alipayViewHolder;
+    @Inject protected AlipaySettingViewHolder alipaySettingViewHolder;
     @Inject protected TransactionHistoryViewHolder transactionHistoryViewHolder;
     @Inject protected ReferralCodeViewHolder referralCodeViewHolder;
     @Inject protected SignOutViewHolder signOutViewHolder;
@@ -301,7 +301,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         profilePreferenceViewHolder.destroyViews();
         locationCountrySettingsViewHolder.destroyViews();
         payPalSettingViewHolder.destroyViews();
-        alipayViewHolder.destroyViews();
+        alipaySettingViewHolder.destroyViews();
         transactionHistoryViewHolder.destroyViews();
         referralCodeViewHolder.destroyViews();
         signOutViewHolder.destroyViews();
@@ -326,7 +326,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         signOutViewHolder = null;
         referralCodeViewHolder = null;
         transactionHistoryViewHolder = null;
-        alipayViewHolder = null;
+        alipaySettingViewHolder = null;
         payPalSettingViewHolder = null;
         locationCountrySettingsViewHolder = null;
         profilePreferenceViewHolder = null;
@@ -413,7 +413,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         // Account
         payPalSettingViewHolder.initViews(this);
-        alipayViewHolder.initViews(this);
+        alipaySettingViewHolder.initViews(this);
         transactionHistoryViewHolder.initViews(this);
         referralCodeViewHolder.initViews(this);
         signOutViewHolder.initViews(this);
