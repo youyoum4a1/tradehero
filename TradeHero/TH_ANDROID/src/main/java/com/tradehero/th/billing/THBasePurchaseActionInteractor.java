@@ -16,10 +16,10 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
     private final THBillingInteractor billingInteractor;
     private final THUIBillingRequest billingRequest;
-    private final UIBillingRequest.OnErrorListener errorListener;
+    private UIBillingRequest.OnErrorListener errorListener;
     private final ProductIdentifierDomain productIdentifierDomain;
-    private final PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
-    private final Callback<UserProfileDTO> freeFollowedListener;
+    private PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener;
+    private Callback<UserProfileDTO> freeFollowedListener;
 
     private final boolean alertsAreFree;
     private final PremiumFollowUserAssistant premiumFollowUserAssistant;
@@ -59,6 +59,22 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
     }
 
+    public void onDestroy()
+    {
+        if (billingRequest != null)
+        {
+            billingRequest.onDestroy();
+        }
+        if (billingInteractor != null)
+        {
+            billingInteractor.onDestroy();
+        }
+        errorListener = null;
+        purchaseReportedListener = null;
+        freeFollowedListener = null;
+        premiumFollowUserAssistant.setUserFollowedListener(null);
+    }
+
     @Override public int showProductsList(ProductIdentifierDomain domain)
     {
         detachRequestCode();
@@ -93,13 +109,11 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
     @Override public void premiumFollowUser()
     {
-        detachPremiumFollowUserAssistant();
         premiumFollowUserAssistant.launchFollow();
     }
 
     @Override public void unfollowUser()
     {
-        detachPremiumFollowUserAssistant();
         premiumFollowUserAssistant.launchUnFollow();
     }
 
@@ -109,15 +123,6 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         {
             billingInteractor.forgetRequestCode(showProductDetailRequestCode);
         }
-    }
-
-    /** TODO We might want to remove this. With the old implementation, premiumFollowUserAssistant was keep for multiple purchase actions.
-     * This new implementation introduces a immutable way, THPurchaseActionInterfactor is fresh everytime the app need one,
-     * so that when the action is finished, everything in this class will be properly collected.
-     */
-    private void detachPremiumFollowUserAssistant()
-    {
-        premiumFollowUserAssistant.setUserFollowedListener(null);
     }
 
     public abstract static class Builder<T extends Builder<T>>
