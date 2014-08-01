@@ -950,15 +950,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return new BuySellPurchaseReportedListener();
     }
 
-    public Editable populateComment()
+    public void populateComment()
     {
         if (transactionCommentFragment != null)
         {
             unSpannedComment = transactionCommentFragment.getComment();
             mCommentsEditText.setText(unSpannedComment);
-            return unSpannedComment;
         }
-        return null;
     }
 
     private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
