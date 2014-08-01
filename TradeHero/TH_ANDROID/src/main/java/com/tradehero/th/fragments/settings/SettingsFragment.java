@@ -119,7 +119,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected AlipaySettingViewHolder alipaySettingViewHolder;
     @Inject protected TransactionHistoryViewHolder transactionHistoryViewHolder;
     @Inject protected ReferralCodeViewHolder referralCodeViewHolder;
-    @Inject protected SignOutViewHolder signOutViewHolder;
+    @Inject protected SignOutSettingViewHolder signOutSettingViewHolder;
     @Inject protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
     @Inject protected ResetHelpScreensViewHolder resetHelpScreensViewHolder;
     @Inject protected ClearCacheViewHolder clearCacheViewHolder;
@@ -304,7 +304,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         alipaySettingViewHolder.destroyViews();
         transactionHistoryViewHolder.destroyViews();
         referralCodeViewHolder.destroyViews();
-        signOutViewHolder.destroyViews();
+        signOutSettingViewHolder.destroyViews();
         userTranslationSettingsViewHolder.destroyViews();
         resetHelpScreensViewHolder.destroyViews();
         clearCacheViewHolder.destroyViews();
@@ -323,7 +323,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         clearCacheViewHolder = null;
         resetHelpScreensViewHolder = null;
         userTranslationSettingsViewHolder = null;
-        signOutViewHolder = null;
+        signOutSettingViewHolder = null;
         referralCodeViewHolder = null;
         transactionHistoryViewHolder = null;
         alipaySettingViewHolder = null;
@@ -416,7 +416,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         alipaySettingViewHolder.initViews(this);
         transactionHistoryViewHolder.initViews(this);
         referralCodeViewHolder.initViews(this);
-        signOutViewHolder.initViews(this);
+        signOutSettingViewHolder.initViews(this);
         locationCountrySettingsViewHolder.initViews(this);
 
         Preference restorePurchaseBlock =
@@ -710,7 +710,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             if (mainCredentials != null && socialNetwork.getAuthenticationHeader().equals(mainCredentials.getAuthType()))
             {
                 // TODO remove this dependency
-                signOutViewHolder.effectSignOut();
+                signOutSettingViewHolder.effectSignOut();
             }
         }
         return false;

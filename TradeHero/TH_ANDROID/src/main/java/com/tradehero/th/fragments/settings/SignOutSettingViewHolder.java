@@ -19,7 +19,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class SignOutViewHolder extends OneSettingViewHolder
+public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
     @NotNull private final ProgressDialogUtil progressDialogUtil;
     @NotNull private final CurrentUserId currentUserId;
@@ -28,7 +28,7 @@ public class SignOutViewHolder extends OneSettingViewHolder
     private MiddleCallback<UserProfileDTO> logoutCallback;
 
     //<editor-fold desc="Constructors">
-    @Inject public SignOutViewHolder(
+    @Inject public SignOutSettingViewHolder(
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull CurrentUserId currentUserId,
             @NotNull SessionServiceWrapper sessionServiceWrapper)
