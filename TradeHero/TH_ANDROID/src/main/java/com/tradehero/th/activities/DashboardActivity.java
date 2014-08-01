@@ -55,7 +55,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import dagger.Lazy;

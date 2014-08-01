@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.tradehero.th.utils.route;
 
 import android.app.Activity;
 import android.content.Context;

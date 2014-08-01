@@ -8,7 +8,7 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 
 public class DiscussionItemViewLinear<T extends DiscussionKey>

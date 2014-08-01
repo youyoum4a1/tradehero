@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.tradehero.th.utils.route;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -31,6 +31,7 @@ import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;

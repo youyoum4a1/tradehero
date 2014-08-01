@@ -31,7 +31,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.EmailSignUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.dagger.AppModule;
 import java.util.ArrayList;
 import java.util.Arrays;
