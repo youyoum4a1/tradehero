@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -374,16 +373,22 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         @Override
         public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
         {
-            displayProgress(false);
-            onRefreshCompleted();
-            handleFollowerSummaryDTOReceived(value);
-            notifyFollowerLoaded(value);
+            if (viewContainer != null)
+            {
+                displayProgress(false);
+                onRefreshCompleted();
+                handleFollowerSummaryDTOReceived(value);
+                notifyFollowerLoaded(value);
+            }
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            displayProgress(false);
-            onRefreshCompleted();
+            if (viewContainer != null)
+            {
+                displayProgress(false);
+                onRefreshCompleted();
+            }
             //THToast.show(R.string.error_fetch_follower);
             Timber.e("Failed to fetch FollowerSummary", error);
         }
