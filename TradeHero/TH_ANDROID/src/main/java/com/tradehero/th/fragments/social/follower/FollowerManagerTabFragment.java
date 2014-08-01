@@ -71,8 +71,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     @Override protected void initViews(View view)
     {
         viewContainer = new FollowerManagerViewContainer(view);
-        infoFetcher =
-                new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
 
         if (followerListAdapter == null)
         {
@@ -137,7 +135,13 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         Timber.d("FollowerManagerTabFragment onResume");
         heroId = getHeroId(getArguments());
 
-        infoFetcher.fetch(this.heroId);
+        fetchFollowers();
+    }
+
+    @Override public void onStop()
+    {
+        detachInfoFetcher();
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -146,14 +150,25 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         {
             this.viewContainer.followerList.setOnItemClickListener(null);
         }
+        this.viewContainer = null;
+        this.followerListAdapter = null;
+        super.onDestroyView();
+    }
+
+    protected void detachInfoFetcher()
+    {
         if (this.infoFetcher != null)
         {
             this.infoFetcher.onDestroyView();
         }
-        this.viewContainer = null;
-        this.followerListAdapter = null;
         this.infoFetcher = null;
-        super.onDestroyView();
+    }
+
+    protected void fetchFollowers()
+    {
+        detachInfoFetcher();
+        infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
+        infoFetcher.fetch(this.heroId);
     }
 
     private boolean isCurrentUser()
@@ -280,7 +295,9 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         {
             heroId = getHeroId(getArguments());
         }
-        infoFetcher.fetch(this.heroId, createFollowerSummaryCacheRefreshListener());
+        detachInfoFetcher();
+        infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheRefreshListener());
+        infoFetcher.fetch(this.heroId);
     }
 
     private void pushTimelineFragment(int followerId)
@@ -373,22 +390,16 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         @Override
         public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
         {
-            if (viewContainer != null)
-            {
-                displayProgress(false);
-                onRefreshCompleted();
-                handleFollowerSummaryDTOReceived(value);
-                notifyFollowerLoaded(value);
-            }
+            displayProgress(false);
+            onRefreshCompleted();
+            handleFollowerSummaryDTOReceived(value);
+            notifyFollowerLoaded(value);
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            if (viewContainer != null)
-            {
-                displayProgress(false);
-                onRefreshCompleted();
-            }
+            displayProgress(false);
+            onRefreshCompleted();
             //THToast.show(R.string.error_fetch_follower);
             Timber.e("Failed to fetch FollowerSummary", error);
         }
