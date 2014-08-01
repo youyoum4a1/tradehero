@@ -3,10 +3,10 @@ package com.tradehero.th.fragments.settings;
 import com.tradehero.th.R;
 import javax.inject.Inject;
 
-public class PayPalViewHolder extends OneSettingViewHolder
+public class PayPalSettingViewHolder extends OneSettingViewHolder
 {
     //<editor-fold desc="Constructors">
-    @Inject public PayPalViewHolder()
+    @Inject public PayPalSettingViewHolder()
     {
     }
     //</editor-fold>

@@ -115,7 +115,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected FaqViewHolder faqViewHolder;
     @Inject protected ProfilePreferenceViewHolder profilePreferenceViewHolder;
     @Inject protected LocationCountrySettingsViewHolder locationCountrySettingsViewHolder;
-    @Inject protected PayPalViewHolder payPalViewHolder;
+    @Inject protected PayPalSettingViewHolder payPalSettingViewHolder;
     @Inject protected AlipayViewHolder alipayViewHolder;
     @Inject protected TransactionHistoryViewHolder transactionHistoryViewHolder;
     @Inject protected ReferralCodeViewHolder referralCodeViewHolder;
@@ -300,7 +300,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         faqViewHolder.destroyViews();
         profilePreferenceViewHolder.destroyViews();
         locationCountrySettingsViewHolder.destroyViews();
-        payPalViewHolder.destroyViews();
+        payPalSettingViewHolder.destroyViews();
         alipayViewHolder.destroyViews();
         transactionHistoryViewHolder.destroyViews();
         referralCodeViewHolder.destroyViews();
@@ -327,7 +327,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         referralCodeViewHolder = null;
         transactionHistoryViewHolder = null;
         alipayViewHolder = null;
-        payPalViewHolder = null;
+        payPalSettingViewHolder = null;
         locationCountrySettingsViewHolder = null;
         profilePreferenceViewHolder = null;
         sendFeedbackViewHolder = null;
@@ -412,7 +412,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         profilePreferenceViewHolder.initViews(this);
 
         // Account
-        payPalViewHolder.initViews(this);
+        payPalSettingViewHolder.initViews(this);
         alipayViewHolder.initViews(this);
         transactionHistoryViewHolder.initViews(this);
         referralCodeViewHolder.initViews(this);
