@@ -98,6 +98,7 @@
   <string name="referral_code_message">如果您是由朋友邀请而来，在此输入邀请码将获得 10,000 虚拟货币。</string>
   <string name="settings_referral_code_message">这是您的邀请码。邀请您的朋友来注册，并使用您的邀请码，获得免费奖金！
   </string>
+  <string name="referral_code_callback_success">您的邀请码识别成功，稍后会获得 10,000 TH$奖励</string>
 
   <string name="friends_can_be_invite">%s 个好友可邀请</string>
   <string name="friends_can_be_follow">%s 个好友可关注</string>

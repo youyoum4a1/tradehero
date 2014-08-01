@@ -212,12 +212,25 @@ public class DashboardActivity extends SherlockFragmentActivity
                 mReferralCodeDialog.dismiss();
             }
             userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+            THToast.show(R.string.referral_code_callback_success);
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             alertDialogUtil.get().dismissProgressDialog();
-            THToast.show(new THException(retrofitError));
+            if ((new THException(retrofitError)).getMessage().contains("Already invited"))
+            {
+                if (mReferralCodeDialog != null)
+                {
+                    mReferralCodeDialog.dismiss();
+                }
+                userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+                THToast.show(R.string.referral_code_callback_success);
+            }
+            else
+            {
+                THToast.show(new THException(retrofitError));
+            }
         }
     }
 

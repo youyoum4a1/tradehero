@@ -228,6 +228,7 @@
   <string name="settings_referral_code_message">This is your own referral code. Share it with your
     friends and get FREE Tradehero Dollars when they sign up !
   </string>
+  <string name="referral_code_callback_success">Your invite code is correct, you will get extra 10,000 TH dollars</string>
 
   <string name="friends_can_be_invite">%s friends can be invite</string>
   <string name="friends_can_be_follow">%s friends can be follow</string>
