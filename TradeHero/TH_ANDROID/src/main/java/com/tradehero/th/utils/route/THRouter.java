@@ -16,6 +16,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 @Singleton
 public class THRouter extends Router
@@ -23,6 +25,7 @@ public class THRouter extends Router
     @NotNull private final CurrentActivityHolder currentActivityHolder;
     private Map<String, String> aliases;
 
+    //<editor-fold desc="Constructors">
     @Inject public THRouter(
             @NotNull Context context,
             @NotNull CurrentActivityHolder currentActivityHolder)
@@ -31,6 +34,7 @@ public class THRouter extends Router
         this.currentActivityHolder = currentActivityHolder;
         aliases = new LinkedHashMap<>();
     }
+    //</editor-fold>
 
     @Override public void map(String format, Class<? extends Activity> klass)
     {
@@ -65,18 +69,31 @@ public class THRouter extends Router
         super.registerRoutes(targets);
         for (Class<?> target : targets)
         {
-            if (Fragment.class.isAssignableFrom(target) && target.isAnnotationPresent(Routable.class))
+            if (Fragment.class.isAssignableFrom(target))
             {
-                Routable routable = target.getAnnotation(Routable.class);
+                //noinspection unchecked
+                Class<? extends Fragment> fragmentTarget = (Class<? extends Fragment>) target;
+                Class<? extends Runnable>[] runnableClasses = null;
 
-                String[] routes = routable.value();
-                if (routes != null)
+                if (target.isAnnotationPresent(PreRoutable.class))
                 {
-                    for (String route : routes)
+                    PreRoutable preRoutable = target.getAnnotation(PreRoutable.class);
+                    runnableClasses = preRoutable.preOpenRunnables();
+                }
+
+                if (target.isAnnotationPresent(Routable.class))
+                {
+                    Routable routable = target.getAnnotation(Routable.class);
+
+                    String[] routes = routable.value();
+                    if (routes != null)
                     {
-                        @SuppressWarnings("unchecked")
-                        Class<? extends Fragment> fragmentTarget = (Class<? extends Fragment>) target;
-                        mapFragment(route, fragmentTarget);
+                        for (String route : routes)
+                        {
+                            mapFragment(
+                                    route,
+                                    new THRouterOptions(runnableClasses, fragmentTarget));
+                        }
                     }
                 }
             }
@@ -89,18 +106,8 @@ public class THRouter extends Router
         this.aliases.put(alias, url);
     }
 
-    public void mapFragment(String format, Class<? extends Fragment> klass)
+    public void mapFragment(String format, @NotNull THRouterOptions options)
     {
-        mapFragment(format, klass, null);
-    }
-
-    public void mapFragment(String format, Class<? extends Fragment> klass, THRouterOptions options)
-    {
-        if (options == null)
-        {
-            options = new THRouterOptions();
-        }
-        options.setOpenFragmentClass(klass);
         this.routes.put(format, options);
     }
 
@@ -110,6 +117,9 @@ public class THRouter extends Router
         {
             DashboardNavigator navigator = ((DashboardActivity) activity).getDashboardNavigator();
             THRouterOptions options = (THRouterOptions) params.routerOptions;
+
+            executePreOpenFragment(options.getPreOpenRunnableClasses());
+
             Bundle args = new Bundle();
             if (extras != null)
             {
@@ -139,6 +149,24 @@ public class THRouter extends Router
         }
     }
 
+    protected void executePreOpenFragment(@Nullable Class<? extends Runnable>[] preOpenRunnables)
+    {
+        if (preOpenRunnables != null)
+        {
+            for (Class<? extends Runnable> runnableClass : preOpenRunnables)
+            {
+                try
+                {
+                    runnableClass.newInstance().run();
+                }
+                catch (InstantiationException|IllegalAccessException e)
+                {
+                    Timber.e(e, "Failed to instantiate %s", runnableClass.getCanonicalName());
+                }
+            }
+        }
+    }
+
     public void inject(Fragment fragment)
     {
         if (fragment.getArguments() != null)
@@ -149,16 +177,40 @@ public class THRouter extends Router
 
     public static class THRouterOptions extends RouterOptions
     {
-        private Class<? extends Fragment> fKlass;
+        private Class<? extends Runnable>[] preOpenRunnableClasses;
+        private Class<? extends Fragment> fragmentClass;
 
-        public void setOpenFragmentClass(Class<? extends Fragment> klass)
+        //<editor-fold desc="Constructors">
+        public THRouterOptions(Class<? extends Fragment> fragmentClass)
         {
-            this.fKlass = klass;
+            this.fragmentClass = fragmentClass;
+        }
+
+        public THRouterOptions(Class<? extends Runnable>[] preOpenRunnableClasses, Class<? extends Fragment> fragmentClass)
+        {
+            this.preOpenRunnableClasses = preOpenRunnableClasses;
+            this.fragmentClass = fragmentClass;
+        }
+        //</editor-fold>
+
+        public void setOpenFragmentClass(Class<? extends Fragment> fragmentClass)
+        {
+            this.fragmentClass = fragmentClass;
         }
 
         public Class<? extends Fragment> getOpenFragmentClass()
         {
-            return fKlass;
+            return fragmentClass;
+        }
+
+        public Class<? extends Runnable>[] getPreOpenRunnableClasses()
+        {
+            return preOpenRunnableClasses;
+        }
+
+        public void setPreOpenRunnableClasses(Class<? extends Runnable>[] preOpenRunnableClasses)
+        {
+            this.preOpenRunnableClasses = preOpenRunnableClasses;
         }
     }
 }

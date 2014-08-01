@@ -89,7 +89,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
         }
         catch (Exception ex)
         {
-            Timber.e("%s host is unhandled %s", host, intent.getDataString(), new Exception());
+            Timber.e(ex, "%s host is unhandled %s", host, intent.getDataString());
         }
     }
 }
