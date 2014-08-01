@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trade;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -220,36 +219,6 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     public void shouldReturnNullTransactionFormDTOWhenPortfolioIsNull()
     {
 
-    }
-
-    @Test
-    public void shouldGenerateTransactionFormDTOWithComments()
-    {
-        String comment = "Super awesome stock! 50% discount!!!";
-
-        TextView mComments = abstractTransactionDialogFragment.getCommentView();
-
-        mComments.setText(comment);
-
-        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
-
-        assertThat(transactionFormDTO).isNotNull();
-        assertThat(transactionFormDTO.tradeComment).isEqualTo(comment);
-    }
-
-    @Test
-    public void shouldGenerateTransactionFormDTOWithoutComments()
-    {
-        String comment = "";
-
-        TextView mComments = abstractTransactionDialogFragment.getCommentView();
-
-        mComments.setText(comment);
-
-        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
-
-        assertThat(transactionFormDTO).isNotNull();
-        assertThat(transactionFormDTO.tradeComment).isEmpty();
     }
 
     @Test

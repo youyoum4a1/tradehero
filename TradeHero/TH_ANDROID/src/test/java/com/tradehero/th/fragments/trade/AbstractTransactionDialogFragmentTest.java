@@ -1,6 +1,7 @@
-package com.tradehero.th.fragments.trending;
+package com.tradehero.th.fragments.trade;
 
 import com.tradehero.AbstractTestBase;
+import android.text.Editable;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -11,17 +12,20 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.trade.AbstractTransactionDialogFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
+import org.junit.Test;
 import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractTransactionDialogFragmentTest extends AbstractTestBase
 {
@@ -92,6 +96,30 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
         abstractTransactionDialogFragment.show(activity.getSupportFragmentManager(), "Test");
 
         runBgUiTasks(10);
+    }
+
+    @Test
+    public void shouldGenerateTransactionFormDTOWithComments()
+    {
+        String comment = "Super awesome stock! 50% discount!!!";
+        Editable editable = mock(Editable.class);
+        when(editable.toString()).thenReturn(comment);
+
+        abstractTransactionDialogFragment.unSpannedComment = editable;
+
+        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+
+        assertThat(transactionFormDTO).isNotNull();
+        assertThat(transactionFormDTO.tradeComment).isEqualTo(comment);
+    }
+
+    @Test
+    public void shouldGenerateTransactionFormDTOWithoutComments()
+    {
+        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+
+        assertThat(transactionFormDTO).isNotNull();
+        assertThat(transactionFormDTO.tradeComment).isNullOrEmpty();
     }
 
     public void tearDown()

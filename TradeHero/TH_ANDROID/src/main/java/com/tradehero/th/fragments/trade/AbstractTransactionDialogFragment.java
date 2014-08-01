@@ -143,7 +143,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;
-    private Editable unSpannedComment;
+    Editable unSpannedComment;
 
     protected abstract String getLabel();
 
@@ -342,11 +342,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     public QuickPriceButtonSet getQuickPriceButtonSet()
     {
         return mQuickPriceButtonSet;
-    }
-
-    public TextView getCommentView()
-    {
-        return mCommentsEditText;
     }
 
     public SeekBar getSeekBar()
@@ -955,14 +950,15 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return new BuySellPurchaseReportedListener();
     }
 
-    public void populateComment()
+    public Editable populateComment()
     {
         if (transactionCommentFragment != null)
         {
             unSpannedComment = transactionCommentFragment.getComment();
-            Timber.d(unSpannedComment.toString());
             mCommentsEditText.setText(unSpannedComment);
+            return unSpannedComment;
         }
+        return null;
     }
 
     private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
