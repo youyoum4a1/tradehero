@@ -1,7 +1,9 @@
 package com.tradehero.common.api;
 
+import com.android.internal.util.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BaseArrayList<T> extends ArrayList<T>
@@ -34,5 +36,17 @@ public class BaseArrayList<T> extends ArrayList<T>
             }
         }
         return false;
+    }
+
+    @Nullable public T findFirstWhere(@NotNull Predicate<T> predicate)
+    {
+        for (T item : this)
+        {
+            if (predicate.apply(item))
+            {
+                return item;
+            }
+        }
+        return null;
     }
 }

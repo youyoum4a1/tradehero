@@ -15,7 +15,7 @@ public class FacebookAuthenticationProviderTest
     @Test public void testDateParsing1() throws ParseException
     {
         String received = "2014-07-31T01:00:32.000Z";
-        Date parsed = FacebookAuthenticationProvider.preciseDateFormat.parse(received);
+        Date parsed = FacebookAuthenticationProvider.PRECISE_DATE_FORMAT.parse(received);
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, 2014);
         calendar.set(Calendar.MONTH, 6);
@@ -31,7 +31,7 @@ public class FacebookAuthenticationProviderTest
     @Test public void testDateParsing2() throws ParseException
     {
         String received = "2014-08-20T01:25:43.000Z";
-        Date parsed = FacebookAuthenticationProvider.preciseDateFormat.parse(received);
+        Date parsed = FacebookAuthenticationProvider.PRECISE_DATE_FORMAT.parse(received);
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, 2014);
         calendar.set(Calendar.MONTH, 7);

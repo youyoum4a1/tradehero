@@ -9,11 +9,13 @@ import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.SortedPerPagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
@@ -31,6 +33,7 @@ import retrofit.Callback;
     @NotNull private final LeaderboardServiceAsync leaderboardServiceAsync;
     @NotNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
+    //<editor-fold desc="Constructors">
     @Inject public LeaderboardServiceWrapper(
             @NotNull LeaderboardService leaderboardService,
             @NotNull LeaderboardServiceAsync leaderboardServiceAsync,
@@ -41,6 +44,7 @@ import retrofit.Callback;
         this.leaderboardServiceAsync = leaderboardServiceAsync;
         this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
+    //</editor-fold>
 
     protected DTOProcessor<GetPositionsDTO> createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
     {
@@ -189,6 +193,32 @@ import retrofit.Callback;
     {
         MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
         leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get User On Leaderboard">
+    @NotNull public LeaderboardDTO getUserOnLeaderboard(
+            @NotNull UserOnLeaderboardKey userOnLeaderboardKey,
+            @Nullable LeaderboardSortType leaderboardSortType)
+    {
+        return leaderboardService.getUserOnLeaderboard(
+                userOnLeaderboardKey.leaderboardKey.key,
+                userOnLeaderboardKey.userBaseKey.key,
+                leaderboardSortType == null ? null : leaderboardSortType.getFlag());
+    }
+
+    @NotNull public MiddleCallback<LeaderboardDTO> getUserOnLeaderboard(
+            @NotNull UserOnLeaderboardKey userOnLeaderboardKey,
+            @Nullable LeaderboardSortType leaderboardSortType,
+            @Nullable Callback<LeaderboardDTO> callback)
+    {
+        MiddleCallback<LeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        leaderboardServiceAsync.getUserOnLeaderboard(
+                userOnLeaderboardKey.leaderboardKey.key,
+                userOnLeaderboardKey.userBaseKey.key,
+                leaderboardSortType == null ? null : leaderboardSortType.getFlag(),
+                middleCallback);
         return middleCallback;
     }
     //</editor-fold>

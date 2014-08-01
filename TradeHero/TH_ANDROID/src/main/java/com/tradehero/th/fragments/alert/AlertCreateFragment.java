@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.alert;
 
+import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -7,17 +8,28 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import org.jetbrains.annotations.NotNull;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
-    public static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
+    private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
     private MiddleCallback<AlertCompactDTO> middleCallbackCreateAlertCompactDTO;
+
+    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
+    {
+        args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    }
+
+    @NotNull public static SecurityId getSecurityId(@NotNull Bundle args)
+    {
+        return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE));
+    }
 
     @Override public void onResume()
     {
         super.onResume();
-        linkWith(new SecurityId(getArguments().getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE)), true);
+        linkWith(getSecurityId(getArguments()), true);
         linkWith(getDummyInitialAlertDTO(), true);
     }
 
@@ -52,11 +64,7 @@ public class AlertCreateFragment extends BaseAlertEditFragment
 
     protected void displayActionBarTitle()
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(R.string.stock_alert_add_alert);
-        }
+        setActionBarTitle(R.string.stock_alert_add_alert);
     }
 
     protected void saveAlertProper(AlertFormDTO alertFormDTO)

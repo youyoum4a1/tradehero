@@ -8,6 +8,7 @@ import android.widget.TabHost;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.intent.THIntent;
@@ -92,7 +93,7 @@ public class DashboardNavigator extends Navigator
         manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         manager.executePendingTransactions();
 
-        updateTabBarOnTabChanged(pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp).getClass().getName());
+        updateTabBarOnTabChanged(((Object) pushFragment(tabType.fragmentClass, args, null, null, shouldAddToBackStack, showHomeKeyAsUp)).getClass().getName());
     }
 
     private void postPushActionFragment(final THIntent thIntent)
@@ -118,6 +119,16 @@ public class DashboardNavigator extends Navigator
             @Nullable String backStackName, Boolean shouldAddToBackStack, Boolean showHomeAsUp)
     {
         resideMenu.closeMenu();
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment instanceof DashboardFragment)
+        {
+            DashboardFragment currentDashboardFragment = (DashboardFragment) currentFragment;
+            if (!currentDashboardFragment.allowNavigateTo(fragmentClass, args))
+            {
+                return null;
+            }
+        }
+
         T fragment = super.pushFragment(fragmentClass, args, anim, backStackName, shouldAddToBackStack, showHomeAsUp);
         executePending(fragment);
         return fragment;

@@ -13,7 +13,7 @@
         android:layout_marginTop="10dp"
         android:text="TRADEHERO"
         android:textColor="@color/gray_1"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:textStyle="bold" >
     </TextView>
 
@@ -47,7 +47,7 @@
             android:layout_marginLeft="20dp"
             android:text="Home"
             android:textColor="@color/gray_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             android:textStyle="normal" >
         </TextView>
     </LinearLayout>
@@ -82,7 +82,7 @@
             android:layout_marginLeft="20dp"
             android:text="Trending"
             android:textColor="@color/gray_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             android:textStyle="normal" >
         </TextView>
     </LinearLayout>
@@ -117,7 +117,7 @@
             android:layout_marginLeft="20dp"
             android:text="Community"
             android:textColor="@color/gray_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             android:textStyle="normal" >
         </TextView>
     </LinearLayout>
@@ -152,7 +152,7 @@
             android:layout_marginLeft="20dp"
             android:text="Portfolios"
             android:textColor="@color/gray_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             android:textStyle="normal" >
         </TextView>
     </LinearLayout>
@@ -187,7 +187,7 @@
             android:layout_marginLeft="20dp"
             android:text="Purchases"
             android:textColor="@color/gray_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             android:textStyle="normal" >
         </TextView>
     </LinearLayout>
@@ -199,7 +199,7 @@
         android:layout_marginTop="30dp"
         android:text="SETTING"
         android:textColor="@color/gray_1"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_large"
         android:textStyle="bold" >
     </TextView>
 
@@ -233,7 +233,7 @@
             android:layout_marginLeft="20dp"
             android:text="Sign Out"
             android:textColor="@color/gray_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             android:textStyle="normal" >
         </TextView>
     </LinearLayout>
@@ -267,7 +267,7 @@
             android:layout_marginLeft="20dp"
             android:text="Reset Cache"
             android:textColor="@color/gray_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             android:textStyle="normal" >
         </TextView>
     </LinearLayout>
@@ -301,7 +301,7 @@
             android:layout_marginLeft="20dp"
             android:text="Help/FAQ"
             android:textColor="@color/gray_1"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_large"
             android:textStyle="normal" >
         </TextView>
     </LinearLayout>

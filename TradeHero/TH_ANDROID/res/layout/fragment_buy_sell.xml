@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:text="@string/buy_sell_portfolio_selected_title"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:layout_centerVertical="true"/>
 
     <ImageView
@@ -53,7 +53,7 @@
         android:layout_toLeftOf="@id/portfolio_drop_down_hint"
         android:layout_toRightOf="@id/selected_title_anchor"
         tools:text="Main Portfolio"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:layout_centerVertical="true"/>
 
   </RelativeLayout>
@@ -68,12 +68,12 @@
     <ImageView
         android:id="@+id/stock_bg_logo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/buy_sell_header_bg_height"
+        android:layout_height="0dp"
         android:layout_alignParentTop="true"
-        android:scaleType="fitCenter"
-        android:alpha="0.08"
+        android:scaleType="centerCrop"
+        android:alpha="0.2"
         tools:background="@color/gray_normal"
-        />
+        android:layout_alignBottom="@+id/buy_sell_action_buttons_bottom_margin"/>
 
     <ImageView
         android:id="@+id/market_closed_icon"
@@ -100,8 +100,8 @@
 
       <ImageView
           android:id="@+id/stock_logo"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_width="@dimen/big_avatar_w_h"
+          android:layout_height="@dimen/big_avatar_w_h"
           android:adjustViewBounds="true"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
@@ -120,7 +120,7 @@
         android:layout_marginLeft="@dimen/common_margin_10"
         android:layout_toRightOf="@id/logo_layout"
         android:text="@string/buy_sell_loading_ask_price"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:textColor="@color/font_roi"
         />
 
@@ -133,7 +133,7 @@
         android:layout_below="@id/buy_price"
         android:layout_marginTop="-5dp"
         android:layout_marginLeft="@dimen/common_margin_10"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:textColor="@color/red"
         android:text="@string/buy_sell_loading_ask_price"
         />
@@ -147,18 +147,17 @@
         android:layout_toRightOf="@id/logo_layout"
         android:layout_marginLeft="@dimen/common_margin_10"
         tools:text="06 Feb 05:00"
-        android:textSize="13sp"
+        android:textSize="@dimen/text_small"
         android:textColor="#4e4e4e"
         android:layout_marginTop="-4dp"/>
 
     <LinearLayout
         android:id="@+id/buy_sell_action_buttons"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height_30"
+        android:layout_height="wrap_content"
         android:layout_below="@id/logo_layout"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/common_margin_15"
-        android:layout_marginBottom="@dimen/common_margin_10"
         android:paddingLeft="@dimen/common_margin_10"
         android:paddingRight="@dimen/common_margin_10"
         >
@@ -177,14 +176,22 @@
 
     </LinearLayout>
 
+
+    <Space
+        android:id="@+id/buy_sell_action_buttons_bottom_margin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_margin_10"
+        android:layout_below="@id/buy_sell_action_buttons"
+        />
+
     <LinearLayout
         android:id="@+id/belt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buy_sell_action_buttons"
+        android:layout_below="@id/stock_bg_logo"
         android:padding="5dp"
-        android:background="@color/white"
-        >
+        android:gravity="center_vertical"
+        android:background="@color/white">
 
       <TextView
           android:id="@+id/info"

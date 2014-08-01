@@ -9,19 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TextView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.HeroIdExtWrapper;
+import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
@@ -131,20 +128,20 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getTitle());
+        setActionBarTitle(getTitle());
     }
 
     private void handleBuyMoreClicked()
     {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        createPurchaseActionInteractorBuilder()
+                .build()
+                .buyFollowCredits();
     }
 
-    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
-        THUIBillingRequest request = super.getShowProductDetailRequest(domain);
-        request.purchaseReportedListener = new HeroManagerOnPurchaseReportedListener();
-        return request;
+        return super.createPurchaseActionInteractorBuilder()
+                .setPurchaseReportedListener(new HeroManagerOnPurchaseReportedListener());
     }
 
     private boolean isCurrentUser()
@@ -189,7 +186,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         tv.setText(title);
     }
 
-    @Override public void onHerosLoaded(HeroTypeResourceDTO resourceDTO, HeroIdExtWrapper value)
+    @Override public void onHerosLoaded(HeroTypeResourceDTO resourceDTO, HeroDTOExtWrapper value)
     {
         if (!isDetached())
         {
@@ -217,13 +214,17 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     }
 
     protected class HeroManagerPremiumUserFollowedListener
-            extends BasePurchaseManagerPremiumUserFollowedListener
+            implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             handleFollowSuccess(currentUserProfileDTO);
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // nothing for now
         }
     }
 

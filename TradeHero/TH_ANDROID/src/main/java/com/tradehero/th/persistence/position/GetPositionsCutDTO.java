@@ -28,7 +28,10 @@ class GetPositionsCutDTO implements DTO
         positionCache.put(getPositionsDTO.positions);
         this.ownedPositionIds = PositionDTO.getFiledPositionIds(getPositionsDTO.positions);
 
-        securityCompactCache.put(getPositionsDTO.securities);
+        if (getPositionsDTO.securities != null)
+        {
+            securityCompactCache.put(getPositionsDTO.securities);
+        }
         this.securityIds = SecurityCompactDTO.getSecurityIds(getPositionsDTO.securities);
 
         this.openPositionsCount = getPositionsDTO.openPositionsCount;

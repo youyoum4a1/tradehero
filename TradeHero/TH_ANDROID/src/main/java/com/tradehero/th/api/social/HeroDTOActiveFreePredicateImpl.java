@@ -1,6 +1,5 @@
 package com.tradehero.th.api.social;
 
-import com.android.internal.util.Predicate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 

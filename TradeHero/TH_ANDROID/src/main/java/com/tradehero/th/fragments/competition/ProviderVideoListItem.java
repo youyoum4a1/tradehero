@@ -5,25 +5,23 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.api.competition.key.HelpVideoId;
-import com.tradehero.th.persistence.competition.HelpVideoCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-public class ProviderVideoListItem extends RelativeLayout implements DTOView<HelpVideoId>
+public class ProviderVideoListItem extends RelativeLayout implements DTOView<HelpVideoDTO>
 {
-    private HelpVideoId videoId;
     private HelpVideoDTO videoDTO;
-    @Inject protected HelpVideoCache helpVideoCache;
     @Inject Picasso picasso;
 
-    private ImageView thumbnail;
-    private TextView title;
-    private TextView description;
+    @InjectView(R.id.help_video_thumbnail) protected ImageView thumbnail;
+    @InjectView(R.id.help_video_title) protected TextView title;
+    @InjectView(R.id.help_video_description) protected TextView description;
 
     //<editor-fold desc="Constructors">
     public ProviderVideoListItem(Context context)
@@ -46,35 +44,24 @@ public class ProviderVideoListItem extends RelativeLayout implements DTOView<Hel
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
+        ButterKnife.inject(this);
+    }
 
-        this.thumbnail = (ImageView) findViewById(R.id.help_video_thumbnail);
-        if (thumbnail != null)
-        {
-            thumbnail.setLayerType(LAYER_TYPE_SOFTWARE, null);
-        }
-        this.title = (TextView) findViewById(R.id.help_video_title);
-        this.description = (TextView) findViewById(R.id.help_video_description);
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        thumbnail.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        if (thumbnail != null)
-        {
-            thumbnail.setImageDrawable(null);
-        }
+        thumbnail.setImageDrawable(null);
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(HelpVideoId videoId1)
+    @Override public void display(HelpVideoDTO helpVideoDTO)
     {
-        if (videoId1 == null)
-        {
-            this.linkWith(null, true);
-        }
-        else
-        {
-            this.linkWith(helpVideoCache.get(videoId1), true);
-        }
+        this.linkWith(helpVideoDTO, true);
     }
 
     public void linkWith(HelpVideoDTO videoDto, boolean andDisplay)

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.facebook.FacebookException;
@@ -27,7 +26,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.social.InviteContactEntryDTO;
-import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
@@ -50,8 +49,9 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,9 +73,9 @@ public class InviteFriendFragment extends DashboardFragment
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject Lazy<SocialService> socialService;
     @Inject Lazy<LinkedInUtils> linkedInUtils;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
     private FriendListAdapter referFriendListAdapter;
@@ -317,7 +317,7 @@ public class InviteFriendFragment extends DashboardFragment
     {
         super.onResume();
 
-        localyticsSession.tagEvent(LocalyticsConstants.Referrals_Settings);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Referrals_Settings));
 
         getProgressDialog().show();
 
@@ -423,7 +423,7 @@ public class InviteFriendFragment extends DashboardFragment
     {
         if (selectedContacts != null && !selectedContacts.isEmpty())
         {
-            InviteFormDTO inviteFriendForm = new InviteFormDTO();
+            InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
             inviteFriendForm.users = new ArrayList<>();
             for (UserFriendsDTO userFriendsDTO : selectedContacts)
             {
@@ -448,9 +448,7 @@ public class InviteFriendFragment extends DashboardFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getString(R.string.invite_friends));
-
+        setActionBarTitle(getString(R.string.invite_friends));
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -564,7 +562,7 @@ public class InviteFriendFragment extends DashboardFragment
     {
         @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
         {
-            userProfileCache.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
+            userProfileCacheLazy.get().put(currentUserId.toUserBaseKey(), userProfileDTO);
             sendInvitation();
         }
 
@@ -591,16 +589,19 @@ public class InviteFriendFragment extends DashboardFragment
                 case LN:
                     if (selectedLinkedInFriends != null && !selectedLinkedInFriends.isEmpty())
                     {
-                        InviteFormDTO inviteFriendForm = new InviteFormDTO();
+                        InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
                         inviteFriendForm.users = new ArrayList<>();
                         for (UserFriendsLinkedinDTO userFriendsDTO : selectedLinkedInFriends)
                         {
-                            inviteFriendForm.users.add(userFriendsDTO.createInvite());
+                            inviteFriendForm.add(userFriendsDTO);
                         }
                         selectedLinkedInFriends = null;
                         getProgressDialog().show();
                         detachMiddleCallbackInvite();
-                        middleCallbackInvite = userServiceWrapper.get().inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm, inviteFriendCallback);
+                        middleCallbackInvite = userServiceWrapper.get().inviteFriends(
+                                currentUserId.toUserBaseKey(),
+                                inviteFriendForm,
+                                inviteFriendCallback);
                     }
                 case FB:
                     if (Session.getActiveSession() == null)
@@ -636,46 +637,50 @@ public class InviteFriendFragment extends DashboardFragment
         }
         Timber.d("list of fbIds: %s", stringBuilder.toString());
 
-        Bundle params = new Bundle();
-        String messageToFacebookFriends = getString(R.string.invite_friend_facebook_tradehero_refer_friend_message);
-        if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
+        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
         {
-            messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
-        }
+            Bundle params = new Bundle();
+            String messageToFacebookFriends = getString(R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+            if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
+            {
+                messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
+            }
 
-        params.putString("message", messageToFacebookFriends);
-        params.putString("to", stringBuilder.toString());
+            params.putString("message", messageToFacebookFriends);
+            params.putString("to", stringBuilder.toString());
 
-        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(getActivity(), Session.getActiveSession(), params))
-                .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                {
-
-                    @Override
-                    public void onComplete(Bundle values, FacebookException error)
+            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(getActivity(), Session.getActiveSession(), params))
+                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
-                        if (error != null)
+
+                        @Override
+                        public void onComplete(Bundle values, FacebookException error)
                         {
-                            if (error instanceof FacebookOperationCanceledException)
+                            if (error != null)
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
-                            }
-                        }
-                        else
-                        {
-                            final String requestId = values.getString("request");
-                            if (requestId != null)
-                            {
-                                THToast.show(R.string.invite_friend_request_sent);
+                                if (error instanceof FacebookOperationCanceledException)
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                             else
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                final String requestId = values.getString("request");
+                                if (requestId != null)
+                                {
+                                    THToast.show(R.string.invite_friend_request_sent);
+                                }
+                                else
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                         }
-                    }
-                })
-                .build();
-        requestsDialog.show();
+                    })
+                    .build();
+            requestsDialog.show();
+        }
     }
     //</editor-fold>
 }

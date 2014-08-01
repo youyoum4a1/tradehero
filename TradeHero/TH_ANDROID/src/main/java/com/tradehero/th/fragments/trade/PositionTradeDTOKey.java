@@ -2,18 +2,18 @@ package com.tradehero.th.fragments.trade;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.position.PositionDTOKey;
-import com.tradehero.th.api.trade.OwnedTradeId;
+import com.tradehero.th.api.trade.TradeDTO;
 
 public class PositionTradeDTOKey implements DTO
 {
     public final PositionDTOKey positionDTOKey;
-    public final OwnedTradeId ownedTradeId;
+    public final TradeDTO tradeDTO;
 
     //<editor-fold desc="Constructors">
-    public PositionTradeDTOKey(PositionDTOKey positionDTOKey, OwnedTradeId ownedTradeId)
+    public PositionTradeDTOKey(PositionDTOKey positionDTOKey, TradeDTO tradeDTO)
     {
         this.positionDTOKey = positionDTOKey;
-        this.ownedTradeId = ownedTradeId;
+        this.tradeDTO = tradeDTO;
     }
     //</editor-fold>
 }

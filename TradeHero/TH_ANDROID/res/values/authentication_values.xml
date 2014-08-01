@@ -6,7 +6,7 @@
   <dimen name="authentication_agreement_vertical_padding">10dp</dimen>
   <dimen name="authentication_button_horizontal_padding">5dp</dimen>
   <dimen name="authentication_button_drawable_padding">10dp</dimen>
-  <dimen name="authentication_button_text_size">18sp</dimen>
+  <dimen name="authentication_button_text_size">@dimen/text_large</dimen>
   <dimen name="authentication_button_vertical_margin">8dp</dimen>
-  <dimen name="authentication_page_text_size">14sp</dimen>
+  <dimen name="authentication_page_text_size">@dimen/text_small</dimen>
 </resources>

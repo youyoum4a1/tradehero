@@ -1,8 +1,15 @@
 package com.tradehero.th.network;
 
 import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.LoginFormDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormEmailDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormFacebookDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormLinkedinDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormQQDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormTwitterDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormWeiboDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.network.retrofit.RetrofitModule;
@@ -23,17 +30,64 @@ public class NetworkModule
     public static final String SERVER_ENDPOINT_KEY = "SERVER_ENDPOINT_KEY";
 
     @Provides @Singleton @ServerEndpoint
-    StringPreference provideEndpointPreference(SharedPreferences sharedPreferences)
+    StringPreference provideEndpointPreference(@ForApp SharedPreferences sharedPreferences)
     {
-        return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.TRADEHERO_PROD_API_ENDPOINT);
+        return new StringPreference(sharedPreferences, SERVER_ENDPOINT_KEY, NetworkConstants.getApiEndPointInUse());
     }
 
-    @Provides
-    LoginFormDTO provideLoginFormDTO()
+    @Provides LoginFormDTO provideLoginFormDTO(DeviceTokenHelper deviceTokenHelper)
     {
         return new LoginFormDTO(
-                DeviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
-                DeviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                VersionUtils.getVersionId(Application.context()));
+    }
+
+    @Provides LoginSignUpFormEmailDTO provideLoginSignUpFormEmailDTO(DeviceTokenHelper deviceTokenHelper)
+    {
+        return new LoginSignUpFormEmailDTO(
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                VersionUtils.getVersionId(Application.context()));
+    }
+
+    @Provides LoginSignUpFormFacebookDTO provideLoginSignUpFormFacebookDTO(DeviceTokenHelper deviceTokenHelper)
+    {
+        return new LoginSignUpFormFacebookDTO(
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                VersionUtils.getVersionId(Application.context()));
+    }
+
+    @Provides LoginSignUpFormLinkedinDTO provideLoginSignUpFormLinkedinDTO(DeviceTokenHelper deviceTokenHelper)
+    {
+        return new LoginSignUpFormLinkedinDTO(
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                VersionUtils.getVersionId(Application.context()));
+    }
+
+    @Provides LoginSignUpFormQQDTO provideLoginSignUpFormQQDTO(DeviceTokenHelper deviceTokenHelper)
+    {
+        return new LoginSignUpFormQQDTO(
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                VersionUtils.getVersionId(Application.context()));
+    }
+
+    @Provides LoginSignUpFormTwitterDTO provideLoginSignUpFormTwitterDTO(DeviceTokenHelper deviceTokenHelper)
+    {
+        return new LoginSignUpFormTwitterDTO(
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
+                VersionUtils.getVersionId(Application.context()));
+    }
+
+    @Provides LoginSignUpFormWeiboDTO provideLoginSignUpFormWeiboDTO(DeviceTokenHelper deviceTokenHelper)
+    {
+        return new LoginSignUpFormWeiboDTO(
+                deviceTokenHelper.getDeviceToken()/**PushManager.shared().getAPID()*/,
+                deviceTokenHelper.getDeviceType() /**DeviceType.Android*/,
                 VersionUtils.getVersionId(Application.context()));
     }
 }

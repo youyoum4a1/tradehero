@@ -51,7 +51,7 @@
         android:textColor="@color/text_gray_normal"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:paddingTop="5sp"
+        android:paddingTop="5dp"
         />
 
     <SeekBar

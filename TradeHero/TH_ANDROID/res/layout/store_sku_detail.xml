@@ -38,7 +38,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="24dp"
         android:layout_centerVertical="true"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         tools:text="$2.58"
         />
 
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/sku_price"
         android:layout_centerVertical="true"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_medium"
         android:textStyle="bold"
         tools:text="2 Alerts"
         />
@@ -75,7 +75,7 @@
       android:layout_alignParentRight="true"
       android:layout_toRightOf="@id/ic_deliverable"
       android:layout_below="@id/price_and_text"
-      android:textSize="12sp"
+      android:textSize="@dimen/text_xsmall"
       android:textColor="@color/gray_3"
       android:visibility="gone"
       tools:text="unlimited concurrent active"

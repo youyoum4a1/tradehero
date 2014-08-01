@@ -7,11 +7,12 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.Server;
+
+import retrofit.Endpoint;
 
 public class ProviderPageIntent extends OneProviderIntent
 {
-    @Inject Server apiServer;
+    @Inject Endpoint apiServer;
 
     //<editor-fold desc="Constructors">
     public ProviderPageIntent(ProviderId providerId, String uri)
@@ -56,7 +57,16 @@ public class ProviderPageIntent extends OneProviderIntent
 
     public String getCompleteForwardUriPath()
     {
-        return apiServer.getUrl() + getForwardUriPath();
+        String path = getForwardUriPath();
+        Uri forwardUri = Uri.parse(path);
+        if (forwardUri.getScheme() == null && forwardUri.getHost() == null)
+        {
+            return apiServer.getUrl() + getForwardUriPath();
+        }
+        else
+        {
+            return path;
+        }
     }
 
     public String getForwardUriPath()

@@ -15,7 +15,7 @@
       android:layout_height="match_parent"
       android:text="@string/watchlist_delete"
       android:gravity="center"
-      android:textSize="14sp"
+      android:textSize="@dimen/text_small"
       android:layout_alignParentRight="true"
       android:textColor="@android:color/white"
       android:background="#f00"

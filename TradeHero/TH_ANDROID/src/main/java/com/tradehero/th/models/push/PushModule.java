@@ -1,6 +1,7 @@
 package com.tradehero.th.models.push;
 
 import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.baidu.BaiduPushModule;
@@ -52,7 +53,7 @@ public class PushModule
         return commonNotificationBuilder;
     }
 
-    @Provides @Singleton @MaxGroupNotifications IntPreference provideMaxGroupNotifications(SharedPreferences sharedPreferences)
+    @Provides @Singleton @MaxGroupNotifications IntPreference provideMaxGroupNotifications(@ForUser SharedPreferences sharedPreferences)
     {
         return new IntPreference(sharedPreferences, MAX_GROUP_NOTIFICATIONS, 3);
     }

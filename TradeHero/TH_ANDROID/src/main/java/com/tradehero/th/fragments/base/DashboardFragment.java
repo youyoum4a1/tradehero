@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -8,8 +9,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -81,27 +80,24 @@ abstract public class DashboardFragment extends BaseFragment
             }
         }
 
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        if (shouldShowHomeAsUp())
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null)
         {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
-                    | ActionBar.DISPLAY_SHOW_TITLE
-                    | ActionBar.DISPLAY_SHOW_HOME);
+            if (shouldShowHomeAsUp())
+            {
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP
+                        | ActionBar.DISPLAY_SHOW_TITLE
+                        | ActionBar.DISPLAY_SHOW_HOME);
+            }
+            else
+            {
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+                        | ActionBar.DISPLAY_SHOW_HOME
+                        | ActionBar.DISPLAY_USE_LOGO);
+                actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+            }
+            actionBar.setHomeButtonEnabled(true);
         }
-        else
-        {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-                    | ActionBar.DISPLAY_SHOW_HOME
-                    | ActionBar.DISPLAY_USE_LOGO);
-            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
-        }
-        actionBar.setHomeButtonEnabled(true);
-    }
-
-    protected void setActionBarTitle(String title)
-    {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(title);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -111,7 +107,11 @@ abstract public class DashboardFragment extends BaseFragment
             case android.R.id.home:
                 if (shouldShowHomeAsUp())
                 {
-                    getDashboardNavigator().popFragment();
+                    DashboardNavigator navigator = getDashboardNavigator();
+                    if (navigator != null)
+                    {
+                        navigator.popFragment();
+                    }
                 }
                 else
                 {
@@ -143,15 +143,18 @@ abstract public class DashboardFragment extends BaseFragment
         return getKeyShowHomeAsUp(getArguments());
     }
 
-    //suggest use DashboardNavigator
-    @Deprecated
-    protected Navigator getNavigator()
+    @Nullable protected DashboardNavigator getDashboardNavigator()
     {
-        return ((NavigatorActivity) getActivity()).getNavigator();
+        @Nullable DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
+        if (activity != null)
+        {
+            return activity.getDashboardNavigator();
+        }
+        return null;
     }
 
-    protected DashboardNavigator getDashboardNavigator()
+    public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)
     {
-        return ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator();
+        return true;
     }
 }

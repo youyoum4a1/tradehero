@@ -96,7 +96,7 @@
         tools:text="Tho Nguyen has become the best trader of the world!"
         android:textColorLink="@color/timeline_item_link"
         android:textColor="@color/timeline_item"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_xsmall"
         android:textStyle="normal"
         />
 

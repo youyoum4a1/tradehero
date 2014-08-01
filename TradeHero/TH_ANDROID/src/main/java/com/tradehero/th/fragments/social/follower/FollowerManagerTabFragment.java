@@ -30,6 +30,7 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.THRouter;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
@@ -113,8 +114,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-        actionBar.setTitle(getTitle());
+        setActionBarTitle(getTitle());
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -351,7 +351,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
         {
             Timber.d("onDTOReceived");
 
@@ -360,7 +360,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             notifyFollowerLoaded(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             displayProgress(false);
             THToast.show(R.string.error_fetch_follower);
@@ -372,7 +372,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
         {
             displayProgress(false);
             onRefreshCompleted();
@@ -380,7 +380,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             notifyFollowerLoaded(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             displayProgress(false);
             onRefreshCompleted();

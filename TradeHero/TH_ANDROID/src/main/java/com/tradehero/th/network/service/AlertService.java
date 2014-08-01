@@ -1,9 +1,9 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
-import java.util.List;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -13,8 +13,7 @@ import retrofit.http.Path;
 public interface AlertService
 {
     //<editor-fold desc="Get Alerts">
-    @GET("/users/{userId}/alerts")
-    List<AlertCompactDTO> getAlerts(
+    @GET("/users/{userId}/alerts") AlertCompactDTOList getAlerts(
             @Path("userId") int userId);
     //</editor-fold>
 

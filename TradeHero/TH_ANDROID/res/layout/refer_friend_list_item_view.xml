@@ -45,7 +45,7 @@
       android:drawableLeft="@drawable/invite_friend_facebook"
       android:drawablePadding="@dimen/refer_friend_source_drawable_padding"
       android:gravity="center_vertical"
-      android:textSize="12sp"
+      android:textSize="@dimen/text_xsmall"
       android:text="@string/facebook"
       android:visibility="invisible"
       />
@@ -61,7 +61,7 @@
       android:drawableLeft="@drawable/invite_friend_linked_in"
       android:drawablePadding="@dimen/refer_friend_source_drawable_padding"
       android:gravity="center_vertical"
-      android:textSize="12sp"
+      android:textSize="@dimen/text_xsmall"
       android:text="@string/linkedin"
       android:visibility="invisible"
       />
@@ -77,7 +77,7 @@
       android:drawableLeft="@drawable/invite_friend_contact"
       android:drawablePadding="@dimen/refer_friend_source_drawable_padding"
       android:gravity="center_vertical"
-      android:textSize="12sp"
+      android:textSize="@dimen/text_xsmall"
       android:text="@null"
       android:visibility="invisible"
       />

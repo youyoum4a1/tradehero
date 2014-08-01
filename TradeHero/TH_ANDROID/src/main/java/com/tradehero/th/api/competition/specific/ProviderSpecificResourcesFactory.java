@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition.specific;
 
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
 import com.tradehero.th.api.competition.specific.etoro.EToroProviderSpecificResourcesDTO;
@@ -21,12 +21,12 @@ public class ProviderSpecificResourcesFactory
     //</editor-fold>
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public ProviderSpecificResourcesDTO createResources(@Nullable ProviderDTO providerDTO)
+    public ProviderSpecificResourcesDTO createResources(@Nullable ProviderCompactDTO providerCompactDTO)
     {
         ProviderSpecificResourcesDTO created = null;
-        if (providerDTO != null)
+        if (providerCompactDTO != null)
         {
-            created = createResources(providerDTO.getProviderId());
+            created = createResources(providerCompactDTO.getProviderId());
         }
         return created;
     }
@@ -53,9 +53,11 @@ public class ProviderSpecificResourcesFactory
                     break;
 
                 default:
-                    Timber.e(new IllegalArgumentException(), "Unhandled ProviderId.key == %d", providerId.key);
+                    Timber.e("Unhandled ProviderId.key == %d", providerId.key);
+                    break;
             }
         }
+
         return created;
     }
 }

@@ -26,72 +26,47 @@
       android:layout_width="@dimen/medium_logo_w_h"
       android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
+      android:layout_centerVertical="true"
       tools:src="@drawable/icn_portfolio_pressed"
       android:contentDescription="@null"
       />
 
-  <LinearLayout
-      android:orientation="vertical"
-      android:layout_width="match_parent"
+  <TextView
+      android:id="@+id/competition_zone_title"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
       android:layout_toRightOf="@id/icn_competition_zone"
+      android:layout_toLeftOf="@+id/competition_roi"
+      android:layout_marginBottom="8dp"
+      android:maxLines="1"
+      android:textStyle="bold"
+      tools:text="February 2014"
+      />
+
+  <TextView
+      android:id="@+id/competition_zone_description"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:maxLines="1"
+      android:layout_below="@id/competition_zone_title"
+      android:layout_toRightOf="@id/icn_competition_zone"
+      android:layout_toLeftOf="@+id/competition_roi"
+      android:textSize="@dimen/text_xsmall"
+      android:textColor="@color/text_gray_normal"
+      tools:text="1st to 28th February"
+      />
+
+  <TextView
+      android:id="@+id/competition_roi"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_toLeftOf="@+id/hint_open_competition_zone"
-      android:paddingTop="2dp"
-      android:paddingBottom="2dp"
-      android:paddingLeft="5dp"
       android:layout_centerVertical="true"
-      >
+      android:paddingRight="5dp"
+      android:textStyle="bold"
+      tools:text="S$ 3750"
+      />
 
-    <RelativeLayout
-        android:id="@+id/title_and_prize_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:paddingRight="16dp"
-        >
-
-      <TextView
-          android:id="@+id/competition_zone_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:layout_marginBottom="8dp"
-          android:maxLines="1"
-          android:textStyle="bold"
-          tools:text="February 2014"
-          />
-
-      <TextView
-          android:id="@+id/competition_prize_to_be_won"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentRight="true"
-          android:text="@string/competition_leaderboard_to_be_won"
-          />
-
-      <TextView
-          android:id="@+id/competition_prize"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_toLeftOf="@+id/competition_prize_to_be_won"
-          android:paddingRight="4dp"
-          android:textStyle="bold"
-          tools:text="S$ 3750"
-          />
-
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/competition_zone_description"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:maxLines="1"
-        android:textSize="10sp"
-        android:textColor="@color/text_gray_normal"
-        tools:text="1st to 28th February"
-        />
-
-  </LinearLayout>
 
 </com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardListItemView>

@@ -20,7 +20,7 @@
       android:background="@drawable/basic_yellow_selector"
       android:layout_marginLeft="10dp"
       android:layout_marginRight="10dp"
-      android:textColor="@color/btn_text_blue"
+      android:textColor="@color/tradehero_blue"
       />
 
 </FrameLayout>

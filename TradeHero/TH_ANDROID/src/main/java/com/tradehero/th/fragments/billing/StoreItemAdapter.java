@@ -4,63 +4,43 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.fragments.billing.store.StoreItemDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
 import java.util.HashMap;
+import org.jetbrains.annotations.NotNull;
 
-public class StoreItemAdapter extends BaseAdapter
+public class StoreItemAdapter extends ArrayAdapter<StoreItemDTO>
 {
-    //<editor-fold desc="Known Positions">
-    public static final int POSITION_IN_APP_PURCHASES = 0;
-    public static final int POSITION_BUY_VIRTUAL_DOLLARS = 1;
-    public static final int POSITION_BUY_FOLLOW_CREDITS = 2;
-    //now alerts are free
-    public static final int POSITION_BUY_STOCK_ALERTS = 8;
-    public static final int POSITION_BUY_RESET_PORTFOLIO = 3;
-    public static final int POSITION_MANAGE_PURCHASES = 4;
-    public static final int POSITION_MANAGE_HEROES = 5;
-    public static final int POSITION_MANAGE_FOLLOWERS = 6;
-    public static final int POSITION_MANAGE_STOCK_ALERTS = 7;
-    //</editor-fold>
-
-    //<editor-fold desc="View Types">
     public static final int VIEW_TYPE_HEADER = 0;
     public static final int VIEW_TYPE_LIKE_BUTTON = 1;
     public static final int VIEW_TYPE_HAS_FURTHER = 2;
-    //</editor-fold>
 
-    protected final Context context;
-    private HashMap<Integer, Integer> viewTypeToLayoutId;
+    @NotNull private HashMap<Integer, Integer> viewTypeToLayoutId;
 
+    //<editor-fold desc="Constructors">
     public StoreItemAdapter(Context context)
     {
-        super();
-        this.context = context;
+        super(context, 0);
+        viewTypeToLayoutId = new HashMap<>();
         buildViewTypeMap();
     }
+    //</editor-fold>
 
     private void buildViewTypeMap()
     {
-        viewTypeToLayoutId = new HashMap<>();
         viewTypeToLayoutId.put(VIEW_TYPE_HEADER, R.layout.store_item_header);
         viewTypeToLayoutId.put(VIEW_TYPE_LIKE_BUTTON, R.layout.store_item_like_button);
         viewTypeToLayoutId.put(VIEW_TYPE_HAS_FURTHER, R.layout.store_item_has_further);
     }
 
-    @Override public int getCount()
-    {
-        //now alerts are free
-        return 8;
-    }
-
     @Override public long getItemId(int i)
     {
         return i;
-    }
-
-    @Override public Object getItem(int i)
-    {
-        return null;
     }
 
     @Override public int getViewTypeCount()
@@ -71,25 +51,22 @@ public class StoreItemAdapter extends BaseAdapter
     @Override public int getItemViewType(int position)
     {
         int viewType;
-        switch (position)
+        StoreItemDTO storeItemDTO = getItem(position);
+        if (storeItemDTO instanceof StoreItemTitleDTO)
         {
-            case POSITION_IN_APP_PURCHASES:
-            case POSITION_MANAGE_PURCHASES:
-                viewType = VIEW_TYPE_HEADER;
-                break;
-            case POSITION_BUY_VIRTUAL_DOLLARS:
-            case POSITION_BUY_FOLLOW_CREDITS:
-            case POSITION_BUY_STOCK_ALERTS:
-            case POSITION_BUY_RESET_PORTFOLIO:
-                viewType = VIEW_TYPE_LIKE_BUTTON;
-                break;
-            case POSITION_MANAGE_HEROES:
-            case POSITION_MANAGE_FOLLOWERS:
-            case POSITION_MANAGE_STOCK_ALERTS:
-                viewType = VIEW_TYPE_HAS_FURTHER;
-                break;
-            default:
-                throw new IllegalArgumentException("Unhandled position " + position);
+            viewType = VIEW_TYPE_HEADER;
+        }
+        else if (storeItemDTO instanceof StoreItemPromptPurchaseDTO)
+        {
+            viewType = VIEW_TYPE_LIKE_BUTTON;
+        }
+        else if (storeItemDTO instanceof StoreItemHasFurtherDTO)
+        {
+            viewType = VIEW_TYPE_HAS_FURTHER;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled dto type " + storeItemDTO);
         }
         return viewType;
     }
@@ -102,25 +79,14 @@ public class StoreItemAdapter extends BaseAdapter
     @Override public View getView(int position, View view, ViewGroup viewGroup)
     {
         int layoutToInflate = getLayoutIdFromPosition(position);
-        view = LayoutInflater.from(context).inflate(layoutToInflate, viewGroup, false);
-
-        switch (getItemViewType(position))
+        if (view == null)
         {
-            case VIEW_TYPE_HEADER:
-                view = fineTuneItemHeaderView(position, view, viewGroup);
-                break;
-
-            case VIEW_TYPE_LIKE_BUTTON:
-                view = fineTuneItemLikeButton(position, view, viewGroup);
-                break;
-
-            case VIEW_TYPE_HAS_FURTHER:
-                view = fineTuneItemHasFurther(position, view, viewGroup);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unhandled position " + position);
+            view = LayoutInflater.from(getContext()).inflate(layoutToInflate, viewGroup, false);
         }
+
+        //noinspection unchecked
+        ((DTOView<StoreItemDTO>) view).display(getItem(position));
+
         return view;
     }
 
@@ -133,88 +99,4 @@ public class StoreItemAdapter extends BaseAdapter
     {
         return getItemViewType(position) != VIEW_TYPE_HEADER;
     }
-
-    //<editor-fold desc="Fine tune methods">
-    private View fineTuneItemHeaderView(int position, View view, ViewGroup viewGroup)
-    {
-        int titleResId;
-        switch (position)
-        {
-            case POSITION_IN_APP_PURCHASES:
-                titleResId = R.string.store_header_in_app_purchases;
-                break;
-            case POSITION_MANAGE_PURCHASES:
-                titleResId = R.string.store_header_manage_purchases;
-                break;
-            default:
-                throw new IllegalArgumentException("Cannot handle position " + position);
-        }
-        ((StoreItemHeader) view).setTitleResId(titleResId);
-        return view;
-    }
-
-    private View fineTuneItemLikeButton(int position, View view, ViewGroup viewGroup)
-    {
-        // TODO
-        int titleResId;
-        int iconResId;
-        int buttonIconResId;
-        switch (position)
-        {
-            case POSITION_BUY_VIRTUAL_DOLLARS:
-                titleResId = R.string.store_buy_virtual_dollars;
-                iconResId = R.drawable.icn_th_dollars;
-                buttonIconResId = R.drawable.btn_buy_thd_large;
-                break;
-            case POSITION_BUY_FOLLOW_CREDITS:
-                titleResId = R.string.store_buy_follow_credits;
-                iconResId = R.drawable.icn_follow_credits;
-                buttonIconResId = R.drawable.btn_buy_credits_large;
-                break;
-            case POSITION_BUY_STOCK_ALERTS:
-                titleResId = R.string.store_buy_stock_alerts;
-                iconResId = R.drawable.icn_stock_alert;
-                buttonIconResId = R.drawable.btn_buy_stock_alerts;
-                break;
-            case POSITION_BUY_RESET_PORTFOLIO:
-                titleResId = R.string.store_buy_reset_portfolio;
-                iconResId = R.drawable.icn_reset_portfolio;
-                buttonIconResId = R.drawable.btn_buy_reset_large;
-                break;
-            default:
-                throw new IllegalArgumentException("Cannot handle position " + position);
-        }
-        ((StoreItemLikeButton) view).setTitleResId(titleResId);
-        ((StoreItemLikeButton) view).setIconResId(iconResId);
-        ((StoreItemLikeButton) view).setImageButtonResId(buttonIconResId);
-        return view;
-    }
-
-    private View fineTuneItemHasFurther(int position, View view, ViewGroup viewGroup)
-    {
-        // TODO
-        int titleResId;
-        int iconResId;
-        switch (position)
-        {
-            case POSITION_MANAGE_HEROES:
-                titleResId = R.string.store_manage_heroes;
-                iconResId = R.drawable.icn_follow_credits;
-                break;
-            case POSITION_MANAGE_FOLLOWERS:
-                titleResId = R.string.store_manage_followers;
-                iconResId = R.drawable.icn_view_followers;
-                break;
-            case POSITION_MANAGE_STOCK_ALERTS:
-                titleResId = R.string.store_manage_stock_alerts;
-                iconResId = R.drawable.icn_stock_alert;
-                break;
-            default:
-                throw new IllegalArgumentException("Cannot handle position " + position);
-        }
-        ((StoreItemHasFurther) view).setTitleResId(titleResId);
-        ((StoreItemHasFurther) view).setIconResId(iconResId);
-        return view;
-    }
-    //</editor-fold>
 }

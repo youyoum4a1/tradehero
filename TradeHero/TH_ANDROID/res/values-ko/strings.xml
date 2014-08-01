@@ -82,4 +82,10 @@
   <string name="chart_loading_image">차트 이미지 로딩중…</string>
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">KRW</string>
+
+  <string name="friends_can_be_invite">%s friends can be invite</string>
+  <string name="friends_can_be_follow">%s friends can be follow</string>
+  <string name="weibo_message_text_limit">[%d/140]</string>
+  <string name="weibo_message_length_error">no more than 140 character</string>
+  <string name="weibo_friends_invite">I\'m playing TradeHero, Come and join me! Get special with my referral code %1$s!</string>
 </resources>

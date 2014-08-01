@@ -1,9 +1,10 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.competition.HelpVideoDTO;
+import com.tradehero.th.api.competition.HelpVideoDTOList;
+import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import java.util.List;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -11,7 +12,8 @@ import retrofit.http.Query;
 public interface ProviderService
 {
     //<editor-fold desc="Get Providers">
-    @GET("/providers") ProviderDTOList getProviders();
+    @GET("/providers?detailed=false") ProviderCompactDTOList getProviderCompacts();
+    @GET("/providers?detailed=true") ProviderDTOList getProviders();
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
@@ -41,7 +43,13 @@ public interface ProviderService
 
     //<editor-fold desc="Get Help Videos">
     @GET("/providers/{providerId}/helpVideos")
-    List<HelpVideoDTO> getHelpVideos(
+    HelpVideoDTOList getHelpVideos(
+            @Path("providerId") int providerId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Cells">
+    @GET("/providers/{providerId}/displaycells")
+    ProviderDisplayCellDTOList getDisplayCells(
             @Path("providerId") int providerId);
     //</editor-fold>
 }

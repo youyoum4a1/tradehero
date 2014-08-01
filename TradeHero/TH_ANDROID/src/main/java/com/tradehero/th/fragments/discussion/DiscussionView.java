@@ -30,6 +30,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class DiscussionView extends FrameLayout
@@ -67,13 +68,13 @@ public class DiscussionView extends FrameLayout
     public DiscussionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init(attrs);
+        init(context, attrs);
     }
 
     public DiscussionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        init(attrs);
+        init(context, attrs);
     }
     //</editor-fold>
 
@@ -96,11 +97,11 @@ public class DiscussionView extends FrameLayout
         return new SingleViewDiscussionSetAdapter(getContext(), listItemLayout);
     }
 
-    private void init(AttributeSet attrs)
+    private void init(Context context, AttributeSet attrs)
     {
         if (attrs != null)
         {
-            TypedArray styled = getContext().obtainStyledAttributes(attrs, R.styleable.DiscussionView);
+            TypedArray styled = context.obtainStyledAttributes(attrs, R.styleable.DiscussionView);
             listItemLayout = styled.getResourceId(R.styleable.DiscussionView_listItemLayout, 0);
             setTopicLayout(styled.getResourceId(R.styleable.DiscussionView_topicLayout, 0));
             styled.recycle();
@@ -443,7 +444,7 @@ public class DiscussionView extends FrameLayout
         return new DiscussionViewCommentPostedListener();
     }
 
-    @Override public void onDTOReceived(DiscussionListKey key, DiscussionKeyList value)
+    @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value)
     {
         onFinish();
 
@@ -463,7 +464,7 @@ public class DiscussionView extends FrameLayout
         }
     }
 
-    @Override public void onErrorThrown(DiscussionListKey key, Throwable error)
+    @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)
     {
         onFinish();
 

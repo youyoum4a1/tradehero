@@ -29,7 +29,6 @@
       android:fadingEdge="none"
       android:scrollbars="none"
       />
-    <!--android:layout_below="@+id/position_list_header_stub"-->
   <com.tradehero.th.widget.list.ExpandingListView
       android:id="@+id/position_list"
       android:layout_width="match_parent"

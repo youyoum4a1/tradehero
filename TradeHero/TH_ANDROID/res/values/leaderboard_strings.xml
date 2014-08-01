@@ -52,6 +52,8 @@
 
   <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
 
+  <string name="error_fetch_user_on_leaderboard">There was an error when fetching your current position in this leaderboard</string>
+
   <string name="leaderboard_community_followers">Followers</string>
   <string name="leaderboard_community_heros">Heroes</string>
 
@@ -64,5 +66,6 @@
   <string name="follower_type_all">All Follower(s)</string>
 
   <string name="leaderboard_friends_position_failed">Sorry, there\'s not enough information to show this user\'s positions.</string>
+  <string name="leaderboard_see_competition_rules">See competition rules here</string>
 
 </resources>

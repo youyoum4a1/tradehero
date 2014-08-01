@@ -12,8 +12,10 @@
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
       android:textStyle="bold"
-      android:textSize="12sp"
+      android:textSize="@dimen/text_xsmall"
       android:text="@string/na"
+      android:paddingTop="@dimen/common_margin_4"
+      android:paddingBottom="@dimen/common_margin_4"
     />
 
 </com.tradehero.th.widget.list.BaseListHeaderView>

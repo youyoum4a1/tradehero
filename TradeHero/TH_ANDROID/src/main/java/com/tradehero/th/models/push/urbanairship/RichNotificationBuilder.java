@@ -23,7 +23,7 @@ public class RichNotificationBuilder implements PushNotificationBuilder
     {
         int pushId = getNotificationIdFromBundle(extras);
 
-        return pushId > 0 ? notificationBuilder.buildNotification(alert, pushId) : null;
+        return pushId > 0 ? notificationBuilder.buildNotification(pushId) : null;
     }
 
     @Override

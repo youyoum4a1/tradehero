@@ -10,10 +10,8 @@
       android:paddingBottom="5dp"
       android:paddingTop="5dp"
       android:layout_marginRight="@dimen/common_margin_10"
-      android:background="@drawable/leaderboard_user_item_follow_action_button"
       android:text="@string/follow"
-      android:textStyle="bold"
       android:gravity="center"
-      android:textColor="@color/white"
+      style="@style/Leaderboard_ActionButton_Blue"
       android:contentDescription="@null"/>
 </merge>

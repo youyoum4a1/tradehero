@@ -4,12 +4,12 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 
 @Singleton public class PositionServiceWrapper
@@ -26,26 +26,9 @@ import retrofit.Callback;
         this.positionServiceAsync = positionServiceAsync;
     }
 
-    private void basicCheck(OwnedPortfolioId ownedPortfolioId)
-    {
-        if (ownedPortfolioId == null)
-        {
-            throw new NullPointerException("ownedPortfolioId cannot be null");
-        }
-        if (ownedPortfolioId.userId == null)
-        {
-            throw new NullPointerException("ownedPortfolioId.userId cannot be null");
-        }
-        if (ownedPortfolioId.portfolioId == null)
-        {
-            throw new NullPointerException("ownedPortfolioId.portfolioId cannot be null");
-        }
-    }
-
     //<editor-fold desc="Get One User Portfolio Positions List">
-    public GetPositionsDTO getPositions(OwnedPortfolioId ownedPortfolioId)
+    @NotNull public GetPositionsDTO getPositions(@NotNull OwnedPortfolioId ownedPortfolioId)
     {
-        basicCheck(ownedPortfolioId);
         GetPositionsDTO returned;
         if (ownedPortfolioId instanceof PerPagedOwnedPortfolioId)
         {
@@ -77,9 +60,10 @@ import retrofit.Callback;
         return returned;
     }
 
-    public MiddleCallback<GetPositionsDTO> getPositions(OwnedPortfolioId ownedPortfolioId, Callback<GetPositionsDTO> callback)
+    @NotNull public MiddleCallback<GetPositionsDTO> getPositions(
+            @NotNull OwnedPortfolioId ownedPortfolioId,
+            @Nullable Callback<GetPositionsDTO> callback)
     {
-        basicCheck(ownedPortfolioId);
         MiddleCallback<GetPositionsDTO> middleCallback = new BaseMiddleCallback<>(callback);
         if (ownedPortfolioId instanceof PerPagedOwnedPortfolioId)
         {

@@ -13,7 +13,6 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHo
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 
 public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
@@ -65,10 +64,11 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
 
     protected void pushWebFragment()
     {
-        if (abstractDiscussionCompactDTO != null)
+        if (abstractDiscussionCompactDTO != null
+                && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url != null)
         {
             Bundle bundle = new Bundle();
-            bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
+            WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
             getNavigator().pushFragment(WebViewFragment.class, bundle);
         }
     }

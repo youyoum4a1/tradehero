@@ -51,8 +51,8 @@
             android:layout_weight="1"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:gravity="center"
-            android:background="@drawable/blue_rounded_button_selector"
+            style="@style/TH.Btn_Invite_Action"
+            android:background="@drawable/leaderboard_user_item_follow_action_button"
             />
 
         <TextView
@@ -62,8 +62,8 @@
             android:layout_weight="1"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:gravity="center"
-            android:background="@drawable/blue_rounded_button_selector"
+            style="@style/TH.Btn_Invite_Action"
+            android:background="@drawable/yellow_rounded_button_selector"
             android:layout_marginLeft="15dp"/>
       </LinearLayout>
     </RelativeLayout>

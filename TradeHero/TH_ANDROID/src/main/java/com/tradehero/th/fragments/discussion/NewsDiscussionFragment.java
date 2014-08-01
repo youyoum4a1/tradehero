@@ -49,10 +49,9 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        ActionBar actionBar = getSherlockActivity().getSupportActionBar();
         Bundle bundle = getArguments();
         String title = bundle.getString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL);
-        actionBar.setTitle(title);
+        setActionBarTitle(title);
         Timber.d("onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
     }

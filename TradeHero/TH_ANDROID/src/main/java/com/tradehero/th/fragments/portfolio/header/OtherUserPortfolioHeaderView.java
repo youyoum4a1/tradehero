@@ -17,19 +17,22 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -44,14 +47,13 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userCache;
     @Inject Picasso picasso;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
-
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
 
+    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
     private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
@@ -116,36 +118,36 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
      */
     public void showFollowDialog()
     {
-        localyticsSession.tagEvent(LocalyticsConstants.Positions_Follow);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
         detachFollowDialogCombo();
-        followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
+        followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
                 new OtherUserPortfolioFollowRequestedListener());
     }
 
     public class OtherUserPortfolioFollowRequestedListener implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
         {
             freeFollow(heroId);
         }
 
-        @Override public void premiumFollowRequested(UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
         {
             follow(heroId);
         }
     }
 
-    protected void freeFollow(UserBaseKey heroId)
+    protected void freeFollow(@NotNull UserBaseKey heroId)
     {
-        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
+        heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get()
                         .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow(UserBaseKey heroId)
+    protected void follow(@NotNull UserBaseKey heroId)
     {
         if (userProfileDTO != null)
         {
@@ -176,16 +178,17 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
             userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
+            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.PositionList));
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
             THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
+            heroAlertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
@@ -258,7 +261,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             this.followingImageView.setVisibility(GONE);
             this.followButton.setVisibility(GONE);
         }
-        else if (currentUser.isFollowingUser(this.userProfileDTO.id))
+        // TODO rework so we handle better the case where currentUser is null
+        else if (currentUser != null && currentUser.isFollowingUser(this.userProfileDTO.id))
         {
             this.followingImageView.setVisibility(VISIBLE);
             this.followButton.setVisibility(GONE);
@@ -272,14 +276,13 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     /**
      * The listener should be strongly referenced elsewhere.
-     * @param followRequestedListener
      */
     @Override public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListenerWeak = new WeakReference<>(followRequestedListener);
     }
 
-    protected void notifyFollowRequested(UserBaseKey userBaseKey)
+    protected void notifyFollowRequested(@NotNull UserBaseKey userBaseKey)
     {
         OnFollowRequestedListener followRequestedListener = followRequestedListenerWeak.get();
         if (followRequestedListener != null)
@@ -288,7 +291,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         }
     }
 
-    protected void notifyUserFollowed(UserBaseKey userBaseKey)
+    protected void notifyUserFollowed(@NotNull UserBaseKey userBaseKey)
     {
         OnFollowRequestedListener followRequestedListener = followRequestedListenerWeak.get();
         if (followRequestedListener != null)
@@ -299,14 +302,13 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     /**
      * The listener should be strongly referenced elsewhere
-     * @param timelineRequestedListener
      */
     @Override public void setTimelineRequestedListener(OnTimelineRequestedListener timelineRequestedListener)
     {
         this.timelineRequestedListenerWeak = new WeakReference<>(timelineRequestedListener);
     }
 
-    protected void notifyTimelineRequested(UserBaseKey userBaseKey)
+    protected void notifyTimelineRequested(@NotNull UserBaseKey userBaseKey)
     {
         OnTimelineRequestedListener timelineRequestedListener = timelineRequestedListenerWeak.get();
         if (timelineRequestedListener != null)

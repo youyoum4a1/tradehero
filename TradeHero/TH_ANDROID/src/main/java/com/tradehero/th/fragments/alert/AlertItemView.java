@@ -17,22 +17,22 @@ import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.persistence.alert.AlertCompactCache;
+import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
 public class AlertItemView extends RelativeLayout
-        implements DTOView<AlertId>
+        implements DTOView<AlertCompactDTO>
 {
     @InjectView(R.id.logo) ImageView stockLogo;
     @InjectView(R.id.stock_symbol) TextView stockSymbol;
@@ -41,7 +41,6 @@ public class AlertItemView extends RelativeLayout
     @InjectView(R.id.buy_stock) ImageView buyStock;
     @InjectView(R.id.sell_stock) ImageView sellStock;
 
-    @Inject protected Lazy<AlertCompactCache> alertCompactCache;
     @Inject protected Lazy<Picasso> picasso;
 
     private AlertCompactDTO alertCompactDTO;
@@ -82,15 +81,7 @@ public class AlertItemView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    @Override public void display(AlertId alertId)
-    {
-        if (alertId != null)
-        {
-            display(alertCompactCache.get().get(alertId));
-        }
-    }
-
-    private void display(AlertCompactDTO alertCompactDTO)
+    @Override public void display(AlertCompactDTO alertCompactDTO)
     {
         this.alertCompactDTO = alertCompactDTO;
         if (alertCompactDTO != null)
@@ -122,7 +113,9 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceFallDescription(double targetPrice)
     {
-        THSignedNumber thPriceRaise = new THSignedNumber(THSignedNumber.TYPE_MONEY, targetPrice, THSignedNumber.WITHOUT_SIGN);
+        THSignedNumber thPriceRaise = THSignedMoney.builder(targetPrice)
+                .withOutSign()
+                .build();
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.stock_alert_when_price_falls),
                 thPriceRaise.toString()
@@ -131,7 +124,9 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceRaiseDescription(double targetPrice)
     {
-        THSignedNumber thPriceRaise = new THSignedNumber(THSignedNumber.TYPE_MONEY, targetPrice, THSignedNumber.WITHOUT_SIGN);
+        THSignedNumber thPriceRaise = THSignedMoney.builder(targetPrice)
+                .withOutSign()
+                .build();
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.stock_alert_when_price_raises),
                 thPriceRaise.toString()
@@ -140,7 +135,7 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getPriceMovementDescription(double percentage)
     {
-        THSignedNumber thPercentageChange = new THSignedNumber(THSignedNumber.TYPE_PERCENTAGE, percentage);
+        THSignedNumber thPercentageChange = THSignedPercentage.builder(percentage).build();
         return Html.fromHtml(String.format(
                 getContext().getString(R.string.stock_alert_when_price_move),
                 thPercentageChange.toString()

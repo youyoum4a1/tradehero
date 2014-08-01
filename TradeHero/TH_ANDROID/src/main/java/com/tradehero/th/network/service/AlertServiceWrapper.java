@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
@@ -14,7 +15,6 @@ import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -72,16 +72,18 @@ import retrofit.Callback;
     }
 
     //<editor-fold desc="Get Alerts">
-    public List<AlertCompactDTO> getAlerts(@NotNull UserBaseKey userBaseKey)
+    public AlertCompactDTOList getAlerts(@NotNull UserBaseKey userBaseKey)
     {
         basicCheck(userBaseKey);
         return alertService.getAlerts(userBaseKey.key);
     }
 
-    public MiddleCallback<List<AlertCompactDTO>> getAlerts(@NotNull UserBaseKey userBaseKey, @Nullable Callback<List<AlertCompactDTO>> callback)
+    public MiddleCallback<AlertCompactDTOList> getAlerts(
+            @NotNull UserBaseKey userBaseKey,
+            @Nullable Callback<AlertCompactDTOList> callback)
     {
         basicCheck(userBaseKey);
-        MiddleCallback<List<AlertCompactDTO>> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<AlertCompactDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         alertServiceAsync.getAlerts(userBaseKey.key, middleCallback);
         return middleCallback;
     }

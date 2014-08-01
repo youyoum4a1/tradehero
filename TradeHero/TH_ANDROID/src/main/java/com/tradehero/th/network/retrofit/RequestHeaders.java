@@ -14,18 +14,23 @@ import retrofit.RequestInterceptor;
 public class RequestHeaders implements RequestInterceptor
 {
     private final MainCredentialsPreference mainCredentialsPreference;
+    private final DeviceTokenHelper deviceTokenHelper;
     private final String version;
     private final String languageCode;
 
+    //<editor-fold desc="Constructors">
     @Inject public RequestHeaders(
             Context context,
             MainCredentialsPreference mainCredentialsPreference,
+            DeviceTokenHelper deviceTokenHelper,
             @LanguageCode String languageCode)
     {
         this.mainCredentialsPreference = mainCredentialsPreference;
+        this.deviceTokenHelper = deviceTokenHelper;
         this.version = VersionUtils.getVersionId(context);
         this.languageCode = languageCode;
     }
+    //</editor-fold>
 
     @Override
     public void intercept(RequestFacade request)
@@ -36,8 +41,8 @@ public class RequestHeaders implements RequestInterceptor
         }
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
-        request.addHeader(Constants.TH_CLIENT_TYPE, String.valueOf(DeviceTokenHelper.getDeviceType().getServerValue()));
         request.addHeader(Constants.ACCEPT_ENCODING, Constants.ACCEPT_ENCODING_GZIP);
+        request.addHeader(Constants.TH_CLIENT_TYPE, String.valueOf(deviceTokenHelper.getDeviceType().getServerValue()));
     }
 
     private void buildAuthorizationHeader(RequestFacade request)

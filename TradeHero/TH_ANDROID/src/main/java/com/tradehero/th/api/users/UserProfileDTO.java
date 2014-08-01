@@ -4,10 +4,10 @@ import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +57,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public int unreadNotificationsCount;
 
     public int tradesSharedCount_FB;
+    public String referralCode;
+    public String inviteCode;
 
     public List<UserAlertPlanDTO> userAlertPlans;
     public List<UserCreditPlanDTO> userCreditPlans;

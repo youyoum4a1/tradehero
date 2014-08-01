@@ -9,12 +9,14 @@ public class DTOProcessorUpdateUserProfile implements DTOProcessor<UserProfileDT
 {
     @NotNull protected final UserProfileCache userProfileCache;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorUpdateUserProfile(@NotNull UserProfileCache userProfileCache)
     {
         this.userProfileCache = userProfileCache;
     }
+    //</editor-fold>
 
-    @Override public UserProfileDTO process(UserProfileDTO userProfileDTO)
+    @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         userProfileCache.put(userProfileDTO.getBaseKey(), userProfileDTO);
         return userProfileDTO;

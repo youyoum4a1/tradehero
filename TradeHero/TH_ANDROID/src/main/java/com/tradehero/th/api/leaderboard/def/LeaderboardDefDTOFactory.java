@@ -5,7 +5,6 @@ import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
@@ -36,24 +35,22 @@ public class LeaderboardDefDTOFactory
     }
 
     @NotNull
-    public HashMap<LeaderboardDefListKey, LeaderboardDefKeyList> file(@NotNull LeaderboardDefDTOList leaderboardDefDTOs)
+    public HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> file(@NotNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
-        HashMap<LeaderboardDefListKey, LeaderboardDefKeyList> filed = new HashMap<>();
-        filed.put(new LeaderboardDefListKey(), new LeaderboardDefKeyList());
-        filed.put(new ConnectedLeaderboardDefListKey(), new LeaderboardDefKeyList());
-        filed.put(new DrillDownLeaderboardDefListKey(), new LeaderboardDefKeyList());
-        filed.put(new SectorLeaderboardDefListKey(), new LeaderboardDefKeyList());
-        filed.put(new ExchangeLeaderboardDefListKey(), new LeaderboardDefKeyList());
-        filed.put(new TimePeriodLeaderboardDefListKey(), new LeaderboardDefKeyList());
-        filed.put(new MostSkilledLeaderboardDefListKey(), new LeaderboardDefKeyList());
+        HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> filed = new HashMap<>();
+        filed.put(new LeaderboardDefListKey(), new LeaderboardDefDTOList());
+        filed.put(new ConnectedLeaderboardDefListKey(), new LeaderboardDefDTOList());
+        filed.put(new DrillDownLeaderboardDefListKey(), new LeaderboardDefDTOList());
+        filed.put(new SectorLeaderboardDefListKey(), new LeaderboardDefDTOList());
+        filed.put(new ExchangeLeaderboardDefListKey(), new LeaderboardDefDTOList());
+        filed.put(new TimePeriodLeaderboardDefListKey(), new LeaderboardDefDTOList());
+        filed.put(new MostSkilledLeaderboardDefListKey(), new LeaderboardDefDTOList());
 
         for (@NotNull LeaderboardDefDTO leaderboardDefDTO: leaderboardDefDTOs)
         {
-            LeaderboardDefKey key = leaderboardDefDTO.getLeaderboardDefKey();
-
-            filed.get(new LeaderboardDefListKey()).add(key);
+            filed.get(new LeaderboardDefListKey()).add(leaderboardDefDTO);
             LeaderboardDefListKey listKey = leaderboardDefDTO.getLeaderboardDefListKey();
-            filed.get(listKey).add(key);
+            filed.get(listKey).add(leaderboardDefDTO);
         }
         return filed;
     }

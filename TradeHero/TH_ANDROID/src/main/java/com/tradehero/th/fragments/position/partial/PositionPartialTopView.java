@@ -18,14 +18,16 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class PositionPartialTopView extends LinearLayout
@@ -359,23 +361,19 @@ public class PositionPartialTopView extends LinearLayout
                 Boolean closed = positionDTO.isClosed();
                 if (closed != null && closed && positionDTO.realizedPLRefCcy != null)
                 {
-                    number = new THSignedNumber(
-                            THSignedNumber.TYPE_MONEY,
-                            positionDTO.realizedPLRefCcy,
-                            THSignedNumber.WITH_SIGN,
-                            /*portfolioDTO*/positionDTO.getNiceCurrency(),
-                            THSignedNumber.TYPE_SIGN_MINUS_ONLY
-                            );
+                    number = THSignedMoney.builder(positionDTO.realizedPLRefCcy)
+                            .withSign()
+                            .signTypeMinusOnly()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build();
                 }
                 else if (closed != null && !closed)
                 {
-                    number = new THSignedNumber(
-                            THSignedNumber.TYPE_MONEY,
-                            positionDTO.marketValueRefCcy,
-                            THSignedNumber.WITH_SIGN,
-                            /*portfolioDTO*/positionDTO.getNiceCurrency(),
-                            THSignedNumber.TYPE_SIGN_MINUS_ONLY
-                    );
+                    number = THSignedMoney.builder(positionDTO.marketValueRefCcy)
+                            .withSign()
+                            .signTypeMinusOnly()
+                            .currency(positionDTO.getNiceCurrency())
+                            .build();
                 }
 
             }
@@ -396,7 +394,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         return new SecurityCompactCache.Listener<SecurityId, SecurityCompactDTO>()
         {
-            @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+            @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
             {
                 if (key.equals(securityId))
                 {
@@ -404,7 +402,7 @@ public class PositionPartialTopView extends LinearLayout
                 }
             }
 
-            @Override public void onErrorThrown(SecurityId key, Throwable error)
+            @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
             {
                 THToast.show("There was an error when fetching the security information");
                 Timber.e("Error fetching the security %s", key, error);

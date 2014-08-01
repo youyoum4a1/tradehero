@@ -3,7 +3,6 @@ package com.tradehero.th.persistence.social;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOList;
-import com.tradehero.th.api.social.HeroIdList;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
@@ -38,12 +37,10 @@ import org.jetbrains.annotations.Nullable;
         }
 
         HeroDTOList previousValues = new HeroDTOList();
-
         for (@NotNull HeroDTO value: values)
         {
             previousValues.add(put(value.getHeroId(followerId), value));
         }
-
         return previousValues;
     }
 
@@ -59,34 +56,6 @@ import org.jetbrains.annotations.Nullable;
         for (@NotNull FollowerHeroRelationId followerHeroRelationId: heroIds)
         {
             heroDTOs.add(get(followerHeroRelationId));
-        }
-        return heroDTOs;
-    }
-
-    public boolean haveAllHeros(@Nullable HeroIdList heroIds)
-    {
-        // We need this longer test in case DTO have been flushed.
-        HeroDTOList heroDTOs = getNonNullDTOs(heroIds);
-        return heroIds != null && (heroIds.size() == heroDTOs.size());
-    }
-
-    @Contract("null -> null; !null -> !null") @Nullable
-    public HeroDTOList getNonNullDTOs(@Nullable List<FollowerHeroRelationId> heroIds)
-    {
-        if (heroIds == null)
-        {
-            return null;
-        }
-
-        HeroDTOList heroDTOs = new HeroDTOList();
-        HeroDTO cachedHeroDTO;
-        for (@NotNull FollowerHeroRelationId followerHeroRelationId: heroIds)
-        {
-            cachedHeroDTO = get(followerHeroRelationId);
-            if (cachedHeroDTO != null)
-            {
-                heroDTOs.add(cachedHeroDTO);
-            }
         }
         return heroDTOs;
     }

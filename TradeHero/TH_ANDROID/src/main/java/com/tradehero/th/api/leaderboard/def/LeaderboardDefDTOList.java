@@ -1,26 +1,17 @@
 package com.tradehero.th.api.leaderboard.def;
 
 import com.android.internal.util.Predicate;
-import java.util.ArrayList;
-import java.util.Collection;
+import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.DTO;
 import org.jetbrains.annotations.NotNull;
 
-public class LeaderboardDefDTOList extends ArrayList<LeaderboardDefDTO>
+public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
+    implements DTO
 {
     //<editor-fold desc="Contructors">
-    public LeaderboardDefDTOList(int initialCapacity)
-    {
-        super(initialCapacity);
-    }
-
     public LeaderboardDefDTOList()
     {
         super();
-    }
-
-    public LeaderboardDefDTOList(Collection<? extends LeaderboardDefDTO> c)
-    {
-        super(c);
     }
     //</editor-fold>
 
@@ -37,5 +28,15 @@ public class LeaderboardDefDTOList extends ArrayList<LeaderboardDefDTO>
             }
         }
         return kept;
+    }
+
+    @NotNull public LeaderboardDefKeyList createKeys()
+    {
+        LeaderboardDefKeyList list = new LeaderboardDefKeyList();
+        for (@NotNull LeaderboardDefDTO leaderboardDefDTO : this)
+        {
+            list.add(leaderboardDefDTO.getLeaderboardDefKey());
+        }
+        return list;
     }
 }

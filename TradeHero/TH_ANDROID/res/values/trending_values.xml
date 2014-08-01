@@ -4,4 +4,11 @@
   <!-- What's Trending -->
   <integer name="trending_list_column_count">2</integer>
 
+  <color name="tile_earn_credit_bg">#376FCF</color>
+  <color name="tile_earn_credit_bg_pressed">#ff2e458e</color>
+  <color name="tile_extra_cash_bg">#91CA70</color>
+  <color name="tile_extra_cash_bg_pressed">#ff6d8d5a</color>
+  <color name="tile_reset_portfolio_bg">#BA2425</color>
+  <color name="tile_reset_portfolio_bg_pressed">#ff8c1b1b</color>
+
 </resources>

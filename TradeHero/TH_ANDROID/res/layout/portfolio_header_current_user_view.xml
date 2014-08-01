@@ -20,7 +20,7 @@
         android:text="@string/portfolio_header_total_value"
         android:gravity="center"
         android:textColor="@color/portfolio_header_text_color"
-        android:textSize="12sp"/>
+        android:textSize="@dimen/text_xsmall"/>
     <TextView
         android:id="@+id/header_portfolio_total_value"
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         android:text="@string/portfolio_header_cash_value"
         android:gravity="center"
         android:textColor="@color/portfolio_header_text_color"
-        android:textSize="12sp"/>
+        android:textSize="@dimen/text_xsmall"/>
     <TextView
         android:id="@+id/header_portfolio_cash_value"
         android:layout_width="match_parent"

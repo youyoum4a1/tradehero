@@ -15,7 +15,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisem
 import java.util.Arrays;
 
 public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
-    implements WrapperListAdapter
+        implements WrapperListAdapter
 {
     private static final int EXTRA_TILE_FREQUENCY = 16;
     private static final int EXTRA_TILE_MIN_DISTANCE = 10;
@@ -27,7 +27,8 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
     private int[] masterTilesMarker;
     private int[] extraTilesMarker;
 
-    public CompetitionLeaderboardMarkUserListAdapter(Context context, ProviderDTO providerDTO, LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter)
+    public CompetitionLeaderboardMarkUserListAdapter(Context context, ProviderDTO providerDTO,
+            LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter)
     {
         this.context = context;
         this.inflater = LayoutInflater.from(context);

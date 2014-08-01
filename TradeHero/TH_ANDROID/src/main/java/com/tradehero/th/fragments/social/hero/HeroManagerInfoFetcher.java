@@ -1,11 +1,9 @@
 package com.tradehero.th.fragments.social.hero;
 
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.th.api.social.HeroIdExtWrapper;
-import com.tradehero.th.api.social.HeroIdList;
+import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.social.HeroCache;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
@@ -17,21 +15,18 @@ public class HeroManagerInfoFetcher
 {
     @NotNull protected final Lazy<UserProfileCache> userProfileCache;
     @NotNull protected final Lazy<HeroListCache> heroListCache;
-    @NotNull protected final Lazy<HeroCache> heroCache;
 
     @Nullable private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
-    @Nullable private DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener;
+    @Nullable private DTOCacheNew.Listener<UserBaseKey, HeroDTOExtWrapper> heroListListener;
 
     //<editor-fold desc="Constructors">
     @Inject public HeroManagerInfoFetcher(
             @NotNull Lazy<UserProfileCache> userProfileCache,
-            @NotNull Lazy<HeroListCache> heroListCache,
-            @NotNull Lazy<HeroCache> heroCache)
+            @NotNull Lazy<HeroListCache> heroListCache)
     {
         super();
         this.userProfileCache = userProfileCache;
         this.heroListCache = heroListCache;
-        this.heroCache = heroCache;
     }
     //</editor-fold>
 
@@ -66,7 +61,7 @@ public class HeroManagerInfoFetcher
     }
 
     public void setHeroListListener(@Nullable
-            DTOCacheNew.Listener<UserBaseKey, HeroIdExtWrapper> heroListListener)
+            DTOCacheNew.Listener<UserBaseKey, HeroDTOExtWrapper> heroListListener)
     {
         this.heroListListener = heroListListener;
     }
@@ -86,19 +81,7 @@ public class HeroManagerInfoFetcher
 
     public void fetchHeroes(@NotNull UserBaseKey followerId)
     {
-        HeroIdExtWrapper heroIdExtWrapper = heroListCache.get().get(followerId);
-        HeroIdList heroIds = (heroIdExtWrapper != null) ? heroIdExtWrapper.allActiveHeroes : null;
-        if (heroCache.get().haveAllHeros(heroIds))
-        {
-            if (this.heroListListener != null)
-            {
-                this.heroListListener.onDTOReceived(followerId, heroIdExtWrapper);
-            }
-        }
-        else
-        {
-            fetchHeroes(followerId, false);
-        }
+        fetchHeroes(followerId, false);
     }
 
     public void reloadHeroes(UserBaseKey followerId)

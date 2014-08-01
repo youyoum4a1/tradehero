@@ -14,7 +14,7 @@
       android:id="@+id/tab_title"
       android:layout_centerInParent="true"
       tools:text="stock name"
-      android:textSize="14sp"
+      android:textSize="@dimen/text_small"
       android:textColor="@android:color/holo_blue_light"
       />
 
@@ -28,7 +28,7 @@
       android:layout_above="@+id/tab_title"
       android:layout_marginBottom="-5dp"
       android:gravity="center"
-      android:textSize="9sp"
+      android:textSize="@dimen/text_xxsmall"
       android:background="@drawable/red_circle"
       tools:text="33"
       />

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -12,15 +13,16 @@ import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefKeyList;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class LeaderboardDefListFragment extends BaseLeaderboardFragment
@@ -28,9 +30,9 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @Inject protected Lazy<LeaderboardDefListCache> leaderboardDefListCache;
     @Inject protected Lazy<LeaderboardDefCache> leaderboardDefCache;
     @Inject protected LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
-    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> leaderboardDefListCacheFetchListener;
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListCacheFetchListener;
 
-    private LeaderboardDefListAdapter leaderboardDefListAdapter;
+    private ArrayAdapter<LeaderboardDefDTO> leaderboardDefListAdapter;
     @InjectView(android.R.id.list) protected ListView contentListView;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -49,8 +51,9 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 
     @Override protected void initViews(View view)
     {
-        leaderboardDefListAdapter =
-                new LeaderboardDefListAdapter(getActivity(), getActivity().getLayoutInflater(), null, R.layout.leaderboard_definition_item_view);
+        leaderboardDefListAdapter = new ArrayDTOAdapterNew<LeaderboardDefDTO, LeaderboardDefView>(
+                getActivity(),
+                R.layout.leaderboard_definition_item_view);
         contentListView.setAdapter(leaderboardDefListAdapter);
     }
 
@@ -76,15 +79,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Object item = parent.getItemAtPosition(position);
-        if (item instanceof LeaderboardDefKey)
-        {
-            LeaderboardDefDTO dto = leaderboardDefCache.get().get((LeaderboardDefKey) item);
-            if (dto != null)
-            {
-                pushLeaderboardListViewFragment(dto);
-            }
-        }
+        pushLeaderboardListViewFragment((LeaderboardDefDTO) parent.getItemAtPosition(position));
     }
 
     protected void refresh()
@@ -103,30 +98,31 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
         leaderboardDefListCache.get().getOrFetchAsync(key);
     }
 
-    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList> createLeaderboardDefKeyListListener()
+    protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> createLeaderboardDefKeyListListener()
     {
         return new LeaderboardDefListViewFragmentDefKeyListListener();
     }
 
-    protected class LeaderboardDefListViewFragmentDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefKeyList>
+    protected class LeaderboardDefListViewFragmentDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList>
     {
-        @Override public void onDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+        @Override public void onDTOReceived(@NotNull LeaderboardDefListKey key, @NotNull LeaderboardDefDTOList value)
         {
             handleDTOReceived(key, value);
         }
 
-        @Override public void onErrorThrown(LeaderboardDefListKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull LeaderboardDefListKey key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
             Timber.e("Error fetching the leaderboard def key list %s", key, error);
         }
     }
 
-    protected void handleDTOReceived(LeaderboardDefListKey key, LeaderboardDefKeyList value)
+    protected void handleDTOReceived(LeaderboardDefListKey key, LeaderboardDefDTOList value)
     {
         if (leaderboardDefListAdapter != null)
         {
-            leaderboardDefListAdapter.setItems(value);
+            leaderboardDefListAdapter.clear();
+            leaderboardDefListAdapter.addAll(value);
             leaderboardDefListAdapter.notifyDataSetChanged();
         }
     }

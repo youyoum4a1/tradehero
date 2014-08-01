@@ -15,16 +15,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
-@Config(manifest = Config.NONE)
 public class DisplayablePortfolioDTOComparableTest
 {
     @Before public void setUp() throws IOException
@@ -305,13 +299,13 @@ public class DisplayablePortfolioDTOComparableTest
 
     @Test public void currentUserShouldBeEqualToItself()
     {
-        assertTrue(getCurrentUser().equals(getCurrentUser()));
+        assertThat(getCurrentUser()).isEqualTo(getCurrentUser());
     }
 
     @Test public void currentUserShouldBeDifferentFromOthers()
     {
-        assertFalse(getCurrentUser().equals(getOtherUser1()));
-        assertFalse(getCurrentUser().equals(getOtherUser2()));
+        assertThat(getCurrentUser()).isNotEqualTo(getOtherUser1());
+        assertThat(getCurrentUser()).isNotEqualTo(getOtherUser2());
     }
 
     @Test public void shouldOrderOldYoung()
@@ -320,11 +314,11 @@ public class DisplayablePortfolioDTOComparableTest
         treeSet.add(getCurrentUserOlderDisplayablePortfolio());
         treeSet.add(getCurrentUserYoungerDisplayablePortfolio());
 
-        assertThat(treeSet.size(), equalTo(2));
+        assertThat(treeSet.size()).isEqualTo(2);
 
         Iterator<DisplayablePortfolioDTO> iterator = treeSet.iterator();
-        assertThat(iterator.next().compareTo(getCurrentUserOlderDisplayablePortfolio()), equalTo(0));
-        assertThat(iterator.next().compareTo(getCurrentUserYoungerDisplayablePortfolio()), equalTo(0));
+        assertThat(iterator.next().compareTo(getCurrentUserOlderDisplayablePortfolio())).isEqualTo(0);
+        assertThat(iterator.next().compareTo(getCurrentUserYoungerDisplayablePortfolio())).isEqualTo(0);
     }
 
     @Test public void shouldOrderAsExpected()
@@ -344,7 +338,7 @@ public class DisplayablePortfolioDTOComparableTest
         treeSet.add(getUser2OlderDisplayablePortfolio());
         treeSet.add(getCurrentUserOlderDisplayablePortfolio());
 
-        assertThat(treeSet.size(), equalTo(12));
+        assertThat(treeSet.size()).isEqualTo(12);
 
         List<DisplayablePortfolioDTO> expectedList = new ArrayList<>();
         expectedList.add(getNullUserDisplayablePortfolio());
@@ -360,6 +354,6 @@ public class DisplayablePortfolioDTOComparableTest
         expectedList.add(getUser2OlderDisplayablePortfolio());
         expectedList.add(getUser2YoungerDisplayablePortfolio());
 
-        assertEquals(expectedList, new ArrayList<>(treeSet));
+        assertThat(new ArrayList<>(treeSet)).isEqualTo(expectedList);
     }
 }

@@ -18,7 +18,7 @@
       android:layout_alignParentTop="true"
       android:layout_centerHorizontal="true"
       android:text="@string/private_message_empty_list_hint"
-      android:textSize="20sp"
+      android:textSize="@dimen/text_xlarge"
       android:visibility="gone"
       />
 

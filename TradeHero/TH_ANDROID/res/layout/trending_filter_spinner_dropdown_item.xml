@@ -11,8 +11,8 @@
 
   <ImageView
       android:id="@+id/trending_filter_spinner_item_icon"
-      android:layout_height="24sp"
-      android:layout_width="24sp"
+      android:layout_height="24dp"
+      android:layout_width="24dp"
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
       android:baselineAlignBottom="true"
@@ -24,9 +24,11 @@
   <TextView
       android:id="@+id/trending_filter_spinner_item_label"
       android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_centerInParent="true"
-      android:textSize="16sp"
+      android:layout_toRightOf="@id/trending_filter_spinner_item_icon"
+      android:textSize="@dimen/text_medium"
+      android:gravity="center"
       android:maxLines="1"
       tools:text="US NYSE - NYSE"
       />

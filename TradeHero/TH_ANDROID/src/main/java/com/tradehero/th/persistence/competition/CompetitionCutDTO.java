@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.competition;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
@@ -18,6 +19,7 @@ class CompetitionCutDTO implements DTO
     public final String iconActiveUrl;
     public final String iconInactiveUrl;
     public final String prizeValueWithCcy;
+    @Nullable public final LeaderboardUserDTO leaderboardUser;
 
     public CompetitionCutDTO(
             @NotNull CompetitionDTO competitionDTO,
@@ -41,6 +43,7 @@ class CompetitionCutDTO implements DTO
         this.iconActiveUrl = competitionDTO.iconActiveUrl;
         this.iconInactiveUrl = competitionDTO.iconInactiveUrl;
         this.prizeValueWithCcy = competitionDTO.prizeValueWithCcy;
+        this.leaderboardUser = competitionDTO.leaderboardUser;
     }
 
     @Nullable public CompetitionDTO create(@NotNull LeaderboardDefCache leaderboardDefCache)
@@ -61,7 +64,8 @@ class CompetitionCutDTO implements DTO
                 competitionDurationType,
                 iconActiveUrl,
                 iconInactiveUrl,
-                prizeValueWithCcy
+                prizeValueWithCcy,
+                leaderboardUser
         );
     }
 }

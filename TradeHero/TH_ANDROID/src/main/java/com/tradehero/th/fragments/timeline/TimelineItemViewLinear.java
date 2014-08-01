@@ -26,8 +26,9 @@ import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -35,7 +36,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
     @Inject THRouter thRouter;
 
     //<editor-fold desc="Constructors">
@@ -184,7 +185,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     {
         if (abstractDiscussionCompactDTO instanceof TimelineItemDTO)
         {
-            localyticsSession.tagEvent(LocalyticsConstants.Monitor_BuySell);
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_BuySell));
 
             SecurityMediaDTO flavorSecurityForDisplay = ((TimelineItemDTO) abstractDiscussionCompactDTO).getFlavorSecurityForDisplay();
             if (flavorSecurityForDisplay != null && flavorSecurityForDisplay.securityId != 0)
@@ -202,10 +203,10 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
     private void openStockAlertEditor()
     {
-        localyticsSession.tagEvent(LocalyticsConstants.Monitor_Alert);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
 
         Bundle args = new Bundle();
-        args.putBundle(AlertCreateFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
+        AlertCreateFragment.putSecurityId(args, getSecurityId());
         getNavigator().pushFragment(AlertCreateFragment.class, args);
     }
 
@@ -218,12 +219,12 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             WatchlistEditFragment.putSecurityId(args, securityId);
             if (watchlistPositionCache.get().get(securityId) != null)
             {
-                localyticsSession.tagEvent(LocalyticsConstants.Monitor_EditWatchlist);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
             }
             else
             {
-                localyticsSession.tagEvent(LocalyticsConstants.Monitor_CreateWatchlist);
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
                 DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }

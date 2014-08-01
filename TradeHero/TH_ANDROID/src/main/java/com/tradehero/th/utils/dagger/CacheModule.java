@@ -2,15 +2,18 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.tradehero.common.cache.LruMemFileCache;
+import com.squareup.picasso.LruCache;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
+import com.tradehero.th.fragments.contestcenter.ContestCompetitionView;
+import com.tradehero.th.fragments.contestcenter.ContestContentView;
+import com.tradehero.th.fragments.contestcenter.ContestItemAdapter;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardDefListAdapter;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityAdapter;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCompetitionView;
 import com.tradehero.th.fragments.settings.SettingsAlipayFragment;
@@ -18,7 +21,6 @@ import com.tradehero.th.fragments.settings.SettingsPayPalFragment;
 import com.tradehero.th.fragments.timeline.UserProfileResideMenuItem;
 import com.tradehero.th.fragments.trending.ExtraTileAdapter;
 import com.tradehero.th.fragments.trending.ProviderTileView;
-import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.ListCacheMaxSize;
 import com.tradehero.th.persistence.MessageListTimeline;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
@@ -30,7 +32,6 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 UserProfileFetchAssistant.class,
-                SecurityAlertAssistant.class,
                 SettingsPayPalFragment.class,
                 SettingsAlipayFragment.class,
 
@@ -38,7 +39,6 @@ import javax.inject.Singleton;
                 AlertItemView.class,
                 AlertViewFragment.class,
 
-                LeaderboardDefListAdapter.class,
                 LeaderboardCommunityAdapter.class,
                 LeaderboardCompetitionView.class,
 
@@ -49,36 +49,34 @@ import javax.inject.Singleton;
                 UserProfileResideMenuItem.class,
                 TimelineDiscussionFragment.class,
                 NewsDiscussionFragment.class,
+
+                ContestItemAdapter.class,
+                ContestContentView.class,
+                ContestCompetitionView.class,
         },
         complete = false,
         library = true
 )
 public class CacheModule
 {
-    private static final String PREFERENCE_KEY = "th";
-
-    @Provides @Singleton LruMemFileCache provideLruMemFileCache(Context context)
+    @Provides @Singleton @ForPicasso LruCache providePicassoMemCache(Context context)
     {
-        return LruMemFileCache.getInstance(context.getApplicationContext());
         //return new LruMemFileCache(context);
+        //return LruMemFileCache.getInstance(context.getApplicationContext());
+        return new LruCache(context);
     }
 
-    @Provides @Singleton SharedPreferences provideSharePreferences(Context context)
-    {
-        return context.getSharedPreferences(PREFERENCE_KEY, Context.MODE_PRIVATE);
-    }
-
-    @Provides @Singleton @SingleCacheMaxSize IntPreference provideDefaultSingleCacheMaxSize(SharedPreferences preference)
+    @Provides @Singleton @SingleCacheMaxSize IntPreference provideDefaultSingleCacheMaxSize(@ForUser SharedPreferences preference)
     {
         return new IntPreference(preference, SingleCacheMaxSize.class.getName(), 1000);
     }
 
-    @Provides @Singleton @ListCacheMaxSize IntPreference provideListSingleCacheMaxSize(SharedPreferences preference)
+    @Provides @Singleton @ListCacheMaxSize IntPreference provideListSingleCacheMaxSize(@ForUser SharedPreferences preference)
     {
         return new IntPreference(preference, ListCacheMaxSize.class.getName(), 200);
     }
 
-    @Provides @Singleton @MessageListTimeline LongPreference provideMessageListTimeline(SharedPreferences preference)
+    @Provides @Singleton @MessageListTimeline LongPreference provideMessageListTimeline(@ForUser SharedPreferences preference)
     {
         return new LongPreference(preference, MessageListTimeline.class.getName(), -1L);
     }

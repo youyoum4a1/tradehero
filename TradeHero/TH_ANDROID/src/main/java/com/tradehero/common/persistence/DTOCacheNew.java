@@ -16,12 +16,6 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 
     boolean isValid(@NotNull DTOType value);
     @Nullable DTOType put(@NotNull DTOKeyType key, @NotNull DTOType value);
-    /**
-     * This method should be implemented so that it is very fast. Indeed this method is sometimes used before deciding
-     * whether to getOrFetch
-     * @param key
-     * @return
-     */
     @Nullable DTOType get(@NotNull DTOKeyType key);
     @NotNull DTOType fetch(@NotNull DTOKeyType key) throws Throwable;
     @NotNull DTOType getOrFetchSync(@NotNull DTOKeyType key) throws Throwable;
@@ -50,6 +44,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     {
         @Nullable private DTOType value;
         @NotNull private final Set<Listener<DTOKeyType, DTOType>> listeners;
+        @NotNull private final Set<HurriedListener<DTOKeyType, DTOType>> hurriedListeners;
         @NotNull protected WeakReference<GetOrFetchTask<DTOKeyType, DTOType>> fetchTask = new WeakReference<>(null);
 
         public CacheValue()
@@ -57,6 +52,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             super();
             value = null;
             listeners = new HashSet<>();
+            hurriedListeners = new HashSet<>();
             fetchTask = new WeakReference<>(null);
         }
 
@@ -78,11 +74,19 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         public void registerListener(@NotNull Listener<DTOKeyType, DTOType> listener)
         {
             listeners.add(listener);
+            if (listener instanceof HurriedListener)
+            {
+                hurriedListeners.add((HurriedListener<DTOKeyType, DTOType>) listener);
+            }
         }
 
         public void unregisterListener(@NotNull Listener<DTOKeyType, DTOType> listener)
         {
             listeners.remove(listener);
+            if (listener instanceof HurriedListener)
+            {
+                hurriedListeners.remove(listener);
+            }
         }
 
         abstract public void getOrFetch(@NotNull final DTOKeyType key, boolean force);
@@ -94,13 +98,10 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 
         public void notifyHurriedListenersPreReceived(@NotNull DTOKeyType key, @NotNull DTOType value)
         {
-            for (@NotNull Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
+            for (@NotNull HurriedListener<DTOKeyType, DTOType> listener : new HashSet<>(hurriedListeners))
             {
-                if (listener instanceof HurriedListener)
-                {
-                    ((HurriedListener<DTOKeyType, DTOType>) listener)
-                            .onPreCachedDTOReceived(key, value);
-                }
+                hurriedListeners.remove(listener);
+                listener.onPreCachedDTOReceived(key, value);
             }
         }
 
@@ -109,21 +110,18 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             fetchTask = new WeakReference<>(null);
             for (@NotNull Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
-                listener.onDTOReceived(key, value);
                 unregisterListener(listener);
+                listener.onDTOReceived(key, value);
             }
         }
 
         public void notifyListenersFailed(@NotNull DTOKeyType key, @NotNull Throwable error)
         {
             fetchTask = new WeakReference<>(null);
-            for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
+            for (@NotNull Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
-                if (listener != null)
-                {
-                    listener.onErrorThrown(key, error);
-                }
                 unregisterListener(listener);
+                listener.onErrorThrown(key, error);
             }
         }
     }

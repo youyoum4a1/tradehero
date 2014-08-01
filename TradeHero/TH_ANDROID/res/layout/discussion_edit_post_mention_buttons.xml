@@ -15,14 +15,14 @@
         android:id="@+id/btn_mention"
         style="@style/TH.TextSocialButtons"
         android:text="@string/at"
-        android:textSize="15sp"
+        android:textSize="@dimen/text_medium"
         />
 
     <TextView
         android:id="@+id/btn_security_tag"
         style="@style/TH.TextSocialButtons"
         android:text="@string/hashtag"
-        android:textSize="15sp"
+        android:textSize="@dimen/text_medium"
         />
 
   </com.tradehero.th.fragments.discussion.MentionActionButtonsView>

@@ -17,9 +17,11 @@ public class AlertCompactDTO implements DTO
 
     @Nullable public SecurityCompactDTO security;
 
+    //<editor-fold desc="Constructors">
     public AlertCompactDTO()
     {
     }
+    //</editor-fold>
 
     public AlertId getAlertId(UserBaseKey userBaseKey)
     {

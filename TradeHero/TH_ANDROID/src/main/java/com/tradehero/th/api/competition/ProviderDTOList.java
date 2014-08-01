@@ -7,7 +7,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import org.jetbrains.annotations.NotNull;
 
-public class ProviderDTOList extends BaseArrayList<ProviderDTO>
+public class ProviderDTOList extends BaseProviderCompactDTOList<ProviderDTO>
     implements DTO
 {
     //<editor-fold desc="Constructors">
@@ -16,19 +16,4 @@ public class ProviderDTOList extends BaseArrayList<ProviderDTO>
         super();
     }
     //</editor-fold>
-
-    @NotNull public OwnedPortfolioIdList getAssociatedOwnedPortfolioIds(@NotNull UserBaseKey forUser)
-    {
-        OwnedPortfolioIdList ownedPortfolioIds = new OwnedPortfolioIdList();
-        OwnedPortfolioId providerPortfolioId;
-        for (ProviderDTO providerDTO : this)
-        {
-            providerPortfolioId = providerDTO.getAssociatedOwnedPortfolioId(forUser);
-            if (providerPortfolioId != null)
-            {
-                ownedPortfolioIds.add(providerPortfolioId);
-            }
-        }
-        return ownedPortfolioIds;
-    }
 }

@@ -5,7 +5,7 @@ import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import javax.inject.Inject;
 
-public class THIABPurchaseConsumer extends IABPurchaseConsumer<IABSKU, THIABOrderId, THIABPurchase>
+class THIABPurchaseConsumer extends IABPurchaseConsumer<IABSKU, THIABOrderId, THIABPurchase>
 {
     @Inject protected THIABPurchaseCache thiabPurchaseCache;
 

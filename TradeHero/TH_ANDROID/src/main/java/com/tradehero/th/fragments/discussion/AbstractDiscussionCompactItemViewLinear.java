@@ -19,6 +19,7 @@ import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class AbstractDiscussionCompactItemViewLinear<T extends DiscussionKey>
         extends LinearLayout
@@ -137,12 +138,12 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
             implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
         @Override
-        public void onDTOReceived(DiscussionKey key, AbstractDiscussionCompactDTO value)
+        public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(DiscussionKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull DiscussionKey key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }

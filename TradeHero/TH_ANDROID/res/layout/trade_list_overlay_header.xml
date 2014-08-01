@@ -57,7 +57,7 @@
                 android:text="@string/trade_list_header_security_symbol"
                 android:gravity="center"
                 android:textColor="@color/portfolio_header_text_color"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/text_xsmall"/>
 
         <TextView
                 android:id="@+id/trade_history_header_security_symbol"
@@ -65,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textColor="@color/portfolio_header_text_color"
+                android:textSize="@dimen/text_small"
                 android:gravity="center"/>
 
     </LinearLayout>

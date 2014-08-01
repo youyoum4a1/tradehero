@@ -1,11 +1,10 @@
 package com.tradehero.th.api.portfolio;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.quote.UpdatePricesQuoteDTO;
-import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 {
@@ -34,33 +33,10 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     public int countTrades;
     public int countExchanges;
 
-    @JsonIgnore public String getNiceCurrency()
+    @Override @NotNull public String toString()
     {
-        if (currencyDisplay != null && !currencyDisplay.isEmpty())
-        {
-            return currencyDisplay;
-        }
-        return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
-    }
-
-    @Override public String toString()
-    {
-        return "PortfolioDTO{" +
-                "cashBalance=" + cashBalance +
-                ", id=" + id +
-                ", providerId=" + providerId +
-                ", title='" + title + '\'' +
-                ", totalValue=" + totalValue +
-                ", totalExtraCashPurchased=" + totalExtraCashPurchased +
-                ", totalExtraCashGiven=" + totalExtraCashGiven +
-                ", plSinceInception=" + plSinceInception +
-                ", isWatchlist=" + isWatchlist +
-                ", openPositionsCount=" + openPositionsCount +
-                ", closedPositionsCount=" + closedPositionsCount +
-                ", watchlistPositionsCount=" + watchlistPositionsCount +
-                ", markingAsOfUtc=" + markingAsOfUtc +
-                ", countExchanges=" + countExchanges +
-
+        return "[PortfolioDTO " +
+                super.toString() +
                 ", initialCash=" + initialCash +
                 ", creationDate=" + creationDate +
                 ", description='" + description + '\'' +
@@ -77,6 +53,6 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
                 ", plY2D=" + plY2D +
                 ", yahooSymbols=" + yahooSymbols +
                 ", countTrades=" + countTrades +
-                '}';
+                ']';
     }
 }

@@ -67,7 +67,7 @@
               android:layout_height="wrap_content"
               android:layout_marginLeft="10dp"
               android:layout_marginTop="5dp"
-              android:textSize="20sp"
+              android:textSize="@dimen/text_xlarge"
               android:textStyle="bold"
               android:ellipsize="end"
               android:singleLine="true"
@@ -80,7 +80,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginLeft="10dp"
-              android:textSize="16sp"
+              android:textSize="@dimen/text_medium"
               android:textStyle="bold"
               android:ellipsize="end"
               android:singleLine="true"
@@ -105,9 +105,9 @@
               <TextView
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_marginRight="3sp"
+                  android:layout_marginRight="3dp"
                   android:textColor="@color/black"
-                  android:textSize="12sp"
+                  android:textSize="@dimen/text_xsmall"
                   android:text="@string/user_profile_member_since"
                   />
 
@@ -116,7 +116,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:textColor="@color/black"
-                  android:textSize="12sp"
+                  android:textSize="@dimen/text_xsmall"
                   android:textStyle="bold"
                   tools:text="Jul 2013"
                   />

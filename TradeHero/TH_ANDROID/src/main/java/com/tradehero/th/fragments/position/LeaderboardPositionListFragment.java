@@ -53,7 +53,7 @@ public class LeaderboardPositionListFragment
     @Override public void onResume()
     {
         String periodStart = getLeaderboardPeriodStartString(getArguments());
-        Timber.d("Period Start: %s" + periodStart);
+        //Timber.d("Period Start: %s" + periodStart);
 
         super.onResume();
     }

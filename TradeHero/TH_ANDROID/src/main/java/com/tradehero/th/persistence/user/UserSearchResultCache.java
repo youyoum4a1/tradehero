@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.user;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.api.users.UserSearchResultDTOList;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -53,14 +54,14 @@ import org.jetbrains.annotations.Nullable;
     }
 
     @Contract("null -> null; !null -> !null") @Nullable
-    public List<UserSearchResultDTO> get(@Nullable List<UserBaseKey> keys)
+    public UserSearchResultDTOList get(@Nullable List<UserBaseKey> keys)
     {
         if (keys == null)
         {
             return null;
         }
 
-        List<UserSearchResultDTO> values = new ArrayList<>();
+        UserSearchResultDTOList values = new UserSearchResultDTOList();
 
         for (UserBaseKey userBaseKey: keys)
         {
