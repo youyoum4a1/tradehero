@@ -301,7 +301,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         discussionPostContent.setSelection(discussionPostContent.length());
     }
 
-    private Editable unSpanText(Editable editable)
+    protected static Editable unSpanText(Editable editable)
     {
         // keep editable unchange
         SpannableStringBuilder editableCopy = new SpannableStringBuilder(editable);

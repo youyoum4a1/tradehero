@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.OnFocusChanged;
 import butterknife.Optional;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -83,7 +82,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
     protected static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
     protected static final String KEY_QUOTE_DTO = AbstractTransactionDialogFragment.class.getName() + ".quote_dto";
-    private static final String DIALOG_HIDDEN = "hidden";
 
     @InjectView(R.id.dialog_stock_name) protected TextView mStockNameTextView;
     @InjectView(R.id.vcash_left) protected TextView mCashShareLeftTextView;
@@ -97,7 +95,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
     @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
-    @InjectView(R.id.comments) protected EditText mCommentsEditText;
+    @InjectView(R.id.comments) protected TextView mCommentsEditText;
 
     @InjectView(R.id.dialog_btn_add_cash) protected ImageButton mBtnAddCash;
     @InjectView(R.id.dialog_btn_confirm) protected Button mConfirm;
@@ -144,6 +142,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private AlertDialog mSocialLinkingDialog;
     private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
+    private TransactionEditCommentFragment transactionCommentFragment;
+    private Editable unSpannedComment;
 
     protected abstract String getLabel();
 
@@ -233,6 +233,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         {
             getDialog().hide();
         }
+    }
+
+    @Override public void onDetach()
+    {
+        transactionCommentFragment = null;
+        super.onDetach();
     }
 
     private void init()
@@ -338,7 +344,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return mQuickPriceButtonSet;
     }
 
-    public EditText getCommentView()
+    public TextView getCommentView()
     {
         return mCommentsEditText;
     }
@@ -408,16 +414,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         launchBuySell();
     }
 
-    @OnFocusChanged(R.id.comments) void onCommentAreaClicked(View commentTextBox, boolean checked)
+    @OnClick(R.id.comments) void onCommentAreaClicked(View commentTextBox)
     {
-        if (checked)
-        {
-            Bundle bundle = new Bundle();
-            SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
-            getDashboardNavigator().pushFragment(TransactionEditCommentFragment.class, bundle);
+        Bundle bundle = new Bundle();
+        SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
+        transactionCommentFragment = getDashboardNavigator().pushFragment(TransactionEditCommentFragment.class, bundle);
 
-            getDialog().hide();
-        }
+        getDialog().hide();
     }
 
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
@@ -567,7 +570,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 null,
                 //sharePublic,
                 false,
-                mCommentsEditText == null ? null : mCommentsEditText.getText().toString(),
+                unSpannedComment != null ? unSpannedComment.toString() : null,
                 quoteDTO.rawResponse,
                 mTransactionQuantity,
                 portfolioId.key
@@ -950,6 +953,16 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private BuySellPurchaseReportedListener createPurchaseReportedListener()
     {
         return new BuySellPurchaseReportedListener();
+    }
+
+    public void populateComment()
+    {
+        if (transactionCommentFragment != null)
+        {
+            unSpannedComment = transactionCommentFragment.getComment();
+            Timber.d(unSpannedComment.toString());
+            mCommentsEditText.setText(unSpannedComment);
+        }
     }
 
     private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>

@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -226,7 +227,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     {
         String comment = "Super awesome stock! 50% discount!!!";
 
-        EditText mComments = abstractTransactionDialogFragment.getCommentView();
+        TextView mComments = abstractTransactionDialogFragment.getCommentView();
 
         mComments.setText(comment);
 
@@ -241,7 +242,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     {
         String comment = "";
 
-        EditText mComments = abstractTransactionDialogFragment.getCommentView();
+        TextView mComments = abstractTransactionDialogFragment.getCommentView();
 
         mComments.setText(comment);
 

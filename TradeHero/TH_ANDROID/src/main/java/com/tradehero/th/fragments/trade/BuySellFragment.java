@@ -303,6 +303,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
         {
+            abstractTransactionDialogFragment.populateComment();
             abstractTransactionDialogFragment.getDialog().show();
         }
     }
