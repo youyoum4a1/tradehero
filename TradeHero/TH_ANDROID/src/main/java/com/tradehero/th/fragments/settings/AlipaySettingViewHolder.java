@@ -26,9 +26,14 @@ public class AlipaySettingViewHolder extends OneSettingViewHolder
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
         this.userProfileCacheListener = createUserProfileCacheListener();
-        fetchUserProfile();
     }
     //</editor-fold>
+
+    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    {
+        super.initViews(preferenceFragment);
+        fetchUserProfile();
+    }
 
     @Override public void destroyViews()
     {
