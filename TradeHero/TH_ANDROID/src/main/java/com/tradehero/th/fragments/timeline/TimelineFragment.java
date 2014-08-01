@@ -79,6 +79,21 @@ import timber.log.Timber;
 public class TimelineFragment extends BasePurchaseManagerFragment
         implements UserProfileCompactViewHolder.OnProfileClickedListener
 {
+    private static final String USER_BASE_KEY_BUNDLE_KEY = TimelineFragment.class.getName() + ".userBaseKey";
+
+    public static void putUserBaseKey(Bundle bundle, UserBaseKey userBaseKey)
+    {
+        bundle.putBundle(USER_BASE_KEY_BUNDLE_KEY, userBaseKey.getArgs());
+    }
+    @Nullable protected static UserBaseKey getUserBaseKey(@NotNull Bundle args)
+    {
+        if (args.containsKey(USER_BASE_KEY_BUNDLE_KEY))
+        {
+            return new UserBaseKey(args.getBundle(USER_BASE_KEY_BUNDLE_KEY));
+        }
+        return null;
+    }
+
     public static enum TabType
     {
         TIMELINE, PORTFOLIO_LIST, STATS
@@ -313,7 +328,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        thRouter.inject(this, getArguments());
+        shownUserBaseKey = getUserBaseKey(getArguments());
+        if (shownUserBaseKey == null)
+        {
+            thRouter.inject(this);
+        }
         //create adapter and so on
         linkWith(shownUserBaseKey, true);
 
