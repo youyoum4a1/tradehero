@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trending;
 
+import com.tradehero.AbstractTestBase;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -22,7 +23,7 @@ import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-public abstract class AbstractTransactionDialogFragmentTest
+public abstract class AbstractTransactionDialogFragmentTest extends AbstractTestBase
 {
     protected static final int CASH_BALANCE = 100000;
 
@@ -89,6 +90,8 @@ public abstract class AbstractTransactionDialogFragmentTest
         abstractTransactionDialogFragment
                 = AbstractTransactionDialogFragment.newInstance(securityId, portfolioId, quoteDTO, isBuy());
         abstractTransactionDialogFragment.show(activity.getSupportFragmentManager(), "Test");
+
+        runBgUiTasks(10);
     }
 
     public void tearDown()
