@@ -55,7 +55,7 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
 
     @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
     {
-        notifyFollowFailed(key, error);
+        notifyFollowFailed(userToFollow, error);
     }
 
     protected void checkBalanceAndFollow()

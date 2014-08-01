@@ -2,9 +2,11 @@ package com.tradehero.th.models.user;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -15,7 +17,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import retrofit.RetrofitError;
 
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -31,6 +35,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
     protected THBillingInteractor billingInteractor;
     private OwnedPortfolioId applicablePortfolioId = new OwnedPortfolioId(98, 456);
     private PremiumFollowUserAssistant assistant;
+    private THUIBillingRequest receivedRequest;
 
     @Before @Override public void setUp()
     {
@@ -49,6 +54,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         billingInteractor = null;
         applicablePortfolioId = null;
         assistant = null;
+        receivedRequest = null;
     }
 
     protected UserProfileDTO mockMyProfileWithCC(double credits)
@@ -97,6 +103,46 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         };
     }
 
+    protected void makeBillingInteractorPurchaseFailed(final BillingException billingException)
+    {
+        //noinspection unchecked
+        when(billingInteractor.run(any(THUIBillingRequest.class)))
+                .then(createCCPurchaseFailedAnswer(billingException));
+    }
+
+    protected Answer<Object> createCCPurchaseFailedAnswer(final BillingException billingException)
+    {
+        return new Answer<Object>()
+        {
+            @Override public Object answer(InvocationOnMock invocation) throws Throwable
+            {
+                Integer requestCode = 22;
+                //noinspection unchecked
+                ((THUIBillingRequest) invocation.getArguments()[0])
+                        .purchaseReportedListener
+                        .onPurchaseReportFailed(
+                                requestCode,
+                                mock(ProductPurchase.class),
+                                billingException);
+                return requestCode;
+            }
+        };
+    }
+
+    protected void makeBillingInteractorSaveRequest(final int requestCode)
+    {
+        //noinspection unchecked
+        when(billingInteractor.run(any(THUIBillingRequest.class)))
+                .then(new Answer<Object>()
+                {
+                    @Override public Object answer(InvocationOnMock invocation) throws Throwable
+                    {
+                        receivedRequest = (THUIBillingRequest) invocation.getArguments()[0];
+                        return requestCode;
+                    }
+                });
+    }
+
     @Test public void followCallsCache()
     {
         assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
@@ -110,14 +156,14 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         verify(userProfileCache, times(1)).getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    @Test public void callingErrorNotifiesListener()
+    @Test public void callingErrorFromCacheNotifiesListener()
     {
         assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
         //noinspection ThrowableInstanceNeverThrown
         Throwable expected = new IllegalArgumentException();
         assistant.onErrorThrown(currentUserId.toUserBaseKey(), expected);
 
-        verify(listener, times(1)).onUserFollowFailed(currentUserId.toUserBaseKey(), expected);
+        verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
 
     @Test public void followErrorCacheNotifiesListener()
@@ -151,6 +197,24 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         verify(userServiceWrapper, times(1)).follow(heroId, assistant);
     }
 
+    @Test public void followWithEnoughCCAndServiceFailedWillNotify()
+    {
+        assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        // Prepare cache
+        UserProfileDTO myProfile = mockMyProfileWithCC(1d);
+        userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
+        assistant.userProfileCache = userProfileCache;
+        // Prepare user service
+        RetrofitError expected = mock(RetrofitError.class);
+        prepareUserServiceForFailFollow(assistant, expected);
+        assistant.userServiceWrapper = userServiceWrapper;
+
+        assistant.launchFollow();
+        runBgUiTasks(10);
+
+        verify(listener, times(1)).onUserFollowFailed(heroId, expected);
+    }
+
     @Test public void followWithEnoughCCAndServiceSuccessWillNotify()
     {
         assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
@@ -178,12 +242,32 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userProfileCache = userProfileCache;
         // Prepare interactor
         assistant.billingInteractor = billingInteractor;
+        makeBillingInteractorSaveRequest(13);
 
         assistant.launchFollow();
         runBgUiTasks(10);
 
         //noinspection unchecked
         verify(billingInteractor, times(1)).run(any(THUIBillingRequest.class));
+        assertThat(assistant.requestCode).isEqualTo(13);
+        assertThat(receivedRequest).isNotNull();
+        assertThat(receivedRequest.domainToPresent).isEqualTo(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS);
+        assertThat(receivedRequest.userToFollow).isEqualTo(heroId);
+        assertThat(receivedRequest.applicablePortfolioId).isEqualTo(applicablePortfolioId);
+    }
+
+    @Test public void followWithNotEnoughCCAndBoughtFailedWillNotify()
+    {
+        assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
+        // Prepare cache
+        UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
+        userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
+        assistant.userProfileCache = userProfileCache;
+        // Prepare interactor
+        final BillingException billingException = mock(BillingException.class);
+        makeBillingInteractorPurchaseFailed(billingException);
+        assistant.billingInteractor = billingInteractor;
+
     }
 
     @Test public void followWithNotEnoughCCAndBoughtSuccessWillCallService()
@@ -204,6 +288,29 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         runBgUiTasks(10);
 
         verify(userServiceWrapper, times(1)).follow(heroId, assistant);
+    }
+
+    // This is very long but here to test that no listener /callback is lost in the process
+    @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowFailedWillNotifyListener()
+    {
+        assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
+        // Prepare cache
+        UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
+        userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
+        assistant.userProfileCache = userProfileCache;
+        // Prepare interactor
+        final UserProfileDTO myProfileAfterPurchase = mockMyProfileWithCC(1d);
+        makeBillingInteractorPurchaseSuccess(myProfileAfterPurchase);
+        assistant.billingInteractor = billingInteractor;
+        // Prepare user service
+        RetrofitError retrofitError = mock(RetrofitError.class);
+        prepareUserServiceForFailFollow(assistant, retrofitError);
+        assistant.userServiceWrapper = userServiceWrapper;
+
+        assistant.launchFollow();
+        runBgUiTasks(10);
+
+        verify(listener, times(1)).onUserFollowFailed(heroId, retrofitError);
     }
 
     // This is very long but here to test that no listener /callback is lost in the process
