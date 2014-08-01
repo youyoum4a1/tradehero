@@ -193,7 +193,7 @@
 
   </com.tradehero.th.fragments.trade.view.QuickPriceButtonSet>
 
-  <EditText
+  <com.tradehero.th.widget.MarkdownTextView
       android:id="@+id/comments"
       android:layout_width="match_parent"
       android:layout_height="45dp"
@@ -204,7 +204,6 @@
       android:gravity="top"
       android:padding="5dp"
       android:hint="@string/buy_sell_confirm_buy_comment"
-      android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
       android:layout_marginTop="15dp"/>
 
   <LinearLayout

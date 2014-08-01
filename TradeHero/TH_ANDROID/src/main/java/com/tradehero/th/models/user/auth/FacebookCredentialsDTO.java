@@ -26,7 +26,7 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
     {
         this(object.getString(SocialAuthenticationProvider.ID_KEY),
                 object.getString(FacebookAuthenticationProvider.ACCESS_TOKEN_KEY),
-                FacebookAuthenticationProvider.preciseDateFormat.parse(
+                FacebookAuthenticationProvider.PRECISE_DATE_FORMAT.parse(
                         object.getString(FacebookAuthenticationProvider.EXPIRATION_DATE_KEY)));
     }
 
@@ -57,7 +57,7 @@ public class FacebookCredentialsDTO extends BaseCredentialsDTO
         try
         {
             object.put(FacebookAuthenticationProvider.EXPIRATION_DATE_KEY,
-                    FacebookAuthenticationProvider.preciseDateFormat.format(expirationDate));
+                    FacebookAuthenticationProvider.PRECISE_DATE_FORMAT.format(expirationDate));
         }
         catch (IllegalArgumentException e)
         {

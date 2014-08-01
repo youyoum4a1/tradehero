@@ -178,12 +178,10 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
         if (trade != null && position != null)
         {
             int textResId = trade.quantity >= 0 ? R.string.trade_bought_quantity_verbose : R.string.trade_sold_quantity_verbose;
-            THSignedNumber tradeQuantity = THSignedNumber.builder()
-                    .value((double) Math.abs(trade.quantity))
+            THSignedNumber tradeQuantity = THSignedNumber.builder((double) Math.abs(trade.quantity))
                     .withOutSign()
                     .build();
-            THSignedNumber tradeValue = THSignedMoney.builder()
-                    .value(trade.unitPriceRefCcy)
+            THSignedNumber tradeValue = THSignedMoney.builder(trade.unitPriceRefCcy)
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();
@@ -210,8 +208,8 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (trade != null)
         {
-            THSignedNumber tradeQuantityAfterTrade = THSignedNumber.builder()
-                    .value((double) Math.abs(trade.quantityAfterTrade))
+            THSignedNumber tradeQuantityAfterTrade = THSignedNumber
+                    .builder((double) Math.abs(trade.quantityAfterTrade))
                     .withOutSign()
                     .build();
             return getContext().getString(
@@ -356,8 +354,8 @@ public class TradeListItemView extends LinearLayout implements DTOView<TradeList
     {
         if (trade != null)
         {
-            THSignedNumber tradeValue = THSignedMoney.builder()
-                    .value(trade.quantity * trade.unitPriceRefCcy)
+            THSignedNumber tradeValue = THSignedMoney
+                    .builder(trade.quantity * trade.unitPriceRefCcy)
                     .withOutSign()
                     .currency(getCurrencyDisplay())
                     .build();

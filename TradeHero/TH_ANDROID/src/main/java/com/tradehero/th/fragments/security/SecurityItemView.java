@@ -280,8 +280,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             if (securityCompactDTO != null && securityCompactDTO.lastPrice != null && !Double.isNaN(
                     securityCompactDTO.lastPrice))
             {
-                lastPrice.setText(THSignedNumber.builder()
-                                .value(securityCompactDTO.lastPrice)
+                lastPrice.setText(THSignedNumber.builder(securityCompactDTO.lastPrice)
                                 .withOutSign()
                             .build().toString());
             }

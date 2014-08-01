@@ -36,8 +36,7 @@ public class PositionDTOUtils
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .value(position.sumInvestedAmountRefCcy)
+            THSignedNumber formattedNumber = THSignedMoney.builder(position.sumInvestedAmountRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -67,8 +66,7 @@ public class PositionDTOUtils
                 position.marketValueStartPeriodRefCcy != null &&
                 /* It appears iOS version does that */position.marketValueStartPeriodRefCcy > 0)
         {
-            THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .value(position.marketValueStartPeriodRefCcy)
+            THSignedNumber formattedNumber = THSignedMoney.builder(position.marketValueStartPeriodRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -109,8 +107,7 @@ public class PositionDTOUtils
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .value(position.realizedPLRefCcy)
+            THSignedNumber formattedNumber = THSignedMoney.builder(position.realizedPLRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -138,8 +135,7 @@ public class PositionDTOUtils
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .value(position.totalPLInPeriodRefCcy)
+            THSignedNumber formattedNumber = THSignedMoney.builder(position.totalPLInPeriodRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -167,8 +163,7 @@ public class PositionDTOUtils
     {
         if (position != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .value(position.marketValueRefCcy)
+            THSignedNumber formattedNumber = THSignedMoney.builder(position.marketValueRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -209,8 +204,7 @@ public class PositionDTOUtils
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .value(position.unrealizedPLRefCcy)
+            THSignedNumber formattedNumber = THSignedMoney.builder(position.unrealizedPLRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();
@@ -247,9 +241,7 @@ public class PositionDTOUtils
         }
         else
         {
-            THSignedNumber roiNumber = THSignedPercentage.builder()
-                    .value(Math.abs(roiValue * 100.0))
-                    .withSign()
+            THSignedNumber roiNumber = THSignedPercentage.builder(Math.abs(roiValue * 100.0))
                     .signTypeArrow()
                     .relevantDigitCount(3)
                     .build();
@@ -276,8 +268,7 @@ public class PositionDTOUtils
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {
 
-            THSignedNumber formatSumPurchasesInPeriodRefCcy = THSignedMoney.builder()
-                    .value(position.sum_purchasesInPeriodRefCcy)
+            THSignedNumber formatSumPurchasesInPeriodRefCcy = THSignedMoney.builder(position.sum_purchasesInPeriodRefCcy)
                     .withOutSign()
                     .currency(refCurrency)
                     .build();

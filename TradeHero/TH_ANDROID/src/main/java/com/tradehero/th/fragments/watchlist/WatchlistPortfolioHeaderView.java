@@ -152,14 +152,11 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
 
     private void displayGainLoss()
     {
-        THSignedNumber firstNumber = THSignedPercentage.builder()
-                .value(getAbsoluteGain())
+        THSignedNumber firstNumber = THSignedPercentage.builder(getAbsoluteGain())
                 .withOutSign()
                 .build();
 
-        THSignedNumber secondNumber = THSignedMoney.builder()
-                .value(getAbsoluteGain())
-                .build();
+        THSignedNumber secondNumber = THSignedMoney.builder(getAbsoluteGain()).build();
         gainLoss.setFirstValue(firstNumber.toString());
         gainLoss.setSecondValue(secondNumber.toString());
         gainLoss.setTitle(getContext().getString(getAbsoluteGain() >= 0 ? R.string.watchlist_gain : R.string.watchlist_loss));

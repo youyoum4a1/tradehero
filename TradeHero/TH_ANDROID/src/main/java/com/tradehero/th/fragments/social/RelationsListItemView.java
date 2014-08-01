@@ -27,6 +27,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class RelationsListItemView extends RelativeLayout
@@ -281,7 +282,7 @@ public class RelationsListItemView extends RelativeLayout
         }
     }
 
-    public int getCountryLogoId(String country)
+    public int getCountryLogoId(@NotNull String country)
     {
         try
         {
