@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
 import java.io.IOException;
+import org.jetbrains.annotations.Nullable;
 
 public class AchievementDefDTO implements DTO
 {
@@ -13,7 +14,7 @@ public class AchievementDefDTO implements DTO
     double virtualDollars;
     String visual;
     String text;
-    String subText;
+    @Nullable String subText;
     int achievementLevel;
     String category;
     String hexColor;

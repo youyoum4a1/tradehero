@@ -6,13 +6,13 @@ import java.util.Date;
 public class UserAchievementDTO implements DTO
 {
     int id;
-    String displayString;
-    Date achievedAtUTC;
+    Date achievedAtUtc;
     int xpEarned;
     int xpTotal;
     int contiguousCount;
     boolean isReset;
     AchievementDefDTO achievementDef;
+    String displayString;
 
     public UserAchievementDTOKey getUserAchievementDTOKey()
     {
