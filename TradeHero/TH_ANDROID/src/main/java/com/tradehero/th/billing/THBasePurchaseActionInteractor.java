@@ -6,6 +6,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -22,7 +24,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     private Callback<UserProfileDTO> freeFollowedListener;
 
     private final boolean alertsAreFree;
-    private final PremiumFollowUserAssistant premiumFollowUserAssistant;
+    @Nullable private final PremiumFollowUserAssistant premiumFollowUserAssistant;
 
     /**
      * Convenient class that will be used to do any purchasing action such as buying extra cash, follow credits, reset portfolio...),
@@ -41,10 +43,15 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
      * @param premiumFollowedListener listener to be notified when premium follow action is completed
      * @param alertsAreFree
      */
-    protected THBasePurchaseActionInteractor(THBillingInteractor billingInteractor, THUIBillingRequest billingRequest, UIBillingRequest.OnErrorListener errorListener,
-            ProductIdentifierDomain productIdentifierDomain, UserBaseKey userToFollow,
+    protected THBasePurchaseActionInteractor(
+            THBillingInteractor billingInteractor,
+            THUIBillingRequest billingRequest,
+            UIBillingRequest.OnErrorListener errorListener,
+            ProductIdentifierDomain productIdentifierDomain,
+            @Nullable UserBaseKey userToFollow,
             OwnedPortfolioId purchaseApplicableOwnedPortfolioId,
-            PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener, Callback<UserProfileDTO> freeFollowedListener,
+            PurchaseReporter.OnPurchaseReportedListener purchaseReportedListener,
+            Callback<UserProfileDTO> freeFollowedListener,
             PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener,
             boolean alertsAreFree)
     {
@@ -56,7 +63,14 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         this.freeFollowedListener = freeFollowedListener;
         this.alertsAreFree = alertsAreFree;
 
-        this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
+        if (userToFollow != null)
+        {
+            this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
+        }
+        else
+        {
+            this.premiumFollowUserAssistant = null;
+        }
     }
 
     public void onDestroy()
@@ -72,12 +86,16 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         errorListener = null;
         purchaseReportedListener = null;
         freeFollowedListener = null;
-        premiumFollowUserAssistant.setUserFollowedListener(null);
+        if (premiumFollowUserAssistant != null)
+        {
+            premiumFollowUserAssistant.setUserFollowedListener(null);
+        }
     }
 
     @Override public int showProductsList(ProductIdentifierDomain domain)
     {
         detachRequestCode();
+        //noinspection unchecked
         return billingInteractor.run(getShowProductDetailRequest(domain));
     }
 
@@ -109,11 +127,15 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
 
     @Override public void premiumFollowUser()
     {
+        // Do not call if no hero to follow
+        //noinspection ConstantConditions
         premiumFollowUserAssistant.launchFollow();
     }
 
     @Override public void unfollowUser()
     {
+        // Do not call if no hero to follow
+        //noinspection ConstantConditions
         premiumFollowUserAssistant.launchUnFollow();
     }
 
@@ -129,7 +151,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
     {
         private THBillingInteractor billingInteractor;
         private PremiumFollowUserAssistant.OnUserFollowedListener premiumFollowedListener;
-        private UserBaseKey userToFollow;
+        @Nullable private UserBaseKey userToFollow;
         private OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
         private Callback<UserProfileDTO> freeFollowedListener;
         private boolean startWithProgressDialog = true;
@@ -152,7 +174,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             return self();
         }
 
-        public Builder setUserToFollow(UserBaseKey userToFollow)
+        public Builder setUserToFollow(@NotNull UserBaseKey userToFollow)
         {
             this.userToFollow = userToFollow;
             return self();
@@ -247,7 +269,10 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         {
             ensureSaneDefaults();
             populateBillingRequest();
-            return new THBasePurchaseActionInteractor(billingInteractor, billingRequest, errorListener,
+            return new THBasePurchaseActionInteractor(
+                    billingInteractor,
+                    billingRequest,
+                    errorListener,
                     productIdentifierDomain,
                     userToFollow,
                     purchaseApplicableOwnedPortfolioId,
