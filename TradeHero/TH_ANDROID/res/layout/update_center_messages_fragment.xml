@@ -3,7 +3,7 @@
 <com.tradehero.th.fragments.updatecenter.messages.MessagesView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:swipe="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/message_list_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
