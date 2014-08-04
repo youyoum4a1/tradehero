@@ -38,9 +38,9 @@ public class LeaderboardMarkUserListFragmentTest extends AbstractTestBase
         heroAlertDialogUtil = null;
     }
 
-    @Ignore("Apparently it crashes on start because of a problem with Loader")
     @Test public void handleFollowRequestedCallsAlertDialog()
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, new LeaderboardDefKey(123));
         leaderboardMarkUserListFragment = dashboardNavigator.pushFragment(LeaderboardMarkUserListFragment.class, args);
