@@ -1,10 +1,13 @@
 package com.tradehero.th.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,9 +17,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.level.LevelDTO;
 import com.tradehero.th.models.level.LevelUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class UserLevelProgressBar extends RelativeLayout
 {
@@ -30,6 +34,8 @@ public class UserLevelProgressBar extends RelativeLayout
 
     private int mCurrentXP = -1;
     private LevelDTO currentLevelDTO;
+    private String xpFormat;
+    private long mAnimatorDuration;
 
     private UserLevelProgressBarListener userLevelProgressBarListener;
 
@@ -53,9 +59,11 @@ public class UserLevelProgressBar extends RelativeLayout
         super.onFinishInflate();
         ButterKnife.inject(this);
         DaggerUtils.inject(this);
+
+        xpFormat = getContext().getString(R.string.user_level_xp_indicator_format);
     }
 
-    public void setXpIndicator(int current)
+    public void startsWith(int current)
     {
         if (current < 0)
         {
@@ -70,20 +78,33 @@ public class UserLevelProgressBar extends RelativeLayout
     {
         currentLevelDTO = levelUtil.getCurrentLevel(mCurrentXP);
         xpProgressBar.setMax(getMaxProgress(currentLevelDTO));
-        xpProgressBar.setProgress(getCurrentXpProgress());
+        xpProgressBar.setProgress(currentXpToNormalisedProgress());
+        updateDisplay();
+        updateXPIndicator(mCurrentXP);
+    }
+
+    private void updateDisplay()
+    {
+        currentLevelLabel.setText(String.valueOf(currentLevelDTO.getCurrentLevel()));
+        nextLevelLabel.setText(String.valueOf(currentLevelDTO.getCurrentLevel() + 1));
+    }
+
+    public void setAnimatorDuration(long mAnimatorDuration)
+    {
+        this.mAnimatorDuration = mAnimatorDuration;
     }
 
     public void increment(int xpGained)
     {
         if (currentLevelDTO == null)
         {
-            throw new RuntimeException("Must call setXPIndicator before calling increment!");
+            throw new RuntimeException("Must call startsWith before calling increment!");
         }
 
-        Queue<UserLevelProgressBarAnimationDefinition> repeatAnimationQueue = getRepeatAnimationQueue(xpGained);
-
-        ProgressBarAnimation animation = new ProgressBarAnimation(xpProgressBar, repeatAnimationQueue);
-        xpProgressBar.startAnimation(animation);
+        List<Animator> animators = getAnimatorQueue(xpGained);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playSequentially(animators);
+        animatorSet.start();
     }
 
     private int getMaxProgress(LevelDTO levelDTO)
@@ -91,37 +112,109 @@ public class UserLevelProgressBar extends RelativeLayout
         return levelDTO.getMaxXp() - levelDTO.getBaseXp();
     }
 
-    private int getCurrentXpProgress()
+    private int currentXpToNormalisedProgress()
     {
-        return xpToProgress(mCurrentXP, currentLevelDTO);
+        return mCurrentXP - currentLevelDTO.getBaseXp();
     }
 
-    private int xpToProgress(int xp, LevelDTO levelDTO)
+    private int gainedXpToNormalisedProgress(int currentXp, int xpGained, LevelDTO levelDTO)
     {
-        return xp - levelDTO.getBaseXp();
+        if(currentXp + xpGained >= levelDTO.getMaxXp())
+        {
+            return getMaxProgress(levelDTO);
+        }
+        return xpGained;
     }
 
-    private Queue<UserLevelProgressBarAnimationDefinition> getRepeatAnimationQueue(int xpGained)
+    private ValueAnimator.AnimatorUpdateListener createUpdateListener()
     {
-        ArrayDeque<UserLevelProgressBarAnimationDefinition> repeatAnimationAnimation = new ArrayDeque<>();
+        return new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
+            {
+                Integer xp = currentLevelDTO.getBaseXp() + (Integer) valueAnimator.getAnimatedValue("secondaryProgress");
+                updateXPIndicator(xp);
+            }
+        };
+    }
 
-        int targetXp = mCurrentXP + xpGained;
+    private void updateXPIndicator(int xp)
+    {
+        mCurrentXP = xp;
+        xpIndicatorLabel.setText(String.format(xpFormat, xp, currentLevelDTO.getMaxXp()));
+    }
+
+    private void updateValueAnimatorDuration(ValueAnimator valueAnimator)
+    {
+        if (mAnimatorDuration > 0)
+        {
+            valueAnimator.setDuration(mAnimatorDuration);
+        }
+    }
+
+    private List<Animator> getAnimatorQueue(int xpGained)
+    {
+        List<Animator> aList = new ArrayList<>();
         LevelDTO levelDTO = currentLevelDTO;
 
-        UserLevelProgressBarAnimationDefinition a0 =
-                new UserLevelProgressBarAnimationDefinition(getCurrentXpProgress(), xpToProgress(targetXp, currentLevelDTO), getMaxProgress(currentLevelDTO), currentLevelDTO);
-        repeatAnimationAnimation.add(a0);
+        PropertyValuesHolder p0a = PropertyValuesHolder.ofInt("progress", currentXpToNormalisedProgress(), currentXpToNormalisedProgress());
+        PropertyValuesHolder p0b = PropertyValuesHolder.ofInt("secondaryProgress", currentXpToNormalisedProgress(),
+                gainedXpToNormalisedProgress(mCurrentXP, xpGained, currentLevelDTO));
+        PropertyValuesHolder p0c = PropertyValuesHolder.ofInt("max", getMaxProgress(currentLevelDTO), getMaxProgress(currentLevelDTO));
 
+        Timber.d("Updating level: %d, baseExp: %d, maxExp: %d, from with Primary: %d, Secondary from: %d to: %d, MaxProgress: %d, xpGained: %d",
+                currentLevelDTO.getCurrentLevel(), currentLevelDTO.getBaseXp(), currentLevelDTO.getMaxXp(), currentXpToNormalisedProgress(),
+                currentXpToNormalisedProgress(), gainedXpToNormalisedProgress(mCurrentXP, xpGained, currentLevelDTO), getMaxProgress(currentLevelDTO), xpGained);
+
+        ValueAnimator v0 =
+                ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, p0a, p0b, p0c);
+        v0.addUpdateListener(createUpdateListener());
+        updateValueAnimatorDuration(v0);
+        aList.add(v0);
+
+        int targetXp = mCurrentXP + xpGained;
         while (targetXp >= levelDTO.getMaxXp())
         {
-            targetXp -= levelDTO.getMaxXp();
-            levelDTO = levelUtil.getNextLevel(levelDTO.getCurrentLevel());
-            UserLevelProgressBarAnimationDefinition
-                    a = new UserLevelProgressBarAnimationDefinition(0, xpToProgress(targetXp, levelDTO), getMaxProgress(levelDTO), levelDTO);
-            repeatAnimationAnimation.add(a);
+            int xpGainedN = targetXp - levelDTO.getMaxXp();
+
+            LevelDTO nextLevelDTO = levelUtil.getNextLevelDTO(levelDTO.getCurrentLevel());
+
+            int startProgress = 0;
+
+            PropertyValuesHolder pNa = PropertyValuesHolder.ofInt("progress", startProgress, startProgress);
+            PropertyValuesHolder pNb = PropertyValuesHolder.ofInt("secondaryProgress", startProgress,
+                    gainedXpToNormalisedProgress(nextLevelDTO.getBaseXp(), xpGainedN, nextLevelDTO));
+            PropertyValuesHolder pNc = PropertyValuesHolder.ofInt("max", getMaxProgress(nextLevelDTO), getMaxProgress(nextLevelDTO));
+
+            Timber.d("Updating level: %d, baseExp: %d, maxExp: %d, from with Primary: %d, Secondary from: %d to: %d, MaxProgress: %d, xpGained: %d",
+                    nextLevelDTO.getCurrentLevel(), nextLevelDTO.getBaseXp(), nextLevelDTO.getMaxXp(), startProgress,
+                    startProgress, gainedXpToNormalisedProgress(nextLevelDTO.getBaseXp(), xpGainedN, nextLevelDTO), getMaxProgress(nextLevelDTO), xpGainedN);
+
+            ValueAnimator vN = ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, pNa, pNb, pNc);
+            vN.addUpdateListener(createUpdateListener());
+            updateValueAnimatorDuration(vN);
+            vN.addListener(new AnimatorListenerAdapter()
+            {
+                @Override public void onAnimationStart(Animator animation)
+                {
+                    super.onAnimationStart(animation);
+                    UserLevelProgressBarListener userLevelProgressBarListenerCopy = userLevelProgressBarListener;
+                    LevelDTO nextLevel = levelUtil.getNextLevelDTO(currentLevelDTO.getCurrentLevel());
+                    if (userLevelProgressBarListenerCopy != null)
+                    {
+                        userLevelProgressBarListenerCopy.onLevelUp(currentLevelDTO, nextLevel);
+                    }
+                    currentLevelDTO = nextLevel;
+                    updateDisplay();
+                }
+            });
+
+            aList.add(vN);
+
+            levelDTO = nextLevelDTO;
         }
 
-        return repeatAnimationAnimation;
+        return aList;
     }
 
     public void setUserLevelProgressBarListener(UserLevelProgressBarListener userLevelProgressBarListener)
@@ -129,74 +222,8 @@ public class UserLevelProgressBar extends RelativeLayout
         this.userLevelProgressBarListener = userLevelProgressBarListener;
     }
 
-    protected class ProgressBarAnimation extends Animation
-    {
-        private ProgressBar progressBar;
-        private UserLevelProgressBarAnimationDefinition animationDefinition;
-
-        public ProgressBarAnimation(ProgressBar progressBar, final Queue<UserLevelProgressBarAnimationDefinition> animationQueue)
-        {
-            super();
-            setInterpolator(new AccelerateInterpolator());
-            this.progressBar = progressBar;
-            this.animationDefinition = animationQueue.poll();
-            this.setRepeatCount(animationQueue.size());
-
-            this.setAnimationListener(new AnimationListener()
-            {
-                @Override public void onAnimationStart(Animation animation)
-                {
-                    xpProgressBar.setProgress(animationDefinition.startFrom);
-                }
-
-                @Override public void onAnimationEnd(Animation animation)
-                {
-                }
-
-                @Override public void onAnimationRepeat(Animation animation)
-                {
-                    animationDefinition = animationQueue.poll();
-                }
-            });
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t)
-        {
-            super.applyTransformation(interpolatedTime, t);
-            int value = (int) (animationDefinition.startFrom + (animationDefinition.finishAt - animationDefinition.startFrom) * interpolatedTime);
-
-            progressBar.setSecondaryProgress(value);
-            if(userLevelProgressBarListener != null)
-            {
-                //userLevelProgressBarListener.onLevelUp();
-            }
-        }
-    }
-
     public interface UserLevelProgressBarListener
     {
         void onLevelUp(LevelDTO fromLevel, LevelDTO toLevel);
-    }
-
-    protected class UserLevelProgressBarAnimationDefinition
-    {
-        int startFrom;
-        int finishAt;
-        int maxValue;
-        LevelDTO levelDTO;
-
-        public UserLevelProgressBarAnimationDefinition(int startFrom, int finishAt, int maxValue, LevelDTO levelDTO)
-        {
-            this.startFrom = startFrom;
-            this.finishAt = finishAt;
-            this.maxValue = maxValue;
-            this.levelDTO = levelDTO;
-
-            if (finishAt >= maxValue)
-            {
-                this.finishAt = maxValue;
-            }
-        }
     }
 }

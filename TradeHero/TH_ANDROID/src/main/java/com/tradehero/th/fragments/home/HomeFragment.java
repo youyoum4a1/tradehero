@@ -32,6 +32,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.fragments.achievement.AchievementDialogFragment;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;

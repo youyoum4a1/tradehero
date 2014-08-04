@@ -2,14 +2,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/achievement_dialog_width"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
     android:background="@color/achievement_dialog_bg"
     >
   <RelativeLayout
-      android:layout_width="match_parent"
+      android:layout_width="@dimen/achievement_dialog_width"
       android:layout_height="wrap_content"
       android:paddingTop="@dimen/achievement_dialog_padding"
       android:paddingLeft="@dimen/achievement_dialog_padding"
@@ -105,14 +105,15 @@
           android:layout_marginLeft="@dimen/user_level_current_level_margin_left"/>
 
       <TextView
-          android:id="@+id/user_level_progress_virtual_dollar_earned"
+          android:id="@+id/user_level_progress_level_up"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
+          android:layout_above="@id/user_level_progress_bar"
           android:layout_marginRight="@dimen/user_level_progress_margin_right"
-          android:layout_above="@id/user_level_progress_xp_earned"
-          style="@style/TH.Level.Earned.VirtualDollar"
-          tools:text="+10,000 TH$!"/>
+          style="@style/TH.Level.Earned.LevelUp"
+          android:visibility="gone"
+          tools:text="LEVEL UP!"/>
 
       <TextView
           android:id="@+id/user_level_progress_xp_earned"
@@ -125,16 +126,14 @@
           tools:text="+1,000 XP!"/>
 
       <TextView
-          android:id="@+id/user_level_progress_level_up"
+          android:id="@+id/user_level_progress_virtual_dollar_earned"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
-          android:layout_above="@id/user_level_progress_bar"
           android:layout_marginRight="@dimen/user_level_progress_margin_right"
-          style="@style/TH.Level.Earned.LevelUp"
-          android:visibility="gone"
-          tools:text="LEVEL UP!"/>
-
+          android:layout_above="@id/user_level_progress_xp_earned"
+          style="@style/TH.Level.Earned.VirtualDollar"
+          tools:text="+10,000 TH$!"/>
 
     </RelativeLayout>
 
