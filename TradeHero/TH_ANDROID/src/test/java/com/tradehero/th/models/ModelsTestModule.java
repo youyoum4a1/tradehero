@@ -8,13 +8,14 @@ import com.tradehero.th.models.user.ModelsUserTestModule;
 import dagger.Module;
 
 @Module(
+        injects = {
+            PositionDTOUtilsTest.class,
+        },
         includes = {
                 ModelsLeaderboardTestModule.class,
                 PushTestModule.class,
                 ModelsShareTestModule.class,
                 ModelsUserTestModule.class,
-
-                PositionDTOUtilsTest.class,
         },
         complete = false,
         library = true
