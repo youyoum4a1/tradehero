@@ -2,7 +2,7 @@ package com.tradehero.th.models.intent;
 
 import android.content.Intent;
 import com.tradehero.th.activities.CurrentActivityHolder;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -89,7 +89,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
         }
         catch (Exception ex)
         {
-            Timber.e("%s host is unhandled %s", host, intent.getDataString(), new Exception());
+            Timber.e(ex, "%s host is unhandled %s", host, intent.getDataString());
         }
     }
 }

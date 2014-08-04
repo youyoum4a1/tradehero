@@ -6,6 +6,7 @@ import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
+import org.jetbrains.annotations.NotNull;
 
 public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipientDTO, RelationsListItemView>
 {
@@ -28,7 +29,7 @@ public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipient
         this.premiumFollowRequestedListener = premiumFollowRequestedListener;
     }
 
-    protected void notifyFollowRequested(UserBaseKey userBaseKey)
+    protected void notifyFollowRequested(@NotNull UserBaseKey userBaseKey)
     {
         OnPremiumFollowRequestedListener listener = premiumFollowRequestedListener;
         if (listener != null)
@@ -45,7 +46,7 @@ public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipient
     protected class RelationsListItemAdapterFollowRequestedListener implements
             OnPremiumFollowRequestedListener
     {
-        @Override public void premiumFollowRequested(UserBaseKey userBaseKey)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
         {
             notifyFollowRequested(userBaseKey);
         }

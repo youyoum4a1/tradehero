@@ -2,8 +2,8 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.tradehero.AbstractTestBase;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
@@ -24,7 +24,7 @@ import org.robolectric.shadows.ShadowPreference;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
-public class UserTranslationSettingsViewHolderTest
+public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
 {
     @Inject TranslationTokenCache translationTokenCache;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
@@ -140,8 +140,7 @@ public class UserTranslationSettingsViewHolderTest
 
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(10);
 
         assertThat(settingsFragment.userTranslationSettingsViewHolder
                 .translationPreferredLang.getSummary().toString())

@@ -90,7 +90,6 @@ public class AuthenticationActivity extends SherlockFragmentActivity
         if (currentFragment == null)
         {
             currentFragment = Fragment.instantiate(this, SignInFragment.class.getName(), null);
-            //currentFragment = Fragment.instantiate(this, WelcomeFragment.class.getName(), null);
         }
 
         setupViewFragmentMapping();
@@ -220,13 +219,22 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 authenticateWithQQ();
                 break;
             case R.id.txt_term_of_service_signin:
-                //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at https://www.tradehero.mobi/privacy ran insecure content from http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700,900.
+                //TODO WebViewActivity not work, for chromium﹕ [INFO:CONSOLE(17)] "The page at
+                //TODO https://www.tradehero.mobi/privacy ran insecure content from
+                //TODO http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700,900.
                 //Intent pWebView = new Intent(this, WebViewActivity.class);
                 //pWebView.putExtra(WebViewActivity.SHOW_URL, Constants.PRIVACY_TERMS_OF_SERVICE);
                 //startActivity(pWebView);
                 Uri uri = Uri.parse(Constants.PRIVACY_TERMS_OF_SERVICE);
                 Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(it);
+                try
+                {
+                    startActivity(it);
+                }
+                catch (android.content.ActivityNotFoundException anfe)
+                {
+                    THToast.show("Unable to open url: " + uri);
+                }
                 break;
             case R.id.txt_term_of_service_termsofuse:
                 //Intent pWebView2 = new Intent(this, WebViewActivity.class);
@@ -234,7 +242,14 @@ public class AuthenticationActivity extends SherlockFragmentActivity
                 //startActivity(pWebView2);
                 Uri uri2 = Uri.parse(Constants.PRIVACY_TERMS_OF_USE);
                 Intent it2 = new Intent(Intent.ACTION_VIEW, uri2);
-                startActivity(it2);
+                try
+                {
+                    startActivity(it2);
+                }
+                catch (android.content.ActivityNotFoundException anfe)
+                {
+                    THToast.show("Unable to open url: " + uri2);
+                }
                 break;
         }
     }

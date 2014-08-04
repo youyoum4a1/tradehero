@@ -2,18 +2,13 @@ package com.tradehero.th.persistence.message;
 
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
-import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.ListCacheMaxSize;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,22 +25,16 @@ public class MessageHeaderListCache extends StraightCutDTOCacheNew<
 {
     @NotNull final private MessageHeaderCache messageHeaderCache;
     @NotNull final private MessageServiceWrapper messageServiceWrapper;
-    @NotNull final private UserProfileCache userProfileCache;
-    @NotNull final private CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public MessageHeaderListCache(
             @ListCacheMaxSize IntPreference maxSize,
             @NotNull MessageHeaderCache messageHeaderCache,
-            @NotNull MessageServiceWrapper messageServiceWrapper,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull CurrentUserId currentUserId)
+            @NotNull MessageServiceWrapper messageServiceWrapper)
     {
         super(maxSize.get());
         this.messageHeaderCache = messageHeaderCache;
         this.messageServiceWrapper = messageServiceWrapper;
-        this.userProfileCache = userProfileCache;
-        this.currentUserId = currentUserId;
     }
     //</editor-fold>
 
@@ -79,19 +68,6 @@ public class MessageHeaderListCache extends StraightCutDTOCacheNew<
             return null;
         }
         return value;
-    }
-
-    /**
-     *
-     * @param data
-     */
-    private void updateUnreadMessageThreadCount(ReadablePaginatedDTO<MessageHeaderDTO> data)
-    {
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
-        {
-            userProfileDTO.unreadMessageThreadsCount =  data.unread;
-        }
     }
 
     public void invalidateWithRecipient(@Nullable UserBaseKey userBaseKey)

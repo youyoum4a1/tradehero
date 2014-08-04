@@ -28,7 +28,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
     }
 
-    @Nullable private static DiscussionKey getDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKeyFactory discussionKeyFactory)
+    @Nullable protected static DiscussionKey getDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKeyFactory discussionKeyFactory)
     {
         if (args.containsKey(DISCUSSION_KEY_BUNDLE_KEY))
         {

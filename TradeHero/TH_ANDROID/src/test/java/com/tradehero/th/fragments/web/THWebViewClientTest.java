@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowWebView;
-import retrofit.Server;
+import retrofit.Endpoint;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
@@ -26,7 +26,7 @@ public class THWebViewClientTest
     private WebView webView;
     private THWebViewClient thWebViewClient;
 
-    @Inject Server apiEndpoint;
+    @Inject Endpoint apiEndpoint;
 
     @Before public void setUp()
     {

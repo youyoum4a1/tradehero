@@ -48,7 +48,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -841,14 +841,18 @@ public class PositionListFragment
     }
 
     protected class AbstractPositionListPremiumUserFollowedListener
-            extends BasePurchaseManagerPremiumUserFollowedListener
+            implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             displayHeaderView();
             fetchSimplePage(true);
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // do nothing for now
         }
     }
 

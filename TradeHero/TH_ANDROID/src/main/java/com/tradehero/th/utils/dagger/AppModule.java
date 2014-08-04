@@ -11,17 +11,7 @@ import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
-import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
-import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABBillingInventoryFetcher;
-import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
-import com.tradehero.th.billing.googleplay.THIABModule;
-import com.tradehero.th.billing.googleplay.THIABPurchaseConsumer;
-import com.tradehero.th.billing.googleplay.THIABPurchaseFetchMilestone;
-import com.tradehero.th.billing.googleplay.THIABPurchaseFetcher;
-import com.tradehero.th.billing.googleplay.THIABPurchaseReporter;
-import com.tradehero.th.billing.googleplay.THIABPurchaser;
+import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -30,6 +20,10 @@ import com.tradehero.th.fragments.authentication.EmailSignInFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter;
+import com.tradehero.th.fragments.contestcenter.ContestCenterActiveFragment;
+import com.tradehero.th.fragments.contestcenter.ContestCenterBaseFragment;
+import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
+import com.tradehero.th.fragments.contestcenter.ContestCenterJoinedFragment;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
@@ -44,12 +38,14 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardCurrentUserRankHeaderView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardCurrentUserRankHeaderView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFriendsItemView;
@@ -61,6 +57,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
@@ -99,8 +96,8 @@ import com.tradehero.th.fragments.settings.InviteFriendFragment;
 import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
+import com.tradehero.th.fragments.settings.SettingsReferralCodeFragment;
 import com.tradehero.th.fragments.settings.UserFriendDTOView;
-import com.tradehero.th.fragments.settings.UserTranslationSettingsViewHolder;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
@@ -112,11 +109,11 @@ import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.follower.FollowerPayoutManagerFragment;
 import com.tradehero.th.fragments.social.follower.FreeFollowerFragment;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
-import com.tradehero.th.fragments.social.friend.FacebookSocialFriendsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.friend.LinkedInSocialFriendsFragment;
-import com.tradehero.th.fragments.social.friend.TwitterSocialFriendsFragment;
-import com.tradehero.th.fragments.social.friend.WeiboSocialFriendsFragment;
+import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentFacebook;
+import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentLinkedIn;
+import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentTwitter;
+import com.tradehero.th.fragments.social.friend.SocialFriendsFragmentWeibo;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
@@ -134,8 +131,11 @@ import com.tradehero.th.fragments.timeline.TimelineFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.fragments.timeline.UserProfileCompactViewHolder;
 import com.tradehero.th.fragments.timeline.UserProfileDetailViewHolder;
+import com.tradehero.th.fragments.trade.AbstractTransactionDialogFragment;
+import com.tradehero.th.fragments.trade.BuyDialogFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
+import com.tradehero.th.fragments.trade.SellDialogFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
@@ -154,12 +154,14 @@ import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
+import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -169,10 +171,8 @@ import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineStore;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.ui.UIModule;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
@@ -189,11 +189,12 @@ import javax.inject.Singleton;
                 SocialNetworkModule.class,
                 UIModule.class,
                 MetricsModule.class,
+                ModelsModule.class,
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
                 ActivityModule.class,
-                THIABModule.class,
+                BillingModule.class,
                 PushModule.class,
         },
         injects =
@@ -202,10 +203,12 @@ import javax.inject.Singleton;
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         ProfileInfoView.class,
+                        SimplePremiumFollowUserAssistant.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
-                        UserTranslationSettingsViewHolder.class,
                         TranslatableLanguageListFragment.class,
+                        LocationListFragment.class,
+                        SettingsReferralCodeFragment.class,
                         AboutFragment.class,
                         EmailSignInFragment.class,
                         ServerValidatedUsernameText.class,
@@ -223,6 +226,9 @@ import javax.inject.Singleton;
                         SearchPeopleItemView.class,
                         FreshQuoteHolder.class,
                         BuySellFragment.class,
+                        AbstractTransactionDialogFragment.class,
+                        BuyDialogFragment.class,
+                        SellDialogFragment.class,
                         TimelineFragment.class,
                         MeTimelineFragment.class,
                         PushableTimelineFragment.class,
@@ -287,7 +293,7 @@ import javax.inject.Singleton;
                         LeaderboardCommunityFragment.class,
                         PeopleSearchFragment.class,
                         LeaderboardDefListFragment.class,
-
+                        LeaderboardCurrentUserRankHeaderView.class,
                         LeaderboardDefView.class,
                         CommunityLeaderboardDefView.class,
                         LeaderboardMarkUserLoader.class,
@@ -295,6 +301,7 @@ import javax.inject.Singleton;
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
                         CompetitionLeaderboardMarkUserItemView.class,
+                        CompetitionLeaderboardCurrentUserRankHeaderView.class,
                         LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
                         FriendLeaderboardMarkUserListFragment.class,
@@ -311,19 +318,9 @@ import javax.inject.Singleton;
                         IABServiceConnector.class,
                         IABBillingAvailableTester.class,
                         IABBillingInventoryFetcher.class,
-                        THIABPurchaseFetcher.class,
-                        THIABBillingInventoryFetcher.class,
-                        THIABPurchaser.class,
-                        THIABPurchaseReporter.class,
-                        THIABLogicHolderFull.class,
-                        THIABPurchaseConsumer.class,
-                        THBaseIABInventoryFetcherHolder.class,
-                        THBaseIABPurchaseReporterHolder.class,
-                        THIABPurchaseFetchMilestone.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
-                        THIABBillingInteractor.class,
                         HeroesTabContentFragment.class,
                         PremiumHeroFragment.class,
                         FreeHeroFragment.class,
@@ -333,7 +330,6 @@ import javax.inject.Singleton;
 
                         WatchlistEditFragment.class,
                         UserWatchlistPositionCache.class,
-                        WatchlistRetrievedMilestone.class,
                         WatchlistPositionFragment.class,
                         WatchlistItemView.class,
                         WatchlistPortfolioHeaderView.class,
@@ -380,10 +376,14 @@ import javax.inject.Singleton;
                         AlertDialogUtil.class,
                         LeaderboardFriendsItemView.class,
                         FriendsInvitationFragment.class,
-                        FacebookSocialFriendsFragment.class,
-                        TwitterSocialFriendsFragment.class,
-                        LinkedInSocialFriendsFragment.class,
-                        WeiboSocialFriendsFragment.class,
+                        ContestCenterFragment.class,
+                        ContestCenterBaseFragment.class,
+                        ContestCenterActiveFragment.class,
+                        ContestCenterJoinedFragment.class,
+                        SocialFriendsFragmentFacebook.class,
+                        SocialFriendsFragmentTwitter.class,
+                        SocialFriendsFragmentLinkedIn.class,
+                        SocialFriendsFragmentWeibo.class,
 
                         HomeFragment.class,
                         HomeWebView.class,
@@ -392,7 +392,6 @@ import javax.inject.Singleton;
         staticInjections =
                 {
                         THUser.class,
-                        NumberDisplayUtils.class,
                 },
         complete = false,
         library = true // TODO remove this line

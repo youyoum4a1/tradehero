@@ -84,6 +84,15 @@ public class LeaderboardDefDTO extends ExtendedDTO
                 (this.toDateDays == 0);
     }
 
+    public long getTimeRestrictionRangeInMillis()
+    {
+        if(toUtcRestricted == null || fromUtcRestricted == null)
+        {
+            return 0;
+        }
+        return toUtcRestricted.getTime() - fromUtcRestricted.getTime();
+    }
+
     public LeaderboardSortTypeDTO defaultSortType()
     {
         for (LeaderboardSortTypeDTO sortTypeDTO: sortTypes)

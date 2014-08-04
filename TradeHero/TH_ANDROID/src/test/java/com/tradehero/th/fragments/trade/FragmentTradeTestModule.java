@@ -6,6 +6,9 @@ import dagger.Module;
         injects = {
                 BuySellFragmentTest.class,
                 TradeListFragmentTest.class,
+
+                AbstractTransactionDialogFragmentTest.class,
+                BuyDialogFragmentTest.class,
         },
         complete = false,
         library = true

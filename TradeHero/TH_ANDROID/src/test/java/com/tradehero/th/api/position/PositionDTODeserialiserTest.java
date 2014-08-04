@@ -2,15 +2,19 @@ package com.tradehero.th.api.position;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.BaseApiTest;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(RobolectricMavenTestRunner.class)
 public class PositionDTODeserialiserTest extends BaseApiTest
 {
     private ObjectMapper normalMapper;
@@ -19,6 +23,7 @@ public class PositionDTODeserialiserTest extends BaseApiTest
     private InputStream positionDTOBody1Stream;
     private String positionDTOBody1;
     private InputStream positionInPeriodDTOBody1Stream;
+    @Inject PositionDTOJacksonModule positionDTOJacksonModule;
 
     @Before
     public void setUp() throws IOException
@@ -28,7 +33,7 @@ public class PositionDTODeserialiserTest extends BaseApiTest
 
         moduleMapper = new ObjectMapper();
         moduleMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        moduleMapper.registerModule(new PositionDTOJacksonModule(new PositionDTODeserialiser()));
+        moduleMapper.registerModule(positionDTOJacksonModule);
 
         positionDTOBody1 = new String(IOUtils.streamToBytes(getClass().getResourceAsStream(getPackagePath() + "/PositionDTOBody1.json")));
         positionDTOBody1Stream = getClass().getResourceAsStream(getPackagePath() + "/PositionDTOBody1.json");

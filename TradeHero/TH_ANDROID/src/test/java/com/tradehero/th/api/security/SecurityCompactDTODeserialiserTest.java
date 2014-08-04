@@ -2,6 +2,7 @@ package com.tradehero.th.api.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.BaseApiTest;
 import com.tradehero.th.api.security.compact.EquityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(RobolectricMavenTestRunner.class)
 public class SecurityCompactDTODeserialiserTest extends BaseApiTest
 {
-    @Inject ObjectMapper normalMapper;
+    @Inject @ForApp ObjectMapper normalMapper;
 
     private InputStream securityCompactDTOBody1Stream;
     private InputStream warrantDTOBody1Stream;

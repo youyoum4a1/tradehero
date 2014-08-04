@@ -20,6 +20,7 @@
   <string name="settings_primary_alipay">支付宝</string>
   <string name="settings_primary_transaction_history">历史购买记录</string>
   <string name="settings_primary_restore_purchases">恢复购买</string>
+  <string name="settings_primary_referral_code">邀请码</string>
   <string name="settings_misc_sign_out">登出</string>
   <string name="settings_misc_sign_out_are_you_sure">您确定要登出吗？</string>
   <string name="settings_misc_sign_out_no">不要</string>
@@ -31,6 +32,7 @@
   <string name="settings_translations">翻译</string>
   <string name="settings_translations_language_preferred">优先语言</string>
   <string name="settings_translations_auto_translate">自动翻译</string>
+  <string name="settings_location">位置</string>
 
   <string name="settings_notifications">通知</string>
   <string name="settings_notifications_email">邮件通知</string>

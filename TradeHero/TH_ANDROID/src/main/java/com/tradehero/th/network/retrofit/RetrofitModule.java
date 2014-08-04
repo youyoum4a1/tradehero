@@ -4,9 +4,14 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
+import com.tradehero.th.api.competition.ProviderCompactDTODeserialiserBase;
+import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTODeserialiser;
 import com.tradehero.th.api.competition.ProviderDTOJacksonModule;
@@ -222,6 +227,11 @@ public class RetrofitModule
         return deserialiser;
     }
 
+    @Provides JsonDeserializer<ProviderCompactDTO> providesProviderCompactDTODeserialiser(ProviderCompactDTODeserialiser deserialiser)
+    {
+        return deserialiser;
+    }
+
     @Provides JsonDeserializer<ProviderDTO> providesProviderDTODeserialiser(ProviderDTODeserialiser deserialiser)
     {
         return deserialiser;
@@ -232,15 +242,23 @@ public class RetrofitModule
         return deserialiser;
     }
 
-    @Provides @Singleton ObjectMapper provideObjectMapper(
-            UserFriendsDTOJacksonModule userFriendsDTOModule,
-            PositionDTOJacksonModule positionDTOModule,
-            ProviderDTOJacksonModule providerDTOModule)
+    @Provides ObjectMapper provideCommonObjectMapper()
     {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
+    }
+
+    @Provides @Singleton @ForApp ObjectMapper provideObjectMapper(
+            ObjectMapper objectMapper,
+            UserFriendsDTOJacksonModule userFriendsDTOModule,
+            PositionDTOJacksonModule positionDTOModule,
+            ProviderCompactDTOJacksonModule providerCompactDTOModule,
+            ProviderDTOJacksonModule providerDTOModule)
+    {
         objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
+        objectMapper.registerModule(providerCompactDTOModule);
         objectMapper.registerModule(providerDTOModule);
 
         // TODO confirm this is correct here
@@ -253,7 +271,7 @@ public class RetrofitModule
         return objectMapper;
     }
 
-    @Provides @Singleton Converter provideConverter(ObjectMapper objectMapper)
+    @Provides @Singleton Converter provideConverter(@ForApp ObjectMapper objectMapper)
     {
         return new JacksonConverter(objectMapper);
     }

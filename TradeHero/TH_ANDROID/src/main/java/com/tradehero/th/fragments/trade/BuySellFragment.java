@@ -1,10 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -14,20 +11,15 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -38,8 +30,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -55,15 +45,11 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.PurchaseReporter;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -74,12 +60,12 @@ import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
-import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
@@ -93,23 +79,16 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
-import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
@@ -139,32 +118,13 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject ResideMenu resideMenu;
 
     //for dialog
-    private AlertDialog mBuySellDialog;
-    private TextView mTradeValueTextView;
-    private TextView mCashLeftValueTextView;
-    private TextView mQuantityTextView;
-    private TextView mCashLeftTextView;
-    private SeekBar mSlider;
-    private QuickPriceButtonSet mQuickPriceButtonSet;
-    private EditText mCommentsEditText;
-    private ToggleButton mBtnShareFacebook;
-    private ToggleButton mBtnShareTwitter;
-    private ToggleButton mBtnShareLinkedIn;
-    private ToggleButton mBtnShareWeChat;
-    private ToggleButton mBtnShareWb;
-    private ToggleButton mBtnLocation;
-    private ToggleButton mBtnSharePublic;
-    private Button mConfirmButton;
     private PushPortfolioFragmentRunnable pushPortfolioFragmentRunnable = null;
-    private boolean isBuying = false;
-    private boolean isSelling = false;
-    private boolean shareLocation = false;
-    private boolean sharePublic = false;
 
     @InjectView(R.id.quote_refresh_countdown) protected ProgressBar mQuoteRefreshProgressBar;
     @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
+    @InjectView(R.id.bottom_button) protected ViewGroup mBuySellBtnContainer;
     @InjectView(R.id.btn_buy) protected Button mBuyBtn;
     @InjectView(R.id.btn_sell) protected Button mSellBtn;
     @InjectView(R.id.btn_add_trigger) protected Button mBtnAddTrigger;
@@ -194,7 +154,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private int mQuantity = 0;
     private Bundle desiredArguments;
-    private String mPriceSelectionMethod;
+    //private String mPriceSelectionMethod;
 
     protected SecurityIdList watchedList;
 
@@ -202,12 +162,12 @@ public class BuySellFragment extends AbstractBuySellFragment
     private int selectedPageIndex;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
-    private ProgressDialog transactionDialog;
     SocialLinkHelper socialLinkHelper;
     @Inject SocialServiceWrapper socialServiceWrapper;
     private BroadcastReceiver chartImageButtonClickReceiver;
 
     @Inject Analytics analytics;
+    private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -278,6 +238,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
 
         selectPage(selectedPageIndex);
+
+        mBuySellBtnContainer.setVisibility(View.GONE);
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -338,6 +300,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBottomViewPager.setCurrentItem(selectedPageIndex);
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
+
+        if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
+        {
+            abstractTransactionDialogFragment.populateComment();
+            abstractTransactionDialogFragment.getDialog().show();
+        }
     }
 
     @Override public void onPause()
@@ -368,66 +336,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBottomViewPager = null;
 
         pushPortfolioFragmentRunnable = null;
-        if (mBuySellDialog != null)
-        {
-            mBuySellDialog.dismiss();
-            mBuySellDialog = null;
-        }
-        mTradeValueTextView = null;
-        mCashLeftValueTextView = null;
-        mQuantityTextView = null;
-        mCashLeftTextView = null;
-        if (mSlider != null)
-        {
-            mSlider.setOnSeekBarChangeListener(null);
-        }
-        mSlider = null;
-        if (mQuickPriceButtonSet != null)
-        {
-            mQuickPriceButtonSet.setListener(null);
-        }
-        mQuickPriceButtonSet = null;
-        mCommentsEditText = null;
-        if (mBtnShareFacebook != null)
-        {
-            mBtnShareFacebook.setOnClickListener(null);
-        }
-        mBtnShareFacebook = null;
-        if (mBtnShareTwitter != null)
-        {
-            mBtnShareTwitter.setOnClickListener(null);
-        }
-        mBtnShareTwitter = null;
-        if (mBtnShareLinkedIn != null)
-        {
-            mBtnShareLinkedIn.setOnClickListener(null);
-        }
-        mBtnShareLinkedIn = null;
-        if (mBtnShareWeChat != null)
-        {
-            mBtnShareWeChat.setOnClickListener(null);
-        }
-        mBtnShareWeChat = null;
-        if (mBtnShareWb != null)
-        {
-            mBtnShareWb.setOnClickListener(null);
-        }
-        mBtnShareWb = null;
-        if (mBtnLocation != null)
-        {
-            mBtnLocation.setOnClickListener(null);
-        }
-        mBtnLocation = null;
-        if (mBtnSharePublic != null)
-        {
-            mBtnSharePublic.setOnCheckedChangeListener(null);
-        }
-        mBtnSharePublic = null;
-        if (mConfirmButton != null)
-        {
-            mConfirmButton.setOnClickListener(null);
-        }
-        mConfirmButton = null;
 
         resideMenu.removeIgnoredView(mBottomViewPager);
         ButterKnife.reset(this);
@@ -507,7 +415,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             displaySelectedPortfolioContainer();
             displayPortfolioSelectorMenu();
             displaySelectedPortfolio();
-            displayQuickPriceButtonSet();
             displayBuySellSwitch();
             displayBuySellPrice();
         }
@@ -530,7 +437,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         setInitialSellQuantityIfCan();
         if (andDisplay)
         {
-            displayQuickPriceButtonSet();
         }
     }
 
@@ -541,9 +447,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         setInitialSellQuantityIfCan();
         if (andDisplay)
         {
-            displayBuySellPrice();
             displayAsOf();
-            displayQuickPriceButtonSet();
+            displayBuySellPrice();
+            displayBuySellContainer();
             displayBuySellSwitch();
         }
     }
@@ -635,27 +541,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         displayActionBarElements();
         displayPageElements();
-
-        //TODO not know do what, temp remove by alex
-        //int avgDailyVolume = 0;
-        //if (securityCompactDTO == null || securityCompactDTO.averageDailyVolume == null)
-        //{
-        //    avgDailyVolume = 0;
-        //}
-        //else
-        //{
-        //    avgDailyVolume = (int) Math.ceil(securityCompactDTO.averageDailyVolume);
-        //}
-        //
-        //int volume = 0;
-        //if (securityCompactDTO == null || securityCompactDTO.volume == null)
-        //{
-        //    volume = 0;
-        //}
-        //else
-        //{
-        //    volume = (int) Math.ceil(securityCompactDTO.volume);
-        //}
     }
 
     public void displayPageElements()
@@ -666,7 +551,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellPrice();
         displayBottomViewPager();
         displayStockName();
-        displayQuickPriceButtonSet();
         displayTriggerButton();
         loadStockLogo();
     }
@@ -785,8 +669,9 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
                 else
                 {
-                    bthSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.ask, THSignedNumber.WITHOUT_SIGN, "");
+                    bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
+                            .withOutSign()
+                            .build();
                     bPrice = bthSignedNumber.toString();
                 }
 
@@ -796,8 +681,9 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
                 else
                 {
-                    sthSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, quoteDTO.bid, THSignedNumber.WITHOUT_SIGN, "");
+                    sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
+                            .withOutSign()
+                            .build();
                     sPrice = sthSignedNumber.toString();
                 }
             }
@@ -831,53 +717,25 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void displayQuickPriceButtonSet()
-    {
-        QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
-        if (buttonSetCopy != null)
-        {
-            if (quoteDTO == null)
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else if (isTransactionTypeBuy && quoteDTO.ask == null)
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else if (isTransactionTypeBuy)
-            {
-                buttonSetCopy.setEnabled(true);
-                if (this.userProfileDTO != null && userProfileDTO.portfolio != null)
-                {
-                    buttonSetCopy.setMaxPrice(userProfileDTO.portfolio.cashBalance);
-                }
-            }
-            else if (!isTransactionTypeBuy && (quoteDTO.bid == null || quoteDTO.toUSDRate == null))
-            {
-                buttonSetCopy.setEnabled(false);
-            }
-            else if (!isTransactionTypeBuy)
-            {
-                buttonSetCopy.setEnabled(true);
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null)
-                {
-                    // TODO see other currencies
-                    buttonSetCopy.setMaxPrice(
-                            maxSellableShares * quoteDTO.bid * quoteDTO.toUSDRate);
-                }
-            }
-        }
-    }
-
     public void displayActionBarElements()
     {
         displayBuySellSwitch();
     }
 
+    public void displayBuySellContainer()
+    {
+        if (mBuySellBtnContainer.getVisibility() == View.GONE)
+        {
+            Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
+            slideIn.setFillAfter(true);
+            mBuySellBtnContainer.setVisibility(View.VISIBLE);
+            mBuySellBtnContainer.startAnimation(slideIn);
+        }
+    }
+
     public void displayBuySellSwitch()
     {
-        boolean supportSell = false;
+        boolean supportSell;
         if (positionDTOCompactList == null
                 || positionDTOCompactList.size() == 0
                 || purchaseApplicableOwnedPortfolioId == null)
@@ -1122,7 +980,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void setTransactionTypeBuy(boolean transactionTypeBuy)
     {
         super.setTransactionTypeBuy(transactionTypeBuy);
-        displayQuickPriceButtonSet();
         displayBuySellSwitch();
     }
 
@@ -1135,18 +992,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.prepareFreshQuoteHolder();
         freshQuoteHolder.identifier = "BuySellFragment";
-    }
-
-    private void handleBtnAddCashPressed()
-    {
-        cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR);
-    }
-
-    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
-    {
-        THUIBillingRequest billingRequest = super.getShowProductDetailRequest(domain);
-        billingRequest.purchaseReportedListener = new BuySellPurchaseReportedListener();
-        return billingRequest;
     }
 
     @OnClick(R.id.btn_add_trigger)
@@ -1313,424 +1158,55 @@ public class BuySellFragment extends AbstractBuySellFragment
         };
     }
 
-    private OnSeekBarChangeListener createSeekBarListener()
-    {
-        return new OnSeekBarChangeListener()
-        {
-            @Override public void onStopTrackingTouch(SeekBar seekBar)
-            {
-            }
-
-            @Override public void onStartTrackingTouch(SeekBar seekBar)
-            {
-            }
-
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-            {
-                if (fromUser)
-                {
-                    mQuantity = progress;
-                    mQuantityTextView.setText(String.valueOf(progress));
-                    updateBuySellDialog();
-                    mPriceSelectionMethod = AnalyticsConstants.Slider;
-                }
-            }
-        };
-    }
-
-    public void setPublishToShareBySetting()
-    {
-        socialSharePreferenceHelperNew.load();
-    }
-
-    public void setPublishEnable(SocialNetworkEnum socialNetwork)
-    {
-        socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetwork, true);
-        switch (socialNetwork)
-        {
-            case FB:
-                mBtnShareFacebook.setChecked(true);
-                break;
-            case TW:
-                mBtnShareTwitter.setChecked(true);
-                break;
-            case LN:
-                mBtnShareLinkedIn.setChecked(true);
-                break;
-            case WB:
-                mBtnShareWb.setChecked(true);
-                break;
-        }
-    }
-
-    @Nullable public Boolean isSocialLinked(SocialNetworkEnum socialNetwork)
-    {
-        UserProfileDTO userProfileCopy = userProfileDTO;
-        if (userProfileCopy != null)
-        {
-            switch (socialNetwork)
-            {
-                case FB:
-                    return userProfileCopy.fbLinked;
-                case TW:
-                    return userProfileCopy.twLinked;
-                case LN:
-                    return userProfileCopy.liLinked;
-                case WB:
-                    return userProfileCopy.wbLinked;
-                case WECHAT:
-                    return null;
-                default:
-                    Timber.e(new IllegalArgumentException(), "Unhandled socialNetwork.%s", socialNetwork);
-                    return false;
-            }
-        }
-        return null;
-    }
-
-    public boolean isSocialLinkedOr(SocialNetworkEnum socialNetwork, boolean orElse)
-    {
-        @Nullable Boolean socialLinked = isSocialLinked(socialNetwork);
-        return socialLinked != null ? socialLinked : orElse;
-    }
-
     public void showBuySellDialog()
     {
-        // TODO Move to DialogFragment? and pass the values to be shared using bundle/intent
-        setPublishToShareBySetting();
-
-        shareLocation = true;
-        sharePublic = false;
-        pushPortfolioFragmentRunnable = null;
-        pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
+        if (quoteDTO != null)
         {
-            @Override
-            public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+            pushPortfolioFragmentRunnable = null;
+            pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
             {
-                BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.security_buy_sell_dialog, null);
-        view.setOnClickListener(new OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                DeviceUtil.dismissKeyboard(getActivity(), mCommentsEditText);
-            }
-        });
-        builder.setView(view);
-        builder.setCancelable(false);
-        TextView stockNameTextView = (TextView) view.findViewById(R.id.dialog_stock_name);
-        if (stockNameTextView != null && securityCompactDTO != null)
-        {
-            stockNameTextView.setText(securityCompactDTO.name);
-        }
-        TextView priceTextView = (TextView) view.findViewById(R.id.dialog_price);
-        if (priceTextView != null)
-        {
-            priceTextView.setText(
-                    isTransactionTypeBuy ? mBuyPrice.getText() : mSellPrice.getText());
-        }
-        ImageButton btnAddCash = (ImageButton) view.findViewById(R.id.dialog_btn_add_cash);
-        if (btnAddCash != null)
-        {
-            btnAddCash.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
+                @Override
+                public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
                 {
-                    DeviceUtil.dismissKeyboard(getActivity(), mCommentsEditText);
-                    handleBtnAddCashPressed();
+                    BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
+                }
+            };
+
+            abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
+                    securityId,
+                    purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
+                    quoteDTO,
+                    isTransactionTypeBuy);
+            abstractTransactionDialogFragment.show(getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
+            abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
+            {
+                @Override public void onTransactionSuccessful(boolean isBuy)
+                {
+                    if (pushPortfolioFragmentRunnable != null)
+                    {
+                        pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
+                    }
+                }
+
+                @Override public void onTransactionFailed(boolean isBuy, THException error)
+                {
+
                 }
             });
         }
-
-        mTradeValueTextView = null;
-        mTradeValueTextView = (TextView) view.findViewById(R.id.vtrade_value);
-        mQuantityTextView = null;
-        mQuantityTextView = (TextView) view.findViewById(R.id.vquantity);
-        if (mQuantityTextView != null)
+        else
         {
-            mQuantityTextView.setText(String.valueOf(mQuantity));
-        }
-        mCashLeftValueTextView = null;
-        mCashLeftValueTextView = (TextView) view.findViewById(R.id.vcash_left);
-
-        mCashLeftTextView = (TextView) view.findViewById(R.id.dialog_cash_left);
-        mCashLeftTextView.setText(
-                isTransactionTypeBuy ? R.string.buy_sell_cash_left : R.string.buy_sell_share_left);
-
-        mSlider = null;
-        mSlider = (SeekBar) view.findViewById(R.id.seekBar);
-        if (mSlider != null)
-        {
-            mSlider.setOnSeekBarChangeListener(createSeekBarListener());
-            if (isTransactionTypeBuy)
-            {
-                Integer maxPurchasableShares = getMaxPurchasableShares();
-                if (maxPurchasableShares != null)
-                {
-                    mSlider.setMax(maxPurchasableShares);
-                    mSlider.setEnabled(maxPurchasableShares > 0);
-                }
-            }
-            else
-            {
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null)
-                {
-                    mSlider.setMax(maxSellableShares);
-                    mSlider.setEnabled(maxSellableShares > 0);
-                }
-            }
-        }
-
-        mQuickPriceButtonSet = null;
-        mQuickPriceButtonSet = (QuickPriceButtonSet) view.findViewById(R.id.quick_price_button_set);
-        if (mQuickPriceButtonSet != null)
-        {
-            mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
-            mQuickPriceButtonSet.addButton(R.id.toggle5k);
-            mQuickPriceButtonSet.addButton(R.id.toggle10k);
-            mQuickPriceButtonSet.addButton(R.id.toggle25k);
-            mQuickPriceButtonSet.addButton(R.id.toggle50k);
-        }
-        displayQuickPriceButtonSet();
-
-        //comments
-        mCommentsEditText = null;
-        mCommentsEditText = (EditText) view.findViewById(R.id.comments);
-
-        //share
-        mBtnShareFacebook = null;
-        mBtnShareFacebook = (ToggleButton) view.findViewById(R.id.btn_share_fb);
-        initSocialButton(mBtnShareFacebook, SocialNetworkEnum.FB);
-
-        mBtnShareTwitter = null;
-        mBtnShareTwitter = (ToggleButton) view.findViewById(R.id.btn_share_tw);
-        initSocialButton(mBtnShareTwitter, SocialNetworkEnum.TW);
-
-        mBtnShareLinkedIn = null;
-        mBtnShareLinkedIn = (ToggleButton) view.findViewById(R.id.btn_share_li);
-        initSocialButton(mBtnShareLinkedIn, SocialNetworkEnum.LN);
-
-        mBtnShareWeChat = null;
-        mBtnShareWeChat = (ToggleButton) view.findViewById(R.id.btn_wechat);
-        initSocialButton(mBtnShareWeChat, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
-
-        mBtnShareWb = null;
-        mBtnShareWb = (ToggleButton) view.findViewById(R.id.btn_share_wb);
-        initSocialButton(mBtnShareWb, SocialNetworkEnum.WB);
-
-        mBtnLocation = null;
-        mBtnLocation = (ToggleButton) view.findViewById(R.id.btn_location);
-        mBtnLocation.setChecked(shareLocation);
-        mBtnLocation.setOnClickListener(new OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                shareLocation = !shareLocation;
-            }
-        });
-        mBtnLocation.setVisibility(View.GONE);
-
-        mBtnSharePublic = null;
-        mBtnSharePublic = (ToggleButton) view.findViewById(R.id.switch_share_public);
-        mBtnSharePublic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b)
-            {
-                sharePublic = b;
-            }
-        });
-        mBtnSharePublic.setVisibility(View.GONE);
-
-        //cancel button
-        Button cancelButton = (Button) view.findViewById(R.id.dialog_btn_cancel);
-        if (cancelButton != null)
-        {
-            cancelButton.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if (mBuySellDialog != null)
-                    {
-                        mBuySellDialog.dismiss();
-                    }
-                }
-            });
-        }
-        //confirm
-        mConfirmButton = null;
-        mConfirmButton = (Button) view.findViewById(R.id.dialog_btn_confirm);
-        if (mConfirmButton != null)
-        {
-            mConfirmButton.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if (mBuySellDialog != null)
-                    {
-                        mBuySellDialog.dismiss();
-                    }
-                    socialSharePreferenceHelperNew.save();
-                    buySellReport();
-                    launchBuySell();
-                }
-            });
-        }
-
-        if (mBuySellDialog != null)
-        {
-            mBuySellDialog.dismiss();
-            mBuySellDialog = null;
-        }
-
-        updateBuySellDialog();
-        mBuySellDialog = builder.create();
-        mBuySellDialog.show();
-    }
-
-    private void buySellReport()
-    {
-        SharingOptionsEvent sharingOptionsEvent = new SharingOptionsEvent.Builder()
-                .setBuyEvent(isTransactionTypeBuy)
-                .setSecurityId(securityId)
-                .setProviderId(portfolioCompactDTO.getProviderIdKey())
-                .setPriceSelectionMethod(mPriceSelectionMethod)
-                .hasComment(mCommentsEditText != null && !mCommentsEditText.getText().toString().isEmpty())
-                .facebookEnabled(mBtnShareFacebook != null && mBtnShareFacebook.isChecked())
-                .twitterEnabled(mBtnShareTwitter != null && mBtnShareTwitter.isChecked())
-                .linkedInEnabled(mBtnShareLinkedIn != null && mBtnShareLinkedIn.isChecked())
-                .wechatEnabled(mBtnShareWeChat != null && mBtnShareWeChat.isChecked())
-                .weiboEnabled(mBtnShareWb != null && mBtnShareWb.isChecked())
-                .build();
-
-        analytics.fireEvent(sharingOptionsEvent);
-    }
-
-    private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum)
-    {
-        initSocialButton(socialButton, socialNetworkEnum, createCheckedChangeListener());
-    }
-
-    private void initSocialButton(CompoundButton socialButton, SocialNetworkEnum socialNetworkEnum,
-            CompoundButton.OnCheckedChangeListener onCheckedChangedListener)
-    {
-        if (socialButton != null)
-        {
-            socialButton.setTag(socialNetworkEnum);
-            socialButton.setChecked(initialShareButtonState(socialNetworkEnum));
-            socialButton.setOnCheckedChangeListener(onCheckedChangedListener);
-        }
-    }
-
-    protected boolean initialShareButtonState(@NotNull SocialNetworkEnum socialNetworkEnum)
-    {
-        return socialSharePreferenceHelperNew.isShareEnabled(
-                socialNetworkEnum,
-                isSocialLinkedOr(socialNetworkEnum, false));
-    }
-
-    public void askToLinkAccountToSocial(final SocialNetworkEnum socialNetwork)
-    {
-        alertDialogUtil.popWithOkCancelButton(
-                getActivity(),
-                getActivity().getApplicationContext().getString(R.string.link, socialNetwork.getName()),
-                getActivity().getApplicationContext().getString(R.string.link_description, socialNetwork.getName()),
-                R.string.link_now,
-                R.string.later,
-                new DialogInterface.OnClickListener()//Ok
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        linkSocialNetwork(socialNetwork);
-                    }
-                },
-                new DialogInterface.OnClickListener()//Cancel
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                    {
-                        alertDialogUtil.dismissProgressDialog();
-                    }
-                }
-        );
-    }
-
-    private CompoundButton.OnCheckedChangeListener createCheckedChangeListenerForWechat()
-    {
-        return new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
-            {
-                if(!compoundButton.isPressed())
-                {
-                    return;
-                }
-                SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
-                socialSharePreferenceHelperNew.updateSocialSharePreference(networkEnum, isChecked);
-            }
-        };
-    }
-
-    private CompoundButton.OnCheckedChangeListener createCheckedChangeListener()
-    {
-        return new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
-            {
-                if(!compoundButton.isPressed())
-                {
-                    return;
-                }
-                SocialNetworkEnum networkEnum = (SocialNetworkEnum) compoundButton.getTag();
-                Boolean socialLinked = isSocialLinked(networkEnum);
-                if (isChecked && (socialLinked == null || !socialLinked))
-                {
-                    if (socialLinked != null)
-                    {
-                        askToLinkAccountToSocial(networkEnum);
-                    }
-                    isChecked = false;
-                }
-
-                compoundButton.setChecked(isChecked);
-                socialSharePreferenceHelperNew.updateSocialSharePreference(networkEnum, isChecked);
-            }
-        };
-    }
-
-    private void linkSocialNetwork(SocialNetworkEnum socialNetworkEnum)
-    {
-        detachSocialLinkHelper();
-        socialLinkHelper = socialLinkHelperFactory.buildSocialLinkerHelper(socialNetworkEnum);
-        socialLinkHelper.link(new SocialLinkingCallback(socialNetworkEnum));
-    }
-
-    private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
-    {
-        final SocialNetworkEnum socialNetworkEnum;
-
-        SocialLinkingCallback(final SocialNetworkEnum socialNetworkEnum)
-        {
-            this.socialNetworkEnum = socialNetworkEnum;
-        }
-
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            linkWith(userProfileDTO, true);
-            setPublishEnable(socialNetworkEnum);
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
+            alertDialogUtil.popWithNegativeButton(
+                    getActivity(),
+                    R.string.buy_sell_no_quote_title,
+                    R.string.buy_sell_no_quote_message,
+                    R.string.buy_sell_no_quote_cancel);
         }
     }
 
     public void shareToWeChat()
     {
+        //TODO Move this!
         if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, DEFAULT_IS_SHARED_TO_WECHAT))
         {
             WeChatDTO weChatDTO = new WeChatDTO();
@@ -1756,120 +1232,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    public void updateBuySellDialog()
-    {
-        String valueText = "-";
-        String cashLeftText = getResources().getString(R.string.na);
-        if (quoteDTO != null)
-        {
-            Double priceRefCcy = quoteDTO.getPriceRefCcy(portfolioCompactDTO, true);
-            if (priceRefCcy != null && portfolioCompactDTO != null)
-            {
-                double value = mQuantity * priceRefCcy;
-                THSignedNumber thTradeValue =
-                        new THSignedNumber(THSignedNumber.TYPE_MONEY, value, THSignedNumber.WITHOUT_SIGN,
-                                portfolioCompactDTO.currencyDisplay);
-                valueText = thTradeValue.toString();
-
-                if (isTransactionTypeBuy)
-                {
-                    double cashAvailable = portfolioCompactDTO.cashBalance;
-                    THSignedNumber thSignedNumber =
-                            new THSignedNumber(THSignedNumber.TYPE_MONEY, cashAvailable - value,
-                                    THSignedNumber.WITHOUT_SIGN, portfolioCompactDTO.currencyDisplay);
-                    cashLeftText = thSignedNumber.toString();
-                }
-            }
-            if (!isTransactionTypeBuy
-                    && positionDTOCompactList != null
-                    && portfolioCompactDTO != null)
-            {
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null && maxSellableShares != 0)
-                {
-                    cashLeftText = String.valueOf(maxSellableShares - mQuantity);//share left
-                }
-            }
-        }
-        if (mTradeValueTextView != null)
-        {
-            mTradeValueTextView.setText(valueText);
-        }
-        if (mQuantityTextView != null)
-        {
-            mQuantityTextView.setText(String.valueOf(mQuantity));
-        }
-        if (mCashLeftValueTextView != null)
-        {
-            mCashLeftValueTextView.setText(cashLeftText);
-        }
-        if (mSlider != null)
-        {
-            mSlider.setProgress(mQuantity);
-        }
-        if (mConfirmButton != null)
-        {
-            mConfirmButton.setEnabled(mQuantity != 0 && (
-                    (!isBuying && isTransactionTypeBuy && hasValidInfoForBuy()) ||
-                            (!isSelling && !isTransactionTypeBuy && hasValidInfoForSell())
-            ));
-        }
-    }
-
-    protected boolean hasValidInfoForBuy()
-    {
-        return securityId != null
-                && securityCompactDTO != null
-                && quoteDTO != null
-                && quoteDTO.ask != null;
-    }
-
-    protected boolean hasValidInfoForSell()
-    {
-        return securityId != null
-                && securityCompactDTO != null
-                && quoteDTO != null
-                && quoteDTO.bid != null;
-    }
-
-    private void launchBuySell()
-    {
-        detachBuySellMiddleCallback();
-
-        if (checkValidToBuyOrSell())
-        {
-            TransactionFormDTO transactionFormDTO = getBuySellOrder(isTransactionTypeBuy);
-            if (transactionFormDTO != null)
-            {
-                transactionDialog = progressDialogUtil.show(BuySellFragment.this.getActivity(),
-                        R.string.processing, R.string.alert_dialog_please_wait);
-
-                buySellMiddleCallback = securityServiceWrapper.doTransaction(
-                        securityId, transactionFormDTO, isTransactionTypeBuy,
-                        new BuySellCallback(isTransactionTypeBuy));
-
-                if (isTransactionTypeBuy)
-                {
-                    isBuying = true;
-                }
-                else
-                {
-                    isSelling = true;
-                }
-            }
-            else
-            {
-                alertDialogUtilBuySell.informBuySellOrderWasNull(getActivity());
-            }
-        }
-    }
-
-    private boolean checkValidToBuyOrSell()
-    {
-        return securityId != null && securityId.getExchange() != null
-                && securityId.getSecuritySymbol() != null;
-    }
-
     private void detachBuySellMiddleCallback()
     {
         if (buySellMiddleCallback != null)
@@ -1877,42 +1239,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             buySellMiddleCallback.setPrimaryCallback(null);
         }
         buySellMiddleCallback = null;
-    }
-
-    private TransactionFormDTO getBuySellOrder(boolean isBuy)
-    {
-        if (quoteDTO == null)
-        {
-            return null;
-        }
-        if (getApplicablePortfolioId() == null || getApplicablePortfolioId().portfolioId == null)
-        {
-            Timber.e("No portfolioId to apply to", new IllegalStateException());
-            return null;
-        }
-        //Timber.d("fb=%b tw=%b li=%b location=%b public=%b quantity=%d", publishToFb,
-        //        publishToTw, publishToLi, shareLocation, sharePublic,
-        //        isBuy ? mBuyQuantity : mSellQuantity);
-
-        return new TransactionFormDTO(
-                shareForTransaction(SocialNetworkEnum.FB),
-                shareForTransaction(SocialNetworkEnum.TW),
-                shareForTransaction(SocialNetworkEnum.LN),
-                shareForTransaction(SocialNetworkEnum.WB),
-                shareLocation ? null : null, // TODO implement location
-                shareLocation ? null : null,
-                shareLocation ? null : null,
-                sharePublic,
-                mCommentsEditText == null ? null : mCommentsEditText.getText().toString(),
-                quoteDTO.rawResponse,
-                mQuantity,
-                getApplicablePortfolioId().portfolioId
-        );
-    }
-
-    protected boolean shareForTransaction(@NotNull SocialNetworkEnum socialNetworkEnum)
-    {
-        return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinkedOr(socialNetworkEnum, true));
     }
 
     private void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
@@ -1963,39 +1289,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     private void trackBuyClickEvent()
     {
         analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
-    }
-
-    private QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
-    {
-        return new QuickPriceButtonSet.OnQuickPriceButtonSelectedListener()
-        {
-            @Override public void onQuickPriceButtonSelected(double priceSelected)
-            {
-                if (quoteDTO == null)
-                {
-                    // Nothing to do
-                }
-                else
-                {
-                    Double priceRefCcy =
-                            quoteDTO.getPriceRefCcy(portfolioCompactDTO, isTransactionTypeBuy);
-                    if (priceRefCcy == null || priceRefCcy == 0)
-                    {
-                        // Nothing to do
-                    }
-                    else
-                    {
-                        linkWithBuyOrSellQuantity((int) Math.floor(priceSelected / priceRefCcy),
-                                true);
-                    }
-                }
-
-                Integer selectedQuantity = isTransactionTypeBuy ? mBuyQuantity : mSellQuantity;
-                mQuantity = selectedQuantity != null ? selectedQuantity : 0;
-                updateBuySellDialog();
-                mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
-            }
-        };
     }
 
     private void pushStockInfoFragmentIn()
@@ -2102,7 +1395,6 @@ public class BuySellFragment extends AbstractBuySellFragment
             super.onDTOReceived(key, value);
             buildUsedMenuPortfolios();
             setInitialSellQuantityIfCan();
-            displayQuickPriceButtonSet();
         }
     }
 
@@ -2124,77 +1416,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             Timber.e("Failed to fetch list of watch list items", error);
             THToast.show(R.string.error_fetch_portfolio_list_info);
-        }
-    }
-
-    protected class BuySellPurchaseReportedListener
-            implements PurchaseReporter.OnPurchaseReportedListener
-    {
-        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
-                UserProfileDTO updatedUserProfile)
-        {
-            linkWith(updatedUserProfile, true);
-            updateBuySellDialog();
-        }
-
-        @Override
-        public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
-                BillingException error)
-        {
-        }
-    }
-
-    private class BuySellCallback implements retrofit.Callback<SecurityPositionDetailDTO>
-    {
-        private final boolean isBuy;
-
-        public BuySellCallback(boolean isBuy)
-        {
-            this.isBuy = isBuy;
-        }
-
-        @Override
-        public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response)
-        {
-            onFinish();
-
-            if (securityPositionDetailDTO == null)
-            {
-                alertDialogUtilBuySell.informBuySellOrderReturnedNull(getActivity());
-                return;
-            }
-
-            if (isBuy)
-            {
-                isBuying = false;
-            }
-            else
-            {
-                isSelling = false;
-            }
-
-            if (pushPortfolioFragmentRunnable != null)
-            {
-                pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
-            }
-        }
-
-        private void onFinish()
-        {
-            if (transactionDialog != null)
-            {
-                transactionDialog.hide();
-            }
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            onFinish();
-            if (retrofitError != null && retrofitError.getResponse() != null)
-            {
-                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
-            }
-            THToast.show(new THException(retrofitError));
         }
     }
 }

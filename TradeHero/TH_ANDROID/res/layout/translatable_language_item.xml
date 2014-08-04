@@ -6,7 +6,10 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     >
 
   <LinearLayout
@@ -33,8 +36,8 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingLeft="16dp"
-          android:paddingRight="16dp"
+          android:paddingLeft="4dp"
+          android:paddingRight="4dp"
           android:textSize="@dimen/text_small"
           android:text="-"
           />
@@ -53,7 +56,7 @@
         android:id="@+id/translatable_text_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:layout_marginTop="4dp"
         android:textSize="@dimen/text_xsmall"
         tools:text="en"
         />
@@ -62,10 +65,11 @@
 
   <ImageView
       android:id="@+id/translatable_tick_is_current"
-      android:layout_width="@dimen/medium_logo_w_h"
-      android:layout_height="@dimen/medium_logo_w_h"
-      android:src="@drawable/tick_green"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
+      android:src="@drawable/ic_tick_green"
+      android:layout_gravity="center_vertical"
       android:visibility="gone"
-      />
+      android:contentDescription="@null"/>
 
 </com.tradehero.th.fragments.translation.TranslatableLanguageItemLinearView>

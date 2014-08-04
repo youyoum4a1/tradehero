@@ -21,7 +21,6 @@ import com.fortysevendeg.swipelistview.SwipeListView;
 import com.fortysevendeg.swipelistview.SwipeListViewListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.TwoStateView;
@@ -40,7 +39,6 @@ import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.persistence.watchlist.WatchlistRetrievedMilestone;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -70,7 +68,6 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     private WatchlistAdapter watchListAdapter;
 
-    private WatchlistRetrievedMilestone watchlistRetrievedMilestone;
     private TwoStateView.OnStateChange gainLossModeListener;
     private BroadcastReceiver broadcastReceiver;
     private Runnable setOffsetRunnable;
@@ -78,12 +75,12 @@ public class WatchlistPositionFragment extends DashboardFragment
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
 
-    public static void putOwnedPortfolioId(Bundle args, OwnedPortfolioId ownedPortfolioId)
+    public static void putOwnedPortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
         args.putBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
     }
 
-    public static OwnedPortfolioId getOwnedPortfolioId(Bundle args)
+    @NotNull public static OwnedPortfolioId getOwnedPortfolioId(@NotNull Bundle args)
     {
         return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
@@ -97,22 +94,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         userWatchlistPositionFetchListener = createWatchlistListener();
         userWatchlistPositionRefreshListener = createRefreshWatchlistListener();
         portfolioFetchListener = createPortfolioCacheListener();
-    }
-
-    protected Milestone.OnCompleteListener createWatchlistRetrievedMilestoneListener()
-    {
-        return new Milestone.OnCompleteListener()
-        {
-            @Override public void onComplete(Milestone milestone)
-            {
-                display();
-            }
-
-            @Override public void onFailed(Milestone milestone, Throwable throwable)
-            {
-                displayProgress(false);
-            }
-        };
     }
 
     protected TwoStateView.OnStateChange createGainLossModeListener()
@@ -242,16 +223,7 @@ public class WatchlistPositionFragment extends DashboardFragment
 
         shownPortfolioId = getOwnedPortfolioId(getArguments());
         fetchPortfolio();
-
-        // watchlist is not yet retrieved
-        if (userWatchlistPositionCache.get(currentUserId.toUserBaseKey()) == null)
-        {
-            launchWatchlistRetrievedMilestone();
-        }
-        else
-        {
-            display();
-        }
+        fetchSecurityIdList();
     }
 
     @Override public void onPause()
@@ -264,7 +236,6 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        detachWatchlistRetrievedMilestone();
         detachUserWatchlistFetchTask();
         detachUserWatchlistRefreshTask();
         detachPortfolioFetchTask();
@@ -301,15 +272,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected void detachWatchlistRetrievedMilestone()
-    {
-        if (watchlistRetrievedMilestone != null)
-        {
-            watchlistRetrievedMilestone.setOnCompleteListener(null);
-        }
-        watchlistRetrievedMilestone = null;
-    }
-
     protected void detachUserWatchlistFetchTask()
     {
         userWatchlistPositionCache.unregister(userWatchlistPositionFetchListener);
@@ -342,15 +304,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         detachPortfolioFetchTask();
         portfolioCache.register(shownPortfolioId, portfolioFetchListener);
         portfolioCache.getOrFetchAsync(shownPortfolioId);
-    }
-
-    protected void launchWatchlistRetrievedMilestone()
-    {
-        detachWatchlistRetrievedMilestone();
-        watchlistRetrievedMilestone = new WatchlistRetrievedMilestone(currentUserId.toUserBaseKey());
-        watchlistRetrievedMilestone.setOnCompleteListener(createWatchlistRetrievedMilestoneListener());
-        displayProgress(true);
-        watchlistRetrievedMilestone.launch();
     }
 
     private void display()

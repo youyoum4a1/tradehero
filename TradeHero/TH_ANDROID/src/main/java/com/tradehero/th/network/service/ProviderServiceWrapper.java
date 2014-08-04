@@ -1,17 +1,23 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTOList;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
+import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
+import com.tradehero.th.models.provider.DTOProcessorProviderCompactReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -42,9 +48,19 @@ import retrofit.Callback;
     //</editor-fold>
 
     //<editor-fold desc="Get Providers">
+    private DTOProcessor<ProviderCompactDTO> createProcessorProviderCompactReceived()
+    {
+        return new DTOProcessorProviderCompactReceived(currentUserId);
+    }
+
     private DTOProcessor<ProviderDTO> createProcessorProviderReceived()
     {
-        return new DTOProcessorProviderReceived(currentUserId);
+        return new DTOProcessorProviderReceived(createProcessorProviderCompactReceived());
+    }
+
+    private DTOProcessor<ProviderCompactDTOList> createProcessorProviderCompactListReceived()
+    {
+        return new DTOProcessorProviderCompactListReceived(createProcessorProviderCompactReceived());
     }
 
     private DTOProcessor<ProviderDTOList> createProcessorProviderListReceived()
@@ -52,10 +68,25 @@ import retrofit.Callback;
         return new DTOProcessorProviderListReceived(createProcessorProviderReceived());
     }
 
+    @NotNull public ProviderCompactDTOList getProviderCompacts()
+    {
+        return createProcessorProviderCompactListReceived().process(
+                this.providerService.getProviderCompacts());
+    }
+
     @NotNull public ProviderDTOList getProviders()
     {
         return createProcessorProviderListReceived().process(
                 this.providerService.getProviders());
+    }
+
+    @NotNull public MiddleCallback<ProviderCompactDTOList> getProviderCompacts(@Nullable Callback<ProviderCompactDTOList> callback)
+    {
+        MiddleCallback<ProviderCompactDTOList> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createProcessorProviderCompactListReceived());
+        this.providerServiceAsync.getProviderCompacts(middleCallback);
+        return middleCallback;
     }
 
     @NotNull public MiddleCallback<ProviderDTOList> getProviders(@Nullable Callback<ProviderDTOList> callback)
@@ -168,4 +199,34 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
+
+    //<editor-fold desc="Get Display Cells">
+    public ProviderDisplayCellDTOList getDisplayCells(@NotNull ProviderDisplayCellListKey providerDisplayCellListKey)
+    {
+        return this.getDisplayCells(providerDisplayCellListKey.getProviderId());
+    }
+
+    @NotNull public MiddleCallback<ProviderDisplayCellDTOList> getDisplayCells(
+            @NotNull ProviderDisplayCellListKey providerDisplayCellListKey,
+            @Nullable Callback<ProviderDisplayCellDTOList> callback)
+    {
+        return this.getDisplayCells(providerDisplayCellListKey.getProviderId(), callback);
+    }
+
+    public ProviderDisplayCellDTOList getDisplayCells(@NotNull ProviderId providerId)
+    {
+        return this.providerService.getDisplayCells(providerId.key);
+    }
+
+    @NotNull public MiddleCallback<ProviderDisplayCellDTOList> getDisplayCells(
+            @NotNull ProviderId providerId,
+            @Nullable Callback<ProviderDisplayCellDTOList> callback)
+    {
+        MiddleCallback<ProviderDisplayCellDTOList> middleCallback = new BaseMiddleCallback<>(callback);
+        this.providerServiceAsync.getDisplayCells(providerId.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+
 }

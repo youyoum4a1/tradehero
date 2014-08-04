@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -184,20 +183,24 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected class AllRelationsFollowRequestedListener implements OnPremiumFollowRequestedListener
     {
-        @Override public void premiumFollowRequested(UserBaseKey userBaseKey)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
         {
             handleFollowRequested(userBaseKey);
         }
     }
 
     protected class AllRelationsPremiumUserFollowedListener
-            extends BasePurchaseManagerPremiumUserFollowedListener
+            implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)
         {
-            super.onUserFollowSuccess(userFollowed, currentUserProfileDTO);
             downloadRelations();
+        }
+
+        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
+        {
+            // nothing for now
         }
     }
 }

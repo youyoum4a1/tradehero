@@ -25,9 +25,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -124,12 +125,12 @@ public class UserProfileResideMenuItem extends LinearLayout
                 {
                     userProfileDTO.portfolio.roiSinceInception = 0.0D;
                 }
-                THSignedNumber thRoiSinceInception = new THSignedNumber(
-                        THSignedNumber.TYPE_PERCENTAGE,
-                        userProfileDTO.portfolio.roiSinceInception * 100);
+                THSignedNumber thRoiSinceInception = THSignedPercentage
+                        .builder(userProfileDTO.portfolio.roiSinceInception * 100)
+                        .build();
 
                 userProfileRoi.setText(thRoiSinceInception.toString());
-                userProfileRoi.setTextColor(getResources().getColor(thRoiSinceInception.getColor()));
+                userProfileRoi.setTextColor(getResources().getColor(thRoiSinceInception.getColorResId()));
             }
             else
             {

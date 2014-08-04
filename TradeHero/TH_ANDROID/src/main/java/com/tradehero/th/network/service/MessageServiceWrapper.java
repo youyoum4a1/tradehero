@@ -11,12 +11,14 @@ import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
 import com.tradehero.th.api.discussion.key.TypedMessageListKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;
 import com.tradehero.th.models.discussion.DTOProcessorMessageDeleted;
 import com.tradehero.th.models.discussion.DTOProcessorMessageRead;
+import com.tradehero.th.models.discussion.DTOProcessorReadablePaginatedMessageReceived;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -37,6 +39,7 @@ public class MessageServiceWrapper
     @NotNull private final MessageService messageService;
     @NotNull private final MessageServiceAsync messageServiceAsync;
     @NotNull private final DiscussionDTOFactory discussionDTOFactory;
+    @NotNull private final CurrentUserId currentUserId;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
     @NotNull private final Lazy<MessageHeaderListCache> messageHeaderListCache;
@@ -45,10 +48,12 @@ public class MessageServiceWrapper
     @NotNull private final Lazy<DiscussionCache> discussionCache;
     @NotNull private final Lazy<UserProfileCache> userProfileCache;
 
+    //<editor-fold desc="Constructors">
     @Inject MessageServiceWrapper(
             @NotNull MessageService messageService,
             @NotNull MessageServiceAsync messageServiceAsync,
             @NotNull DiscussionDTOFactory discussionDTOFactory,
+            @NotNull CurrentUserId currentUserId,
             @NotNull Lazy<MessageHeaderListCache> messageHeaderListCache,
             @NotNull Lazy<MessageHeaderCache> messageHeaderCache,
             @NotNull Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache,
@@ -58,55 +63,31 @@ public class MessageServiceWrapper
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;
         this.discussionDTOFactory = discussionDTOFactory;
+        this.currentUserId = currentUserId;
         this.messageHeaderListCache = messageHeaderListCache;
         this.messageHeaderCache = messageHeaderCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.discussionCache = discussionCache;
         this.userProfileCache = userProfileCache;
     }
-
-    //<editor-fold desc="DTO Processors">
-    protected DTOProcessor<DiscussionDTO> createDiscussionCreateProcessor(DiscussionKey stubKey)
-    {
-        return new DTOProcessorDiscussionCreate(
-                discussionDTOFactory,
-                discussionCache.get(),
-                stubKey);
-    }
-
-    protected DTOProcessor<Response> createMessageHeaderReadProcessor(
-            MessageHeaderId messageHeaderId,
-            UserBaseKey readerId)
-    {
-        return new DTOProcessorMessageRead(messageHeaderCache.get(),
-                userProfileCache.get(),
-                messageHeaderId,
-                readerId);
-    }
-
-    protected DTOProcessor<Response> createMessageHeaderDeletedProcessor(
-            MessageHeaderId messageHeaderId,
-            UserBaseKey readerId)
-    {
-        return new DTOProcessorMessageDeleted(
-                messageHeaderCache.get(),
-                userProfileCache.get(),
-                messageHeaderListCache.get(),
-                messageHeaderId,
-                readerId);
-    }
     //</editor-fold>
 
     //<editor-fold desc="Get Message Headers">
+    protected DTOProcessor<ReadablePaginatedMessageHeaderDTO> createReadablePaginatedMessageHeaderReceivedProcessor()
+    {
+        return new DTOProcessorReadablePaginatedMessageReceived<>(userProfileCache.get(), currentUserId.toUserBaseKey());
+    }
+
     public ReadablePaginatedMessageHeaderDTO getMessageHeaders(MessageListKey messageListKey)
     {
         if (messageListKey instanceof TypedMessageListKey)
         {
             return getMessageHeaders((TypedMessageListKey) messageListKey);
         }
-        return messageService.getMessageHeaders(
-                messageListKey.page,
-                messageListKey.perPage);
+        return createReadablePaginatedMessageHeaderReceivedProcessor().process(
+                messageService.getMessageHeaders(
+                        messageListKey.page,
+                        messageListKey.perPage));
     }
 
     public ReadablePaginatedMessageHeaderDTO getMessageHeaders(TypedMessageListKey messageListKey)
@@ -115,21 +96,23 @@ public class MessageServiceWrapper
         {
             return getMessageHeaders((RecipientTypedMessageListKey) messageListKey);
         }
-        return messageService.getMessageHeaders(
-                messageListKey.discussionType.description,
-                null,
-                messageListKey.page,
-                messageListKey.perPage);
+        return createReadablePaginatedMessageHeaderReceivedProcessor().process(
+                messageService.getMessageHeaders(
+                        messageListKey.discussionType.description,
+                        null,
+                        messageListKey.page,
+                        messageListKey.perPage));
     }
 
     public ReadablePaginatedMessageHeaderDTO getMessageHeaders(
             RecipientTypedMessageListKey messageListKey)
     {
-        return messageService.getMessageHeaders(
-                messageListKey.discussionType.description,
-                messageListKey.recipientId.key,
-                messageListKey.page,
-                messageListKey.perPage);
+        return createReadablePaginatedMessageHeaderReceivedProcessor().process(
+                messageService.getMessageHeaders(
+                        messageListKey.discussionType.description,
+                        messageListKey.recipientId.key,
+                        messageListKey.page,
+                        messageListKey.perPage));
     }
 
     public MiddleCallback<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(MessageListKey messageListKey,
@@ -139,7 +122,9 @@ public class MessageServiceWrapper
         {
             return getMessageHeaders((TypedMessageListKey) messageListKey, callback);
         }
-        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createReadablePaginatedMessageHeaderReceivedProcessor());
         messageServiceAsync.getMessageHeaders(
                 messageListKey.page,
                 messageListKey.perPage,
@@ -154,7 +139,9 @@ public class MessageServiceWrapper
         {
             return getMessageHeaders((RecipientTypedMessageListKey) messageListKey, callback);
         }
-        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createReadablePaginatedMessageHeaderReceivedProcessor());
         messageServiceAsync.getMessageHeaders(
                 messageListKey.discussionType.description,
                 null,
@@ -168,7 +155,9 @@ public class MessageServiceWrapper
             RecipientTypedMessageListKey messageListKey,
             Callback<ReadablePaginatedMessageHeaderDTO> callback)
     {
-        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback(callback);
+        MiddleCallback<ReadablePaginatedMessageHeaderDTO> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createReadablePaginatedMessageHeaderReceivedProcessor());
         messageServiceAsync.getMessageHeaders(
                 messageListKey.discussionType.description,
                 messageListKey.recipientId.key,
@@ -239,14 +228,18 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Create Message">
+    protected DTOProcessor<DiscussionDTO> createDiscussionCreateProcessor(DiscussionKey stubKey)
+    {
+        return new DTOProcessorDiscussionCreate(
+                discussionDTOFactory,
+                discussionCache.get(),
+                userMessagingRelationshipCache.get(),
+                stubKey);
+    }
+
     public DiscussionDTO createMessage(MessageCreateFormDTO form)
     {
-        DiscussionDTO discussionDTO = messageService.createMessage(form);
-        if (discussionDTO != null)
-        {
-            userMessagingRelationshipCache.get().invalidate(new UserBaseKey(discussionDTO.userId));
-        }
-        return discussionDTO;
+        return createDiscussionCreateProcessor(null).process(messageService.createMessage(form));
     }
 
     public MiddleCallback<DiscussionDTO> createMessage(MessageCreateFormDTO form, Callback<DiscussionDTO> callback)
@@ -260,6 +253,18 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Delete Message">
+    protected DTOProcessor<Response> createMessageHeaderDeletedProcessor(
+            MessageHeaderId messageHeaderId,
+            UserBaseKey readerId)
+    {
+        return new DTOProcessorMessageDeleted(
+                messageHeaderCache.get(),
+                userProfileCache.get(),
+                messageHeaderListCache.get(),
+                messageHeaderId,
+                readerId);
+    }
+
     public Response deleteMessage(
             MessageHeaderId messageHeaderId,
             int senderUserId,
@@ -286,6 +291,16 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Read Message">
+    protected DTOProcessor<Response> createMessageHeaderReadProcessor(
+            MessageHeaderId messageHeaderId,
+            UserBaseKey readerId)
+    {
+        return new DTOProcessorMessageRead(messageHeaderCache.get(),
+                userProfileCache.get(),
+                messageHeaderId,
+                readerId);
+    }
+
     public Response readMessage(
             int commentId,
             int senderUserId,

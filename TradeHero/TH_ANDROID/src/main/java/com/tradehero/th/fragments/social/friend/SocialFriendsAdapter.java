@@ -1,139 +1,124 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.AbstractArrayAdapter;
+import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
-public class SocialFriendsAdapter extends AbstractArrayAdapter<UserFriendsDTO> {
-
-    private Context mContext;
-    private int mLayoutResourceId;
-    private SocialFriendItemView.OnElementClickListener elementClickedListener;
+public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListItemDTO, SocialFriendItemView>
+{
+    private int mLayoutItemResId;
+    private int mLayoutHeaderResId;
+    @Nullable private SocialFriendUserView.OnElementClickListener elementClickedListener;
 
     //<editor-fold desc="Constructors">
-    public SocialFriendsAdapter(Context context, List<UserFriendsDTO> objects, int layoutResourceId) {
-        super(context,0,objects);
-        this.mContext = context;
-        this.mLayoutResourceId = layoutResourceId;
+    public SocialFriendsAdapter(Context context, List<SocialFriendListItemDTO> objects, int layoutItemResId, int layoutHeaderResId)
+    {
+        super(context, 0);
+        addAll(objects);
+        this.mLayoutItemResId = layoutItemResId;
+        this.mLayoutHeaderResId = layoutHeaderResId;
     }
     //</editor-fold>
 
     @Override
-    public SocialFriendItemView getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null)
+    public SocialFriendItemView getView(int position, View convertView, ViewGroup parent)
+    {
+        SocialFriendItemView itemView = super.getView(position, convertView, parent);
+        if (itemView instanceof SocialFriendUserView)
         {
-            convertView = LayoutInflater.from(mContext).inflate(getViewResId(position), parent, false);
+            ((SocialFriendUserView) itemView).setOnElementClickedListener(createUserClickedListener());
         }
-        SocialFriendItemView dtoView = (SocialFriendItemView) convertView;
-        dtoView.display(getItem(position));
-        dtoView.setOnElementClickedListener(elementClickedListener);
-        return dtoView;
-
+        return itemView;
     }
 
-    @Override
-    protected String getItemNameForFilter(UserFriendsDTO item) {
-        return item.name;
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
     }
 
-    protected int getViewResId(int position) {
-        return mLayoutResourceId;
+    @Override public boolean isEnabled(int position)
+    {
+        return getItem(position) instanceof SocialFriendListItemUserDTO;
+    }
+
+    @Override public int getViewResId(int position)
+    {
+        SocialFriendListItemDTO item = getItem(position);
+        if (item instanceof SocialFriendListItemHeaderDTO)
+        {
+            return mLayoutHeaderResId;
+        }
+        else if (item instanceof SocialFriendListItemUserDTO)
+        {
+            return mLayoutItemResId;
+        }
+        throw new IllegalArgumentException("Unhandled item type " + item.getClass());
     }
 
     public void setOnElementClickedListener(
-            SocialFriendItemView.OnElementClickListener elementClickedListener) {
+            @Nullable SocialFriendUserView.OnElementClickListener elementClickedListener)
+    {
         this.elementClickedListener = elementClickedListener;
     }
 
-    protected void handleFollowEvent(UserFriendsDTO userFriendsDTO) {
+    protected void handleFollowEvent(@NotNull UserFriendsDTO userFriendsDTO)
+    {
+        SocialFriendUserView.OnElementClickListener listenerCopy = elementClickedListener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onFollowButtonClick(userFriendsDTO);
+        }
     }
 
-    protected void handleInviteEvent(UserFriendsDTO userFriendsDTO) {
+    protected void handleInviteEvent(@NotNull UserFriendsDTO userFriendsDTO)
+    {
+        SocialFriendUserView.OnElementClickListener listenerCopy = elementClickedListener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onInviteButtonClick(userFriendsDTO);
+        }
     }
 
-    protected SocialFriendItemView.OnElementClickListener createUserClickedListener() {
+    protected void handleCheckBoxEvent(@NotNull UserFriendsDTO userFriendsDTO)
+    {
+        SocialFriendUserView.OnElementClickListener listenerCopy = elementClickedListener;
+        if (listenerCopy != null)
+        {
+            listenerCopy.onCheckBoxClick(userFriendsDTO);
+        }
+    }
+
+
+    protected SocialFriendUserView.OnElementClickListener createUserClickedListener()
+    {
         return new SocialElementClickListener();
     }
 
-    protected class SocialElementClickListener implements SocialFriendItemView.OnElementClickListener {
-
+    protected class SocialElementClickListener implements SocialFriendUserView.OnElementClickListener
+    {
         @Override
-        public void onFollowButtonClick(UserFriendsDTO userFriendsDTO) {
+        public void onFollowButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
+        {
             handleFollowEvent(userFriendsDTO);
         }
 
         @Override
-        public void onInviteButtonClick(UserFriendsDTO userFriendsDTO) {
+        public void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
+        {
             handleInviteEvent(userFriendsDTO);
         }
 
+        @Override
+        public void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO)
+        {
+            Timber.d("onCheckBoxClicked " + userFriendsDTO);
+            handleCheckBoxEvent(userFriendsDTO);
+        }
     }
-
-//    /**
-//     * Copy from ArrayAdapter
-//     */
-//    private class MyFilter extends Filter {
-//
-//        @Override
-//        protected FilterResults performFiltering(CharSequence prefix) {
-//            FilterResults results = new FilterResults();
-//
-//            if (mOriginalValues == null) {
-//                synchronized (mLock) {
-//                    mOriginalValues = new ArrayList<UserFriendsDTO>(mObjects);//
-//                }
-//            }
-//
-//            if (prefix == null || prefix.length() == 0) {
-//                synchronized (mLock) {
-//                    ArrayList<UserFriendsDTO> list = new ArrayList<UserFriendsDTO>(mOriginalValues);
-//                    results.values = list;
-//                    results.count = list.size();
-//                    return results;
-//                }
-//            } else {
-//                String prefixString = prefix.toString().toLowerCase();
-//                final int count = mOriginalValues.size();
-//                final ArrayList<UserFriendsDTO> newValues = new ArrayList<UserFriendsDTO>(count);
-//                for (int i = 0; i < count; i++) {
-//                    final UserFriendsDTO value = mOriginalValues.get(i);
-//                    final String valueText = value.name.toLowerCase();
-//                    if (valueText.startsWith(prefixString)) {
-//                        newValues.add(value);
-//                    } else {
-//                        final String[] words = valueText.split(" ");
-//                        final int wordCount = words.length;
-//
-//                        for (int k = 0; k < wordCount; k++) {
-//                            if (words[k].startsWith(prefixString)) {
-//                                newValues.add(value);
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                results.values = newValues;
-//                results.count = newValues.size();
-//            }
-//
-//            return results;
-//        }
-//
-//        @Override
-//        protected void publishResults(CharSequence constraint,
-//                                      FilterResults results) {
-//            mObjects = (List<UserFriendsDTO>) results.values;
-//            if (results.count > 0) {
-//                notifyDataSetChanged();
-//            } else {
-//                notifyDataSetInvalidated();
-//            }
-//        }
-
-//    }
 }

@@ -14,9 +14,10 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.LoginFormDTO;
+import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.signup.LoginSignUpFormDTOFactory;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.THAuthenticationProvider;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -46,7 +47,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -70,7 +70,8 @@ public class THUser
     @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
-    @Inject static Provider<LoginFormDTO> loginFormDTOProvider;
+    @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
+    @Inject static DeviceTokenHelper deviceTokenHelper;
 
     public static void initialize()
     {
@@ -130,7 +131,7 @@ public class THUser
         }
         if (userFormDTO.deviceToken == null)
         {
-            userFormDTO.deviceToken = DeviceTokenHelper.getDeviceToken();
+            userFormDTO.deviceToken = deviceTokenHelper.getDeviceToken();
         }
         Timber.d("APID: %s,authenticationMode :%s", userFormDTO.deviceToken,/*PushManager.shared().getAPID()*/
                 authenticationMode);
@@ -158,9 +159,13 @@ public class THUser
                         createCallbackForSignUpAsyncWithJson(credentialsDTO, callback));
                 break;
             case SignIn:
-                LoginFormDTO loginFormDTO = loginFormDTOProvider.get();
+                //use new DTO, combine login and social register
+                LoginSignUpFormDTO loginSignUpFormDTO = loginSignUpFormDTOFactory.create(userFormDTO);
+
                 // TODO save middle callback?
-                sessionServiceWrapper.get().login(authenticator.getAuthHeader(), loginFormDTO, createCallbackForSignInAsyncWithJson(credentialsDTO, callback));
+                sessionServiceWrapper.get().signupAndLogin(authenticator.getAuthHeader(),
+                        loginSignUpFormDTO,
+                        createCallbackForSignInAsyncWithJson(credentialsDTO, callback));
                 break;
         }
     }

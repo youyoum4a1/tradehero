@@ -28,9 +28,11 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
@@ -68,7 +70,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
     protected FreshQuoteHolder freshQuoteHolder;
-    protected QuoteDTO quoteDTO;
+    @Nullable protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
 
     protected boolean isTransactionTypeBuy = true;
@@ -145,15 +147,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             linkWith(securityId, true);
         }
 
-        UserProfileDTO profileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (profileDTO != null)
-        {
-            linkWith(profileDTO, true);
-        }
-        else
-        {
-            requestUserProfile();
-        }
+        requestUserProfile();
     }
 
     //<editor-fold desc="ActionBar">
@@ -238,13 +232,15 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxPurchasableShares()
     {
-        return portfolioCompactDTOUtil.getMaxPurchasableShares(this.portfolioCompactDTO, this.quoteDTO);
+        return portfolioCompactDTOUtil.getMaxPurchasableShares(
+                this.portfolioCompactDTO,
+                this.quoteDTO);
     }
 
     public Integer getMaxSellableShares()
     {
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null && positionDTOCompactList != null)
+        if (ownedPortfolioId != null && positionDTOCompactList != null)
         {
             return positionDTOCompactList.getMaxSellableShares(
                     this.quoteDTO,
@@ -382,12 +378,17 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
+    protected void clampBuyQuantity(boolean andDisplay)
     {
-        this.mBuyQuantity = clampedBuyQuantity(buyQuantity);
+        linkWithBuyQuantity(mBuyQuantity, andDisplay);
     }
 
-    protected Integer clampedBuyQuantity(Integer candidate)
+    protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
+    {
+        this.mBuyQuantity = getClampedBuyQuantity(buyQuantity);
+    }
+
+    protected Integer getClampedBuyQuantity(Integer candidate)
     {
         Integer maxPurchasable = getMaxPurchasableShares();
         if (candidate == null || maxPurchasable == null)
@@ -397,17 +398,17 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return Math.min(candidate, maxPurchasable);
     }
 
-    protected void clampBuyQuantity(boolean andDisplay)
+    protected void clampSellQuantity(boolean andDisplay)
     {
-        linkWithBuyQuantity(mBuyQuantity, andDisplay);
+        linkWithSellQuantity(mSellQuantity, andDisplay);
     }
 
     protected void linkWithSellQuantity(Integer sellQuantity, boolean andDisplay)
     {
-        this.mSellQuantity = clampedSellQuantity(sellQuantity);
+        this.mSellQuantity = getClampedSellQuantity(sellQuantity);
     }
 
-    protected Integer clampedSellQuantity(Integer candidate)
+    protected Integer getClampedSellQuantity(Integer candidate)
     {
         Integer maxSellable = getMaxSellableShares();
         if (candidate == null || maxSellable == null || maxSellable == 0)
@@ -415,11 +416,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             return candidate;
         }
         return Math.min(candidate, maxSellable);
-    }
-
-    protected void clampSellQuantity(boolean andDisplay)
-    {
-        linkWithSellQuantity(mSellQuantity, andDisplay);
     }
 
     protected void prepareFreshQuoteHolder()
@@ -470,12 +466,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected class AbstractBuySellSecurityPositionCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO>
     {
-        @Override public void onDTOReceived(final SecurityId key, final SecurityPositionDetailDTO value)
+        @Override public void onDTOReceived(@NotNull final SecurityId key, @NotNull final SecurityPositionDetailDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_detailed_security_info);
             Timber.e("Error fetching the security position detail %s", key, error);
@@ -487,14 +483,19 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return new AbstractBuySellUserProfileCacheListener();
     }
 
-    protected class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class AbstractBuySellUserProfileCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(final UserBaseKey key, final UserProfileDTO value)
+        @Override public void onPreCachedDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onDTOReceived(@NotNull final UserBaseKey key, @NotNull final UserProfileDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_your_user_profile);
             Timber.e("Error fetching the user profile %s", key, error);

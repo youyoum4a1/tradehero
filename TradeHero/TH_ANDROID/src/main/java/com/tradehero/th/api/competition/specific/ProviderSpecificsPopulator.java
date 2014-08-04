@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition.specific;
 
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderCompactDTO;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,12 +20,12 @@ public class ProviderSpecificsPopulator
     }
     //</editor-fold>
 
-    public void populate(@Nullable ProviderDTO providerDTO)
+    public void populate(@Nullable ProviderCompactDTO providerCompactDTO)
     {
-        if (providerDTO != null)
+        if (providerCompactDTO != null)
         {
-            providerDTO.specificResources = providerSpecificResourcesFactory.createResources(providerDTO);
-            providerDTO.specificKnowledge = providerSpecificKnowledgeFactory.createKnowledge(providerDTO);
+            providerCompactDTO.specificResources = providerSpecificResourcesFactory.createResources(providerCompactDTO);
+            providerCompactDTO.specificKnowledge = providerSpecificKnowledgeFactory.createKnowledge(providerCompactDTO);
         }
     }
 }

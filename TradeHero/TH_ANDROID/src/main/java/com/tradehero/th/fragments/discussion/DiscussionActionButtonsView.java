@@ -120,11 +120,11 @@ public class DiscussionActionButtonsView extends LinearLayout
         }
     }
 
-    public void setCommentCountVisable(int visable)
+    public void setCommentCountVisible(int visible)
     {
         if (commentCount != null)
         {
-            commentCount.setVisibility(visable);
+            commentCount.setVisibility(visible);
         }
     }
 

@@ -32,7 +32,7 @@
       />
 
   <ToggleButton
-      android:id="@+id/btn_wechat"
+      android:id="@+id/btn_share_wechat"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_wechat"
       />

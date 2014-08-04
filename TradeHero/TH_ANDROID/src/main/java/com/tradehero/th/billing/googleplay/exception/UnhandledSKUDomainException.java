@@ -2,11 +2,10 @@ package com.tradehero.th.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.IABResult;
 import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueException;
-import com.tradehero.th.billing.googleplay.THIABConstants;
 
 public class UnhandledSKUDomainException extends IABOneResponseValueException
 {
-    public static final int VALID_RESPONSE = THIABConstants.UNHANDLED_DOMAIN;
+    public static final int VALID_RESPONSE = THIABExceptionConstants.UNHANDLED_DOMAIN;
 
     public UnhandledSKUDomainException(IABResult r)
     {

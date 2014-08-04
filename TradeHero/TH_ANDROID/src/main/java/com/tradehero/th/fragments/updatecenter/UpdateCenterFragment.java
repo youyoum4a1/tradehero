@@ -34,10 +34,13 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.discussion.RunnableInvalidateMessageList;
+import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.PreRoutable;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -47,6 +50,10 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
+@PreRoutable(preOpenRunnables = {
+        RunnableInvalidateMessageList.class,
+        RunnableInvalidateNotificationList.class,
+})
 @Routable("updatecenter/:pageIndex")
 public class UpdateCenterFragment extends DashboardFragment
         implements OnTitleNumberChangeListener,
@@ -325,7 +332,7 @@ public class UpdateCenterFragment extends DashboardFragment
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(new THException(error));
         }

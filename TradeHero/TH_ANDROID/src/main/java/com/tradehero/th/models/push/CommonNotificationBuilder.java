@@ -94,6 +94,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             notificationGroupHolder.put(groupId, notificationDTOs);
             notification = notificationBuilder
                     .setContentText(notificationDTO.text)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationDTO.text))
                     .build();
         }
         else
@@ -118,7 +119,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
                 style.addLine(notificationDTOs.get(i).text);
             }
 
-            // If we have more messages to show then the EXTRA_MESSAGES_TO_SHOW, add a summary
+            // If we have more messages to show then the EXTRA_MESSAGES_TO_SHOW, add a code
             if (totalUnreadCount > maxGroupNotifications.get())
             {
                 style.setSummaryText(context.getString(R.string.inbox_summary, totalUnreadCount - maxGroupNotifications.get()));

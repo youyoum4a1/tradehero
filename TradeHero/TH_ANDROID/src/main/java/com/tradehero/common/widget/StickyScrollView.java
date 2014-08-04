@@ -2,13 +2,13 @@ package com.tradehero.common.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.ScrollView;
+import com.tradehero.common.utils.SDKUtils;
 import java.util.ArrayList;
 
 /**
@@ -397,7 +397,7 @@ public class StickyScrollView extends ScrollView
 
     private void hideView(View v)
     {
-        if (Build.VERSION.SDK_INT >= 11)
+        if (SDKUtils.isHoneycombOrHigher())
         {
             v.setAlpha(0);
         }
@@ -412,7 +412,7 @@ public class StickyScrollView extends ScrollView
 
     private void showView(View v)
     {
-        if (Build.VERSION.SDK_INT >= 11)
+        if (SDKUtils.isHoneycombOrHigher())
         {
             v.setAlpha(1);
         }

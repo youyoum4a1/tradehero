@@ -134,9 +134,18 @@ public final class SharingOptionsEvent extends SecurityEvent
 
         public SharingOptionsEvent build()
         {
+            ensureSaneDefaults();
             return new SharingOptionsEvent(isBuyEvent, securityId, providerId, priceSelectionMethod, hasComment, facebookEnabled, twitterEnabled,
                     linkedInEnabled,
                     weChatEnabled,weiboEnabled);
+        }
+
+        private void ensureSaneDefaults()
+        {
+            if (providerId == null)
+            {
+                providerId = new ProviderId(0);
+            }
         }
     }
 }

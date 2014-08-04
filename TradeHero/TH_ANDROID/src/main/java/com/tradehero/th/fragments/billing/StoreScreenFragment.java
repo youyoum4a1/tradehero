@@ -31,7 +31,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -102,7 +102,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         if (productDomainIdentifierOrdinal != null)
         {
-            cancelOthersAndShowProductDetailList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
+            createPurchaseActionInteractorBuilder()
+                    .build()
+                    .showProductsList(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]);
         }
     }
 
@@ -160,7 +162,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
-            cancelOthersAndShowProductDetailList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
+            createPurchaseActionInteractorBuilder()
+                    .build()
+                    .showProductsList(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain);
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {

@@ -9,6 +9,9 @@ import com.tradehero.common.persistence.prefs.LongPreference;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.alert.AlertListItemAdapter;
 import com.tradehero.th.fragments.alert.AlertViewFragment;
+import com.tradehero.th.fragments.contestcenter.ContestCompetitionView;
+import com.tradehero.th.fragments.contestcenter.ContestContentView;
+import com.tradehero.th.fragments.contestcenter.ContestItemAdapter;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityAdapter;
@@ -46,6 +49,10 @@ import javax.inject.Singleton;
                 UserProfileResideMenuItem.class,
                 TimelineDiscussionFragment.class,
                 NewsDiscussionFragment.class,
+
+                ContestItemAdapter.class,
+                ContestContentView.class,
+                ContestCompetitionView.class,
         },
         complete = false,
         library = true

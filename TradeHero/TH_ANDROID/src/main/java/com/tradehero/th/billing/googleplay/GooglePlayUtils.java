@@ -8,7 +8,7 @@ import com.tradehero.th.utils.VersionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GooglePlayUtils
+class GooglePlayUtils
 {
     public static Intent getSupportPurchaseReportEmailIntent(Context context, THIABPurchase purchase)
     {

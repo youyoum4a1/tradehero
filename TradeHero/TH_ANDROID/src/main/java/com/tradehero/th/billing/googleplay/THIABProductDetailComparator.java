@@ -3,7 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailComparator;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 
-public class THIABProductDetailComparator<THIABProductDetailType extends THIABProductDetail>
+class THIABProductDetailComparator<THIABProductDetailType extends THIABProductDetail>
         extends BaseIABProductDetailComparator<THIABProductDetailType>
 {
     @Override public int compare(THIABProductDetailType lhs, THIABProductDetailType rhs)

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
+class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         IABSKU,
         THIABProductDetail,
         THIABLogicHolder,

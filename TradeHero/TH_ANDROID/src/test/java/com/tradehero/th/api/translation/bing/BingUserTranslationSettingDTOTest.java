@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.TestConstants;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import static org.junit.Assume.assumeTrue;
 @RunWith(RobolectricMavenTestRunner.class)
 public class BingUserTranslationSettingDTOTest
 {
-    @Inject ObjectMapper objectMapper;
+    @Inject @ForApp ObjectMapper objectMapper;
     @Inject LanguageDTOFactory languageDTOFactory;
 
     //<editor-fold desc="De/Serialisation">

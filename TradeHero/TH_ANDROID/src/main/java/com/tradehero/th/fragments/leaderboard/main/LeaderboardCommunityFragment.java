@@ -199,7 +199,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         // get the data
         fetchLeaderboardDefList();
-        fetchProviderIdList();
+        //fetchProviderIdList(); //feature2.3.0 remove provider list in this fragment
     }
 
     private void fetchLeaderboardDefList()
@@ -321,6 +321,10 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     protected void recreateAdapter()
     {
         communityScreen.setDisplayedChildByLayoutId(android.R.id.list);
+        if(leaderboardDefListAdapter != null)
+        {
+            leaderboardDefListAdapter.clear();
+        }
         leaderboardDefListAdapter = createAdapter();
         if (providerDTOs != null)
         {

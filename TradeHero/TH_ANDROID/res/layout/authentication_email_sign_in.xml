@@ -25,7 +25,7 @@
 
   <com.tradehero.th.widget.SelfValidatedText
       android:id="@+id/authentication_sign_in_email"
-      android:layout_below="@+id/authentication_logo"
+      android:layout_below="@id/authentication_logo"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/common_margin_80"
@@ -47,7 +47,7 @@
       android:id="@+id/et_pwd_login"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/authentication_sign_in_email"
+      android:layout_below="@id/authentication_sign_in_email"
       android:layout_marginTop="@dimen/common_margin_20"
       android:layout_marginLeft="@dimen/common_margin_60"
       android:layout_marginRight="@dimen/common_margin_60"
@@ -62,8 +62,8 @@
   <Button
       android:id="@+id/btn_login"
       android:layout_width="fill_parent"
-      android:layout_height="@dimen/common_margin_60"
-      android:layout_below="@+id/et_pwd_login"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/et_pwd_login"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="@dimen/common_margin_50"
       android:layout_marginLeft="@dimen/common_margin_60"
@@ -73,12 +73,13 @@
       android:textColor="@color/white"
       android:textSize="@dimen/common_text_size_30"
       android:textStyle="bold"/>
+      <!--android:layout_height="@dimen/common_margin_60"-->
 
   <TextView
       android:id="@+id/authentication_sign_in_forgot_password"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/btn_login"
+      android:layout_below="@id/btn_login"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="@dimen/common_margin_80"
       android:background="@drawable/basic_transparent_selector"

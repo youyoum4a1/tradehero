@@ -29,6 +29,22 @@ public class DateUtils
         return sdf.format(d);
     }
 
+    public static String getDisplayableDate(@NotNull Resources resources, @Nullable Date dStart, @Nullable Date dEnd)
+    {
+        if (dStart == null || dEnd == null)
+        {
+            return resources.getString(R.string.na);
+        }
+
+        SimpleDateFormat sdfStart = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm));
+        sdfStart.setTimeZone(TimeZone.getDefault());
+
+        SimpleDateFormat sdfEnd = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm_yyyy));
+        sdfEnd.setTimeZone(TimeZone.getDefault());
+
+        return sdfStart.format(dStart) + " - " + sdfEnd.format(dEnd);
+    }
+
     public static int getNumberOfDaysBetweenDates(@NotNull Date start, @NotNull Date end)
     {
            return (int) (end.getTime() - start.getTime()) / MILLISECOND_PER_DAY;

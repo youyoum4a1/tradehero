@@ -5,27 +5,12 @@ import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import org.jetbrains.annotations.NotNull;
 
-public class DTOProcessorProviderListReceived implements DTOProcessor<ProviderDTOList>
+public class DTOProcessorProviderListReceived
+    extends DTOProcessorProviderCompactListReceivedBase<ProviderDTO, ProviderDTOList>
 {
-    @NotNull private final DTOProcessor<ProviderDTO> providerProcessor;
-
-    //<editor-fold desc="Constructors">
     public DTOProcessorProviderListReceived(
             @NotNull DTOProcessor<ProviderDTO> providerProcessor)
     {
-        this.providerProcessor = providerProcessor;
-    }
-    //</editor-fold>
-
-    @Override public ProviderDTOList process(ProviderDTOList value)
-    {
-        if (value != null)
-        {
-            for (ProviderDTO providerDTO : value)
-            {
-                providerProcessor.process(providerDTO);
-            }
-        }
-        return value;
+        super(providerProcessor);
     }
 }

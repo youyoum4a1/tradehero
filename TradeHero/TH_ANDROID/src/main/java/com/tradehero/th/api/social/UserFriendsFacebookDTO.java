@@ -15,6 +15,11 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
     {
         super();
     }
+
+    public UserFriendsFacebookDTO(@NotNull String fbId)
+    {
+        this.fbId = fbId;
+    }
     //</editor-fold>
 
     @Override public int getNetworkLabelImage()

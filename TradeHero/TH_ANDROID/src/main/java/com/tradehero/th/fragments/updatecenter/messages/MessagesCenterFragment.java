@@ -46,7 +46,7 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -629,7 +629,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             hasMorePage = true;
             onRefreshCompleted();
-            Timber.d("refresh onErrorThrown");
+            Timber.e("refresh onErrorThrown", error);
             if (getListAdapter() != null && getListAdapter().getCount() > 0)
             {
                 //when already fetch the data,do not show error view
