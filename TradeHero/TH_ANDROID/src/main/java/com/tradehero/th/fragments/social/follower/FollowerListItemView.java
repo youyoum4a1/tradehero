@@ -24,7 +24,7 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -198,7 +198,7 @@ public class FollowerListItemView extends RelativeLayout
         {
             Timber.d("getCountryLogoId country:%s",country);
             return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException|NullPointerException ex)
+        } catch (IllegalArgumentException ex)
         {
             return defaultResId;
         }

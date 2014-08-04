@@ -25,7 +25,7 @@ import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -174,7 +174,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 if (currentUserId.get() != user.id)
                 {
                     Bundle bundle = new Bundle();
-                    thRouter.save(bundle, new UserBaseKey(user.id));
+                    TimelineFragment.putUserBaseKey(bundle, new UserBaseKey(user.id));
                     getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
                 }
             }

@@ -151,18 +151,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected void detachUserProfileCache()
     {
-        if (userProfileCacheListener != null)
-        {
-            userProfileCache.unregister(userProfileCacheListener);
-        }
+        userProfileCache.unregister(userProfileCacheListener);
     }
 
     protected void detachUserOnLeaderboardCacheListener()
     {
-        if (userOnLeaderboardCacheListener != null)
-        {
-            userOnLeaderboardCache.unregister(userOnLeaderboardCacheListener);
-        }
+        userOnLeaderboardCache.unregister(userOnLeaderboardCacheListener);
     }
 
     protected void fetchCurrentUserProfile()

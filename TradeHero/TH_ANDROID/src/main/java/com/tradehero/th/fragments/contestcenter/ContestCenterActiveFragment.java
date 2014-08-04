@@ -13,14 +13,11 @@ public class ContestCenterActiveFragment extends ContestCenterBaseFragment
         {
             for (@NotNull ProviderDTO providerDTO : providerDTOs)
             {
-                if (!providerDTO.isUserEnrolled)
-                {
                     contestListAdapter.add(new ProviderContestPageDTO(providerDTO));
                     if (providerDTO.vip != null && providerDTO.vip)
                     {
                         contestListAdapter.add(new EmptyHeadLineDTO());
                     }
-                }
             }
         }
 

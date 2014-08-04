@@ -94,6 +94,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             notificationGroupHolder.put(groupId, notificationDTOs);
             notification = notificationBuilder
                     .setContentText(notificationDTO.text)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationDTO.text))
                     .build();
         }
         else

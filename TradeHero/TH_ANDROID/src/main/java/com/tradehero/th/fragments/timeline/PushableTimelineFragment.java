@@ -1,5 +1,8 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -11,6 +14,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This fragment will not be the main, but one that is pushed from elsewhere
@@ -93,5 +97,14 @@ public class PushableTimelineFragment extends TimelineFragment
                 premiumFollowUser(shownUserBaseKey);
             //}
         //});
+    }
+
+    @Override public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)
+    {
+        return !(
+                    getClass().isAssignableFrom(fragmentClass) &&
+                    shownUserBaseKey != null &&
+                    shownUserBaseKey.equals(getUserBaseKey(args)))
+                && super.allowNavigateTo(fragmentClass, args);
     }
 }

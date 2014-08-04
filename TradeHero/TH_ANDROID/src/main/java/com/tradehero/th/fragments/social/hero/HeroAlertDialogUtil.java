@@ -65,7 +65,7 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
                 okClickListener);
     }
 
-    public FollowDialogCombo showFollowDialog(
+    @Nullable public FollowDialogCombo showFollowDialog(
             @NotNull final Context context,
             @Nullable UserBaseDTO userBaseDTO,
             final int followType,
@@ -75,44 +75,65 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
         {
             return null;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         LayoutInflater inflater = LayoutInflater.from(context);
         FollowDialogView followDialogView = (FollowDialogView) inflater.inflate(R.layout.follow_dialog, null);
         followDialogView.setFollowType(followType);
         followDialogView.display(userBaseDTO);
 
-        builder.setView(followDialogView);
-        builder.setCancelable(true);
-
-        final AlertDialog mFollowDialog = builder.create();
+        final AlertDialog mFollowDialog = new AlertDialog.Builder(context)
+                .setView(followDialogView)
+                .setCancelable(true)
+                .create();
         mFollowDialog.setCancelable(true);
         mFollowDialog.setCanceledOnTouchOutside(true);
         mFollowDialog.show();
 
-        followDialogView.setFollowRequestedListener(new OnFollowRequestedListener()
-        {
-            @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
-            {
-                onFinish();
-                if (followType != UserProfileDTOUtil.IS_FREE_FOLLOWER)
-                {
-                    followRequestedListener.freeFollowRequested(heroId);
-                }
-            }
-
-            @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
-            {
-                onFinish();
-                followRequestedListener.premiumFollowRequested(heroId);
-            }
-
-            private void onFinish()
-            {
-                mFollowDialog.dismiss();
-            }
-        });
+        followDialogView.setFollowRequestedListener(new MiddleFollowRequestedListener(
+                followRequestedListener,
+                followType,
+                mFollowDialog
+        ));
 
         return new FollowDialogCombo(mFollowDialog, followDialogView);
+    }
+
+    private static class MiddleFollowRequestedListener implements OnFollowRequestedListener
+    {
+        @NotNull private final OnFollowRequestedListener followRequestedListener;
+        private final int followType;
+        @NotNull private final AlertDialog mFollowDialog;
+
+        //<editor-fold desc="Constructors">
+        private MiddleFollowRequestedListener(
+                @NotNull OnFollowRequestedListener followRequestedListener,
+                int followType,
+                @NotNull AlertDialog mFollowDialog)
+        {
+            this.followRequestedListener = followRequestedListener;
+            this.followType = followType;
+            this.mFollowDialog = mFollowDialog;
+        }
+        //</editor-fold>
+
+        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
+        {
+            onFinish();
+            if (followType != UserProfileDTOUtil.IS_FREE_FOLLOWER)
+            {
+                followRequestedListener.freeFollowRequested(heroId);
+            }
+        }
+
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
+        {
+            onFinish();
+            followRequestedListener.premiumFollowRequested(heroId);
+        }
+
+        private void onFinish()
+        {
+            mFollowDialog.dismiss();
+        }
     }
 }

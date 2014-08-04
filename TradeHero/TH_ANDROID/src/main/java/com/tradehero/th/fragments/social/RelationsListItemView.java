@@ -24,9 +24,10 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class RelationsListItemView extends RelativeLayout
@@ -281,13 +282,13 @@ public class RelationsListItemView extends RelativeLayout
         }
     }
 
-    public int getCountryLogoId(String country)
+    public int getCountryLogoId(@NotNull String country)
     {
         try
         {
             return Country.valueOf(country).logoId;
         }
-        catch (IllegalArgumentException|NullPointerException ex)
+        catch (IllegalArgumentException ex)
         {
             Timber.e(ex, "No country for %s", country);
         }
