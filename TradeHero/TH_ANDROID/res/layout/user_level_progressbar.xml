@@ -16,7 +16,7 @@
       style="@style/TH.Level.Next"/>
 
   <ProgressBar
-      android:id="@+id/user_level_progress_bar"
+      android:id="@+id/user_level_main_progress_bar"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/user_level_progress_margin_top"

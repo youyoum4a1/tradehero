@@ -18,6 +18,7 @@
       >
 
     <Button
+        android:id="@+id/btn_achievement_dismiss"
         android:layout_width="@dimen/small_icon_w_h"
         android:layout_height="@dimen/small_icon_w_h"
         style="@style/TH.ButtonClose"

@@ -28,7 +28,7 @@ public class UserLevelProgressBar extends RelativeLayout
     @InjectView(R.id.user_level_progress_bar_indicator) protected TextView xpIndicatorLabel;
     @InjectView(R.id.user_level_progress_current) protected TextView currentLevelLabel;
 
-    @InjectView(R.id.user_level_progress_bar) protected ProgressBar xpProgressBar;
+    @InjectView(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
 
     @Inject LevelUtil levelUtil;
 

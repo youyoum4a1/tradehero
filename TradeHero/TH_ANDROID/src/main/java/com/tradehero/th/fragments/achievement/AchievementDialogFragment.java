@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
@@ -17,7 +19,17 @@ import com.tradehero.th.widget.UserLevelProgressBar;
 
 public class AchievementDialogFragment extends BaseDialogFragment
 {
+    @InjectView(R.id.achievement_header) TextView header;
+    @InjectView(R.id.achievement_title) TextView title;
+    @InjectView(R.id.achievement_description) TextView description;
+    @InjectView(R.id.achievement_more_description) TextView moreDescription;
+
+    @InjectView(R.id.achievement_badge) ImageView badge;
+    @InjectView(R.id.achievement_pulse) ImageView pulseEffect;
+
     @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
+
+    @InjectView(R.id.btn_achievement_dismiss) Button btnDismiss;
     @InjectView(R.id.btn_achievement_share) Button btnShare;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -38,13 +50,16 @@ public class AchievementDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        userLevelProgressBar.startsWith(120);
-        userLevelProgressBar.setAnimatorDuration(1200);
     }
 
     @OnClick(R.id.btn_achievement_share)
     public void onShareClicked()
     {
-        userLevelProgressBar.increment(270);
+    }
+
+    @OnClick(R.id.btn_achievement_dismiss)
+    public void onDismissBtnClicked()
+    {
+        getDialog().dismiss();
     }
 }
