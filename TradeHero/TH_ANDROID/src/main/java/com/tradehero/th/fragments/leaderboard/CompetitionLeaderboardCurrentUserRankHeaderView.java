@@ -59,6 +59,12 @@ public class CompetitionLeaderboardCurrentUserRankHeaderView extends Leaderboard
         }
     }
 
+    @Override protected void displayUserIsRanked()
+    {
+        super.displayUserIsRanked();
+        mDisplayName.setText(userProfileDTO.displayName);
+    }
+
     @Override protected void displayUserNotRanked()
     {
         super.displayUserNotRanked();

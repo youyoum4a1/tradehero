@@ -36,7 +36,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
 
     public static final int FLAG_USER_NOT_RANKED = -1;
 
-    private UserProfileDTO userProfileDTO;
+    protected UserProfileDTO userProfileDTO;
 
     protected Integer mCurrentRank;
     protected Double mRoiSinceInception = 0.0D;
@@ -134,7 +134,6 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     protected void displayUserIsRanked()
     {
         mCurrentRankLabel.setText(String.valueOf(mCurrentRank));
-        //Set the ROI from the user profile cache
         displayROIValue(mRoiSinceInception);
     }
 
