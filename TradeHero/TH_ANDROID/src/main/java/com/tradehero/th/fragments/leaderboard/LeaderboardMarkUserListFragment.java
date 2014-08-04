@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -18,6 +19,7 @@ import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -248,11 +250,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             Timber.d("onResume filterFragment is null");
         }
+    }
 
-        if (leaderboardMarkUserListAdapter != null && getApplicablePortfolioId() != null)
+    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    {
+        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
+        if (leaderboardMarkUserListAdapter != null && purchaseApplicablePortfolioId != null)
         {
-            leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
-            leaderboardMarkUserListAdapter.notifyDataSetChanged();
+            leaderboardMarkUserListAdapter.setApplicablePortfolioId(purchaseApplicablePortfolioId);
         }
     }
 
@@ -311,7 +316,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        prepareLeaderboardMarkUserAdapter();
+        if(leaderboardMarkUserListAdapter != null)
+        {
+            leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
+        }
     }
 
     public void initialLoad()
@@ -320,6 +328,27 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
         leaderboardMarkUserLoader.reload();
         //invalidateCachedItemView();
+    }
+
+    private void updateListViewRow(UserBaseKey userBaseKey)
+    {
+        AdapterView list = leaderboardMarkUserListView.getRefreshableView();
+        int start = list.getFirstVisiblePosition();
+        for (int i = start, j = list.getLastVisiblePosition(); i <= j; i++)
+        {
+            Object target = list.getItemAtPosition(i);
+            if (target instanceof UserBaseDTO)
+            {
+                UserBaseDTO user = (UserBaseDTO) target;
+                if (user.getBaseKey().equals(userBaseKey))
+                {
+
+                    View view = list.getChildAt(i - start);
+                    list.getAdapter().getView(i, view, list);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -432,16 +461,25 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         detachFreeFollowMiddleCallback();
         freeFollowMiddleCallback =
                 userServiceWrapperLazy.get()
-                        .freeFollow(heroId, new FreeFollowCallback());
+                        .freeFollow(heroId, new FreeFollowCallback(heroId));
     }
 
     public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
     {
+        private final UserBaseKey heroId;
+
+        public FreeFollowCallback(UserBaseKey heroId)
+        {
+            this.heroId = heroId;
+        }
+
         @Override public void success(UserProfileDTO userProfileDTO, Response response)
         {
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
             setCurrentUserProfileDTO(userProfileDTO);
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+
+            updateListViewRow(heroId);
         }
 
         @Override public void failure(RetrofitError retrofitError)
