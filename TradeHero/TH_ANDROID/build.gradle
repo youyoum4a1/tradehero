@@ -52,8 +52,8 @@ android {
             versionNameSuffix '-dev'
         }
         release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard/proguard-android.txt'), 'proguard-rules.pro'
+            runProguard true
+            proguardFiles 'proguard/proguard-android.txt'
             signingConfig signingConfigs.release
         }
         chinese {
@@ -102,6 +102,17 @@ android {
             }
         }
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
 }
 
 dependencies {
@@ -132,11 +143,12 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile 'com.squareup.okhttp:okhttp:1.6.0'
     compile ('com.squareup.retrofit:retrofit:1.6.1') {
-        exclude group: 'com.google.code.gson', module: 'gson'
+        exclude module: 'gson'
     }
     compile ('com.squareup.retrofit:converter-simplexml:1.4.1') {
-        exclude group: 'stax', module: 'stax-api'
-        exclude group: 'xpp3', module: 'xpp3'
+        exclude module: 'stax'
+        exclude module: 'stax-api'
+        exclude module: 'xpp3'
     }
     compile 'com.squareup.dagger:dagger:1.2.1'
     provided 'com.squareup.dagger:dagger-compiler:1.2.1'
