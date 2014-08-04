@@ -42,6 +42,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix '.dev'
+            versionNameSuffix '-dev'
+        }
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard/proguard-android.txt'), 'proguard-rules.pro'
@@ -57,16 +61,13 @@ android {
                 srcDir 'src/main/java'
             }
             aidl {
-                srcDir 'src'
+                srcDir 'src/main/java'
             }
             res {
                 srcDir 'res'
             }
             assets {
                 srcDir 'assets'
-            }
-            resources {
-                srcDir 'src'
             }
         }
     }
