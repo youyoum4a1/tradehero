@@ -174,6 +174,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
+import com.tradehero.th.widget.UserLevelProgressBar;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Locale;
@@ -384,6 +385,9 @@ import javax.inject.Singleton;
                         HomeFragment.class,
                         HomeWebView.class,
                         GuideActivity.class,
+
+                        UserLevelProgressBar.class,
+
                 },
         staticInjections =
                 {

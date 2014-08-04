@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <integer name="pulse_duration">1600</integer>
-  <integer name="zoom_in_delay">100</integer>
-  <integer name="dismiss_duration">800</integer>
+  <integer name="achievement_pulse_duration">1600</integer>
+  <integer name="achievement_zoom_in_delay">100</integer>
+  <integer name="achievement_dismiss_duration">800</integer>
+  <dimen name="achievement_dialog_padding">10dp</dimen>
+  <dimen name="achievement_dialog_width">300dp</dimen>
+  <color name="achievement_dialog_bg">@color/white</color>
+  <dimen name="achievement_badge_w_h">160dp</dimen>
+  <dimen name="achievement_badge_margin_top">20dp</dimen>
+  <dimen name="achievement_pulse_circle_w_h">60dp</dimen>
+  <dimen name="achievement_pulse_circle_margin_top">70dp</dimen>
+  <dimen name="achievement_title_margin_top">20dp</dimen>
+  <dimen name="achievement_description_margin_top">10dp</dimen>
+  <dimen name="achievement_level_progress_margin_top">20dp</dimen>
+  <dimen name="achievement_level_progress_container_height">75dp</dimen>
+  <dimen name="achievement_share_container_margin_top">30dp</dimen>
+  <dimen name="user_level_progressbar_height">14dp</dimen>
+  <dimen name="user_level_progressbar_indicator_text_size">@dimen/text_xxsmall</dimen>
+
 </resources>

@@ -9,6 +9,6 @@
     android:toXScale="1"
     android:toYScale="1"
     android:fillAfter="true"
-    android:startOffset="@integer/zoom_in_delay"
+    android:startOffset="@integer/achievement_zoom_in_delay"
     android:interpolator="@android:interpolator/accelerate_quint">
 </scale>

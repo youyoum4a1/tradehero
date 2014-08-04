@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.UserLevelProgressBar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <TextView
+      android:id="@+id/user_level_progress_next"
+      android:layout_width="@dimen/user_level_next_level_w_h"
+      android:layout_height="@dimen/user_level_next_level_w_h"
+      android:layout_alignParentRight="true"
+      tools:text="9"
+      style="@style/TH.Level.Next"/>
+
+  <ProgressBar
+      android:id="@+id/user_level_progress_bar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/user_level_progress_margin_top"
+      android:layout_marginLeft="@dimen/user_level_progress_margin_left"
+      android:layout_marginRight="@dimen/user_level_progress_margin_right"
+      style="@style/TH.Level.ProgressBar"/>
+
+  <TextView
+      android:id="@+id/user_level_progress_current"
+      android:layout_width="@dimen/user_level_current_level_w_h"
+      android:layout_height="@dimen/user_level_current_level_w_h"
+      tools:text="8"
+      style="@style/TH.Level.Current"/>
+
+  <TextView
+      android:id="@+id/user_level_progress_bar_indicator"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignLeft="@id/user_level_progress_bar"
+      android:layout_marginLeft="@dimen/user_level_indicator_margin_left"
+      android:layout_below="@id/user_level_progress_bar"
+      tools:text="2000/8000 XP"
+      style="@style/TH.Level.Indicator"/>
+
+</com.tradehero.th.widget.UserLevelProgressBar>

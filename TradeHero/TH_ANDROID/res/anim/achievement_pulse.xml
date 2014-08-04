@@ -2,7 +2,7 @@
 
 <set xmlns:android="http://schemas.android.com/apk/res/android">
   <scale
-      android:duration="@integer/pulse_duration"
+      android:duration="@integer/achievement_pulse_duration"
       android:fromXScale="1"
       android:fromYScale="1"
       android:pivotX="50%"
@@ -15,7 +15,7 @@
   <alpha
       android:fromAlpha="1.0"
       android:toAlpha="0.0"
-      android:duration="@integer/pulse_duration"
+      android:duration="@integer/achievement_pulse_duration"
       android:repeatCount="infinite"
       android:repeatMode="restart"
       android:interpolator="@android:interpolator/accelerate_quint"
