@@ -2,6 +2,7 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import com.squareup.picasso.LruCache;
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.fragments.alert.AlertItemView;
 import com.tradehero.th.fragments.competition.AdView;

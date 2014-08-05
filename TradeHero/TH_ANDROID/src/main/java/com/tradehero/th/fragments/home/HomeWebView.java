@@ -106,6 +106,7 @@ public final class HomeWebView extends WebView
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HomeContentDTO value)
         {
             reloadWebView(value);
+            dtoCacheUtil.anonymousPrefetches();
             dtoCacheUtil.initialPrefetches();
         }
 

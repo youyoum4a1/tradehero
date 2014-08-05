@@ -238,4 +238,6 @@
   <string name="referral_dollars_claimed">Referral dollars claimed</string>
   <string name="done">Done</string>
   <string name="trade_comment">Trade Comment</string>
+
+  <string name="mark_as_all_read">Mark as all Read</string>
 </resources>

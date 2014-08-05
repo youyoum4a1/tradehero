@@ -26,4 +26,7 @@ interface NotificationServiceAsync
     void markAsRead(
             @Path("readPushId") int readPushId,
             Callback<Response> callback);
+
+    @POST("/notifications/read/-1")
+    void markAsReadAll(Callback<Response> callback);
 }

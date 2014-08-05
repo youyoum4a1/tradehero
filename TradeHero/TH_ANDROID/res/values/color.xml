@@ -37,6 +37,9 @@
   <color name="btn_qq_color_end">#ff1b93bc</color>
   <color name="btn_authentication_login_color_light">#357CDD</color>
 
+  <color name="read_all_layout_color_dark">#0274b4</color>
+  <color name="read_all_layout_color_light">#357CDD</color>
+
   <color name="gray_2">#A0AFAFAF</color>
   <color name="text_gray_normal">#aaaaaa</color>
   <color name="gray_normal">#aaaaaa</color>

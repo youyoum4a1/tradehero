@@ -301,6 +301,13 @@ public class MessageServiceWrapper
                 readerId);
     }
 
+    //<editor-fold desc="Read All Message">
+    protected DTOProcessor<Response> createMessageHeaderReadAllProcessor()
+    {
+        return new DTOProcessorMessageRead(messageHeaderCache.get(),
+                userProfileCache.get());
+    }
+
     public Response readMessage(
             int commentId,
             int senderUserId,
@@ -324,6 +331,16 @@ public class MessageServiceWrapper
                 callback,
                 createMessageHeaderReadProcessor(messageHeaderId, readerId));
         messageServiceAsync.readMessage(commentId, senderUserId, recipientUserId, middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<Response> readAllMessage(
+            Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createMessageHeaderReadAllProcessor());
+        messageServiceAsync.readAllMessage(middleCallback);
         return middleCallback;
     }
     //</editor-fold>

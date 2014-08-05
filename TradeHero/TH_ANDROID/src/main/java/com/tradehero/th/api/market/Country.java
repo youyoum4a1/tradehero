@@ -1,6 +1,7 @@
 package com.tradehero.th.api.market;
 
 import com.tradehero.th.R;
+import org.jetbrains.annotations.Nullable;
 
 public enum Country
 {
@@ -247,5 +248,20 @@ public enum Country
     {
         this.logoId = logoId;
         this.locationName = locationName;
+    }
+
+    public static int getCountryLogo(int defaultResId, @Nullable String countryCode)
+    {
+        if (countryCode == null)
+        {
+            return defaultResId;
+        }
+        try
+        {
+            return Country.valueOf(countryCode).logoId;
+        } catch (IllegalArgumentException ex)
+        {
+            return defaultResId;
+        }
     }
 }

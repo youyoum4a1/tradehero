@@ -7,10 +7,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -45,6 +48,8 @@ public class NotificationsView extends BetterViewAnimator
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.notification_pull_to_refresh_list) PullToRefreshListView notificationList;
+    @InjectView(R.id.listViewLayout) RelativeLayout listViewLayout;
+    @InjectView(R.id.readAllLayout) LinearLayout readAllLayout;
 
     @Inject Lazy<NotificationListCache> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
@@ -92,6 +97,7 @@ public class NotificationsView extends BetterViewAnimator
         notificationListRefreshListener = createNotificationRefreshListener();
 
         notificationListAdapter = createNotificationListAdapter();
+
     }
 
     private NotificationListAdapter createNotificationListAdapter()
@@ -129,6 +135,13 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setOnRefreshListener(notificationPullToRefreshListener);
 
         fetchNextPageIfNecessary();
+
+    }
+
+    @OnClick(R.id.readAllLayout)
+    protected void onReadAllLayoutClicked()
+    {
+        reportNotificationReadAll();
     }
 
     private void createOnRefreshListener()
@@ -201,6 +214,7 @@ public class NotificationsView extends BetterViewAnimator
         notificationListAdapter.clear();
         notificationListAdapter.addAll(notificationKeyList);
         notificationListAdapter.notifyDataSetChanged();
+        setReadAllLayoutVisable();
         Timber.d("resetContent");
     }
 
@@ -252,6 +266,13 @@ public class NotificationsView extends BetterViewAnimator
                         createMarkNotificationAsReadCallback()));
     }
 
+    protected void reportNotificationReadAll()
+    {
+        middleCallbacks.add(
+                notificationServiceWrapper.markAsReadAll(
+                        createMarkNotificationAsReadAllCallback()));
+    }
+
     private DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO> createNotificationFetchListener()
     {
         return new NotificationFetchListener(true);
@@ -281,6 +302,7 @@ public class NotificationsView extends BetterViewAnimator
                 }
                 notificationListAdapter.addAll(value.getData());
                 notificationListAdapter.notifyDataSetChanged();
+                setReadAllLayoutVisable();
             }
         }
 
@@ -303,9 +325,13 @@ public class NotificationsView extends BetterViewAnimator
                 notificationListAdapter.clear();
                 notificationList.onRefreshComplete();
             }
-
-            setDisplayedChildByLayoutId(notificationList.getId());
+            setNotificationListShow();
         }
+    }
+
+    private void setNotificationListShow()
+    {
+        setDisplayedChildByLayoutId(R.id.listViewLayout);
     }
 
     private DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO> createNotificationRefreshListener()
@@ -358,6 +384,27 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
+    protected Callback<Response> createMarkNotificationAsReadAllCallback()
+    {
+        return new NotificationMarkAsReadAllCallback();
+    }
+
+    protected class NotificationMarkAsReadAllCallback implements Callback<Response>
+    {
+        @Override public void success(Response response, Response response2)
+        {
+            Timber.d("NotificationMarkAsReadAllCallback success");
+            setAllNotificationRead();
+            setReadAllLayoutVisable();
+            requestUpdateTabCounter();
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            Timber.d("NotificationMarkAsReadAllCallback failure");
+        }
+    }
+
     private void requestUpdateTabCounter()
     {
         // TODO remove this hack after refactor messagecenterfragment
@@ -389,5 +436,34 @@ public class NotificationsView extends BetterViewAnimator
             notificationClickHandler.handleNotificationItemClicked();
             reportNotificationRead(notificationDTO.pushId);
         }
+    }
+
+    private void setReadAllLayoutVisable()
+    {
+        boolean haveUnread = false;
+        int SIZE = notificationListAdapter.getCount();
+        for(int i = 0;i<SIZE;i++)
+        {
+            if(notificationListAdapter.getItem(i).unread)
+            {
+                haveUnread = true;
+                break;
+            }
+        }
+
+        if(readAllLayout!=null)
+        {
+            readAllLayout.setVisibility(haveUnread?View.VISIBLE:View.GONE);
+        }
+    }
+
+    private void setAllNotificationRead()
+    {
+        int SIZE = notificationListAdapter.getCount();
+        for(int i = 0;i<SIZE;i++)
+        {
+            notificationListAdapter.getItem(i).unread = false;
+        }
+        notificationListAdapter.notifyDataSetChanged();
     }
 }
