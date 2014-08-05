@@ -55,6 +55,7 @@ public class AchievementDialogFragment extends BaseDialogFragment
     @OnClick(R.id.btn_achievement_share)
     public void onShareClicked()
     {
+
     }
 
     @OnClick(R.id.btn_achievement_dismiss)
