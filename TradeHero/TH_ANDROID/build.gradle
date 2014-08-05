@@ -9,6 +9,15 @@ buildscript {
     }
 }
 
+// Manifest version information!
+def versionMajor = 2
+def versionMinor = 3
+def versionPatch = 0
+def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+
+def currentDate = (int) (System.currentTimeMillis() / (1000 * 60 * 60 * 24))
+def moduloDate = currentDate % 1000
+
 apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 apply plugin: 'robolectric'
@@ -21,6 +30,9 @@ repositories {
     maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
     maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
 }
+
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
 
 def isTravis = "true".equals(System.getenv("TRAVIS"))
 def preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
@@ -35,11 +47,14 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.tradehero.th"
         minSdkVersion 14
         targetSdkVersion 19
-        versionCode 160
-        versionName "1.0"
+
+        versionCode moduloDate * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+        buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
     }
 
     compileOptions {
