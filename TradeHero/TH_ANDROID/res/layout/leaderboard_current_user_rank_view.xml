@@ -39,6 +39,17 @@
       android:layout_marginRight="5dp"
       />
 
+  <ImageView
+      android:id="@+id/leaderboard_current_user_rank_country_logo"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:scaleType="centerInside"
+      tools:src="@drawable/square_gb"
+      android:contentDescription="@null"
+      android:layout_marginRight="@dimen/leaderboard_flag_icon_margin_right"/>
+
   <TextView
       android:id="@+id/leaderboard_current_user_rank_display_name"
       android:layout_width="wrap_content"
@@ -47,6 +58,7 @@
       android:textStyle="bold"
       android:textSize="@dimen/leaderboard_title_text_size"
       android:layout_toRightOf="@+id/leaderboard_current_user_rank_profile_picture"
+      android:layout_toLeftOf="@id/leaderboard_current_user_rank_country_logo"
       android:shadowColor="@color/light_grey"
       android:shadowDy="1"
       android:shadowRadius="1"
@@ -58,8 +70,10 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_below="@id/leaderboard_current_user_rank_display_name"
+      android:layout_toLeftOf="@id/leaderboard_current_user_rank_country_logo"
       android:layout_alignLeft="@id/leaderboard_current_user_rank_display_name"
       tools:text="+87%"
       />
+
 
 </RelativeLayout>

@@ -62,7 +62,7 @@ public class CompetitionLeaderboardCurrentUserRankHeaderView extends Leaderboard
     @Override protected void displayUserIsRanked()
     {
         super.displayUserIsRanked();
-        mDisplayName.setText(userProfileDTO.displayName);
+        displayName.setText(userProfileDTO.displayName);
     }
 
     @Override protected void displayUserNotRanked()
@@ -77,10 +77,15 @@ public class CompetitionLeaderboardCurrentUserRankHeaderView extends Leaderboard
         Spannable span = new SpannableString(rule);
         span.setSpan(clickableSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         span.setSpan(textColorSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        mROILabel.setMovementMethod(LinkMovementMethod.getInstance());
-        mROILabel.setText(span);
-        mROILabel.setBackgroundResource(R.drawable.basic_transparent_selector);
-        mDisplayName.setText(R.string.leaderboard_not_ranked);
+        roiLabel.setMovementMethod(LinkMovementMethod.getInstance());
+        roiLabel.setText(span);
+        roiLabel.setBackgroundResource(R.drawable.basic_transparent_selector);
+        displayName.setText(R.string.leaderboard_not_ranked);
+    }
+
+    @Override protected boolean shouldDisplayCountryLogo()
+    {
+        return false;
     }
 
     private ClickableSpan createClickableSpan()
