@@ -9,12 +9,15 @@ import com.tradehero.th.models.push.handlers.PushReceivedHandler;
 import com.tradehero.th.models.push.handlers.RegistrationFinishedHandler;
 import com.urbanairship.push.CustomPushNotificationBuilder;
 import com.urbanairship.push.PushNotificationBuilder;
-import dagger.Module;
-import dagger.Provides;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {

@@ -1,23 +1,22 @@
 package com.tradehero.th.models.push;
 
 import android.content.SharedPreferences;
+
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.baidu.BaiduPushModule;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.utils.Constants;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Provider;
-import javax.inject.Singleton;
 import timber.log.Timber;
 
 @Module(
         includes = {
-                BaiduPushModule.class,
-                UrbanAirshipPushModule.class,
+                BaiduPushModule.class
         },
         injects = {
                 DefaultIntentReceiver.class,
@@ -30,18 +29,13 @@ public class PushModule
     private static final String MAX_GROUP_NOTIFICATIONS = "MAX_GROUP_NOTIFICATIONS";
 
     @Provides @Singleton PushNotificationManager providePushNotificationManager(
-            Provider<BaiduPushManager> baiduPushManager,
-            Provider<UrbanAirshipPushNotificationManager> urbanAirshipPushNotificationManager)
+            BaiduPushManager baiduPushManager)
     {
         switch (Constants.TAP_STREAM_TYPE.pushProvider)
         {
-            case URBAN_AIRSHIP:
-                Timber.d("Using UrbanAirship Push");
-                return urbanAirshipPushNotificationManager.get();
-
             case BAIDU:
                 Timber.d("Using Baidu Push");
-                return baiduPushManager.get();
+                return baiduPushManager;
 
             default:
                 throw new IllegalArgumentException("Unhandled PushProvider." + Constants.TAP_STREAM_TYPE.pushProvider.name());
