@@ -16,7 +16,7 @@ import retrofit.client.Response;
 
 public class DTOProcessorNotificationRead implements DTOProcessor<Response>
 {
-    @NotNull private final NotificationKey key;
+    private final NotificationKey key;
     @NotNull private final Context context;
     @NotNull private final NotificationCache notificationCache;
     @NotNull private final CurrentUserId currentUserId;
@@ -38,28 +38,55 @@ public class DTOProcessorNotificationRead implements DTOProcessor<Response>
     }
     //</editor-fold>
 
+    //<editor-fold desc="Constructors">
+    public DTOProcessorNotificationRead(
+            @NotNull Context context,
+            @NotNull NotificationCache notificationCache,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache)
+    {
+        this.key = null;
+        this.context = context;
+        this.notificationCache = notificationCache;
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
+    }
+    //</editor-fold>
+
     @Override public Response process(Response value)
     {
-        NotificationDTO notificationDTO = notificationCache.get(key);
-        boolean previousUnread = false;
-        if (notificationDTO != null)
+        if(key != null)
         {
-            previousUnread = notificationDTO.unread;
-            notificationDTO.unread = false;
-        }
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
-        if (previousUnread && userProfileDTO != null && userProfileDTO.unreadNotificationsCount > 0)
-        {
-            userProfileDTO.unreadNotificationsCount--;
-        }
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+            NotificationDTO notificationDTO = notificationCache.get(key);
+            boolean previousUnread = false;
+            if (notificationDTO != null)
+            {
+                previousUnread = notificationDTO.unread;
+                notificationDTO.unread = false;
+            }
+            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            if (previousUnread && userProfileDTO != null && userProfileDTO.unreadNotificationsCount > 0)
+            {
+                userProfileDTO.unreadNotificationsCount--;
+            }
+            userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
 
-        if (previousUnread)
-        {
-            Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(requestUpdateIntent);
+            if (previousUnread)
+            {
+                Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(requestUpdateIntent);
+            }
+            return value;
         }
-
-        return value;
+        else
+        {
+            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            if(userProfileDTO != null)
+            {
+                userProfileDTO.unreadNotificationsCount = 0;
+            }
+            userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+            return value;
+        }
     }
 }

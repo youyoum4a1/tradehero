@@ -59,6 +59,15 @@ public class NotificationServiceWrapper
                 userProfileCache.get());
     }
 
+    @NotNull private DTOProcessor<Response> createNotificationReadDTOProcessor()
+    {
+        return new DTOProcessorNotificationRead(
+                context,
+                notificationCache.get(),
+                currentUserId,
+                userProfileCache.get());
+    }
+
     //<editor-fold desc="Get Notifications">
     public PaginatedNotificationDTO getNotifications(@NotNull NotificationListKey notificationListKey)
     {
@@ -103,6 +112,21 @@ public class NotificationServiceWrapper
     {
         BaseMiddleCallback<Response> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationReadDTOProcessor(pushKey));
         notificationServiceAsync.markAsRead(pushKey.key, readMiddleCallback);
+        return readMiddleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Mark As Read All">
+    public Response markAsReadAll()
+    {
+        return createNotificationReadDTOProcessor().process(notificationService.markAsReadAll());
+    }
+
+    @NotNull public MiddleCallback<Response> markAsReadAll(
+            @Nullable Callback<Response> callback)
+    {
+        BaseMiddleCallback<Response> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationReadDTOProcessor());
+        notificationServiceAsync.markAsReadAll(readMiddleCallback);
         return readMiddleCallback;
     }
     //</editor-fold>

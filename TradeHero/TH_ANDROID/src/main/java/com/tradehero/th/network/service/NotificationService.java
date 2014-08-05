@@ -19,4 +19,7 @@ public interface NotificationService
 
     @POST("/notifications/read/{readPushId}")
     Response markAsRead(@Path("readPushId") int readPushId);
+
+    @POST("/notifications/read/-1")
+    Response markAsReadAll();
 }
