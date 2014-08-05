@@ -45,6 +45,8 @@ android {
     dexOptions {
         // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
         preDexLibraries = preDexEnabled && !isTravis
+        // TODO is this really necessary?
+        jumboMode = true
     }
 
     defaultConfig {
@@ -70,20 +72,29 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix '.dev'
-            versionNameSuffix '-dev'
+            // versionNameSuffix interferes with the version the server receives
+//            applicationIdSuffix '.dev'
+//            versionNameSuffix '-dev'
         }
         release {
             runProguard true
             proguardFiles 'proguard/proguard-android.txt'
             signingConfig signingConfigs.release
         }
-        chinese {
-            applicationIdSuffix '.cn'
-            versionNameSuffix '-cn'
-        }
+    }
+
+    // There may be further flavorGroups dimensions in the future
+    flavorGroups "marketSegment"
+
+    productFlavors {
         googleplay {
-            versionNameSuffix '-gp'
+            flavorGroup "marketSegment"
+        }
+        china {
+            flavorGroup "marketSegment"
+        }
+        samsung {
+            flavorGroup "marketSegment"
         }
     }
 
@@ -106,21 +117,56 @@ android {
             }
         }
 
-        chinese {
+        debug {
+            java {
+                srcDir 'src/debug/java'
+            }
+        }
+
+        //region Flavours
+        googleplay {
+            manifest {
+                srcFile 'src/googleplay/AndroidManifest.xml'
+                srcFile 'src/samsung/AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src/googleplay/java'
+                // TODO remove samsung when files properly moved, and xav/iap merged in.
+                srcDir 'src/samsung/java'
+            }
+        }
+
+        china {
+            manifest {
+                srcFile 'src/chinese/AndroidManifest.xml'
+            }
             java {
                 srcDir 'src/chinese/java'
             }
         }
 
-        release {
+        samsung {
+            manifest {
+                srcFile 'src/samsung/AndroidManifest.xml'
+            }
             java {
-                srcDir 'src/googleplay/java'
+                srcDir 'src/samsung/java'
             }
         }
+        //endregion
 
-        debug {
+        // TODO make sure this is not breaking
+        androidTest.setRoot('src/test')
+
+        androidTest {
             java {
+                srcDir 'src/chinese/java'
                 srcDir 'src/googleplay/java'
+                srcDir 'src/debug/java'
+                srcDir 'src/test/java'
+            }
+            resources {
+                srcDir 'src/test/resources'
             }
         }
     }
@@ -139,9 +185,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    chineseCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
+    chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
 
     compile project(':ResideMenu')
+    // TODO change to samsungCompile when properly separated
     compile project(':samsung_iap')
     compile project(':facebook-android-sdk:facebook')
 
@@ -150,6 +197,7 @@ dependencies {
     }
     compile 'com.android.support:support-v4:19.1.0'
     compile ('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {
+        exclude group: 'commons-codec', module: 'android'
         // exclude group: 'com.android.support', module: 'appcompat-v7'
     }
     compile ('com.viewpagerindicator:library:2.4.1@aar') {
@@ -159,12 +207,18 @@ dependencies {
         exclude group: 'com.google.android', module: 'support-v4'
     }
     compile ('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
+        exclude group: 'com.nineoldandroids', module: 'library'
         // exclude group: 'com.android.support', module: 'appcompat-v7'
     }
 
-    compile 'com.squareup.picasso:picasso:2.3.2'
-    compile 'com.squareup.okhttp:okhttp:1.6.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:1.6.0'
+    compile ('com.squareup.picasso:picasso:2.3.3') {
+        exclude group: "com.squareup.okhttp", module: "okhttp"
+        exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
+    }
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile ('com.squareup.okhttp:okhttp-urlconnection:2.0.0') {
+        exclude group: "com.squareup.okhttp", module: "okhttp"
+    }
     compile ('com.squareup.retrofit:retrofit:1.6.1') {
         exclude module: 'gson'
     }
