@@ -3,7 +3,7 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android">
   <translate
       android:fromXDelta="0%"
-      android:toXDelta="-100%"
+      android:toXDelta="-150%"
       android:duration="@integer/achievement_dismiss_duration"/>
   <alpha
       android:fromAlpha="1.0"
@@ -14,13 +14,5 @@
       android:toDegrees="-30"
       android:pivotX="50%"
       android:pivotY="100%"
-      android:duration="@integer/achievement_dismiss_duration"/>
-  <scale
-      android:pivotX="50%"
-      android:pivotY="50%"
-      android:fromXScale="1"
-      android:fromYScale="1"
-      android:toXScale="0.8"
-      android:toYScale="0.8"
       android:duration="@integer/achievement_dismiss_duration"/>
 </set>

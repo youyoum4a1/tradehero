@@ -478,4 +478,21 @@
     <item name="android:textColor">#CE021B</item>
   </style>
 
+  <style name="TH.Achievement.Dialog" parent="android:Theme.Holo.Light.Dialog" >
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowIsFloating">false</item>
+    <item name="android:windowBackground">@null</item>
+  </style>
+
+  <style name="TH.Achievement.Dialog.Animation" parent="@android:style/Animation.Activity" >
+    <item name="android:windowEnterAnimation">@anim/achievement_zoom_in</item>
+    <item name="android:windowExitAnimation">@anim/achievement_dismiss_left</item>
+  </style>
+
+  <style name="TH.Achievement.Dialog.NoAnimation" parent="@android:style/Animation.Activity" >
+    <item name="android:windowEnterAnimation">@null</item>
+    <item name="android:windowExitAnimation">@null</item>
+  </style>
+
 </resources>
