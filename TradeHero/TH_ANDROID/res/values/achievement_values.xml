@@ -18,4 +18,8 @@
   <dimen name="user_level_progressbar_height">14dp</dimen>
   <dimen name="user_level_progressbar_indicator_text_size">@dimen/text_xxsmall</dimen>
 
+  <integer name="achievement_level_up_start_duration">300</integer>
+  <integer name="achievement_level_up_end_start_offset">700</integer>
+  <integer name="achievement_level_up_end_duration">300</integer>
+
 </resources>

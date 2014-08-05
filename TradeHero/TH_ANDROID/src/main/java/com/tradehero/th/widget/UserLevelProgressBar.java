@@ -8,6 +8,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import timber.log.Timber;
 
 public class UserLevelProgressBar extends RelativeLayout
 {
+    private static final long MS_PER_XP = 20;
     @InjectView(R.id.user_level_progress_next) protected TextView nextLevelLabel;
     @InjectView(R.id.user_level_progress_bar_indicator) protected TextView xpIndicatorLabel;
     @InjectView(R.id.user_level_progress_current) protected TextView currentLevelLabel;
@@ -35,7 +37,6 @@ public class UserLevelProgressBar extends RelativeLayout
     private int mCurrentXP = -1;
     private LevelDTO currentLevelDTO;
     private String xpFormat;
-    private long mAnimatorDuration;
 
     private UserLevelProgressBarListener userLevelProgressBarListener;
 
@@ -89,11 +90,6 @@ public class UserLevelProgressBar extends RelativeLayout
         nextLevelLabel.setText(String.valueOf(currentLevelDTO.getCurrentLevel() + 1));
     }
 
-    public void setAnimatorDuration(long mAnimatorDuration)
-    {
-        this.mAnimatorDuration = mAnimatorDuration;
-    }
-
     public void increment(int xpGained)
     {
         if (currentLevelDTO == null)
@@ -103,6 +99,7 @@ public class UserLevelProgressBar extends RelativeLayout
 
         List<Animator> animators = getAnimatorQueue(xpGained);
         AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setInterpolator(new LinearInterpolator());
         animatorSet.playSequentially(animators);
         animatorSet.start();
     }
@@ -144,14 +141,6 @@ public class UserLevelProgressBar extends RelativeLayout
         xpIndicatorLabel.setText(String.format(xpFormat, xp, currentLevelDTO.getMaxXp()));
     }
 
-    private void updateValueAnimatorDuration(ValueAnimator valueAnimator)
-    {
-        if (mAnimatorDuration > 0)
-        {
-            valueAnimator.setDuration(mAnimatorDuration);
-        }
-    }
-
     private List<Animator> getAnimatorQueue(int xpGained)
     {
         List<Animator> aList = new ArrayList<>();
@@ -169,7 +158,7 @@ public class UserLevelProgressBar extends RelativeLayout
         ValueAnimator v0 =
                 ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, p0a, p0b, p0c);
         v0.addUpdateListener(createUpdateListener());
-        updateValueAnimatorDuration(v0);
+        v0.setDuration(getAnimationDuration(currentXpToNormalisedProgress(), gainedXpToNormalisedProgress(mCurrentXP, xpGained, currentLevelDTO)));
         aList.add(v0);
 
         int targetXp = mCurrentXP + xpGained;
@@ -192,7 +181,7 @@ public class UserLevelProgressBar extends RelativeLayout
 
             ValueAnimator vN = ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, pNa, pNb, pNc);
             vN.addUpdateListener(createUpdateListener());
-            updateValueAnimatorDuration(vN);
+            vN.setDuration(getAnimationDuration(startProgress, gainedXpToNormalisedProgress(nextLevelDTO.getBaseXp(), xpGainedN, nextLevelDTO)));
             vN.addListener(new AnimatorListenerAdapter()
             {
                 @Override public void onAnimationStart(Animator animation)
@@ -215,6 +204,16 @@ public class UserLevelProgressBar extends RelativeLayout
         }
 
         return aList;
+    }
+
+    private long getAnimationDuration(int startProgress, int endProgress)
+    {
+        long diff = ((long) endProgress - (long) startProgress) * MS_PER_XP;
+        if(diff < 0)
+        {
+            diff = 0;
+        }
+        return diff;
     }
 
     public void setUserLevelProgressBarListener(UserLevelProgressBarListener userLevelProgressBarListener)

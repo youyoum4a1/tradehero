@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +38,10 @@ public class AchievementDialogFragment extends BaseDialogFragment
     @InjectView(R.id.btn_achievement_dismiss) Button btnDismiss;
     @InjectView(R.id.btn_achievement_share) Button btnShare;
 
+    @InjectView(R.id.user_level_progress_level_up) TextView levelUp;
+    @InjectView(R.id.user_level_progress_xp_earned) TextView xpEarned;
+    @InjectView(R.id.user_level_progress_virtual_dollar_earned) TextView dollarEarned;
+
     private boolean mShouldDismissOnOutsideClicked;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -59,6 +65,7 @@ public class AchievementDialogFragment extends BaseDialogFragment
     {
         super.onViewCreated(view, savedInstanceState);
         mShouldDismissOnOutsideClicked = true; //TODO
+        userLevelProgressBar.setUserLevelProgressBarListener(createUserLevelProgressBarListener());
     }
 
     @Override public void onResume()
@@ -90,6 +97,12 @@ public class AchievementDialogFragment extends BaseDialogFragment
     {
         contentContainer.setOnTouchListener(null);
         super.onPause();
+    }
+
+    @Override public void onDestroyView()
+    {
+        userLevelProgressBar.setUserLevelProgressBarListener(null);
+        super.onDestroyView();
     }
 
     public void setShouldDismissOnOutsideClicked(boolean mShouldDismissOnOutsideClicked)
@@ -127,7 +140,27 @@ public class AchievementDialogFragment extends BaseDialogFragment
     {
         @Override public void onLevelUp(LevelDTO fromLevel, LevelDTO toLevel)
         {
+            Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.achievement_level_up);
+            levelUp.setVisibility(View.VISIBLE);
+            a.setAnimationListener(new Animation.AnimationListener()
+                                   {
+                                       @Override public void onAnimationStart(Animation animation)
+                                       {
 
+                                       }
+
+                                       @Override public void onAnimationEnd(Animation animation)
+                                       {
+                                            levelUp.setVisibility(View.GONE);
+                                       }
+
+                                       @Override public void onAnimationRepeat(Animation animation)
+                                       {
+
+                                       }
+                                   }
+            );
+            levelUp.startAnimation(a);
         }
     }
 }
