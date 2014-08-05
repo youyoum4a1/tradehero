@@ -67,11 +67,17 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         this.freeFollowedListener = freeFollowedListener;
         this.alertsAreFree = alertsAreFree;
 
-//<<<<<<< HEAD
-//        this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(premiumFollowedListener, userToFollow, purchaseApplicableOwnedPortfolioId);
-//        DaggerUtils.inject(this);
-//=======
-        this.premiumFollowUserAssistant = new PremiumFollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
+        if (userToFollow == null)
+        {
+            //userToFollow maybe null, if user select reset portfolio or add cash
+            premiumFollowUserAssistant = null;
+        }
+        else
+        {
+            premiumFollowUserAssistant = new PremiumFollowUserAssistant(userToFollow, premiumFollowedListener, purchaseApplicableOwnedPortfolioId);
+        }
+
+        DaggerUtils.inject(this);
     }
 
     public void onDestroy()
