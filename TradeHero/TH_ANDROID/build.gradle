@@ -138,10 +138,10 @@ android {
 
         china {
             manifest {
-                srcFile 'src/chinese/AndroidManifest.xml'
+                srcFile 'src/china/AndroidManifest.xml'
             }
             java {
-                srcDir 'src/chinese/java'
+                srcDir 'src/china/java'
             }
         }
 
@@ -160,7 +160,7 @@ android {
 
         androidTest {
             java {
-                srcDir 'src/chinese/java'
+                srcDir 'src/china/java'
                 srcDir 'src/googleplay/java'
                 srcDir 'src/debug/java'
                 srcDir 'src/test/java'
