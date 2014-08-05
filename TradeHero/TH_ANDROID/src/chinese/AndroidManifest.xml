@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--Baidu push-->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!--Baidu push-->
+
     <application>
         <receiver
             android:name="com.baidu.android.pushservice.RegistrationReceiver"
@@ -11,6 +19,22 @@
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
                 <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".models.push.baidu.BaiduIntentReceiver">
+            <intent-filter>
+                <action android:name="com.tradehero.th.ACTION_NOTIFICATION_CLICKED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- receiver for baidu push -->
+        <receiver android:name="com.tradehero.th.models.push.baidu.BaiduPushMessageReceiver">
+            <intent-filter>
+                <!-- receive push msg -->
+                <action android:name="com.baidu.android.pushservice.action.MESSAGE"/>
+                <!-- receive bind,unbind,fetch,delete etc msg -->
+                <action android:name="com.baidu.android.pushservice.action.RECEIVE"/>
+                <action android:name="com.baidu.android.pushservice.action.notification.CLICK"/>
             </intent-filter>
         </receiver>
 

@@ -42,14 +42,6 @@
   <!-- END OPTIONAL Urban Airship Settings -->
   <!-- END push notification permission -->
 
-  <!--Baidu push-->
-  <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-  <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>
-  <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
-  <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
-  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-  <!--Baidu push-->
-
   <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
 
   <application
@@ -212,22 +204,6 @@
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
-    <receiver android:name=".models.push.baidu.BaiduIntentReceiver">
-      <intent-filter>
-        <action android:name="com.tradehero.th.ACTION_NOTIFICATION_CLICKED"/>
-      </intent-filter>
-    </receiver>
-
-    <!-- receiver for baidu push -->
-    <receiver android:name="com.tradehero.th.models.push.baidu.BaiduPushMessageReceiver">
-      <intent-filter>
-        <!-- receive push msg -->
-        <action android:name="com.baidu.android.pushservice.action.MESSAGE"/>
-        <!-- receive bind,unbind,fetch,delete etc msg -->
-        <action android:name="com.baidu.android.pushservice.action.RECEIVE"/>
-        <action android:name="com.baidu.android.pushservice.action.notification.CLICK"/>
-      </intent-filter>
-    </receiver>
 
     <!-- BEGIN Baidu inter-process communication -->
     <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver" android:process=":bdservice_v1">
