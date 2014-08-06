@@ -92,6 +92,8 @@ android {
         }
         china {
             flavorDimension "marketSegment"
+            // TODO handle the different kinds
+            // http://stackoverflow.com/questions/9035356/how-can-i-transform-a-properties-file-during-a-gradle-build
         }
         samsung {
             flavorDimension "marketSegment"
