@@ -463,7 +463,7 @@
 
   <style name="TH.Level.Earned" parent="android:TextAppearance.Holo.Small">
     <item name="android:gravity">right|center_vertical</item>
-    <item name="android:textSize">@dimen/text_xsmall</item>
+    <item name="android:textSize">@dimen/text_small</item>
   </style>
 
   <style name="TH.Level.Earned.VirtualDollar" parent="TH.Level.Earned">

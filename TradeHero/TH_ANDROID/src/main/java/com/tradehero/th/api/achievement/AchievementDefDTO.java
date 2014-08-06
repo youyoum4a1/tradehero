@@ -8,16 +8,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class AchievementDefDTO implements DTO
 {
-    int id;
-    int trigger;
-    String thName;
-    double virtualDollars;
-    String visual;
-    String text;
-    @Nullable String subText;
-    int achievementLevel;
-    String category;
-    String hexColor;
+    public int id;
+    public int trigger;
+    public String thName;
+    public double virtualDollars;
+    public String visual;
+    public String text;
+    @Nullable public String subText;
+    public int achievementLevel;
+    public String category;
+    public String hexColor;
+    public String header;
 
     @JsonIgnore
     public AchievementDefDTOKey getAchievementDefDTOKey()

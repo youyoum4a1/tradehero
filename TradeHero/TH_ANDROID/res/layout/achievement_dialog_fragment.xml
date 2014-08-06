@@ -24,11 +24,10 @@
       >
     <RelativeLayout
         android:layout_width="@dimen/achievement_dialog_width"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/achievement_dialog_padding"
-        android:paddingLeft="@dimen/achievement_dialog_padding"
-        android:paddingRight="@dimen/achievement_dialog_padding"
-        android:paddingBottom="@dimen/achievement_share_container_margin_top"
+        android:layout_height="@dimen/achievement_dialog_height"
+        android:padding="@dimen/achievement_dialog_padding"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         >
 
       <Button
@@ -55,9 +54,20 @@
           android:layout_height="@dimen/achievement_pulse_circle_w_h"
           android:scaleType="fitCenter"
           android:src="@drawable/white_circle"
+          android:layout_alignParentTop="true"
           android:layout_marginTop="@dimen/achievement_pulse_circle_margin_top"
-          android:layout_below="@id/achievement_header"
           android:layout_centerHorizontal="true"/>
+
+      <ImageView
+          android:id="@+id/achievement_starburst"
+          android:layout_width="@dimen/achievement_pulse_circle_w_h"
+          android:layout_height="@dimen/achievement_pulse_circle_w_h"
+          android:src="@drawable/achievement_background"
+          android:layout_alignParentTop="true"
+          android:layout_marginTop="@dimen/achievement_pulse_circle_margin_top"
+          android:layout_centerHorizontal="true"
+          android:alpha="0.1"
+          />
 
       <ImageView
           android:id="@+id/achievement_badge"
@@ -66,7 +76,7 @@
           android:scaleType="fitCenter"
           tools:src="@drawable/launcher"
           android:layout_marginTop="@dimen/achievement_badge_margin_top"
-          android:layout_below="@id/achievement_header"
+          android:layout_alignParentTop="true"
           android:layout_centerHorizontal="true"/>
 
       <TextView
@@ -102,14 +112,16 @@
           android:layout_width="match_parent"
           android:layout_height="@dimen/achievement_level_progress_container_height"
           android:layout_below="@id/achievement_more_description"
-          android:layout_marginTop="@dimen/achievement_level_progress_margin_top">
+          android:layout_marginTop="@dimen/achievement_level_progress_margin_top"
+          android:clipChildren="false"
+          android:clipToPadding="false">
 
         <ImageView
             android:id="@+id/user_level_avatar"
             android:layout_width="@dimen/medium_logo_w_h"
             android:layout_height="@dimen/medium_logo_w_h"
             android:layout_alignParentBottom="true"
-            tools:src="@drawable/superman_facebook"/>
+            android:src="@drawable/ic_level_avatar_placeholder"/>
 
         <include
             android:id="@+id/user_level_progress_bar"
