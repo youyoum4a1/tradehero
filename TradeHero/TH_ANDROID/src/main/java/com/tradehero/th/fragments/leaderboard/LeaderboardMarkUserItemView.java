@@ -468,6 +468,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (lbmuFollowUser != null)
         {
+            // you can't follow yourself
+            if (currentUserId.get() == leaderboardItem.id)
+            {
+                lbmuFollowUser.setVisibility(GONE);
+                return;
+            }
+
             Boolean isFollowing = isCurrentUserFollowing();
             boolean showButton = isFollowing == null || !isFollowing;
             lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
