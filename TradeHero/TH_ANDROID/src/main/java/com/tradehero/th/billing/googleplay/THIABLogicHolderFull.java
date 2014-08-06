@@ -15,13 +15,11 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.utils.ArrayUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
-import com.tradehero.th.billing.samsung.THProductDetailDomainPredicate;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
@@ -30,6 +28,8 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
+
+//import com.tradehero.th.billing.samsung.THProductDetailDomainPredicate;
 
 class THIABLogicHolderFull
     extends THBaseBillingLogicHolder<
@@ -134,7 +134,8 @@ class THIABLogicHolderFull
         {
             return null;
         }
-        return ArrayUtils.filter(details, new THProductDetailDomainPredicate<IABSKU, THIABProductDetail>(domain));
+        return null;
+        //return ArrayUtils.filter(details, new THProductDetailDomainPredicate<IABSKU, THIABProductDetail>(domain));
     }
 
     protected BaseIABSKUList<IABSKU> getAllSkus()

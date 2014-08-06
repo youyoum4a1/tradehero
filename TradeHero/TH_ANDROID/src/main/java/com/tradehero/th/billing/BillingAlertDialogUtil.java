@@ -9,9 +9,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
@@ -23,6 +21,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+//import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
 
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,

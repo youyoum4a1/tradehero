@@ -1,10 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
-import com.tradehero.th.api.billing.PurchaseReportDTO;
-import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
+import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -102,13 +101,13 @@ import retrofit.Callback;
                     ((GooglePlayPurchaseReportDTO) purchaseReportDTO).googlePlayData,
                     ((GooglePlayPurchaseReportDTO) purchaseReportDTO).googlePlaySignature);
         }
-        else if (purchaseReportDTO instanceof SamsungPurchaseReportDTO)
-        {
-            received = alertPlanService.checkAlertPlanAttributionSamsung(
-                    userBaseKey.key,
-                    ((SamsungPurchaseReportDTO) purchaseReportDTO).paymentId,
-                    ((SamsungPurchaseReportDTO) purchaseReportDTO).productCode);
-        }
+        //else if (purchaseReportDTO instanceof SamsungPurchaseReportDTO)
+        //{
+        //    received = alertPlanService.checkAlertPlanAttributionSamsung(
+        //            userBaseKey.key,
+        //            ((SamsungPurchaseReportDTO) purchaseReportDTO).paymentId,
+        //            ((SamsungPurchaseReportDTO) purchaseReportDTO).productCode);
+        //}
         else
         {
             throw new IllegalArgumentException("Unhandled type " + purchaseReportDTO.getClass());
@@ -130,14 +129,14 @@ import retrofit.Callback;
                     ((GooglePlayPurchaseReportDTO) purchaseReportDTO).googlePlaySignature,
                     middleCallback);
         }
-        else if (purchaseReportDTO instanceof SamsungPurchaseReportDTO)
-        {
-            alertPlanServiceAsync.checkAlertPlanAttributionSamsung(
-                    userBaseKey.key,
-                    ((SamsungPurchaseReportDTO) purchaseReportDTO).paymentId,
-                    ((SamsungPurchaseReportDTO) purchaseReportDTO).productCode,
-                    middleCallback);
-        }
+        //else if (purchaseReportDTO instanceof SamsungPurchaseReportDTO)
+        //{
+        //    alertPlanServiceAsync.checkAlertPlanAttributionSamsung(
+        //            userBaseKey.key,
+        //            ((SamsungPurchaseReportDTO) purchaseReportDTO).paymentId,
+        //            ((SamsungPurchaseReportDTO) purchaseReportDTO).productCode,
+        //            middleCallback);
+        //}
         else
         {
             throw new IllegalArgumentException("Unhandled type " + purchaseReportDTO.getClass());
