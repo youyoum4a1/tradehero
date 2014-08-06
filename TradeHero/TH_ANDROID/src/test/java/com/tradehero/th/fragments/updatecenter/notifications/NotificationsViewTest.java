@@ -39,6 +39,7 @@ public class NotificationsViewTest
     @Test public void testMarkAsReadNotCrash()
     {
         notifView.notificationServiceWrapper = mock(NotificationServiceWrapper.class);
+        //noinspection unchecked
         when(notifView.notificationServiceWrapper.markAsRead(any(UserBaseKey.class), any(NotificationKey.class), any(Callback.class)))
         .then(new Answer<BaseMiddleCallback<Response>>()
         {
@@ -46,7 +47,8 @@ public class NotificationsViewTest
             {
                 Object[] args = invocation.getArguments();
                 Response successResponse = new Response("http://whatever", 200, "Good", new ArrayList<Header>(), null);
-                ((Callback) args[1]).success(successResponse, null);
+                //noinspection unchecked
+                ((Callback) args[2]).success(successResponse, null);
                 return null;
             }
         });
