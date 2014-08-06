@@ -1,9 +1,10 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import com.tradehero.common.persistence.DTOCache;
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -156,25 +157,30 @@ abstract public class SocialConnectSettingViewHolder
 
     protected boolean changeSharing(boolean enable)
     {
+        Context activityContext = null;
+        if (preferenceFragment != null)
+        {
+            activityContext = preferenceFragment.getActivity();
+        }
         Timber.d("Sharing is asked to change");
-        if (enable)
+        if (activityContext != null && enable)
         {
             progressDialog = progressDialogUtil.show(
-                    preferenceFragment.getActivity(),
+                    activityContext,
                     getLinkingDialogTitle(),
                     getLinkingDialogMessage());
         }
-        else
+        else if (activityContext != null)
         {
             progressDialog = progressDialogUtil.show(
-                    preferenceFragment.getActivity(),
+                    activityContext,
                     getUnlinkingDialogTitle(),
                     getUnlinkingDialogMessage());
         }
         return false;
     }
 
-    abstract protected String getSocialNetworkName();
+    @Nullable abstract protected String getSocialNetworkName();
     abstract protected int getLinkingDialogTitle();
     abstract protected int getLinkingDialogMessage();
     abstract protected int getUnlinkingDialogTitle();
@@ -200,11 +206,12 @@ abstract public class SocialConnectSettingViewHolder
         {
             reportConnectToServer(json);
             ProgressDialog progressDialogCopy = progressDialog;
-            if (progressDialogCopy != null)
+            PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+            if (progressDialogCopy != null && preferenceFragmentCopy != null)
             {
                 progressDialogCopy.setMessage(
                         String.format(
-                                preferenceFragment.getString(R.string.authentication_connecting_tradehero),
+                                preferenceFragmentCopy.getString(R.string.authentication_connecting_tradehero),
                                 getSocialNetworkName()));
             }
             return false;

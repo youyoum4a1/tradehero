@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
@@ -12,6 +13,7 @@ import com.tradehero.th.utils.TwitterUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingViewHolder
 {
@@ -35,9 +37,14 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
         return R.string.key_settings_sharing_twitter;
     }
 
-    @Override protected String getSocialNetworkName()
+    @Override @Nullable protected String getSocialNetworkName()
     {
-        return preferenceFragment.getString(R.string.twitter);
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            return preferenceFragmentCopy.getString(R.string.twitter);
+        }
+        return null;
     }
 
     @Override protected int getLinkingDialogTitle()
@@ -67,9 +74,13 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
         {
             detachMiddleSocialConnectLogInCallback();
             middleSocialConnectLogInCallback = createMiddleSocialConnectLogInCallback();
-            twitterUtils.get().logIn(
-                    preferenceFragment.getActivity(),
-                    middleSocialConnectLogInCallback);
+            PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+            if (preferenceFragmentCopy != null)
+            {
+                twitterUtils.get().logIn(
+                        preferenceFragmentCopy.getActivity(),
+                        middleSocialConnectLogInCallback);
+            }
         }
         else
         {

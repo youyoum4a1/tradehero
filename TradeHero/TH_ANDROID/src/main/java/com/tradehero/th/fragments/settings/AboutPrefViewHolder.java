@@ -18,6 +18,10 @@ public class AboutPrefViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        preferenceFragment.getNavigator().pushFragment(AboutFragment.class);
+        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragment.getNavigator().pushFragment(AboutFragment.class);
+        }
     }
 }

@@ -1,10 +1,11 @@
 package com.tradehero.th.fragments.settings;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 abstract public class BaseSettingViewHolder implements SettingViewHolder
 {
-    protected DashboardPreferenceFragment preferenceFragment;
+    @Nullable protected DashboardPreferenceFragment preferenceFragment;
 
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {

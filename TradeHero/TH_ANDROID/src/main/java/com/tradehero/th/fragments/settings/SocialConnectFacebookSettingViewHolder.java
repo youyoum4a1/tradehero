@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
@@ -12,6 +13,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SocialConnectFacebookSettingViewHolder extends SocialConnectSettingViewHolder
 {
@@ -35,9 +37,14 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
         return R.string.key_settings_sharing_facebook;
     }
 
-    @Override protected String getSocialNetworkName()
+    @Override @Nullable protected String getSocialNetworkName()
     {
-        return preferenceFragment.getString(R.string.facebook);
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            return preferenceFragmentCopy.getString(R.string.facebook);
+        }
+        return null;
     }
 
     @Override protected int getLinkingDialogTitle()
@@ -67,9 +74,13 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
         {
             detachMiddleSocialConnectLogInCallback();
             middleSocialConnectLogInCallback = createMiddleSocialConnectLogInCallback();
-            facebookUtils.get().logIn(
-                    preferenceFragment.getActivity(),
-                    middleSocialConnectLogInCallback);
+            PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+            if (preferenceFragmentCopy != null)
+            {
+                facebookUtils.get().logIn(
+                        preferenceFragmentCopy.getActivity(),
+                        middleSocialConnectLogInCallback);
+            }
         }
         else
         {
