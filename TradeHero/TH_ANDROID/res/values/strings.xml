@@ -240,4 +240,5 @@
   <string name="trade_comment">Trade Comment</string>
 
   <string name="mark_as_all_read">Mark as all Read</string>
+  <string name="leaderboard_not_ranked_position"><![CDATA[>9999]]></string>
 </resources>

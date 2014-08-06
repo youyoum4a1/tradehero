@@ -152,6 +152,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         if (ownRankingView.expandingLayout != null)
         {
+            ownRankingView.displayRankingPosition(currentRank);
             ownRankingView.expandingLayout.setVisibility(View.GONE);
             ownRankingView.onExpand(false);
             ownRankingView.setOnClickListener(new BaseExpandingItemListener());
