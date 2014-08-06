@@ -7,17 +7,42 @@ import javax.inject.Inject;
 
 public class PositionDTOCompactListUtil
 {
+    //<editor-fold desc="Constructors">
     @Inject public PositionDTOCompactListUtil()
     {
         super();
     }
+    //</editor-fold>
 
-    public Double projectedPLValue(List<PositionDTOCompact> positionDTOCompacts, QuoteDTO quoteDTO, Integer shareQuantity)
+    //<editor-fold desc="Projected PL Value">
+    public Double projectedPLValue(
+            List<PositionDTOCompact> positionDTOCompacts,
+            QuoteDTO quoteDTO,
+            Integer shareQuantity)
     {
         return projectedPLValue(positionDTOCompacts, quoteDTO, shareQuantity, true);
     }
 
-    public Double projectedPLValue(List<PositionDTOCompact> positionDTOCompacts, QuoteDTO quoteDTO, Integer shareQuantity, boolean includeTransactionCost)
+    public Double projectedPLValue(
+            List<PositionDTOCompact> positionDTOCompacts,
+            QuoteDTO quoteDTO,
+            Integer shareQuantity,
+            boolean includeTransactionCost)
+    {
+        return projectedPLValue(
+                positionDTOCompacts,
+                quoteDTO,
+                shareQuantity,
+                includeTransactionCost,
+                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
+    }
+
+    public Double projectedPLValue(
+            List<PositionDTOCompact> positionDTOCompacts,
+            QuoteDTO quoteDTO,
+            Integer shareQuantity,
+            boolean includeTransactionCost,
+            double txnCostUsd)
     {
         if (shareQuantity != null &&
                 positionDTOCompacts != null &&
@@ -31,7 +56,7 @@ public class PositionDTOCompactListUtil
             double plValue = sellPrice - buyPrice;
             if (shareQuantity > 0 && includeTransactionCost)
             {
-                plValue -= SecurityUtils.DEFAULT_TRANSACTION_COST;
+                plValue -= txnCostUsd;
             }
             return plValue;
         }
@@ -40,4 +65,5 @@ public class PositionDTOCompactListUtil
             return null;
         }
     }
+    //</editor-fold>
 }

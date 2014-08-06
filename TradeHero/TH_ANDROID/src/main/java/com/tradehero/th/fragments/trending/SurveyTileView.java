@@ -15,6 +15,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public final class SurveyTileView extends ImageView
 {
@@ -103,12 +104,12 @@ public final class SurveyTileView extends ImageView
     {
         return new DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>()
         {
-            @Override public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+            @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
             {
                 linkWith(value, true);
             }
 
-            @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
             {
 
             }

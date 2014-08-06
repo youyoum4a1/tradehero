@@ -31,7 +31,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THIABLogicHolderFull
+class THIABLogicHolderFull
     extends THBaseBillingLogicHolder<
                 IABSKUListKey,
                 IABSKU,

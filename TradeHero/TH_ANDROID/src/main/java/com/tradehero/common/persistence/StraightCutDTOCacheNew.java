@@ -40,6 +40,11 @@ abstract public class StraightCutDTOCacheNew<
         }
         //</editor-fold>
 
+        @Nullable public DTOCutType getShrunkValue()
+        {
+            return shrunkValue;
+        }
+
         @Override @Nullable public DTOType getValue()
         {
             return inflateValue(key, shrunkValue);

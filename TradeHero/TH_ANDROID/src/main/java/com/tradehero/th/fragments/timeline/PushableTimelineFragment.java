@@ -1,8 +1,9 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.route.Routable;
@@ -11,8 +12,9 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.metrics.Analytics;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This fragment will not be the main, but one that is pushed from elsewhere
@@ -23,7 +25,7 @@ import javax.inject.Inject;
 public class PushableTimelineFragment extends TimelineFragment
 {
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
-    @Inject THLocalyticsSession localyticsSession;
+    @Inject Analytics analytics;
 
     @Override protected void initViews(View view)
     {
@@ -94,5 +96,14 @@ public class PushableTimelineFragment extends TimelineFragment
                 premiumFollowUser(shownUserBaseKey);
             }
         });
+    }
+
+    @Override public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)
+    {
+        return !(
+                    getClass().isAssignableFrom(fragmentClass) &&
+                    shownUserBaseKey != null &&
+                    shownUserBaseKey.equals(getUserBaseKey(args)))
+                && super.allowNavigateTo(fragmentClass, args);
     }
 }

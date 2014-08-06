@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.actionbarsherlock.app.ActionBar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -21,9 +20,10 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.persistence.social.UserFollowerCache;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 {
@@ -262,13 +262,13 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected class FollowerPayoutManagerFollowerListener implements DTOCacheNew.Listener<FollowerHeroRelationId, UserFollowerDTO>
     {
-        @Override public void onDTOReceived(FollowerHeroRelationId key, UserFollowerDTO value)
+        @Override public void onDTOReceived(@NotNull FollowerHeroRelationId key, @NotNull UserFollowerDTO value)
         {
             display(value);
         }
 
         @Override
-        public void onErrorThrown(FollowerHeroRelationId key, Throwable error)
+        public void onErrorThrown(@NotNull FollowerHeroRelationId key, @NotNull Throwable error)
         {
             THToast.show(
                     "There was an error fetching your follower information");

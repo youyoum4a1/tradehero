@@ -18,13 +18,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
-import dagger.Lazy;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -35,7 +34,7 @@ public class GuideActivity extends Activity
         View.OnClickListener
 {
     private static final int CLOSE_IMAGE_ID = 0x88888;
-    @Inject Lazy<THLocalyticsSession> localyticsSession;
+    @Inject Analytics analytics;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -67,14 +66,13 @@ public class GuideActivity extends Activity
             Timber.e(e, null);
         }
 
-        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
-        localyticsSession.get().tagScreen(LocalyticsConstants.Splash);
+        analytics.openSession();
+        analytics.tagScreen(AnalyticsConstants.Splash);
     }
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
-        localyticsSession.get().upload();
+        analytics.closeSession();
         super.onPause();
     }
 
@@ -181,7 +179,7 @@ public class GuideActivity extends Activity
 
     @Override public void onClick(View v)
     {
-        localyticsSession.get().tagEvent(LocalyticsConstants.SplashScreenCancel);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SplashScreenCancel));
         ActivityHelper.launchAuthentication(this);
     }
 
@@ -251,8 +249,7 @@ public class GuideActivity extends Activity
                 imageView.setOnClickListener(null);
             }
             container.addView(view);
-            localyticsSession.get().tagEventMethod(LocalyticsConstants.SplashScreen,
-                    LocalyticsConstants.Screen + String.valueOf(position));
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.SplashScreen, AnalyticsConstants.Screen + String.valueOf(position)));
             return view;
         }
 

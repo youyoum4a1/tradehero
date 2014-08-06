@@ -1,18 +1,23 @@
 package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {
     public static final int COLOR_ACTIVE = R.color.black;
     public static final int COLOR_INACTIVE = R.color.text_gray_normal;
 
-    protected TextView prizeView;
+    @InjectView(R.id.competition_roi) protected TextView roiView;
 
     //<editor-fold desc="Constructors">
     public CompetitionZoneLeaderboardListItemView(Context context)
@@ -34,7 +39,6 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
     @Override protected void initViews()
     {
         super.initViews();
-        prizeView = (TextView) findViewById(R.id.competition_prize);
     }
 
     @Override public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
@@ -42,7 +46,7 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
         super.linkWith(competitionZoneDTO, andDisplay);
         if (andDisplay)
         {
-            displayPrize();
+            displayROI();
         }
     }
 
@@ -50,7 +54,7 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
     @Override public void display()
     {
         super.display();
-        displayPrize();
+        displayROI();
     }
 
     public void displayIcon()
@@ -96,13 +100,27 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
         return ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).isActive();
     }
 
-    public void displayPrize()
+    public void displayROI()
     {
-        if (prizeView != null)
+        if (roiView != null)
         {
             if (competitionZoneDTO != null && competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
             {
-                prizeView.setText(((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.prizeValueWithCcy);
+                LeaderboardUserDTO leaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
+                if(leaderboardUserDTO != null)
+                {
+                    THSignedNumber thRoi = THSignedPercentage
+                            .builder(leaderboardUserDTO.roiInPeriod * 100)
+                            .build();
+
+                    roiView.setText(thRoi.toString());
+                    roiView.setTextColor(getResources().getColor(thRoi.getColorResId()));
+                }
+                else
+                {
+                    roiView.setTextColor(Color.BLACK);
+                    roiView.setText(R.string.na);
+                }
             }
         }
     }

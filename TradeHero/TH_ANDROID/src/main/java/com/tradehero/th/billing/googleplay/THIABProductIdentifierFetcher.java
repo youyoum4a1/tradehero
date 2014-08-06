@@ -6,7 +6,7 @@ import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-public interface THIABProductIdentifierFetcher
+interface THIABProductIdentifierFetcher
     extends IABProductIdentifierFetcher<
         IABSKUListKey,
         IABSKU,

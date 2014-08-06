@@ -30,8 +30,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @InjectView(R.id.btn_share_fb) ToggleButton mFacebookShareButton;
     @InjectView(R.id.btn_share_tw) ToggleButton mTwitterShareButton;
     @InjectView(R.id.btn_share_li) ToggleButton mLinkedInShareButton;
-    @InjectView(R.id.btn_share_wb) ToggleButton mWbShareButton;
-    @InjectView(R.id.btn_wechat) ToggleButton mWechatShareButton;
+    @InjectView(R.id.btn_share_wb) ToggleButton mWeiboShareButton;
+    @InjectView(R.id.btn_share_wechat) ToggleButton mWechatShareButton;
     @InjectView(R.id.btn_location) ToggleButton mLocationShareButton;
     @InjectView(R.id.switch_share_public) ToggleButton mIsPublic;
 
@@ -75,7 +75,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         initSocialButton(mTwitterShareButton, SocialNetworkEnum.TW);
         initSocialButton(mLinkedInShareButton, SocialNetworkEnum.LN);
         initSocialButton(mWechatShareButton, SocialNetworkEnum.WECHAT, createCheckedChangeListenerForWechat());
-        initSocialButton(mWbShareButton, SocialNetworkEnum.WB);
+        initSocialButton(mWeiboShareButton, SocialNetworkEnum.WB);
     }
 
     private void initSocialButton(CompoundButton compoundButton, SocialNetworkEnum socialNetworkEnum)
@@ -201,7 +201,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         publishableFormDTO.publishToFb = mFacebookShareButton.isChecked();
         publishableFormDTO.publishToTw = mTwitterShareButton.isChecked();
         publishableFormDTO.publishToLi = mLinkedInShareButton.isChecked();
-        publishableFormDTO.publishToWb = mWbShareButton.isChecked();
+        publishableFormDTO.publishToWb = mWeiboShareButton.isChecked();
 
         publishableFormDTO.isPublic = mIsPublic.isChecked();
 
@@ -219,6 +219,15 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     public void onPostDiscussion()
     {
         socialSharePreferenceHelperNew.save();
+    }
+
+    public void hideSocialButtons()
+    {
+        mFacebookShareButton.setVisibility(GONE);
+        mTwitterShareButton.setVisibility(GONE);
+        mLinkedInShareButton.setVisibility(GONE);
+        mWechatShareButton.setVisibility(GONE);
+        mWeiboShareButton.setVisibility(GONE);
     }
 
     //<editor-fold desc="To be used in future, we should encapsulate searching for people and stock within this view, instead of doing it in the parent fragment">

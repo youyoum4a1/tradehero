@@ -54,8 +54,6 @@ public interface BillingInteractor<
     void forgetRequestCode(int requestCode);
     BillingLogicHolderType getBillingLogicHolder();
 
-    void doAction(int action);
-
     AlertDialog popBillingUnavailable(BillingExceptionType billingException);
     int run(UIBillingRequestType uiBillingRequest);
 

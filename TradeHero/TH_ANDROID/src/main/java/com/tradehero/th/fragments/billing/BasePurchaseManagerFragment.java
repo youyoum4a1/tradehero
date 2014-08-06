@@ -4,32 +4,29 @@ import android.os.Bundle;
 import android.view.View;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.UIBillingRequest;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.system.SystemStatusDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
+import com.tradehero.th.billing.THPurchaseActionInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
@@ -37,21 +34,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
-    @Inject protected THBillingInteractor userInteractor;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected SystemStatusCache systemStatusCache;
-    private DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> systemStatusCacheListener;
-    protected SystemStatusDTO systemStatusDTO;
-    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
-    private PortfolioCompactListRetrievedMilestone portfolioCompactListRetrievedMilestone;
-    private Milestone.OnCompleteListener portfolioCompactListRetrievedListener;
-
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
-    @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
-    protected Integer showProductDetailRequestCode;
+    private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
+    protected THPurchaseActionInteractor thPurchaseActionInteractor;
 
-    protected PremiumFollowUserAssistant premiumFollowUserAssistant;
+    @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
+    @Inject protected Provider<THUIBillingRequest> uiBillingRequestProvider;
+    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @Inject protected THBillingInteractor userInteractor;
+    @Inject SystemStatusCache systemStatusCache;
 
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -75,112 +67,63 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        portfolioCompactListRetrievedListener = createPortfolioCompactListRetrievedListener();
-        systemStatusCacheListener = createSystemStatusCacheListener();
-    }
-
-    protected Milestone.OnCompleteListener createPortfolioCompactListRetrievedListener()
-    {
-        return new BasePurchaseManagementPortfolioCompactListRetrievedListener();
-    }
-
-    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new BasePurchaseManagerPremiumUserFollowedListener();
-    }
-
-    protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
-    {
-        return new BasePurchaseManagerFreeUserFollowedCallback();
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        systemStatusCache.register(currentUserId.toUserBaseKey(), systemStatusCacheListener);
-        systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        prepareApplicableOwnedPortolioId();
 
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            Bundle thIntentBundle = args.getBundle(BUNDLE_KEY_THINTENT_BUNDLE);
-            if (thIntentBundle != null)
-            {
-                int action = thIntentBundle.getInt(THIABBillingInteractor.BUNDLE_KEY_ACTION);
-                if (action > 0)
-                {
-                    userInteractor.doAction(action); // TODO place the action after portfolio has been set
-                }
-                args.remove(BUNDLE_KEY_THINTENT_BUNDLE);
-            }
-        }
+        fetchPortfolioCompactList();
     }
 
     @Override public void onStop()
     {
-        detachSystemStatusCache();
-        detachPortfolioRetrievedMilestone();
-        detachPremiumFollowUserAssistant();
-        detachRequestCode();
+        detachPortfolioCompactListCache();
+        detachPurchaseActionInteractor();
         super.onStop();
-    }
-
-    protected void detachRequestCode()
-    {
-        if (showProductDetailRequestCode != null && userInteractor != null)
-        {
-            userInteractor.forgetRequestCode(showProductDetailRequestCode);
-        }
     }
 
     @Override public void onDestroy()
     {
-        systemStatusCacheListener = null;
-        portfolioCompactListRetrievedListener = null;
+        portfolioCompactListFetchListener = null;
         super.onDestroy();
     }
 
-    protected void detachSystemStatusCache()
+    private void detachPortfolioCompactListCache()
     {
-        systemStatusCache.unregister(systemStatusCacheListener);
+        portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
     }
 
-    protected void prepareApplicableOwnedPortolioId()
+    private void detachPurchaseActionInteractor()
+    {
+        if (thPurchaseActionInteractor != null)
+        {
+            thPurchaseActionInteractor.onDestroy();
+        }
+        thPurchaseActionInteractor = null;
+    }
+
+    private void fetchPortfolioCompactList()
+    {
+        detachPortfolioCompactListCache();
+        portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
+        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
     {
         Bundle args = getArguments();
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId(args);
 
-        if (applicablePortfolioId == null)
+        if (applicablePortfolioId == null && defaultIfNotInArgs != null)
         {
-            applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), null);
-        }
-        if (applicablePortfolioId.userId == null)
-        {
-            applicablePortfolioId = new OwnedPortfolioId(currentUserId.get(), applicablePortfolioId.portfolioId);
-        }
-        if (applicablePortfolioId.portfolioId == null)
-        {
-            final OwnedPortfolioId ownedPortfolioId = portfolioCompactListCache.getDefaultPortfolio(applicablePortfolioId.getUserBaseKey());
-            if (ownedPortfolioId != null && ownedPortfolioId.portfolioId != null)
-            {
-                applicablePortfolioId = ownedPortfolioId;
-            }
-            else
-            {
-                // This situation will be handled by the milestone
-            }
+            applicablePortfolioId = defaultIfNotInArgs.getOwnedPortfolioId();
         }
 
-        if (applicablePortfolioId.portfolioId == null)
+        if (applicablePortfolioId == null)
         {
-            // At this stage, portfolioId is still null, we need to wait for the fetch
-            waitForPortfolioCompactListFetched(applicablePortfolioId.getUserBaseKey());
+            Timber.e(new NullPointerException(), "Null applicablePortfolio");
         }
         else
         {
@@ -196,161 +139,94 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
     }
 
-    private void detachPortfolioRetrievedMilestone()
-    {
-        if (portfolioCompactListRetrievedMilestone != null)
-        {
-            portfolioCompactListRetrievedMilestone.setOnCompleteListener(null);
-        }
-        portfolioCompactListRetrievedListener = null;
-    }
-
-    private void detachPremiumFollowUserAssistant()
-    {
-        if (premiumFollowUserAssistant != null)
-        {
-            premiumFollowUserAssistant.setUserFollowedListener(null);
-        }
-        premiumFollowUserAssistant = null;
-    }
-
-    protected void waitForPortfolioCompactListFetched(UserBaseKey userBaseKey)
-    {
-        detachPortfolioRetrievedMilestone();
-        portfolioCompactListRetrievedMilestone = new PortfolioCompactListRetrievedMilestone(userBaseKey);
-        portfolioCompactListRetrievedMilestone.setOnCompleteListener(portfolioCompactListRetrievedListener);
-        portfolioCompactListRetrievedMilestone.launch();
-    }
-
     @Nullable public OwnedPortfolioId getApplicablePortfolioId()
     {
         return purchaseApplicableOwnedPortfolioId;
     }
 
-    protected boolean alertsAreFree()
+    protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
-        return systemStatusDTO != null && systemStatusDTO.alertsAreFree;
+        return THBasePurchaseActionInteractor.builder()
+                .setBillingInteractor(userInteractor)
+                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
+                .setBillingRequest(uiBillingRequestProvider.get())
+                .startWithProgressDialog(true) // true by default
+                .popIfBillingNotAvailable(true)  // true by default
+                .popIfProductIdentifierFetchFailed(true) // true by default
+                .popIfInventoryFetchFailed(true) // true by default
+                .popIfPurchaseFailed(true) // true by default
+                .setPremiumFollowedListener(createPremiumUserFollowedListener())
+                .error(new UIBillingRequest.OnErrorListener()
+                {
+                    @Override public void onError(int requestCode, BillingException billingException)
+                    {
+                        Timber.e(billingException, "Store had error");
+                    }
+                });
     }
 
-    public void cancelOthersAndShowProductDetailList(ProductIdentifierDomain domain)
+    // region Following action
+    // should call this method where the action takes place
+    @Deprecated
+    protected final void premiumFollowUser(@NotNull UserBaseKey heroId)
     {
-        if (domain.equals(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS) && alertsAreFree())
+        detachPurchaseActionInteractor();
+        thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
+                .setUserToFollow(heroId)
+                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
+                .build();
+
+        thPurchaseActionInteractor.premiumFollowUser();
+    }
+
+    // should call it where the action takes place
+    @Deprecated
+    protected final void unfollowUser(@NotNull UserBaseKey heroId)
+    {
+        detachPurchaseActionInteractor();
+        thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
+                .setUserToFollow(heroId)
+                .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
+                .build();
+        thPurchaseActionInteractor.unfollowUser();
+    }
+    //endregion
+
+    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
+    {
+        return new BasePurchaseManagementPortfolioCompactListFetchListener();
+    }
+
+    protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
+    {
+        protected BasePurchaseManagementPortfolioCompactListFetchListener()
         {
-            alertDialogUtil.popWithNegativeButton(
-                    getActivity(),
-                    R.string.store_alert_are_free_title,
-                    R.string.store_alert_are_free_description,
-                    R.string.ok);
-        }
-        else
-        {
-            detachRequestCode();
-            showProductDetailRequestCode = showProductDetailListForPurchase(domain);
-        }
-    }
-
-    public int showProductDetailListForPurchase(ProductIdentifierDomain domain)
-    {
-        return userInteractor.run(getShowProductDetailRequest(domain));
-    }
-
-    public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
-    {
-        THUIBillingRequest request = uiBillingRequestProvider.get();
-        request.applicablePortfolioId = getApplicablePortfolioId();
-        request.startWithProgressDialog = true;
-        request.popIfBillingNotAvailable = true;
-        request.popIfProductIdentifierFetchFailed = true;
-        request.popIfInventoryFetchFailed = true;
-        request.domainToPresent = domain;
-        request.popIfPurchaseFailed = true;
-        request.popIfReportFailed = true;
-        request.onDefaultErrorListener = new UIBillingRequest.OnErrorListener()
-        {
-            @Override public void onError(int requestCode, BillingException billingException)
-            {
-                Timber.e(billingException, "Store had error");
-            }
-        };
-        return request;
-    }
-
-    public void premiumFollowUser(UserBaseKey heroId)
-    {
-        premiumFollowUser(heroId, createPremiumUserFollowedListener());
-    }
-
-    public void premiumFollowUser(UserBaseKey heroId,
-            PremiumFollowUserAssistant.OnUserFollowedListener followedListener)
-    {
-        detachPremiumFollowUserAssistant();
-        premiumFollowUserAssistant = new PremiumFollowUserAssistant(followedListener, heroId, purchaseApplicableOwnedPortfolioId);
-        premiumFollowUserAssistant.launchFollow();
-    }
-
-    public void unfollowUser(UserBaseKey heroId)
-    {
-        detachPremiumFollowUserAssistant();
-        premiumFollowUserAssistant = new PremiumFollowUserAssistant(
-                createPremiumUserFollowedListener(), heroId, purchaseApplicableOwnedPortfolioId);
-        premiumFollowUserAssistant.launchUnFollow();
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO> createSystemStatusCacheListener()
-    {
-        return new BasePurchaseManagementSystemStatusCacheListener();
-    }
-
-    protected class BasePurchaseManagementSystemStatusCacheListener implements DTOCacheNew.Listener<UserBaseKey, SystemStatusDTO>
-    {
-        @Override public void onDTOReceived(UserBaseKey key, SystemStatusDTO value)
-        {
-            BasePurchaseManagerFragment.this.systemStatusDTO = value;
+            // no unexpected creation
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
         {
-        }
-    }
-
-    protected class BasePurchaseManagementPortfolioCompactListRetrievedListener implements Milestone.OnCompleteListener
-    {
-        @Override public void onComplete(Milestone milestone)
-        {
-            prepareApplicableOwnedPortolioId();
+            prepareApplicableOwnedPortolioId(value.getDefaultPortfolio());
         }
 
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_portfolio_list_info);
-            Timber.e(throwable, "Failed to download portfolio compacts");
         }
     }
 
-    protected class BasePurchaseManagerFreeUserFollowedCallback implements Callback<UserProfileDTO>
+    //region Creation and Listener
+    @Deprecated
+    protected Callback<UserProfileDTO> createFreeUserFollowedCallback()
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            // Children classes should update the display
-        }
-
-        @Override public void failure(RetrofitError error)
-        {
-            // Anything to do?
-        }
+        // default will be used when this one return null
+        return null;
     }
 
-    protected class BasePurchaseManagerPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
+    protected PremiumFollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
-        @Override
-        public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
-        {
-            // Children classes should update the display
-        }
-
-        @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
-        {
-            // Anything to do?
-        }
+        // default will be used when this one return null
+        return null;
     }
+    //endregion
 }

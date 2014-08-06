@@ -8,7 +8,7 @@ class ProviderCommunityPageDTO implements CommunityPageDTO
     @NotNull public final ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
-    ProviderCommunityPageDTO(@NotNull ProviderDTO providerDTO)
+    public ProviderCommunityPageDTO(@NotNull ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
     }

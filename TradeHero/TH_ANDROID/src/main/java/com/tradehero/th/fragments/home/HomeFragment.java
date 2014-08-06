@@ -17,12 +17,14 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTOFactory;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
@@ -46,8 +48,8 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
@@ -55,11 +57,10 @@ import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 @Routable({
-        "refer-friend/:SocialID/:UserID",
-        "user/:UserID/follow/free"
+        "refer-friend/:socialId/:socialUserId",
+        "user/:userId/follow/free"
 })
 public final class HomeFragment extends BaseWebViewFragment
 {
@@ -76,18 +77,25 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
     @Inject Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject SocialServiceWrapper socialServiceWrapper;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
-    @Inject UserProfileCache userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCache homeContentCache;
+    @Inject THRouter thRouter;
+    @Inject Lazy<UserFriendsDTOFactory> userFriendsDTOFactory;
+
+    @RouteProperty(ROUTER_SOCIALID) String socialId;
+    @RouteProperty(ROUTER_SOCIALUSERID) String socialUserId;
+    @RouteProperty(ROUTER_USERID) Integer userId;
+
+    public static final String ROUTER_SOCIALID = "socialId";
+    public static final String ROUTER_SOCIALUSERID = "socialUserId";
+    public static final String ROUTER_USERID = "userId";
 
     protected SocialFriendHandler socialFriendHandler;
     private ProgressDialog progressDialog;
     private UserFriendsDTO userFriendsDTO;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
     private MiddleCallback<Response> middleCallbackInvite;
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -142,8 +150,8 @@ public final class HomeFragment extends BaseWebViewFragment
         switch (item.getItemId())
         {
             case R.id.btn_fresh:
-                homeContentCache.invalidate(currentUserId.toUserBaseKey());
                 webView.reload();
+                userProfileCacheLazy.get().getOrFetchAsync(currentUserId.toUserBaseKey(), true);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -156,54 +164,68 @@ public final class HomeFragment extends BaseWebViewFragment
         super.onDestroyView();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        thRouter.inject(this);
+
+        if (socialId != null && socialUserId != null)
+        {
+            createInviteInHomePage();
+        }
+        else if (userId != null)
+        {
+            createFollowInHomePage();
+        }
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        resetRoutingData();
+    }
+
+    private void resetRoutingData()
+    {
+        // TODO Routing library should have a way to clear injected data, proposing: THRouter.reset(this)
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            args.remove(ROUTER_SOCIALID);
+            args.remove(ROUTER_SOCIALUSERID);
+            args.remove(ROUTER_USERID);
+        }
+        socialId = null;
+        socialUserId = null;
+        userId = null;
+    }
 
     //<editor-fold desc="Windy's stuff, to be refactored">
-    public void createInviteInHomePage(String social, String userid)
+    private void createInviteInHomePage()
     {
-        if (social == null) return;
-        if (social.equals("fb"))
-        {
-            userFriendsDTO = new UserFriendsFacebookDTO();
-            ((UserFriendsFacebookDTO) userFriendsDTO).fbId = userid;
-        }
-        else if (social.equals("li"))
-        {
-            userFriendsDTO = new UserFriendsLinkedinDTO();
-            ((UserFriendsLinkedinDTO) userFriendsDTO).liId = userid;
-        }
-        else if (social.equals("tw"))
-        {
-            userFriendsDTO = new UserFriendsTwitterDTO();
-            ((UserFriendsTwitterDTO) userFriendsDTO).twId = userid;
-        }
+        userFriendsDTO = userFriendsDTOFactory.get().createFrom(socialId, socialUserId);
         invite();
     }
 
-    public void createFollowInHomePage(String userid)
+    public void createFollowInHomePage()
     {
-        if (userid == null) return;
-        Timber.d("Follow friend: " + userid);
         UserFriendsDTO user = new UserFriendsContactEntryDTO();
-        user.thUserId = Integer.valueOf(userid);
-        Timber.d("Follow thUserId: " + user.thUserId);
+        user.thUserId = userId;
         follow(user);
     }
 
     public void follow(UserFriendsDTO userFriendsDTO)
     {
-        Timber.d("onFollowButtonClick %s", userFriendsDTO);
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
         handleFollowUsers(usersToFollow);
     }
 
     private void invite()
     {
-        Timber.d("windy: invite()");
         if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
         {
-            InviteFormDTO inviteFriendForm = new InviteFormDTO();
-            inviteFriendForm.users = new ArrayList<>();
-            inviteFriendForm.users.add(userFriendsDTO.createInvite());
+            InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
+            inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get()
@@ -214,8 +236,6 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             if (Session.getActiveSession() == null)
             {
-                Timber.d("windy: Session.getActiveSession() = " + Session.getActiveSession());
-                Timber.d("windy: facebookUtils.get.login()...");
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
                         new TrackFacebookCallback());
             }
@@ -228,9 +248,8 @@ public final class HomeFragment extends BaseWebViewFragment
 
     private void invite(UserFriendsDTO userDto)
     {
-        InviteFormDTO inviteFriendForm = new InviteFormDTO();
-        inviteFriendForm.users = new ArrayList<>();
-        inviteFriendForm.users.add(userDto.createInvite());
+        InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
+        inviteFriendForm.add(userDto);
         getProgressDialog().show();
         detachMiddleCallbackInvite();
         middleCallbackInvite = userServiceWrapperLazy.get()
@@ -244,48 +263,52 @@ public final class HomeFragment extends BaseWebViewFragment
         stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
 
         Bundle params = new Bundle();
-        String messageToFacebookFriends = getActivity().getString(
-                R.string.invite_friend_facebook_tradehero_refer_friend_message);
-        if (messageToFacebookFriends.length() > 60)
+        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
         {
-            messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-        }
+            String messageToFacebookFriends = getActivity().getString(
+                    R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+            if (messageToFacebookFriends.length() > 60)
+            {
+                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+            }
 
-        params.putString("message", messageToFacebookFriends);
-        params.putString("to", stringBuilder.toString());
+            params.putString("message", messageToFacebookFriends);
+            params.putString("to", stringBuilder.toString());
 
-        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
-                params))
-                .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                {
-                    @Override
-                    public void onComplete(Bundle values, FacebookException error)
+            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+                    params))
+                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
-                        if (error != null)
+                        @Override
+                        public void onComplete(Bundle values, FacebookException error)
                         {
-                            if (error instanceof FacebookOperationCanceledException)
+                            if (error != null)
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
-                            }
-                        }
-                        else
-                        {
-                            final String requestId = values.getString("request");
-                            if (requestId != null)
-                            {
-                                THToast.show(R.string.invite_friend_request_sent);
-                                invite(userFriendsDTO);
+                                if (error instanceof FacebookOperationCanceledException)
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                             else
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                final String requestId = values.getString("request");
+                                if (requestId != null)
+                                {
+                                    THToast.show(R.string.invite_friend_request_sent);
+                                    invite(userFriendsDTO);
+                                }
+                                else
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                         }
-                    }
-                })
-                .build();
-        requestsDialog.show();
+                    })
+                    .build();
+            requestsDialog.show();
+        }
     }
 
     private void detachMiddleCallbackInvite()
@@ -411,7 +434,7 @@ public final class HomeFragment extends BaseWebViewFragment
             {
                 // TODO
                 handleFollowSuccess();
-                userProfileCache.put(userProfileDTO.getBaseKey(), userProfileDTO);
+                userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
 
                 return;
             }

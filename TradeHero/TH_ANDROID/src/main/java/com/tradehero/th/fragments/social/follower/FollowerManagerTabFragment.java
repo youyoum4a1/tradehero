@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -28,8 +27,9 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.HeroType;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
@@ -71,8 +71,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     @Override protected void initViews(View view)
     {
         viewContainer = new FollowerManagerViewContainer(view);
-        infoFetcher =
-                new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
 
         if (followerListAdapter == null)
         {
@@ -137,7 +135,13 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         Timber.d("FollowerManagerTabFragment onResume");
         heroId = getHeroId(getArguments());
 
-        infoFetcher.fetch(this.heroId);
+        fetchFollowers();
+    }
+
+    @Override public void onStop()
+    {
+        detachInfoFetcher();
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -146,14 +150,25 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         {
             this.viewContainer.followerList.setOnItemClickListener(null);
         }
+        this.viewContainer = null;
+        this.followerListAdapter = null;
+        super.onDestroyView();
+    }
+
+    protected void detachInfoFetcher()
+    {
         if (this.infoFetcher != null)
         {
             this.infoFetcher.onDestroyView();
         }
-        this.viewContainer = null;
-        this.followerListAdapter = null;
         this.infoFetcher = null;
-        super.onDestroyView();
+    }
+
+    protected void fetchFollowers()
+    {
+        detachInfoFetcher();
+        infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheListener());
+        infoFetcher.fetch(this.heroId);
     }
 
     private boolean isCurrentUser()
@@ -280,7 +295,9 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         {
             heroId = getHeroId(getArguments());
         }
-        infoFetcher.fetch(this.heroId, createFollowerSummaryCacheRefreshListener());
+        detachInfoFetcher();
+        infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheRefreshListener());
+        infoFetcher.fetch(this.heroId);
     }
 
     private void pushTimelineFragment(int followerId)
@@ -350,7 +367,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
         {
             Timber.d("onDTOReceived");
 
@@ -359,7 +376,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             notifyFollowerLoaded(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             displayProgress(false);
             THToast.show(R.string.error_fetch_follower);
@@ -371,7 +388,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, FollowerSummaryDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
         {
             displayProgress(false);
             onRefreshCompleted();
@@ -379,7 +396,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             notifyFollowerLoaded(value);
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             displayProgress(false);
             onRefreshCompleted();

@@ -25,6 +25,7 @@ import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
@@ -279,7 +280,9 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
             if (securityCompactDTO != null && securityCompactDTO.lastPrice != null && !Double.isNaN(
                     securityCompactDTO.lastPrice))
             {
-                lastPrice.setText(String.format("%.2f", securityCompactDTO.lastPrice));
+                lastPrice.setText(THSignedNumber.builder(securityCompactDTO.lastPrice)
+                                .withOutSign()
+                            .build().toString());
             }
             else
             {
@@ -297,18 +300,22 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
                 if (securityCompactDTO.pc50DMA == null)
                 {
                     Timber.w("displayProfitIndicator, pc50DMA was null");
+                    profitIndicator.setText("");
+                    profitIndicator.setTextColor(getResources().getColor(R.color.black));
                 }
                 else
                 {
                     if (securityCompactDTO.pc50DMA > 0)
                     {
-                        //profitIndicator.setText(getContext().getString(R.string.positive_prefix));
                         profitIndicator.setText(R.string.arrow_prefix_positive);
                     }
                     else if (securityCompactDTO.pc50DMA < 0)
                     {
-                        //profitIndicator.setText(getContext().getString(R.string.negative_prefix));
                         profitIndicator.setText(R.string.arrow_prefix_negative);
+                    }
+                    else
+                    {
+                        profitIndicator.setText("");
                     }
                     profitIndicator.setTextColor(ColorUtils.getProperColorForNumber(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
                 }
@@ -420,7 +427,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void loadImage()
     {
-
         resetImage();
 
         if (isMyUrlOk())

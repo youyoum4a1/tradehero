@@ -16,16 +16,16 @@ public class SocialNetworkFactory
         switch (socialNetworkEnum)
         {
             case FB:
-                return FacebookSocialFriendsFragment.class;
+                return SocialFriendsFragmentFacebook.class;
 
             case TW:
-                return TwitterSocialFriendsFragment.class;
+                return SocialFriendsFragmentTwitter.class;
 
             case LN:
-                return LinkedInSocialFriendsFragment.class;
+                return SocialFriendsFragmentLinkedIn.class;
 
             case WB:
-                return WeiboSocialFriendsFragment.class;
+                return SocialFriendsFragmentWeibo.class;
         }
         throw new IllegalArgumentException("Do not support " + socialNetworkEnum);
     }

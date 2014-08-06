@@ -134,6 +134,21 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         super.onDestroy();
     }
 
+    @Override protected int getCurrentRankLayoutResId()
+    {
+        return R.layout.leaderboard_competition_current_user_rank_header_view;
+    }
+
+    @Override protected void initCurrentRankHeaderView()
+    {
+        super.initCurrentRankHeaderView();
+        CompetitionLeaderboardCurrentUserRankHeaderView competitionLeaderboardCurrentUserRankHeaderView = getCompetitionUserRankHeaderView();
+        if (competitionLeaderboardCurrentUserRankHeaderView != null)
+        {
+            competitionLeaderboardCurrentUserRankHeaderView.linkWith(providerId);
+        }
+    }
+
     @Override protected void saveCurrentFilterKey()
     {
         // Do nothing
@@ -142,8 +157,8 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     private void pushWizardElement()
     {
         Bundle args = new Bundle();
-        args.putString(WebViewFragment.BUNDLE_KEY_URL, providerUtil.getWizardPage(providerId) + "&previous=whatever");
-        args.putBoolean(WebViewFragment.BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, false);
+        WebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
+        WebViewFragment.putIsOptionMenuVisible(args, false);
         this.webViewFragment = getDashboardNavigator().pushFragment(
                 WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
@@ -160,6 +175,17 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     @Override protected void pushFilterFragmentIn()
     {
         // Do nothing
+    }
+
+    protected CompetitionLeaderboardCurrentUserRankHeaderView getCompetitionUserRankHeaderView()
+    {
+        LeaderboardCurrentUserRankHeaderView header = inflateAndGetUserRankHeaderView();
+        if (header != null && header instanceof CompetitionLeaderboardCurrentUserRankHeaderView)
+        {
+            return (CompetitionLeaderboardCurrentUserRankHeaderView) header;
+        }
+
+        return null;
     }
 
     protected class CompetitionLeaderboardListWebViewTHIntentPassedListener extends CompetitionWebFragmentTHIntentPassedListener

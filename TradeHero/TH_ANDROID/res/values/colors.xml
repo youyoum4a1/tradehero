@@ -67,6 +67,8 @@
 
   <color name="loading_progress_background">#ea2c2c2c</color>
 
+  <color name="leaderboard_current_user_rank_header_background">#ffbecfe8</color>
+
   <string-array name="rangeColors2" translatable="false">
     <item>#FF0C2B</item>
     <item>#FF1D0C</item>

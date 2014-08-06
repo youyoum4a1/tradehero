@@ -2,29 +2,45 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="@drawable/timed_header_right_bg"
+    android:gravity="center"
     >
+
+  <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:background="@drawable/timed_header_left_bg"
+      android:scaleType="fitCenter"
+      android:src="@drawable/ic_device_access_time"
+      />
 
   <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginRight="32dp"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:paddingTop="@dimen/leaderboard_timed_header_vertical_padding"
+      android:paddingBottom="@dimen/leaderboard_timed_header_vertical_padding"
+      android:paddingRight="@dimen/leaderboard_timed_header_horizontal_padding"
+      android:gravity="center"
+      android:background="@drawable/timed_header_left_bg">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/competition_leaderboard_timer_time_left_1"
-        android:textSize="@dimen/text_xsmall"
+        style="@style/TH.Time_Text.Header.Inverse"
+        android:textSize="@dimen/text_small"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/competition_leaderboard_timer_time_left_2"
-        android:textSize="@dimen/text_xsmall"
+        style="@style/TH.Time_Text.Header.Inverse"
+        android:textSize="@dimen/text_small"
         />
 
   </LinearLayout>
@@ -33,16 +49,18 @@
       android:id="@+id/value_day_count"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/leaderboard_timed_header_horizontal_padding"
       android:text="@string/na"
-      android:textSize="@dimen/text_xlarge"
+      style="@style/TH.Time_Text.Header"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/competition_leaderboard_timer_days"
-      android:paddingLeft="8dp"
-      android:paddingRight="8dp"
+      android:paddingLeft="@dimen/leaderboard_timed_header_horizontal_padding"
+      android:paddingRight="@dimen/leaderboard_timed_header_horizontal_padding"
+      style="@style/TH.Time_Text.Header"
       android:textSize="@dimen/text_small"
       />
 
@@ -51,14 +69,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/na"
-      android:textSize="@dimen/text_xlarge"
+      style="@style/TH.Time_Text.Header"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/competition_leaderboard_timer_time_separator"
-      android:textSize="@dimen/text_xlarge"
+      style="@style/TH.Time_Text.Header"
       />
 
   <TextView
@@ -66,14 +84,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/na"
-      android:textSize="@dimen/text_xlarge"
+      style="@style/TH.Time_Text.Header"
       />
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/competition_leaderboard_timer_time_separator"
-      android:textSize="@dimen/text_xlarge"
+      style="@style/TH.Time_Text.Header"
       />
 
   <TextView
@@ -81,7 +99,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/na"
-      android:textSize="@dimen/text_xlarge"
+      style="@style/TH.Time_Text.Header"
+      android:layout_marginRight="@dimen/leaderboard_timed_header_horizontal_padding"
       />
 
 </LinearLayout>

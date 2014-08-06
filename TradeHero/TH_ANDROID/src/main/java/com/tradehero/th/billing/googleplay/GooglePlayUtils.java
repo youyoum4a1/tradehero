@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-public class GooglePlayUtils
+class GooglePlayUtils
     extends BillingUtils<
         IABSKU,
         THIABProductDetail,

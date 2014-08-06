@@ -16,13 +16,14 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 public class AdView extends RelativeLayout
-    implements DTOView<CompetitionZoneAdvertisementDTO>
+        implements DTOView<CompetitionZoneDTO>
 {
     @InjectView(R.id.banner) ImageView banner;
     private AdDTO adDTO;
@@ -33,7 +34,7 @@ public class AdView extends RelativeLayout
         {
             Bundle bundle = new Bundle();
             String url = adDTO.redirectUrl + String.format("&userId=%d", currentUserId.get());
-            bundle.putString(WebViewFragment.BUNDLE_KEY_URL, url);
+            WebViewFragment.putUrl(bundle, url);
             getNavigator().pushFragment(WebViewFragment.class, bundle);
         }
     }
@@ -70,7 +71,12 @@ public class AdView extends RelativeLayout
         DaggerUtils.inject(this);
     }
 
-    @Override public void display(CompetitionZoneAdvertisementDTO competitionZoneAdvertisementDTO)
+    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
+    {
+        display((CompetitionZoneAdvertisementDTO) competitionZoneDTO);
+    }
+
+    public void display(CompetitionZoneAdvertisementDTO competitionZoneAdvertisementDTO)
     {
         if (competitionZoneAdvertisementDTO != null)
         {
@@ -110,6 +116,7 @@ public class AdView extends RelativeLayout
                 }
                 else
                 {
+                    picasso.get().cancelRequest(banner);
                     picasso.get().load(adDTO.bannerImageUrl)
                             .into(banner);
                 }

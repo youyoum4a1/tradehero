@@ -16,10 +16,10 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.NumberDisplayUtils;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
@@ -265,10 +265,12 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             }
             else
             {
-                mStrikePrice.setText(getString(
-                        R.string.warrant_info_strike_price_value_display,
-                        warrantDTO.strikePriceCcy,
-                        NumberDisplayUtils.formatWithRelevantDigits(warrantDTO.strikePrice, 4)));
+                mStrikePrice.setText(
+                        THSignedMoney.builder(warrantDTO.strikePrice)
+                                .currency(warrantDTO.strikePriceCcy)
+                                .withOutSign()
+                                .build().toString()
+                        );
             }
         }
     }

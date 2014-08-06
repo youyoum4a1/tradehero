@@ -83,6 +83,13 @@
         />
 
     <Preference
+        android:enabled="true"
+        android:key="@string/key_settings_primary_referral_code"
+        android:title="@string/settings_primary_referral_code"
+        android:icon="@drawable/default_image"
+        />
+
+    <Preference
         android:key="@string/key_settings_misc_sign_out"
         android:title="@string/settings_misc_sign_out"
         android:icon="@drawable/settings_sign_out"
@@ -91,6 +98,31 @@
   </PreferenceCategory>
 
   <PreferenceCategory
+      android:key="@string/key_settings_translations_container"
+      android:title="@string/settings_translations">
+
+    <Preference
+        android:key="@string/key_settings_translations_preferred_language"
+        android:title="@string/settings_translations_language_preferred"
+        android:icon="@drawable/default_image"
+      />
+
+    <CheckBoxPreference
+        android:key="@string/key_settings_translations_auto_translate"
+        android:title="@string/settings_translations_auto_translate"
+        android:icon="@drawable/logo_bing"
+      />
+
+    <Preference
+        android:key="@string/key_settings_location"
+        android:title="@string/settings_location"
+        android:icon="@drawable/default_image"
+        />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key=""
       android:title="@string/settings_notifications">
 
     <CheckBoxPreference

@@ -9,7 +9,7 @@ import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
 
-public interface THIABInteractor
+interface THIABInteractor
         extends
         IABInteractor<
                 IABSKUListKey,

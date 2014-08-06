@@ -12,11 +12,11 @@ import butterknife.Optional;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -129,7 +129,8 @@ public class AbstractLeaderboardDefView extends RelativeLayout
             //leaderboardDefUserRank.setBackgroundResource(R.drawable.lb_friends_bg);
         }
 
-        updateRankTitle();
+        //a2.3 Feature changed is no rank show in Social leaderboard Screen
+        //updateRankTitle();
     }
 
     protected void displayIcon()

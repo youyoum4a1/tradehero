@@ -8,13 +8,15 @@
     android:paddingBottom="8dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:background="@color/white"
+    android:background="@drawable/basic_white_selector"
   >
+    <!--android:clickable="true"-->
+    <!--android:addStatesFromChildren="false"-->
 
   <ImageView
       android:id="@+id/icon"
-      android:layout_width="32dp"
-      android:layout_height="32dp"
+      android:layout_width="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
       android:layout_marginRight="16dp"
       android:layout_centerVertical="true"
@@ -34,6 +36,8 @@
       android:background="@null"
       android:contentDescription="@null"
       />
+      <!--android:duplicateParentState="false"-->
+      <!--android:clickable="true"-->
 
   <TextView
       android:id="@+id/title"

@@ -1,32 +1,19 @@
 package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PagedOwnedPortfolioId extends OwnedPortfolioId
 {
     public final static String BUNDLE_KEY_PAGE = PagedOwnedPortfolioId.class.getName() + ".page";
 
-    public final Integer page;
+    @Nullable public final Integer page;
 
     //<editor-fold desc="Constructors">
-    public PagedOwnedPortfolioId(Integer userId, Integer portfolioId, int page)
+    public PagedOwnedPortfolioId(int userId, int portfolioId, @Nullable Integer page)
     {
         super(userId, portfolioId);
-        this.page = page;
-    }
-
-    public PagedOwnedPortfolioId(UserBaseKey userBaseKey, PortfolioId portfolioId, int page)
-    {
-        super(userBaseKey, portfolioId);
-        this.page = page;
-    }
-
-    public PagedOwnedPortfolioId(UserBaseDTO userBaseDTO, PortfolioCompactDTO portfolioCompactDTO, int page)
-    {
-        super(userBaseDTO, portfolioCompactDTO);
         this.page = page;
     }
 
@@ -37,28 +24,29 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
     }
     //</editor-fold>
 
+    public static boolean isPagedOwnedPortfolioId(@NotNull Bundle args)
+    {
+        return isOwnedPortfolioId(args)
+                && args.containsKey(BUNDLE_KEY_PAGE);
+    }
+
     @Override public int hashCode()
     {
         return super.hashCode() ^ (page == null ? 0: page.hashCode());
     }
 
-    public boolean equals(PagedOwnedPortfolioId other)
+    public boolean equals(@Nullable PagedOwnedPortfolioId other)
     {
         return other != null &&
                 super.equals(other) &&
                 (page == null ? other.page == null : page.equals(other.page));
     }
 
-    public int compareTo(PagedOwnedPortfolioId other)
+    public int compareTo(@NotNull PagedOwnedPortfolioId other)
     {
         if (this == other)
         {
             return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
         }
 
         int parentComp = super.compareTo(other);
@@ -67,21 +55,28 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
             return parentComp;
         }
 
+        if (page == null)
+        {
+            return other.page == null ? 0 : 1;
+        }
+
         return page.compareTo(other.page);
     }
 
-    @JsonIgnore @Override public boolean isValid()
-    {
-        return super.isValid() && page != null;
-    }
-
-    @Override protected void putParameters(Bundle args)
+    @Override protected void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
-        args.putInt(BUNDLE_KEY_PAGE, page);
+        if (page == null)
+        {
+            args.remove(BUNDLE_KEY_PAGE);
+        }
+        else
+        {
+            args.putInt(BUNDLE_KEY_PAGE, page);
+        }
     }
 
-    @Override public String toString()
+    @Override @NotNull public String toString()
     {
         return String.format("[userId=%d; portfolioId=%d; page=%d]", userId, portfolioId, page);
     }

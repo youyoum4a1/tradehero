@@ -3,7 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaseConsumerHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 
-public class THBaseIABPurchaseConsumerHolder
+class THBaseIABPurchaseConsumerHolder
     extends BaseIABPurchaseConsumerHolder<
         IABSKU,
         THIABOrderId,

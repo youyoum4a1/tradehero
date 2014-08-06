@@ -80,17 +80,32 @@
 
   <string name="social_friend_empty">没有好友数据</string>
   <string name="search_social_friend_empty">没有找到好友数据</string>
-    <string name="invite_from_weibo">邀请微博好友</string>
-    <string name="invite_from_linkedIn">邀请LinkedIn好友</string>
-    <string name="invite_from_facebook">邀请Facebook好友</string>
-    <string name="invite_from_twitter">邀请Twitter好友</string>
+  <string name="invite_from_weibo">邀请微博好友</string>
+  <string name="invite_from_wechat">邀请微信好友</string>
+  <string name="invite_from_linkedIn">邀请LinkedIn好友</string>
+  <string name="invite_from_facebook">邀请Facebook好友</string>
+  <string name="invite_from_twitter">邀请Twitter好友</string>
   <plurals name="inbox_notification_title">
     <item quantity="one">1 条新消息</item>
-    <item quantity="other">%d 条<b>新</b>消息</item>
+    <item quantity="other">%d 条<b>新</b>消息
+    </item>
   </plurals>
   <string name="inbox_summary">+%d 更多</string>
   <string name="notification_unread_messages">您有 %d 条未读消息</string>
   <string name="notification_new_activities">您有 %d 条新活动</string>
-    <string name="friend_link_social_network">请绑定社交网络</string>
+  <string name="friend_link_social_network">请绑定社交网络</string>
+  <string name="referral_code_title">认领您的虚拟奖金!</string>
+  <string name="referral_code_message">如果您是由朋友邀请而来，在此输入邀请码将获得 10,000 虚拟货币。</string>
+  <string name="settings_referral_code_message">这是您的邀请码。邀请您的朋友来注册，并使用您的邀请码，获得免费奖金！
+  </string>
+  <string name="referral_code_callback_success">您的邀请码识别成功，稍后会获得 10,000 TH$奖励</string>
 
+  <string name="friends_can_be_invite">%s 个好友可邀请</string>
+  <string name="friends_can_be_follow">%s 个好友可关注</string>
+  <string name="weibo_message_text_limit">[%d/140]</string>
+  <string name="weibo_message_length_error">不能超过140字</string>
+  <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！使用我的邀请码 %1$s 更有额外奖励哦！</string>
+  <string name="referral_dollars_claimed">已成功提交邀请码</string>
+
+  <string name="mark_as_all_read">全部已读</string>
 </resources>

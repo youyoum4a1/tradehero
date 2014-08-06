@@ -27,10 +27,10 @@ import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
-import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
@@ -136,7 +136,9 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             @Override public void onClick(View v)
             {
-                cancelOthersAndShowProductDetailList(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS);
+                createPurchaseActionInteractorBuilder()
+                        .build()
+                        .buyStockAlertSubscription();
             }
         });
 
@@ -217,27 +219,21 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         alertCompactListCache.unregister(alertCompactListListener);
     }
 
-    @Override public THUIBillingRequest getShowProductDetailRequest(ProductIdentifierDomain domain)
+    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
-        THUIBillingRequest uiBillingRequest = super.getShowProductDetailRequest(domain);
-        uiBillingRequest.startWithProgressDialog = true;
-        uiBillingRequest.popIfBillingNotAvailable = true;
-        uiBillingRequest.popIfProductIdentifierFetchFailed = true;
-        uiBillingRequest.popIfInventoryFetchFailed = true;
-        uiBillingRequest.popIfPurchaseFailed = true;
-        uiBillingRequest.purchaseReportedListener = new THPurchaseReporter.OnPurchaseReportedListener()
-        {
-            @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
-            {
-                displayAlertCount();
-                displayAlertCountIcon();
-            }
+        return super.createPurchaseActionInteractorBuilder()
+                .setPurchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
+                {
+                    @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
+                    {
+                        displayAlertCount();
+                        displayAlertCountIcon();
+                    }
 
-            @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-            {
-            }
-        };
-        return uiBillingRequest;
+                    @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
+                    {
+                    }
+                });
     }
 
     private void displayAlertCount()
@@ -279,7 +275,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle();
         AlertViewFragment.putAlertId(bundle, alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()));
-        getDashboardNavigator().pushFragment(AlertViewFragment.class, bundle);
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(AlertViewFragment.class, bundle);
+        }
     }
 
     private void handleManageSubscriptionClicked()

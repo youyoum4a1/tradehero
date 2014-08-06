@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
@@ -19,6 +18,7 @@ import com.tradehero.th.fragments.billing.googleplay.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.googleplay.THIABStoreProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
+import com.tradehero.th.utils.metrics.Analytics;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +35,9 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
     protected THIABPurchaseCache thiabPurchaseCache;
     protected GooglePlayUtils googlePlayUtils;
 
-    @Inject public THIABAlertDialogUtil(LocalyticsSession localyticsSession, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache, GooglePlayUtils googlePlayUtils)
+    @Inject public THIABAlertDialogUtil(Analytics analytics, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache, GooglePlayUtils googlePlayUtils)
     {
-        super(localyticsSession, activityUtil);
+        super(analytics, activityUtil);
         this.thiabPurchaseCache = thiabPurchaseCache;
         this.googlePlayUtils = googlePlayUtils;
     }

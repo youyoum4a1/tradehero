@@ -30,14 +30,16 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.THSignedNumber;
+import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class PortfolioListItemView extends RelativeLayout
@@ -356,14 +358,12 @@ public class PortfolioListItemView extends RelativeLayout
                     displayablePortfolioDTO.portfolioDTO != null &&
                     displayablePortfolioDTO.portfolioDTO.roiSinceInception != null)
             {
-                THSignedNumber roi = new THSignedNumber(
-                        THSignedNumber.TYPE_PERCENTAGE,
-                        displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100,
-                        THSignedNumber.WITH_SIGN,
-                        null,
-                        THSignedNumber.TYPE_SIGN_ARROW);
-                roiValue.setText(roi.toString(1));
-                roiValue.setTextColor(getResources().getColor(roi.getColor()));
+                THSignedNumber roi = THSignedPercentage.builder(displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                roiValue.setText(roi.toString());
+                roiValue.setTextColor(getResources().getColor(roi.getColorResId()));
                 roiValue.setVisibility(VISIBLE);
             }
             else if (displayablePortfolioDTO != null &&
@@ -411,7 +411,7 @@ public class PortfolioListItemView extends RelativeLayout
     protected class PortfolioListItemViewGetPositionsListener
             implements DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO>
     {
-        @Override public void onDTOReceived(GetPositionsDTOKey key, GetPositionsDTO value)
+        @Override public void onDTOReceived(@NotNull GetPositionsDTOKey key, @NotNull GetPositionsDTO value)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
                     PortfolioListItemView.this.displayablePortfolioDTO;
@@ -422,7 +422,7 @@ public class PortfolioListItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(GetPositionsDTOKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull GetPositionsDTOKey key, @NotNull Throwable error)
         {
             // We do not inform the user as this is not critical
         }
@@ -436,7 +436,7 @@ public class PortfolioListItemView extends RelativeLayout
     protected class PortfolioListItemViewWatchedSecurityIdListListener
             implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
     {
-        @Override public void onDTOReceived(UserBaseKey key, SecurityIdList value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
                     PortfolioListItemView.this.displayablePortfolioDTO;
@@ -452,7 +452,7 @@ public class PortfolioListItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             // We do not inform the user as this is not critical
         }

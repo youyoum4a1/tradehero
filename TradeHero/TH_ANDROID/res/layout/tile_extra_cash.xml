@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.trending.ExtraCashTileView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/extra_tile_background"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/todo_trending_security_item_height"
+    android:layout_height="@dimen/grid_item_height"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/tile_extra_cash_bg">
 
-    android:bottom="@dimen/security_tile_bg_padding_r_b"
-    android:left="@dimen/security_tile_bg_padding_t_l"
-    android:right="@dimen/security_tile_bg_padding_r_b"
-    android:top="@dimen/security_tile_bg_padding_t_l"
+  <ImageView
+      android:layout_width="@dimen/big_avatar_w_h"
+      android:layout_height="@dimen/big_avatar_w_h"
+      android:id="@+id/extra_tile_image"
+      android:scaleType="fitCenter"
+      android:src="@drawable/icon_extra_cash"
+      android:layout_gravity="center"
+      android:contentDescription="@null"/>
 
-    >
+  <TextView
+      android:id="@+id/extra_tile_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:textColor="@color/white"
+      android:text="@string/tile_extra_cash_text"
+      />
 
-</com.tradehero.th.fragments.trending.ExtraCashTileView>
+</LinearLayout>

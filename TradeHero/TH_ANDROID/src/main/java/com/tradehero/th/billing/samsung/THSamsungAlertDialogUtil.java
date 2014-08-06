@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
-import com.localytics.android.LocalyticsSession;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
@@ -18,6 +17,7 @@ import com.tradehero.th.fragments.billing.samsung.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.samsung.THSamsungStoreProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
 import java.util.HashMap;
+import com.tradehero.th.utils.metrics.Analytics;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -32,11 +32,11 @@ public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
     protected THSamsungPurchaseCache thSamsungPurchaseCache;
     protected SamsungStoreUtils samsungStoreUtils;
 
-    @Inject public THSamsungAlertDialogUtil(LocalyticsSession localyticsSession,
+    @Inject public THSamsungAlertDialogUtil(Analytics analytics,
             ActivityUtil activityUtil, THSamsungPurchaseCache thSamsungPurchaseCache,
             SamsungStoreUtils samsungStoreUtils)
     {
-        super(localyticsSession, activityUtil);
+        super(analytics, activityUtil);
         this.thSamsungPurchaseCache = thSamsungPurchaseCache;
         this.samsungStoreUtils = samsungStoreUtils;
     }

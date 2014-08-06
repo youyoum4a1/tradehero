@@ -1,10 +1,14 @@
 package com.tradehero.th.persistence.prefs;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import com.tradehero.common.annotation.ForApp;
+import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.activities.SplashActivity;
+import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
@@ -12,12 +16,12 @@ import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.CredentialsSetPreference;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
-import com.tradehero.th.utils.dagger.ForApp;
-import com.tradehero.th.utils.dagger.ForUser;
+import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Module(
         injects = {
@@ -40,8 +44,23 @@ public class PreferenceModule
     private static final String PREF_PUSH_IDENTIFIER_SENT_FLAG = "PREF_PUSH_IDENTIFIER_SENT_FLAG";
     private static final String PREF_SAVED_PUSH_IDENTIFIER = "PREF_SAVED_PUSH_IDENTIFIER";
     private static final String PREF_FIRST_LAUNCH_FLAG = "PREF_FIRST_LAUNCH_FLAG";
+    private static final String PREF_FIRST_SHOW_REFERRAL_CODE_FLAG = "PREF_FIRST_SHOW_REFERRAL_CODE_FLAG";
     public static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
+    private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
+
+    private static final String USER_PREFERENCE_KEY = "th";
+    private static final String APP_PREFERENCE_KEY = "th_app";
+
+    @Provides @Singleton @ForUser SharedPreferences provideUserSharePreferences(Context context)
+    {
+        return context.getSharedPreferences(USER_PREFERENCE_KEY, Context.MODE_PRIVATE);
+    }
+
+    @Provides @Singleton @ForApp SharedPreferences provideAppSharePreferences(Context context)
+    {
+        return context.getSharedPreferences(APP_PREFERENCE_KEY, Context.MODE_PRIVATE);
+    }
 
     @Provides @Singleton MainCredentialsPreference provideMainCredentialsPreference(@ForUser SharedPreferences sharedPreferences, CredentialsDTOFactory credentialsDTOFactory)
     {
@@ -86,10 +105,26 @@ public class PreferenceModule
         return credentialsSetPreference;
     }
 
-    @Provides @Singleton SocialShareSetPreference provideSocialSharePref(@ForUser SharedPreferences sharedPreferences,
-            SocialSharePreferenceDTOFactory sharePreferenceDTOFactory)
+    @Provides @Singleton SocialShareSetPreference provideSocialSharePref(
+            @ForUser @NotNull SharedPreferences sharedPreferences,
+            @NotNull SocialSharePreferenceDTOFactory sharePreferenceDTOFactory)
     {
-        return new SocialShareSetPreference(sharePreferenceDTOFactory, sharedPreferences, PREF_SAVED_SOCIAL_SHARE_KEY, new HashSet<String>());
+        return new SocialShareSetPreference(
+                sharePreferenceDTOFactory,
+                sharedPreferences,
+                PREF_SAVED_SOCIAL_SHARE_KEY,
+                new HashSet<String>());
+    }
+
+    @Provides @Singleton UserTranslationSettingPreference provideUserTranslationSettingPref(
+            @ForUser @NotNull SharedPreferences sharedPreferences,
+            @NotNull UserTranslationSettingDTOFactory userTranslationSettingDTOFactory)
+    {
+        return new UserTranslationSettingPreference(
+                userTranslationSettingDTOFactory,
+                sharedPreferences,
+                PREF_SAVED_TRANSLATION_SETTING_KEY,
+                new HashSet<String>());
     }
 
     @Provides @Singleton @ResetHelpScreens BooleanPreference provideResetHelpScreen(@ForUser SharedPreferences sharedPreferences)
@@ -110,5 +145,10 @@ public class PreferenceModule
     @Provides @Singleton @FirstLaunch BooleanPreference provideFirstLaunchPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_FIRST_LAUNCH_FLAG, true);
+    }
+
+    @Provides @Singleton @FirstShowReferralCodeDialog BooleanPreference provideFirstShowReferralCodeDialogPreference(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_FIRST_SHOW_REFERRAL_CODE_FLAG, true);
     }
 }

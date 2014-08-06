@@ -15,15 +15,18 @@ import org.jetbrains.annotations.Nullable;
     public static final int DEFAULT_MAX_SIZE = 50;
 
     @NotNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NotNull private final ProviderCompactCache providerCompactCache;
     @NotNull private final ProviderCache providerCache;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderListCache(
             @NotNull ProviderServiceWrapper providerServiceWrapper,
+            @NotNull ProviderCompactCache providerCompactCache,
             @NotNull ProviderCache providerCache)
     {
         super(DEFAULT_MAX_SIZE);
         this.providerServiceWrapper = providerServiceWrapper;
+        this.providerCompactCache = providerCompactCache;
         this.providerCache = providerCache;
     }
     //</editor-fold>
@@ -40,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
     @NotNull @Override protected ProviderIdList cutValue(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
     {
+        providerCompactCache.put(value);
         providerCache.put(value);
         return value.createKeys();
     }

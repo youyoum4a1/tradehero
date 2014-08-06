@@ -22,7 +22,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
@@ -49,12 +49,13 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.utils.metrics.localytics.LocalyticsConstants;
-import com.tradehero.th.utils.metrics.localytics.THLocalyticsSession;
+import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import java.util.ArrayList;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -88,7 +89,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
-    @Inject Lazy<THLocalyticsSession> localyticsSessionLazy;
+    @Inject Analytics analytics;
 
     public LeaderboardFriendsItemView(Context context)
     {
@@ -208,7 +209,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 break;
             case R.id.leaderboard_user_item_follow:
                 THToast.show("TODO");
-                //alertDialogUtilLazy.get().showFollowDialog(getContext(), userFriendsDTO,
+                //heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userFriendsDTO,
                 //        UserProfileDTOUtil.IS_NOT_FOLLOWER,
                 //        new LeaderBoardFollowRequestedListener());
                 break;
@@ -218,18 +219,18 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     public class LeaderBoardFollowRequestedListener
             implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
         {
             freeFollow(heroId);
         }
 
-        @Override public void premiumFollowRequested(UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
         {
             follow(heroId);
         }
     }
 
-    protected void freeFollow(UserBaseKey heroId)
+    protected void freeFollow(@NotNull UserBaseKey heroId)
     {
         alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
                 R.string.following_this_hero));
@@ -239,12 +240,12 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                         .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow(UserBaseKey heroId)
+    protected void follow(@NotNull UserBaseKey heroId)
     {
         notifyFollowRequested(heroId);
     }
 
-    protected void notifyFollowRequested(UserBaseKey heroId)
+    protected void notifyFollowRequested(@NotNull UserBaseKey heroId)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
@@ -348,15 +349,14 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             if (userFriendsDTO instanceof UserFriendsLinkedinDTO)
             {
-                localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Linkedin);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Linkedin));
             }
             else
             {
-                localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Twitter);
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Twitter));
             }
-            InviteFormDTO inviteFriendForm = new InviteFormDTO();
-            inviteFriendForm.users = new ArrayList<>();
-            inviteFriendForm.users.add(userFriendsDTO.createInvite());
+            InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
+            inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
             detachMiddleCallbackInvite();
             middleCallbackInvite = userServiceWrapperLazy.get()
@@ -365,7 +365,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
-            localyticsSessionLazy.get().tagEventMethod(LocalyticsConstants.InviteFriends, LocalyticsConstants.Facebook);
+            analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
             if (Session.getActiveSession() == null)
             {
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
@@ -383,48 +383,52 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(((UserFriendsFacebookDTO) userFriendsDTO).fbId);
 
-        Bundle params = new Bundle();
-        String messageToFacebookFriends = getContext().getString(
-                R.string.invite_friend_facebook_tradehero_refer_friend_message);
-        if (messageToFacebookFriends.length() > 60)
+        UserProfileDTO userProfileDTO = userProfileCacheLazy.get().get(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
         {
-            messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-        }
+            Bundle params = new Bundle();
+            String messageToFacebookFriends = getContext().getString(
+                    R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
+            if (messageToFacebookFriends.length() > 60)
+            {
+                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+            }
 
-        params.putString("message", messageToFacebookFriends);
-        params.putString("to", stringBuilder.toString());
+            params.putString("message", messageToFacebookFriends);
+            params.putString("to", stringBuilder.toString());
 
-        WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
-                currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
-                params))
-                .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                {
-                    @Override
-                    public void onComplete(Bundle values, FacebookException error)
+            WebDialog requestsDialog = (new WebDialog.RequestsDialogBuilder(
+                    currentActivityHolderLazy.get().getCurrentActivity(), Session.getActiveSession(),
+                    params))
+                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
                     {
-                        if (error != null)
+                        @Override
+                        public void onComplete(Bundle values, FacebookException error)
                         {
-                            if (error instanceof FacebookOperationCanceledException)
+                            if (error != null)
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
-                            }
-                        }
-                        else
-                        {
-                            final String requestId = values.getString("request");
-                            if (requestId != null)
-                            {
-                                THToast.show(R.string.invite_friend_request_sent);
+                                if (error instanceof FacebookOperationCanceledException)
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                             else
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                final String requestId = values.getString("request");
+                                if (requestId != null)
+                                {
+                                    THToast.show(R.string.invite_friend_request_sent);
+                                }
+                                else
+                                {
+                                    THToast.show(R.string.invite_friend_request_canceled);
+                                }
                             }
                         }
-                    }
-                })
-                .build();
-        requestsDialog.show();
+                    })
+                    .build();
+            requestsDialog.show();
+        }
     }
 
     private void detachMiddleCallbackInvite()

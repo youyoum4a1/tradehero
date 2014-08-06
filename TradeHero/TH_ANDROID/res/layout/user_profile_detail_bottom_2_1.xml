@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="15dp"
-        >
+        android:baselineAligned="false">
 
       <LinearLayout
           android:id="@+id/user_profile_followers_count_wrapper"
@@ -139,6 +139,8 @@
           android:layout_height="wrap_content"
           android:orientation="vertical"
           android:layout_weight="1"
+          android:background="@drawable/basic_transparent_selector"
+          android:addStatesFromChildren="true"
           android:gravity="center_horizontal"
           >
 

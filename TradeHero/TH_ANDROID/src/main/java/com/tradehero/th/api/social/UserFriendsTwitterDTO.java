@@ -15,6 +15,11 @@ public class UserFriendsTwitterDTO extends UserFriendsDTO
     {
         super();
     }
+
+    public UserFriendsTwitterDTO(@NotNull String twId)
+    {
+        this.twId = twId;
+    }
     //</editor-fold>
 
     @Override public int getNetworkLabelImage()

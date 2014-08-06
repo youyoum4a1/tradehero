@@ -11,6 +11,8 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
 {
@@ -23,15 +25,17 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
     @Inject DiscussionCache discussionCache;
     @Inject CurrentUserId currentUserId;
 
-    public PrivateDiscussionSetAdapter(Context context, int mineResId, int otherResId)
+    //<editor-fold desc="Constructors">
+    public PrivateDiscussionSetAdapter(@NotNull Context context, int mineResId, int otherResId)
     {
         super(context);
         this.mineResId = mineResId;
         this.otherResId = otherResId;
         DaggerUtils.inject(this);
     }
+    //</editor-fold>
 
-    @Override protected Set<DiscussionKey> createSet(Collection<DiscussionKey> objects)
+    @Override @NotNull protected Set<DiscussionKey> createSet(@Nullable Collection<DiscussionKey> objects)
     {
         Set<DiscussionKey> created = new TreeSet<>(new DiscussionKeyComparatorIdAsc());
         if (objects != null)

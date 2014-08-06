@@ -2,6 +2,7 @@ package com.tradehero.th.api.competition;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +15,7 @@ public class CompetitionDTO implements DTO
     public String iconActiveUrl;
     public String iconInactiveUrl;
     public String prizeValueWithCcy;
+    @Nullable public LeaderboardUserDTO leaderboardUser;
 
     //<editor-fold desc="Constructors">
     public CompetitionDTO()
@@ -22,7 +24,7 @@ public class CompetitionDTO implements DTO
     }
 
     public CompetitionDTO(int id, @Nullable LeaderboardDefDTO leaderboard, String name, String competitionDurationType, String iconActiveUrl,
-            String iconInactiveUrl, String prizeValueWithCcy)
+            String iconInactiveUrl, String prizeValueWithCcy, LeaderboardUserDTO leaderboardUser)
     {
         this.id = id;
         this.leaderboard = leaderboard;
@@ -31,6 +33,7 @@ public class CompetitionDTO implements DTO
         this.iconActiveUrl = iconActiveUrl;
         this.iconInactiveUrl = iconInactiveUrl;
         this.prizeValueWithCcy = prizeValueWithCcy;
+        this.leaderboardUser = leaderboardUser;
     }
     //</editor-fold>
 

@@ -3,6 +3,8 @@ package com.tradehero.th.widget.time;
 import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.time.TimeFormatFloor;
 import com.tradehero.common.time.TimeUnitDayUnlimited;
 import com.tradehero.common.time.TimeUnitHourInDay;
@@ -22,10 +24,10 @@ public class TimeDisplayViewHolder
     public static final long MAX_DAY_COUNT = 99;
 
     @NotNull protected final Context context;
-    protected TextView dayCountView;
-    protected TextView hourCountView;
-    protected TextView minuteCountView;
-    protected TextView secondCountView;
+    @InjectView(R.id.value_day_count) protected TextView dayCountView;
+    @InjectView(R.id.value_hour_count) protected TextView hourCountView;
+    @InjectView(R.id.value_minute_count) protected TextView minuteCountView;
+    @InjectView(R.id.value_second_count) protected TextView secondCountView;
     @NotNull protected final PrettyTime prettyTime;
 
     //<editor-fold desc="Constructors">
@@ -52,10 +54,7 @@ public class TimeDisplayViewHolder
     {
         if (view != null)
         {
-            dayCountView = (TextView) view.findViewById(R.id.value_day_count);
-            hourCountView = (TextView) view.findViewById(R.id.value_hour_count);
-            minuteCountView = (TextView) view.findViewById(R.id.value_minute_count);
-            secondCountView = (TextView) view.findViewById(R.id.value_second_count);
+            ButterKnife.inject(this, view);
         }
     }
 

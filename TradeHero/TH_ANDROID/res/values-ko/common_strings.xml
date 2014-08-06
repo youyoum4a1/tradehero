@@ -16,6 +16,7 @@
   <string name="data_format_dd_mmm_hh_mm">MM월 dd일 HH:mm</string>
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy MM월 dd일 kk:mm z</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm">MM월 dd일 HH:mm</string>
+  <string name="data_format_dd_mmm">MM월 dd일</string>
 
   <!-- Splash screen -->
   <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>

@@ -34,6 +34,7 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class StockInfoFragment extends DashboardFragment
@@ -363,12 +364,12 @@ public class StockInfoFragment extends DashboardFragment
 
     protected class StockInfoFragmentSecurityCompactCacheListener implements DTOCacheNew.Listener<SecurityId, SecurityCompactDTO>
     {
-        @Override public void onDTOReceived(SecurityId key, SecurityCompactDTO value)
+        @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(SecurityId key, Throwable error)
+        @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
             THToast.show(R.string.error_fetch_security_info);
             Timber.e(error, "Failed to fetch SecurityCompact %s", securityId);

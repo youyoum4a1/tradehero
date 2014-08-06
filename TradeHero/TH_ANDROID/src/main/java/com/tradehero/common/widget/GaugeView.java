@@ -27,13 +27,13 @@ import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import java.util.Arrays;
 
@@ -322,7 +322,7 @@ public class GaugeView extends View {
         // TODO Why isn't this working with HA layer?
         // The needle is not displayed although the onDraw() is being triggered by invalidate()
         // calls.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (SDKUtils.isHoneycombOrHigher()) {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 

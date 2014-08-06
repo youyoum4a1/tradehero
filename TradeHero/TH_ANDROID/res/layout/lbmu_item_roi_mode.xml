@@ -93,19 +93,23 @@
           android:layout_height="wrap_content"
           android:paddingLeft="5dp"
           android:textColor="@color/gray_1"
+          android:visibility="gone"
           tools:text="(annualised: +1200%)"
           />
+
     </LinearLayout>
+
     <ImageView
         android:id="@+id/leaderboard_user_item_country_logo"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="@dimen/small_icon_w_h"
+        android:layout_height="@dimen/small_icon_w_h"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:scaleType="centerInside"
         android:contentDescription="@null"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="@dimen/leaderboard_flag_icon_margin_right"
         />
+
   </RelativeLayout>
 
   <ImageView

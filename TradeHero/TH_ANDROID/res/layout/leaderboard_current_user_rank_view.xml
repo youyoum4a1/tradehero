@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/leaderboard_current_user_rank_vertical_margin"
+    android:layout_marginBottom="@dimen/leaderboard_current_user_rank_vertical_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/leaderboard_current_user_rank_vertical_padding"
+    android:paddingBottom="@dimen/leaderboard_current_user_rank_vertical_padding"
+    android:background="@color/leaderboard_current_user_rank_header_background"
+    >
+
+  <TextView
+      android:id="@+id/leaderboard_current_user_rank_position"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:textSize="@dimen/leaderboard_position_text_size"
+      android:textStyle="bold"
+      android:textColor="@color/leaderboard_ranking_position"
+      android:shadowColor="@color/light_grey"
+      android:shadowDy="1"
+      android:shadowRadius="1"
+      android:layout_centerVertical="true"
+      android:minWidth="50dp"
+      tools:text="1"
+      />
+
+  <ImageView
+      android:id="@+id/leaderboard_current_user_rank_profile_picture"
+      android:layout_height="@dimen/leaderboard_user_view_profile_width"
+      android:layout_width="@dimen/leaderboard_user_view_profile_width"
+      android:contentDescription="@null"
+      tools:src="@drawable/superman_facebook"
+      android:layout_toRightOf="@+id/leaderboard_current_user_rank_position"
+      android:layout_centerVertical="true"
+      android:layout_marginRight="5dp"
+      />
+
+  <ImageView
+      android:id="@+id/leaderboard_current_user_rank_country_logo"
+      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_icon_w_h"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:scaleType="centerInside"
+      tools:src="@drawable/square_gb"
+      android:contentDescription="@null"
+      android:layout_marginRight="@dimen/leaderboard_flag_icon_margin_right"/>
+
+  <TextView
+      android:id="@+id/leaderboard_current_user_rank_display_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:textStyle="bold"
+      android:textSize="@dimen/leaderboard_title_text_size"
+      android:layout_toRightOf="@+id/leaderboard_current_user_rank_profile_picture"
+      android:layout_toLeftOf="@id/leaderboard_current_user_rank_country_logo"
+      android:shadowColor="@color/light_grey"
+      android:shadowDy="1"
+      android:shadowRadius="1"
+      tools:text="Rafael Barba"
+      />
+
+  <TextView
+      android:id="@+id/leaderboard_current_user_rank_roi"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/leaderboard_current_user_rank_display_name"
+      android:layout_toLeftOf="@id/leaderboard_current_user_rank_country_logo"
+      android:layout_alignLeft="@id/leaderboard_current_user_rank_display_name"
+      tools:text="+87%"
+      />
+
+
+</RelativeLayout>

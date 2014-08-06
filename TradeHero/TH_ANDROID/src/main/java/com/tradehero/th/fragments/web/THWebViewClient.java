@@ -78,6 +78,7 @@ public class THWebViewClient extends WebViewClient
                 if (uri.getHost().equalsIgnoreCase(context.getString(R.string.intent_host_home)))
                 {
                     view.reload();
+                    return true;
                 }
                 else if (uri.getHost().equalsIgnoreCase(context.getString(R.string.intent_host_web)))
                 {
@@ -91,11 +92,12 @@ public class THWebViewClient extends WebViewClient
                         Timber.d("Opening this page: %s", redirectUrl);
                         DashboardNavigator navigator = ((DashboardNavigatorActivity) context).getDashboardNavigator();
                         Bundle bundle = new Bundle();
-                        bundle.putString(BaseWebViewFragment.BUNDLE_KEY_URL, redirectUrl);
+                        WebViewFragment.putUrl(bundle, redirectUrl);
                         navigator.pushFragment(WebViewFragment.class, bundle);
-                        return false;
+                        return true;
                     }
                 }
+                // Need to return true, coz it will be handled by THRouter, see {@link com.tradehero.th.models.intent.THIntentFactoryImpl#create()}
                 return true;
             }
         }

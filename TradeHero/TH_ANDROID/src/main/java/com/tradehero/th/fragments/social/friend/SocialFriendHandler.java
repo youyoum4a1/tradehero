@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.social.friend;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.Window;
-import com.tradehero.th.api.social.InviteDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
+import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -108,16 +108,16 @@ import retrofit.client.Response;
     }
 
     // TODO
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, List<UserFriendsDTO> users, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, @NotNull List<UserFriendsDTO> users, RequestCallback<Response> callback)
     {
 
-        InviteFormDTO inviteFormDTO = new InviteFormDTO();
-        List<InviteDTO> usersToFollow = new ArrayList<>(users.size());
-        for (int i = 0; i < users.size(); i++)
-        {
-            usersToFollow.add(users.get(i).createInvite());
-        }
-        inviteFormDTO.users = usersToFollow;
+        InviteFormUserDTO inviteFormDTO = new InviteFormUserDTO();
+        inviteFormDTO.addAll(users);
+        return inviteFriends(userKey, inviteFormDTO, callback);
+    }
+
+    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, RequestCallback<Response> callback)
+    {
         if (callback != null)
         {
             callback.onRequestStart();

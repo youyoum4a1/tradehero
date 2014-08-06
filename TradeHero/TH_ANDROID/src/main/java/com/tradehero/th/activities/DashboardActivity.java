@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -15,10 +16,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.crashlytics.android.Crashlytics;
-import com.localytics.android.LocalyticsSession;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -29,8 +30,8 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
@@ -43,7 +44,10 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.persistence.prefs.FirstShowReferralCodeDialog;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.ui.ViewWrapper;
@@ -52,15 +56,17 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import timber.log.Timber;
 
 public class DashboardActivity extends SherlockFragmentActivity
@@ -85,23 +91,26 @@ public class DashboardActivity extends SherlockFragmentActivity
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject Lazy<THIntentFactory> thIntentFactory;
     @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject Lazy<LocalyticsSession> localyticsSession;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCache> notificationCache;
+    @Inject DeviceTokenHelper deviceTokenHelper;
+    @Inject @FirstShowReferralCodeDialog BooleanPreference firstShowReferralCodeDialogPreference;
+    @Inject SystemStatusCache systemStatusCache;
 
     @Inject AppContainer appContainer;
     @Inject ViewWrapper slideMenuContainer;
     @Inject ResideMenu resideMenu;
 
     @Inject THRouter thRouter;
-
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
+    @Inject Analytics analytics;
 
     private DTOCacheNew.HurriedListener<NotificationKey, NotificationDTO> notificationFetchListener;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
 
+    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     private ProgressDialog progressDialog;
+    private AlertDialog mReferralCodeDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -121,7 +130,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (Constants.RELEASE)
         {
             Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                    String.format("%s:%d", DeviceTokenHelper.getDeviceType(), Constants.TAP_STREAM_TYPE.type));
+                    String.format("%s:%d", deviceTokenHelper.getDeviceType(), Constants.TAP_STREAM_TYPE.type));
             Crashlytics.setUserIdentifier("" + currentUserId.get());
         }
 
@@ -153,7 +162,9 @@ public class DashboardActivity extends SherlockFragmentActivity
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
 
         suggestUpgradeIfNecessary();
-        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list, and this line is no use for it will update after login in prefetchesUponLogin
+        //dtoCacheUtil.initialPrefetches();//this will block first initial launch securities list,
+        // and this line is no use for it will update after login in prefetchesUponLogin
+        showReferralCodeDialog();
 
         navigator = new DashboardNavigator(this, getSupportFragmentManager(), R.id.realtabcontent);
         if (savedInstanceState == null && navigator.getCurrentFragment() == null)
@@ -168,6 +179,67 @@ public class DashboardActivity extends SherlockFragmentActivity
         //TODO need check whether this is ok for urbanship,
         //TODO for baidu, PushManager.startWork can't run in Application.init() for stability, it will run in a circle. by alex
         pushNotificationManager.get().enablePush();
+    }
+
+    private void showReferralCodeDialog()
+    {
+        if (firstShowReferralCodeDialogPreference.get())
+        {
+            firstShowReferralCodeDialogPreference.set(false);
+            if (THUser.getTHAuthenticationProvider() != null)
+            {
+                if (THUser.getTHAuthenticationProvider().getAuthType().equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
+                {
+                    //not show referral code dialog if login by email by alex
+                    return;
+                }
+            }
+            UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+            if (userProfileDTO != null)
+            {
+                if (userProfileDTO.inviteCode != null && !userProfileDTO.inviteCode.isEmpty())
+                {
+                    return;
+                }
+            }
+            if (mReferralCodeDialog == null)
+            {
+                mReferralCodeDialog = alertDialogUtil.get().getReferralCodeDialog(this, currentUserId.toUserBaseKey(), new TrackCallback());
+            }
+            mReferralCodeDialog.show();
+        }
+    }
+
+    public class TrackCallback implements retrofit.Callback<Response>
+    {
+        @Override public void success(Response response, Response response2)
+        {
+            alertDialogUtil.get().dismissProgressDialog();
+            if (mReferralCodeDialog != null)
+            {
+                mReferralCodeDialog.dismiss();
+            }
+            userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+            THToast.show(R.string.referral_code_callback_success);
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            alertDialogUtil.get().dismissProgressDialog();
+            if ((new THException(retrofitError)).getMessage().contains("Already invited"))
+            {
+                if (mReferralCodeDialog != null)
+                {
+                    mReferralCodeDialog.dismiss();
+                }
+                userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+                THToast.show(R.string.referral_code_callback_success);
+            }
+            else
+            {
+                THToast.show(new THException(retrofitError));
+            }
+        }
     }
 
     @Override
@@ -212,29 +284,25 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (getIntent() != null && getIntent().getBooleanExtra(UserLoginDTO.SUGGEST_UPGRADE, false))
         {
             alertDialogUtil.get().popWithOkCancelButton(
-                    this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
-                    R.string.later,
-                    new DialogInterface.OnClickListener()
+                this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
+                R.string.later,
+                new DialogInterface.OnClickListener()
+                {
+                    @Override public void onClick(DialogInterface dialog, int which)
                     {
-                        @Override public void onClick(DialogInterface dialog, int which)
+                        try
                         {
-                            try
-                            {
-                                THToast.show(R.string.update_guide);
-                                startActivity(
-                                        new Intent(Intent.ACTION_VIEW, Uri.parse(
-                                                "market://details?id="
-                                                        + Constants.PLAYSTORE_APP_ID)));
-                            } catch (ActivityNotFoundException ex)
-                            {
-                                startActivity(
-                                        new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse(
-                                                        "https://play.google.com/store/apps/details?id="
-                                                                + Constants.PLAYSTORE_APP_ID)));
-                            }
+                            THToast.show(R.string.update_guide);
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(
+                                            "market://details?id=" + Constants.PLAYSTORE_APP_ID)));
+                        } catch (ActivityNotFoundException ex)
+                        {
+                            startActivity(new Intent(Intent.ACTION_VIEW,
+                                            Uri.parse("https://play.google.com/store/apps/details?id="
+                                                            + Constants.PLAYSTORE_APP_ID)));
                         }
-                    });
+                    }
+                });
         }
     }
 
@@ -283,13 +351,19 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
     }
 
+    @Override protected void onStart()
+    {
+        super.onStart();
+        systemStatusCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
     @Override protected void onResume()
     {
         super.onResume();
 
         launchActions();
 
-        localyticsSession.get().open(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
+        analytics.openSession();
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -320,9 +394,7 @@ public class DashboardActivity extends SherlockFragmentActivity
 
     @Override protected void onPause()
     {
-        localyticsSession.get().close(Collections.singletonList(Constants.TAP_STREAM_TYPE.name()));
-        localyticsSession.get().upload();
-
+        analytics.closeSession();
         super.onPause();
     }
 
@@ -413,12 +485,12 @@ public class DashboardActivity extends SherlockFragmentActivity
     protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override
-        public void onDTOReceived(UserBaseKey key, UserProfileDTO value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             supportInvalidateOptionsMenu();
         }
 
-        @Override public void onErrorThrown(UserBaseKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
 
         }
@@ -458,7 +530,7 @@ public class DashboardActivity extends SherlockFragmentActivity
         }
 
         @Override
-        public void onDTOReceived(NotificationKey key, NotificationDTO value)
+        public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
         {
             onFinish();
 
@@ -466,7 +538,7 @@ public class DashboardActivity extends SherlockFragmentActivity
             notificationClickHandler.handleNotificationItemClicked();
         }
 
-        @Override public void onErrorThrown(NotificationKey key, Throwable error)
+        @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
         {
             onFinish();
             THToast.show(new THException(error));

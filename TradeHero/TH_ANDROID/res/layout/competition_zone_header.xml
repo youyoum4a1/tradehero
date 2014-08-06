@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.widget.list.BaseListHeaderView
+<com.tradehero.th.fragments.competition.zone.CompetitionZoneHeaderView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,6 +14,8 @@
       android:textStyle="bold"
       android:textSize="@dimen/text_xsmall"
       android:text="@string/na"
+      android:paddingTop="@dimen/common_margin_4"
+      android:paddingBottom="@dimen/common_margin_4"
     />
 
-</com.tradehero.th.widget.list.BaseListHeaderView>
+</com.tradehero.th.fragments.competition.zone.CompetitionZoneHeaderView>

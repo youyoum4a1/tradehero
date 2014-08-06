@@ -12,6 +12,7 @@
   <string name="provider_competition_terms_title">条款 &amp; 条件</string>
   <string name="provider_security_list_title">比赛证劵</string>
   <string name="provider_security_list_search_hint">根据标的名或是代码筛选</string>
+  <string name="provider_security_list_tradable">可交易证券</string>
   <string name="competition_leaderboard_timer_time_left_1">时间</string>
   <string name="competition_leaderboard_timer_time_left_2">剩余</string>
   <string name="competition_leaderboard_timer_days">天</string>
@@ -20,6 +21,7 @@
   <string name="competition_enrollment_web_view_done">完成</string>
   <string name="competition_portfolio_unsure">未命名比赛</string>
 
+  <string name="competition_trade_now">现在交易!</string>
   <!-- Macquarie WarrantHero specific strings. providerId == 3-->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
