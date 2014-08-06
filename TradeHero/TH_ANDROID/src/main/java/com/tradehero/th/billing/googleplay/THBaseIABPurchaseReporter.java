@@ -4,6 +4,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBasePurchaseReporter;
@@ -61,7 +62,11 @@ public class THBaseIABPurchaseReporter
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
         if (portfolioId == null || portfolioId.userId == null || portfolioId.portfolioId == null)
         {
-            portfolioId = portfolioCompactListCache.get().getDefaultPortfolio(currentUserId.toUserBaseKey());
+            PortfolioCompactDTO cachedDefaultPortfolio = portfolioCompactListCache.get().getDefaultPortfolio(currentUserId.toUserBaseKey());
+            if (cachedDefaultPortfolio != null)
+            {
+                portfolioId = cachedDefaultPortfolio.getOwnedPortfolioId();
+            }
         }
         if (portfolioId == null)
         {
