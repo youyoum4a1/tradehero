@@ -109,6 +109,7 @@ public class NotificationServiceWrapper
     @NotNull private DTOProcessor<Response> createNotificationAllReadDTOProcessor(@NotNull UserBaseKey readerId)
     {
         return new DTOProcessorNotificationAllRead(
+                notificationCache.get(),
                 readerId,
                 userProfileCache.get());
     }

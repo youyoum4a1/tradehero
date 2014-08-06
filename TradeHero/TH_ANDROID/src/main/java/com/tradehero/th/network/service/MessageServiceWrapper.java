@@ -334,7 +334,7 @@ public class MessageServiceWrapper
     @NotNull protected DTOProcessor<Response> createMessageHeaderReadAllProcessor(
             @NotNull UserBaseKey readerId)
     {
-        return new DTOProcessorAllMessagesRead(userProfileCache.get(),readerId);
+        return new DTOProcessorAllMessagesRead(messageHeaderCache.get(), userProfileCache.get(), readerId);
     }
 
     @NotNull public Response readAllMessage(
