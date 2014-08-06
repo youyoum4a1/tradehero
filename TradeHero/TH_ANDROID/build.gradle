@@ -10,13 +10,13 @@ buildscript {
 }
 
 // Manifest version information!
-def versionMajor = 2
-def versionMinor = 3
-def versionPatch = 0
-def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+project.ext.versionMajor = 2
+project.ext.versionMinor = 3
+project.ext.versionPatch = 0
+project.ext.versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
-def currentDate = (int) (System.currentTimeMillis() / (1000 * 60 * 60 * 24))
-def moduloDate = currentDate % 1000
+project.ext.currentDate = (int) (System.currentTimeMillis() / (1000 * 60 * 60 * 24))
+project.ext.moduloDate = project.ext.currentDate % 1000
 
 apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
@@ -31,11 +31,11 @@ repositories {
     maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
 }
 
-def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-def buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
+project.ext.gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+project.ext.buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
 
-def isTravis = "true".equals(System.getenv("TRAVIS"))
-def preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
+project.ext.isTravis = "true".equals(System.getenv("TRAVIS"))
+project.ext.preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 
 android {
     compileSdkVersion 19
@@ -44,7 +44,7 @@ android {
 
     dexOptions {
         // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
-        preDexLibraries = preDexEnabled && !isTravis
+        preDexLibraries = project.ext.preDexEnabled && !project.ext.isTravis
         // TODO is this really necessary?
         jumboMode = true
     }
@@ -53,11 +53,11 @@ android {
         minSdkVersion 14
         targetSdkVersion 19
 
-        versionCode moduloDate * 1000 + versionPatch * 100 + versionBuild
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionCode project.ext.moduloDate * 1000 + project.ext.versionPatch * 100 + project.ext.versionBuild
+        versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
 
-        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
-        buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
+        buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
+        buildConfigField "String", "BUILD_TIME", "\"${project.ext.buildTime}\""
     }
 
     compileOptions {
@@ -84,17 +84,17 @@ android {
     }
 
     // There may be further flavorGroups dimensions in the future
-    flavorGroups "marketSegment"
+    flavorDimensions "marketSegment"
 
     productFlavors {
         googleplay {
-            flavorGroup "marketSegment"
+            flavorDimension "marketSegment"
         }
         china {
-            flavorGroup "marketSegment"
+            flavorDimension "marketSegment"
         }
         samsung {
-            flavorGroup "marketSegment"
+            flavorDimension "marketSegment"
         }
     }
 
@@ -188,8 +188,11 @@ dependencies {
     chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
 
     compile project(':ResideMenu')
-    // TODO change to samsungCompile when properly separated
-    compile project(':samsung_iap')
+    // TODO remove when properly separated
+    chinaCompile project(':samsung_iap')
+    // TODO remove when properly separated
+    googleplayCompile project(':samsung_iap')
+    samsungCompile project(':samsung_iap')
     compile project(':facebook-android-sdk:facebook')
 
     compile ('com.actionbarsherlock:actionbarsherlock:4.4.0@aar') {
