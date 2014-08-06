@@ -136,10 +136,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                 initHeaderView(headerView);
             }
 
-            ownRankingView = (LeaderboardMarkUserItemView) inflateAndGetUserRankHeaderView();
-            setupOwnRankingView();
+            View userRankingHeaderView = inflateAndGetUserRankHeaderView();
+            setupOwnRankingView(userRankingHeaderView);
 
-            leaderboardMarkUserListView.getRefreshableView().addHeaderView(ownRankingView);
+            leaderboardMarkUserListView.getRefreshableView().addHeaderView(userRankingHeaderView);
         }
     }
 
@@ -148,16 +148,20 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return R.layout.lbmu_item_roi_mode;
     }
 
-    private void setupOwnRankingView()
+    private void setupOwnRankingView(View userRankingHeaderView)
     {
-        if (ownRankingView.expandingLayout != null)
+        if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
         {
-            ownRankingView.displayRankingPosition(currentRank);
-            ownRankingView.expandingLayout.setVisibility(View.GONE);
-            ownRankingView.onExpand(false);
-            ownRankingView.setOnClickListener(new BaseExpandingItemListener());
+            ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
+            if (ownRankingView.expandingLayout != null)
+            {
+                ownRankingView.displayRankingPosition(currentRank);
+                ownRankingView.expandingLayout.setVisibility(View.GONE);
+                ownRankingView.onExpand(false);
+                ownRankingView.setOnClickListener(new BaseExpandingItemListener());
+            }
+            ownRankingView.displayOwnRanking(currentLeaderboardKey);
         }
-        ownRankingView.displayOwnRanking(currentLeaderboardKey);
     }
 
     protected int getHeaderViewResId()
