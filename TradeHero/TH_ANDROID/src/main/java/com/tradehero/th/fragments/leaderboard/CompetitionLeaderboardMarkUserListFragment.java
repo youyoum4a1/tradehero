@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -178,7 +179,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected CompetitionLeaderboardCurrentUserRankHeaderView getCompetitionUserRankHeaderView()
     {
-        LeaderboardCurrentUserRankHeaderView header = inflateAndGetUserRankHeaderView();
+        View header = inflateAndGetUserRankHeaderView();
         if (header != null && header instanceof CompetitionLeaderboardCurrentUserRankHeaderView)
         {
             return (CompetitionLeaderboardCurrentUserRankHeaderView) header;

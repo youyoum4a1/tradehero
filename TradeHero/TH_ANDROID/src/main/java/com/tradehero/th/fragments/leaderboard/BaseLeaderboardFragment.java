@@ -51,7 +51,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected int currentRank;
     protected Double roiToBeShown;
-    private LeaderboardCurrentUserRankHeaderView mRankHeaderView;
+    private View mRankHeaderView;
 
     public static void putLeaderboardDefKey(@NotNull Bundle args, @NotNull LeaderboardDefKey leaderboardDefKey)
     {
@@ -268,14 +268,13 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
      *
      * @return {@link View View}, the header view when {@link #shouldShowUserRank shouldShowUserRank} is true, null otherwise
      */
-    @Nullable protected final LeaderboardCurrentUserRankHeaderView inflateAndGetUserRankHeaderView()
+    @Nullable protected final View inflateAndGetUserRankHeaderView()
     {
         if (shouldShowUserRank())
         {
             if (mRankHeaderView == null)
             {
-                mRankHeaderView =
-                        (LeaderboardCurrentUserRankHeaderView) LayoutInflater.from(getActivity()).inflate(getCurrentRankLayoutResId(), null, false);
+                mRankHeaderView = LayoutInflater.from(getActivity()).inflate(getCurrentRankLayoutResId(), null, false);
                 initCurrentRankHeaderView();
             }
             return mRankHeaderView;
@@ -296,16 +295,16 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected void initCurrentRankHeaderView()
     {
-        if (mRankHeaderView != null)
+        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
         {
-            mRankHeaderView.setRank(currentRank);
-            mRankHeaderView.setRoiToBeShown(roiToBeShown);
+            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setRank(currentRank);
+            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setRoiToBeShown(roiToBeShown);
         }
     }
 
     protected int getCurrentRankLayoutResId()
     {
-        return R.layout.leaderboard_current_user_rank_header_view;
+        throw new RuntimeException("Not implemented!");
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
