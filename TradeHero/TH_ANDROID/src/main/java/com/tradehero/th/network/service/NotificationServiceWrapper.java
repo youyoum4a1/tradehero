@@ -7,6 +7,7 @@ import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.notification.DTOProcessorNotificationAllRead;
 import com.tradehero.th.models.notification.DTOProcessorNotificationRead;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -61,9 +62,7 @@ public class NotificationServiceWrapper
 
     @NotNull private DTOProcessor<Response> createNotificationReadDTOProcessor()
     {
-        return new DTOProcessorNotificationRead(
-                context,
-                notificationCache.get(),
+        return new DTOProcessorNotificationAllRead(
                 currentUserId,
                 userProfileCache.get());
     }
