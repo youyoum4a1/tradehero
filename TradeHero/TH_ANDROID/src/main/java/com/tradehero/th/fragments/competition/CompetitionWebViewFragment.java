@@ -14,7 +14,7 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 

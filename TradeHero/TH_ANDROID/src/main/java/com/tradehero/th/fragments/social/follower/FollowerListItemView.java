@@ -24,7 +24,7 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -176,31 +176,12 @@ public class FollowerListItemView extends RelativeLayout
     {
         if (country != null)
         {
-            if (userFollowerDTO != null && userFollowerDTO.countryCode != null)
+            int imageResId = R.drawable.default_image;
+            if (userFollowerDTO != null)
             {
-                country.setImageResource(getCountryLogoId(userFollowerDTO.countryCode));
+                imageResId = Country.getCountryLogo(R.drawable.default_image, userFollowerDTO.countryCode);
             }
-            else
-            {
-                country.setImageResource(R.drawable.default_image);
-            }
-        }
-    }
-
-    public int getCountryLogoId(@NotNull String country)
-    {
-        return getCountryLogoId(0, country);
-    }
-
-    public int getCountryLogoId(int defaultResId, @NotNull String country)
-    {
-        try
-        {
-            Timber.d("getCountryLogoId country:%s",country);
-            return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException ex)
-        {
-            return defaultResId;
+            country.setImageResource(imageResId);
         }
     }
 

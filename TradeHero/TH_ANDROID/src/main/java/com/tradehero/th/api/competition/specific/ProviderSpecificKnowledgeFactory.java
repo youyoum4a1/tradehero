@@ -52,10 +52,6 @@ public class ProviderSpecificKnowledgeFactory
                 case ProviderIdConstants.PROVIDER_ID_SGX_STOCKWHIZ:
                     created = new SgxStockWhizProviderSpecificKnowledgeDTO();
                     break;
-
-                default:
-                    Timber.e("Unhandled ProviderId.key == %d", providerId.key);
-                    break;
             }
         }
 

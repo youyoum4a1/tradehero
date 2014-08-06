@@ -61,7 +61,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
     @InjectView(R.id.discussion_post_content) EditText discussionPostContent;
-    @InjectView(R.id.discussion_new_post_action_buttons) DiscussionPostActionButtonsView discussionPostActionButtonsView;
+    @InjectView(R.id.discussion_new_post_action_buttons) protected DiscussionPostActionButtonsView discussionPostActionButtonsView;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCache securityCompactCache;
@@ -77,7 +77,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
     private ProgressDialog progressDialog;
-    private MenuItem postMenuButton;
+    protected MenuItem postMenuButton;
     private TextWatcher discussionEditTextWatcher;
 
     private HasSelectedItem selectionFragment;
@@ -92,7 +92,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return view;
     }
 
-    private void initView()
+    protected void initView()
     {
         discussionEditTextWatcher = new DiscussionEditTextWatcher();
         discussionPostContent.addTextChangedListener(discussionEditTextWatcher);
@@ -301,7 +301,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         discussionPostContent.setSelection(discussionPostContent.length());
     }
 
-    private Editable unSpanText(Editable editable)
+    protected static Editable unSpanText(Editable editable)
     {
         // keep editable unchange
         SpannableStringBuilder editableCopy = new SpannableStringBuilder(editable);

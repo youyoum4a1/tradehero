@@ -99,7 +99,7 @@
   <dimen name="alert_item_label_min_width">120dp</dimen>
   <dimen name="leaderboard_bottom_padding">50dp</dimen>
   <dimen name="search_stock_people_padding">8dp</dimen>
-  <dimen name="leaderboard_separator_height">10dp</dimen>
+  <dimen name="leaderboard_separator_height">5dp</dimen>
   <dimen name="leaderboard_separator_height_negated">-10dp</dimen>
   <dimen name="trending_list_padding_left_and_right">8dp</dimen>
   <dimen name="trending_list_padding_bottom">95dp</dimen>
@@ -175,5 +175,7 @@
 
   <dimen name="discussion_separator_thickness">0.5dp</dimen>
   <dimen name="discussion_list_padding">60dp</dimen>
+
+  <dimen name="message_read_all_button_radius">4dp</dimen>
 
 </resources>

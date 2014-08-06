@@ -14,8 +14,8 @@ public class DTOProcessorMessageRead implements DTOProcessor<Response>
 {
     @NotNull private final MessageHeaderCache messageHeaderCache;
     @NotNull private final UserProfileCache userProfileCache;
-    @Nullable private final MessageHeaderId messageHeaderId;
-    @Nullable private final UserBaseKey readerId;
+    @NotNull private MessageHeaderId messageHeaderId;
+    @NotNull private UserBaseKey readerId;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorMessageRead(

@@ -115,11 +115,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected FaqViewHolder faqViewHolder;
     @Inject protected ProfilePreferenceViewHolder profilePreferenceViewHolder;
     @Inject protected LocationCountrySettingsViewHolder locationCountrySettingsViewHolder;
-    @Inject protected PayPalViewHolder payPalViewHolder;
-    @Inject protected AlipayViewHolder alipayViewHolder;
+    @Inject protected PayPalSettingViewHolder payPalSettingViewHolder;
+    @Inject protected AlipaySettingViewHolder alipaySettingViewHolder;
     @Inject protected TransactionHistoryViewHolder transactionHistoryViewHolder;
     @Inject protected ReferralCodeViewHolder referralCodeViewHolder;
-    @Inject protected SignOutViewHolder signOutViewHolder;
+    @Inject protected SignOutSettingViewHolder signOutSettingViewHolder;
     @Inject protected UserTranslationSettingsViewHolder userTranslationSettingsViewHolder;
     @Inject protected ResetHelpScreensViewHolder resetHelpScreensViewHolder;
     @Inject protected ClearCacheViewHolder clearCacheViewHolder;
@@ -300,11 +300,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         faqViewHolder.destroyViews();
         profilePreferenceViewHolder.destroyViews();
         locationCountrySettingsViewHolder.destroyViews();
-        payPalViewHolder.destroyViews();
-        alipayViewHolder.destroyViews();
+        payPalSettingViewHolder.destroyViews();
+        alipaySettingViewHolder.destroyViews();
         transactionHistoryViewHolder.destroyViews();
         referralCodeViewHolder.destroyViews();
-        signOutViewHolder.destroyViews();
+        signOutSettingViewHolder.destroyViews();
         userTranslationSettingsViewHolder.destroyViews();
         resetHelpScreensViewHolder.destroyViews();
         clearCacheViewHolder.destroyViews();
@@ -323,11 +323,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         clearCacheViewHolder = null;
         resetHelpScreensViewHolder = null;
         userTranslationSettingsViewHolder = null;
-        signOutViewHolder = null;
+        signOutSettingViewHolder = null;
         referralCodeViewHolder = null;
         transactionHistoryViewHolder = null;
-        alipayViewHolder = null;
-        payPalViewHolder = null;
+        alipaySettingViewHolder = null;
+        payPalSettingViewHolder = null;
         locationCountrySettingsViewHolder = null;
         profilePreferenceViewHolder = null;
         sendFeedbackViewHolder = null;
@@ -412,11 +412,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         profilePreferenceViewHolder.initViews(this);
 
         // Account
-        payPalViewHolder.initViews(this);
-        alipayViewHolder.initViews(this);
+        payPalSettingViewHolder.initViews(this);
+        alipaySettingViewHolder.initViews(this);
         transactionHistoryViewHolder.initViews(this);
         referralCodeViewHolder.initViews(this);
-        signOutViewHolder.initViews(this);
+        signOutSettingViewHolder.initViews(this);
         locationCountrySettingsViewHolder.initViews(this);
 
         Preference restorePurchaseBlock =
@@ -710,7 +710,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             if (mainCredentials != null && socialNetwork.getAuthenticationHeader().equals(mainCredentials.getAuthType()))
             {
                 // TODO remove this dependency
-                signOutViewHolder.effectSignOut();
+                signOutSettingViewHolder.effectSignOut();
             }
         }
         return false;

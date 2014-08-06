@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -175,8 +175,8 @@ public class RelationsListItemView extends RelativeLayout
         if (avatar != null)
         {
             picassoLazy.get().load(R.drawable.superman_facebook)
-                .transform(peopleIconTransformationLazy.get())
-                .into(avatar);
+                    .transform(peopleIconTransformationLazy.get())
+                    .into(avatar);
         }
     }
 
@@ -264,9 +264,9 @@ public class RelationsListItemView extends RelativeLayout
             String userTypeText = getContext().getString(userTypeTextResId);
             String subTitle = getContext().getString(subtitleresId);
             return getContext().getString(
-                        R.string.follower_item_with_subtitle,
-                        userTypeText,
-                        subTitle);
+                    R.string.follower_item_with_subtitle,
+                    userTypeText,
+                    subTitle);
         }
         return getContext().getString(userTypeTextResId);
     }
@@ -278,21 +278,13 @@ public class RelationsListItemView extends RelativeLayout
                 allowableRecipientDTO.user != null &&
                 allowableRecipientDTO.user.countryCode != null)
         {
-            countryLogo.setImageResource(getCountryLogoId(allowableRecipientDTO.user.countryCode));
+            int imageResId = Country.getCountryLogo(R.drawable.default_image, allowableRecipientDTO.user.countryCode);
+            countryLogo.setImageResource(imageResId);
         }
-    }
-
-    public int getCountryLogoId(@NotNull String country)
-    {
-        try
+        else if (countryLogo != null)
         {
-            return Country.valueOf(country).logoId;
+            countryLogo.setImageResource(R.drawable.default_image);
         }
-        catch (IllegalArgumentException ex)
-        {
-            Timber.e(ex, "No country for %s", country);
-        }
-        return R.drawable.default_image;
     }
 
     protected void notifyFollowRequested()

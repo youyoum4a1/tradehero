@@ -7,6 +7,7 @@ import com.tradehero.th.api.notification.NotificationListKey;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.notification.DTOProcessorNotificationAllRead;
 import com.tradehero.th.models.notification.DTOProcessorNotificationRead;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -59,6 +60,13 @@ public class NotificationServiceWrapper
                 userProfileCache.get());
     }
 
+    @NotNull private DTOProcessor<Response> createNotificationReadDTOProcessor()
+    {
+        return new DTOProcessorNotificationAllRead(
+                currentUserId,
+                userProfileCache.get());
+    }
+
     //<editor-fold desc="Get Notifications">
     public PaginatedNotificationDTO getNotifications(@NotNull NotificationListKey notificationListKey)
     {
@@ -103,6 +111,21 @@ public class NotificationServiceWrapper
     {
         BaseMiddleCallback<Response> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationReadDTOProcessor(pushKey));
         notificationServiceAsync.markAsRead(pushKey.key, readMiddleCallback);
+        return readMiddleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Mark As Read All">
+    public Response markAsReadAll()
+    {
+        return createNotificationReadDTOProcessor().process(notificationService.markAsReadAll());
+    }
+
+    @NotNull public MiddleCallback<Response> markAsReadAll(
+            @Nullable Callback<Response> callback)
+    {
+        BaseMiddleCallback<Response> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationReadDTOProcessor());
+        notificationServiceAsync.markAsReadAll(readMiddleCallback);
         return readMiddleCallback;
     }
     //</editor-fold>

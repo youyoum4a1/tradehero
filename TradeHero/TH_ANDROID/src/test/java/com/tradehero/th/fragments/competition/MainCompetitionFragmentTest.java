@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.competition;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.AbsListView;
+import com.tradehero.AbstractTestBase;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.AdDTO;
@@ -37,7 +38,7 @@ import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricMavenTestRunner.class)
 @Config(shadows = ShadowWebViewNew.class)
-public class MainCompetitionFragmentTest
+public class MainCompetitionFragmentTest extends AbstractTestBase
 {
     private static final String TEST_ADS_WEB_URL = "http://www.google.com";
     private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";
@@ -166,12 +167,7 @@ public class MainCompetitionFragmentTest
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        runBgUiTasks(10);
 
         int firstPortfolioButtonPosition = -1;
 

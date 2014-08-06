@@ -228,10 +228,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
             {
                 handleCompetitionItemClicked(((ProviderContestPageDTO) item).providerDTO);
             }
-            else if(item instanceof EmptyHeadLineDTO)
-            {
-                Timber.d("EmptyHeadLineDTO is clicked");
-            }
             else
             {
                 throw new IllegalArgumentException("Unhandled item type " + item);

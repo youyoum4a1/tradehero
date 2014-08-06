@@ -427,7 +427,6 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
 
     public void loadImage()
     {
-
         resetImage();
 
         if (isMyUrlOk())

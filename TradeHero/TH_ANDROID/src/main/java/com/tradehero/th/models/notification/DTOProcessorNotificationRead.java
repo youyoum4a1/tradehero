@@ -1,13 +1,10 @@
 package com.tradehero.th.models.notification;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -53,13 +50,6 @@ public class DTOProcessorNotificationRead implements DTOProcessor<Response>
             userProfileDTO.unreadNotificationsCount--;
         }
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
-
-        if (previousUnread)
-        {
-            Intent requestUpdateIntent = new Intent(UpdateCenterFragment.REQUEST_UPDATE_UNREAD_COUNTER);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(requestUpdateIntent);
-        }
-
         return value;
     }
 }

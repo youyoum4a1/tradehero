@@ -76,4 +76,9 @@ interface MessageServiceAsync
             @Path("recipientUserId") int recipientUserId,
             Callback<Response> callback);
     //</editor-fold>
+
+    //<editor-fold desc="Read All Message">
+    @POST("/messages/read/-1")
+    void readAllMessage(Callback<Response> callback);
+    //</editor-fold>
 }

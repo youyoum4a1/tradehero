@@ -73,7 +73,8 @@ public class SplashActivity extends SherlockActivity
 
         DaggerUtils.inject(this);
         currentActivityHolder.setCurrentActivity(this);
-        dtoCacheUtil.anonymousPrefetches();
+        //delay this for first page is not trending fragment, now first page is home page by alex
+        //dtoCacheUtil.anonymousPrefetches();
     }
 
     @Override protected void onResume()

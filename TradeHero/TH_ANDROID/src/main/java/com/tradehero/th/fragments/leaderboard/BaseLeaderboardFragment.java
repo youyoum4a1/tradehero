@@ -268,7 +268,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
      *
      * @return {@link View View}, the header view when {@link #shouldShowUserRank shouldShowUserRank} is true, null otherwise
      */
-    @Nullable protected final LeaderboardCurrentUserRankHeaderView getUserRankHeaderView()
+    @Nullable protected final LeaderboardCurrentUserRankHeaderView inflateAndGetUserRankHeaderView()
     {
         if (shouldShowUserRank())
         {

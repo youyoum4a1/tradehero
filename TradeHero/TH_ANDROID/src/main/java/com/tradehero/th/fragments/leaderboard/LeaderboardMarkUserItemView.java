@@ -42,7 +42,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -268,40 +268,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 .into(lbmuProfilePicture);
     }
 
-    public void displayCountryLogo()
+    private void displayCountryLogo()
     {
         if (countryLogo != null)
         {
             try
             {
-                if (leaderboardItem != null && leaderboardItem.countryCode != null)
-                {
-                    countryLogo.setImageResource(getCountryLogoId(leaderboardItem.countryCode));
-                }
-                else
-                {
-                    countryLogo.setImageResource(R.drawable.default_image);
-                }
+                int imageResId = Country.getCountryLogo(R.drawable.default_image, leaderboardItem.countryCode);
+                countryLogo.setImageResource(imageResId);
             } catch (OutOfMemoryError e)
             {
                 Timber.e(e, null);
             }
-        }
-    }
-
-    public int getCountryLogoId(@NotNull String country)
-    {
-        return getCountryLogoId(R.drawable.default_image, country);
-    }
-
-    public int getCountryLogoId(int defaultResId, @NotNull String country)
-    {
-        try
-        {
-            return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException ex)
-        {
-            return defaultResId;
         }
     }
 

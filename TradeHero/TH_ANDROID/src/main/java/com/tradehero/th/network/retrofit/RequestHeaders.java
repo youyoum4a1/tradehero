@@ -41,6 +41,7 @@ public class RequestHeaders implements RequestInterceptor
         }
         request.addHeader(Constants.TH_CLIENT_VERSION, version);
         request.addHeader(Constants.TH_LANGUAGE_CODE, languageCode);
+        // OkHttp will apparently add "Accept-Encoding: gzip" itself
         request.addHeader(Constants.TH_CLIENT_TYPE, String.valueOf(deviceTokenHelper.getDeviceType().getServerValue()));
     }
 

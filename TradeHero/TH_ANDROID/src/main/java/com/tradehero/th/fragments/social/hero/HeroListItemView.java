@@ -25,7 +25,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
@@ -237,31 +237,12 @@ public class HeroListItemView extends RelativeLayout
     {
         if (countryLogo != null)
         {
-            if (heroDTO != null && heroDTO.countryCode != null)
+            int imageResId = R.drawable.default_image;
+            if (heroDTO != null)
             {
-                countryLogo.setImageResource(getCountryLogoId(heroDTO.countryCode));
+                imageResId = Country.getCountryLogo(R.drawable.default_image, heroDTO.countryCode);
             }
-            else
-            {
-                countryLogo.setImageResource(R.drawable.default_image);
-            }
-        }
-    }
-
-    public int getCountryLogoId(String country)
-    {
-        return getCountryLogoId(0, country);
-    }
-
-    public int getCountryLogoId(int defaultResId, String country)
-    {
-        try
-        {
-            return Country.valueOf(country).logoId;
-        }
-        catch (IllegalArgumentException|NullPointerException ex)
-        {
-            return defaultResId;
+            countryLogo.setImageResource(imageResId);
         }
     }
 

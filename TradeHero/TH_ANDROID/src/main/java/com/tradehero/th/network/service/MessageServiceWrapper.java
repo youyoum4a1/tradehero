@@ -15,6 +15,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.discussion.DTOProcessorAllMessagesRead;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;
 import com.tradehero.th.models.discussion.DTOProcessorMessageDeleted;
 import com.tradehero.th.models.discussion.DTOProcessorMessageRead;
@@ -301,6 +302,12 @@ public class MessageServiceWrapper
                 readerId);
     }
 
+    //<editor-fold desc="Read All Message">
+    protected DTOProcessor<Response> createMessageHeaderReadAllProcessor(UserBaseKey readerId)
+    {
+        return new DTOProcessorAllMessagesRead(userProfileCache.get(),readerId);
+    }
+
     public Response readMessage(
             int commentId,
             int senderUserId,
@@ -324,6 +331,17 @@ public class MessageServiceWrapper
                 callback,
                 createMessageHeaderReadProcessor(messageHeaderId, readerId));
         messageServiceAsync.readMessage(commentId, senderUserId, recipientUserId, middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<Response> readAllMessage(
+            final UserBaseKey readerId,
+            Callback<Response> callback)
+    {
+        MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
+                callback,
+                createMessageHeaderReadAllProcessor(readerId));
+        messageServiceAsync.readAllMessage(middleCallback);
         return middleCallback;
     }
     //</editor-fold>

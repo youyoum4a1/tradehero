@@ -154,12 +154,14 @@ import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoader;
+import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
+import com.tradehero.th.models.user.SimplePremiumFollowUserAssistant;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListRetrievedAsyncMilestone;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListRetrievedMilestone;
@@ -187,6 +189,7 @@ import javax.inject.Singleton;
                 SocialNetworkModule.class,
                 UIModule.class,
                 MetricsModule.class,
+                ModelsModule.class,
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
@@ -200,6 +203,7 @@ import javax.inject.Singleton;
                         com.tradehero.th.base.Application.class,
                         SettingsProfileFragment.class,
                         ProfileInfoView.class,
+                        SimplePremiumFollowUserAssistant.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
                         TranslatableLanguageListFragment.class,

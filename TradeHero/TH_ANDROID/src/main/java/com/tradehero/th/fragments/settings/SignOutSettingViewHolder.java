@@ -9,6 +9,8 @@ import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
+import com.tradehero.th.models.user.auth.DisplayableCredentialsDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -19,25 +21,34 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class SignOutViewHolder extends OneSettingViewHolder
+public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
     @NotNull private final ProgressDialogUtil progressDialogUtil;
+    @NotNull private final MainCredentialsPreference mainCredentialsPreference;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final SessionServiceWrapper sessionServiceWrapper;
     private ProgressDialog progressDialog;
     private MiddleCallback<UserProfileDTO> logoutCallback;
 
     //<editor-fold desc="Constructors">
-    @Inject public SignOutViewHolder(
+    @Inject public SignOutSettingViewHolder(
             @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull MainCredentialsPreference mainCredentialsPreference,
             @NotNull CurrentUserId currentUserId,
             @NotNull SessionServiceWrapper sessionServiceWrapper)
     {
         this.progressDialogUtil = progressDialogUtil;
+        this.mainCredentialsPreference = mainCredentialsPreference;
         this.currentUserId = currentUserId;
         this.sessionServiceWrapper = sessionServiceWrapper;
     }
     //</editor-fold>
+
+    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    {
+        super.initViews(preferenceFragment);
+        showMainCredentials();
+    }
 
     @Override protected int getStringKeyResId()
     {
@@ -68,6 +79,14 @@ public class SignOutViewHolder extends OneSettingViewHolder
                         });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    protected void showMainCredentials()
+    {
+        DisplayableCredentialsDTO mainCredentials = new DisplayableCredentialsDTO(
+                preferenceFragment.getActivity(),
+                mainCredentialsPreference.getCredentials());
+        clickablePref.setSummary(mainCredentials.getTypeAndId());
     }
 
     protected void effectSignOut()

@@ -232,7 +232,7 @@ public class PositionDTOUtils
         }
     }
 
-    private void setROILook(TextView textView, Double roiValue)
+    void setROILook(TextView textView, Double roiValue)
     {
         if (roiValue == null)
         {
@@ -241,7 +241,7 @@ public class PositionDTOUtils
         }
         else
         {
-            THSignedNumber roiNumber = THSignedPercentage.builder(Math.abs(roiValue * 100.0))
+            THSignedNumber roiNumber = THSignedPercentage.builder(roiValue * 100.0)
                     .signTypeArrow()
                     .relevantDigitCount(3)
                     .build();
