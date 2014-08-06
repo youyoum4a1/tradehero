@@ -380,6 +380,11 @@ public class THUser
         THUser.authenticationMode = authenticationMode;
     }
 
+    public static THAuthenticationProvider getTHAuthenticationProvider()
+    {
+        return authenticator;
+    }
+
     public static void removeCredential(String authenticationHeader)
     {
         if (typedCredentials == null)

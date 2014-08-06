@@ -36,6 +36,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
+    protected THPurchaseActionInteractor thPurchaseActionInteractor;
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroAlertDialogUtil heroAlertDialogUtil;
@@ -79,6 +80,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Override public void onStop()
     {
         detachPortfolioCompactListCache();
+        detachPurchaseActionInteractor();
         super.onStop();
     }
 
@@ -91,6 +93,15 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     private void detachPortfolioCompactListCache()
     {
         portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
+    }
+
+    private void detachPurchaseActionInteractor()
+    {
+        if (thPurchaseActionInteractor != null)
+        {
+            thPurchaseActionInteractor.onDestroy();
+        }
+        thPurchaseActionInteractor = null;
     }
 
     private void fetchPortfolioCompactList()
@@ -159,7 +170,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Deprecated
     protected final void premiumFollowUser(@NotNull UserBaseKey heroId)
     {
-        THPurchaseActionInteractor thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
+        detachPurchaseActionInteractor();
+        thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
                 .setUserToFollow(heroId)
                 .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
                 .build();
@@ -171,7 +183,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Deprecated
     protected final void unfollowUser(@NotNull UserBaseKey heroId)
     {
-        THPurchaseActionInteractor thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
+        detachPurchaseActionInteractor();
+        thPurchaseActionInteractor = createPurchaseActionInteractorBuilder()
                 .setUserToFollow(heroId)
                 .setPurchaseApplicableOwnedPortfolioId(purchaseApplicableOwnedPortfolioId)
                 .build();

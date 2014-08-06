@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.updatecenter.messages;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,6 +20,8 @@ public class MessagesView extends RelativeLayout
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) TextView emptyView;
     @InjectView(R.id.error) View errorView;
+    @InjectView(R.id.listViewLayout) RelativeLayout listViewLayout;
+    @InjectView(R.id.readAllLayout) LinearLayout readAllLayout;
 
     //<editor-fold desc="Constructors">
     public MessagesView(Context context)
@@ -51,7 +54,7 @@ public class MessagesView extends RelativeLayout
 
     public void showListView()
     {
-        showOnlyThis(pullToRefreshSwipeListView);
+        showOnlyThis(listViewLayout);
     }
 
     public void showEmptyView()
@@ -78,7 +81,7 @@ public class MessagesView extends RelativeLayout
 
     private void showOnlyThis(View view)
     {
-        changeViewVisibility(pullToRefreshSwipeListView, view == pullToRefreshSwipeListView);
+        changeViewVisibility(listViewLayout, view == listViewLayout);
         changeViewVisibility(errorView, view == errorView);
         changeViewVisibility(progressBar, view == progressBar);
         changeViewVisibility(emptyView, view == emptyView);

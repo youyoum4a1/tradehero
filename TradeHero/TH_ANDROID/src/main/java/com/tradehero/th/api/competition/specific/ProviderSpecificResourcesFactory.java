@@ -51,10 +51,6 @@ public class ProviderSpecificResourcesFactory
                 case ProviderIdConstants.PROVIDER_ID_SGX_STOCKWHIZ:
                     // Nothing to do for now
                     break;
-
-                default:
-                    Timber.e("Unhandled ProviderId.key == %d", providerId.key);
-                    break;
             }
         }
 

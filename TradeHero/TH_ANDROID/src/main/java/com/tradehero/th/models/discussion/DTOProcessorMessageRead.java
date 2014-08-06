@@ -14,8 +14,8 @@ public class DTOProcessorMessageRead implements DTOProcessor<Response>
 {
     @NotNull private final MessageHeaderCache messageHeaderCache;
     @NotNull private final UserProfileCache userProfileCache;
-    @Nullable private final MessageHeaderId messageHeaderId;
-    @Nullable private final UserBaseKey readerId;
+    private MessageHeaderId messageHeaderId;
+    private UserBaseKey readerId;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorMessageRead(
@@ -28,6 +28,16 @@ public class DTOProcessorMessageRead implements DTOProcessor<Response>
         this.userProfileCache = userProfileCache;
         this.messageHeaderId = messageHeaderId;
         this.readerId = readerId;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Constructors">
+    public DTOProcessorMessageRead(
+            @NotNull MessageHeaderCache messageHeaderCache,
+            @NotNull UserProfileCache userProfileCache)
+    {
+        this.messageHeaderCache = messageHeaderCache;
+        this.userProfileCache = userProfileCache;
     }
     //</editor-fold>
 
