@@ -46,11 +46,11 @@ public class AlipayActivity extends Activity
     private int mType = 0;
     private int mPosition = 0;
     private String mOrderId = "";
-    private String PRICE[][] =
-            {{"0.01", "0.01", "0.01"}, {"0.01", "0.01", "0.01"}, {"0.01", "0.01", "0.01"},
-                    {"0.01"}};
     //private String PRICE[][] =
-    //        {{"6", "18", "30"}, {"12", "120", "240"}, {"12", "30", "68"}, {"12"}};
+    //        {{"0.01", "0.01", "0.01"}, {"0.01", "0.01", "0.01"}, {"0.01", "0.01", "0.01"},
+    //                {"0.01"}};
+    private String PRICE[][] =
+            {{"6", "18", "30"}, {"12", "120", "240"}, {"12", "30", "68"}, {"12"}};
     private OwnedPortfolioId mPortfolioId;
     private MiddleCallback<String> getOrderIdMiddleCallback;
     private MiddleCallback<OrderStatusDTO> getOrderStatusMiddleCallback;
