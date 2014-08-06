@@ -5,6 +5,7 @@ import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class NotificationsViewTest
     @Test public void testMarkAsReadNotCrash()
     {
         notifView.notificationServiceWrapper = mock(NotificationServiceWrapper.class);
-        when(notifView.notificationServiceWrapper.markAsRead(any(NotificationKey.class), any(Callback.class)))
+        when(notifView.notificationServiceWrapper.markAsRead(any(UserBaseKey.class), any(NotificationKey.class), any(Callback.class)))
         .then(new Answer<BaseMiddleCallback<Response>>()
         {
             @Override public BaseMiddleCallback<Response> answer(InvocationOnMock invocation) throws Throwable
