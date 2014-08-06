@@ -1,8 +1,11 @@
 package com.tradehero.th.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABConstants;
+import com.tradehero.th.billing.THBillingConstants;
 
-class THIABConstants extends IABConstants
+class THIABConstants
+        extends IABConstants
+        implements THBillingConstants
 {
     // Below are the codes as they are understood on Google Play
     public static final String EXTRA_CASH_T0_KEY = "com.myhero.th.extracash.t0";

@@ -16,7 +16,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.StoreItemAdapter;
@@ -238,7 +238,7 @@ public class PremiumFollowUserAssistant extends SimplePremiumFollowUserAssistant
                 Timber.e(billingException, "Store had error");
             }
         };
-        billingRequest.purchaseReportedListener = new PurchaseReporter.OnPurchaseReportedListener()
+        billingRequest.purchaseReportedListener = new THPurchaseReporter.OnPurchaseReportedListener()
         {
             @Override
             public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,

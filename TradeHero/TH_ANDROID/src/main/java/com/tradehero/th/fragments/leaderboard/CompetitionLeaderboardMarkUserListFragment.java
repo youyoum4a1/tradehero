@@ -179,7 +179,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected CompetitionLeaderboardCurrentUserRankHeaderView getCompetitionUserRankHeaderView()
     {
-        LeaderboardCurrentUserRankHeaderView header = getUserRankHeaderView();
+        LeaderboardCurrentUserRankHeaderView header = inflateAndGetUserRankHeaderView();
         if (header != null && header instanceof CompetitionLeaderboardCurrentUserRankHeaderView)
         {
             return (CompetitionLeaderboardCurrentUserRankHeaderView) header;

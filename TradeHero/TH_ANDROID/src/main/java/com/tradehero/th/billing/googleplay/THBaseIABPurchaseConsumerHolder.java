@@ -8,7 +8,7 @@ class THBaseIABPurchaseConsumerHolder
         IABSKU,
         THIABOrderId,
         THIABPurchase,
-        THIABPurchaseConsumer>
+        THBaseIABPurchaseConsumer>
     implements THIABPurchaseConsumerHolder
 {
     public THBaseIABPurchaseConsumerHolder()
@@ -16,8 +16,8 @@ class THBaseIABPurchaseConsumerHolder
         super();
     }
 
-    @Override protected THIABPurchaseConsumer createPurchaseConsumer()
+    @Override protected THBaseIABPurchaseConsumer createPurchaseConsumer()
     {
-        return new THIABPurchaseConsumer();
+        return new THBaseIABPurchaseConsumer();
     }
 }

@@ -1,12 +1,12 @@
 package com.tradehero.th.billing.googleplay;
 
-import com.tradehero.common.billing.ProductDetailTuner;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THProductDetailTuner;
 import timber.log.Timber;
 
-public class THIABProductDetailTuner implements ProductDetailTuner<IABSKU, THIABProductDetail>
+public class THIABProductDetailTuner implements THProductDetailTuner<IABSKU, THIABProductDetail>
 {
     public THIABProductDetailTuner()
     {

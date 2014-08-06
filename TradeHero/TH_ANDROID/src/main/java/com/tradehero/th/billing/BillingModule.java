@@ -7,7 +7,7 @@ import dagger.Module;
 @Module(
         includes = {
                 GooglePlayBillingModule.class,
-                SamsungBillingModule.class
+                //SamsungBillingModule.class
         },
         injects = {
         },

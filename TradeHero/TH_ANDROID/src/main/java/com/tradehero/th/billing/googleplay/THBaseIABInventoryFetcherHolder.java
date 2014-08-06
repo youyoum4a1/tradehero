@@ -7,11 +7,9 @@ import com.tradehero.common.billing.googleplay.IABSKUListKey;
 
 public class THBaseIABInventoryFetcherHolder
     extends BaseIABInventoryFetcherHolder<
-        IABSKUListKey,
         IABSKU,
-        IABSKUList,
         THIABProductDetail,
-        THIABBillingInventoryFetcher>
+        THBaseIABInventoryFetcher>
     implements THIABInventoryFetcherHolder
 {
     public THBaseIABInventoryFetcherHolder()
@@ -19,8 +17,8 @@ public class THBaseIABInventoryFetcherHolder
         super();
     }
 
-    @Override protected THIABBillingInventoryFetcher createInventoryFetcher()
+    @Override protected THBaseIABInventoryFetcher createInventoryFetcher()
     {
-        return new THIABBillingInventoryFetcher();
+        return new THBaseIABInventoryFetcher();
     }
 }

@@ -10,7 +10,7 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
         IABSKUListKeyType extends IABSKUListKey,
         IABSKUType extends IABSKU,
         IABSKUListType extends BaseIABSKUList<IABSKUType>,
-        ProductIdentifierFetcherType extends ProductIdentifierFetcher<
+        IABProductIdentifierFetcherType extends IABProductIdentifierFetcher<
                 IABSKUListKeyType,
                 IABSKUType,
                 IABSKUListType,
@@ -21,8 +21,13 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
         IABSKUType,
         IABSKUListType,
         IABExceptionType>
+    implements IABProductIdentifierFetcherHolder<
+        IABSKUListKeyType,
+        IABSKUType,
+        IABSKUListType,
+        IABExceptionType>
 {
-    protected Map<Integer /*requestCode*/, ProductIdentifierFetcherType> skuFetchers;
+    protected Map<Integer /*requestCode*/, IABProductIdentifierFetcherType> skuFetchers;
 
     public BaseIABProductIdentifierFetcherHolder()
     {
@@ -33,7 +38,7 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUListKeyType, IABSKUType, IABSKUListType, IABExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
-        ProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
+        IABProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
         skuFetcher.fetchProductIdentifiers(requestCode);
@@ -41,7 +46,7 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
 
     @Override public void onDestroy()
     {
-        for (ProductIdentifierFetcherType inventoryFetcher : skuFetchers.values())
+        for (IABProductIdentifierFetcherType inventoryFetcher : skuFetchers.values())
         {
             if (inventoryFetcher != null)
             {
@@ -53,5 +58,5 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
         super.onDestroy();
     }
 
-    abstract protected ProductIdentifierFetcherType createProductIdentifierFetcher();
+    abstract protected IABProductIdentifierFetcherType createProductIdentifierFetcher();
 }

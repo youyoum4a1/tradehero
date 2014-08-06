@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 import com.tradehero.common.billing.BillingInventoryFetcher;
+import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
@@ -22,12 +23,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
-import com.tradehero.th.billing.googleplay.exception.MissingApplicablePortfolioIdException;
+import com.tradehero.th.billing.googleplay.exception.IABMissingApplicablePortfolioIdException;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.billing.googleplay.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.googleplay.THIABStoreProductDetailView;
-import com.tradehero.th.fragments.billing.googleplay.THSKUDetailAdapter;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 import com.tradehero.th.persistence.social.HeroListCache;
@@ -36,7 +37,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-class THIABBillingInteractor
+public class THIABBillingInteractor
     extends
         THBaseBillingInteractor<
                 IABSKUListKey,
@@ -48,7 +49,7 @@ class THIABBillingInteractor
                 THIABPurchase,
                 THIABLogicHolder,
                 THIABStoreProductDetailView,
-                THSKUDetailAdapter,
+                THIABSKUDetailAdapter,
                 THIABBillingRequestFull,
                 THUIIABBillingRequest,
                 IABException>
@@ -58,8 +59,7 @@ class THIABBillingInteractor
 
     @Inject THIABProductDetailCache thiabProductDetailCache;
     @Inject THIABLogicHolder billingActor;
-    @Inject THIABAlertDialogUtil THIABAlertDialogUtil;
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject THIABAlertDialogUtil thIABAlertDialogUtil;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
 
     @Inject protected HeroListCache heroListCache;
@@ -71,6 +71,11 @@ class THIABBillingInteractor
         super();
     }
     //</editor-fold>
+
+    @Override public String getName()
+    {
+        return IABConstants.NAME;
+    }
 
     //<editor-fold desc="Life Cycle">
     public void onDestroy()
@@ -98,7 +103,27 @@ class THIABBillingInteractor
     @Override protected void populateBillingRequest(THIABBillingRequestFull request, THUIIABBillingRequest uiBillingRequest)
     {
         super.populateBillingRequest(request, uiBillingRequest);
-        // TODO add specific things for IAB
+
+        if (uiBillingRequest.domainToPresent != null)
+        {
+            request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
+            request.fetchInventory = true;
+        }
+        else if (uiBillingRequest.restorePurchase)
+        {
+            request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
+            request.fetchInventory = true;
+            request.fetchPurchase = true;
+            request.restorePurchase = true;
+        }
+        else if (uiBillingRequest.fetchInventory)
+        {
+            request.testBillingAvailable = true;
+            request.fetchProductIdentifiers = true;
+            request.fetchInventory = true;
+        }
     }
     //</editor-fold>
 
@@ -109,9 +134,9 @@ class THIABBillingInteractor
     }
     //</editor-fold>
 
-    @Override protected BillingAlertDialogUtil<IABSKU, THIABProductDetail, THIABLogicHolder, THIABStoreProductDetailView, THSKUDetailAdapter> getBillingAlertDialogUtil()
+    @Override protected BillingAlertDialogUtil<IABSKU, THIABProductDetail, THIABLogicHolder, THIABStoreProductDetailView, THIABSKUDetailAdapter> getBillingAlertDialogUtil()
     {
-        return THIABAlertDialogUtil;
+        return thIABAlertDialogUtil;
     }
 
     public AlertDialog popErrorWhenLoading()
@@ -199,19 +224,19 @@ class THIABBillingInteractor
             {
                 if (exception instanceof IABUserCancelledException)
                 {
-                    dialog = THIABAlertDialogUtil.popUserCancelled(currentContext);
+                    dialog = thIABAlertDialogUtil.popUserCancelled(currentContext);
                 }
                 else if (exception instanceof IABBadResponseException)
                 {
-                    dialog = THIABAlertDialogUtil.popBadResponse(currentContext);
+                    dialog = thIABAlertDialogUtil.popBadResponse(currentContext);
                 }
                 else if (exception instanceof IABResultErrorException)
                 {
-                    dialog = THIABAlertDialogUtil.popResultError(currentContext);
+                    dialog = thIABAlertDialogUtil.popResultError(currentContext);
                 }
                 else if (!(exception instanceof IABBillingUnavailableException)) // No need to tell again
                 {
-                    dialog = THIABAlertDialogUtil.popUnknownError(currentContext, exception);
+                    dialog = thIABAlertDialogUtil.popUnknownError(currentContext, exception);
                 }
             }
         }
@@ -249,7 +274,8 @@ class THIABBillingInteractor
         }
     }
 
-    @Override protected THIABPurchaseOrder createEmptyPurchaseOrder(int requestCode, IABSKU productIdentifier) throws MissingApplicablePortfolioIdException
+    @Override protected THIABPurchaseOrder createEmptyPurchaseOrder(int requestCode, IABSKU productIdentifier) throws
+            IABMissingApplicablePortfolioIdException
     {
         THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
         if (uiBillingRequest != null)
@@ -273,37 +299,38 @@ class THIABBillingInteractor
             {
                 if (exception instanceof IABVerificationFailedException)
                 {
-                    dialog = THIABAlertDialogUtil.popVerificationFailed(currentContext);
+                    dialog = thIABAlertDialogUtil.popVerificationFailed(currentContext);
                 }
                 else if (exception instanceof IABUserCancelledException)
                 {
-                    dialog = THIABAlertDialogUtil.popUserCancelled(currentContext);
+                    dialog = thIABAlertDialogUtil.popUserCancelled(currentContext);
                 }
                 else if (exception instanceof IABBadResponseException)
                 {
-                    dialog = THIABAlertDialogUtil.popBadResponse(currentContext);
+                    dialog = thIABAlertDialogUtil.popBadResponse(currentContext);
                 }
                 else if (exception instanceof IABResultErrorException)
                 {
-                    dialog = THIABAlertDialogUtil.popResultError(currentContext);
+                    dialog = thIABAlertDialogUtil.popResultError(currentContext);
                 }
                 else if (exception instanceof IABRemoteException)
                 {
-                    dialog = THIABAlertDialogUtil.popRemoteError(currentContext);
+                    dialog = thIABAlertDialogUtil.popRemoteError(currentContext);
                 }
                 else if (exception instanceof IABItemAlreadyOwnedException)
                 {
-                    dialog = THIABAlertDialogUtil.popSKUAlreadyOwned(currentContext,
+                    dialog = thIABAlertDialogUtil.popSKUAlreadyOwned(
+                            currentContext,
                             thiabProductDetailCache.get(purchaseOrder.getProductIdentifier()),
                             restoreClickListener);
                 }
                 else if (exception instanceof IABSendIntentException)
                 {
-                    dialog = THIABAlertDialogUtil.popSendIntent(currentContext);
+                    dialog = thIABAlertDialogUtil.popSendIntent(currentContext);
                 }
                 else
                 {
-                    dialog = THIABAlertDialogUtil.popUnknownError(currentContext, exception);
+                    dialog = thIABAlertDialogUtil.popUnknownError(currentContext, exception);
                 }
             }
         }
@@ -338,11 +365,11 @@ class THIABBillingInteractor
                 }
                 if (currentContext != null)
                 {
-                    IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                    thIABAlertDialogUtil.handlePurchaseRestoreFinished(
                             currentContext,
                             restoredPurchases,
                             failedRestorePurchases,
-                            IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(currentContext, exception),
+                            thIABAlertDialogUtil.createFailedRestoreClickListener(currentContext, exception),
                             billingRequest.popRestorePurchaseOutcomeVerbose);
                 }
             }
@@ -465,7 +492,7 @@ class THIABBillingInteractor
         Context currentContext = currentActivityHolder.getCurrentContext();
         if (currentContext != null)
         {
-            return THIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(currentContext, exception);
+            return thIABAlertDialogUtil.popOfferSendEmailSupportConsumeFailed(currentContext, exception);
         }
         return null;
     }

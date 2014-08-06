@@ -1,0 +1,11 @@
+ItemId          : 000001016743
+ItemName        : TH$ 100K
+ItemPrice       : 6.33
+ItemPriceString : $6.33
+CurrencyUnit    : $
+ItemDesc        : TH$ 100K
+ItemImageUrl    : http://img.samsungapps.com/appsitem/itemDefaultImage.jpg
+ItemDownloadUrl :
+Type : 00
+SubscriptionDurationUnit :
+SubscriptionDurationMultiplier :

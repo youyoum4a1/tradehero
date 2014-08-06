@@ -12,7 +12,6 @@ import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.billing.BillingPurchaser;
-import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierListKey;
@@ -49,17 +48,17 @@ abstract public class THBaseBillingInteractor<
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
         THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,
-        OrderIdType extends OrderId,
+        THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<
                 ProductIdentifierType,
-                OrderIdType>,
+                THOrderIdType>,
         THBillingLogicHolderType extends THBillingLogicHolder<
                 ProductIdentifierListKeyType,
                 ProductIdentifierType,
                 ProductIdentifierListType,
                 THProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 THBillingRequestType,
                 BillingExceptionType>,
@@ -76,7 +75,7 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierListType,
                 THProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 BillingExceptionType>,
         THUIBillingRequestType extends THUIBillingRequest<
@@ -85,7 +84,7 @@ abstract public class THBaseBillingInteractor<
                 ProductIdentifierListType,
                 THProductDetailType,
                 THPurchaseOrderType,
-                OrderIdType,
+                THOrderIdType,
                 THProductPurchaseType,
                 BillingExceptionType>,
         BillingExceptionType extends BillingException>
@@ -95,7 +94,7 @@ abstract public class THBaseBillingInteractor<
         ProductIdentifierListType,
         THProductDetailType,
         THPurchaseOrderType,
-        OrderIdType,
+        THOrderIdType,
         THProductPurchaseType,
         THBillingLogicHolderType,
         THBillingRequestType,
@@ -284,27 +283,6 @@ abstract public class THBaseBillingInteractor<
         request.purchaseRestorerListener = createPurchaseRestorerFinishedListener();
         request.purchaseFinishedListener = createPurchaseFinishedListener();
         request.purchaseReportedListener = createPurchaseReportedListener();
-
-        if (uiBillingRequest.domainToPresent != null)
-        {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
-        }
-        else if (uiBillingRequest.restorePurchase)
-        {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
-            request.fetchPurchase = true;
-            request.restorePurchase = true;
-        }
-        else if (uiBillingRequest.fetchInventory)
-        {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
-        }
     }
     //</editor-fold>
 
@@ -647,6 +625,7 @@ abstract public class THBaseBillingInteractor<
 
         @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, THProductDetailType> inventory)
         {
+            Timber.d("Inventory fetched count %d", productIdentifiers.size());
             forgetListener(requestCode);
             handleInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
             notifyInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
@@ -654,6 +633,7 @@ abstract public class THBaseBillingInteractor<
 
         @Override public void onInventoryFetchFail(int requestCode, List<ProductIdentifierType> productIdentifiers, BillingExceptionType exception)
         {
+            Timber.e(exception, "inventory failed");
             forgetListener(requestCode);
             handleInventoryFetchFail(requestCode, productIdentifiers, exception);
             notifyInventoryFetchFail(requestCode, productIdentifiers, exception);
@@ -724,7 +704,7 @@ abstract public class THBaseBillingInteractor<
     //<editor-fold desc="Fetch Purchases">
     protected  BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType> createPurchaseFetchedListener()
     {
@@ -733,7 +713,7 @@ abstract public class THBaseBillingInteractor<
 
     protected class THBaseBillingInteractorOnPurchaseFetchedListener implements BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType>
     {
@@ -813,9 +793,9 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Purchase Restore">
-    protected BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseRestorerFinishedListener()
+    protected BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseRestorerFinishedListener()
     {
-        return new BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, THProductPurchaseType, BillingExceptionType>()
+        return new BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>()
         {
             @Override public void onPurchaseRestored(int requestCode, List<THProductPurchaseType> restoredPurchases, List<THProductPurchaseType> failedRestorePurchases,
                     List<BillingExceptionType> failExceptions)
@@ -852,7 +832,7 @@ abstract public class THBaseBillingInteractor<
     protected BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             THPurchaseOrderType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType> createPurchaseFinishedListener()
     {
@@ -862,7 +842,7 @@ abstract public class THBaseBillingInteractor<
     protected class THBaseBillingInteractorOnPurchaseFinishedListener implements BillingPurchaser.OnPurchaseFinishedListener<
             ProductIdentifierType,
             THPurchaseOrderType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType>
     {
@@ -927,16 +907,23 @@ abstract public class THBaseBillingInteractor<
         {
             if (billingRequest.purchaseFinishedListener != null)
             {
+                Timber.d("notify purchase Finished");
                 billingRequest.purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
             }
             else if (billingRequest.onDefaultErrorListener != null)
             {
+                Timber.d("notify default listener");
                 billingRequest.onDefaultErrorListener.onError(requestCode, billingException);
             }
         }
         if (billingRequest == null || billingRequest.popIfPurchaseFailed)
         {
+            Timber.d("calling popAlert");
             popPurchaseFailed(requestCode, purchaseOrder, billingException, createRestoreClickListener(requestCode));
+        }
+        else
+        {
+            Timber.d("Not popping purchase failed");
         }
     }
 
@@ -975,18 +962,18 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Purchase Reporting Sequence">
-    protected PurchaseReporter.OnPurchaseReportedListener<
+    protected THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType> createPurchaseReportedListener()
     {
         return new THBaseBillingInteractorOnPurchaseReportedListener();
     }
 
-    protected class THBaseBillingInteractorOnPurchaseReportedListener implements PurchaseReporter.OnPurchaseReportedListener<
+    protected class THBaseBillingInteractorOnPurchaseReportedListener implements THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
-            OrderIdType,
+            THOrderIdType,
             THProductPurchaseType,
             BillingExceptionType>
     {

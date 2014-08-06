@@ -14,13 +14,13 @@ abstract public class BaseIABPurchaserHolder<
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaserType extends IABPurchaser<
-                IABSKUType,
-                IABProductDetailType,
-                IABOrderIdType,
-                IABPurchaseOrderType,
-                IABPurchaseType,
-                IABExceptionType>,
+        IABPurchaserType extends BaseIABPurchaser<
+                        IABSKUType,
+                        IABProductDetailType,
+                        IABPurchaseOrderType,
+                        IABOrderIdType,
+                        IABPurchaseType,
+                        IABExceptionType>,
         IABExceptionType extends IABException>
     extends BaseBillingPurchaserHolder<
         IABSKUType,
@@ -71,10 +71,10 @@ abstract public class BaseIABPurchaserHolder<
         iabPurchaser.purchase(requestCode, purchaseOrder);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Timber.d("onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
-        IABPurchaser iabPurchaser = iabPurchasers.get(requestCode);
+        BaseIABPurchaser iabPurchaser = iabPurchasers.get(requestCode);
         if (iabPurchaser != null)
         {
             iabPurchaser.handleActivityResult(requestCode, resultCode, data);

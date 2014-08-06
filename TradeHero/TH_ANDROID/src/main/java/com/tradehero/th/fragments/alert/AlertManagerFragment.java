@@ -27,9 +27,9 @@ import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
-import com.tradehero.th.billing.googleplay.SecurityAlertKnowledge;
+import com.tradehero.th.billing.THPurchaseReporter;
+import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -56,7 +56,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Inject protected AlertCompactListCache alertCompactListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCache> userProfileCache;
-    @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
+    @Inject protected THIABSecurityAlertKnowledge THIABSecurityAlertKnowledge;
 
     private Milestone.OnCompleteListener userProfileRetrievedMilestoneCompleteListener;
     private UserProfileRetrievedMilestone userProfileRetrievedMilestone;
@@ -222,7 +222,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
     {
         return super.createPurchaseActionInteractorBuilder()
-                .setPurchaseReportedListener(new PurchaseReporter.OnPurchaseReportedListener()
+                .setPurchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
                 {
                     @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
                     {
@@ -267,7 +267,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             int count = currentUserProfile.getUserAlertPlansAlertCount();
             alertPlanCountIcon.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
-            alertPlanCountIcon.setImageResource(securityAlertKnowledge.getStockAlertIcon(count));
+            alertPlanCountIcon.setImageResource(THIABSecurityAlertKnowledge.getStockAlertIcon(count));
         }
     }
 

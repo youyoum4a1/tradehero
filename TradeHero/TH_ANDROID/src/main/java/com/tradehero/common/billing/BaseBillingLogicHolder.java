@@ -159,7 +159,7 @@ abstract public class BaseBillingLogicHolder<
                 launchProductIdentifierFetchSequence(requestCode);
                 launched = true;
             }
-            else if (billingRequest.fetchInventory && billingRequest.productIdentifiersForInventory != null)
+            else if (billingRequest.fetchInventory)
             {
                 launchInventoryFetchSequence(requestCode, billingRequest.productIdentifiersForInventory);
                 launched = true;
@@ -203,11 +203,6 @@ abstract public class BaseBillingLogicHolder<
     @Override public void launchFetchPurchaseSequence(int requestCode)
     {
         purchaseFetcherHolder.launchFetchPurchaseSequence(requestCode);
-    }
-
-    @Override public void launchRestorePurchaseSequence(int requestCode)
-    {
-        throw new IllegalArgumentException("Do not call this method");
     }
 
     @Override public void launchPurchaseSequence(int requestCode, PurchaseOrderType purchaseOrder)
@@ -778,6 +773,10 @@ abstract public class BaseBillingLogicHolder<
         if (purchaseFinishedListener != null)
         {
             purchaseFinishedListener.onPurchaseFailed(requestCode, purchaseOrder, billingException);
+        }
+        else
+        {
+            Timber.d("No purchase finished listener for failed");
         }
         unregisterPurchaseFinishedListener(requestCode);
     }

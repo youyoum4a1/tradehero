@@ -2,6 +2,7 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.Map;
+import timber.log.Timber;
 
 abstract public class ProductIdentifierListCache<
             ProductIdentifierType extends ProductIdentifier,
@@ -23,9 +24,17 @@ abstract public class ProductIdentifierListCache<
 
     public void put(Map<ProductIdentifierListKeyType, ProductIdentifierListType> typedLists)
     {
+        Timber.d("Put map size %d", typedLists.size());
         for (Map.Entry<ProductIdentifierListKeyType, ProductIdentifierListType> entry : typedLists.entrySet())
         {
             put(entry.getKey(), entry.getValue());
         }
+    }
+
+    @Override public ProductIdentifierListType put(ProductIdentifierListKeyType key,
+            ProductIdentifierListType value)
+    {
+        Timber.d("Put %s", key);
+        return super.put(key, value);
     }
 }

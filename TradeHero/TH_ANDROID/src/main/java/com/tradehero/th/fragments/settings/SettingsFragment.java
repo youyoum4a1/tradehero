@@ -15,8 +15,10 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
+import com.squareup.picasso.LruCache;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.milestone.Milestone;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -33,7 +35,7 @@ import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
+import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -47,6 +49,7 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
@@ -57,6 +60,7 @@ import com.tradehero.th.utils.QQUtils;
 import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.dagger.ForPicasso;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -86,8 +90,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
-    // TODO something belong to Google Play should not be here, generic util class for all store is expected
-    @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
+    @Inject THIABAlertDialogUtil thiabAlertDialogUtil;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
 
     @Inject Lazy<FacebookUtils> facebookUtils;
@@ -384,11 +387,11 @@ public final class SettingsFragment extends DashboardPreferenceFragment
                     List failedRestorePurchases, List failExceptions)
             {
                 Timber.d("onPurchaseRestoreFinished3");
-                IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
+                thiabAlertDialogUtil.handlePurchaseRestoreFinished(
                         getActivity(),
                         restoredPurchases,
                         failedRestorePurchases,
-                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(),
+                        thiabAlertDialogUtil.createFailedRestoreClickListener(getActivity(),
                                 new Exception())); // TODO have a better exception
             }
         };

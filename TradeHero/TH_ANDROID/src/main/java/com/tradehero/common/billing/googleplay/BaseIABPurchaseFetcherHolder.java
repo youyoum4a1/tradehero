@@ -10,11 +10,16 @@ abstract public class BaseIABPurchaseFetcherHolder<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
-        IABPurchaseFetcherType extends IABPurchaseFetcher<
-                IABSKUType,
-                IABOrderIdType,
-                IABPurchaseType>>
+        IABPurchaseFetcherType extends BaseIABPurchaseFetcher<
+                        IABSKUType,
+                        IABOrderIdType,
+                        IABPurchaseType>>
     extends BaseBillingPurchaseFetcherHolder<
+        IABSKUType,
+        IABOrderIdType,
+        IABPurchaseType,
+        IABException>
+    implements IABPurchaseFetcherHolder<
         IABSKUType,
         IABOrderIdType,
         IABPurchaseType,

@@ -753,6 +753,7 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("reportMessageAllRead...");
         middleCallbackList.add(
                 messageServiceWrapper.get().readAllMessage(
+                        currentUserId.toUserBaseKey(),
                         createMessageAsReadAllCallback()));
     }
 
@@ -883,8 +884,8 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         boolean haveUnread = false;
         if (getListAdapter() == null) return;
-        int SIZE = getListAdapter().getCount();
-        for (int i = 0; i < SIZE; i++)
+        int itemCount = getListAdapter().getCount();
+        for (int i = 0; i < itemCount; i++)
         {
             if (getListAdapter().getItem(i).unread)
             {
@@ -901,8 +902,8 @@ public class MessagesCenterFragment extends DashboardFragment
     private void setAllMessageRead()
     {
         if (getListAdapter() == null) return;
-        int SIZE = getListAdapter().getCount();
-        for (int i = 0; i < SIZE; i++)
+        int itemCount = getListAdapter().getCount();
+        for (int i = 0; i < itemCount; i++)
         {
             getListAdapter().getItem(i).unread = false;
         }

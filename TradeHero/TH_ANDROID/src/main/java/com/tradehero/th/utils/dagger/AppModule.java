@@ -3,7 +3,6 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import com.tradehero.common.billing.alipay.AlipayActivity;
 import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
-import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
@@ -14,6 +13,7 @@ import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
+import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -120,6 +120,7 @@ import com.tradehero.th.fragments.social.hero.AllHeroFragment;
 import com.tradehero.th.fragments.social.hero.FreeHeroFragment;
 import com.tradehero.th.fragments.social.hero.HeroListItemView;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroesTabContentFragment;
 import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
 import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
@@ -317,9 +318,12 @@ import javax.inject.Singleton;
 
                         CompetitionWebViewFragment.class,
 
+                        PortfolioCompactListRetrievedMilestone.class,
+                        UserProfileRetrievedMilestone.class,
+                        HeroManagerInfoFetcher.class,
+                        THIABBillingInteractor.class,
                         IABServiceConnector.class,
                         IABBillingAvailableTester.class,
-                        IABBillingInventoryFetcher.class,
                         IABSKUListRetrievedAsyncMilestone.class,
                         PortfolioCompactListRetrievedMilestone.class,
                         UserProfileRetrievedMilestone.class,
@@ -399,7 +403,7 @@ import javax.inject.Singleton;
                         THUser.class,
                 },
         complete = false,
-        library = true // TODO remove this line
+        library = false // TODO remove this line
 )
 public class AppModule
 {

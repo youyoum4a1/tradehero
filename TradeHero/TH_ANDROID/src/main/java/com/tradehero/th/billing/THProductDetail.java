@@ -12,6 +12,7 @@ public interface THProductDetail<ProductIdentifierType extends ProductIdentifier
     boolean getHasRibbon();
     int getIconRibbonResId();
     ProductIdentifierDomain getDomain();
+    Double getPrice();
     String getPriceText();
     String getDescription();
 }

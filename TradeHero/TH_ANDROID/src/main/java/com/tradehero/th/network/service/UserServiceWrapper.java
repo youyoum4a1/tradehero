@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -682,12 +682,12 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Add Credit">
-    public UserProfileDTO addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO)
+    public UserProfileDTO addCredit(UserBaseKey userKey, PurchaseReportDTO purchaseDTO)
     {
         return createUpdateProfileProcessor().process(userService.addCredit(userKey.key, purchaseDTO));
     }
 
-    public MiddleCallback<UserProfileDTO> addCredit(UserBaseKey userKey, GooglePlayPurchaseDTO purchaseDTO, Callback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> addCredit(UserBaseKey userKey, PurchaseReportDTO purchaseDTO, Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
         userServiceAsync.addCredit(userKey.key, purchaseDTO, middleCallback);
@@ -736,17 +736,17 @@ import retrofit.client.Response;
 
     public UserProfileDTO follow(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO)
+            @NotNull PurchaseReportDTO purchaseReportDTO)
     {
-        return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseDTO));
+        return createFollowUserProcessor(userBaseKey).process(userService.follow(userBaseKey.key, purchaseReportDTO));
     }
 
     @NotNull public MiddleCallback<UserProfileDTO> follow(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO, @Nullable Callback<UserProfileDTO> callback)
+            @NotNull PurchaseReportDTO purchaseReportDTO, @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowUserProcessor(userBaseKey));
-        userServiceAsync.follow(userBaseKey.key, purchaseDTO, middleCallback);
+        userServiceAsync.follow(userBaseKey.key, purchaseReportDTO, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

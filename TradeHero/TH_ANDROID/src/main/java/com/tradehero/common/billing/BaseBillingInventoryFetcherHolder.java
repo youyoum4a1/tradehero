@@ -4,6 +4,7 @@ import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import timber.log.Timber;
 
 abstract public class BaseBillingInventoryFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
@@ -67,7 +68,12 @@ abstract public class BaseBillingInventoryFetcherHolder<
         BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> parentFetchedListener = getInventoryFetchedListener(requestCode);
         if (parentFetchedListener != null)
         {
+            Timber.d("Notify listener");
             parentFetchedListener.onInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
+        }
+        else
+        {
+            Timber.d("Listener null");
         }
     }
 

@@ -8,7 +8,7 @@ class THBaseIABPurchaseFetcherHolder
         IABSKU,
         THIABOrderId,
         THIABPurchase,
-        THIABPurchaseFetcher>
+        THBaseIABPurchaseFetcher>
     implements THIABPurchaseFetcherHolder
 {
     public THBaseIABPurchaseFetcherHolder()
@@ -16,8 +16,8 @@ class THBaseIABPurchaseFetcherHolder
         super();
     }
 
-    @Override protected THIABPurchaseFetcher createPurchaseFetcher()
+    @Override protected THBaseIABPurchaseFetcher createPurchaseFetcher()
     {
-        return new THIABPurchaseFetcher();
+        return new THBaseIABPurchaseFetcher();
     }
 }

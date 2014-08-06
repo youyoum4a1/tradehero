@@ -8,7 +8,7 @@ import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
-import com.tradehero.th.billing.PurchaseReporter;
+import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.THPurchaseOrder;
 
 public class THBillingRequest<
@@ -32,7 +32,7 @@ public class THBillingRequest<
 {
     public boolean reportPurchase;
     public ProductPurchaseType purchaseToReport;
-    public PurchaseReporter.OnPurchaseReportedListener<
+    public THPurchaseReporter.OnPurchaseReportedListener<
                 ProductIdentifierType,
                 OrderIdType,
                 ProductPurchaseType,

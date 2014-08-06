@@ -10,7 +10,7 @@ public class BaseIABBillingAvailableTesterHolder
     extends BaseBillingAvailableTesterHolder<IABException>
     implements IABBillingAvailableTesterHolder<IABException>
 {
-    protected Map<Integer /*requestCode*/, IABBillingAvailableTester> billingAvailableTesters;
+    protected Map<Integer /*requestCode*/, BaseIABBillingAvailableTester> billingAvailableTesters;
 
     public BaseIABBillingAvailableTesterHolder()
     {
@@ -27,7 +27,7 @@ public class BaseIABBillingAvailableTesterHolder
     @Override public void forgetRequestCode(int requestCode)
     {
         super.forgetRequestCode(requestCode);
-        IABBillingAvailableTester purchaser = billingAvailableTesters.get(requestCode);
+        BaseIABBillingAvailableTester purchaser = billingAvailableTesters.get(requestCode);
         if (purchaser != null)
         {
             purchaser.setListener(null);
@@ -39,7 +39,7 @@ public class BaseIABBillingAvailableTesterHolder
     @Override public void launchBillingAvailableTestSequence(int requestCode)
     {
         BillingAvailableTester.OnBillingAvailableListener<IABException> billingAvailableListener = createBillingAvailableListener();
-        IABBillingAvailableTester billingAvailableTester = createAvailableTester();
+        BaseIABBillingAvailableTester billingAvailableTester = createAvailableTester();
         billingAvailableTester.setBillingAvailableListener(billingAvailableListener);
         billingAvailableTesters.put(requestCode, billingAvailableTester);
         billingAvailableTester.testBillingAvailable(requestCode);
@@ -47,7 +47,7 @@ public class BaseIABBillingAvailableTesterHolder
 
     @Override public void onDestroy()
     {
-        for (IABBillingAvailableTester billingAvailableTester: billingAvailableTesters.values())
+        for (BaseIABBillingAvailableTester billingAvailableTester: billingAvailableTesters.values())
         {
             if (billingAvailableTester != null)
             {
@@ -58,8 +58,8 @@ public class BaseIABBillingAvailableTesterHolder
         super.onDestroy();
     }
 
-    protected IABBillingAvailableTester createAvailableTester()
+    protected BaseIABBillingAvailableTester createAvailableTester()
     {
-        return new IABBillingAvailableTester();
+        return new BaseIABBillingAvailableTester();
     }
 }

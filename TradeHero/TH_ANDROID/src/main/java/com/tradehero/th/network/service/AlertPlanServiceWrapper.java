@@ -1,6 +1,8 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
+import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.users.RestorePurchaseForm;
@@ -54,14 +56,14 @@ import retrofit.Callback;
     //<editor-fold desc="Subscribe to Alert Plan">
     public UserProfileDTO subscribeToAlertPlan(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO)
+            @NotNull PurchaseReportDTO purchaseDTO)
     {
         return createDTOProcessorUserProfile().process(alertPlanService.subscribeToAlertPlan(userBaseKey.key, purchaseDTO));
     }
 
     public MiddleCallback<UserProfileDTO> subscribeToAlertPlan(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO purchaseDTO,
+            @NotNull PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
@@ -90,25 +92,56 @@ import retrofit.Callback;
     //<editor-fold desc="Check Alert Plan Attribution">
     public AlertPlanStatusDTO checkAlertPlanAttribution(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO googlePlayPurchaseDTO)
+            @NotNull PurchaseReportDTO purchaseReportDTO)
     {
-        return alertPlanService.checkAlertPlanAttribution(
-                userBaseKey.key,
-                googlePlayPurchaseDTO.googlePlayData,
-                googlePlayPurchaseDTO.googlePlaySignature);
+        AlertPlanStatusDTO received;
+        if (purchaseReportDTO instanceof GooglePlayPurchaseReportDTO)
+        {
+            received = alertPlanService.checkAlertPlanAttribution(
+                    userBaseKey.key,
+                    ((GooglePlayPurchaseReportDTO) purchaseReportDTO).googlePlayData,
+                    ((GooglePlayPurchaseReportDTO) purchaseReportDTO).googlePlaySignature);
+        }
+        else if (purchaseReportDTO instanceof SamsungPurchaseReportDTO)
+        {
+            received = alertPlanService.checkAlertPlanAttributionSamsung(
+                    userBaseKey.key,
+                    ((SamsungPurchaseReportDTO) purchaseReportDTO).paymentId,
+                    ((SamsungPurchaseReportDTO) purchaseReportDTO).productCode);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled type " + purchaseReportDTO.getClass());
+        }
+        return received;
     }
 
     @NotNull public MiddleCallback<AlertPlanStatusDTO> checkAlertPlanAttribution(
             @NotNull UserBaseKey userBaseKey,
-            @NotNull GooglePlayPurchaseDTO googlePlayPurchaseDTO,
+            @NotNull PurchaseReportDTO purchaseReportDTO,
             @Nullable Callback<AlertPlanStatusDTO> callback)
     {
         MiddleCallback<AlertPlanStatusDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        alertPlanServiceAsync.checkAlertPlanAttribution(
-                userBaseKey.key,
-                googlePlayPurchaseDTO.googlePlayData,
-                googlePlayPurchaseDTO.googlePlaySignature,
-                middleCallback);
+        if (purchaseReportDTO instanceof GooglePlayPurchaseReportDTO)
+        {
+            alertPlanServiceAsync.checkAlertPlanAttribution(
+                    userBaseKey.key,
+                    ((GooglePlayPurchaseReportDTO) purchaseReportDTO).googlePlayData,
+                    ((GooglePlayPurchaseReportDTO) purchaseReportDTO).googlePlaySignature,
+                    middleCallback);
+        }
+        else if (purchaseReportDTO instanceof SamsungPurchaseReportDTO)
+        {
+            alertPlanServiceAsync.checkAlertPlanAttributionSamsung(
+                    userBaseKey.key,
+                    ((SamsungPurchaseReportDTO) purchaseReportDTO).paymentId,
+                    ((SamsungPurchaseReportDTO) purchaseReportDTO).productCode,
+                    middleCallback);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled type " + purchaseReportDTO.getClass());
+        }
         return middleCallback;
     }
     //</editor-fold>

@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -239,7 +239,7 @@ interface UserServiceAsync
     @POST("/users/{userId}/addCredit")
     void addCredit(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
@@ -257,7 +257,7 @@ interface UserServiceAsync
     @POST("/users/{userId}/follow")
     void follow(
             @Path("userId") int userId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseReportDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 

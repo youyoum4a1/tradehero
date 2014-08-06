@@ -1,6 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -34,7 +34,7 @@ interface PortfolioServiceAsync
     void resetPortfolio(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
@@ -43,7 +43,7 @@ interface PortfolioServiceAsync
     void addCash(
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId,
-            @Body GooglePlayPurchaseDTO purchaseDTO,
+            @Body PurchaseReportDTO purchaseDTO,
             Callback<UserProfileDTO> callback);
     //</editor-fold>
 
