@@ -159,8 +159,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         Bundle args = new Bundle();
         WebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         WebViewFragment.putIsOptionMenuVisible(args, false);
-        this.webViewFragment = getDashboardNavigator().pushFragment(
-                WebViewFragment.class, args);
+        this.webViewFragment = getDashboardNavigator().pushFragment(WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
