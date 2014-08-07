@@ -212,6 +212,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
     private void openWatchlistEditor()
     {
+        // TODO make it so that it needs SecurityId
         Bundle args = new Bundle();
         SecurityId securityId = getSecurityId();
         if (securityId != null)
@@ -220,12 +221,12 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             if (watchlistPositionCache.get().get(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
+                WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
             }
             else
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
+                WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);

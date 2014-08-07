@@ -79,6 +79,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected MenuItem marketCloseIcon;
 
+    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
+    {
+        args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -363,18 +368,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         if (andDisplay)
         {
             // TODO slider and max purchasable shares
-        }
-    }
-
-    protected void linkWithBuyOrSellQuantity(Integer newQuantity, boolean andDisplay)
-    {
-        if (isTransactionTypeBuy)
-        {
-            linkWithBuyQuantity(newQuantity, andDisplay);
-        }
-        else
-        {
-            linkWithSellQuantity(newQuantity, andDisplay);
         }
     }
 
