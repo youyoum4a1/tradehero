@@ -88,18 +88,4 @@ public class TradeListFragmentTest
 
         assertNull(tradeListFragmentHeader.getListener());
     }
-
-    @Test public void testButtonListenerIsRecycled()
-    {
-        Bundle args = new Bundle();
-        TradeListFragment.putPositionDTOKey(args, new OwnedPositionId(1, 2, 3));
-        tradeListFragment = dashboardNavigator.pushFragment(TradeListFragment.class, args);
-
-        assertNotNull(tradeListFragment.buttonListener);
-
-        dashboardNavigator.popFragment();
-        tradeListFragment.onDestroy();
-
-        assertNull(tradeListFragment.buttonListener);
-    }
 }
