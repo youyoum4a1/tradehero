@@ -19,7 +19,8 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class NewsDialogLayout extends ShareDialogLayout
 {
@@ -160,14 +161,14 @@ public class NewsDialogLayout extends ShareDialogLayout
         }
     }
 
-    @Override public void setDiscussionToShare(AbstractDiscussionCompactDTO discussionToShare)
+    @Override public void setDiscussionToShare(@NotNull AbstractDiscussionCompactDTO discussionToShare)
     {
         super.setDiscussionToShare(discussionToShare);
         setNewsTitle();
     }
 
     @Override public void setMenuClickedListener(
-            OnShareMenuClickedListener menuClickedListener)
+            @Nullable OnShareMenuClickedListener menuClickedListener)
     {
         if (menuClickedListener != null &&
                 !(menuClickedListener instanceof OnMenuClickedListener))
