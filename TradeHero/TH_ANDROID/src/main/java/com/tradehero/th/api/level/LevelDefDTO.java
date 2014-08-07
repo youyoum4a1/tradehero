@@ -1,6 +1,9 @@
 package com.tradehero.th.api.level;
 
-public class LevelDefDTO
+import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.api.level.key.LevelDefId;
+
+public class LevelDefDTO implements DTO
 {
     public int id;
     public int xpFrom;
@@ -8,4 +11,9 @@ public class LevelDefDTO
     public String name;
     public String badge;
     public int level;
+
+    public LevelDefId getId()
+    {
+        return new LevelDefId(id);
+    }
 }

@@ -1,5 +1,8 @@
 package com.tradehero.th.fragments.achievement;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.graphics.Color;
@@ -22,7 +25,7 @@ import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.UserAchievementDTOKey;
+import com.tradehero.th.api.achievement.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.utils.GraphicUtil;
@@ -56,12 +59,16 @@ public class AchievementDialogFragment extends BaseDialogFragment
     @InjectView(R.id.user_level_progress_xp_earned) TextView xpEarned;
     @InjectView(R.id.user_level_progress_virtual_dollar_earned) TextView dollarEarned;
 
+    @InjectView(R.id.achievement_xp_dollar_earned_container) ViewGroup xpDollarEarnedContainer;
+
     @Inject UserAchievementDTOUtil userAchievementDTOUtil;
     @Inject Picasso picasso;
     @Inject GraphicUtil graphicUtil;
 
-    private UserAchievementDTOKey userAchievementDTOKey;
+    private UserAchievementId userAchievementId;
     private UserAchievementDTO userAchievementDTO;
+    private float mXpEarnedOriginalY = -1;
+    private long mMsLevelUpDelay;
 
     protected AchievementDialogFragment()
     {
@@ -94,9 +101,10 @@ public class AchievementDialogFragment extends BaseDialogFragment
 
     private void init()
     {
-        userAchievementDTOKey = new UserAchievementDTOKey(getArguments());
-        userAchievementDTO = userAchievementDTOUtil.pop(userAchievementDTOKey);
-
+        userAchievementId = new UserAchievementId(getArguments());
+        userAchievementDTO = userAchievementDTOUtil.pop(userAchievementId);
+        mMsLevelUpDelay = getResources().getInteger(R.integer.achievement_level_up_end_start_offset) - getResources().getInteger(
+                R.integer.achievement_level_up_start_duration);
         initView();
     }
 
@@ -138,7 +146,11 @@ public class AchievementDialogFragment extends BaseDialogFragment
     {
         Animation pulse = AnimationUtils.loadAnimation(getActivity(), R.anim.achievement_pulse);
         pulseEffect.startAnimation(pulse);
-        picasso.load(userAchievementDTO.achievementDef.visual).placeholder(R.drawable.achievement_unlocked_placeholder).fit().centerInside().into(badge);
+        picasso.load(userAchievementDTO.achievementDef.visual)
+                .placeholder(R.drawable.achievement_unlocked_placeholder)
+                .fit()
+                .centerInside()
+                .into(badge);
     }
 
     private void displayTitle()
@@ -172,6 +184,7 @@ public class AchievementDialogFragment extends BaseDialogFragment
     private void initProgressBar()
     {
         userLevelProgressBar.startsWith(userAchievementDTO.getBaseExp());
+        userLevelProgressBar.setStartDelayOnLevelUp(mMsLevelUpDelay);
     }
 
     @Override public void onResume()
@@ -234,29 +247,55 @@ public class AchievementDialogFragment extends BaseDialogFragment
     {
         if (levelUp != null)
         {
-            Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.achievement_level_up);
+            if(mXpEarnedOriginalY < 0)
+            {
+                mXpEarnedOriginalY = xpDollarEarnedContainer.getY();
+            }
+
             levelUp.setVisibility(View.VISIBLE);
-            a.setAnimationListener(new Animation.AnimationListener()
-                                   {
-                                       @Override public void onAnimationStart(Animation animation)
-                                       {
 
-                                       }
+            Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.achievement_level_up);
+            a.setAnimationListener(
+                    new Animation.AnimationListener()
+                    {
+                        @Override public void onAnimationStart(Animation animation)
+                        {
 
-                                       @Override public void onAnimationEnd(Animation animation)
-                                       {
-                                           if (levelUp != null)
-                                           {
-                                               levelUp.setVisibility(View.GONE);
-                                           }
-                                       }
+                        }
 
-                                       @Override public void onAnimationRepeat(Animation animation)
-                                       {
+                        @Override public void onAnimationEnd(Animation animation)
+                        {
+                            if (levelUp != null)
+                            {
+                                levelUp.setVisibility(View.GONE);
+                            }
+                        }
 
-                                       }
-                                   }
+                        @Override public void onAnimationRepeat(Animation animation)
+                        {
+
+                        }
+                    }
             );
+
+            ValueAnimator vA = ObjectAnimator.ofFloat(xpDollarEarnedContainer, "y", mXpEarnedOriginalY - xpEarned.getHeight());
+            vA.setDuration(getResources().getInteger(R.integer.achievement_level_up_start_duration));
+            vA.setInterpolator(a.getInterpolator());
+
+
+            ValueAnimator vB = ObjectAnimator.ofFloat(xpDollarEarnedContainer, "y", mXpEarnedOriginalY);
+            vB.setDuration(getResources().getInteger(R.integer.achievement_level_up_end_duration));
+            vB.setInterpolator(a.getInterpolator());
+
+            if(mMsLevelUpDelay >= 0)
+            {
+                vB.setStartDelay(mMsLevelUpDelay);
+            }
+
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playSequentially(vA, vB);
+            animatorSet.start();
+
             levelUp.startAnimation(a);
         }
     }
@@ -283,15 +322,15 @@ public class AchievementDialogFragment extends BaseDialogFragment
             super();
         }
 
-        @Nullable public AchievementDialogFragment newInstance(@NotNull UserAchievementDTOKey userAchievementDTOKey)
+        @Nullable public AchievementDialogFragment newInstance(@NotNull UserAchievementId userAchievementId)
         {
-            if (!userAchievementDTOUtil.shouldShow(userAchievementDTOKey))
+            if (!userAchievementDTOUtil.shouldShow(userAchievementId))
             {
                 return null;
             }
 
             Bundle args = new Bundle();
-            args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_DTO_KEY, userAchievementDTOKey.getArgs());
+            args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_DTO_KEY, userAchievementId.getArgs());
             AchievementDialogFragment f = new AchievementDialogFragment();
             f.setArguments(args);
             return f;

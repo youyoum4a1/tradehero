@@ -10,6 +10,15 @@
       android:fromYDelta="100%"
       android:toYDelta="0%"
       />
+  <scale
+      android:duration="@integer/achievement_level_up_start_duration"
+      android:fromXScale="0"
+      android:toXScale="1"
+      android:fromYScale="1"
+      android:toYScale="1"
+      android:pivotX="100%"
+      android:pivotY="100%"
+      />
   <alpha
       android:duration="@integer/achievement_level_up_start_duration"
       android:fromAlpha="0"

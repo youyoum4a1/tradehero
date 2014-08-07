@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
-import com.tradehero.th.models.level.LevelUtil;
+import com.tradehero.th.models.level.LevelDefUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +32,15 @@ public class UserLevelProgressBar extends RelativeLayout
 
     @InjectView(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
 
-    @Inject LevelUtil levelUtil;
+    @Inject LevelDefUtil levelDefUtil;
 
     private int mCurrentXP = -1;
     private LevelDefDTO currentLevelDTO;
     private String xpFormat;
 
     private UserLevelProgressBarListener userLevelProgressBarListener;
+    private AnimatorSet mAnimatorSet;
+    private long mMsDelay;
 
     public UserLevelProgressBar(Context context)
     {
@@ -77,7 +79,7 @@ public class UserLevelProgressBar extends RelativeLayout
 
     private void determineLevel()
     {
-        currentLevelDTO = levelUtil.getCurrentLevel(mCurrentXP);
+        currentLevelDTO = levelDefUtil.getCurrentLevel(mCurrentXP);
         xpProgressBar.setMax(getMaxProgress(currentLevelDTO));
         xpProgressBar.setProgress(currentXpToNormalisedProgress());
         updateDisplay();
@@ -90,6 +92,14 @@ public class UserLevelProgressBar extends RelativeLayout
         nextLevelLabel.setText(String.valueOf(currentLevelDTO.level + 1));
     }
 
+    public void setStartDelayOnLevelUp(long msDelay)
+    {
+        if (msDelay > 0)
+        {
+            this.mMsDelay = msDelay;
+        }
+    }
+
     public void increment(int xpGained)
     {
         if (currentLevelDTO == null)
@@ -98,10 +108,14 @@ public class UserLevelProgressBar extends RelativeLayout
         }
 
         List<Animator> animators = getAnimatorQueue(xpGained);
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.setInterpolator(new LinearInterpolator());
-        animatorSet.playSequentially(animators);
-        animatorSet.start();
+        if (mAnimatorSet != null)
+        {
+            mAnimatorSet.end();
+        }
+        mAnimatorSet = new AnimatorSet();
+        mAnimatorSet.setInterpolator(new LinearInterpolator());
+        mAnimatorSet.playSequentially(animators);
+        mAnimatorSet.start();
     }
 
     private int getMaxProgress(LevelDefDTO levelDTO)
@@ -160,6 +174,7 @@ public class UserLevelProgressBar extends RelativeLayout
                 ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, p0a, p0b, p0c);
         v0.addUpdateListener(createUpdateListener());
         v0.setDuration(getAnimationDuration(currentXpToNormalisedProgress(), gainedXpToNormalisedProgress(mCurrentXP, xpGained, currentLevelDTO)));
+        v0.addListener(createAnimationAdapter());
         aList.add(v0);
 
         int targetXp = mCurrentXP + xpGained;
@@ -167,7 +182,7 @@ public class UserLevelProgressBar extends RelativeLayout
         {
             int xpGainedN = targetXp - levelDTO.xpTo;
 
-            LevelDefDTO nextLevelDTO = levelUtil.getNextLevelDTO(levelDTO.level);
+            LevelDefDTO nextLevelDTO = levelDefUtil.getNextLevelDTO(levelDTO.level);
 
             int startProgress = 0;
 
@@ -184,21 +199,8 @@ public class UserLevelProgressBar extends RelativeLayout
             ValueAnimator vN = ObjectAnimator.ofPropertyValuesHolder(xpProgressBar, pNa, pNb, pNc);
             vN.addUpdateListener(createUpdateListener());
             vN.setDuration(getAnimationDuration(startProgress, gainedXpToNormalisedProgress(nextLevelDTO.xpFrom, xpGainedN, nextLevelDTO)));
-            vN.addListener(new AnimatorListenerAdapter()
-            {
-                @Override public void onAnimationStart(Animator animation)
-                {
-                    super.onAnimationStart(animation);
-                    UserLevelProgressBarListener userLevelProgressBarListenerCopy = userLevelProgressBarListener;
-                    LevelDefDTO nextLevel = levelUtil.getNextLevelDTO(currentLevelDTO.level);
-                    if (userLevelProgressBarListenerCopy != null)
-                    {
-                        userLevelProgressBarListenerCopy.onLevelUp(currentLevelDTO, nextLevel);
-                    }
-                    currentLevelDTO = nextLevel;
-                    updateDisplay();
-                }
-            });
+            vN.setStartDelay(mMsDelay);
+            vN.addListener(createAnimationAdapter());
 
             aList.add(vN);
 
@@ -206,6 +208,28 @@ public class UserLevelProgressBar extends RelativeLayout
         }
 
         return aList;
+    }
+
+    private AnimatorListenerAdapter createAnimationAdapter()
+    {
+        return new AnimatorListenerAdapter()
+        {
+            @Override public void onAnimationEnd(Animator animation)
+            {
+                super.onAnimationStart(animation);
+                if(xpProgressBar.getSecondaryProgress() >= xpProgressBar.getMax())
+                {
+                    UserLevelProgressBarListener userLevelProgressBarListenerCopy = userLevelProgressBarListener;
+                    LevelDefDTO nextLevel = levelDefUtil.getNextLevelDTO(currentLevelDTO.level);
+                    if (userLevelProgressBarListenerCopy != null)
+                    {
+                        userLevelProgressBarListenerCopy.onLevelUp(currentLevelDTO, nextLevel);
+                    }
+                    currentLevelDTO = nextLevel;
+                    updateDisplay();
+                }
+            }
+        };
     }
 
     private long getAnimationDuration(int startProgress, int endProgress)

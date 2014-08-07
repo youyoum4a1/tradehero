@@ -4,16 +4,16 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import org.jetbrains.annotations.NotNull;
 
-public class AchievementDefDTOKey extends AbstractIntegerDTOKey
+public class UserAchievementId extends AbstractIntegerDTOKey
 {
-    private static final String BUNDLE_KEY = AchievementDefDTOKey.class.getName() +".key";
+    private static final String BUNDLE_KEY = UserAchievementId.class.getName() + ".key";
 
-    public AchievementDefDTOKey(Integer key)
+    public UserAchievementId(Integer key)
     {
         super(key);
     }
 
-    public AchievementDefDTOKey(@NotNull Bundle args)
+    public UserAchievementId(@NotNull Bundle args)
     {
         super(args);
     }

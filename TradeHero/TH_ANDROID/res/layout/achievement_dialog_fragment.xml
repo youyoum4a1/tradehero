@@ -143,25 +143,31 @@
             android:text="@string/achievement_level_up"
             tools:text="LEVEL UP!"/>
 
-        <TextView
-            android:id="@+id/user_level_progress_xp_earned"
+        <LinearLayout
+            android:id="@+id/achievement_xp_dollar_earned_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="right"
             android:layout_alignParentRight="true"
-            android:layout_above="@id/user_level_progress_level_up"
-            android:layout_marginRight="@dimen/user_level_progress_margin_right"
-            style="@style/TH.Level.Earned.XP"
-            tools:text="+1,000 XP!"/>
+            android:layout_above="@id/user_level_progress_bar"
+            android:layout_marginRight="@dimen/user_level_progress_margin_right">
 
-        <TextView
-            android:id="@+id/user_level_progress_virtual_dollar_earned"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/user_level_progress_margin_right"
-            android:layout_above="@id/user_level_progress_xp_earned"
-            style="@style/TH.Level.Earned.VirtualDollar"
-            tools:text="+10,000 TH$!"/>
+          <TextView
+              android:id="@+id/user_level_progress_virtual_dollar_earned"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/TH.Level.Earned.VirtualDollar"
+              tools:text="+10,000 TH$!"/>
+
+          <TextView
+              android:id="@+id/user_level_progress_xp_earned"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/TH.Level.Earned.XP"
+              tools:text="+1,000 XP!"/>
+
+        </LinearLayout>
 
       </RelativeLayout>
 

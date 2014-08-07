@@ -11,11 +11,11 @@ public class UserAchievementDTO implements DTO
     public int xpTotal;
     public int contiguousCount;
     public boolean isReset;
-    public AchievementDefDTO achievementDef;
+    public AchievementsDTO achievementDef;
 
-    public UserAchievementDTOKey getUserAchievementDTOKey()
+    public UserAchievementId getUserAchievementId()
     {
-        return new UserAchievementDTOKey(id);
+        return new UserAchievementId(id);
     }
 
     public int getBaseExp()

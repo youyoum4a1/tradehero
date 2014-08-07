@@ -4,6 +4,7 @@ import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
@@ -26,6 +27,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardPositionIdCache;
+import com.tradehero.th.persistence.level.LevelDefListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
@@ -99,6 +101,7 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<UserMessagingRelationshipCache> userMessagingRelationshipCache;
     protected final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
     protected final Lazy<WatchlistPositionCache> watchlistPositionCache;
+    protected final Lazy<LevelDefListCache> levelDefListCache;
     //</editor-fold>
 
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
@@ -145,6 +148,7 @@ import org.jetbrains.annotations.Nullable;
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
             Lazy<WatchlistPositionCache> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
+            Lazy<LevelDefListCache> levelDefListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @NotNull UserBaseDTOUtil userBaseDTOUtil)
     {
@@ -189,6 +193,7 @@ import org.jetbrains.annotations.Nullable;
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
         this.userBaseDTOUtil = userBaseDTOUtil;
+        this.levelDefListCache = levelDefListCacheLazy;
     }
     //</editor-fold>
 
@@ -241,6 +246,7 @@ import org.jetbrains.annotations.Nullable;
         preFetchExchanges();
         preFetchTrending();
         preFetchProviders();
+        preFetchTraderLevels();
     }
 
     public void preFetchExchanges()
@@ -252,6 +258,11 @@ import org.jetbrains.annotations.Nullable;
     {
         // TODO Make it take care of the users's default stock exchange.
         this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+    }
+
+    private void preFetchTraderLevels()
+    {
+        this.levelDefListCache.get().getOrFetchAsync(new LevelDefListId(), true); //Should it be forceUpdate?
     }
 
     public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
