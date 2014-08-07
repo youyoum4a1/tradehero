@@ -308,6 +308,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void displayRanking(UserBaseDTO userBaseDTO)
     {
+        if (currentUserId.get() == null || userBaseDTO == null)
+        {
+            return;
+        }
         if (currentUserId.get() == userBaseDTO.id)
         {
             lbmuPosition.setTextColor(

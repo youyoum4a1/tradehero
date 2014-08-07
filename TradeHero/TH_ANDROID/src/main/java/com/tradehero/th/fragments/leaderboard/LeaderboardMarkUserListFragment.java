@@ -338,7 +338,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         freeFollowMiddleCallback = null;
     }
 
-    @Override protected void setCurrentUserProfileDTO(UserProfileDTO userProfileDTO)
+    @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
         if(leaderboardMarkUserListAdapter != null)
@@ -348,12 +348,15 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         if (userProfileCache != null && currentUserId != null)
         {
             UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-            userProfileCache.put(userBaseKey, userProfileDTO);
+            userProfileCache.put(userBaseKey, currentUserProfileDTO);
         }
         if (ownRankingView != null)
         {
             ownRankingView.linkWith(getApplicablePortfolioId());
-            ownRankingView.linkWith(currentUserProfileDTO);
+            if (currentUserProfileDTO != null)
+            {
+                ownRankingView.linkWith(currentUserProfileDTO);
+            }
         }
     }
 
