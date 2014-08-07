@@ -10,6 +10,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.Date;
 import java.util.Random;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class MessageHeaderDTO implements DTO, KeyGenerator
 {
@@ -66,7 +67,7 @@ public class MessageHeaderDTO implements DTO, KeyGenerator
         DaggerUtils.inject(this);
     }
 
-    @Override public MessageHeaderId getDTOKey()
+    @Override @NotNull public MessageHeaderId getDTOKey()
     {
         UserBaseKey correspondentId = getCorrespondentId(currentUserId.toUserBaseKey());
         if (correspondentId != null)

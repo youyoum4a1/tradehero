@@ -15,7 +15,7 @@ public class PortfolioCompactDTO implements DTO
 
     public int id;
     //<editor-fold desc="Populated on client side">
-    public int userId;
+    @NotNull public Integer userId;
     //</editor-fold>
 
     public Integer providerId;

@@ -3,14 +3,15 @@ package com.tradehero.th.models.notification;
 import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class RunnableInvalidateNotificationList implements Runnable
 {
-    @Inject NotificationListCache notificationListCache;
+    @Inject @NotNull NotificationListCache notificationListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public RunnableInvalidateNotificationList(
-            NotificationListCache notificationListCache)
+            @NotNull NotificationListCache notificationListCache)
     {
         this.notificationListCache = notificationListCache;
     }

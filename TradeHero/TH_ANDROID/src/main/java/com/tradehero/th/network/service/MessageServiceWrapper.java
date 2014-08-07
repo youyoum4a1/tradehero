@@ -15,6 +15,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.discussion.DTOProcessorAllMessagesRead;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;
 import com.tradehero.th.models.discussion.DTOProcessorMessageDeleted;
 import com.tradehero.th.models.discussion.DTOProcessorMessageRead;
@@ -30,6 +31,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
 
@@ -254,8 +256,8 @@ public class MessageServiceWrapper
 
     //<editor-fold desc="Delete Message">
     protected DTOProcessor<Response> createMessageHeaderDeletedProcessor(
-            MessageHeaderId messageHeaderId,
-            UserBaseKey readerId)
+            @NotNull MessageHeaderId messageHeaderId,
+            @NotNull UserBaseKey readerId)
     {
         return new DTOProcessorMessageDeleted(
                 messageHeaderCache.get(),
@@ -266,21 +268,21 @@ public class MessageServiceWrapper
     }
 
     public Response deleteMessage(
-            MessageHeaderId messageHeaderId,
+            @NotNull MessageHeaderId messageHeaderId,
             int senderUserId,
             int recipientUserId,
-            UserBaseKey readerId)
+            @NotNull UserBaseKey readerId)
     {
         return createMessageHeaderDeletedProcessor(messageHeaderId, readerId).process(
                 messageService.deleteMessage(messageHeaderId.commentId, senderUserId, recipientUserId));
     }
 
     public MiddleCallback<Response> deleteMessage(
-            final MessageHeaderId messageHeaderId,
+            @NotNull final MessageHeaderId messageHeaderId,
             int senderUserId,
             int recipientUserId,
-            UserBaseKey readerId,
-            Callback<Response> callback)
+            @NotNull UserBaseKey readerId,
+            @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
                 callback,
@@ -292,8 +294,8 @@ public class MessageServiceWrapper
 
     //<editor-fold desc="Read Message">
     protected DTOProcessor<Response> createMessageHeaderReadProcessor(
-            MessageHeaderId messageHeaderId,
-            UserBaseKey readerId)
+            @NotNull MessageHeaderId messageHeaderId,
+            @NotNull UserBaseKey readerId)
     {
         return new DTOProcessorMessageRead(messageHeaderCache.get(),
                 userProfileCache.get(),
@@ -301,31 +303,24 @@ public class MessageServiceWrapper
                 readerId);
     }
 
-    //<editor-fold desc="Read All Message">
-    protected DTOProcessor<Response> createMessageHeaderReadAllProcessor()
-    {
-        return new DTOProcessorMessageRead(messageHeaderCache.get(),
-                userProfileCache.get());
-    }
-
-    public Response readMessage(
+    @NotNull public Response readMessage(
             int commentId,
             int senderUserId,
             int recipientUserId,
-            MessageHeaderId messageHeaderId,
-            UserBaseKey readerId)
+            @NotNull MessageHeaderId messageHeaderId,
+            @NotNull UserBaseKey readerId)
     {
         return createMessageHeaderReadProcessor(messageHeaderId, readerId).process(
                 messageService.readMessage(commentId, senderUserId, recipientUserId));
     }
 
-    public MiddleCallback<Response> readMessage(
+    @NotNull public MiddleCallback<Response> readMessage(
             int commentId,
             int senderUserId,
             int recipientUserId,
-            final MessageHeaderId messageHeaderId,
-            final UserBaseKey readerId,
-            Callback<Response> callback)
+            @NotNull final MessageHeaderId messageHeaderId,
+            @NotNull final UserBaseKey readerId,
+            @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
                 callback,
@@ -333,13 +328,29 @@ public class MessageServiceWrapper
         messageServiceAsync.readMessage(commentId, senderUserId, recipientUserId, middleCallback);
         return middleCallback;
     }
+    //</editor-fold>
 
-    public MiddleCallback<Response> readAllMessage(
-            Callback<Response> callback)
+    //<editor-fold desc="Read All Message">
+    @NotNull protected DTOProcessor<Response> createMessageHeaderReadAllProcessor(
+            @NotNull UserBaseKey readerId)
+    {
+        return new DTOProcessorAllMessagesRead(messageHeaderCache.get(), userProfileCache.get(), readerId);
+    }
+
+    @NotNull public Response readAllMessage(
+            @NotNull final UserBaseKey readerId)
+    {
+        return createMessageHeaderReadAllProcessor(readerId).process(
+                messageService.readAllMessage());
+    }
+
+    @NotNull public MiddleCallback<Response> readAllMessage(
+            @NotNull final UserBaseKey readerId,
+            @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(
                 callback,
-                createMessageHeaderReadAllProcessor());
+                createMessageHeaderReadAllProcessor(readerId));
         messageServiceAsync.readAllMessage(middleCallback);
         return middleCallback;
     }

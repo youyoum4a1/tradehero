@@ -43,6 +43,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.widget.list.BaseExpandingItemListener;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
@@ -81,6 +82,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected FollowDialogCombo followDialogCombo;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    private LeaderboardMarkUserItemView ownRankingView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -135,11 +137,32 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                 leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
                 initHeaderView(headerView);
             }
-            View rankHeaderView = getUserRankHeaderView();
-            if (rankHeaderView != null)
+
+            View userRankingHeaderView = inflateAndGetUserRankHeaderView();
+            setupOwnRankingView(userRankingHeaderView);
+
+            leaderboardMarkUserListView.getRefreshableView().addHeaderView(userRankingHeaderView);
+        }
+    }
+
+    @Override protected int getCurrentRankLayoutResId()
+    {
+        return R.layout.lbmu_item_roi_mode;
+    }
+
+    private void setupOwnRankingView(View userRankingHeaderView)
+    {
+        if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
+        {
+            ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
+            if (ownRankingView.expandingLayout != null)
             {
-                leaderboardMarkUserListView.getRefreshableView().addHeaderView(rankHeaderView);
+                ownRankingView.displayRankingPosition(currentRank);
+                ownRankingView.expandingLayout.setVisibility(View.GONE);
+                ownRankingView.onExpand(false);
+                ownRankingView.setOnClickListener(new BaseExpandingItemListener());
             }
+            ownRankingView.displayOwnRanking(currentLeaderboardKey);
         }
     }
 
@@ -326,6 +349,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
             userProfileCache.put(userBaseKey, userProfileDTO);
+        }
+        if (ownRankingView != null)
+        {
+            ownRankingView.linkWith(getApplicablePortfolioId());
+            ownRankingView.linkWith(currentUserProfileDTO);
         }
     }
 

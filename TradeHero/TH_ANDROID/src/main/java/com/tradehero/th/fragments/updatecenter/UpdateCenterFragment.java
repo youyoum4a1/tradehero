@@ -128,7 +128,7 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         detachUserProfileCache();
         userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(),true);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     private void detachUserProfileCache()

@@ -50,6 +50,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public boolean useTHPrice;
 
+    @Deprecated
     public int unreadCount;
     public int alertCount;
 
@@ -193,7 +194,6 @@ public class UserProfileDTO extends UserProfileCompactDTO
                 ", rank=" + rank +
                 ", firstFollowAllTime=" + firstFollowAllTime +
                 ", useTHPrice=" + useTHPrice +
-                ", unreadCount=" + unreadCount +
                 ", alertCount=" + alertCount +
                 ", tradesSharedCount_FB=" + tradesSharedCount_FB +
                 ", userAlertPlans=" + userAlertPlans +

@@ -17,6 +17,7 @@
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">dd MMM yyyy kk:mm z</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm">dd MMM HH:mm</string>
   <string name="data_format_dd_mmm">dd MMM</string>
+  <string name="data_format_yyyy_mm_dd_hh_mm_ss">yyyy-MM-dd\'T\'HH:mm:ss\'Z\'</string>
 
   <!-- TEMP stuff -->
   <string name="test_email" translatable="false">dev@tradehero.mobi</string>

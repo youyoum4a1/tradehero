@@ -5,14 +5,14 @@
   <item android:state_pressed="true">
     <shape android:shape="rectangle">
       <solid android:color="@color/read_all_layout_color_dark"/>
-      <corners android:radius="@dimen/common_margin_4"/>
+      <corners android:radius="@dimen/message_read_all_button_radius"/>
     </shape>
   </item>
 
   <item>
     <shape android:shape="rectangle">
       <solid android:color="@color/read_all_layout_color_light"/>
-      <corners android:radius="@dimen/common_margin_4"/>
+      <corners android:radius="@dimen/message_read_all_button_radius"/>
     </shape>
   </item>
 

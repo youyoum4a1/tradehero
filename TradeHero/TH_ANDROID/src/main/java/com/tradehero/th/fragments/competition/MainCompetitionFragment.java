@@ -400,7 +400,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         Bundle args = new Bundle();
         ProviderVideoListFragment.putProviderId(args, providerId);
-        ProviderVideoListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
+        ProviderVideoListFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId());
         getDashboardNavigator().pushFragment(ProviderVideoListFragment.class, args);
     }
 
@@ -454,13 +454,11 @@ public class MainCompetitionFragment extends CompetitionFragment
 
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
-            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,
-                    args);
+            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class, args);
         }
         else
         {
-            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class,
-                    args);
+            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class, args);
         }
     }
 

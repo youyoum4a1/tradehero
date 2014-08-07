@@ -97,7 +97,6 @@ public class NotificationsView extends BetterViewAnimator
         notificationListRefreshListener = createNotificationRefreshListener();
 
         notificationListAdapter = createNotificationListAdapter();
-
     }
 
     private NotificationListAdapter createNotificationListAdapter()
@@ -135,7 +134,6 @@ public class NotificationsView extends BetterViewAnimator
         notificationList.setOnRefreshListener(notificationPullToRefreshListener);
 
         fetchNextPageIfNecessary();
-
     }
 
     @OnClick(R.id.readAllLayout)
@@ -262,6 +260,7 @@ public class NotificationsView extends BetterViewAnimator
     {
         middleCallbacks.add(
                 notificationServiceWrapper.markAsRead(
+                        currentUserId.toUserBaseKey(),
                         new NotificationKey(pushId),
                         createMarkNotificationAsReadCallback()));
     }
@@ -270,6 +269,7 @@ public class NotificationsView extends BetterViewAnimator
     {
         middleCallbacks.add(
                 notificationServiceWrapper.markAsReadAll(
+                        currentUserId.toUserBaseKey(),
                         createMarkNotificationAsReadAllCallback()));
     }
 
@@ -373,10 +373,11 @@ public class NotificationsView extends BetterViewAnimator
     {
         @Override public void success(Response response, Response response2)
         {
-            if(notificationListAdapter!=null)
+            if (notificationListAdapter != null)
             {
                 notificationListAdapter.notifyDataSetChanged();
             }
+            requestUpdateTabCounter();
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -441,26 +442,26 @@ public class NotificationsView extends BetterViewAnimator
     private void setReadAllLayoutVisable()
     {
         boolean haveUnread = false;
-        int SIZE = notificationListAdapter.getCount();
-        for(int i = 0;i<SIZE;i++)
+        int itemCount = notificationListAdapter.getCount();
+        for (int i = 0; i < itemCount; i++)
         {
-            if(notificationListAdapter.getItem(i).unread)
+            if (notificationListAdapter.getItem(i).unread)
             {
                 haveUnread = true;
                 break;
             }
         }
 
-        if(readAllLayout!=null)
+        if (readAllLayout != null)
         {
-            readAllLayout.setVisibility(haveUnread?View.VISIBLE:View.GONE);
+            readAllLayout.setVisibility(haveUnread ? View.VISIBLE : View.GONE);
         }
     }
 
     private void setAllNotificationRead()
     {
-        int SIZE = notificationListAdapter.getCount();
-        for(int i = 0;i<SIZE;i++)
+        int itemCount = notificationListAdapter.getCount();
+        for (int i = 0; i < itemCount; i++)
         {
             notificationListAdapter.getItem(i).unread = false;
         }

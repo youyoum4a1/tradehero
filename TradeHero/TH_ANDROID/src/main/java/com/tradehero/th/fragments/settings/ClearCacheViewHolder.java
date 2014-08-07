@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.preference.PreferenceFragment;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.utils.SlowedAsyncTask;
 import com.tradehero.th.R;
@@ -9,12 +11,13 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.dagger.ForPicasso;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ClearCacheViewHolder extends OneSettingViewHolder
 {
     @NotNull private final ProgressDialogUtil progressDialogUtil;
     @NotNull private final LruCache lruCache;
-    private ProgressDialog progressDialog;
+    @Nullable private ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
     @Inject public ClearCacheViewHolder(
@@ -33,16 +36,28 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         if (progressDialog == null)
         {
-            progressDialog = progressDialogUtil.show(preferenceFragment.getActivity(),
-                    R.string.settings_misc_cache_clearing_alert_title,
-                    R.string.settings_misc_cache_clearing_alert_message);
+            if (preferenceFragmentCopy != null)
+            {
+                Context activityContext = preferenceFragmentCopy.getActivity();
+                if (activityContext != null)
+                {
+                    progressDialog = progressDialogUtil.show(
+                            activityContext,
+                            R.string.settings_misc_cache_clearing_alert_title,
+                            R.string.settings_misc_cache_clearing_alert_message);
+                }
+            }
         }
         else
         {
             progressDialog.setTitle(R.string.settings_misc_cache_clearing_alert_title);
-            progressDialog.setMessage(preferenceFragment.getString(R.string.settings_misc_cache_clearing_alert_message));
+            if (preferenceFragmentCopy != null)
+            {
+                progressDialog.setMessage(preferenceFragmentCopy.getString(R.string.settings_misc_cache_clearing_alert_message));
+            }
             progressDialog.show();
         }
 
@@ -69,32 +84,37 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
 
     private void handleCacheCleared()
     {
-        FragmentActivity activity = preferenceFragment.getActivity();
-        if (activity != null)
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
         {
-            if (progressDialog == null)
+            FragmentActivity activity = preferenceFragment.getActivity();
+            if (activity != null)
             {
-                progressDialog = progressDialogUtil.show(preferenceFragment.getActivity(),
-                        R.string.settings_misc_cache_cleared_alert_title,
-                        R.string.empty);
-            }
-            else
-            {
-                progressDialog.setTitle(R.string.settings_misc_cache_cleared_alert_title);
-                progressDialog.setMessage("");
-                progressDialog.show();
-            }
-            preferenceFragment.getView().postDelayed(new Runnable()
-            {
-                @Override public void run()
+                if (progressDialog == null)
                 {
-                    ProgressDialog progressDialogCopy = progressDialog;
-                    if (progressDialogCopy != null)
-                    {
-                        progressDialogCopy.hide();
-                    }
+                    progressDialog = progressDialogUtil.show(
+                            activity,
+                            R.string.settings_misc_cache_cleared_alert_title,
+                            R.string.empty);
                 }
-            }, 500);
+                else
+                {
+                    progressDialog.setTitle(R.string.settings_misc_cache_cleared_alert_title);
+                    progressDialog.setMessage("");
+                    progressDialog.show();
+                }
+                preferenceFragmentCopy.getView().postDelayed(new Runnable()
+                {
+                    @Override public void run()
+                    {
+                        ProgressDialog progressDialogCopy = progressDialog;
+                        if (progressDialogCopy != null)
+                        {
+                            progressDialogCopy.hide();
+                        }
+                    }
+                }, 500);
+            }
         }
     }
 }

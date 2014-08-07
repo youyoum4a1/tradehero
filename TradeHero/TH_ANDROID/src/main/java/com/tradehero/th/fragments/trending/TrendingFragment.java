@@ -403,7 +403,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
+            MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId());
             getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)

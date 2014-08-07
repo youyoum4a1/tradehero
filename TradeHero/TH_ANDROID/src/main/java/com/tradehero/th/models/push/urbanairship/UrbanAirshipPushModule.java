@@ -1,10 +1,17 @@
 package com.tradehero.th.models.push.urbanairship;
 
+import android.content.Context;
+import com.tradehero.common.annotation.Temp;
+import com.tradehero.th.R;
 import com.tradehero.th.models.push.handlers.GcmDeletedHandler;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.models.push.handlers.PushNotificationHandler;
 import com.tradehero.th.models.push.handlers.PushReceivedHandler;
 import com.tradehero.th.models.push.handlers.RegistrationFinishedHandler;
+import com.tradehero.th.utils.Constants;
+//import com.urbanairship.AirshipConfigOptions;
+//import com.urbanairship.push.CustomPushNotificationBuilder;
+//import com.urbanairship.push.PushNotificationBuilder;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Arrays;
@@ -56,5 +63,16 @@ public class UrbanAirshipPushModule
     //    nb.layoutSubjectId = R.id.notification_subject;
     //    nb.layoutMessageId = R.id.message;
     //    return nb;
+    //}
+
+    //@Provides AirshipConfigOptions provideAirshipConfigOptions(Context context)
+    //{
+    //    AirshipConfigOptions options = AirshipConfigOptions.loadDefaultOptions(context);
+    //    if (Constants.DOGFOOD_BUILD)
+    //    {
+    //        options.inProduction = false;
+    //        options.gcmSender = Constants.GCM_STAGING_SENDER;
+    //    }
+    //    return options;
     //}
 }
