@@ -138,9 +138,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.SellDialogFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
-import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -261,8 +259,6 @@ import javax.inject.Singleton;
 
                         TradeListFragment.class,
                         TradeListItemView.class,
-                        TradeListOverlayHeaderView.class,
-                        TradeListHeaderView.class,
 
                         StoreScreenFragment.class,
                         HeroManagerFragment.class,

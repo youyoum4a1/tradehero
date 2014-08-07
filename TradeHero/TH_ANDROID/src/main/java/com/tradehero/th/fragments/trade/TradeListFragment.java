@@ -40,7 +40,6 @@ import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
@@ -79,7 +78,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     SecurityActionDialogFactory securityActionDialogFactory = new SecurityActionDialogFactory(); // no inject, 65k
 
     @InjectView(android.R.id.empty) protected ProgressBar progressBar;
-    @InjectView(R.id.trade_list_header) protected TradeListOverlayHeaderView header;
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
     @RouteProperty("userId") Integer routeUserId;
@@ -138,8 +136,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             {
                 tradeListView.setAdapter(adapter);
             }
-
-            registerOverlayHeaderListener();
         }
     }
 
@@ -187,12 +183,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         detachFetchTradesTask();
         detachSecurityActionDialog();
         securityAlertAssistant.setOnPopulatedListener(null);
-        if (adapter != null)
-        {
-            adapter.setTradeListHeaderClickListener(null);
-        }
         adapter = null;
-        header.setListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -255,27 +246,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         return created;
     }
 
-    private void registerOverlayHeaderListener()
-    {
-        if (this.header == null)
-        {
-            return;
-        }
-
-        this.header.setListener(new TradeListOverlayHeaderView.Listener()
-        {
-            @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId)
-            {
-                THToast.show("TODO remove");
-            }
-
-            @Override public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId)
-            {
-                openUserProfile(userId);
-            }
-        });
-    }
-
     private void openUserProfile(UserBaseKey userId)
     {
         Bundle bundle = new Bundle();
@@ -310,7 +280,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         fetchTrades();
         if (andDisplay)
         {
-            displayHeader();
         }
     }
 
@@ -339,19 +308,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     public void display()
     {
-        displayHeader();
         displayActionBarTitle();
-    }
-
-    public void displayHeader()
-    {
-        if (this.header != null)
-        {
-            if (this.positionDTO != null)
-            {
-                header.bindOwnedPositionId(this.positionDTO);
-            }
-        }
     }
 
     protected SecurityId getSecurityId()
