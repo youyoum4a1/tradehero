@@ -10,7 +10,7 @@ public class Constants
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
-    public static final boolean FOR_QA = false;
+    public static final boolean DOGFOOD_BUILD = false;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
@@ -56,6 +56,9 @@ public class Constants
     // Localytics
     public static final String LOCALYTICS_APP_KEY_RELEASE = "f8886191fcc5693203600e1-6ab3a58c-79a1-11e2-3035-008e703cf207";
     public static final String LOCALYTICS_APP_KEY_DEBUG = "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";
+
+    // GCM
+    public static final String GCM_STAGING_SENDER = "927417497470";
 
     // TODO remove when automated build.
     // 0 for international, 1 baidu, 2 tencent. It is here to help with build multiple version

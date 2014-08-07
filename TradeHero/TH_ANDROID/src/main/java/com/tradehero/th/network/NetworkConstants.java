@@ -18,7 +18,7 @@ public class NetworkConstants
 
     public static String getApiEndPointInUse()
     {
-        return Constants.FOR_QA ? TRADEHERO_QA_API_ENDPOINT : TRADEHERO_PROD_API_ENDPOINT;
+        return Constants.DOGFOOD_BUILD ? TRADEHERO_QA_API_ENDPOINT : TRADEHERO_PROD_API_ENDPOINT;
     }
 
     public static final String COMPETITION_PATH = "competitionpages/";
