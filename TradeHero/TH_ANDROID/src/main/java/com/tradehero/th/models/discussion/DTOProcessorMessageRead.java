@@ -7,7 +7,6 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import retrofit.client.Response;
 
 public class DTOProcessorMessageRead implements DTOProcessor<Response>
@@ -21,8 +20,8 @@ public class DTOProcessorMessageRead implements DTOProcessor<Response>
     public DTOProcessorMessageRead(
             @NotNull MessageHeaderCache messageHeaderCache,
             @NotNull UserProfileCache userProfileCache,
-            @Nullable MessageHeaderId messageHeaderId,
-            @Nullable UserBaseKey readerId)
+            @NotNull MessageHeaderId messageHeaderId,
+            @NotNull UserBaseKey readerId)
     {
         this.messageHeaderCache = messageHeaderCache;
         this.userProfileCache = userProfileCache;
@@ -33,18 +32,12 @@ public class DTOProcessorMessageRead implements DTOProcessor<Response>
 
     @Override public Response process(Response value)
     {
-        if (messageHeaderId != null)
+        MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
+        if (messageHeaderDTO != null && messageHeaderDTO.unread)
         {
-            MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
-            if (messageHeaderDTO != null && messageHeaderDTO.unread)
-            {
-                messageHeaderDTO.unread = false;
-            }
+            messageHeaderDTO.unread = false;
         }
-        if (readerId != null)
-        {
-            userProfileCache.getOrFetchAsync(readerId, true);
-        }
+        userProfileCache.getOrFetchAsync(readerId, true);
         return value;
     }
 }

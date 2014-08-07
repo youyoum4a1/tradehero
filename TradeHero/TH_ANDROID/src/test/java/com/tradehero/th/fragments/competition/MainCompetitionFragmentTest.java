@@ -105,6 +105,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
     @Test public void shouldGoToWebFragmentAfterClickOnAds()
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
@@ -117,6 +118,8 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
         AbsListView competitionListView = mainCompetitionFragment.listView;
         assertThat(competitionListView).isNotNull();
+
+        Robolectric.getBackgroundScheduler().unPause();
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasksIncludingDelayedTasks();
@@ -221,6 +224,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
     private void shouldGoToCorrectWebPageAfterClickOnWizardCell(String webLink)
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
@@ -235,6 +239,8 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
+
+        Robolectric.getBackgroundScheduler().unPause();
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasksIncludingDelayedTasks();

@@ -18,9 +18,13 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
+import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
@@ -34,24 +38,30 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
@@ -59,8 +69,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>,
         ExpandingLayout.OnExpandListener
 {
+    private static final Integer FLAG_USER_NOT_RANKED = -1;
+    private static final int MAX_OWN_RANKING = 10000;
+
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject Lazy<LeaderboardUserCache> leaderboardUserCache;
+    @Inject Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
@@ -101,6 +116,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
+    private MiddleCallback<LeaderboardDTO> leaderboardOwnUserRankingCallback;
+    private LeaderboardUserId leaderboardUserId;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -162,6 +179,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuProfilePicture.setImageDrawable(null);
         }
+        unsetLeaderboardOwnUserRankingCallback();
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -201,6 +219,30 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(expandableItem, true);
     }
 
+    public void displayOwnRanking(LeaderboardKey leaderboardKey)
+    {
+        if (leaderboardUserId != null)
+        {
+            LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardUserCache.get().get(leaderboardUserId);
+            if (ownLeaderboardUserDTO != null)
+            {
+                display(ownLeaderboardUserDTO);
+                return;
+            }
+        }
+        unsetLeaderboardOwnUserRankingCallback();
+        leaderboardOwnUserRankingCallback = leaderboardServiceWrapper.get().getUserOnLeaderboard(new UserOnLeaderboardKey(leaderboardKey,
+                    currentUserId.toUserBaseKey()), null, new LeaderboardUserRankingCallback());
+    }
+
+    private void unsetLeaderboardOwnUserRankingCallback()
+    {
+        if (leaderboardOwnUserRankingCallback != null)
+        {
+            leaderboardOwnUserRankingCallback.setPrimaryCallback(null);
+        }
+    }
+
     private void linkWith(LeaderboardUserDTO expandableItem, boolean andDisplay)
     {
         this.leaderboardItem = expandableItem;
@@ -226,20 +268,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void displayTopSection()
     {
-        lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
-        if (currentUserId.get() == leaderboardItem.id)
+        if (leaderboardItem.getPosition() != null)
         {
-            lbmuPosition.setTextColor(
-                    getContext().getResources().getColor(R.color.button_green));
-        }
-        else
-        {
-            lbmuPosition.setTextColor(
-                    getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+            lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
         }
 
-        lbmuDisplayName.setText(leaderboardItem.displayName);
         lbmuHeroQuotient.setText(leaderboardItem.getHeroQuotientFormatted());
+
         if (lbmuFoF != null)
         {
             lbmuFoF.setVisibility(
@@ -249,16 +284,40 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuFoF.setText(leaderboardItem.friendOfMarkupString);
         }
 
+        linkWith(leaderboardItem);
+    }
+
+    public void linkWith(UserBaseDTO userBaseDTO)
+    {
+        displayRanking(userBaseDTO);
+
+        lbmuDisplayName.setText(userBaseDTO.displayName);
+
         loadDefaultUserImage();
-        if (leaderboardItem.picture != null)
+        if (userBaseDTO.picture != null)
         {
             picasso.get()
-                    .load(leaderboardItem.picture)
+                    .load(userBaseDTO.picture)
                     .transform(peopleIconTransformation)
                     .placeholder(lbmuProfilePicture.getDrawable())
                     .into(lbmuProfilePicture);
         }
-        displayCountryLogo();
+
+        displayCountryLogo(userBaseDTO);
+    }
+
+    private void displayRanking(UserBaseDTO userBaseDTO)
+    {
+        if (currentUserId.get() == userBaseDTO.id)
+        {
+            lbmuPosition.setTextColor(
+                    getContext().getResources().getColor(R.color.button_green));
+        }
+        else
+        {
+            lbmuPosition.setTextColor(
+                    getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+        }
     }
 
     private void loadDefaultUserImage()
@@ -268,15 +327,16 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 .into(lbmuProfilePicture);
     }
 
-    private void displayCountryLogo()
+    private void displayCountryLogo(UserBaseDTO userBaseDTO)
     {
         if (countryLogo != null)
         {
             try
             {
-                int imageResId = Country.getCountryLogo(R.drawable.default_image, leaderboardItem.countryCode);
+                int imageResId = Country.getCountryLogo(R.drawable.default_image, userBaseDTO.countryCode);
                 countryLogo.setImageResource(imageResId);
-            } catch (OutOfMemoryError e)
+            }
+            catch (OutOfMemoryError e)
             {
                 Timber.e(e, null);
             }
@@ -429,6 +489,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (lbmuFollowUser != null)
         {
+            // you can't follow yourself
+            if (currentUserId.get() == leaderboardItem.id)
+            {
+                lbmuFollowUser.setVisibility(GONE);
+                return;
+            }
+
             Boolean isFollowing = isCurrentUserFollowing();
             boolean showButton = isFollowing == null || !isFollowing;
             lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
@@ -581,8 +648,44 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
+    public void displayRankingPosition(int currentRank)
+    {
+        if (isUserRanked(currentRank))
+        {
+            lbmuPosition.setText("" + currentRank);
+        }
+        else
+        {
+            lbmuPosition.setText(R.string.leaderboard_not_ranked_position);
+        }
+    }
+
+    protected static boolean isUserRanked(int currentRank)
+    {
+        return currentRank != FLAG_USER_NOT_RANKED && currentRank > 0 && currentRank < MAX_OWN_RANKING;
+    }
+
     public static interface OnFollowRequestedListener
     {
         void onFollowRequested(UserBaseDTO userBaseKey);
+    }
+
+    private class LeaderboardUserRankingCallback implements Callback<LeaderboardDTO>
+    {
+        @Override public void success(LeaderboardDTO leaderboardDTO, Response response)
+        {
+            if (leaderboardDTO != null && leaderboardDTO.users != null && !leaderboardDTO.users.isEmpty())
+            {
+                LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardDTO.users.get(0);
+                leaderboardUserId = ownLeaderboardUserDTO.getLeaderboardUserId();
+                leaderboardUserCache.get().put(leaderboardUserId, ownLeaderboardUserDTO);
+                display(ownLeaderboardUserDTO);
+            }
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            THToast.show(new THException(retrofitError));
+        }
     }
 }

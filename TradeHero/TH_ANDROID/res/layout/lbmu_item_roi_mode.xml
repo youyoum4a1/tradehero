@@ -136,7 +136,7 @@
   <include
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      layout="@layout/leaderboard_item_expendview_2"
+      layout="@layout/leaderboard_item_expandview_2"
       />
 
 </com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView>

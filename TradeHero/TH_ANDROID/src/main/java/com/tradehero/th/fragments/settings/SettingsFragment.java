@@ -21,17 +21,12 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
@@ -41,7 +36,6 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.models.user.auth.CredentialsDTO;
 import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -50,13 +44,8 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.FacebookUtils;
-import com.tradehero.th.utils.LinkedInUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.QQUtils;
-import com.tradehero.th.utils.TwitterUtils;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -81,8 +70,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject SocialServiceWrapper socialServiceWrapper;
-    private MiddleCallback<UserProfileDTO> middleCallbackConnect;
-    private MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject PushNotificationManager pushNotificationManager;
@@ -90,11 +77,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject THIABPurchaseRestorerAlertUtil IABPurchaseRestorerAlertUtil;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
 
-    @Inject Lazy<FacebookUtils> facebookUtils;
-    @Inject Lazy<TwitterUtils> twitterUtils;
-    @Inject Lazy<LinkedInUtils> linkedInUtils;
-    @Inject Lazy<WeiboUtils> weiboUtils;
-    @Inject Lazy<QQUtils> qqUtils;
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<ResideMenu> resideMenuLazy;
@@ -104,12 +86,8 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     private SocialNetworkEnum socialNetworkToConnectTo;
     private ProgressDialog progressDialog;
-    private CheckBoxPreference facebookSharing;
     private SocialNetworkEnum currentSocialNetworkConnect;
-    private CheckBoxPreference twitterSharing;
-    private CheckBoxPreference linkedInSharing;
-    private CheckBoxPreference weiboSharing;
-    private CheckBoxPreference qqSharing;
+    @Inject protected SocialConnectSettingViewHolderContainer socialConnectSettingViewHolderContainer;
     @Inject protected SendLoveViewHolder sendLoveViewHolder;
     @Inject protected SendFeedbackViewHolder sendFeedbackViewHolder;
     @Inject protected FaqViewHolder faqViewHolder;
@@ -171,8 +149,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         DaggerUtils.inject(this);
 
-        createSocialConnectLogInCallback();
-
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()
         {
             @Override public void onPurchaseRestored(
@@ -189,41 +165,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         };
 
         this.socialNetworkToConnectTo = getSocialNetworkToConnect(getArguments());
-    }
-
-    private void createSocialConnectLogInCallback()
-    {
-        socialConnectLogInCallback = new LogInCallback()
-        {
-            @Override public void done(UserLoginDTO user, THException ex)
-            {
-                // when user cancel the process
-                if (!isDetached())
-                {
-                    progressDialog.hide();
-                }
-            }
-
-            @Override public void onStart()
-            {
-            }
-
-            @Override public boolean onSocialAuthDone(JSONCredentials json)
-            {
-                detachMiddleCallbackConnect();
-                middleCallbackConnect = socialServiceWrapper.connect(
-                        currentUserId.toUserBaseKey(),
-                        UserFormFactory.create(json),
-                        createSocialConnectCallback());
-                if (!isDetached())
-                {
-                    progressDialog.setMessage(
-                            String.format(getString(R.string.authentication_connecting_tradehero),
-                                    currentSocialNetworkConnect.getName()));
-                }
-                return false;
-            }
-        };
     }
 
     @Override public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup,
@@ -295,6 +236,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
     @Override public void onDestroyView()
     {
+        socialConnectSettingViewHolderContainer.destroyViews();
         sendFeedbackViewHolder.destroyViews();
         sendLoveViewHolder.destroyViews();
         faqViewHolder.destroyViews();
@@ -312,8 +254,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
 
         detachMiddleCallbackUpdateUserProfile();
         detachCurrentUserProfileMilestone();
-        detachMiddleCallbackConnect();
-        detachMiddleCallbackDisconnect();
         super.onDestroyView();
     }
 
@@ -333,6 +273,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         sendFeedbackViewHolder = null;
         sendLoveViewHolder = null;
         faqViewHolder = null;
+        socialConnectSettingViewHolderContainer = null;
 
         socialConnectLogInCallback = null;
         this.currentUserProfileRetrievedMilestoneListener = null;
@@ -356,24 +297,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             this.currentUserProfileRetrievedMilestone.setOnCompleteListener(null);
         }
         this.currentUserProfileRetrievedMilestone = null;
-    }
-
-    protected void detachMiddleCallbackConnect()
-    {
-        if (middleCallbackConnect != null)
-        {
-            middleCallbackConnect.setPrimaryCallback(null);
-        }
-        middleCallbackConnect = null;
-    }
-
-    protected void detachMiddleCallbackDisconnect()
-    {
-        if (middleCallbackDisconnect != null)
-        {
-            middleCallbackDisconnect.setPrimaryCallback(null);
-        }
-        middleCallbackDisconnect = null;
     }
 
     private BillingPurchaseRestorer.OnPurchaseRestorerListener createPurchaseRestorerListener()
@@ -435,36 +358,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
 
         // Sharing
-        facebookSharing = (CheckBoxPreference) findPreference(
-                getString(R.string.key_settings_sharing_facebook));
-        if (facebookSharing != null)
-        {
-            facebookSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.FB));
-        }
-        twitterSharing = (CheckBoxPreference) findPreference(
-                getString(R.string.key_settings_sharing_twitter));
-        if (twitterSharing != null)
-        {
-            twitterSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.TW));
-        }
-        linkedInSharing = (CheckBoxPreference) findPreference(
-                getString(R.string.key_settings_sharing_linked_in));
-        if (linkedInSharing != null)
-        {
-            linkedInSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.LN));
-        }
-        weiboSharing = (CheckBoxPreference) findPreference(
-                getString(R.string.key_settings_sharing_weibo));
-        if (weiboSharing != null)
-        {
-            weiboSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.WB));
-        }
-        qqSharing = (CheckBoxPreference) findPreference(
-                getString(R.string.key_settings_sharing_qq));
-        if (qqSharing != null)
-        {
-            qqSharing.setOnPreferenceChangeListener(createPreferenceChangeListenerSharing(SocialNetworkEnum.QQ));
-        }
+        socialConnectSettingViewHolderContainer.initViews(this);
 
         // Translations
         userTranslationSettingsViewHolder.initViews(this);
@@ -535,7 +429,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         if (this.currentUserProfileRetrievedMilestone.isComplete())
         {
             updateNotificationStatus();
-            updateSocialConnectStatus();
         }
         // Otherwise we rely on the complete listener
 
@@ -640,127 +533,9 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         return false;
     }
 
-    private Preference.OnPreferenceChangeListener createPreferenceChangeListenerSharing(
-            final SocialNetworkEnum socialNetwork)
+    protected void changeSharing(SocialNetworkEnum socialNetworkEnum, boolean enable)
     {
-        return new Preference.OnPreferenceChangeListener()
-        {
-            @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-            {
-                return changeSharing(socialNetwork, (boolean) newValue);
-            }
-        };
-    }
-
-    private boolean changeSharing(SocialNetworkEnum socialNetwork, boolean enable)
-    {
-        Timber.d("Sharing is asked to change");
-        currentSocialNetworkConnect = socialNetwork;
-        if (enable)
-        {
-            switch (socialNetwork)
-            {
-                case FB:
-                    progressDialog = progressDialogUtil.show(getActivity(),
-                            R.string.facebook,
-                            R.string.authentication_connecting_to_facebook);
-
-                    facebookUtils.get().logIn(getActivity(), socialConnectLogInCallback);
-                    break;
-                case TW:
-                    progressDialog = progressDialogUtil.show(getActivity(),
-                            R.string.twitter,
-                            R.string.authentication_twitter_connecting);
-                    twitterUtils.get().logIn(getActivity(), socialConnectLogInCallback);
-                    break;
-                case TH:
-                    break;
-                case LN:
-                    progressDialog = progressDialogUtil.show(getActivity(),
-                            R.string.linkedin,
-                            R.string.authentication_connecting_to_linkedin);
-                    linkedInUtils.get().logIn(getActivity(), socialConnectLogInCallback);
-                    break;
-                case WB:
-                    progressDialog = progressDialogUtil.show(getActivity(),
-                            R.string.sina_weibo,
-                            R.string.authentication_connecting_to_weibo);
-                    weiboUtils.get().logIn(getActivity(), socialConnectLogInCallback);
-                    break;
-                case QQ:
-                    progressDialog = progressDialogUtil.show(getActivity(),
-                            R.string.tencent_qq,
-                            R.string.authentication_connecting_to_qq);
-                    qqUtils.get().logIn(getActivity(), socialConnectLogInCallback);
-                    break;
-            }
-        }
-        else
-        {
-            progressDialog = progressDialogUtil.show(getActivity(),
-                    R.string.alert_dialog_please_wait,
-                    R.string.authentication_connecting_tradehero_only);
-            detachMiddleCallbackDisconnect();
-            middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                    currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(socialNetwork),
-                    createSocialDisconnectCallback());
-
-            CredentialsDTO mainCredentials = mainCredentialsPreference.getCredentials();
-            if (mainCredentials != null && socialNetwork.getAuthenticationHeader().equals(mainCredentials.getAuthType()))
-            {
-                // TODO remove this dependency
-                signOutSettingViewHolder.effectSignOut();
-            }
-        }
-        return false;
-    }
-
-    private Callback<UserProfileDTO> createSocialDisconnectCallback()
-    {
-        return new SocialLinkingCallback()
-        {
-            @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-            {
-                super.success(userProfileDTO, thResponse);
-                THUser.removeCredential(currentSocialNetworkConnect.getAuthenticationHeader());
-            }
-        };
-    }
-
-    private Callback<UserProfileDTO> createSocialConnectCallback()
-    {
-        return new SocialLinkingCallback();
-    }
-
-    private void updateSocialConnectStatus()
-    {
-        UserProfileDTO updatedUserProfileDTO =
-                userProfileCache.get().get(currentUserId.toUserBaseKey());
-        if (updatedUserProfileDTO != null)
-        {
-            if (facebookSharing != null)
-            {
-                facebookSharing.setChecked(updatedUserProfileDTO.fbLinked);
-            }
-            if (twitterSharing != null)
-            {
-                twitterSharing.setChecked(updatedUserProfileDTO.twLinked);
-            }
-            if (linkedInSharing != null)
-            {
-                linkedInSharing.setChecked(updatedUserProfileDTO.liLinked);
-            }
-            if (weiboSharing != null)
-            {
-                weiboSharing.setChecked(updatedUserProfileDTO.wbLinked);
-            }
-            if (qqSharing != null)
-            {
-                qqSharing.setChecked(updatedUserProfileDTO.qqLinked);
-            }
-            Timber.d("Sharing is updated");
-        }
+        socialConnectSettingViewHolderContainer.changeSharing(socialNetworkEnum, enable);
     }
 
     private void handleRestorePurchaseClicked()
@@ -805,25 +580,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         };
     }
 
-    private class SocialLinkingCallback extends THCallback<UserProfileDTO>
-    {
-        @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-        {
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            // user unlinked current authentication
-            THToast.show(ex);
-        }
-
-        @Override protected void finish()
-        {
-            progressDialog.hide();
-            updateSocialConnectStatus();
-        }
-    }
-
     private class SettingsUserProfileRetrievedCompleteListener
             implements Milestone.OnCompleteListener
     {
@@ -831,7 +587,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         {
             onFinish();
             updateNotificationStatus();
-            updateSocialConnectStatus();
         }
 
         private void onFinish()

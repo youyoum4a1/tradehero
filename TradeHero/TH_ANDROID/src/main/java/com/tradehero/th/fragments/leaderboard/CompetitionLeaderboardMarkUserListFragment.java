@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
+import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -159,8 +160,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         Bundle args = new Bundle();
         WebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
         WebViewFragment.putIsOptionMenuVisible(args, false);
-        this.webViewFragment = getDashboardNavigator().pushFragment(
-                WebViewFragment.class, args);
+        this.webViewFragment = getDashboardNavigator().pushFragment(WebViewFragment.class, args);
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
@@ -179,7 +179,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected CompetitionLeaderboardCurrentUserRankHeaderView getCompetitionUserRankHeaderView()
     {
-        LeaderboardCurrentUserRankHeaderView header = inflateAndGetUserRankHeaderView();
+        View header = inflateAndGetUserRankHeaderView();
         if (header != null && header instanceof CompetitionLeaderboardCurrentUserRankHeaderView)
         {
             return (CompetitionLeaderboardCurrentUserRankHeaderView) header;

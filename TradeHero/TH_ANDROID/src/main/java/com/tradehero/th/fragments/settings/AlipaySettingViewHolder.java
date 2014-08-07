@@ -55,7 +55,11 @@ public class AlipaySettingViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        preferenceFragment.getNavigator().pushFragment(SettingsAlipayFragment.class);
+        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragmentCopy.getNavigator().pushFragment(SettingsAlipayFragment.class);
+        }
     }
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()

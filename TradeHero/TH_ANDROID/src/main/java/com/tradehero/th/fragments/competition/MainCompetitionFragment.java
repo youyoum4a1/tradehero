@@ -454,13 +454,11 @@ public class MainCompetitionFragment extends CompetitionFragment
 
         if (competitionZoneDTO.competitionDTO.leaderboard.isWithinUtcRestricted())
         {
-            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class,
-                    args);
+            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class, args);
         }
         else
         {
-            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class,
-                    args);
+            getDashboardNavigator().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class, args);
         }
     }
 

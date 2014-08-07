@@ -1,9 +1,8 @@
 package com.tradehero.th.models.notification;
 
-import android.content.Context;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.notification.NotificationCache;
@@ -14,23 +13,20 @@ import retrofit.client.Response;
 public class DTOProcessorNotificationRead implements DTOProcessor<Response>
 {
     @NotNull private final NotificationKey key;
-    @NotNull private final Context context;
     @NotNull private final NotificationCache notificationCache;
-    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final UserBaseKey readerId;
     @NotNull private final UserProfileCache userProfileCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorNotificationRead(
             @NotNull NotificationKey key,
-            @NotNull Context context,
             @NotNull NotificationCache notificationCache,
-            @NotNull CurrentUserId currentUserId,
+            @NotNull UserBaseKey readerId,
             @NotNull UserProfileCache userProfileCache)
     {
         this.key = key;
-        this.context = context;
         this.notificationCache = notificationCache;
-        this.currentUserId = currentUserId;
+        this.readerId = readerId;
         this.userProfileCache = userProfileCache;
     }
     //</editor-fold>
@@ -44,12 +40,12 @@ public class DTOProcessorNotificationRead implements DTOProcessor<Response>
             previousUnread = notificationDTO.unread;
             notificationDTO.unread = false;
         }
-        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.get(readerId);
         if (previousUnread && userProfileDTO != null && userProfileDTO.unreadNotificationsCount > 0)
         {
             userProfileDTO.unreadNotificationsCount--;
         }
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        userProfileCache.getOrFetchAsync(readerId, true);
         return value;
     }
 }

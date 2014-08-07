@@ -3,7 +3,9 @@ package com.tradehero.th.fragments.settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -16,6 +18,7 @@ import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -27,8 +30,8 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
     @NotNull private final MainCredentialsPreference mainCredentialsPreference;
     @NotNull private final CurrentUserId currentUserId;
     @NotNull private final SessionServiceWrapper sessionServiceWrapper;
-    private ProgressDialog progressDialog;
-    private MiddleCallback<UserProfileDTO> logoutCallback;
+    @Nullable private ProgressDialog progressDialog;
+    @Nullable private MiddleCallback<UserProfileDTO> logoutCallback;
 
     //<editor-fold desc="Constructors">
     @Inject public SignOutSettingViewHolder(
@@ -57,52 +60,82 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(preferenceFragment.getActivity());
-        alertDialogBuilder
-                .setTitle(R.string.settings_misc_sign_out_are_you_sure)
-                .setCancelable(true)
-                .setNegativeButton(R.string.settings_misc_sign_out_no,
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                dialog.cancel();
-                            }
-                        })
-                .setPositiveButton(R.string.settings_misc_sign_out_yes,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override public void onClick(DialogInterface dialogInterface, int i)
-                            {
-                                effectSignOut();
-                            }
-                        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            Context activityContext = preferenceFragmentCopy.getActivity();
+            if (activityContext != null)
+            {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activityContext);
+                alertDialogBuilder
+                        .setTitle(R.string.settings_misc_sign_out_are_you_sure)
+                        .setCancelable(true)
+                        .setNegativeButton(R.string.settings_misc_sign_out_no,
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog, int id)
+                                    {
+                                        dialog.cancel();
+                                    }
+                                })
+                        .setPositiveButton(R.string.settings_misc_sign_out_yes,
+                                new DialogInterface.OnClickListener()
+                                {
+                                    @Override public void onClick(DialogInterface dialogInterface, int i)
+                                    {
+                                        effectSignOut();
+                                    }
+                                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
+        }
     }
 
     protected void showMainCredentials()
     {
-        DisplayableCredentialsDTO mainCredentials = new DisplayableCredentialsDTO(
-                preferenceFragment.getActivity(),
-                mainCredentialsPreference.getCredentials());
-        clickablePref.setSummary(mainCredentials.getTypeAndId());
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            Context activityContext = preferenceFragmentCopy.getActivity();
+            if (activityContext != null)
+            {
+                DisplayableCredentialsDTO mainCredentials = new DisplayableCredentialsDTO(
+                        activityContext,
+                        mainCredentialsPreference.getCredentials());
+                clickablePref.setSummary(mainCredentials.getTypeAndId());
+            }
+        }
     }
 
     protected void effectSignOut()
     {
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        Activity activityContext = null;
+        if (preferenceFragmentCopy != null)
+        {
+            activityContext = preferenceFragmentCopy.getActivity();
+        }
         if (progressDialog == null)
         {
-            progressDialog = progressDialogUtil.show(preferenceFragment.getActivity(),
-                    R.string.settings_misc_sign_out_alert_title,
-                    R.string.settings_misc_sign_out_alert_message);
+            if (activityContext != null)
+            {
+                progressDialog = progressDialogUtil.show(
+                        activityContext,
+                        R.string.settings_misc_sign_out_alert_title,
+                        R.string.settings_misc_sign_out_alert_message);
+            }
         }
         else
         {
             progressDialog.show();
         }
-        progressDialog.setCancelable(true);
-        progressDialog.setCanceledOnTouchOutside(true);
+        if (progressDialog != null)
+        {
+            progressDialog.setCancelable(true);
+            progressDialog.setCanceledOnTouchOutside(true);
+        }
 
         Timber.d("Before signout current user base key %s", currentUserId.toUserBaseKey());
         detachLogoutCallback();
@@ -111,9 +144,10 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
 
     protected void detachLogoutCallback()
     {
-        if (logoutCallback != null)
+        MiddleCallback<UserProfileDTO> logoutCallbackCopy = logoutCallback;
+        if (logoutCallbackCopy != null)
         {
-            logoutCallback.setPrimaryCallback(null);
+            logoutCallbackCopy.setPrimaryCallback(null);
         }
         logoutCallback = null;
     }
@@ -138,22 +172,40 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         public void success(UserProfileDTO o, Response response)
         {
             THUser.clearCurrentUser();
-            progressDialog.dismiss();
+            dismissProgressDialog();
             // TODO move these lines into MiddleCallbackLogout?
             ActivityHelper.launchAuthentication(activity);
         }
 
         @Override public void failure(RetrofitError error)
         {
-            progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
-            progressDialog.setMessage("");
-            preferenceFragment.getView().postDelayed(new Runnable()
+            ProgressDialog progressDialogCopy = progressDialog;
+            if (progressDialogCopy != null)
             {
-                @Override public void run()
+                progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
+                progressDialog.setMessage("");
+
+            }
+            PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+            if (preferenceFragmentCopy != null)
+            {
+                preferenceFragmentCopy.getView().postDelayed(new Runnable()
                 {
-                    progressDialog.dismiss();
-                }
-            }, 3000);
+                    @Override public void run()
+                    {
+                        dismissProgressDialog();
+                    }
+                }, 3000);
+            }
+        }
+    }
+
+    private void dismissProgressDialog()
+    {
+        ProgressDialog progressDialogCopy = progressDialog;
+        if (progressDialogCopy != null)
+        {
+            progressDialogCopy.dismiss();
         }
     }
 }
