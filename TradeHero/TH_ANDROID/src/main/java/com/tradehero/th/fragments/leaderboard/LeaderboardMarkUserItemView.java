@@ -681,6 +681,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 leaderboardUserCache.get().put(leaderboardUserId, ownLeaderboardUserDTO);
                 display(ownLeaderboardUserDTO);
             }
+            else
+            {
+                // user is not ranked, disable expandable view
+                setOnClickListener(null);
+                lbmuDisplayName.setText(R.string.leaderboard_not_ranked);
+                lbmuPosition.setText("-");
+            }
         }
 
         @Override public void failure(RetrofitError retrofitError)

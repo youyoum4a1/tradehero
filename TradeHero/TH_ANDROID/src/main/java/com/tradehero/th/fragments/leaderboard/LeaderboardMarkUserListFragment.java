@@ -343,7 +343,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
         }
-        ownRankingView.linkWith(getApplicablePortfolioId());
+        if (ownRankingView != null)
+        {
+            ownRankingView.linkWith(getApplicablePortfolioId());
+            ownRankingView.linkWith(currentUserProfileDTO);
+        }
     }
 
     public void initialLoad()
