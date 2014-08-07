@@ -192,9 +192,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             {
                 SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
                 Bundle args = new Bundle();
-                args.putBundle(
-                        BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                        securityId.getArgs());
+                BuySellFragment.putSecurityId(args, securityId);
 
                 getNavigator().pushFragment(BuySellFragment.class, args);
             }

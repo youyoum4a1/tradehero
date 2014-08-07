@@ -11,6 +11,8 @@ import java.util.List;
 
 abstract public class SecurityTradeIntent extends TrendingIntent
 {
+    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityTradeIntent.class.getName() + ".securityId";
+
     //<editor-fold desc="Constructors">
     protected SecurityTradeIntent(SecurityId securityId)
     {
@@ -67,6 +69,6 @@ abstract public class SecurityTradeIntent extends TrendingIntent
     @Override public void populate(Bundle bundle)
     {
         super.populate(bundle);
-        bundle.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
+        bundle.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
     }
 }

@@ -37,7 +37,7 @@ import timber.log.Timber;
 
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
-    public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
+    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
     public final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
     public final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
@@ -82,6 +82,16 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
         args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    }
+
+    @Nullable public static SecurityId getSecurityId(@NotNull Bundle args)
+    {
+        Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
+        if (securityIdBundle == null)
+        {
+            return null;
+        }
+        return new SecurityId(securityIdBundle);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -138,13 +148,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onResume()
     {
         super.onResume();
-
-        Bundle args = getArguments();
-        Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
-
-        if (securityIdBundle != null)
+        @Nullable SecurityId securityIdFromArgs = getSecurityId(getArguments());
+        if (securityIdFromArgs != null)
         {
-            linkWith(new SecurityId(securityIdBundle), true);
+            linkWith(securityIdFromArgs, true);
         }
         else
         {

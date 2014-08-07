@@ -400,7 +400,7 @@ public class SecuritySearchFragment extends BasePurchaseManagerFragment
     protected void pushTradeFragmentIn(SecurityId securityId)
     {
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        BuySellFragment.putSecurityId(args, securityId);
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {

@@ -64,7 +64,7 @@ public class BuySellFragmentTest
     {
         SecurityId googleId = new SecurityId("NYSE", "GOOG");
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, googleId.getArgs());
+        BuySellFragment.putSecurityId(args, googleId);
         return args;
     }
 

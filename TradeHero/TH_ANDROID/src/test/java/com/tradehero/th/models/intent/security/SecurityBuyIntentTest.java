@@ -97,8 +97,8 @@ public class SecurityBuyIntentTest
         SecurityBuyIntent intent = new SecurityBuyIntent(securityId);
         Bundle bundle = intent.getBundle();
         assertEquals(2, bundle.size());
-        assertEquals(2, bundle.getBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE).size());
-        assertTrue(securityId.equals(new SecurityId(bundle.getBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE))));
+        assertEquals(2, bundle.getBundle("com.tradehero.th.models.intent.security.SecurityTradeIntent.securityId").size());
+        assertTrue(securityId.equals(new SecurityId(bundle.getBundle("com.tradehero.th.models.intent.security.SecurityTradeIntent.securityId"))));
         assertTrue(bundle.getBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY));
     }
 
@@ -111,8 +111,8 @@ public class SecurityBuyIntentTest
         intent.populate(bundle);
 
         assertEquals(3, bundle.size());
-        assertEquals(2, bundle.getBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE).size());
-        assertTrue(securityId.equals(new SecurityId(bundle.getBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE))));
+        assertEquals(2, bundle.getBundle("com.tradehero.th.models.intent.security.SecurityTradeIntent.securityId").size());
+        assertTrue(securityId.equals(new SecurityId(bundle.getBundle("com.tradehero.th.models.intent.security.SecurityTradeIntent.securityId"))));
         assertTrue(bundle.getBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY));
     }
 }

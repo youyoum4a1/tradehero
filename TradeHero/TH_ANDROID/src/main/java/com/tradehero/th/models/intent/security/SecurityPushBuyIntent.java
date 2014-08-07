@@ -14,6 +14,8 @@ import java.util.List;
 
 public class SecurityPushBuyIntent extends THIntent
 {
+    private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityPushBuyIntent.class.getName() + ".securityId";
+
     public SecurityPushBuyIntent(SecurityIntegerId securityIntegerId, SecurityId securityId)
     {
         super();
@@ -96,6 +98,6 @@ public class SecurityPushBuyIntent extends THIntent
     @Override public void populate(Bundle bundle)
     {
         super.populate(bundle);
-        bundle.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
+        bundle.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
     }
 }
