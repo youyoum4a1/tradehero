@@ -1,7 +1,6 @@
 package com.tradehero.th.models.intent;
 
 import com.tradehero.th.models.intent.competition.ProviderIntentFactory;
-import com.tradehero.th.models.intent.portfolio.PortfolioIntentFactory;
 import com.tradehero.th.models.intent.security.SecurityIntentFactory;
 import dagger.Module;
 import dagger.Provides;
@@ -27,11 +26,6 @@ public class IntentDaggerModule
     {
     }
 
-    @Provides(type = Provides.Type.SET)
-    THIntentFactory provideTrendingIntentFactory(PortfolioIntentFactory factory)
-    {
-        return factory;
-    }
     @Provides(type = Provides.Type.SET)
     THIntentFactory provideTrendingIntentFactory(ProviderIntentFactory factory)
     {
