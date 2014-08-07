@@ -4,7 +4,6 @@ import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
-import com.tradehero.th.api.users.UserBaseKey;
 import org.jetbrains.annotations.NotNull;
 
 public class BaseProviderCompactDTOList<ProviderDTOType extends ProviderCompactDTO>
@@ -18,13 +17,13 @@ public class BaseProviderCompactDTOList<ProviderDTOType extends ProviderCompactD
     }
     //</editor-fold>
 
-    @NotNull public OwnedPortfolioIdList getAssociatedOwnedPortfolioIds(@NotNull UserBaseKey forUser)
+    @NotNull public OwnedPortfolioIdList getAssociatedOwnedPortfolioIds()
     {
         OwnedPortfolioIdList ownedPortfolioIds = new OwnedPortfolioIdList();
         OwnedPortfolioId providerPortfolioId;
         for (ProviderCompactDTO providerDTO : this)
         {
-            providerPortfolioId = providerDTO.getAssociatedOwnedPortfolioId(forUser);
+            providerPortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
             if (providerPortfolioId != null)
             {
                 ownedPortfolioIds.add(providerPortfolioId);

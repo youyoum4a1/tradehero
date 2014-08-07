@@ -5,32 +5,29 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
 
-public class DTOProcessorSecurityPosition implements DTOProcessor<SecurityPositionDetailDTO>
+public class DTOProcessorSecurityPositionUpdated extends DTOProcessorSecurityPositionReceived
 {
-    @NotNull private final SecurityId securityId;
-    @NotNull private final CurrentUserId currentUserId;
     @NotNull private final UserProfileCache userProfileCache;
     @NotNull private final SecurityPositionDetailCache securityPositionDetailCache;
 
-    public DTOProcessorSecurityPosition(
+    public DTOProcessorSecurityPositionUpdated(
             @NotNull SecurityPositionDetailCache securityPositionDetailCache,
             @NotNull UserProfileCache userProfileCache,
             @NotNull CurrentUserId currentUserId,
             @NotNull SecurityId securityId)
     {
-        this.securityId = securityId;
-        this.currentUserId = currentUserId;
+        super(securityId, currentUserId);
         this.userProfileCache = userProfileCache;
         this.securityPositionDetailCache = securityPositionDetailCache;
     }
 
-    @Override public SecurityPositionDetailDTO process(SecurityPositionDetailDTO value)
+    @Override public SecurityPositionDetailDTO process(@NotNull SecurityPositionDetailDTO value)
     {
+        value = super.process(value);
         securityPositionDetailCache.put(securityId, value);
 
         if (value.portfolio != null)
