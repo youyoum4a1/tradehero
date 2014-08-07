@@ -156,7 +156,6 @@ import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoa
 import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
@@ -331,7 +330,6 @@ import javax.inject.Singleton;
                         WatchlistItemView.class,
                         WatchlistPortfolioHeaderView.class,
 
-                        TrendingIntentFactory.class,
                         ProviderPageIntent.class,
 
                         AlertManagerFragment.class,
