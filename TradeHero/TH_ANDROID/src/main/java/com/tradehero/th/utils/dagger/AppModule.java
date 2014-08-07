@@ -81,6 +81,7 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.ChartFragment;
+import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
@@ -349,6 +350,7 @@ import javax.inject.Singleton;
                         ShareDialogLayout.class,
                         ShareDestinationSetAdapter.class,
                         NewsDialogLayout.class,
+                        SecurityActionListLinear.class,
                         NewsHeadlineViewLinear.class,
                         NewsViewLinear.class,
                         AbstractDiscussionCompactItemViewLinear.class,
