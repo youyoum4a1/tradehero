@@ -17,7 +17,9 @@
 }
 
 -keepattributes EnclosingMethod
-
+-keepclassmembers class com.tradehero.th.** {
+  *;
+}
 # keep setters in Views so that animations can still work.
 # see http://proguard.sourceforge.net/manual/examples.html#beans
 -keepclassmembers public class * extends android.view.View {
@@ -49,7 +51,7 @@
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
 
--keepattributes Exceptions,SourceFile,LineNumberTable,Deprecated
+-keepattributes Exceptions,SourceFile,LineNumberTable,Deprecated,InnerClasses
 -keepattributes Signature
 
 
