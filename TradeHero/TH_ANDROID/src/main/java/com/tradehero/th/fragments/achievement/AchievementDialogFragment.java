@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AchievementDialogFragment extends BaseDialogFragment
 {
-    private static final String BUNDLE_KEY_USER_ACHIEVEMENT_DTO_KEY = AchievementDialogFragment.class.getName() + ".UserAchievementDTOKey";
+    private static final String BUNDLE_KEY_USER_ACHIEVEMENT_ID = AchievementDialogFragment.class.getName() + ".UserAchievementDTOKey";
 
     @InjectView(R.id.achievement_content_container) ViewGroup contentContainer;
 
@@ -96,7 +96,6 @@ public class AchievementDialogFragment extends BaseDialogFragment
     {
         super.onViewCreated(view, savedInstanceState);
         init();
-        userLevelProgressBar.setUserLevelProgressBarListener(createUserLevelProgressBarListener());
     }
 
     private void init()
@@ -185,6 +184,7 @@ public class AchievementDialogFragment extends BaseDialogFragment
     {
         userLevelProgressBar.startsWith(userAchievementDTO.getBaseExp());
         userLevelProgressBar.setStartDelayOnLevelUp(mMsLevelUpDelay);
+        userLevelProgressBar.setUserLevelProgressBarListener(createUserLevelProgressBarListener());
     }
 
     @Override public void onResume()
@@ -255,54 +255,59 @@ public class AchievementDialogFragment extends BaseDialogFragment
             levelUp.setVisibility(View.VISIBLE);
 
             Animation a = AnimationUtils.loadAnimation(getActivity(), R.anim.achievement_level_up);
-            a.setAnimationListener(
-                    new Animation.AnimationListener()
-                    {
-                        @Override public void onAnimationStart(Animation animation)
-                        {
+            a.setAnimationListener(createLevelUpAnimationListener());
 
-                        }
+            ValueAnimator moveUp = ObjectAnimator.ofFloat(xpDollarEarnedContainer, "y", mXpEarnedOriginalY - xpEarned.getHeight());
+            moveUp.setDuration(getResources().getInteger(R.integer.achievement_level_up_start_duration));
+            moveUp.setInterpolator(a.getInterpolator());
 
-                        @Override public void onAnimationEnd(Animation animation)
-                        {
-                            if (levelUp != null)
-                            {
-                                levelUp.setVisibility(View.GONE);
-                            }
-                        }
-
-                        @Override public void onAnimationRepeat(Animation animation)
-                        {
-
-                        }
-                    }
-            );
-
-            ValueAnimator vA = ObjectAnimator.ofFloat(xpDollarEarnedContainer, "y", mXpEarnedOriginalY - xpEarned.getHeight());
-            vA.setDuration(getResources().getInteger(R.integer.achievement_level_up_start_duration));
-            vA.setInterpolator(a.getInterpolator());
-
-
-            ValueAnimator vB = ObjectAnimator.ofFloat(xpDollarEarnedContainer, "y", mXpEarnedOriginalY);
-            vB.setDuration(getResources().getInteger(R.integer.achievement_level_up_end_duration));
-            vB.setInterpolator(a.getInterpolator());
+            ValueAnimator moveDown = ObjectAnimator.ofFloat(xpDollarEarnedContainer, "y", mXpEarnedOriginalY);
+            moveDown.setDuration(getResources().getInteger(R.integer.achievement_level_up_end_duration));
+            moveDown.setInterpolator(a.getInterpolator());
 
             if(mMsLevelUpDelay >= 0)
             {
-                vB.setStartDelay(mMsLevelUpDelay);
+                moveDown.setStartDelay(mMsLevelUpDelay);
             }
 
             AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.playSequentially(vA, vB);
+            animatorSet.playSequentially(moveUp, moveDown);
             animatorSet.start();
 
             levelUp.startAnimation(a);
         }
     }
 
+    private LevelUpAnimationListener createLevelUpAnimationListener()
+    {
+        return new LevelUpAnimationListener();
+    }
+
     private UserLevelProgressBar.UserLevelProgressBarListener createUserLevelProgressBarListener()
     {
         return new AchievementUserLevelProgressBarListener();
+    }
+
+    private class LevelUpAnimationListener implements Animation.AnimationListener
+    {
+
+        @Override public void onAnimationStart(Animation animation)
+        {
+
+        }
+
+        @Override public void onAnimationEnd(Animation animation)
+        {
+            if (levelUp != null)
+            {
+                levelUp.setVisibility(View.GONE);
+            }
+        }
+
+        @Override public void onAnimationRepeat(Animation animation)
+        {
+
+        }
     }
 
     protected class AchievementUserLevelProgressBarListener implements UserLevelProgressBar.UserLevelProgressBarListener
@@ -330,7 +335,7 @@ public class AchievementDialogFragment extends BaseDialogFragment
             }
 
             Bundle args = new Bundle();
-            args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_DTO_KEY, userAchievementId.getArgs());
+            args.putBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID, userAchievementId.getArgs());
             AchievementDialogFragment f = new AchievementDialogFragment();
             f.setArguments(args);
             return f;

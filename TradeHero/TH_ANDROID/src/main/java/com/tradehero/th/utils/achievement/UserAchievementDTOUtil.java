@@ -52,7 +52,7 @@ public class UserAchievementDTOUtil
         userAchievementCache.invalidate(userAchievementId);
     }
 
-    private UserAchievementDTO dummy()
+    public static UserAchievementDTO dummy()
     {
         UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
         AchievementsDTO achievementsDTO = new AchievementsDTO();
