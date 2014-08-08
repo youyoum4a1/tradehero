@@ -643,7 +643,7 @@ public class PositionListFragment
             else
             {
                 Bundle args = new Bundle();
-                args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+                BuySellFragment.putSecurityId(args, securityId);
                 if (currentUserId.toUserBaseKey().equals(clickedPositionDTO.getUserBaseKey()))
                 {
                     // We only add if this the current user portfolio

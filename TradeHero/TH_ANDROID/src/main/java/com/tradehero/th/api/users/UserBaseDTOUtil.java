@@ -5,7 +5,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +31,17 @@ public class UserBaseDTOUtil
                 return getFirstLastName(context, userBaseDTO);
             }
 
+            return userBaseDTO.displayName;
+        }
+
+        return context.getString(R.string.na);
+    }
+
+    //return displayName in Follow and Hero ListItemView as https://www.pivotaltracker.com/story/show/76497256
+    @NotNull public String getShortDisplayName(@NotNull Context context, @Nullable UserBaseDTO userBaseDTO)
+    {
+        if (userBaseDTO != null)
+        {
             return userBaseDTO.displayName;
         }
 

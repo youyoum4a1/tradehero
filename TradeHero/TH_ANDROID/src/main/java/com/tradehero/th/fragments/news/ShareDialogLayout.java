@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,10 +18,10 @@ import com.tradehero.th.api.share.SocialShareFormDTOFactory;
 import com.tradehero.th.fragments.share.ShareDestinationSetAdapter;
 import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationFactory;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ShareDialogLayout extends LinearLayout
 {
@@ -30,11 +29,10 @@ public class ShareDialogLayout extends LinearLayout
     @InjectView(R.id.news_action_share_cancel) protected View cancelView;
     @InjectView(R.id.news_action_list_sharing_items) protected ListView listViewSharingOptions;
 
-    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject ShareDestinationFactory shareDestinationFactory;
     @Inject SocialShareFormDTOFactory socialShareFormDTOFactory;
 
-    protected OnShareMenuClickedListener menuClickedListener;
+    @Nullable protected OnShareMenuClickedListener menuClickedListener;
     protected AbstractDiscussionCompactDTO discussionToShare;
 
     //<editor-fold desc="Constructors">
@@ -77,44 +75,22 @@ public class ShareDialogLayout extends LinearLayout
 
     protected void fillData()
     {
-        listViewSharingOptions.setAdapter(createAdapterForShare());
+        listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(getContext(), shareDestinationFactory.getAllShareDestinations()));
         listViewSharingOptions.setDividerHeight(1);
     }
 
-    protected BaseAdapter createAdapterForShare()
-    {
-        return new ShareDestinationSetAdapter(getContext(), shareDestinationFactory.getAllShareDestinations());
-    }
-
-    public void setDiscussionToShare(AbstractDiscussionCompactDTO discussionToShare)
+    public void setDiscussionToShare(@NotNull AbstractDiscussionCompactDTO discussionToShare)
     {
         this.discussionToShare = discussionToShare;
     }
 
-    public void setMenuClickedListener(OnShareMenuClickedListener menuClickedListener)
+    public void setMenuClickedListener(@Nullable OnShareMenuClickedListener menuClickedListener)
     {
         this.menuClickedListener = menuClickedListener;
     }
 
     @OnClick(R.id.news_action_share_cancel)
     protected void onCancelClicked(View view)
-    {
-        notifyCancelClicked();
-    }
-
-    @OnItemClick(R.id.news_action_list_sharing_items)
-    protected void onShareOptionsItemClicked(AdapterView<?> parent, View view, int position, long id)
-    {
-        handleShareAction((ShareDestination) parent.getItemAtPosition(position));
-    }
-
-    protected void handleShareAction(ShareDestination shareDestination)
-    {
-        notifyShareClicked(socialShareFormDTOFactory.createForm(shareDestination,
-                discussionToShare));
-    }
-
-    protected void notifyCancelClicked()
     {
         OnShareMenuClickedListener listenerCopy = menuClickedListener;
         if (listenerCopy != null)
@@ -123,12 +99,16 @@ public class ShareDialogLayout extends LinearLayout
         }
     }
 
-    protected void notifyShareClicked(SocialShareFormDTO shareFormDTO)
+    @OnItemClick(R.id.news_action_list_sharing_items)
+    protected void onShareOptionsItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         OnShareMenuClickedListener listenerCopy = menuClickedListener;
         if (listenerCopy != null)
         {
-            listenerCopy.onShareRequestedClicked(shareFormDTO);
+            listenerCopy.onShareRequestedClicked(
+                    socialShareFormDTOFactory.createForm(
+                            (ShareDestination) parent.getItemAtPosition(position),
+                            discussionToShare));
         }
     }
 

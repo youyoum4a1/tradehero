@@ -524,7 +524,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private void openSecurityProfile()
     {
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        BuySellFragment.putSecurityId(args, securityId);
         getNavigator().pushFragment(BuySellFragment.class, args);
     }
 

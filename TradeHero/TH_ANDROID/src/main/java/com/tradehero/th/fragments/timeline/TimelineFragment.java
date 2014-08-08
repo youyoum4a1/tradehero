@@ -60,10 +60,10 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -875,7 +875,23 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 userProfileCache.get().get(currentUserIdLazy.get().toUserBaseKey());
         if (userProfileDTO != null)
         {
-            return userProfileDTO.getFollowType(shownUserBaseKey);
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null)
+            {
+                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
+                if (purchaserKey != null)
+                {
+                    UserProfileDTO purchaserProfile = userProfileCache.get().get(purchaserKey);
+                    if (purchaserProfile != null)
+                    {
+                        return purchaserProfile.getFollowType(shownUserBaseKey);
+                    }
+                }
+            }
+            else
+            {
+                return userProfileDTO.getFollowType(shownUserBaseKey);
+            }
         }
         return 0;
     }

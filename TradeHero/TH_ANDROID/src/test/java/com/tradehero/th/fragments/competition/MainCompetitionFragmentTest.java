@@ -55,7 +55,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
         dashboardNavigator = activity.getDashboardNavigator();
 
-        providerId = new ProviderId(23);
+        providerId = new ProviderId(3423);
         // creating mock object for providerDTO
         ProviderDTO mockProviderDTO = new ProviderDTO();
         mockProviderDTO.id = providerId.key;
@@ -82,7 +82,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
     {
         Bundle args = new Bundle();
 
-        ProviderId providerId = new ProviderId(23);
+        ProviderId providerId = new ProviderId(3423);
         MainCompetitionFragment.putProviderId(args, providerId);
 
         MainCompetitionFragment mainCompetition = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);

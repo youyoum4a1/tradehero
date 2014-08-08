@@ -453,7 +453,7 @@ public class TrendingFragment extends SecurityListFragment
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
 
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
 

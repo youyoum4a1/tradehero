@@ -83,6 +83,7 @@ import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.security.ChartFragment;
+import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
@@ -139,9 +140,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.SellDialogFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
-import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -159,7 +158,6 @@ import com.tradehero.th.loaders.security.macquarie.MacquarieSecurityListPagedLoa
 import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.models.intent.trending.TrendingIntentFactory;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
@@ -262,8 +260,6 @@ import javax.inject.Singleton;
 
                         TradeListFragment.class,
                         TradeListItemView.class,
-                        TradeListOverlayHeaderView.class,
-                        TradeListHeaderView.class,
 
                         StoreScreenFragment.class,
                         HeroManagerFragment.class,
@@ -336,7 +332,6 @@ import javax.inject.Singleton;
                         WatchlistItemView.class,
                         WatchlistPortfolioHeaderView.class,
 
-                        TrendingIntentFactory.class,
                         ProviderPageIntent.class,
 
                         AlertManagerFragment.class,
@@ -351,6 +346,7 @@ import javax.inject.Singleton;
                         ShareDialogLayout.class,
                         ShareDestinationSetAdapter.class,
                         NewsDialogLayout.class,
+                        SecurityActionListLinear.class,
                         NewsHeadlineViewLinear.class,
                         NewsViewLinear.class,
                         AbstractDiscussionCompactItemViewLinear.class,

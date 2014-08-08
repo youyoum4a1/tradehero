@@ -23,10 +23,10 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -192,7 +192,7 @@ public class HeroListItemView extends RelativeLayout
 
     public void displayTitle()
     {
-        title.setText(userBaseDTOUtil.getLongDisplayName(getContext(), heroDTO));
+        title.setText(userBaseDTOUtil.getShortDisplayName(getContext(), heroDTO));
     }
 
     public void displayDateInfo()
