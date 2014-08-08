@@ -1,304 +1,56 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.ExpandableListReporter;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.position.PositionDTOList;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.fragments.position.view.PositionView;
-import com.tradehero.th.fragments.position.view.PositionLockedView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class ExpandablePositionItemAdapter extends PositionItemAdapter
         implements ExpandableListReporter
 {
-    protected List<PositionItemType> itemTypes = new ArrayList<>();
-    protected List<Object> items = new ArrayList<>();
-
-    private Map<PositionItemType, Integer> positionItemTypeToLayoutId;
-
     private WeakReference<PositionListener<PositionDTO>> cellListener;
 
     //<editor-fold desc="Constructors">
     public ExpandablePositionItemAdapter(
-            Context context,
-            Map<PositionItemType, Integer> positionItemTypeToLayoutId)
+            @NotNull Context context,
+            @NotNull Map<Integer, Integer> positionItemTypeToLayoutId)
     {
-        super(context, 0);
-        this.positionItemTypeToLayoutId = positionItemTypeToLayoutId;
+        super(context, positionItemTypeToLayoutId);
     }
     //</editor-fold>
 
-    @Override public boolean hasStableIds()
-    {
-        return true;
-    }
-
-    public void setItems(@Nullable List<PositionDTO> dtos)
-    {
-        List<PositionItemType> newItemTypes = new ArrayList<>();
-        List<Object> newItems = new ArrayList<>();
-
-        if (dtos == null || dtos.size() == 0)
-        {
-            newItemTypes.add(PositionItemType.Header);
-            newItems.add(null);
-
-            newItemTypes.add(PositionItemType.Placeholder);
-            newItems.add(null);
-        }
-        else
-        {
-            PositionDTOList<PositionDTO> lockedPositions = new PositionDTOList<>();
-            PositionDTOList<PositionDTO> openPositions = new PositionDTOList<>();
-            PositionDTOList<PositionDTO> closedPositions = new PositionDTOList<>();
-
-            // Split in open / closed
-            for (@NotNull PositionDTO positionDTO : dtos)
-            {
-                if (positionDTO.isLocked())
-                {
-                    lockedPositions.add(positionDTO);
-                }
-                else if (positionDTO.isClosed())
-                {
-                    closedPositions.add(positionDTO);
-                }
-                else
-                {
-                    openPositions.add(positionDTO);
-                }
-            }
-
-            // Dress list
-
-            // Open area
-            if (lockedPositions.size() > 0)
-            {
-                newItemTypes.add(PositionItemType.Header);
-                PositionDTO positionDTO = lockedPositions.get(0);
-                newItems.add(new HeaderDTO(
-                        PositionItemType.Locked,
-                        positionDTO.aggregateCount,
-                        positionDTO.earliestTradeUtc,
-                        positionDTO.latestTradeUtc));
-
-                newItemTypes.add(PositionItemType.Locked);
-                newItems.add(positionDTO);
-            }
-            else if (openPositions.size() > 0)
-            {
-                newItemTypes.add(PositionItemType.Header);
-                newItems.add(new HeaderDTO(
-                        PositionItemType.Open,
-                        openPositions.size(),
-                        openPositions.getEarliestTradeUtc(),
-                        openPositions.getLatestTradeUtc()
-                        ));
-
-                for (PositionDTO openPosition : openPositions)
-                {
-                    if (openPosition instanceof PositionInPeriodDTO)
-                    {
-                        newItemTypes.add(PositionItemType.OpenInPeriod);
-                    }
-                    else
-                    {
-                        newItemTypes.add(PositionItemType.Open);
-                    }
-                    newItems.add(createExpandableItem(openPosition));
-                }
-            }
-            else
-            {
-                newItemTypes.add(PositionItemType.Header);
-                newItems.add(new HeaderDTO(PositionItemType.Placeholder, null));
-
-                newItemTypes.add(PositionItemType.Placeholder);
-                newItems.add(null);
-            }
-
-            // Closed area
-            if (closedPositions.size() > 0)
-            {
-                newItemTypes.add(PositionItemType.Header);
-                newItems.add(new HeaderDTO(
-                        PositionItemType.Closed,
-                        closedPositions.size(),
-                        closedPositions.getEarliestTradeUtc(),
-                        closedPositions.getLatestTradeUtc()
-                        ));
-
-                for (PositionDTO closedPosition : closedPositions)
-                {
-                    if (closedPosition instanceof PositionInPeriodDTO)
-                    {
-                        newItemTypes.add(PositionItemType.ClosedInPeriod);
-                    }
-                    else
-                    {
-                        newItemTypes.add(PositionItemType.Closed);
-                    }
-                    newItems.add(createExpandableItem(closedPosition));
-                }
-            }
-        }
-
-        this.itemTypes = newItemTypes;
-        this.items = newItems;
-        notifyDataSetChanged();
-    }
-
-    protected ExpandableListItem<PositionDTO> createExpandableItem(PositionDTO dto)
+    protected ExpandableListItem<PositionDTO> createExpandableItem(@NotNull PositionDTO dto)
     {
         return new ExpandableListItem<>(dto);
     }
 
-    @Override public int getCount()
-    {
-        return itemTypes.size();
-    }
-
-    public PositionItemType getItemPositionType(int position)
-    {
-        return itemTypes.get(position);
-    }
-
     @Override public int getItemViewType(int position)
     {
-        return getItemPositionType(position).value;
-    }
-
-    protected int getLayoutForPosition(int position)
-    {
-        return positionItemTypeToLayoutId.get(itemTypes.get(position));
-    }
-
-    @Override public Object getItem(int position)
-    {
-        return items.get(position);
-    }
-
-    @Override public long getItemId(int position)
-    {
         Object item = getItem(position);
-        return item == null ? 0 : item.hashCode();
+        if (item instanceof ExpandableListItem)
+        {
+            return super.getItemViewType(((PositionDTO) ((ExpandableListItem) item).getModel()));
+        }
+        return super.getItemViewType(position);
     }
 
-    public String getHeaderText(HeaderDTO headerDTO)
+    @Override protected void add(@NotNull List<Object> items, @NotNull PositionDTO item)
     {
-        if (headerDTO == null ||
-                headerDTO.headerFor == PositionItemType.Open ||
-                headerDTO.headerFor == PositionItemType.Locked ||
-                headerDTO.headerFor == PositionItemType.Placeholder)
-        {
-            return getOpenHeaderText(headerDTO);
-        }
-        else if (headerDTO.headerFor == PositionItemType.Closed)
-        {
-            return getClosedHeaderText(headerDTO);
-        }
-        throw new IllegalArgumentException("Unhandled " + headerDTO.toString() );
+        items.add(createExpandableItem(item));
     }
 
-    public String getOpenHeaderText(HeaderDTO headerDTO)
+    @Override protected void preparePositionView(PositionView cell, Object item, int position)
     {
-        if (headerDTO == null || headerDTO.count == null)
-        {
-            return getContext().getString(R.string.position_list_header_open_unsure);
-        }
-        return getContext().getString(R.string.position_list_header_open, (int) headerDTO.count);
-    }
-
-    public String getClosedHeaderText(HeaderDTO headerDTO)
-    {
-        if (headerDTO == null || headerDTO.count == null)
-        {
-            return getContext().getString(R.string.position_list_header_closed_unsure);
-        }
-        return getContext().getString(R.string.position_list_header_closed, (int) headerDTO.count);
-    }
-
-    @Override public int getViewTypeCount()
-    {
-        return PositionItemType.values().length;
-    }
-
-    //@SuppressWarnings("unchecked")
-    @Override public View getView(int position, View convertView, ViewGroup parent)
-    {
-        PositionItemType itemPositionType = getItemPositionType(position);
-        int layoutToInflate = getLayoutForPosition(position);
-
-        if (convertView == null)
-        {
-            try
-            {
-                convertView = LayoutInflater.from(getContext()).inflate(layoutToInflate, parent, false);
-            }
-            catch (Throwable t)
-            {
-                do
-                {
-                    Timber.e(t, "error");
-                    t = t.getCause();
-                }
-                while (t != null);
-            }
-        }
-
-        Object item = getItem(position);
-
-        if (itemPositionType == PositionItemType.Header && convertView != null)
-        {
-            prepareHeaderView((PositionSectionHeaderItemView) convertView, (HeaderDTO) item);
-        }
-        else if (itemPositionType == PositionItemType.Locked && convertView != null)
-        {
-            PositionLockedView cell = (PositionLockedView) convertView;
-            cell.linkWith((PositionDTO) item, false);
-            cell.display();
-        }
-        else if (PositionItemType.takesPositionDTO(itemPositionType) && convertView != null)
-        {
-            ExpandableListItem<PositionDTO> expandableWrapper = (ExpandableListItem<PositionDTO>) item;
-            PositionView cell = (PositionView) convertView;
-            cell.linkWith(expandableWrapper, false);
-            cell.display();
-            cell.setListener(new AbstractPositionItemAdapterPositionListener());
-        }
-
-        return convertView;
-    }
-
-    protected void prepareHeaderView(PositionSectionHeaderItemView convertView, HeaderDTO info)
-    {
-        convertView.setHeaderTextContent(getHeaderText(info));
-        convertView.setTimeBaseTextContent(
-                info == null ? null : info.dateStart,
-                info == null ? null : info.dateEnd);
-    }
-
-    @Override public boolean areAllItemsEnabled()
-    {
-        return false;
-    }
-
-    @Override public boolean isEnabled(int position)
-    {
-        return getItemViewType(position) != PositionItemType.Header.value;
+        //noinspection unchecked
+        cell.linkWith((ExpandableListItem<PositionDTO>) item, false);
+        cell.display();
+        cell.setListener(new AbstractPositionItemAdapterPositionListener());
     }
 
     /**
@@ -367,40 +119,6 @@ public class ExpandablePositionItemAdapter extends PositionItemAdapter
         }
     }
     //</editor-fold>
-
-    public static class HeaderDTO
-    {
-        public final PositionItemType headerFor;
-        public final Integer count;
-        public final Date dateStart;
-        public final Date dateEnd;
-
-        public HeaderDTO(PositionItemType headerFor, Integer count)
-        {
-            this.headerFor = headerFor;
-            this.count = count;
-            this.dateStart = null;
-            this.dateEnd = null;
-        }
-
-        public HeaderDTO(PositionItemType headerFor, Integer count, Date dateStart, Date dateEnd)
-        {
-            this.headerFor = headerFor;
-            this.count = count;
-            this.dateStart = dateStart;
-            this.dateEnd = dateEnd;
-        }
-
-        @Override public String toString()
-        {
-            return "HeaderDTO{" +
-                    "headerFor=" + headerFor +
-                    ", count=" + count +
-                    ", dateStart=" + dateStart +
-                    ", dateEnd=" + dateEnd +
-                    '}';
-        }
-    }
 
     protected class AbstractPositionItemAdapterPositionListener
             implements PositionListener<PositionDTO>

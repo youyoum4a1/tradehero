@@ -48,10 +48,10 @@ import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
@@ -321,16 +321,16 @@ public class PositionListFragment
         positionItemAdapter.setCellListener(this);
     }
 
-    @NotNull protected Map<PositionItemType, Integer> getLayoutResIds()
+    @NotNull protected Map<Integer, Integer> getLayoutResIds()
     {
-        Map<PositionItemType, Integer> layouts = new HashMap<>();
-        layouts.put(PositionItemType.Header, R.layout.position_item_header);
-        layouts.put(PositionItemType.Placeholder, R.layout.position_quick_nothing);
-        layouts.put(PositionItemType.Locked, R.layout.position_locked_item);
-        layouts.put(PositionItemType.Open, R.layout.position_open_no_period);
-        layouts.put(PositionItemType.OpenInPeriod, R.layout.position_open_in_period);
-        layouts.put(PositionItemType.Closed, R.layout.position_closed_no_period);
-        layouts.put(PositionItemType.ClosedInPeriod, R.layout.position_closed_in_period);
+        Map<Integer, Integer> layouts = new HashMap<>();
+        layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN, R.layout.position_open_no_period);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_IN_PERIOD, R.layout.position_open_in_period);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_closed_no_period);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED_IN_PERIOD, R.layout.position_closed_in_period);
         return layouts;
     }
 
@@ -540,7 +540,8 @@ public class PositionListFragment
         if (this.getPositionsDTO != null)
         {
             createPositionItemAdapter();
-            positionItemAdapter.setItems(getPositionsDTO.positions);
+            positionItemAdapter.addAll(getPositionsDTO.positions);
+            positionItemAdapter.notifyDataSetChanged();
             restoreExpandingStates();
             pullToRefreshListView.setAdapter(positionItemAdapter);
             //if (positionsListView != null)
