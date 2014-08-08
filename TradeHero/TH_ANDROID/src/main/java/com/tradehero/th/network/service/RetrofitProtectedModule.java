@@ -153,5 +153,10 @@ public class RetrofitProtectedModule
                 .build()
                 .create(HomeServiceAsync.class);
     }
+
+    @Provides @Singleton AchievementServiceAsync provideAchievementServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(AchievementServiceAsync.class);
+    }
     //</editor-fold>
 }

@@ -6,15 +6,18 @@ import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.LevelDefIdList;
 import com.tradehero.th.api.level.key.LevelDefId;
 import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LevelDefCache extends StraightDTOCacheNew<LevelDefId, LevelDefDTO>
 {
-    public LevelDefCache(int maxSize)
+    public static final int DEFAULT_MAX_SIZE = 100;
+
+    @Inject public LevelDefCache()
     {
-        super(maxSize);
+        super(DEFAULT_MAX_SIZE);
     }
 
     @NotNull @Override public LevelDefDTO fetch(@NotNull LevelDefId key) throws Throwable

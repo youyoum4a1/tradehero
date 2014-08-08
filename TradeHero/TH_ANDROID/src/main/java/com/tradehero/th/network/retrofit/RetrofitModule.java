@@ -29,6 +29,7 @@ import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.FriendlyUrlConnectionClient;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
+import com.tradehero.th.network.service.AchievementService;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
@@ -301,6 +302,11 @@ public class RetrofitModule
     @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
     {
         return builder.setEndpoint(server).setRequestInterceptor(requestHeaders).build();
+    }
+
+    @Provides @Singleton AchievementService provideAchievementService(RestAdapter adapter)
+    {
+        return adapter.create(AchievementService.class);
     }
 
     //@Provides Client provideOkClient(Context context)
