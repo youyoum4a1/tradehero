@@ -8,7 +8,7 @@
   <string name="watchlist_add_title">Add to Watchlist</string>
   <string name="watchlist_edit_title">Edit in Watchlist</string>
 
-  <string name="watchlist_button_done">Done</string>
+  <string name="watchlist_button_done">@string/done</string>
   <string name="watchlist_button_delete">Delete</string>
   <string name="watchlist_average_price_header">Average Price (US$)</string>
   <string name="watchlist_quantity_header">Quantity</string>

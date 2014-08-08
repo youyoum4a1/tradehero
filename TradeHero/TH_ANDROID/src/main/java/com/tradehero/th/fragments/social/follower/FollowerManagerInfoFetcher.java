@@ -35,16 +35,4 @@ public class FollowerManagerInfoFetcher
         this.followerSummaryCache.register(heroId, this.followerSummaryListener);
         this.followerSummaryCache.getOrFetchAsync(heroId);
     }
-
-    /**
-     *
-     * @param heroId
-     * @param followerSummaryListener
-     */
-    public void fetch(final UserBaseKey heroId,DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
-    {
-        followerSummaryCache.unregister(followerSummaryListener);
-        followerSummaryCache.register(heroId, followerSummaryListener);
-        this.followerSummaryCache.getOrFetchAsync(heroId, true);
-    }
 }

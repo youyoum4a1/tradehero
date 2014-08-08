@@ -97,7 +97,8 @@ public class THWebViewClient extends WebViewClient
                         return true;
                     }
                 }
-                return false;
+                // Need to return true, coz it will be handled by THRouter, see {@link com.tradehero.th.models.intent.THIntentFactoryImpl#create()}
+                return true;
             }
         }
 

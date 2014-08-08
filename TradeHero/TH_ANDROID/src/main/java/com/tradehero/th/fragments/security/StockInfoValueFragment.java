@@ -93,8 +93,8 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mPreviousClose.setText(THSignedMoney.builder()
-                        .value(value.previousClose)
+                mPreviousClose.setText(THSignedMoney
+                        .builder(value.previousClose)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -111,8 +111,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mOpen.setText(THSignedMoney.builder()
-                        .value(value.open)
+                mOpen.setText(THSignedMoney.builder(value.open)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -129,8 +128,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mDaysHigh.setText(THSignedMoney.builder()
-                        .value(value.high)
+                mDaysHigh.setText(THSignedMoney.builder(value.high)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -147,8 +145,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mDaysLow.setText(THSignedMoney.builder()
-                        .value(value.low)
+                mDaysLow.setText(THSignedMoney.builder(value.low)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -165,8 +162,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mMarketCap.setText(THSignedMoney.builder()
-                        .value(value.marketCap)
+                mMarketCap.setText(THSignedMoney.builder(value.marketCap)
                         .currency(value.currencyDisplay)
                         .build().toString());
             }
@@ -183,8 +179,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mPERatio.setText(THSignedNumber.builder()
-                        .value(value.pe)
+                mPERatio.setText(THSignedNumber.builder(value.pe)
                         .withOutSign()
                         .build().toString());
             }
@@ -201,8 +196,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mEps.setText(THSignedNumber.builder()
-                        .value(value.eps)
+                mEps.setText(THSignedNumber.builder(value.eps)
                         .withOutSign()
                         .build().toString());
             }
@@ -219,8 +213,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mVolume.setText(THSignedNumber.builder()
-                        .value(value.volume)
+                mVolume.setText(THSignedNumber.builder(value.volume)
                         .build().toString());
             }
         }
@@ -236,8 +229,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
             }
             else
             {
-                mAvgVolume.setText(THSignedNumber.builder()
-                        .value(value.averageDailyVolume)
+                mAvgVolume.setText(THSignedNumber.builder(value.averageDailyVolume)
                         .build().toString());
             }
         }

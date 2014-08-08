@@ -28,17 +28,19 @@ public class THSignedNumber
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
     {
-        private Double value;
+        private double value;
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
 
-        protected abstract BuilderType self();
-
-        protected boolean isValid()
+        //<editor-fold desc="Constructors">
+        protected Builder(double value)
         {
-            return value != null;
+            this.value = value;
         }
+        //</editor-fold>
+
+        protected abstract BuilderType self();
 
         public BuilderType value(double number)
         {
@@ -90,15 +92,22 @@ public class THSignedNumber
 
     private static class Builder2 extends Builder<Builder2>
     {
+        //<editor-fold desc="Constructors">
+        private Builder2(double value)
+        {
+            super(value);
+        }
+        //</editor-fold>
+
         @Override protected Builder2 self()
         {
             return this;
         }
     }
 
-    public static Builder<?> builder()
+    public static Builder<?> builder(double value)
     {
-        return new Builder2();
+        return new Builder2(value);
     }
 
     //<editor-fold desc="Constructors">
@@ -108,11 +117,6 @@ public class THSignedNumber
         this.signType = builder.signType;
         this.value = builder.value;
         this.relevantDigitCount = builder.relevantDigitCount;
-
-        if (!builder.isValid())
-        {
-            throw new IllegalArgumentException("Invalid builder");
-        }
     }
     //</editor-fold>
 

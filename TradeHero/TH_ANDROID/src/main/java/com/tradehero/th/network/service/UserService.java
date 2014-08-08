@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -238,5 +239,11 @@ public interface UserService
     Response updateReferralCode(
             @Path("userId") int userId,
             @Body UpdateReferralCodeDTO updateReferralCodeDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Send Analytics">
+    @POST("/analytics")
+    Response sendAnalytics(
+            @Body BatchAnalyticsEventForm batchAnalyticsEventForm);
     //</editor-fold>
 }

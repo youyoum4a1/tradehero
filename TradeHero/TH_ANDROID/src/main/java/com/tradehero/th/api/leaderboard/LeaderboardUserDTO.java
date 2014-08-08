@@ -108,7 +108,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
             return "0";
         }
 
-        return THSignedNumber.builder().value(starRating).withOutSign().build().toString();
+        return THSignedNumber.builder(starRating).withOutSign().build().toString();
     }
 
     public int getCommentsCount()

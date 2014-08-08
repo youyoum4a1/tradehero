@@ -13,6 +13,13 @@ public class THSignedMoney extends THSignedNumber
     {
         @Nullable private String currency;
 
+        //<editor-fold desc="Constructors">
+        protected Builder(double value)
+        {
+            super(value);
+        }
+        //</editor-fold>
+
         public BuilderType currency(String currency)
         {
             this.currency = currency;
@@ -27,15 +34,22 @@ public class THSignedMoney extends THSignedNumber
 
     private static class Builder2 extends Builder<Builder2>
     {
+        //<editor-fold desc="Constructors">
+        private Builder2(double value)
+        {
+            super(value);
+        }
+        //</editor-fold>
+
         @Override protected Builder2 self()
         {
             return this;
         }
     }
 
-    public static Builder<?> builder()
+    public static Builder<?> builder(double value)
     {
-        return new Builder2();
+        return new Builder2(value);
     }
 
     //<editor-fold desc="Constructors">

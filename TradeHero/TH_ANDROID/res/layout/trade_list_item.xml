@@ -206,7 +206,7 @@
 
         </LinearLayout>
 
-        <TextView
+        <com.tradehero.th.widget.MarkdownTextView
             android:id="@+id/trade_list_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

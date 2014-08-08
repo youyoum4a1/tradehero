@@ -4,36 +4,39 @@ import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionDTORestrictionComparator;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class CompetitionZoneDTOUtil
 {
-
-    @Inject PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @NotNull private final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
     //<editor-fold desc="Constructors">
-    @Inject public CompetitionZoneDTOUtil()
+    @Inject public CompetitionZoneDTOUtil(@NotNull PortfolioCompactDTOUtil portfolioCompactDTOUtil)
     {
         super();
+        this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
     }
     //</editor-fold>
 
-    public void populateLists(Context context,
+    public void populateLists(
+            @NotNull Context context,
             UserProfileCompactDTO portfolioUserProfileCompact,
-            ProviderDTO providerDTO,
-            List<CompetitionDTO> competitionDTOs,
-            List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
-            List<Integer> preparedOrderedTypes,
-            List<Object> preparedOrderedItems)
+            @Nullable ProviderDTO providerDTO,
+            @Nullable List<CompetitionDTO> competitionDTOs,
+            @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
+            @NotNull List<Integer> preparedOrderedTypes,
+            @NotNull List<CompetitionZoneDTO> preparedOrderedItems)
     {
         if (providerDTO != null)
         {
@@ -91,7 +94,7 @@ public class CompetitionZoneDTOUtil
 
             if (competitionDTOs != null)
             {
-                Collections.sort(competitionDTOs, CompetitionDTO.RestrictionLeaderboardComparator);
+                Collections.sort(competitionDTOs, new CompetitionDTORestrictionComparator());
                 for (CompetitionDTO competitionDTO : competitionDTOs)
                 {
                     if (competitionDTO != null)

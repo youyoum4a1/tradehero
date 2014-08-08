@@ -40,16 +40,21 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.billing.PurchaseReporter;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
+import com.tradehero.th.fragments.discussion.TransactionEditCommentFragment;
 import com.tradehero.th.fragments.social.SocialLinkHelper;
 import com.tradehero.th.fragments.social.SocialLinkHelperFactory;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -60,7 +65,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
@@ -91,7 +95,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
     @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
-    @InjectView(R.id.comments) protected EditText mCommentsEditText;
+    @InjectView(R.id.comments) protected TextView mCommentsEditText;
 
     @InjectView(R.id.dialog_btn_add_cash) protected ImageButton mBtnAddCash;
     @InjectView(R.id.dialog_btn_confirm) protected Button mConfirm;
@@ -129,7 +133,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private PortfolioId portfolioId;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
-    private boolean isTransactionRunning;
     protected Integer mTransactionQuantity = 0;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
 
@@ -139,6 +142,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private AlertDialog mSocialLinkingDialog;
     private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
+    private TransactionEditCommentFragment transactionCommentFragment;
+    Editable unSpannedComment;
 
     protected abstract String getLabel();
 
@@ -219,6 +224,23 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         initViews();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
+        if (!(getDashboardNavigator().getCurrentFragment() instanceof BuySellFragment))
+        {
+            getDialog().hide();
+        }
+    }
+
+    @Override public void onDetach()
+    {
+        transactionCommentFragment = null;
+        super.onDetach();
+    }
+
     private void init()
     {
         securityCompactDTO = securityCompactCache.get(getSecurityId());
@@ -297,8 +319,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
             if (priceRefCcy != null && portfolioCompactDTO != null)
             {
                 double value = mTransactionQuantity * priceRefCcy;
-                THSignedNumber thTradeValue = THSignedMoney.builder()
-                        .value(value)
+                THSignedNumber thTradeValue = THSignedMoney.builder(value)
                         .withOutSign()
                         .currency(portfolioCompactDTO.currencyDisplay)
                         .build();
@@ -321,11 +342,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     public QuickPriceButtonSet getQuickPriceButtonSet()
     {
         return mQuickPriceButtonSet;
-    }
-
-    public EditText getCommentView()
-    {
-        return mCommentsEditText;
     }
 
     public SeekBar getSeekBar()
@@ -391,6 +407,15 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         socialSharePreferenceHelperNew.save();
         fireBuySellReport();
         launchBuySell();
+    }
+
+    @OnClick(R.id.comments) void onCommentAreaClicked(View commentTextBox)
+    {
+        Bundle bundle = new Bundle();
+        SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
+        transactionCommentFragment = getDashboardNavigator().pushFragment(TransactionEditCommentFragment.class, bundle);
+
+        getDialog().hide();
     }
 
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
@@ -504,8 +529,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                         R.string.processing, R.string.alert_dialog_please_wait);
 
                 buySellMiddleCallback = getTransactionMiddleCallback(transactionFormDTO);
-
-                isTransactionRunning = true;
             }
             else
             {
@@ -542,7 +565,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                 null,
                 //sharePublic,
                 false,
-                mCommentsEditText == null ? null : mCommentsEditText.getText().toString(),
+                unSpannedComment != null ? unSpannedComment.toString() : null,
                 quoteDTO.rawResponse,
                 mTransactionQuantity,
                 portfolioId.key
@@ -927,6 +950,15 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         return new BuySellPurchaseReportedListener();
     }
 
+    public void populateComment()
+    {
+        if (transactionCommentFragment != null)
+        {
+            unSpannedComment = transactionCommentFragment.getComment();
+            mCommentsEditText.setText(unSpannedComment);
+        }
+    }
+
     private class SocialLinkingCallback implements retrofit.Callback<UserProfileDTO>
     {
         final SocialNetworkEnum socialNetworkEnum;
@@ -999,11 +1031,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
             if (isBuy)
             {
-                isTransactionRunning = false;
             }
             else
             {
-                isTransactionRunning = false;
             }
 
             if (buySellTransactionListener != null)
@@ -1060,5 +1090,15 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         void onTransactionSuccessful(boolean isBuy);
 
         void onTransactionFailed(boolean isBuy, THException error);
+    }
+
+    protected DashboardNavigator getDashboardNavigator()
+    {
+        DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
+        if (activity != null)
+        {
+            return activity.getDashboardNavigator();
+        }
+        return null;
     }
 }

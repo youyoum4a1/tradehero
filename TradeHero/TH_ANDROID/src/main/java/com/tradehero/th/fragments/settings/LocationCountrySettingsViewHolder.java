@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -79,19 +80,27 @@ public class LocationCountrySettingsViewHolder extends OneSettingViewHolder
             }
             if (currentCountry != null)
             {
-                String summary = preferenceFragment.getString(
-                        R.string.location_summary,
-                        userProfileDTO.countryCode,
-                        preferenceFragment.getString(currentCountry.locationName));
-                clickablePref.setSummary(summary);
-                clickablePref.setIcon(currentCountry.logoId);
+                PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+                if (preferenceFragmentCopy != null)
+                {
+                    String summary = preferenceFragmentCopy.getString(
+                            R.string.location_summary,
+                            userProfileDTO.countryCode,
+                            preferenceFragmentCopy.getString(currentCountry.locationName));
+                    clickablePref.setSummary(summary);
+                }
+                // TODO superimpose flag?
             }
         }
     }
 
     protected void handlePrefClicked()
     {
-        preferenceFragment.getNavigator().pushFragment(LocationListFragment.class);
+        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragmentCopy.getNavigator().pushFragment(LocationListFragment.class);
+        }
     }
 
     protected class UserProfileCacheListener implements DTOCacheNew.HurriedListener<UserBaseKey, UserProfileDTO>

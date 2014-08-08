@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.competition;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.AbsListView;
+import com.tradehero.AbstractTestBase;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.AdDTO;
@@ -37,7 +38,7 @@ import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(RobolectricMavenTestRunner.class)
 @Config(shadows = ShadowWebViewNew.class)
-public class MainCompetitionFragmentTest
+public class MainCompetitionFragmentTest extends AbstractTestBase
 {
     private static final String TEST_ADS_WEB_URL = "http://www.google.com";
     private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";
@@ -54,7 +55,7 @@ public class MainCompetitionFragmentTest
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
         dashboardNavigator = activity.getDashboardNavigator();
 
-        providerId = new ProviderId(23);
+        providerId = new ProviderId(3423);
         // creating mock object for providerDTO
         ProviderDTO mockProviderDTO = new ProviderDTO();
         mockProviderDTO.id = providerId.key;
@@ -81,7 +82,7 @@ public class MainCompetitionFragmentTest
     {
         Bundle args = new Bundle();
 
-        ProviderId providerId = new ProviderId(23);
+        ProviderId providerId = new ProviderId(3423);
         MainCompetitionFragment.putProviderId(args, providerId);
 
         MainCompetitionFragment mainCompetition = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
@@ -104,6 +105,7 @@ public class MainCompetitionFragmentTest
 
     @Test public void shouldGoToWebFragmentAfterClickOnAds()
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
@@ -116,6 +118,8 @@ public class MainCompetitionFragmentTest
 
         AbsListView competitionListView = mainCompetitionFragment.listView;
         assertThat(competitionListView).isNotNull();
+
+        Robolectric.getBackgroundScheduler().unPause();
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasksIncludingDelayedTasks();
@@ -166,12 +170,7 @@ public class MainCompetitionFragmentTest
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        runBgUiTasks(10);
 
         int firstPortfolioButtonPosition = -1;
 
@@ -225,6 +224,7 @@ public class MainCompetitionFragmentTest
 
     private void shouldGoToCorrectWebPageAfterClickOnWizardCell(String webLink)
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
@@ -239,6 +239,8 @@ public class MainCompetitionFragmentTest
 
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
+
+        Robolectric.getBackgroundScheduler().unPause();
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasksIncludingDelayedTasks();

@@ -160,8 +160,7 @@ abstract public class AbstractPositionPartialBottomOpenView<
         {
             if (positionDTO != null && positionDTO.averagePriceRefCcy != null)
             {
-                THSignedNumber ThAveragePriceRefCcy = THSignedMoney.builder()
-                        .value(positionDTO.averagePriceRefCcy)
+                THSignedNumber ThAveragePriceRefCcy = THSignedMoney.builder(positionDTO.averagePriceRefCcy)
                         .withOutSign()
                         .currency(positionDTO.getNiceCurrency())
                         .build();

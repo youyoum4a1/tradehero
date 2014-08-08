@@ -11,22 +11,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
+import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
@@ -36,53 +41,51 @@ import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.THRouter;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserItemView extends RelativeLayout
-        implements DTOView<LeaderboardUserDTO>, View.OnClickListener,
+        implements DTOView<LeaderboardUserDTO>,
         ExpandingLayout.OnExpandListener
 {
+    private static final Integer FLAG_USER_NOT_RANKED = -1;
+    private static final int MAX_OWN_RANKING = 10000;
+
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @Inject Lazy<LeaderboardUserCache> leaderboardUserCache;
+    @Inject Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
     @Inject Lazy<Picasso> picasso;
-    @Inject Lazy<UserProfileCache> userProfileCacheLazy;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
-    @Inject Lazy<UserProfileCache> userProfileCache;
 
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
     protected OwnedPortfolioId applicablePortfolioId;
-    protected FollowDialogCombo followDialogCombo;
     // data
     protected LeaderboardUserDTO leaderboardItem;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
 
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
@@ -113,16 +116,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
+    private MiddleCallback<LeaderboardDTO> leaderboardOwnUserRankingCallback;
+    private LeaderboardUserId leaderboardUserId;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
     {
         super(context);
-    }
-
-    @Override protected void onVisibilityChanged(View changedView, int visibility)
-    {
-        super.onVisibilityChanged(changedView, visibility);
     }
 
     public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
@@ -153,27 +153,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             DaggerUtils.inject(lbmuFoF);
         }
 
-        TextView lbmuOpenProfile = (TextView) findViewById(R.id.leaderboard_user_item_open_profile);
-        if (lbmuOpenProfile != null)
-        {
-            lbmuOpenProfile.setOnClickListener(this);
-        }
-        TextView lbmuOpenPositionsList =
-                (TextView) findViewById(R.id.leaderboard_user_item_open_positions_list);
-        if (lbmuOpenPositionsList != null)
-        {
-            lbmuOpenPositionsList.setOnClickListener(this);
-        }
-
-        if (lbmuProfilePicture != null)
-        {
-            lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
-        }
-
-        if (expandingLayout != null)
-        {
-            expandingLayout.setOnExpandListener(this);
-        }
+        lbmuProfilePicture.setLayerType(LAYER_TYPE_SOFTWARE, null);
+        expandingLayout.setOnExpandListener(this);
     }
 
     @Override protected void onAttachedToWindow()
@@ -184,18 +165,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
         }
-        if (lbmuPositionInfo != null)
-        {
-            lbmuPositionInfo.setOnClickListener(this);
-        }
-        if (lbmuFollowUser != null)
-        {
-            lbmuFollowUser.setOnClickListener(this);
-        }
-        if (lbmuProfilePicture != null)
-        {
-            lbmuProfilePicture.setOnClickListener(this);
-        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -204,28 +173,15 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuFoF.setMovementMethod(null);
         }
-        if (lbmuPositionInfo != null)
-        {
-            lbmuPositionInfo.setOnClickListener(null);
-        }
-        if (lbmuFollowUser != null)
-        {
-            lbmuFollowUser.setOnClickListener(null);
-        }
         loadDefaultUserImage();
 
         if (lbmuProfilePicture != null)
         {
             lbmuProfilePicture.setImageDrawable(null);
         }
-        if (lbmuProfilePicture != null)
-        {
-            lbmuProfilePicture.setOnClickListener(null);
-        }
+        unsetLeaderboardOwnUserRankingCallback();
 
-        detachFreeFollowMiddleCallback();
-        detachFollowDialogCombo();
-
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -263,6 +219,30 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(expandableItem, true);
     }
 
+    public void displayOwnRanking(LeaderboardKey leaderboardKey)
+    {
+        if (leaderboardUserId != null)
+        {
+            LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardUserCache.get().get(leaderboardUserId);
+            if (ownLeaderboardUserDTO != null)
+            {
+                display(ownLeaderboardUserDTO);
+                return;
+            }
+        }
+        unsetLeaderboardOwnUserRankingCallback();
+        leaderboardOwnUserRankingCallback = leaderboardServiceWrapper.get().getUserOnLeaderboard(new UserOnLeaderboardKey(leaderboardKey,
+                    currentUserId.toUserBaseKey()), null, new LeaderboardUserRankingCallback());
+    }
+
+    private void unsetLeaderboardOwnUserRankingCallback()
+    {
+        if (leaderboardOwnUserRankingCallback != null)
+        {
+            leaderboardOwnUserRankingCallback.setPrimaryCallback(null);
+        }
+    }
+
     private void linkWith(LeaderboardUserDTO expandableItem, boolean andDisplay)
     {
         this.leaderboardItem = expandableItem;
@@ -288,20 +268,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void displayTopSection()
     {
-        lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
-        if (currentUserId.get() == leaderboardItem.id)
+        if (leaderboardItem.getPosition() != null)
         {
-            lbmuPosition.setTextColor(
-                    getContext().getResources().getColor(R.color.button_green));
-        }
-        else
-        {
-            lbmuPosition.setTextColor(
-                    getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+            lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
         }
 
-        lbmuDisplayName.setText(leaderboardItem.displayName);
         lbmuHeroQuotient.setText(leaderboardItem.getHeroQuotientFormatted());
+
         if (lbmuFoF != null)
         {
             lbmuFoF.setVisibility(
@@ -311,16 +284,40 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuFoF.setText(leaderboardItem.friendOfMarkupString);
         }
 
+        linkWith(leaderboardItem);
+    }
+
+    public void linkWith(UserBaseDTO userBaseDTO)
+    {
+        displayRanking(userBaseDTO);
+
+        lbmuDisplayName.setText(userBaseDTO.displayName);
+
         loadDefaultUserImage();
-        if (leaderboardItem.picture != null)
+        if (userBaseDTO.picture != null)
         {
             picasso.get()
-                    .load(leaderboardItem.picture)
+                    .load(userBaseDTO.picture)
                     .transform(peopleIconTransformation)
                     .placeholder(lbmuProfilePicture.getDrawable())
                     .into(lbmuProfilePicture);
         }
-        displayCountryLogo();
+
+        displayCountryLogo(userBaseDTO);
+    }
+
+    private void displayRanking(UserBaseDTO userBaseDTO)
+    {
+        if (currentUserId.get() == userBaseDTO.id)
+        {
+            lbmuPosition.setTextColor(
+                    getContext().getResources().getColor(R.color.button_green));
+        }
+        else
+        {
+            lbmuPosition.setTextColor(
+                    getContext().getResources().getColor(R.color.leaderboard_ranking_position));
+        }
     }
 
     private void loadDefaultUserImage()
@@ -330,40 +327,19 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 .into(lbmuProfilePicture);
     }
 
-    public void displayCountryLogo()
+    private void displayCountryLogo(UserBaseDTO userBaseDTO)
     {
         if (countryLogo != null)
         {
             try
             {
-                if (leaderboardItem != null && leaderboardItem.countryCode != null)
-                {
-                    countryLogo.setImageResource(getCountryLogoId(leaderboardItem.countryCode));
-                }
-                else
-                {
-                    countryLogo.setImageResource(R.drawable.default_image);
-                }
-            } catch (OutOfMemoryError e)
+                int imageResId = Country.getCountryLogo(R.drawable.default_image, userBaseDTO.countryCode);
+                countryLogo.setImageResource(imageResId);
+            }
+            catch (OutOfMemoryError e)
             {
                 Timber.e(e, null);
             }
-        }
-    }
-
-    public int getCountryLogoId(String country)
-    {
-        return getCountryLogoId(R.drawable.default_image, country);
-    }
-
-    public int getCountryLogoId(int defaultResId, String country)
-    {
-        try
-        {
-            return Country.valueOf(country).logoId;
-        } catch (IllegalArgumentException ex)
-        {
-            return defaultResId;
         }
     }
 
@@ -382,8 +358,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuPeriod.setText(period);
 
         // display Roi
-        THSignedNumber roi = THSignedPercentage.builder()
-                .value(leaderboardItem.roiInPeriod * 100)
+        THSignedNumber roi = THSignedPercentage
+                .builder(leaderboardItem.roiInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -392,8 +368,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuRoi.setTextColor(getResources().getColor(roi.getColorResId()));
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = THSignedPercentage.builder()
-                .value(leaderboardItem.roiAnnualizedInPeriod * 100)
+        THSignedNumber roiAnnualizedVal = THSignedPercentage
+                .builder(leaderboardItem.roiAnnualizedInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -403,8 +379,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage.builder()
-                .value(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
+        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage
+                .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
@@ -418,8 +394,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // sharpe ratio
         if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
         {
-            lbmuSharpeRatio.setText(THSignedNumber.builder()
-                    .value(leaderboardItem.sharpeRatioInPeriodVsSP500)
+            lbmuSharpeRatio.setText(THSignedNumber
+                    .builder(leaderboardItem.sharpeRatioInPeriodVsSP500)
                     .build()
                     .toString());
         }
@@ -447,27 +423,27 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         // Number of trades in Period
         if (lbmuNumberTradesInPeriod != null)
         {
-            lbmuNumberTradesInPeriod.setText(THSignedNumber.builder()
-                    .value(leaderboardItem.numberOfTradesInPeriod)
+            lbmuNumberTradesInPeriod.setText(THSignedNumber
+                    .builder(leaderboardItem.numberOfTradesInPeriod)
                     .build().toString());
         }
 
         // average days held
-        lbmuAvgDaysHeld.setText(THSignedNumber.builder()
-                .value(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
+        lbmuAvgDaysHeld.setText(THSignedNumber
+                .builder(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
                 .relevantDigitCount(3)
                 .build().toString());
-        lbmuWinRatio.setText(THSignedPercentage.builder()
-                .value(leaderboardItem.getWinRatio() * 100)
+        lbmuWinRatio.setText(THSignedPercentage
+                .builder(leaderboardItem.getWinRatio() * 100)
                 .relevantDigitCount(3)
                 .build().toString());
 
         // followers & comments count
-        lbmuFollowersCount.setText(THSignedNumber.builder()
-                .value(leaderboardItem.getTotalFollowersCount())
+        lbmuFollowersCount.setText(THSignedNumber
+                .builder(leaderboardItem.getTotalFollowersCount())
                 .build().toString());
-        lbmuCommentsCount.setText(THSignedNumber.builder()
-                .value(leaderboardItem.getCommentsCount())
+        lbmuCommentsCount.setText(THSignedNumber
+                .builder(leaderboardItem.getCommentsCount())
                 .build().toString());
     }
 
@@ -491,8 +467,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (lbmuPl != null && leaderboardItem != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney.builder()
-                    .value(leaderboardItem.PLinPeriodRefCcy)
+            THSignedNumber formattedNumber = THSignedMoney
+                    .builder(leaderboardItem.PLinPeriodRefCcy)
                     .withOutSign()
                     .currency(getLbmuPlCurrencyDisplay())
                     .build();
@@ -513,6 +489,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         if (lbmuFollowUser != null)
         {
+            // you can't follow yourself
+            if (currentUserId.get() == leaderboardItem.id)
+            {
+                lbmuFollowUser.setVisibility(GONE);
+                return;
+            }
+
             Boolean isFollowing = isCurrentUserFollowing();
             boolean showButton = isFollowing == null || !isFollowing;
             lbmuFollowUser.setVisibility(showButton ? VISIBLE : GONE);
@@ -529,86 +512,43 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    @Override public void onClick(View view)
+    @OnClick(R.id.leaderboard_user_item_info)
+    protected void handleUserInfoClicked()
     {
-        switch (view.getId())
-        {
-            case R.id.leaderboard_user_item_info:
-                // TODO right now the icon is gone
-                break;
-            case R.id.leaderboard_user_item_open_profile:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
-                handleOpenProfileButtonClicked();
-                break;
-
-            case R.id.leaderboard_user_item_open_positions_list:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
-                handleOpenPositionListClicked();
-                break;
-
-            case R.id.leaderboard_user_item_follow:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
-                detachFollowDialogCombo();
-                followDialogCombo = alertDialogUtilLazy.get().showFollowDialog(getContext(), leaderboardItem,
-                        UserProfileDTOUtil.IS_NOT_FOLLOWER,
-                        new LeaderBoardFollowRequestedListener());
-                break;
-            case R.id.leaderboard_user_item_profile_picture:
-                handleUserIconClicked();
-                break;
-        }
+        // Nothing?
     }
 
-    public class LeaderBoardFollowRequestedListener
-            implements com.tradehero.th.models.social.OnFollowRequestedListener
+    @OnClick(R.id.leaderboard_user_item_open_profile)
+    protected void handleProfileClicked()
     {
-        @Override public void freeFollowRequested(UserBaseKey heroId)
-        {
-            freeFollow(heroId);
-        }
-
-        @Override public void premiumFollowRequested(UserBaseKey heroId)
-        {
-            follow(heroId);
-        }
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
+        handleOpenProfileButtonClicked();
     }
 
-    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
+    @OnClick(R.id.leaderboard_user_item_open_positions_list)
+    protected void handlePositionButtonClicked()
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
-        {
-            alertDialogUtilLazy.get().dismissProgressDialog();
-            LeaderboardMarkUserItemView.this.linkWith(userProfileDTO, true);
-            userProfileCacheLazy.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            THToast.show(new THException(retrofitError));
-            alertDialogUtilLazy.get().dismissProgressDialog();
-        }
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
+        handleOpenPositionListClicked();
     }
 
-    private void handleUserIconClicked()
+    @OnClick(R.id.leaderboard_user_item_follow)
+    protected void handleFollowButtonClicked()
+    {
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
+        follow(leaderboardItem);
+    }
+
+    @OnClick(R.id.leaderboard_user_item_profile_picture)
+    protected void handleUserIconClicked()
     {
         //OtherTimelineFragment.viewProfile((DashboardActivity) getContext(), null);
         handleOpenProfileButtonClicked();
     }
 
-    protected void freeFollow(UserBaseKey heroId)
+    protected void follow(@NotNull UserBaseDTO userBaseDTO)
     {
-        alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
-                R.string.following_this_hero));
-        detachFreeFollowMiddleCallback();
-        freeFollowMiddleCallback =
-                userServiceWrapperLazy.get()
-                        .freeFollow(heroId, new FreeFollowCallback());
-    }
-
-    protected void follow(UserBaseKey heroId)
-    {
-        notifyFollowRequested(heroId);
+        notifyFollowRequested(userBaseDTO);
     }
 
     private void handleOpenPositionListClicked()
@@ -699,36 +639,60 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(userProfileDTO, true);
     }
 
-    protected void notifyFollowRequested(UserBaseKey heroId)
+    protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
-            followRequestedListenerCopy.onFollowRequested(heroId);
+            followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
+    }
+
+    public void displayRankingPosition(int currentRank)
+    {
+        if (isUserRanked(currentRank))
+        {
+            lbmuPosition.setText("" + currentRank);
+        }
+        else
+        {
+            lbmuPosition.setText(R.string.leaderboard_not_ranked_position);
+        }
+    }
+
+    protected static boolean isUserRanked(int currentRank)
+    {
+        return currentRank != FLAG_USER_NOT_RANKED && currentRank > 0 && currentRank < MAX_OWN_RANKING;
     }
 
     public static interface OnFollowRequestedListener
     {
-        void onFollowRequested(UserBaseKey userBaseKey);
+        void onFollowRequested(UserBaseDTO userBaseKey);
     }
 
-    private void detachFreeFollowMiddleCallback()
+    private class LeaderboardUserRankingCallback implements Callback<LeaderboardDTO>
     {
-        if (freeFollowMiddleCallback != null)
+        @Override public void success(LeaderboardDTO leaderboardDTO, Response response)
         {
-            freeFollowMiddleCallback.setPrimaryCallback(null);
+            if (leaderboardDTO != null && leaderboardDTO.users != null && !leaderboardDTO.users.isEmpty())
+            {
+                LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardDTO.users.get(0);
+                leaderboardUserId = ownLeaderboardUserDTO.getLeaderboardUserId();
+                leaderboardUserCache.get().put(leaderboardUserId, ownLeaderboardUserDTO);
+                display(ownLeaderboardUserDTO);
+            }
+            else
+            {
+                // user is not ranked, disable expandable view
+                setOnClickListener(null);
+                lbmuDisplayName.setText(R.string.leaderboard_not_ranked);
+                lbmuPosition.setText("-");
+            }
         }
-        freeFollowMiddleCallback = null;
-    }
 
-    protected void detachFollowDialogCombo()
-    {
-        FollowDialogCombo followDialogComboCopy = followDialogCombo;
-        if (followDialogComboCopy != null)
+        @Override public void failure(RetrofitError retrofitError)
         {
-            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
+            THToast.show(new THException(retrofitError));
         }
-        followDialogCombo = null;
     }
 }

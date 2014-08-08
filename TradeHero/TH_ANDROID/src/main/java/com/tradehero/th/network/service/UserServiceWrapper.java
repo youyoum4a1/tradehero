@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -843,6 +844,13 @@ import retrofit.client.Response;
                 createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
         userServiceAsync.updateReferralCode(invitedUserId.key, updateReferralCodeDTO, middleCallback);
         return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Send Analytics">
+    @NotNull public void sendAnalytics(@NotNull BatchAnalyticsEventForm batchAnalyticsEventForm)
+    {
+        userService.sendAnalytics(batchAnalyticsEventForm);
     }
     //</editor-fold>
 }

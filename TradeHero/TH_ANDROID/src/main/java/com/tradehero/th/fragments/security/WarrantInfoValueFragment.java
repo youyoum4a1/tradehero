@@ -266,8 +266,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             else
             {
                 mStrikePrice.setText(
-                        THSignedMoney.builder()
-                                .value(warrantDTO.strikePrice)
+                        THSignedMoney.builder(warrantDTO.strikePrice)
                                 .currency(warrantDTO.strikePriceCcy)
                                 .withOutSign()
                                 .build().toString()

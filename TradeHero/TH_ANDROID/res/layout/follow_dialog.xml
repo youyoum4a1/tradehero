@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.FollowDialogView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.social.FollowDialogView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    >
 
   <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/common_margin_10"
       android:layout_marginTop="40dp"
-      android:layout_marginBottom="40dp">
+      android:layout_marginBottom="40dp"
+      >
 
     <ImageView
         android:id="@+id/user_profile_avatar"
@@ -21,14 +25,19 @@
         android:layout_margin="@dimen/user_profile_compact_avatar_margin"
         android:background="@drawable/layout_oval"
         android:padding="0.5dp"
-        android:contentDescription="@null"/>
+        android:contentDescription="@null"
+        tools:src="@drawable/superman_facebook"
+        />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_margin_10"
-        android:layout_toRightOf="@id/user_profile_avatar"/>
+        android:layout_toRightOf="@id/user_profile_avatar"
+        tools:text="@string/not_follow_title"
+        />
+
     <TextView
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
@@ -36,21 +45,26 @@
         android:layout_toRightOf="@id/user_profile_avatar"
         android:layout_below="@id/title"
         android:textStyle="bold"
-        android:textSize="@dimen/text_large"/>
+        android:textSize="@dimen/text_large"
+        tools:text="Windy912"
+        />
+
   </RelativeLayout>
 
   <LinearLayout
       android:id="@+id/free_follow_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      >
 
     <TextView
         android:id="@+id/content1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/free_follow_content1"
-        android:padding="@dimen/common_margin_10"/>
+        android:padding="@dimen/common_margin_10"
+        />
 
     <TextView
         android:id="@+id/content2"
@@ -59,17 +73,20 @@
         android:text="@string/free_follow_content2"
         android:paddingLeft="@dimen/common_margin_10"
         android:paddingRight="@dimen/common_margin_10"
-        android:paddingBottom="@dimen/common_margin_10"/>
+        android:paddingBottom="@dimen/common_margin_10"
+        />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/light_grey"/>
+        android:background="@color/light_grey"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
       <Button
           android:id="@+id/btn_free"
@@ -79,7 +96,8 @@
           android:text="@string/continue_free_follow"
           android:textSize="@dimen/text_small"
           android:textColor="#77a4fd"
-          android:background="@drawable/basic_white_selector"/>
+          android:background="@drawable/basic_white_selector"
+          />
 
       <Button
           android:id="@+id/btn_premium"
@@ -91,7 +109,9 @@
           android:textSize="@dimen/text_medium"
           android:textColor="@color/black"
           android:textStyle="bold"
-          android:layout_marginLeft="1dp"/>
+          android:layout_marginLeft="1dp"
+          />
+
     </LinearLayout>
 
   </LinearLayout>
@@ -110,18 +130,21 @@
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:background="@drawable/basic_light_grey_selector"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/not_follow_subtitle"
-          android:textStyle="bold"/>
+          android:textStyle="bold"
+          />
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/free_follow_content3"/>
+          android:text="@string/free_follow_content3"
+          />
 
     </LinearLayout>
 
@@ -133,18 +156,21 @@
         android:padding="@dimen/common_margin_10"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/not_follow_premium_subtitle"
-          android:textStyle="bold"/>
+          android:textStyle="bold"
+          />
 
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/free_follow_content2"/>
+          android:text="@string/free_follow_content2"
+          />
 
     </LinearLayout>
 

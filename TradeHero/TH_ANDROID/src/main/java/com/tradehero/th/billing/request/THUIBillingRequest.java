@@ -58,6 +58,7 @@ public class THUIBillingRequest<
 
     public void onDestroy()
     {
+        this.purchaseReportedListener = null;
         this.followResultListener = null;
     }
 }

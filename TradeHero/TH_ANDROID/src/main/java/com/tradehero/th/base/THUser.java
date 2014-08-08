@@ -1,7 +1,6 @@
 package com.tradehero.th.base;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothClass;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -379,6 +378,11 @@ public class THUser
     public static void setAuthenticationMode(AuthenticationMode authenticationMode)
     {
         THUser.authenticationMode = authenticationMode;
+    }
+
+    public static THAuthenticationProvider getTHAuthenticationProvider()
+    {
+        return authenticator;
     }
 
     public static void removeCredential(String authenticationHeader)

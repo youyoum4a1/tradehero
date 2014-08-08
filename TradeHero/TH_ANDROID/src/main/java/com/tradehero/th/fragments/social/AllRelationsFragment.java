@@ -183,7 +183,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected class AllRelationsFollowRequestedListener implements OnPremiumFollowRequestedListener
     {
-        @Override public void premiumFollowRequested(UserBaseKey userBaseKey)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
         {
             handleFollowRequested(userBaseKey);
         }

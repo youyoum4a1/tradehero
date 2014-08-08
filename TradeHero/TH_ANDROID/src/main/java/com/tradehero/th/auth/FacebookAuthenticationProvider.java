@@ -33,7 +33,7 @@ import timber.log.Timber;
 @Singleton
 public class FacebookAuthenticationProvider implements THAuthenticationProvider
 {
-    public static final DateFormat preciseDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+    public static final DateFormat PRECISE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
     public static final String ACCESS_TOKEN_KEY =  "access_token";
     public static final String EXPIRATION_DATE_KEY = "expiration_date";
 
@@ -55,7 +55,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
             @FacebookAppId String applicationId,
             @FacebookPermissions Collection<String> permissions)
     {
-        this.preciseDateFormat.setTimeZone(new SimpleTimeZone(0, "GMT"));
+        PRECISE_DATE_FORMAT.setTimeZone(new SimpleTimeZone(0, "GMT"));
 
         this.activityCode = 32665;
         this.baseActivity = new WeakReference<>(null);
@@ -73,7 +73,6 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
     }
 
-    @Deprecated
     public synchronized void extendAccessToken(Context context, THAuthenticationProvider.THAuthenticationCallback callback)
     {
         if (this.currentOperationCallback != null)
@@ -85,8 +84,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         {
             @Override public void onComplete(Bundle values)
             {
-                FacebookAuthenticationProvider.this.handleSuccess(
-                        FacebookAuthenticationProvider.this.userId);
+                createAndExecuteMeRequest(session);
             }
 
             @Override public void onFacebookError(FacebookError e)
@@ -112,14 +110,15 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
             cancel();
         }
         this.currentOperationCallback = callback;
-        Activity activity = this.baseActivity == null ? null : this.baseActivity.get();
+        final Activity activity = this.baseActivity == null ? null : this.baseActivity.get();
         if (activity == null)
         {
             throw new IllegalStateException(
                     "Activity must be non-null for Facebook authentication to proceed.");
         }
         int activityCode = this.activityCode;
-        this.session = new Session.Builder(activity).setApplicationId(this.applicationId)
+        this.session = new Session.Builder(activity)
+                .setApplicationId(this.applicationId)
                 .setTokenCachingStrategy(new SharedPreferencesTokenCachingStrategy(activity))
                 .build();
 
@@ -136,7 +135,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         }
         openRequest.setCallback(new Session.StatusCallback()
         {
-            public void call(Session session, SessionState state, Exception exception)
+            @Override public void call(Session session, SessionState state, Exception exception)
             {
                 if (state == SessionState.OPENING)
                 {
@@ -148,32 +147,12 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
                     {
                         return;
                     }
-                    Request meRequest = Request.newGraphPathRequest(session, "me", new Request.Callback()
+                    if (facebook.isSessionValid())
                     {
-                        public void onCompleted(Response response)
-                        {
-                            if (response.getError() != null)
-                            {
-                                if (response.getError().getException() != null)
-                                {
-                                    FacebookAuthenticationProvider.this.handleError(response.getError().getException());
-                                }
-                                else
-                                {
-                                    FacebookAuthenticationProvider.this.handleError(
-                                            new Exception("An error occurred while fetching the Facebook user's identity."));
-                                }
-                            }
-                            else
-                            {
-                                FacebookAuthenticationProvider.this.handleSuccess(
-                                        (String) response.getGraphObject()
-                                                .getProperty("id"));
-                            }
-                        }
-                    });
-                    meRequest.getParameters().putString("fields", "id");
-                    meRequest.executeAsync();
+                        extendAccessToken(activity, currentOperationCallback);
+                        return;
+                    }
+                    createAndExecuteMeRequest(session);
                 }
                 else if (exception != null)
                 {
@@ -186,6 +165,36 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
             }
         });
         this.session.openForRead(openRequest);
+    }
+
+    private void createAndExecuteMeRequest(Session session)
+    {
+        Request meRequest = Request.newGraphPathRequest(session, "me", new Request.Callback()
+        {
+            @Override public void onCompleted(Response response)
+            {
+                if (response.getError() != null)
+                {
+                    if (response.getError().getException() != null)
+                    {
+                        FacebookAuthenticationProvider.this.handleError(response.getError().getException());
+                    }
+                    else
+                    {
+                        FacebookAuthenticationProvider.this.handleError(
+                                new Exception("An error occurred while fetching the Facebook user's identity."));
+                    }
+                }
+                else
+                {
+                    FacebookAuthenticationProvider.this.handleSuccess(
+                            (String) response.getGraphObject()
+                                    .getProperty("id"));
+                }
+            }
+        });
+        meRequest.getParameters().putString("fields", "id");
+        meRequest.executeAsync();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -269,7 +278,7 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         JSONCredentials authData = new JSONCredentials();
         authData.put(SocialAuthenticationProvider.ID_KEY, id);
         authData.put(ACCESS_TOKEN_KEY, accessToken);
-        authData.put(EXPIRATION_DATE_KEY, this.preciseDateFormat.format(expiration));
+        authData.put(EXPIRATION_DATE_KEY, PRECISE_DATE_FORMAT.format(expiration));
         return authData;
     }
 
@@ -332,16 +341,14 @@ public class FacebookAuthenticationProvider implements THAuthenticationProvider
         try
         {
             String accessToken = authData.getString(ACCESS_TOKEN_KEY);
-            Date expirationDate =
-                    this.preciseDateFormat.parse(authData.getString(EXPIRATION_DATE_KEY));
+            Date expirationDate = PRECISE_DATE_FORMAT.parse(authData.getString(EXPIRATION_DATE_KEY));
 
             if (this.facebook != null)
             {
                 this.facebook.setAccessToken(accessToken);
                 this.facebook.setAccessExpires(expirationDate.getTime());
             }
-            TokenCachingStrategy tcs = new SharedPreferencesTokenCachingStrategy(
-                    this.applicationContext);
+            TokenCachingStrategy tcs = new SharedPreferencesTokenCachingStrategy(this.applicationContext);
             Bundle data = tcs.load();
             TokenCachingStrategy.putToken(data, authData.getString(ACCESS_TOKEN_KEY));
             TokenCachingStrategy.putExpirationDate(data, expirationDate);

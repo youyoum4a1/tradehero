@@ -17,7 +17,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 
 public class MarkdownTextView extends TextView implements OnElementClickListener
@@ -120,7 +120,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         SecurityId securityId = new SecurityId(exchange, symbol);
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        BuySellFragment.putSecurityId(args, securityId);
         getNavigator().pushFragment(BuySellFragment.class, args);
     }
 
