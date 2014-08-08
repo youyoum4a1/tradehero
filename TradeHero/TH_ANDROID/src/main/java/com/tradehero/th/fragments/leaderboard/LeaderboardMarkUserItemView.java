@@ -70,7 +70,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         ExpandingLayout.OnExpandListener
 {
     private static final Integer FLAG_USER_NOT_RANKED = -1;
-    private static final int MAX_OWN_RANKING = 10000;
+    private static final int MAX_OWN_RANKING = 1000;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
