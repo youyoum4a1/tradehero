@@ -11,14 +11,11 @@ import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-abstract public class AbstractPartialBottomView<
-            PositionDTOType extends PositionDTO,
-            ExpandableListItemType extends ExpandableListItem<PositionDTOType>
-            >
+public class AbstractPartialBottomView
         extends RelativeLayout
 {
-    protected ExpandableListItemType expandableListItem;
-    protected PositionDTOType positionDTO;
+    protected ExpandableListItem<PositionDTO> expandableListItem;
+    protected PositionDTO positionDTO;
 
     @Inject protected PositionDTOUtils positionDTOUtils;
 
@@ -51,7 +48,7 @@ abstract public class AbstractPartialBottomView<
         return this;
     }
 
-    public void linkWith(ExpandableListItemType expandableListItem, boolean andDisplay)
+    public void linkWith(ExpandableListItem<PositionDTO> expandableListItem, boolean andDisplay)
     {
         this.expandableListItem = expandableListItem;
         linkWith(expandableListItem == null ? null : expandableListItem.getModel(), andDisplay);
@@ -61,7 +58,7 @@ abstract public class AbstractPartialBottomView<
         }
     }
 
-    public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
