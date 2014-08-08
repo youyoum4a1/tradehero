@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionView;
 import java.util.ArrayList;
@@ -229,9 +230,14 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         {
             // Do nothing
         }
-        else
+        else if (convertView instanceof PositionView)
         {
             preparePositionView((PositionView) convertView, item, position);
+        }
+        else if (convertView instanceof PositionPartialTopView)
+        {
+            ((PositionPartialTopView) convertView).linkWith((PositionDTO) item, false);
+            ((PositionPartialTopView) convertView).display();
         }
 
         return convertView;

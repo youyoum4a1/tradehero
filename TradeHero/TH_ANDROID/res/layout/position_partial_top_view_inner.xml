@@ -130,7 +130,7 @@
 
     </LinearLayout>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btn_trade_history"
         android:layout_width="@dimen/medium_logo_w_h"
         android:layout_height="@dimen/medium_logo_w_h"
@@ -140,7 +140,6 @@
         android:scaleType="fitCenter"
         android:src="@drawable/settings_forward_light"
         android:contentDescription="@null"
-        android:background="@drawable/basic_transparent_selector"
         />
 
   </RelativeLayout>

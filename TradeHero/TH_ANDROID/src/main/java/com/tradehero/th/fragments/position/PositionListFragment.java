@@ -29,14 +29,13 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
-import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
@@ -52,10 +51,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.list.ExpandingListView;
 import dagger.Lazy;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -65,15 +62,13 @@ import timber.log.Timber;
 @Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends BasePurchaseManagerFragment
-        implements PositionListener<PositionDTO>,
-        PortfolioHeaderView.OnFollowRequestedListener,
+        implements PortfolioHeaderView.OnFollowRequestedListener,
         PortfolioHeaderView.OnTimelineRequestedListener,
         WithTutorial
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
-    public static final String BUNDLE_KEY_EXPANDED_LIST_FLAGS = PositionListFragment.class.getName() + ".expandedListFlags";
 
     @Inject CurrentUserId currentUserId;
     @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
@@ -85,7 +80,7 @@ public class PositionListFragment
     @Inject PortfolioCache portfolioCache;
     @Inject UserProfileCache userProfileCache;
 
-    @InjectView(R.id.position_list) protected ExpandingListView positionsListView;
+    @InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.pull_to_refresh_position_list) PositionListView pullToRefreshListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
@@ -100,10 +95,9 @@ public class PositionListFragment
     protected UserBaseKey shownUser;
     @Nullable protected UserProfileDTO userProfileDTO;
 
-    @Nullable protected ExpandablePositionItemAdapter positionItemAdapter;
+    @Nullable protected PositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
-    @Nullable private boolean[] expandedPositions;
 
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> refreshGetPositionsDTOListener;
@@ -168,7 +162,6 @@ public class PositionListFragment
         if (savedInstanceState != null)
         {
             firstPositionVisible = savedInstanceState.getInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
-            expandedPositions = savedInstanceState.getBooleanArray(BUNDLE_KEY_EXPANDED_LIST_FLAGS);
         }
 
         View view = inflater.inflate(R.layout.fragment_positions_list, container, false);
@@ -188,21 +181,6 @@ public class PositionListFragment
             }
 
             positionsListView.setAdapter(positionItemAdapter);
-            positionsListView.setExpandingListItemListener(new ExpandingListView.ExpandingListItemListener()
-            {
-                @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-                {
-                    handlePositionItemClicked(adapterView, view, position, id);
-                }
-
-                @Override public void onItemExpanded(AdapterView<?> parent, View view, int position, long id)
-                {
-                }
-
-                @Override public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id)
-                {
-                }
-            });
 
             initPullToRefreshListView(view);
 
@@ -277,24 +255,6 @@ public class PositionListFragment
 
     private void initPullToRefreshListView(View view)
     {
-        ExpandingListView.ExpandableItemClickHandler
-                expandableItemClickListener = new ExpandingListView.ExpandableItemClickHandler(pullToRefreshListView.getRefreshableView());
-        expandableItemClickListener.setExpandingListItemListener(new ExpandingListView.ExpandingListItemListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-            {
-                handlePositionItemClicked(adapterView, view, position, id);
-            }
-
-            @Override public void onItemExpanded(AdapterView<?> parent, View view, int position, long id)
-            {
-            }
-
-            @Override public void onItemCollapsed(AdapterView<?> parent, View view, int position, long id)
-            {
-            }
-        });
-
         //TODO make it better
         pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
@@ -307,18 +267,20 @@ public class PositionListFragment
             {
             }
         });
+        pullToRefreshListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                handlePositionItemClicked(adapterView, view, i, l);
+            }
+        });
     }
 
     protected void createPositionItemAdapter()
     {
-        if (positionItemAdapter != null)
-        {
-            positionItemAdapter.setCellListener(null);
-        }
-        positionItemAdapter = new ExpandablePositionItemAdapter(
+        positionItemAdapter = new PositionItemAdapter(
                 getActivity(),
                 getLayoutResIds());
-        positionItemAdapter.setCellListener(this);
     }
 
     @NotNull protected Map<Integer, Integer> getLayoutResIds()
@@ -327,14 +289,14 @@ public class PositionListFragment
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN, R.layout.position_open_no_period);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_IN_PERIOD, R.layout.position_open_in_period);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_closed_no_period);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED_IN_PERIOD, R.layout.position_closed_in_period);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN, R.layout.position_top_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_IN_PERIOD, R.layout.position_top_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED_IN_PERIOD, R.layout.position_top_view);
         return layouts;
     }
 
-    private void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
+    protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         if (view instanceof PositionNothingView)
         {
@@ -343,6 +305,22 @@ public class PositionListFragment
         else if (view instanceof PositionLockedView)
         {
             popFollowUser(shownUser);
+        }
+        else
+        {
+            Bundle args = new Bundle();
+            // By default tries
+            TradeListFragment.putPositionDTOKey(args, ((PositionDTO) parent.getItemAtPosition(position)).getPositionDTOKey());
+            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+            if (ownedPortfolioId != null)
+            {
+                TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            }
+            DashboardNavigator navigator = getDashboardNavigator();
+            if (navigator != null)
+            {
+                navigator.pushFragment(TradeListFragment.class, args);
+            }
         }
     }
 
@@ -391,25 +369,6 @@ public class PositionListFragment
         {
             firstPositionVisible = positionsListView.getFirstVisiblePosition();
         }
-
-        // save expanding state
-        if (positionItemAdapter != null)
-        {
-            List<Boolean> expandedStates = positionItemAdapter.getExpandedStatesPerPosition();
-            if (expandedStates == null)
-            {
-                expandedPositions = null;
-            }
-            else
-            {
-                expandedPositions = new boolean[expandedStates.size()];
-                int position = 0;
-                for (Boolean state : expandedStates)
-                {
-                    expandedPositions[position++] = state;
-                }
-            }
-        }
         super.onPause();
     }
 
@@ -419,7 +378,6 @@ public class PositionListFragment
         detachGetPositionsTask();
         detachUserProfileCache();
         outState.putInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
-        outState.putBooleanArray(BUNDLE_KEY_EXPANDED_LIST_FLAGS, expandedPositions);
     }
 
     @Override public void onStop()
@@ -437,11 +395,6 @@ public class PositionListFragment
         {
             positionsListView.setOnScrollListener(null);
             positionsListView.setOnTouchListener(null);
-            positionsListView.setExpandingListItemListener(null);
-        }
-        if (positionItemAdapter != null)
-        {
-            positionItemAdapter.setCellListener(null);
         }
         positionItemAdapter = null;
 
@@ -496,7 +449,7 @@ public class PositionListFragment
 
     protected void fetchSimplePage()
     {
-        fetchSimplePage(true);
+        fetchSimplePage(false);
     }
 
     protected void fetchSimplePage(boolean force)
@@ -542,7 +495,6 @@ public class PositionListFragment
             createPositionItemAdapter();
             positionItemAdapter.addAll(getPositionsDTO.positions);
             positionItemAdapter.notifyDataSetChanged();
-            restoreExpandingStates();
             pullToRefreshListView.setAdapter(positionItemAdapter);
             //if (positionsListView != null)
             //{
@@ -561,32 +513,6 @@ public class PositionListFragment
         {
             // TODO finer grained
             display();
-        }
-    }
-
-    protected void restoreExpandingStates()
-    {
-        positionItemAdapter.setExpandedStatesPerPosition(expandedPositions);
-
-        // temporary fix! reason to check if the view is null: sometime dto is received too fast, before onCreateView ....
-        if (getView() != null)
-        {
-            getView().post(
-                    new Runnable()
-                    {
-                        @Override public void run()
-                        {
-                            ExpandablePositionItemAdapter adapterCopy =
-                                    positionItemAdapter;
-                            ExpandingListView listViewCopy = positionsListView;
-                            if (adapterCopy != null && listViewCopy != null)
-                            {
-                                adapterCopy.notifyDataSetChanged();
-                                listViewCopy.setSelection(firstPositionVisible);
-                            }
-                        }
-                    }
-            );
         }
     }
 
@@ -708,64 +634,6 @@ public class PositionListFragment
         thRouter.save(args, userBaseKey);
         ((DashboardActivity) getActivity())
                 .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="PositionListener">
-    @Override public void onTradeHistoryClicked(@NotNull PositionDTO clickedPositionDTO)
-    {
-        Bundle args = new Bundle();
-        // By default tries
-        TradeListFragment.putPositionDTOKey(args, clickedPositionDTO.getPositionDTOKey());
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-        getDashboardNavigator().pushFragment(TradeListFragment.class, args);
-    }
-
-    @Override public void onBuyClicked(PositionDTO clickedPositionDTO)
-    {
-        pushBuySellFragment(clickedPositionDTO, true);
-    }
-
-    @Override public void onSellClicked(PositionDTO clickedPositionDTO)
-    {
-        pushBuySellFragment(clickedPositionDTO, false);
-    }
-
-    @Override public void onAddAlertClicked(@NotNull PositionDTO clickedPositionDTO)
-    {
-        SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
-        if (securityId != null && getApplicablePortfolioId() != null)
-        {
-            Bundle args = new Bundle();
-            AlertCreateFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-            AlertCreateFragment.putSecurityId(args, securityId);
-            getDashboardNavigator().pushFragment(AlertCreateFragment.class, args);
-        }
-        else
-        {
-            Timber.d("SecurityId was lost for clickedPositionDTO %s", clickedPositionDTO);
-            THToast.show(R.string.error_find_security_id_to_int);
-        }
-    }
-
-    @Override public void onStockInfoClicked(@NotNull PositionDTO clickedPositionDTO)
-    {
-        SecurityId securityId = securityIdCache.get().get(clickedPositionDTO.getSecurityIntegerId());
-        if (securityId == null)
-        {
-            THToast.show(R.string.error_find_security_id_to_int);
-            Timber.d("SecurityId is null", new IllegalStateException());
-        }
-        else
-        {
-            Bundle args = new Bundle();
-            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            getDashboardNavigator().pushFragment(StockInfoFragment.class, args);
-        }
     }
     //</editor-fold>
 

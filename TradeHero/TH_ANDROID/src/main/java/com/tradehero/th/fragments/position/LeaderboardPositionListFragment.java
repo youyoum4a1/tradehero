@@ -36,16 +36,8 @@ public class LeaderboardPositionListFragment
 
     @Override protected void createPositionItemAdapter()
     {
+        super.createPositionItemAdapter();
         isTimeRestricted = getLeaderBoardTimeRestricted(getArguments());
-
-        if (positionItemAdapter != null)
-        {
-            positionItemAdapter.setCellListener(null);
-        }
-        positionItemAdapter = new ExpandablePositionItemAdapter(
-                getActivity(),
-                getLayoutResIds());
-        positionItemAdapter.setCellListener(this);
     }
 
     @Override public void onResume()
