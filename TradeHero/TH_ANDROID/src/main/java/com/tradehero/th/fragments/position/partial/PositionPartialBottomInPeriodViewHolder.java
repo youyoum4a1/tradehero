@@ -5,10 +5,11 @@ import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
@@ -16,18 +17,18 @@ import javax.inject.Inject;
 
 public class PositionPartialBottomInPeriodViewHolder
 {
-    @InjectView(R.id.in_period_pl_value_header) protected TextView inPeriodPLHeader;
-    @InjectView(R.id.in_period_pl_value) protected TextView inPeriodPL;
-    @InjectView(R.id.in_period_additional_invested) protected TextView inPeriodAdditionalInvested;
-    @InjectView(R.id.in_period_start_value) protected TextView inPeriodValueAtStart;
-    @InjectView(R.id.in_period_start_value_date) protected TextView inPeriodStartValueDate;
-    @InjectView(R.id.in_period_roi_value) protected TextView inPeriodRoiValue;
-    @InjectView(R.id.position_list_in_period_title) protected View inPeriodTitle;
-    @InjectView(R.id.position_list_bottom_in_period_container) protected View inPeriodPositionContainer;
-    @InjectView(R.id.position_list_overall_title) protected View overallTitle;
+    @InjectView(R.id.in_period_pl_value_header) @Optional protected TextView inPeriodPLHeader;
+    @InjectView(R.id.in_period_pl_value) @Optional protected TextView inPeriodPL;
+    @InjectView(R.id.in_period_additional_invested) @Optional protected TextView inPeriodAdditionalInvested;
+    @InjectView(R.id.in_period_start_value) @Optional protected TextView inPeriodValueAtStart;
+    @InjectView(R.id.in_period_start_value_date) @Optional protected TextView inPeriodStartValueDate;
+    @InjectView(R.id.in_period_roi_value) @Optional protected TextView inPeriodRoiValue;
+    @InjectView(R.id.position_list_in_period_title) @Optional protected View inPeriodTitle;
+    @InjectView(R.id.position_list_bottom_in_period_container) @Optional protected View inPeriodPositionContainer;
+    @InjectView(R.id.position_list_overall_title) @Optional protected View overallTitle;
 
     private final Context context;
-    private LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem;
+    private ExpandableListItem<PositionDTO> expandableListItem;
     private PositionDTO positionDTO;
 
     @Inject protected PositionDTOUtils positionDTOUtils;
@@ -45,7 +46,7 @@ public class PositionPartialBottomInPeriodViewHolder
         return positionDTO instanceof PositionInPeriodDTO;
     }
 
-    public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem, boolean andDisplay)
+    public void linkWith(ExpandableListItem<PositionDTO> expandableListItem, boolean andDisplay)
     {
         this.expandableListItem = expandableListItem;
         linkWith(expandableListItem == null ? null : expandableListItem.getModel(), andDisplay);
