@@ -42,7 +42,7 @@ public class LeaderboardPositionListFragment
         {
             positionItemAdapter.setCellListener(null);
         }
-        positionItemAdapter = new LeaderboardExpandablePositionItemAdapter(
+        positionItemAdapter = new ExpandablePositionItemAdapter(
                 getActivity(),
                 getLayoutResIds());
         positionItemAdapter.setCellListener(this);

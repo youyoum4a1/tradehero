@@ -4,14 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.ExpandableListReporter;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.fragments.position.view.AbstractPositionView;
+import com.tradehero.th.fragments.position.view.PositionView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,26 +21,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class ExpandablePositionItemAdapter
-        extends BaseAdapter implements ExpandableListReporter
+public class ExpandablePositionItemAdapter extends PositionItemAdapter
+        implements ExpandableListReporter
 {
     protected List<PositionItemType> itemTypes = new ArrayList<>();
     protected List<Object> items = new ArrayList<>();
-
-    protected final Context context;
 
     private Map<PositionItemType, Integer> positionItemTypeToLayoutId;
 
     private WeakReference<PositionListener<PositionDTO>> cellListener;
 
+    //<editor-fold desc="Constructors">
     public ExpandablePositionItemAdapter(
             Context context,
             Map<PositionItemType, Integer> positionItemTypeToLayoutId)
     {
-        super();
-        this.context = context;
+        super(context, 0);
         this.positionItemTypeToLayoutId = positionItemTypeToLayoutId;
     }
+    //</editor-fold>
 
     @Override public boolean hasStableIds()
     {
@@ -219,18 +217,18 @@ public class ExpandablePositionItemAdapter
     {
         if (headerDTO == null || headerDTO.count == null)
         {
-            return context.getString(R.string.position_list_header_open_unsure);
+            return getContext().getString(R.string.position_list_header_open_unsure);
         }
-        return context.getString(R.string.position_list_header_open, (int) headerDTO.count);
+        return getContext().getString(R.string.position_list_header_open, (int) headerDTO.count);
     }
 
     public String getClosedHeaderText(HeaderDTO headerDTO)
     {
         if (headerDTO == null || headerDTO.count == null)
         {
-            return context.getString(R.string.position_list_header_closed_unsure);
+            return getContext().getString(R.string.position_list_header_closed_unsure);
         }
-        return context.getString(R.string.position_list_header_closed, (int) headerDTO.count);
+        return getContext().getString(R.string.position_list_header_closed, (int) headerDTO.count);
     }
 
     @Override public int getViewTypeCount()
@@ -248,7 +246,7 @@ public class ExpandablePositionItemAdapter
         {
             try
             {
-                convertView = LayoutInflater.from(context).inflate(layoutToInflate, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(layoutToInflate, parent, false);
             }
             catch (Throwable t)
             {
@@ -276,7 +274,7 @@ public class ExpandablePositionItemAdapter
         else if (PositionItemType.takesPositionDTO(itemPositionType) && convertView != null)
         {
             ExpandableListItem<PositionDTO> expandableWrapper = (ExpandableListItem<PositionDTO>) item;
-            AbstractPositionView cell = (AbstractPositionView) convertView;
+            PositionView cell = (PositionView) convertView;
             cell.linkWith(expandableWrapper, false);
             cell.display();
             cell.setListener(new AbstractPositionItemAdapterPositionListener());

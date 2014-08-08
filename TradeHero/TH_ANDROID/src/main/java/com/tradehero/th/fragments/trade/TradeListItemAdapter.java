@@ -9,7 +9,7 @@ import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.fragments.position.view.AbstractPositionView;
+import com.tradehero.th.fragments.position.view.PositionView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
@@ -171,9 +171,9 @@ public class TradeListItemAdapter
                     convertView = inflater.inflate(getPositionLayoutResId(), viewGroup, false);
                 }
 
-                ((AbstractPositionView) convertView).linkWith(this.shownPositionDTO, false);
-                ((AbstractPositionView) convertView).linkWithHasHistoryButton(false, false);
-                ((AbstractPositionView) convertView).display();
+                ((PositionView) convertView).linkWith(this.shownPositionDTO, false);
+                ((PositionView) convertView).linkWithHasHistoryButton(false, false);
+                ((PositionView) convertView).display();
                 View buttons = convertView.findViewById(R.id.position_shortcuts);
                 if (buttons != null)
                 {

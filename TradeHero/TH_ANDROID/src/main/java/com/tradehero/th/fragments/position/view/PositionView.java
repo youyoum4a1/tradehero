@@ -16,13 +16,10 @@ import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import timber.log.Timber;
 
-public abstract class AbstractPositionView<
-            PositionDTOType extends PositionDTO,
-            ExpandableListItemType extends ExpandableListItem<PositionDTOType>>
-        extends LinearLayout
+public class PositionView extends LinearLayout
 {
     @InjectView(R.id.position_partial_top) protected PositionPartialTopView topView;
-    @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTOType, ExpandableListItemType>*/ bottomView;
+    @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
 
     @InjectView(R.id.color_indicator) protected ColorIndicator colorIndicator;
     @InjectView(R.id.btn_buy_now) protected View btnBuy;
@@ -32,23 +29,23 @@ public abstract class AbstractPositionView<
     @InjectView(R.id.btn_trade_history) protected View historyButton;
 
     protected boolean hasHistoryButton = true;
-    protected ExpandableListItemType expandableListItem;
-    protected PositionDTOType positionDTO;
+    protected ExpandableListItem<PositionDTO> expandableListItem;
+    protected PositionDTO positionDTO;
 
-    protected PositionListener<PositionDTOType> listener = null;
+    protected PositionListener<PositionDTO> listener = null;
 
     //<editor-fold desc="Constructors">
-    public AbstractPositionView(Context context)
+    public PositionView(Context context)
     {
         super(context);
     }
 
-    public AbstractPositionView(Context context, AttributeSet attrs)
+    public PositionView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public AbstractPositionView(Context context, AttributeSet attrs, int defStyle)
+    public PositionView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -81,7 +78,7 @@ public abstract class AbstractPositionView<
 
     protected void notifyBuyClicked()
     {
-        PositionListener<PositionDTOType> listenerCopy = listener;
+        PositionListener<PositionDTO> listenerCopy = listener;
         if (listenerCopy != null)
         {
             listenerCopy.onBuyClicked(getPositionDTO());
@@ -96,7 +93,7 @@ public abstract class AbstractPositionView<
 
     protected void notifySellClicked()
     {
-        PositionListener<PositionDTOType> listenerCopy = listener;
+        PositionListener<PositionDTO> listenerCopy = listener;
         if (listenerCopy != null)
         {
             listenerCopy.onSellClicked(getPositionDTO());
@@ -111,7 +108,7 @@ public abstract class AbstractPositionView<
 
     protected void notifyAddAlertClicked()
     {
-        PositionListener<PositionDTOType> listenerCopy = listener;
+        PositionListener<PositionDTO> listenerCopy = listener;
         if (listenerCopy != null)
         {
             listenerCopy.onAddAlertClicked(getPositionDTO());
@@ -126,7 +123,7 @@ public abstract class AbstractPositionView<
 
     protected void notifyStockInfoClicked()
     {
-        PositionListener<PositionDTOType> listenerCopy = listener;
+        PositionListener<PositionDTO> listenerCopy = listener;
         if (listenerCopy != null)
         {
             listenerCopy.onStockInfoClicked(getPositionDTO());
@@ -141,7 +138,7 @@ public abstract class AbstractPositionView<
 
     protected void notifyTradeHistoryClicked()
     {
-        PositionListener<PositionDTOType> listenerCopy = listener;
+        PositionListener<PositionDTO> listenerCopy = listener;
         if (listenerCopy != null)
         {
             listenerCopy.onTradeHistoryClicked(getPositionDTO());
@@ -157,7 +154,7 @@ public abstract class AbstractPositionView<
         }
     }
 
-    public void linkWith(ExpandableListItemType expandableListItem, boolean andDisplay)
+    public void linkWith(ExpandableListItem<PositionDTO> expandableListItem, boolean andDisplay)
     {
         this.expandableListItem = expandableListItem;
         linkWith(expandableListItem == null ? null : expandableListItem.getModel(), andDisplay);
@@ -171,7 +168,7 @@ public abstract class AbstractPositionView<
         }
     }
 
-    public void linkWith(PositionDTOType positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
         this.positionDTO = positionDTO;
 
@@ -190,7 +187,7 @@ public abstract class AbstractPositionView<
         }
     }
 
-    public PositionDTOType getPositionDTO()
+    public PositionDTO getPositionDTO()
     {
         Timber.d("getPositionDTO %s", positionDTO);
         Timber.d("getPositionDTO %s", positionDTO.getPositionDTOKey());
@@ -257,12 +254,12 @@ public abstract class AbstractPositionView<
         }
     }
 
-    public PositionListener<PositionDTOType> getListener()
+    public PositionListener<PositionDTO> getListener()
     {
         return listener;
     }
 
-    public void setListener(PositionListener<PositionDTOType> listener)
+    public void setListener(PositionListener<PositionDTO> listener)
     {
         this.listener = listener;
     }
