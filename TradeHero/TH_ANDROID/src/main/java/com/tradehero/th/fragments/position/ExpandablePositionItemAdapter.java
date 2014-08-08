@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class AbstractPositionItemAdapter
+public class ExpandablePositionItemAdapter
         extends BaseAdapter implements ExpandableListReporter
 {
     protected List<PositionItemType> itemTypes = new ArrayList<>();
@@ -34,7 +34,7 @@ public class AbstractPositionItemAdapter
 
     private WeakReference<PositionListener<PositionDTO>> cellListener;
 
-    public AbstractPositionItemAdapter(
+    public ExpandablePositionItemAdapter(
             Context context,
             Map<PositionItemType, Integer> positionItemTypeToLayoutId)
     {

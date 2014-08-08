@@ -8,7 +8,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
+import com.tradehero.th.fragments.position.LeaderboardExpandablePositionItemAdapter;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
@@ -27,7 +27,7 @@ public class PositionPartialBottomInPeriodViewHolder
     @InjectView(R.id.position_list_overall_title) protected View overallTitle;
 
     private final Context context;
-    private LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem;
+    private LeaderboardExpandablePositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem;
     private PositionDTO positionDTO;
 
     @Inject protected PositionDTOUtils positionDTOUtils;
@@ -45,7 +45,7 @@ public class PositionPartialBottomInPeriodViewHolder
         return positionDTO instanceof PositionInPeriodDTO;
     }
 
-    public void linkWith(LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem, boolean andDisplay)
+    public void linkWith(LeaderboardExpandablePositionItemAdapter.ExpandableLeaderboardPositionItem expandableListItem, boolean andDisplay)
     {
         this.expandableListItem = expandableListItem;
         linkWith(expandableListItem == null ? null : expandableListItem.getModel(), andDisplay);

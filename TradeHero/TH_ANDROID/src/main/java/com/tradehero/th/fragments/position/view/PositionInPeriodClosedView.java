@@ -3,11 +3,11 @@ package com.tradehero.th.fragments.position.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.fragments.position.LeaderboardPositionItemAdapter;
+import com.tradehero.th.fragments.position.LeaderboardExpandablePositionItemAdapter;
 
 public class PositionInPeriodClosedView extends AbstractPositionView<
         PositionDTO,
-        LeaderboardPositionItemAdapter.ExpandableLeaderboardPositionItem>
+        LeaderboardExpandablePositionItemAdapter.ExpandableLeaderboardPositionItem>
 {
     //<editor-fold desc="Constructors">
     public PositionInPeriodClosedView(Context context)

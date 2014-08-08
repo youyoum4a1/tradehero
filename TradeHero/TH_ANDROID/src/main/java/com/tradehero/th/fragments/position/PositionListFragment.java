@@ -100,7 +100,7 @@ public class PositionListFragment
     protected UserBaseKey shownUser;
     @Nullable protected UserProfileDTO userProfileDTO;
 
-    @Nullable protected AbstractPositionItemAdapter positionItemAdapter;
+    @Nullable protected ExpandablePositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
     @Nullable private boolean[] expandedPositions;
@@ -315,7 +315,7 @@ public class PositionListFragment
         {
             positionItemAdapter.setCellListener(null);
         }
-        positionItemAdapter = new AbstractPositionItemAdapter(
+        positionItemAdapter = new ExpandablePositionItemAdapter(
                 getActivity(),
                 getLayoutResIds());
         positionItemAdapter.setCellListener(this);
@@ -575,7 +575,7 @@ public class PositionListFragment
                     {
                         @Override public void run()
                         {
-                            AbstractPositionItemAdapter adapterCopy =
+                            ExpandablePositionItemAdapter adapterCopy =
                                     positionItemAdapter;
                             ExpandingListView listViewCopy = positionsListView;
                             if (adapterCopy != null && listViewCopy != null)

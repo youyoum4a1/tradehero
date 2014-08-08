@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.position;
 import android.os.Bundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class LeaderboardPositionListFragment
         extends PositionListFragment
@@ -43,10 +42,9 @@ public class LeaderboardPositionListFragment
         {
             positionItemAdapter.setCellListener(null);
         }
-        positionItemAdapter = new LeaderboardPositionItemAdapter(
+        positionItemAdapter = new LeaderboardExpandablePositionItemAdapter(
                 getActivity(),
-                getLayoutResIds(),
-                isTimeRestricted);
+                getLayoutResIds());
         positionItemAdapter.setCellListener(this);
     }
 
