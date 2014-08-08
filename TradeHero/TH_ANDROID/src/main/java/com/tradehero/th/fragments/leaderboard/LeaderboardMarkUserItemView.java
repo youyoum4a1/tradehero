@@ -287,7 +287,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(leaderboardItem);
     }
 
-    public void linkWith(UserBaseDTO userBaseDTO)
+    public void linkWith(@NotNull UserBaseDTO userBaseDTO)
     {
         displayRanking(userBaseDTO);
 
@@ -306,7 +306,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         displayCountryLogo(userBaseDTO);
     }
 
-    private void displayRanking(UserBaseDTO userBaseDTO)
+    private void displayRanking(@NotNull UserBaseDTO userBaseDTO)
     {
         if (currentUserId.get() == userBaseDTO.id)
         {

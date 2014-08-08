@@ -336,7 +336,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         freeFollowMiddleCallback = null;
     }
 
-    @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
+    @Override protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
         if(leaderboardMarkUserListAdapter != null)
@@ -501,7 +501,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             this.heroId = heroId;
         }
 
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        @Override public void success(@NotNull UserProfileDTO userProfileDTO, Response response)
         {
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
             setCurrentUserProfileDTO(userProfileDTO);
@@ -524,7 +524,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected class LeaderboardMarkUserListPremiumUserFollowedListener implements PremiumFollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(UserBaseKey userFollowed, UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
             setCurrentUserProfileDTO(currentUserProfileDTO);
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));

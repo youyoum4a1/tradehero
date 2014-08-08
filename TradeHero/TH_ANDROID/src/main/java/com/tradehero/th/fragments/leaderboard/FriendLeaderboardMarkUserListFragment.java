@@ -196,7 +196,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
     }
 
-    @Override protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
+    @Override protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
         if (leaderboardFriendsUserListAdapter != null)
@@ -265,7 +265,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         });
     }
 
-    protected void handleFollowSuccess(UserProfileDTO userProfileDTO)
+    protected void handleFollowSuccess(@NotNull UserProfileDTO userProfileDTO)
     {
         setCurrentUserProfileDTO(userProfileDTO);
     }

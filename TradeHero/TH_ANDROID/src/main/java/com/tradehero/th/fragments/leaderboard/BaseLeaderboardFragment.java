@@ -183,7 +183,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return R.menu.leaderboard_menu;
     }
 
-    protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
+    protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
     }
