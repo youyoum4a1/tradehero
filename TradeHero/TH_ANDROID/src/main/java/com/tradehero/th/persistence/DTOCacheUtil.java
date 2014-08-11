@@ -21,6 +21,8 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
+import com.tradehero.th.persistence.competition.CompetitionCache;
+import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
@@ -70,6 +72,8 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<AlertCache> alertCache;
     protected final Lazy<AlertCompactCache> alertCompactCache;
     protected final Lazy<AlertCompactListCache> alertCompactListCache;
+    protected final Lazy<CompetitionListCache> competitionListCache;
+    protected final Lazy<CompetitionCache> competitionCache;
     protected final Lazy<DiscussionCache> discussionCache;
     protected final Lazy<DiscussionListCacheNew> discussionListCache;
     protected final Lazy<ExchangeCompactListCache> exchangeCompactListCache;
@@ -117,6 +121,8 @@ import org.jetbrains.annotations.Nullable;
             Lazy<AlertCache> alertCache,
             Lazy<AlertCompactCache> alertCompactCache,
             Lazy<AlertCompactListCache> alertCompactListCache,
+            Lazy<CompetitionListCache> competitionListCache,
+            Lazy<CompetitionCache> competitionCache,
             Lazy<DiscussionCache> discussionCache,
             Lazy<DiscussionListCacheNew> discussionListCache,
             Lazy<ExchangeCompactListCache> exchangeCompactListCache,
@@ -159,6 +165,8 @@ import org.jetbrains.annotations.Nullable;
         this.alertCache = alertCache;
         this.alertCompactCache = alertCompactCache;
         this.alertCompactListCache = alertCompactListCache;
+        this.competitionListCache = competitionListCache;
+        this.competitionCache = competitionCache;
         this.discussionCache = discussionCache;
         this.discussionListCache = discussionListCache;
         this.exchangeCompactListCache = exchangeCompactListCache;
@@ -205,6 +213,8 @@ import org.jetbrains.annotations.Nullable;
         alertCache.get().invalidateAll();
         alertCompactCache.get().invalidateAll();
         alertCompactListCache.get().invalidateAll();
+        competitionListCache.get().invalidateAll();
+        competitionCache.get().invalidateAll();
         discussionCache.get().invalidateAll();
         discussionListCache.get().invalidateAll();
         followerSummaryCache.get().invalidateAll();

@@ -4,6 +4,7 @@ import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
 import dagger.Lazy;
@@ -18,23 +19,27 @@ import org.jetbrains.annotations.Nullable;
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
+    @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
     @NotNull private final Lazy<LeaderboardDefCache> leaderboardDefCache;
     @NotNull private final Lazy<LeaderboardUserCache> leaderboardUserCache;
 
     //<editor-fold desc="Constructors">
     @Inject public CompetitionCache(
+            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
             @NotNull Lazy<LeaderboardDefCache> leaderboardDefCache,
             @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
-        this(DEFAULT_MAX_SIZE, leaderboardDefCache, leaderboardUserCache);
+        this(DEFAULT_MAX_SIZE, competitionServiceWrapper, leaderboardDefCache, leaderboardUserCache);
     }
 
     public CompetitionCache(
             int maxSize,
+            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
             @NotNull Lazy<LeaderboardDefCache> leaderboardDefCache,
             @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
         super(maxSize);
+        this.competitionServiceWrapper = competitionServiceWrapper;
         this.leaderboardDefCache = leaderboardDefCache;
         this.leaderboardUserCache = leaderboardUserCache;
     }
@@ -42,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
     @Override @NotNull public CompetitionDTO fetch(@NotNull CompetitionId key) throws Throwable
     {
-        throw new IllegalStateException("There is no fetch on this cache");
+        return competitionServiceWrapper.getCompetition(key);
     }
 
     @Override @NotNull protected CompetitionCutDTO cutValue(@NotNull CompetitionId key, @NotNull CompetitionDTO value)
