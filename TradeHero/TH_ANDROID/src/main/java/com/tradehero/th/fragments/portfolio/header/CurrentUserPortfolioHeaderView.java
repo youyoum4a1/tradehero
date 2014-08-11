@@ -64,7 +64,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     {
         if (totalValueTextView != null)
         {
-            if (this.portfolioDTO != null)
+            if (portfolioDTO != null)
             {
                 String valueString = String.format("%s %,.0f", this.portfolioDTO.getNiceCurrency(), this.portfolioDTO.totalValue);
                 totalValueTextView.setText(valueString);
@@ -76,9 +76,9 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     {
         if (cashValueTextView != null)
         {
-            if (this.portfolioDTO != null)
+            if (portfolioDTO != null)
             {
-                String cashString = String.format("%s %,.0f", this.portfolioDTO.getNiceCurrency(), this.portfolioDTO.cashBalance);
+                String cashString = String.format("%s %,.0f", portfolioDTO.getNiceCurrency(), this.portfolioDTO.cashBalance);
                 cashValueTextView.setText(cashString);
             }
         }
