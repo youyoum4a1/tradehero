@@ -325,7 +325,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override @NotNull public TrendingSecurityListType getSecurityListType(int page)
     {
-        return trendingFilterTypeDTO.getSecurityListType(trendingFilterTypeDTO.exchange.getApiName(), page, perPage);
+        return trendingFilterTypeDTO.getSecurityListType(page, perPage);
     }
 
     public void pushSearchIn()
@@ -505,8 +505,6 @@ public class TrendingFragment extends SecurityListFragment
                 AppTiming.splashCreate - AppTiming.appCreate,
                 AppTiming.dashboardCreate - AppTiming.splashCreate,
                 AppTiming.trendingFilled - AppTiming.dashboardCreate);
-
-        //dtoCacheUtil.initialPrefetches();
     }
 
     private void refreshAdapterWithTiles(boolean refreshTileTypes)

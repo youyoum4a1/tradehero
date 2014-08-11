@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence;
 
+import android.content.Context;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.competition.key.ProviderListKey;
@@ -9,9 +10,12 @@ import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.alert.AlertCache;
@@ -52,6 +56,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -104,6 +109,7 @@ import org.jetbrains.annotations.Nullable;
     protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     protected final StringPreference serverEndpointPreference;
     @NotNull protected final UserBaseDTOUtil userBaseDTOUtil;
+    @NotNull protected final Context context;
 
     //<editor-fold desc="Constructors">
     @Inject public DTOCacheUtil(
@@ -146,7 +152,8 @@ import org.jetbrains.annotations.Nullable;
             Lazy<WatchlistPositionCache> watchlistPositionCache,
             Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
-            @NotNull UserBaseDTOUtil userBaseDTOUtil)
+            @NotNull UserBaseDTOUtil userBaseDTOUtil,
+            @NotNull Context context)
     {
         this.currentUserId = currentUserId;
         this.alertCache = alertCache;
@@ -189,6 +196,7 @@ import org.jetbrains.annotations.Nullable;
         this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
         this.userBaseDTOUtil = userBaseDTOUtil;
+        this.context = context;
     }
     //</editor-fold>
 
@@ -239,7 +247,6 @@ import org.jetbrains.annotations.Nullable;
     public void anonymousPrefetches()
     {
         preFetchExchanges();
-        preFetchTrending();
         preFetchProviders();
     }
 
@@ -250,8 +257,35 @@ import org.jetbrains.annotations.Nullable;
 
     public void preFetchTrending()
     {
-        // TODO Make it take care of the users's default stock exchange.
-        this.securityCompactListCache.get().getOrFetchAsync(new TrendingBasicSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        ExchangeCompactDTOList exchangeCompactDTOs = exchangeCompactListCache.get().get(new ExchangeListType());
+        if (currentUserProfile != null && exchangeCompactDTOs != null)
+        {
+            preFetchTrending(currentUserProfile, exchangeCompactDTOs);
+        }
+    }
+
+    protected void preFetchTrending(
+            @NotNull UserBaseDTO userBaseDTO,
+            @NotNull List<? extends ExchangeCompactDTO> exchangeCompactDTOs)
+    {
+        ExchangeCompactDTO initialExchange = userBaseDTOUtil.getInitialExchange(userBaseDTO, exchangeCompactDTOs);
+        ExchangeCompactSpinnerDTO initialExchangeSpinner;
+        if (initialExchange == null)
+        {
+            initialExchangeSpinner = new ExchangeCompactSpinnerDTO(
+                    context.getResources());
+        }
+        else
+        {
+            initialExchangeSpinner = new ExchangeCompactSpinnerDTO(
+                    context.getResources(),
+                    initialExchange);
+        }
+        TrendingFilterTypeBasicDTO filterTypeBasicDTO = new TrendingFilterTypeBasicDTO(initialExchangeSpinner);
+
+        this.securityCompactListCache.get().getOrFetchAsync(
+                filterTypeBasicDTO.getSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
     }
 
     public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
@@ -279,7 +313,6 @@ import org.jetbrains.annotations.Nullable;
     public void initialPrefetches()
     {
         preFetchWatchlist();
-        //preFetchProviders();
 
         conveniencePrefetches(); // TODO move them so time after the others
     }
