@@ -22,7 +22,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th.persistence.leaderboard.UserOnLeaderboardCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -42,12 +42,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Inject LeaderboardSortHelper leaderboardSortHelper;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
-    @Inject UserOnLeaderboardCache userOnLeaderboardCache;
+    @Inject LeaderboardCache leaderboardCache;
 
     protected LeaderboardDefKey leaderboardDefKey;
     protected UserProfileDTO currentUserProfileDTO;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO> userOnLeaderboardCacheListener;
+    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> userOnLeaderboardCacheListener;
 
     protected int currentRank;
     protected Double roiToBeShown;
@@ -156,7 +156,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected void detachUserOnLeaderboardCacheListener()
     {
-        userOnLeaderboardCache.unregister(userOnLeaderboardCacheListener);
+        leaderboardCache.unregister(userOnLeaderboardCacheListener);
     }
 
     protected void fetchCurrentUserProfile()
@@ -173,8 +173,8 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             detachUserOnLeaderboardCacheListener();
             UserOnLeaderboardKey userOnLeaderboardKey =
                     new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
-            userOnLeaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
-            userOnLeaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
+            leaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
+            leaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
         }
     }
 
@@ -312,7 +312,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return new BaseLeaderboardFragmentProfileCacheListener();
     }
 
-    protected DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO> createUserOnLeaderboardListener()
+    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createUserOnLeaderboardListener()
     {
         return new BaseLeaderboardFragmentUserOnLeaderboardCacheListener();
     }
@@ -336,10 +336,9 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected class BaseLeaderboardFragmentUserOnLeaderboardCacheListener implements DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO>
+    protected class BaseLeaderboardFragmentUserOnLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
     {
-
-        @Override public void onDTOReceived(@NotNull UserOnLeaderboardKey key, @NotNull LeaderboardDTO value)
+        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value)
         {
             if (value.users != null && value.users.size() == 1)
             {
@@ -356,7 +355,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             initCurrentRankHeaderView();
         }
 
-        @Override public void onErrorThrown(@NotNull UserOnLeaderboardKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to download current User position on leaderboard", error);
             THToast.show(R.string.error_fetch_user_on_leaderboard);

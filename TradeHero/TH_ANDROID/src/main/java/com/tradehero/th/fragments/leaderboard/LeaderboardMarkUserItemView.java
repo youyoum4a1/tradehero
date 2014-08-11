@@ -231,8 +231,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             }
         }
         unsetLeaderboardOwnUserRankingCallback();
-        leaderboardOwnUserRankingCallback = leaderboardServiceWrapper.get().getUserOnLeaderboard(new UserOnLeaderboardKey(leaderboardKey,
-                    currentUserId.toUserBaseKey()), null, new LeaderboardUserRankingCallback());
+        // TODO replace with a cache call.
+        leaderboardOwnUserRankingCallback = leaderboardServiceWrapper.get().getLeaderboard(
+                new UserOnLeaderboardKey(leaderboardKey,
+                    currentUserId.toUserBaseKey()), new LeaderboardUserRankingCallback());
     }
 
     private void unsetLeaderboardOwnUserRankingCallback()

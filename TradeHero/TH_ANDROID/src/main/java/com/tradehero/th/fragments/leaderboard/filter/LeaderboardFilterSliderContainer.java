@@ -63,7 +63,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
         {
             @Override public void onClick(View view)
             {
-                setParameters(getStartingFilter(getResources(), perPagedFilteredLeaderboardKey.key), leaderboardDTO);
+                setParameters(getStartingFilter(getResources(), perPagedFilteredLeaderboardKey.id), leaderboardDTO);
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterReset));
             }
         });
@@ -87,7 +87,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     public PerPagedFilteredLeaderboardKey getFilteredLeaderboardKey()
     {
         this.perPagedFilteredLeaderboardKey = new PerPagedFilteredLeaderboardKey(
-                this.perPagedFilteredLeaderboardKey.key,
+                this.perPagedFilteredLeaderboardKey.id,
                 null, // Page but we don't care
                 null, // PerPage but we don't care
                 minWinRatioView.getCurrentValue(),
