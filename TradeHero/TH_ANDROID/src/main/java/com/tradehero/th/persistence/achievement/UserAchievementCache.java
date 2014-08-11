@@ -5,9 +5,10 @@ import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.UserAchievementId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-public class UserAchievementCache extends StraightDTOCacheNew<UserAchievementId, UserAchievementDTO>
+@Singleton public class UserAchievementCache extends StraightDTOCacheNew<UserAchievementId, UserAchievementDTO>
 {
     //TODO implements CutDTO when AchievementsDTO has its own cache?
 

@@ -7,11 +7,12 @@ import com.tradehero.th.api.level.LevelDefIdList;
 import com.tradehero.th.api.level.key.LevelDefId;
 import java.util.List;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LevelDefCache extends StraightDTOCacheNew<LevelDefId, LevelDefDTO>
+@Singleton public class LevelDefCache extends StraightDTOCacheNew<LevelDefId, LevelDefDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 100;
 

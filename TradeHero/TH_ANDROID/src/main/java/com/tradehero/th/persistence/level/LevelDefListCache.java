@@ -6,10 +6,11 @@ import com.tradehero.th.api.level.LevelDefIdList;
 import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LevelDefListCache extends StraightCutDTOCacheNew<LevelDefListId, LevelDefDTOList, LevelDefIdList>
+@Singleton public class LevelDefListCache extends StraightCutDTOCacheNew<LevelDefListId, LevelDefDTOList, LevelDefIdList>
 {
     public static final int DEFAULT_MAX_SIZE = 1;
 
