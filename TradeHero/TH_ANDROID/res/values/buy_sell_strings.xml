@@ -21,6 +21,8 @@
   <string name="buy_sell_button_sell">Sell @ %1$s</string>
   <string name="buy_sell_button_cannot_buy" translatable="false">-</string>
   <string name="buy_sell_button_cannot_sell" translatable="false">-</string>
+  <string name="buy_sell_sell_profit">Profit: %s</string>
+  <string name="buy_sell_sell_loss">Loss: %s</string>
   <string name="buy_sell_confirm_share_public">Public</string>
   <string name="buy_sell_confirm_share_private">Private</string>
   <string name="buy_sell_confirm_buy_comment">Add a comment…</string>

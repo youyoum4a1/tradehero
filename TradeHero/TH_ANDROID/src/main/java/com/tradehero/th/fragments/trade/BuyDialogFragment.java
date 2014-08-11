@@ -7,6 +7,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class BuyDialogFragment extends AbstractTransactionDialogFragment
 {
@@ -30,6 +31,11 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
                 .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
                 .build();
         return getString(R.string.buy_sell_button_buy, bThSignedNumber.toString());
+    }
+
+    @Override @Nullable protected Double getProfitOrLoss()
+    {
+        return null;
     }
 
     @Override protected int getCashLeftLabelResId()
