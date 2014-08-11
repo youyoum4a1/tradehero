@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -273,6 +274,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
         mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
         mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
+        mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent)
+            {
+                return false;
+            }
+        });
 
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
