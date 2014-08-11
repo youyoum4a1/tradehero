@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -23,7 +24,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -43,10 +43,8 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.network.service.LeaderboardServiceWrapper;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
-import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
@@ -60,8 +58,6 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
@@ -74,8 +70,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<LeaderboardDefCache> leaderboardDefCache;
-    @Inject Lazy<LeaderboardUserCache> leaderboardUserCache;
-    @Inject Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
+    @Inject Lazy<LeaderboardCache> leaderboardCache;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
@@ -116,8 +111,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
-    private MiddleCallback<LeaderboardDTO> leaderboardOwnUserRankingCallback;
-    private LeaderboardUserId leaderboardUserId;
+    private @Nullable DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardOwnUserRankingListener;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
@@ -142,6 +136,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         DaggerUtils.inject(this);
         initViews();
+        leaderboardOwnUserRankingListener = createLeaderboardUserRankingListener();
     }
 
     private void initViews()
@@ -165,6 +160,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuFoF.setMovementMethod(LinkMovementMethod.getInstance());
         }
+        if (leaderboardOwnUserRankingListener == null)
+        {
+            leaderboardOwnUserRankingListener = createLeaderboardUserRankingListener();
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -179,7 +178,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuProfilePicture.setImageDrawable(null);
         }
-        unsetLeaderboardOwnUserRankingCallback();
+        detachOwnRankingLeaderboardCache();
+        leaderboardOwnUserRankingListener = null;
 
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
@@ -221,28 +221,15 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public void displayOwnRanking(LeaderboardKey leaderboardKey)
     {
-        if (leaderboardUserId != null)
-        {
-            LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardUserCache.get().get(leaderboardUserId);
-            if (ownLeaderboardUserDTO != null)
-            {
-                display(ownLeaderboardUserDTO);
-                return;
-            }
-        }
-        unsetLeaderboardOwnUserRankingCallback();
-        // TODO replace with a cache call.
-        leaderboardOwnUserRankingCallback = leaderboardServiceWrapper.get().getLeaderboard(
-                new UserOnLeaderboardKey(leaderboardKey,
-                    currentUserId.toUserBaseKey()), new LeaderboardUserRankingCallback());
+        detachOwnRankingLeaderboardCache();
+        UserOnLeaderboardKey key = new UserOnLeaderboardKey(leaderboardKey, currentUserId.toUserBaseKey());
+        leaderboardCache.get().register(key, leaderboardOwnUserRankingListener);
+        leaderboardCache.get().getOrFetchAsync(key);
     }
 
-    private void unsetLeaderboardOwnUserRankingCallback()
+    private void detachOwnRankingLeaderboardCache()
     {
-        if (leaderboardOwnUserRankingCallback != null)
-        {
-            leaderboardOwnUserRankingCallback.setPrimaryCallback(null);
-        }
+        leaderboardCache.get().unregister(leaderboardOwnUserRankingListener);
     }
 
     private void linkWith(LeaderboardUserDTO expandableItem, boolean andDisplay)
@@ -672,15 +659,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         void onFollowRequested(UserBaseDTO userBaseKey);
     }
 
-    private class LeaderboardUserRankingCallback implements Callback<LeaderboardDTO>
+    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createLeaderboardUserRankingListener()
     {
-        @Override public void success(LeaderboardDTO leaderboardDTO, Response response)
+        return new LeaderboardUserRankingCacheListener();
+    }
+
+    protected class LeaderboardUserRankingCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
+    {
+        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO leaderboardDTO)
         {
-            if (leaderboardDTO != null && leaderboardDTO.users != null && !leaderboardDTO.users.isEmpty())
+            if (leaderboardDTO.users != null && !leaderboardDTO.users.isEmpty())
             {
                 LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardDTO.users.get(0);
-                leaderboardUserId = ownLeaderboardUserDTO.getLeaderboardUserId();
-                leaderboardUserCache.get().put(leaderboardUserId, ownLeaderboardUserDTO);
                 display(ownLeaderboardUserDTO);
             }
             else
@@ -692,9 +682,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             }
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
         {
-            THToast.show(new THException(retrofitError));
+            THToast.show(new THException(error));
         }
     }
 }
