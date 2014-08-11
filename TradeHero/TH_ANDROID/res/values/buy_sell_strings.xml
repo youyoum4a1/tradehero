@@ -17,8 +17,10 @@
   <string name="buy_sell_p10k" translatable="false">$10K</string>
   <string name="buy_sell_p25k" translatable="false">$25K</string>
   <string name="buy_sell_p50k" translatable="false">$50K</string>
-  <string name="buy_sell_button_buy">Buy @ %1$s</string>
-  <string name="buy_sell_button_sell">Sell @ %1$s</string>
+  <string name="buy_sell_button_buy">Buy @ %1$s %2$s</string>
+  <string name="buy_sell_dialog_buy">Buy @ %1$s</string>
+  <string name="buy_sell_button_sell">Sell @ %1$s %2$s</string>
+  <string name="buy_sell_dialog_sell">Sell @ %1$s</string>
   <string name="buy_sell_button_cannot_buy" translatable="false">-</string>
   <string name="buy_sell_button_cannot_sell" translatable="false">-</string>
   <string name="buy_sell_sell_profit">Profit: %s</string>

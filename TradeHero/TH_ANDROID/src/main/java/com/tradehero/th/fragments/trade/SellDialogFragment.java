@@ -4,8 +4,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +30,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
                 .withOutSign()
                 .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
                 .build();
-        return getString(R.string.buy_sell_button_sell, sthSignedNumber.toString());
+        return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
     }
 
     @Override @Nullable protected Double getProfitOrLoss()
