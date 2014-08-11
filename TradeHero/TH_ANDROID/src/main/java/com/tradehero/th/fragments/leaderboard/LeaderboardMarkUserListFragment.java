@@ -358,7 +358,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         //invalidateCachedItemView();
     }
 
-    private void updateListViewRow(UserBaseKey userBaseKey)
+    private void updateListViewRow(UserBaseKey heroId)
     {
         AdapterView list = leaderboardMarkUserListView.getRefreshableView();
         int start = list.getFirstVisiblePosition();
@@ -368,7 +368,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             if (target instanceof UserBaseDTO)
             {
                 UserBaseDTO user = (UserBaseDTO) target;
-                if (user.getBaseKey().equals(userBaseKey))
+                if (user.getBaseKey().equals(heroId))
                 {
 
                     View view = list.getChildAt(i - start);
@@ -527,6 +527,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
         {
             setCurrentUserProfileDTO(currentUserProfileDTO);
+            updateListViewRow(userFollowed);
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
         }
 
