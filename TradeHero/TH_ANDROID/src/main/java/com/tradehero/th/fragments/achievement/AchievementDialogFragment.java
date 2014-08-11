@@ -100,7 +100,7 @@ public class AchievementDialogFragment extends BaseDialogFragment
 
     private void init()
     {
-        userAchievementId = new UserAchievementId(getArguments());
+        userAchievementId = new UserAchievementId(getArguments().getBundle(BUNDLE_KEY_USER_ACHIEVEMENT_ID));
         userAchievementDTO = userAchievementDTOUtil.pop(userAchievementId);
         mMsLevelUpDelay = getResources().getInteger(R.integer.achievement_level_up_end_start_offset) - getResources().getInteger(
                 R.integer.achievement_level_up_start_duration);
@@ -228,7 +228,7 @@ public class AchievementDialogFragment extends BaseDialogFragment
     @OnClick(R.id.btn_achievement_share)
     public void onShareClicked()
     {
-        userLevelProgressBar.increment(500);
+        userLevelProgressBar.increment(100);
     }
 
     @OnClick(R.id.btn_achievement_dismiss)
