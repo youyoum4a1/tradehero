@@ -178,7 +178,7 @@
   <string name="manage_heroes_unfollow_failed">There was an error when trying to unfollow this
     hero
   </string>
-  <string name="manage_heroes_unfollow_official_accounts_failed">Official accounts are not allowed to unfollow.</string>
+  <string name="manage_heroes_unfollow_official_accounts_failed">You cannot unfollow this official account</string>
   <string name="manage_heroes_unfollow_success">Unfollow this hero successfully</string>
 
   <!-- Manage followers -->
