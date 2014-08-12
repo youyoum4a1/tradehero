@@ -1,32 +1,35 @@
 package com.tradehero.th.utils;
 
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import com.android.internal.util.Predicate;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class AdapterViewUtils
+public class AdapterViewUtils
 {
+    //<editor-fold desc="Constructors">
     @Inject public AdapterViewUtils()
     {
         super();
     }
+    //</editor-fold>
 
-    @SuppressWarnings("unchecked")
-    public <T> boolean updateSingleRow(@NotNull AdapterView adapterView, @NotNull Class<T> type, @NotNull Predicate<T> comparator)
+    public <T> boolean updateSingleRow(@NotNull AdapterView adapterView, @NotNull Class<T> type, @NotNull Predicate<T> predicate)
     {
-        if (adapterView.getAdapter() != null)
+        Adapter adapter = adapterView.getAdapter();
+        if (adapter != null)
         {
             int start = adapterView.getFirstVisiblePosition();
             for (int i = start, j = adapterView.getLastVisiblePosition(); i <= j; i++)
             {
                 Object row = adapterView.getItemAtPosition(i);
-                if (row != null && type.isInstance(row) && comparator.apply((T) row))
+                //noinspection unchecked
+                if (row != null && type.isInstance(row) && predicate.apply((T) row))
                 {
                     View view = adapterView.getChildAt(i - start);
-                    adapterView.getAdapter().getView(i, view, adapterView);
+                    adapter.getView(i, view, adapterView);
                     return true;
                 }
             }
