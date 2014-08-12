@@ -150,7 +150,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @Override protected int getCurrentRankLayoutResId()
     {
-        return R.layout.lbmu_item_roi_mode;
+        return R.layout.lbmu_item_own_ranking_roi_mode;
     }
 
     private void setupOwnRankingView(View userRankingHeaderView)

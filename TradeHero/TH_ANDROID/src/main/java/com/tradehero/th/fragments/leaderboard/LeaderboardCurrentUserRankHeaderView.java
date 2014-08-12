@@ -47,8 +47,6 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
-    public static final int FLAG_USER_NOT_RANKED = -1;
-
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Nullable protected UserProfileDTO userProfileDTO;

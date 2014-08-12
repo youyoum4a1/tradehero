@@ -6,8 +6,8 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -112,6 +112,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
+
+    @InjectView(R.id.lbmu_inner_view_container) ViewGroup innerViewContainer;
+
     private @Nullable DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardOwnUserRankingListener;
 
     //<editor-fold desc="Constructors">
@@ -326,8 +329,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             {
                 int imageResId = Country.getCountryLogo(R.drawable.default_image, userBaseDTO.countryCode);
                 countryLogo.setImageResource(imageResId);
-            }
-            catch (OutOfMemoryError e)
+            } catch (OutOfMemoryError e)
             {
                 Timber.e(e, null);
             }
@@ -675,13 +677,18 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             {
                 LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardDTO.users.get(0);
                 display(ownLeaderboardUserDTO);
+
+                innerViewContainer.setBackgroundResource(R.drawable.basic_white_selector);
             }
             else
             {
                 // user is not ranked, disable expandable view
                 setOnClickListener(null);
-                lbmuDisplayName.setText(R.string.leaderboard_not_ranked);
+                lbmuRoi.setText(R.string.leaderboard_not_ranked);
                 lbmuPosition.setText("-");
+
+                // disable touch feedback so we don't confuse the user
+                innerViewContainer.setBackgroundResource(R.color.white);
             }
         }
 
