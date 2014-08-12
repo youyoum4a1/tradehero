@@ -486,7 +486,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 messageHeaderDTO.getDTOKey(),
                 messageHeaderDTO.senderUserId,
                 messageHeaderDTO.recipientUserId,
-                messageHeaderDTO.unread ? currentUserId.toUserBaseKey() : null,
+                currentUserId.toUserBaseKey(),
                 new MessageDeletionCallback(messageHeaderDTO));
     }
 

@@ -45,15 +45,15 @@ public class EasyDebugTree implements Timber.Tree, Timber.TaggedTree
         return args.length == 0 ? message : String.format(message, args);
     }
 
-    @Override public void v(String message, Object... args)
-    {
-        Log.v(getTag(), formatString(message, args));
-    }
+    //@Override public void v(String message, Object... args)
+    //{
+    //    Log.v(getTag(), formatString(message, args));
+    //}
 
-    @Override public void v(Throwable t, String message, Object... args)
-    {
-        Log.v(getTag(), formatString(message, args), t);
-    }
+    //@Override public void v(Throwable t, String message, Object... args)
+    //{
+    //    Log.v(getTag(), formatString(message, args), t);
+    //}
 
     @Override public void d(String message, Object... args)
     {

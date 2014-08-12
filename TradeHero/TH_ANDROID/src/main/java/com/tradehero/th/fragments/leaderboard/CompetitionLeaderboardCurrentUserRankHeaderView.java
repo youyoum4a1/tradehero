@@ -24,6 +24,7 @@ public class CompetitionLeaderboardCurrentUserRankHeaderView extends Leaderboard
 
     @Inject ProviderUtil providerUtil;
 
+    //<editor-fold desc="Constructors">
     public CompetitionLeaderboardCurrentUserRankHeaderView(Context context)
     {
         super(context);
@@ -38,6 +39,7 @@ public class CompetitionLeaderboardCurrentUserRankHeaderView extends Leaderboard
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     public void linkWith(@NotNull ProviderId providerId)
     {
@@ -49,43 +51,42 @@ public class CompetitionLeaderboardCurrentUserRankHeaderView extends Leaderboard
         return providerUtil.getRulesPage(providerId);
     }
 
-    public void handleRulesClicked()
-    {
-        if (!isUserRanked())
-        {
-            Bundle args = new Bundle();
-            CompetitionWebViewFragment.putUrl(args, getRules());
-            getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
-        }
-    }
-
-    @Override protected void displayUserIsRanked()
-    {
-        super.displayUserIsRanked();
-        displayName.setText(userProfileDTO.displayName);
-    }
-
-    @Override protected void displayUserNotRanked()
-    {
-        super.displayUserNotRanked();
-
-        String rule = getContext().getString(R.string.leaderboard_see_competition_rules);
-
-        CharacterStyle clickableSpan = createClickableSpan();
-        CharacterStyle textColorSpan = createTextColorSpan();
-
-        Spannable span = new SpannableString(rule);
-        span.setSpan(clickableSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        span.setSpan(textColorSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        roiLabel.setMovementMethod(LinkMovementMethod.getInstance());
-        roiLabel.setText(span);
-        roiLabel.setBackgroundResource(R.drawable.basic_transparent_selector);
-        displayName.setText(R.string.leaderboard_not_ranked);
-    }
-
     @Override protected boolean shouldDisplayCountryLogo()
     {
         return false;
+    }
+
+    @Override protected void displayUserName()
+    {
+        super.displayUserName();
+        if (!isUserRanked())
+        {
+            displayName.setText(R.string.leaderboard_not_ranked);
+        }
+    }
+
+    @Override protected void displayROIValue()
+    {
+        super.displayROIValue();
+        if (!isUserRanked())
+        {
+            String rule = getContext().getString(R.string.leaderboard_see_competition_rules);
+
+            CharacterStyle textColorSpan = createTextColorSpan();
+            CharacterStyle clickableSpan = createClickableSpan();
+
+            Spannable span = new SpannableString(rule);
+            span.setSpan(clickableSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            span.setSpan(textColorSpan, 0, rule.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            roiLabel.setMovementMethod(LinkMovementMethod.getInstance());
+            roiLabel.setText(span);
+            roiLabel.setBackgroundResource(R.drawable.basic_transparent_selector);
+        }
+    }
+
+    private ForegroundColorSpan createTextColorSpan()
+    {
+        return new ForegroundColorSpan(getResources().getColor(R.color.tradehero_blue));
     }
 
     private ClickableSpan createClickableSpan()
@@ -99,8 +100,13 @@ public class CompetitionLeaderboardCurrentUserRankHeaderView extends Leaderboard
         };
     }
 
-    private ForegroundColorSpan createTextColorSpan()
+    public void handleRulesClicked()
     {
-        return new ForegroundColorSpan(getResources().getColor(R.color.tradehero_blue));
+        if (!isUserRanked())
+        {
+            Bundle args = new Bundle();
+            CompetitionWebViewFragment.putUrl(args, getRules());
+            getNavigator().pushFragment(CompetitionWebViewFragment.class, args);
+        }
     }
 }

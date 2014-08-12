@@ -76,8 +76,6 @@ import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFra
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodViewHolder;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
@@ -252,8 +250,6 @@ import javax.inject.Singleton;
 
                         PositionPartialTopView.class,
                         PositionPartialBottomClosedView.class,
-                        PositionPartialBottomInPeriodClosedView.class,
-                        PositionPartialBottomInPeriodOpenView.class,
                         PositionPartialBottomOpenView.class,
                         PositionLockedView.class,
                         PositionPartialBottomInPeriodViewHolder.class,

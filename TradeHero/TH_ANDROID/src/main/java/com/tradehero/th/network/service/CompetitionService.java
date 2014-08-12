@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
@@ -16,6 +17,12 @@ public interface CompetitionService
     @GET("/providers/{providerId}/competitions")
     CompetitionDTOList getCompetitions(
             @Path("providerId") int providerId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Competition">
+    @GET("/competitions/{competitionId}")
+    CompetitionDTO getCompetition(
+            @Path("competitionId") int competitionId);
     //</editor-fold>
 
     //<editor-fold desc="Get Competition Leaderboard">

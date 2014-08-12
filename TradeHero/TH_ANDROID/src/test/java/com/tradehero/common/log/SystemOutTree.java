@@ -12,16 +12,16 @@ public class SystemOutTree implements Timber.Tree
     }
     //</editor-fold>
 
-    @Override public void v(String message, Object... args)
-    {
-        System.out.println("v: " + String.format(message, args));
-    }
+    //@Override public void v(String message, Object... args)
+    //{
+    //    System.out.println("v: " + String.format(message, args));
+    //}
 
-    @Override public void v(Throwable t, String message, Object... args)
-    {
-        System.out.println("v: " + String.format(message, args));
-        t.printStackTrace(System.out);
-    }
+    //@Override public void v(Throwable t, String message, Object... args)
+    //{
+    //    System.out.println("v: " + String.format(message, args));
+    //    t.printStackTrace(System.out);
+    //}
 
     @Override public void d(String message, Object... args)
     {

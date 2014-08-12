@@ -9,47 +9,76 @@ import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
+import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import java.util.Arrays;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
         implements WrapperListAdapter
 {
-    private static final int EXTRA_TILE_FREQUENCY = 16;
-    private static final int EXTRA_TILE_MIN_DISTANCE = 10;
+    //private static final int EXTRA_TILE_FREQUENCY = 16;
+    //private static final int EXTRA_TILE_MIN_DISTANCE = 10;
+    private int extraTileFrequency = -1;
+    private int extraTileStartrow = -1;
 
-    private final Context context;
     private final LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
-    private final ProviderDTO providerDTO;
+    @NotNull private final ProviderDTO providerDTO;
     private final LayoutInflater inflater;
     private int[] masterTilesMarker;
     private int[] extraTilesMarker;
+    private CompetitionLeaderboardDTO competitionLeaderboardDTO;
 
-    public CompetitionLeaderboardMarkUserListAdapter(Context context, ProviderDTO providerDTO,
+    //<editor-fold desc="Constructors">
+    public CompetitionLeaderboardMarkUserListAdapter(
+            @NotNull Context context,
+            @NotNull ProviderDTO providerDTO,
             LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter)
     {
-        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.providerDTO = providerDTO;
         this.leaderboardMarkUserListAdapter = leaderboardMarkUserListAdapter;
-        if (leaderboardMarkUserListAdapter != null && leaderboardMarkUserListAdapter.getCount() > 0)
-        {
-            generateExtraTile();
-        }
+    }
+    //</editor-fold>
+
+    public void setCompetitionLeaderboardDTO(CompetitionLeaderboardDTO competitionLeaderboardDTO)
+    {
+        this.competitionLeaderboardDTO = competitionLeaderboardDTO;
     }
 
     @Override public void notifyDataSetChanged()
     {
-        generateExtraTile();
+        if (competitionLeaderboardDTO != null)
+        {
+            generateExtraTile();
+        }
         super.notifyDataSetChanged();
+    }
+
+    private void initAdsContants()
+    {
+        if (competitionLeaderboardDTO != null)
+        {
+            extraTileStartrow = competitionLeaderboardDTO.adStartRow;
+            extraTileFrequency = competitionLeaderboardDTO.adFrequencyRows;
+            Timber.d("InitAdsContants: startrow = %d , frequency = %d", extraTileStartrow, extraTileFrequency);
+        }
     }
 
     private void generateExtraTile()
     {
-        int extraTileCount = Math.round(leaderboardMarkUserListAdapter.getCount() / EXTRA_TILE_FREQUENCY);
-
+        initAdsContants();
+        //int extraTileCount = Math.round(leaderboardMarkUserListAdapter.getCount() / EXTRA_TILE_FREQUENCY);
+        int extraTileCount = Math.round((leaderboardMarkUserListAdapter.getCount() - extraTileStartrow) / extraTileFrequency);
+        if (extraTileStartrow <= leaderboardMarkUserListAdapter.getCount())
+        {
+            extraTileCount += 1;
+        }
         if (extraTileCount > 0)
         {
             int[] tempMarker;
@@ -72,21 +101,11 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
 
     private int[] generateAdsTile(int extraTileCount)
     {
-        int maxTileIndex = leaderboardMarkUserListAdapter.getCount() + extraTileCount - 1;
-        int previousIndex = -1;
         int[] extraTileIndexes = new int[extraTileCount];
 
         for (int i = 0; i < extraTileCount; ++i)
         {
-            int newTileIndex = i * EXTRA_TILE_FREQUENCY + (int) (Math.random() * EXTRA_TILE_FREQUENCY);
-            if (previousIndex > 0 && (newTileIndex - previousIndex < EXTRA_TILE_MIN_DISTANCE))
-            {
-                newTileIndex = previousIndex + EXTRA_TILE_MIN_DISTANCE;
-            }
-            // side effect of previous tiles insertion, also there should not be any overlapping between 2 tiles random space
-            newTileIndex += i % EXTRA_TILE_MIN_DISTANCE;
-            newTileIndex = Math.min(maxTileIndex, newTileIndex);
-            previousIndex = newTileIndex;
+            int newTileIndex = i * (extraTileFrequency + 1) + extraTileStartrow;
             extraTileIndexes[i] = newTileIndex;
         }
 
@@ -195,8 +214,18 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
             if (view instanceof CompetitionLeaderboardMarkUserItemView)
             {
                 ((CompetitionLeaderboardMarkUserItemView) view).setProviderDTO(providerDTO);
+                PrizeDTO prizeDTO = getPrizeDTO(getWrappedPosition(position));
+                if (prizeDTO != null)
+                {
+                    ((CompetitionLeaderboardMarkUserItemView) view).setPrizeDTO(prizeDTO);
+                }
             }
             return view;
         }
+    }
+
+    @Nullable public PrizeDTO getPrizeDTO(int position)
+    {
+        return competitionLeaderboardDTO == null ? null : competitionLeaderboardDTO.getPrizeAt(position);
     }
 }

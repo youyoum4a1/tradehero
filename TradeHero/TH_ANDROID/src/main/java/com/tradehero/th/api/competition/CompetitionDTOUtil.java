@@ -5,66 +5,91 @@ import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Singleton;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class CompetitionDTOUtil
+public class CompetitionDTOUtil
 {
+    //<editor-fold desc="Constructors">
     @Inject public CompetitionDTOUtil()
     {
         super();
     }
+    //</editor-fold>
 
-    public CompetitionLeaderboardId getCompetitionLeaderboardId(ProviderId providerId, CompetitionId competitionId)
+    public CompetitionLeaderboardId getCompetitionLeaderboardId(
+            @NotNull ProviderId providerId,
+            @NotNull CompetitionId competitionId)
     {
         return new CompetitionLeaderboardId(providerId.key, competitionId.key);
     }
 
-    public CompetitionLeaderboardId getCompetitionLeaderboardId(ProviderId providerId, CompetitionId competitionId, Integer page)
+    public CompetitionLeaderboardId getCompetitionLeaderboardId(
+            @NotNull ProviderId providerId,
+            @NotNull CompetitionId competitionId,
+            @Nullable Integer page)
     {
         return new CompetitionLeaderboardId(providerId.key, competitionId.key, page);
     }
 
-    public CompetitionLeaderboardId getCompetitionLeaderboardId(ProviderId providerId, CompetitionId competitionId, Integer page, Integer perPage)
+    public CompetitionLeaderboardId getCompetitionLeaderboardId(
+            @NotNull ProviderId providerId,
+            @NotNull CompetitionId competitionId,
+            @Nullable Integer page, @Nullable
+    Integer perPage)
     {
         return new CompetitionLeaderboardId(providerId.key, competitionId.key, page, perPage);
     }
 
-    public List<CompetitionLeaderboardId> getCompetitionLeaderboardIds(ProviderId providerId, List<CompetitionId> competitionIds)
+    @Contract("!null, null -> null; !null, !null -> !null") @Nullable
+    public List<CompetitionLeaderboardId> getCompetitionLeaderboardIds(
+            @NotNull ProviderId providerId,
+            @Nullable List<CompetitionId> competitionIds)
     {
         if (competitionIds == null)
         {
             return null;
         }
         List<CompetitionLeaderboardId> list = new ArrayList<>();
-        for (CompetitionId competitionId : competitionIds)
+        for (@NotNull CompetitionId competitionId : competitionIds)
         {
             list.add(getCompetitionLeaderboardId(providerId, competitionId));
         }
         return list;
     }
 
-    public List<CompetitionLeaderboardId> getCompetitionLeaderboardIds(ProviderId providerId, List<CompetitionId> competitionIds, Integer page)
+    @Contract("!null, null, _ -> null; !null, !null, _ -> !null") @Nullable
+    public List<CompetitionLeaderboardId> getCompetitionLeaderboardIds(
+            @NotNull ProviderId providerId,
+            @Nullable List<CompetitionId> competitionIds,
+            @Nullable Integer page)
     {
         if (competitionIds == null)
         {
             return null;
         }
         List<CompetitionLeaderboardId> list = new ArrayList<>();
-        for (CompetitionId competitionId : competitionIds)
+        for (@NotNull CompetitionId competitionId : competitionIds)
         {
             list.add(getCompetitionLeaderboardId(providerId, competitionId, page));
         }
         return list;
     }
 
-    public List<CompetitionLeaderboardId> getCompetitionLeaderboardIds(ProviderId providerId, List<CompetitionId> competitionIds, Integer page, Integer perPage)
+    @Contract("!null, null, _, _ -> null; !null, !null, _, _ -> !null") @Nullable
+    public List<CompetitionLeaderboardId> getCompetitionLeaderboardIds(
+            @NotNull ProviderId providerId,
+            @Nullable List<CompetitionId> competitionIds,
+            @Nullable Integer page,
+            @Nullable Integer perPage)
     {
         if (competitionIds == null)
         {
             return null;
         }
         List<CompetitionLeaderboardId> list = new ArrayList<>();
-        for (CompetitionId competitionId : competitionIds)
+        for (@NotNull CompetitionId competitionId : competitionIds)
         {
             list.add(getCompetitionLeaderboardId(providerId, competitionId, page, perPage));
         }

@@ -311,7 +311,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         displayActionBarTitle();
     }
 
-    protected SecurityId getSecurityId()
+    @Nullable protected SecurityId getSecurityId()
     {
         if (positionDTO == null)
         {

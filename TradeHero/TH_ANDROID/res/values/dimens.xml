@@ -175,7 +175,10 @@
 
   <dimen name="discussion_separator_thickness">0.5dp</dimen>
   <dimen name="discussion_list_padding">60dp</dimen>
+  <dimen name="leaderboard_position_width">60dp</dimen>
 
   <dimen name="message_read_all_button_radius">4dp</dimen>
+
+
 
 </resources>

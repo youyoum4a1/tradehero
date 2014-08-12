@@ -1,8 +1,10 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -51,6 +53,22 @@ import retrofit.Callback;
     {
         MiddleCallback<CompetitionDTOList> middleCallback = new BaseMiddleCallback<>(callback);
         this.competitionServiceAsync.getCompetitions(providerId.key, middleCallback);
+        return middleCallback;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Competition">
+    public CompetitionDTO getCompetition(@NotNull CompetitionId competitionId)
+    {
+        return competitionService.getCompetition(competitionId.key);
+    }
+
+    public MiddleCallback<CompetitionDTO> getCompetition(
+            @NotNull CompetitionId competitionId,
+            @Nullable Callback<CompetitionDTO> callback)
+    {
+        MiddleCallback<CompetitionDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        competitionServiceAsync.getCompetition(competitionId.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

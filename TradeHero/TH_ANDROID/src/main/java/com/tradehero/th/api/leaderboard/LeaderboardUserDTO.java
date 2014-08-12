@@ -12,6 +12,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardUserDTO extends UserBaseDTO
@@ -96,7 +97,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
         return null;
     }
 
-    public LeaderboardUserId getLeaderboardUserId()
+    @NotNull public LeaderboardUserId getLeaderboardUserId()
     {
         return new LeaderboardUserId(id, lbmuId);
     }

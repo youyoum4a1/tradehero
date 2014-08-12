@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -221,7 +221,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         configureFollowItemsVisibility();
     }
 
-    @Override public void linkWith(PortfolioDTO portfolioDTO)
+    @Override public void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
         // Nothing to do
     }
