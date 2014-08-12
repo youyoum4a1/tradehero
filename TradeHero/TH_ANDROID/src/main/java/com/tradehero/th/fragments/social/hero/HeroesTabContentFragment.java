@@ -264,8 +264,18 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
             @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
             {
-                Timber.e(error, "onUserFollowFailed error");
-                THToast.show(getString(R.string.manage_heroes_unfollow_failed));
+                //TODO offical accounts, do not unfollow
+                if (userFollowed.key.intValue() == 562001 || userFollowed.key.intValue() == 562005
+                        || userFollowed.key.intValue() == 562018 || userFollowed.key.intValue() == 570750
+                        || userFollowed.key.intValue() == 570758 || userFollowed.key.intValue() == 570762)
+                {
+                    THToast.show(getString(R.string.manage_heroes_unfollow_official_accounts_failed));
+                }
+                else
+                {
+                    Timber.e(error, "onUserFollowFailed error");
+                    THToast.show(getString(R.string.manage_heroes_unfollow_failed));
+                }
             }
         };
     }
