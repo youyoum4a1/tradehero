@@ -8,9 +8,9 @@ import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
-import com.tradehero.th.api.competition.ProviderCompactDTODeserialiserBase;
 import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTODeserialiser;
@@ -250,8 +250,15 @@ public class RetrofitModule
         return objectMapper;
     }
 
+    @Provides ObjectMapperWrapper provideCommonObjectMapperWrapper()
+    {
+        ObjectMapperWrapper objectMapper = new ObjectMapperWrapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
+    }
+
     @Provides @Singleton @ForApp ObjectMapper provideObjectMapper(
-            ObjectMapper objectMapper,
+            ObjectMapperWrapper objectMapper,
             UserFriendsDTOJacksonModule userFriendsDTOModule,
             PositionDTOJacksonModule positionDTOModule,
             ProviderCompactDTOJacksonModule providerCompactDTOModule,
