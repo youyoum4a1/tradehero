@@ -260,7 +260,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.competitionZoneListItemAdapter = new CompetitionZoneListItemAdapter(
                 getActivity(),
                 R.layout.competition_zone_item,
-                R.layout.competition_zone_trade_now,
                 R.layout.competition_zone_ads,
                 R.layout.competition_zone_header,
                 R.layout.competition_zone_portfolio,
