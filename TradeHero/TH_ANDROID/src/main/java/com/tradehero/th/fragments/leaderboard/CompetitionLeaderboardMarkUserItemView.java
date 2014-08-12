@@ -50,7 +50,7 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         displayLbmuPl();
     }
 
-    public void setPrizeDTO(@NotNull PrizeDTO prizeDTO)
+    public void setPrizeDTO(@Nullable PrizeDTO prizeDTO)
     {
         this.prizeDTO = prizeDTO;
         displayPrize();
