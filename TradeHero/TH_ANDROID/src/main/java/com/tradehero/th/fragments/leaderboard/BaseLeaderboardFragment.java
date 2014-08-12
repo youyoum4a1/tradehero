@@ -244,8 +244,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView && currentLeaderboardUserDTO != null)
         {
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setRank(currentLeaderboardUserDTO.ordinalPosition + 1);
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setRoiToBeShown(currentLeaderboardUserDTO.roiInPeriod);
+            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).display(currentLeaderboardUserDTO);
         }
     }
 

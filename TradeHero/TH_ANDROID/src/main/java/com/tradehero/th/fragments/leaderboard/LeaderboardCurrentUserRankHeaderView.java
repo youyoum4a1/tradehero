@@ -10,20 +10,22 @@ import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
+    implements DTOView<LeaderboardUserDTO>
 {
     @InjectView(R.id.leaderboard_current_user_rank_display_name) protected TextView displayName;
     @InjectView(R.id.leaderboard_current_user_rank_profile_picture) protected ImageView avatar;
@@ -39,10 +41,9 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     public static final int FLAG_USER_NOT_RANKED = -1;
 
     protected UserProfileDTO userProfileDTO;
+    protected LeaderboardUserDTO leaderboardUserDTO;
 
-    @Nullable protected Integer currentRank;
-    protected Double roiInPeriod = 0.0D;
-
+    //<editor-fold desc="Constructors">
     public LeaderboardCurrentUserRankHeaderView(Context context)
     {
         super(context);
@@ -57,6 +58,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -76,11 +78,19 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
         }
     }
 
-    private void display()
+    @Override public void display(LeaderboardUserDTO dto)
+    {
+        this.leaderboardUserDTO = dto;
+        display();
+    }
+
+    protected void display()
     {
         displayUserName();
         displayUserPhoto();
         displayUserCountry();
+        displayRanking();
+        displayROIValue();
     }
 
     private void displayUserPhoto()
@@ -129,7 +139,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
                 .into(avatar);
     }
 
-    private void displayUserName()
+    protected void displayUserName()
     {
         if (userProfileDTO != null)
         {
@@ -137,50 +147,41 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
         }
     }
 
-    public void setRank(@Nullable Integer rank)
-    {
-        this.currentRank = rank;
-        if (isUserRanked())
-        {
-            displayUserIsRanked();
-        }
-        else
-        {
-            displayUserNotRanked();
-        }
-    }
-
     protected boolean isUserRanked()
     {
-        return currentRank != null && currentRank != FLAG_USER_NOT_RANKED && currentRank > 0;
+        return leaderboardUserDTO != null && leaderboardUserDTO.ordinalPosition > -1;
     }
 
-    protected void displayUserIsRanked()
+    protected void displayRanking()
     {
-        currentRankLabel.setText(String.valueOf(currentRank));
-        displayROIValue(roiInPeriod);
+        currentRankLabel.setText(getRankLabel());
     }
 
-    protected void displayUserNotRanked()
+    protected String getRankLabel()
     {
-        currentRankLabel.setText("-");
-        roiLabel.setText(R.string.leaderboard_not_ranked);
-    }
-
-    public void setRoiToBeShown(@Nullable Double roiToBeShown)
-    {
-        if (roiToBeShown != null && isUserRanked())
+        if (!isUserRanked())
         {
-            displayROIValue(roiToBeShown);
+            return "-";
         }
+        if (leaderboardUserDTO.ordinalPosition >= LeaderboardMarkUserItemView.MAX_OWN_RANKING)
+        {
+            return getContext().getString(R.string.leaderboard_not_ranked_position);
+        }
+        return THSignedNumber.builder(leaderboardUserDTO.ordinalPosition + 1).build().toString();
     }
 
-    private void displayROIValue(double value)
+    protected void displayROIValue()
     {
-        THSignedNumber thRoiSinceInception = THSignedPercentage.builder(value * 100).build();
-
-        roiLabel.setText(thRoiSinceInception.toString());
-        roiLabel.setTextColor(getResources().getColor(thRoiSinceInception.getColorResId()));
+        int colorResId = R.color.black;
+        String roiString = getContext().getString(R.string.leaderboard_not_ranked);
+        if (isUserRanked())
+        {
+            THSignedNumber thRoiSinceInception = THSignedPercentage.builder(leaderboardUserDTO.roiInPeriod * 100).build();
+            roiString = thRoiSinceInception.toString();
+            colorResId = thRoiSinceInception.getColorResId();
+        }
+        roiLabel.setText(roiString);
+        roiLabel.setTextColor(getResources().getColor(colorResId));
     }
 
     protected DashboardNavigator getNavigator()
