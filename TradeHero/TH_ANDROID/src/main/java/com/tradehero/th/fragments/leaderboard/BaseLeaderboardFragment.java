@@ -242,9 +242,13 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected void initCurrentRankHeaderView()
     {
-        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView && currentLeaderboardUserDTO != null)
+        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
         {
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).display(currentLeaderboardUserDTO);
+            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setApplicablePortfolioId(getApplicablePortfolioId());
+            if (currentLeaderboardUserDTO != null)
+            {
+                ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).display(currentLeaderboardUserDTO);
+            }
         }
     }
 
