@@ -15,6 +15,8 @@ import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import java.util.Arrays;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
@@ -25,22 +27,24 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
     private int extraTileFrequency = -1;
     private int extraTileStartrow = -1;
 
-    private final Context context;
     private final LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
-    private final ProviderDTO providerDTO;
+    @NotNull private final ProviderDTO providerDTO;
     private final LayoutInflater inflater;
     private int[] masterTilesMarker;
     private int[] extraTilesMarker;
     private CompetitionLeaderboardDTO competitionLeaderboardDTO;
 
-    public CompetitionLeaderboardMarkUserListAdapter(Context context, ProviderDTO providerDTO,
+    //<editor-fold desc="Constructors">
+    public CompetitionLeaderboardMarkUserListAdapter(
+            @NotNull Context context,
+            @NotNull ProviderDTO providerDTO,
             LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter)
     {
-        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.providerDTO = providerDTO;
         this.leaderboardMarkUserListAdapter = leaderboardMarkUserListAdapter;
     }
+    //</editor-fold>
 
     public void setCompetitionLeaderboardDTO(CompetitionLeaderboardDTO competitionLeaderboardDTO)
     {
@@ -62,7 +66,7 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
         {
             extraTileStartrow = competitionLeaderboardDTO.adStartRow;
             extraTileFrequency = competitionLeaderboardDTO.adFrequencyRows;
-            Timber.d("InitAdsContants: startrow = %d , frequency = %d",extraTileStartrow,extraTileFrequency);
+            Timber.d("InitAdsContants: startrow = %d , frequency = %d", extraTileStartrow, extraTileFrequency);
         }
     }
 
@@ -210,21 +214,18 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
             if (view instanceof CompetitionLeaderboardMarkUserItemView)
             {
                 ((CompetitionLeaderboardMarkUserItemView) view).setProviderDTO(providerDTO);
-                ((CompetitionLeaderboardMarkUserItemView) view).setPrizeDTO(getPrizeDTO(getWrappedPosition(position)));
+                PrizeDTO prizeDTO = getPrizeDTO(getWrappedPosition(position));
+                if (prizeDTO != null)
+                {
+                    ((CompetitionLeaderboardMarkUserItemView) view).setPrizeDTO(prizeDTO);
+                }
             }
             return view;
         }
     }
 
-    public PrizeDTO getPrizeDTO(int position)
+    @Nullable public PrizeDTO getPrizeDTO(int position)
     {
-        if (competitionLeaderboardDTO != null && competitionLeaderboardDTO.prizes != null)
-        {
-            if (position >= 0 && position < competitionLeaderboardDTO.prizes.size())
-            {
-                return competitionLeaderboardDTO.prizes.get(position);
-            }
-        }
-        return null;
+        return competitionLeaderboardDTO == null ? null : competitionLeaderboardDTO.getPrizeAt(position);
     }
 }

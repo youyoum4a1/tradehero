@@ -4,16 +4,28 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import butterknife.InjectView;
+import com.tradehero.th.R;
 import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
+import com.tradehero.th.models.number.THSignedMoney;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
-    private ProviderDTO providerDTO;
-    private PrizeDTO prizeDTO;
+    @InjectView(R.id.leaderboard_prizeLayout) LinearLayout prizelayout;
+    @InjectView(R.id.leaderboard_prizeIcon) ImageView prizeIcon;
+    @InjectView(R.id.leaderboard_prizeAmount) TextView prizeAmount;
+
+    @Nullable private ProviderDTO providerDTO;
+    @Nullable private PrizeDTO prizeDTO;
 
     //<editor-fold desc="Constructors">
     public CompetitionLeaderboardMarkUserItemView(Context context)
@@ -32,13 +44,13 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     }
     //</editor-fold>
 
-    public void setProviderDTO(ProviderDTO providerDTO)
+    public void setProviderDTO(@NotNull ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
         displayLbmuPl();
     }
 
-    public void setPrizeDTO(PrizeDTO prizeDTO)
+    public void setPrizeDTO(@NotNull PrizeDTO prizeDTO)
     {
         this.prizeDTO = prizeDTO;
         displayPrize();
@@ -46,14 +58,16 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
 
     protected void displayPrize()
     {
-        if(prizeDTO==null)
+        if (prizeDTO == null)
         {
             prizelayout.setVisibility(View.GONE);
         }
         else
         {
             prizelayout.setVisibility(View.VISIBLE);
-            prizeAmount.setText(prizeDTO.prizeCcy+(int)prizeDTO.amount);
+            prizeAmount.setText(THSignedMoney.builder(prizeDTO.amount)
+                    .currency(prizeDTO.prizeCcy)
+                    .build().toString());
         }
     }
 
