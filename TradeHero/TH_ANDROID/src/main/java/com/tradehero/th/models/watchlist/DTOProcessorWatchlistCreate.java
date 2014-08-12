@@ -14,6 +14,7 @@ public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistChange
     @NotNull private final UserBaseKey concernedUser;
     @NotNull private final UserWatchlistPositionCache userWatchlistPositionCache;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistCreate(
             @NotNull WatchlistPositionCache watchlistPositionCache,
             @NotNull UserBaseKey concernedUser,
@@ -24,6 +25,7 @@ public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistChange
         this.concernedUser = concernedUser;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
     }
+    //</editor-fold>
 
     @Nullable
     @Override public WatchlistPositionDTO process(@Nullable WatchlistPositionDTO watchlistPositionDTO)

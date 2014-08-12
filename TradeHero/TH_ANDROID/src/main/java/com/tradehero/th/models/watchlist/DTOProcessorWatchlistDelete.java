@@ -18,6 +18,7 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
     @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
     @NotNull private final UserWatchlistPositionCache userWatchlistPositionCache;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistDelete(
             @NotNull WatchlistPositionCache watchlistPositionCache,
             @NotNull UserBaseKey concernedUser,
@@ -30,6 +31,7 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
         this.portfolioCompactListCache = portfolioCompactListCache;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
     }
+    //</editor-fold>
 
     @Override public WatchlistPositionDTO process(@NotNull WatchlistPositionDTO watchlistPositionDTO)
     {
