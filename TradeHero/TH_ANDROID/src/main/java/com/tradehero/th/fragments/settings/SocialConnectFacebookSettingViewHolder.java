@@ -8,6 +8,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
@@ -24,10 +25,11 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper,
             @NotNull Lazy<FacebookUtils> facebookUtils)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, socialServiceWrapper);
+        super(currentUserId, userProfileCache, progressDialogUtil, alertDialogUtil, socialServiceWrapper);
         this.facebookUtils = facebookUtils;
     }
     //</editor-fold>
@@ -57,12 +59,12 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
         return R.string.authentication_connecting_to_facebook;
     }
 
-    @Override protected int getUnlinkingDialogTitle()
+    @Override protected int getUnlinkingProgressDialogTitle()
     {
         return R.string.facebook;
     }
 
-    @Override protected int getUnlinkingDialogMessage()
+    @Override protected int getUnlinkingProgressDialogMessage()
     {
         return R.string.authentication_connecting_tradehero_only;
     }
@@ -82,15 +84,17 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
                         middleSocialConnectLogInCallback);
             }
         }
-        else
-        {
-            detachMiddleServerDisconnectCallback();
-            middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                    currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(SocialNetworkEnum.FB),
-                    createSocialDisconnectCallback());
-        }
         return returned;
+    }
+
+    @Override protected void effectUnlink()
+    {
+        super.effectUnlink();
+        detachMiddleServerDisconnectCallback();
+        middleCallbackDisconnect = socialServiceWrapper.disconnect(
+                currentUserId.toUserBaseKey(),
+                new SocialNetworkFormDTO(SocialNetworkEnum.FB),
+                createSocialDisconnectCallback());
     }
 
     @Override protected void updateSocialConnectStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
