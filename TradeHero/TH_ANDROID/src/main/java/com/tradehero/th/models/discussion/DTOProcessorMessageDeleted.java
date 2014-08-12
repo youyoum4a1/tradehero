@@ -19,7 +19,7 @@ public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
             @NotNull UserProfileCache userProfileCache,
             @NotNull MessageHeaderListCache messageHeaderListCache,
             @NotNull MessageHeaderId messageHeaderId,
-            @NotNull  UserBaseKey readerId)
+            @NotNull UserBaseKey readerId)
     {
         super(messageHeaderCache, userProfileCache, messageHeaderId, readerId);
         this.messageHeaderListCache = messageHeaderListCache;
