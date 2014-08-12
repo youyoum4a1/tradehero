@@ -7,6 +7,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -88,6 +89,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
     @InjectView(R.id.leaderboard_user_item_hq) TextView lbmuHeroQuotient;
     @InjectView(R.id.leaderboard_user_item_info) ImageView lbmuPositionInfo;
+    @InjectView(R.id.leaderboard_prizeLayout) LinearLayout prizelayout;
+    @InjectView(R.id.leaderboard_prizeIcon) ImageView prizeIcon;
+    @InjectView(R.id.leaderboard_prizeAmount) TextView prizeAmount;
+
 
     // expanding view
     @InjectView(R.id.lbmu_pl) TextView lbmuPl;

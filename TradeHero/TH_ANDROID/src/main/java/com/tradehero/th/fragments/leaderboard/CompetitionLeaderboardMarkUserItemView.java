@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
+import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
@@ -11,6 +13,7 @@ import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFra
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
     private ProviderDTO providerDTO;
+    private PrizeDTO prizeDTO;
 
     //<editor-fold desc="Constructors">
     public CompetitionLeaderboardMarkUserItemView(Context context)
@@ -33,6 +36,25 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     {
         this.providerDTO = providerDTO;
         displayLbmuPl();
+    }
+
+    public void setPrizeDTO(PrizeDTO prizeDTO)
+    {
+        this.prizeDTO = prizeDTO;
+        displayPrize();
+    }
+
+    protected void displayPrize()
+    {
+        if(prizeDTO==null)
+        {
+            prizelayout.setVisibility(View.GONE);
+        }
+        else
+        {
+            prizelayout.setVisibility(View.VISIBLE);
+            prizeAmount.setText(prizeDTO.prizeCcy+(int)prizeDTO.amount);
+        }
     }
 
     @Override protected String getLbmuPlCurrencyDisplay()

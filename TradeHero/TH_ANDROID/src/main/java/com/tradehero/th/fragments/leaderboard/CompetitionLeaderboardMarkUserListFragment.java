@@ -5,13 +5,17 @@ import android.view.View;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionDTOUtil;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
+import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.base.Navigator;
@@ -21,6 +25,7 @@ import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
+import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCache;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +39,10 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     @Inject ProviderCache providerCache;
     @Inject CompetitionCache competitionCache;
     @Inject ProviderUtil providerUtil;
+    @Inject CompetitionLeaderboardCache competitionLeaderboardCache;
+    @Inject CompetitionDTOUtil competitionDTOUtil;
+
+    protected DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO> competitionLeaderboardCacheListener;
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
@@ -42,6 +51,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     protected THIntentPassedListener webViewTHIntentPassedListener;
     protected WebViewFragment webViewFragment;
     protected CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
+
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
@@ -79,7 +89,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         CompetitionId competitionId = getCompetitionId(getArguments());
         competitionDTO = competitionCache.get(competitionId);
         Timber.d("competitionDTO %s", competitionDTO);
-
+        competitionLeaderboardCacheListener = createCompetitionLeaderboardListener();
         this.webViewTHIntentPassedListener = new CompetitionLeaderboardListWebViewTHIntentPassedListener();
     }
 
@@ -154,12 +164,55 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
             this.webViewFragment.setThIntentPassedListener(null);
         }
         this.webViewFragment = null;
+        fetchCompetitionLeaderboard();
     }
+
 
     @Override public void onDestroy()
     {
         this.webViewTHIntentPassedListener = null;
+        competitionLeaderboardCacheListener = null;
         super.onDestroy();
+    }
+
+    protected void detachCompetitionLeaderboardCache()
+    {
+        competitionLeaderboardCache.unregister(competitionLeaderboardCacheListener);
+    }
+
+    protected void fetchCompetitionLeaderboard()
+    {
+        detachCompetitionLeaderboardCache();
+        CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId,competitionDTO.getCompetitionId());
+        competitionLeaderboardCache.register(key, competitionLeaderboardCacheListener);
+        competitionLeaderboardCache.getOrFetchAsync(key);
+    }
+
+    protected DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO> createCompetitionLeaderboardListener()
+    {
+        return new CompetetionLeaderboardCacheListener();
+    }
+
+    protected class CompetetionLeaderboardCacheListener implements DTOCacheNew.Listener<CompetitionLeaderboardId, CompetitionLeaderboardDTO>
+    {
+        public CompetetionLeaderboardCacheListener()
+        {
+            super();
+        }
+
+        @Override public void onDTOReceived(@NotNull CompetitionLeaderboardId key, @NotNull CompetitionLeaderboardDTO value)
+        {
+            if(value instanceof CompetitionLeaderboardDTO)
+            {
+                competitionAdapter.setCompetitionLeaderboardDTO((CompetitionLeaderboardDTO)value);
+                competitionAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override public void onErrorThrown(@NotNull CompetitionLeaderboardId key, @NotNull Throwable error)
+        {
+            Timber.d("ProviderPrizeAdsCallBack failure!");
+        }
     }
 
     @Override protected int getCurrentRankLayoutResId()
