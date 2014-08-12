@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -38,6 +39,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -65,6 +67,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject Lazy<UserProfileCache> userProfileCacheLazy;
+    @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
 
     @InjectView(R.id.leaderboard_mark_user_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
     @InjectView(R.id.leaderboard_mark_user_screen) BetterViewAnimator leaderboardMarkUserScreen;
@@ -353,7 +356,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if(leaderboardMarkUserListAdapter != null)
+        if (leaderboardMarkUserListAdapter != null)
         {
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
         }
@@ -372,25 +375,16 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         //invalidateCachedItemView();
     }
 
-    private void updateListViewRow(UserBaseKey heroId)
+    private void updateListViewRow(final UserBaseKey heroId)
     {
         AdapterView list = leaderboardMarkUserListView.getRefreshableView();
-        int start = list.getFirstVisiblePosition();
-        for (int i = start, j = list.getLastVisiblePosition(); i <= j; i++)
+        adapterViewUtilsLazy.get().updateSingleRow(list, UserBaseDTO.class, new Predicate<UserBaseDTO>()
         {
-            Object target = list.getItemAtPosition(i);
-            if (target instanceof UserBaseDTO)
+            @Override public boolean apply(UserBaseDTO userBaseDTO)
             {
-                UserBaseDTO user = (UserBaseDTO) target;
-                if (user.getBaseKey().equals(heroId))
-                {
-
-                    View view = list.getChildAt(i - start);
-                    list.getAdapter().getView(i, view, list);
-                    break;
-                }
+                return userBaseDTO.getBaseKey().equals(heroId);
             }
-        }
+        });
     }
 
     /**
