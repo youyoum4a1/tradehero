@@ -1,6 +1,7 @@
 package com.tradehero.th.models;
 
 import com.tradehero.th.models.leaderboard.ModelsLeaderboardTestModule;
+import com.tradehero.th.models.level.LevelTestModule;
 import com.tradehero.th.models.position.PositionDTOUtilsTest;
 import com.tradehero.th.models.push.PushTestModule;
 import com.tradehero.th.models.share.ModelsShareTestModule;
@@ -16,6 +17,7 @@ import dagger.Module;
                 PushTestModule.class,
                 ModelsShareTestModule.class,
                 ModelsUserTestModule.class,
+                LevelTestModule.class,
         },
         complete = false,
         library = true
