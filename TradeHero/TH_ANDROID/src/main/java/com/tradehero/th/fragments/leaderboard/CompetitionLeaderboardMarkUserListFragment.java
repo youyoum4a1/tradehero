@@ -23,11 +23,12 @@ import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
-    public static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
+    private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".providerId";
     public static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserListFragment.class.getName() + ".competitionId";
 
     @Inject ProviderCache providerCache;
@@ -42,14 +43,40 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     protected WebViewFragment webViewFragment;
     protected CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
 
+    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
+
+    @NotNull public static ProviderId getProviderId(@NotNull Bundle args)
+    {
+        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+    }
+
+    public static void putCompetition(@NotNull Bundle args, @NotNull CompetitionDTO competitionDTO)
+    {
+        putCompetitionId(args, competitionDTO.getCompetitionId());
+        putLeaderboardDefKey(args, competitionDTO.leaderboard.getLeaderboardDefKey());
+    }
+
+    public static void putCompetitionId(@NotNull Bundle args, @NotNull CompetitionId competitionId)
+    {
+        args.putBundle(BUNDLE_KEY_COMPETITION_ID, competitionId.getArgs());
+    }
+
+    @NotNull public static CompetitionId getCompetitionId(@NotNull Bundle args)
+    {
+        return new CompetitionId(args.getBundle(BUNDLE_KEY_COMPETITION_ID));
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        providerId = new ProviderId(getArguments().getBundle(BUNDLE_KEY_PROVIDER_ID));
+        providerId = getProviderId(getArguments());
         providerDTO = providerCache.get(providerId);
         Timber.d("providerDTO %s", providerDTO);
 
-        CompetitionId competitionId = new CompetitionId(getArguments().getBundle(BUNDLE_KEY_COMPETITION_ID));
+        CompetitionId competitionId = getCompetitionId(getArguments());
         competitionDTO = competitionCache.get(competitionId);
         Timber.d("competitionDTO %s", competitionDTO);
 

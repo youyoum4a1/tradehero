@@ -214,9 +214,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         this.followRequestedListener = followRequestedListener;
     }
 
-    @Override public void display(LeaderboardUserDTO expandableItem)
+    @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
     {
-        linkWith(expandableItem, true);
+        linkWith(leaderboardUserDTO, true);
     }
 
     public void displayOwnRanking(LeaderboardKey leaderboardKey)
@@ -232,9 +232,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         leaderboardCache.get().unregister(leaderboardOwnUserRankingListener);
     }
 
-    private void linkWith(LeaderboardUserDTO expandableItem, boolean andDisplay)
+    private void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
     {
-        this.leaderboardItem = expandableItem;
+        this.leaderboardItem = leaderboardUserDTO;
 
         if (andDisplay)
         {
@@ -257,6 +257,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void displayTopSection()
     {
+        displayRankingPosition();
         if (leaderboardItem.getPosition() != null)
         {
             lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
@@ -531,7 +532,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @OnClick(R.id.leaderboard_user_item_profile_picture)
     protected void handleUserIconClicked()
     {
-        //OtherTimelineFragment.viewProfile((DashboardActivity) getContext(), null);
         handleOpenProfileButtonClicked();
     }
 
@@ -613,14 +613,16 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     private void handleOpenProfileButtonClicked()
     {
+        if (leaderboardItem == null)
+        {
+            // TODO nicer
+            return;
+        }
         int userId = leaderboardItem.id;
 
-        if (currentUserId != null && currentUserId.get() != userId)
-        {
-            Bundle bundle = new Bundle();
-            thRouter.save(bundle, new UserBaseKey(userId));
-            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-        }
+        Bundle bundle = new Bundle();
+        thRouter.save(bundle, new UserBaseKey(userId));
+        getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
     }
 
     protected void handleSuccess(UserProfileDTO userProfileDTO, Response response)
@@ -637,9 +639,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    public void displayRankingPosition(int currentRank)
+    public void displayRankingPosition()
     {
-        if (isUserRanked(currentRank))
+        @Nullable Integer currentRank = leaderboardItem == null ? null : (leaderboardItem.ordinalPosition + 1);
+        if (currentRank == null)
+        {
+            // TODO decide
+        }
+        else if (currentRank <= MAX_OWN_RANKING)
         {
             lbmuPosition.setText("" + currentRank);
         }
@@ -647,11 +654,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         {
             lbmuPosition.setText(R.string.leaderboard_not_ranked_position);
         }
-    }
-
-    protected static boolean isUserRanked(int currentRank)
-    {
-        return currentRank != FLAG_USER_NOT_RANKED && currentRank > 0 && currentRank < MAX_OWN_RANKING;
     }
 
     public static interface OnFollowRequestedListener

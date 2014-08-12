@@ -17,6 +17,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -67,6 +68,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @InjectView(R.id.leaderboard_mark_user_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
     @InjectView(R.id.leaderboard_mark_user_screen) BetterViewAnimator leaderboardMarkUserScreen;
+    protected View headerView;
 
     private TextView leaderboardMarkUserMarkingTime;
 
@@ -129,11 +131,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         if (leaderboardMarkUserListView != null)
         {
-            View headerView = inflater.inflate(getHeaderViewResId(), null);
+            headerView = inflater.inflate(getHeaderViewResId(), null);
             if (headerView != null)
             {
                 leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
-                initHeaderView(headerView);
+                initHeaderView();
             }
 
             View userRankingHeaderView = inflateAndGetUserRankHeaderView();
@@ -155,7 +157,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
             if (ownRankingView.expandingLayout != null)
             {
-                ownRankingView.displayRankingPosition(currentRank);
+                ownRankingView.display(currentLeaderboardUserDTO);
                 ownRankingView.expandingLayout.setVisibility(View.GONE);
                 ownRankingView.onExpand(false);
                 ownRankingView.setOnClickListener(new BaseExpandingItemListener());
@@ -169,24 +171,35 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return R.layout.leaderboard_listview_header;
     }
 
-    protected void initHeaderView(View headerView)
+    @Override protected void linkWith(LeaderboardDefDTO leaderboardDefDTO, boolean andDisplay)
     {
-        String leaderboardDefDesc = getArguments().getString(BUNDLE_KEY_LEADERBOARD_DEF_DESC);
-
-        TextView leaderboardMarkUserTimePeriod = (TextView) headerView.findViewById(R.id.leaderboard_time_period);
-        if (leaderboardMarkUserTimePeriod != null)
+        super.linkWith(leaderboardDefDTO, andDisplay);
+        if (andDisplay)
         {
-            if (leaderboardDefDesc != null)
-            {
-                leaderboardMarkUserTimePeriod.setText(leaderboardDefDesc);
-                leaderboardMarkUserTimePeriod.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                leaderboardMarkUserTimePeriod.setVisibility(View.GONE);
-            }
+            initHeaderView();
         }
-        leaderboardMarkUserMarkingTime = (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
+    }
+
+    protected void initHeaderView()
+    {
+        if (headerView != null)
+        {
+            String leaderboardDefDesc = leaderboardDefDTO == null ? null : leaderboardDefDTO.desc;
+            TextView leaderboardMarkUserTimePeriod = (TextView) headerView.findViewById(R.id.leaderboard_time_period);
+            if (leaderboardMarkUserTimePeriod != null)
+            {
+                if (leaderboardDefDesc != null)
+                {
+                    leaderboardMarkUserTimePeriod.setText(leaderboardDefDesc);
+                    leaderboardMarkUserTimePeriod.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    leaderboardMarkUserTimePeriod.setVisibility(View.GONE);
+                }
+            }
+            leaderboardMarkUserMarkingTime = (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
+        }
     }
 
     //<editor-fold desc="ActionBar">
@@ -275,15 +288,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
-    {
-        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
-        if (leaderboardMarkUserListAdapter != null && purchaseApplicablePortfolioId != null)
-        {
-            leaderboardMarkUserListAdapter.setApplicablePortfolioId(purchaseApplicablePortfolioId);
-        }
-    }
-
     @Override public void onStop()
     {
         detachFollowDialogCombo();
@@ -292,6 +296,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroyView()
     {
+        headerView = null;
         if (leaderboardMarkUserListAdapter != null)
         {
             leaderboardMarkUserListAdapter.setDTOLoaderCallback(null);
@@ -334,6 +339,15 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             freeFollowMiddleCallback.setPrimaryCallback(null);
         }
         freeFollowMiddleCallback = null;
+    }
+
+    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
+    {
+        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
+        if (leaderboardMarkUserListAdapter != null && purchaseApplicablePortfolioId != null)
+        {
+            leaderboardMarkUserListAdapter.setApplicablePortfolioId(purchaseApplicablePortfolioId);
+        }
     }
 
     @Override protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)

@@ -39,6 +39,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 {
     @Nullable @Optional @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @Nullable @InjectView(R.id.progress) ProgressBar mProgress;
+    @Nullable protected  View headerView;
 
     @Nullable protected LeaderboardFriendsListAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;
@@ -92,18 +93,18 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         if (leaderboardMarkUserListView != null)
         {
-            View headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
+            headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
             if (headerView != null)
             {
                 leaderboardMarkUserListView.addHeaderView(headerView, null, false);
-                initHeaderView(headerView);
+                initHeaderView();
             }
         }
     }
 
-    protected void initHeaderView(@NotNull View headerView)
+    protected void initHeaderView()
     {
-        String leaderboardDefDesc = getArguments().getString(BUNDLE_KEY_LEADERBOARD_DEF_DESC);
+        String leaderboardDefDesc = leaderboardDefDTO == null ? null : leaderboardDefDTO.desc;
         TextView leaderboardMarkUserTimePeriod =
                 (TextView) headerView.findViewById(R.id.leaderboard_time_period);
         if (leaderboardMarkUserTimePeriod != null)

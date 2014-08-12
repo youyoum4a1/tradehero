@@ -40,7 +40,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
 
     protected UserProfileDTO userProfileDTO;
 
-    protected Integer currentRank;
+    @Nullable protected Integer currentRank;
     protected Double roiInPeriod = 0.0D;
 
     public LeaderboardCurrentUserRankHeaderView(Context context)
@@ -137,7 +137,7 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
         }
     }
 
-    public void setRank(int rank)
+    public void setRank(@Nullable Integer rank)
     {
         this.currentRank = rank;
         if (isUserRanked())

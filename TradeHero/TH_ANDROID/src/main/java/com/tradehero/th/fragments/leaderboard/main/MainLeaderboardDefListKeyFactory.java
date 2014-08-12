@@ -20,8 +20,6 @@ class MainLeaderboardDefListKeyFactory
     {
         switch (leaderboardCommunityType)
         {
-            case Competition:
-                return null;
             case Connected:
                 return new ConnectedLeaderboardDefListKey();
             case SkillAndCountry:
