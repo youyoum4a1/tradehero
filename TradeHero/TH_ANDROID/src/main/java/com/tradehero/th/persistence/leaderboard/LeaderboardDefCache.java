@@ -29,14 +29,8 @@ import org.jetbrains.annotations.NotNull;
 
     @Override @NotNull public LeaderboardDefDTO fetch(@NotNull final LeaderboardDefKey key) throws Throwable
     {
-        LeaderboardDefDTO found = leaderboardDefListCache.get().getOrFetchSync(
-                new LeaderboardDefListKey()).findFirstWhere(new Predicate<LeaderboardDefDTO>()
-        {
-            @Override public boolean apply(LeaderboardDefDTO leaderboardDefDTO)
-            {
-                return leaderboardDefDTO.getLeaderboardDefKey().equals(key);
-            }
-        });
+        leaderboardDefListCache.get().getOrFetchSync(new LeaderboardDefListKey());
+        LeaderboardDefDTO found = get(key);
         if (found != null)
         {
             return found;
