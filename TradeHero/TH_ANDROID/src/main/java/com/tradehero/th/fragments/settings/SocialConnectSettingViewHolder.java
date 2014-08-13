@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -33,14 +31,13 @@ import retrofit.Callback;
 import timber.log.Timber;
 
 abstract public class SocialConnectSettingViewHolder
-    extends BaseSettingViewHolder
+    extends BaseOneCheckboxSettingViewHolder
 {
     @NotNull protected final CurrentUserId currentUserId;
     @NotNull protected final UserProfileCache userProfileCache;
     @NotNull protected final ProgressDialogUtil progressDialogUtil;
     @NotNull protected final AlertDialogUtil alertDialogUtil;
     @NotNull protected final SocialServiceWrapper socialServiceWrapper;
-    @Nullable protected CheckBoxPreference clickablePref;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Nullable protected MiddleLogInCallback middleSocialConnectLogInCallback;
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackConnect;
@@ -67,23 +64,9 @@ abstract public class SocialConnectSettingViewHolder
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
-        clickablePref = (CheckBoxPreference) preferenceFragment.findPreference(
-                preferenceFragment.getString(getStringKeyResId()));
-        if (clickablePref != null)
-        {
-            clickablePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeSharing((boolean) newValue);
-                }
-            });
-        }
         userProfileCacheListener = createUserProfileCacheListener();
         fetchUserProfile();
     }
-
-    abstract protected int getStringKeyResId();
 
     @Override public void destroyViews()
     {
@@ -93,7 +76,6 @@ abstract public class SocialConnectSettingViewHolder
         detachMiddleServerDisconnectCallback();
         hideProgressDialog();
         hideUnlinkConfirmDialog();
-        this.clickablePref = null;
         super.destroyViews();
     }
 
@@ -173,7 +155,7 @@ abstract public class SocialConnectSettingViewHolder
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    protected boolean changeSharing(boolean enable)
+    protected boolean changeStatus(boolean enable)
     {
         Context activityContext = null;
         if (preferenceFragment != null)
@@ -322,5 +304,6 @@ abstract public class SocialConnectSettingViewHolder
             THUser.removeCredential(getSocialNetworkName());
         }
     }
+
     abstract protected void updateSocialConnectStatus(@NotNull UserProfileDTO updatedUserProfileDTO);
 }

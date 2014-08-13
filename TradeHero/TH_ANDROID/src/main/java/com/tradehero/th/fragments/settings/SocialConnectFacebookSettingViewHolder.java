@@ -69,9 +69,9 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
         return R.string.authentication_connecting_tradehero_only;
     }
 
-    @Override protected boolean changeSharing(boolean enable)
+    @Override protected boolean changeStatus(boolean enable)
     {
-        boolean returned = super.changeSharing(enable);
+        boolean returned = super.changeStatus(enable);
         if (enable)
         {
             detachMiddleSocialConnectLogInCallback();
