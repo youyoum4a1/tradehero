@@ -113,7 +113,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
 
-    @InjectView(R.id.lbmu_inner_view_container) ViewGroup innerViewContainer;
+    @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
 
     private @Nullable DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardOwnUserRankingListener;
 
@@ -678,7 +678,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardDTO.users.get(0);
                 display(ownLeaderboardUserDTO);
 
-                innerViewContainer.setBackgroundResource(R.drawable.basic_white_selector);
+                if(innerViewContainer != null)
+                {
+                    innerViewContainer.setBackgroundResource(R.drawable.basic_white_selector);
+                }
             }
             else
             {
@@ -688,7 +691,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 lbmuPosition.setText("-");
 
                 // disable touch feedback so we don't confuse the user
-                innerViewContainer.setBackgroundResource(R.color.white);
+                if(innerViewContainer != null)
+                {
+                    innerViewContainer.setBackgroundResource(R.color.white);
+                }
             }
         }
 
