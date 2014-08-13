@@ -41,6 +41,11 @@ public class SocialConnectWeiboSettingViewHolder extends SocialConnectSettingVie
         return R.string.key_settings_sharing_weibo;
     }
 
+    @Override protected int getOrderIntResId()
+    {
+        return R.integer.key_settings_sharing_weibo_order;
+    }
+
     @Override @Nullable protected String getSocialNetworkName()
     {
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;

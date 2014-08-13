@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.preference.Preference;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
@@ -51,6 +52,18 @@ abstract public class SocialConnectSettingViewHolder
         this.socialServiceWrapper = socialServiceWrapper;
     }
     //</editor-fold>
+
+    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    {
+        super.initViews(preferenceFragment);
+        Preference clickablePrefCopy = clickablePref;
+        if (clickablePrefCopy != null)
+        {
+            clickablePrefCopy.setOrder(preferenceFragment.getResources().getInteger(getOrderIntResId()));
+        }
+    }
+
+    protected abstract int getOrderIntResId();
 
     @Override public void destroyViews()
     {

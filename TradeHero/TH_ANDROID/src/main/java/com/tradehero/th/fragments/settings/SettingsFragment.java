@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -26,11 +25,9 @@ import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
@@ -129,7 +126,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         initPreferenceClickHandlers();
-        initInfo();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -149,7 +145,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Settings));
         if (socialNetworkToConnectTo != null)
         {
-            changeSharing(socialNetworkToConnectTo, true);
+            socialConnectSettingViewHolderContainer.changeSharing(socialNetworkToConnectTo, true);
             socialNetworkToConnectTo = null;
         }
     }
@@ -204,24 +200,6 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         super.onDestroy();
     }
 
-    private BillingPurchaseRestorer.OnPurchaseRestorerListener createPurchaseRestorerListener()
-    {
-        return new BillingPurchaseRestorer.OnPurchaseRestorerListener()
-        {
-            @Override public void onPurchaseRestored(int requestCode, List restoredPurchases,
-                    List failedRestorePurchases, List failExceptions)
-            {
-                Timber.d("onPurchaseRestoreFinished3");
-                IABPurchaseRestorerAlertUtil.handlePurchaseRestoreFinished(
-                        getActivity(),
-                        restoredPurchases,
-                        failedRestorePurchases,
-                        IABPurchaseRestorerAlertUtil.createFailedRestoreClickListener(getActivity(),
-                                new Exception())); // TODO have a better exception
-            }
-        };
-    }
-
     private void initPreferenceClickHandlers()
     {
         topBannerSettingViewHolder.initViews(this);
@@ -255,10 +233,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         resetHelpScreensViewHolder.initViews(this);
         clearCacheViewHolder.initViews(this);
         aboutPrefViewHolder.initViews(this);
-    }
 
-    private void initInfo()
-    {
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
         PackageInfo packageInfo = null;
@@ -281,10 +256,5 @@ public final class SettingsFragment extends DashboardPreferenceFragment
             version.setSummary(timeStr);
         }
         version.setTitle(VersionUtils.getVersionId(getActivity()) + " - " + serverPath);
-    }
-
-    protected void changeSharing(SocialNetworkEnum socialNetworkEnum, boolean enable)
-    {
-        socialConnectSettingViewHolderContainer.changeSharing(socialNetworkEnum, enable);
     }
 }

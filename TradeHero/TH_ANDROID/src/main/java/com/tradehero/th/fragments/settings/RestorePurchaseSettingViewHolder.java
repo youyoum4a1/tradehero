@@ -1,10 +1,13 @@
 package com.tradehero.th.fragments.settings;
 
+import android.preference.PreferenceCategory;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.metrics.MarketSegment;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -45,6 +48,15 @@ public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
                 }
             }
         };
+        PreferenceCategory container = (PreferenceCategory) preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_account_group));
+        if (Constants.TAP_STREAM_TYPE.marketSegment.equals(MarketSegment.CHINA))
+            // TODO this is not so good. It should depend on Billing Module
+        {
+            if (container != null && clickablePref != null)
+            {
+                container.removePreference(clickablePref);
+            }
+        }
     }
 
     @Override public void destroyViews()

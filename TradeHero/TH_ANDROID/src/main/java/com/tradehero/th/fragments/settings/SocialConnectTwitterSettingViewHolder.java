@@ -41,6 +41,11 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
         return R.string.key_settings_sharing_twitter;
     }
 
+    @Override protected int getOrderIntResId()
+    {
+        return R.integer.key_settings_sharing_twitter_order;
+    }
+
     @Override @Nullable protected String getSocialNetworkName()
     {
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;

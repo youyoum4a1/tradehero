@@ -41,6 +41,11 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
         return R.string.key_settings_sharing_linked_in;
     }
 
+    @Override protected int getOrderIntResId()
+    {
+        return R.integer.key_settings_sharing_linked_in_order;
+    }
+
     @Override @Nullable protected String getSocialNetworkName()
     {
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;

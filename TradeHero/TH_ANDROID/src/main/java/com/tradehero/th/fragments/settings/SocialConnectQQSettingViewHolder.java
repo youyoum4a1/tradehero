@@ -41,6 +41,11 @@ public class SocialConnectQQSettingViewHolder extends SocialConnectSettingViewHo
         return R.string.key_settings_sharing_qq;
     }
 
+    @Override protected int getOrderIntResId()
+    {
+        return R.integer.key_settings_sharing_qq_order;
+    }
+
     @Override @Nullable protected String getSocialNetworkName()
     {
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
