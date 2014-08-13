@@ -100,6 +100,10 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
+        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
+        {
+            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).onDestroyView();
+        }
         mRankHeaderView = null;
         super.onDestroyView();
     }
@@ -242,10 +246,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
         {
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setApplicablePortfolioId(getApplicablePortfolioId());
+            LeaderboardCurrentUserRankHeaderView headerCopy = (LeaderboardCurrentUserRankHeaderView) mRankHeaderView;
+
+            headerCopy.setApplicablePortfolioId(getApplicablePortfolioId());
             if (currentLeaderboardUserDTO != null)
             {
-                ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).display(currentLeaderboardUserDTO);
+                headerCopy.display(currentLeaderboardUserDTO);
             }
         }
     }
