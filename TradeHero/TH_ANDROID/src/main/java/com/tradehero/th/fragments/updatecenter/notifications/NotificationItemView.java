@@ -92,6 +92,7 @@ public class NotificationItemView
     {
         if (notificationDTO != null)
         {
+            this.notificationDTO = notificationDTO;
             notificationContent.setText(notificationDTO.text);
             notificationTime.setText(prettyTime.format(notificationDTO.createdAtUtc));
             notificationUnreadFlag.setVisibility(notificationDTO.unread ? View.VISIBLE : View.INVISIBLE);
