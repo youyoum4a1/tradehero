@@ -79,23 +79,24 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        if(displayName == null)
+        {
+            ButterKnife.inject(this);
+        }
         userProfileCacheListener = createUserProfileCacheListener();
         if (!isInEditMode())
         {
             fetchUserProfile();
             display();
         }
-    }
 
-    public void onDestroyView()
-    {
-        ButterKnife.reset(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachUserProfileCache();
         userProfileCacheListener = null;
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 

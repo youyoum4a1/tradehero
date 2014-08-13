@@ -67,7 +67,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>,
         ExpandingLayout.OnExpandListener
 {
-    private static final Integer FLAG_USER_NOT_RANKED = -1;
     public static final int MAX_OWN_RANKING = 1000;
 
     @Inject CurrentUserId currentUserId;

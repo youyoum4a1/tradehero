@@ -100,10 +100,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
-        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
-        {
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).onDestroyView();
-        }
         mRankHeaderView = null;
         super.onDestroyView();
     }
