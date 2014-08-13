@@ -55,7 +55,7 @@
   </style>
 
   <style name="TH.Btn_Price_Bar_Base">
-    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">1</item>
     <item name="android:gravity">center</item>
@@ -64,8 +64,8 @@
 
   <style name="TH.Btn_Price_Bar" parent="TH.Btn_Price_Bar_Base">
     <item name="android:background">@drawable/basic_transparent_selector</item>
-    <item name="android:textColor">@color/price_bar_text_default</item>
-    <item name="android:textSize">@dimen/text_xsmall</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textSize">@dimen/text_xlarge</item>
   </style>
 
   <style name="TH.Btn_Time_Span" parent="TH.Btn_Price_Bar_Base">
@@ -75,19 +75,11 @@
     <item name="android:minHeight">@dimen/timespan_button_min_height</item>
   </style>
 
-  <style name="TH.Btn_Price_Bar_Middle" parent="TH.Btn_Price_Bar_Base">
-    <!--item name="android:background">@drawable/price_bar_bg_color</item>
-    <item name="android:textColor">@drawable/price_bar_text_color</item-->
-  </style>
+  <style name="TH.BtnQuickPriceSet" parent="TH.Btn_Price_Bar_Base">
+    <item name="android:background">@drawable/basic_transparent_selector</item>
+    <item name="android:textColor">@color/price_bar_text_default</item>
+    <item name="android:textSize">@dimen/text_xsmall</item>
 
-  <style name="TH.Btn_Price_Bar_Left" parent="TH.Btn_Price_Bar_Base">
-    <!--item name="android:background">@drawable/trend_price_bar_button_left</item>
-    <item name="android:textColor">@drawable/price_bar_text_color</item-->
-  </style>
-
-  <style name="TH.Btn_Price_Bar_Right" parent="TH.Btn_Price_Bar_Base">
-    <!--item name="android:background">@drawable/trend_price_bar_button_right</item>
-    <item name="android:textColor">@drawable/price_bar_text_color</item-->
   </style>
 
   <style name="TH.Btn_Price_Bar_Separator">
