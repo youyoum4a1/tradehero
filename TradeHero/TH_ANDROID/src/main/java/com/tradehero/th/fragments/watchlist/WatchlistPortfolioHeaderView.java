@@ -12,21 +12,21 @@ import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 public class WatchlistPortfolioHeaderView extends LinearLayout
         implements DTOView<UserBaseKey>
@@ -37,7 +37,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     private WatchlistHeaderItem gainLoss;
     private WatchlistHeaderItem valuation;
     private TextView marking;
-    private SecurityIdList securityIdList;
+    private WatchlistPositionDTOList watchlistPositionDTOs;
     private UserBaseKey userBaseKey;
     private PortfolioCompactDTO portfolioCompactDTO;
     private SimpleDateFormat markingDateFormat;
@@ -132,7 +132,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     private void linkWith(UserBaseKey userBaseKey, boolean andDisplay)
     {
         this.userBaseKey = userBaseKey;
-        securityIdList = userWatchlistPositionCache.get().get(this.userBaseKey);
+        watchlistPositionDTOs = userWatchlistPositionCache.get().get(this.userBaseKey);
 
         if (andDisplay)
         {
@@ -198,13 +198,11 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     private double getTotalValue()
     {
         double totalValue = 0.0;
-        if (securityIdList != null)
+        if (watchlistPositionDTOs != null)
         {
-            for (SecurityId securityId: securityIdList)
+            for (@NotNull WatchlistPositionDTO watchlistItem: watchlistPositionDTOs)
             {
-                WatchlistPositionDTO watchlistItem = watchlistPositionCache.get().get(securityId);
-                if (watchlistItem != null
-                        && watchlistItem.securityDTO != null
+                if (watchlistItem.securityDTO != null
                         && watchlistItem.securityDTO.getLastPriceInUSD() != null
                         && watchlistItem.shares != null)
                 {
@@ -219,12 +217,11 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     {
         double totalInvested = 0.0;
 
-        if (securityIdList != null)
+        if (watchlistPositionDTOs != null)
         {
-            for (SecurityId securityId: securityIdList)
+            for (@NotNull WatchlistPositionDTO watchlistItem: watchlistPositionDTOs)
             {
-                WatchlistPositionDTO watchlistItem = watchlistPositionCache.get().get(securityId);
-                if (watchlistItem != null && watchlistItem.securityDTO != null)
+                if (watchlistItem.securityDTO != null)
                 {
                     totalInvested += (watchlistItem.watchlistPrice * watchlistItem.securityDTO.toUSDRate) * watchlistItem.shares;
                 }

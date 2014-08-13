@@ -1,9 +1,9 @@
 package com.tradehero.th.models.watchlist;
 
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
@@ -48,10 +48,11 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
                     null);
         }
 
-        SecurityIdList currentIds = userWatchlistPositionCache.get(concernedUser);
-        if (currentIds != null)
+        WatchlistPositionDTOList cachedPositions = userWatchlistPositionCache.get(concernedUser);
+        if (cachedPositions != null && deletedSecurityId != null)
         {
-            currentIds.remove(deletedSecurityId);
+            cachedPositions.remove(deletedSecurityId);
+            userWatchlistPositionCache.put(concernedUser, cachedPositions);
         }
         watchlistPositionCache.invalidate(deletedSecurityId);
         return watchlistPositionDTO;
