@@ -1,74 +1,55 @@
 package com.tradehero.th.persistence.user;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import java.util.ArrayList;
-import java.util.List;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
-public class AllowableRecipientPaginatedCache extends StraightDTOCacheNew<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
+public class AllowableRecipientPaginatedCache extends StraightCutDTOCacheNew<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO, PaginatedUserBaseKey>
 {
     public static final int DEFAULT_MAX_SIZE = 20;
 
     @NotNull private final UserServiceWrapper userServiceWrapper;
-    @NotNull private final UserMessagingRelationshipCache userRelationCache;
+    @NotNull private final Lazy<AllowableRecipientCache> allowableRecipientCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AllowableRecipientPaginatedCache(
             @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull UserMessagingRelationshipCache userRelationCache)
+            @NotNull Lazy<AllowableRecipientCache> allowableRecipientCache)
     {
         super(DEFAULT_MAX_SIZE);
         this.userServiceWrapper = userServiceWrapper;
-        this.userRelationCache = userRelationCache;
+        this.allowableRecipientCache = allowableRecipientCache;
     }
     //</editor-fold>
 
-    @Override @NotNull public PaginatedDTO<AllowableRecipientDTO> fetch(@NotNull SearchAllowableRecipientListType key)
+    @Override @NotNull public PaginatedAllowableRecipientDTO fetch(@NotNull SearchAllowableRecipientListType key)
             throws Throwable
     {
-        return putInternal(key, userServiceWrapper.searchAllowableRecipients(key));
+        return userServiceWrapper.searchAllowableRecipients(key);
     }
 
-    @NotNull private PaginatedDTO<AllowableRecipientDTO> putInternal(
+    @NotNull @Override protected PaginatedUserBaseKey cutValue(
             @NotNull SearchAllowableRecipientListType key,
-            @NotNull PaginatedDTO<AllowableRecipientDTO> value)
+            @NotNull PaginatedAllowableRecipientDTO value)
     {
-        PaginatedDTO<AllowableRecipientDTO> reprocessed = new PaginatedDTO<>();
-        reprocessed.setPagination(value.getPagination());
-        if (value.getData() != null)
-        {
-            List<AllowableRecipientDTO> data = new ArrayList<>();
-            for (AllowableRecipientDTO allowableRecipientDTO : value.getData())
-            {
-                //data.add(allowableRecipientDTO.user.getBaseKey());
-                data.add(allowableRecipientDTO);
-                put(allowableRecipientDTO);
-            }
-            reprocessed.setData(data);
-        }
-        return reprocessed;
+        return new PaginatedUserBaseKey(value, allowableRecipientCache.get());
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
-    private AllowableRecipientDTO put(@Nullable AllowableRecipientDTO value)
+    @Nullable @Override protected PaginatedAllowableRecipientDTO inflateValue(
+            @NotNull SearchAllowableRecipientListType key,
+            @Nullable PaginatedUserBaseKey cutValue)
     {
-        if (value == null || value.user == null)
+        if (cutValue == null)
         {
             return null;
         }
-        UserBaseKey userBaseKey = value.user.getBaseKey();
-        AllowableRecipientDTO previous = new AllowableRecipientDTO();
-        previous.relationship = userRelationCache.put(userBaseKey, value.relationship);
-        return previous;
+        return cutValue.inflate(allowableRecipientCache.get());
     }
 }

@@ -10,13 +10,15 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
@@ -24,12 +26,15 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
+import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCompactCache;
+import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
         implements AdapterView.OnItemClickListener
@@ -38,8 +43,11 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject UserProfileCompactCache userProfileCompactCache;
     @Inject AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
+    @Inject UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @Inject Lazy<AdapterViewUtils> adapterViewUtils;
+
     private
-    DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
+    DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>
             allowableRecipientCacheListener;
 
     private RelationsListItemAdapter mRelationsListItemAdapter;
@@ -104,8 +112,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListItemAdapter.setPremiumFollowRequestedListener(null);
         mRelationsListItemAdapter = null;
         mRelationsList = null;
-        //we need update this page every time when user come in for we don't know whether others follow him during this time
-        allowableRecipientPaginatedCache.invalidateAll();
         super.onDestroyView();
     }
 
@@ -147,7 +153,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         premiumFollowUser(userBaseKey);
     }
 
-    protected DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedDTO<AllowableRecipientDTO>>
+    protected DTOCacheNew.Listener<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>
         createAllowableRecipientListener()
     {
         return new AllRelationAllowableRecipientCacheListener();
@@ -156,10 +162,10 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected class AllRelationAllowableRecipientCacheListener
             implements DTOCacheNew.Listener<
             SearchAllowableRecipientListType,
-            PaginatedDTO<AllowableRecipientDTO>>
+            PaginatedAllowableRecipientDTO>
     {
         @Override public void onDTOReceived(@NotNull SearchAllowableRecipientListType key,
-                @NotNull PaginatedDTO<AllowableRecipientDTO> value)
+                @NotNull PaginatedAllowableRecipientDTO value)
         {
             //mRelationsList = userProfileCompactCache.get(value.getData());
             mRelationsList = value.getData();
@@ -185,7 +191,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
         {
             handleFollowRequested(userBaseKey);
-            allowableRecipientPaginatedCache.invalidateAll();
         }
     }
 
@@ -195,12 +200,39 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         @Override public void onUserFollowSuccess(UserBaseKey userFollowed,
                 UserProfileDTO currentUserProfileDTO)
         {
-            downloadRelations();
+            forceUpdateLook(userFollowed);
         }
 
         @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
         {
             // nothing for now
+        }
+    }
+
+    protected void forceUpdateLook(@NotNull final UserBaseKey userFollowed)
+    {
+        final UserMessagingRelationshipDTO newRelationship = userMessagingRelationshipCache.get(userFollowed);
+        if (newRelationship != null)
+        {
+            adapterViewUtils.get().updateSingleRow(mRelationsListView, AllowableRecipientDTO.class, new Predicate<AllowableRecipientDTO>()
+            {
+                @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)
+                {
+                    if (allowableRecipientDTO == null
+                            || !allowableRecipientDTO.user.getBaseKey().equals(userFollowed))
+                    {
+                        return false;
+                    }
+                    allowableRecipientDTO.relationship = newRelationship;
+                    return true;
+                }
+            });
+        }
+        else
+        {
+            allowableRecipientPaginatedCache.invalidateAll();
+            downloadRelations();
+            Timber.e("Strangely, there was no longer the relation in cache");
         }
     }
 }
