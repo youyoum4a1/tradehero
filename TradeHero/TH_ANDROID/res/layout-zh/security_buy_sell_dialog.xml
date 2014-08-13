@@ -166,7 +166,7 @@
 
     <com.tradehero.th.fragments.trade.view.QuickPriceButton
         android:id="@+id/toggle5k"
-        style="@style/TH.Btn_Price_Bar"
+        style="@style/TH.BtnQuickPriceSet"
         android:text="@string/buy_sell_p5k"
         app:price="5000"
         />
@@ -175,7 +175,7 @@
 
     <com.tradehero.th.fragments.trade.view.QuickPriceButton
         android:id="@+id/toggle10k"
-        style="@style/TH.Btn_Price_Bar"
+        style="@style/TH.BtnQuickPriceSet"
         android:text="@string/buy_sell_p10k"
         app:price="10000"
         />
@@ -184,7 +184,7 @@
 
     <com.tradehero.th.fragments.trade.view.QuickPriceButton
         android:id="@+id/toggle25k"
-        style="@style/TH.Btn_Price_Bar"
+        style="@style/TH.BtnQuickPriceSet"
         android:text="@string/buy_sell_p25k"
         app:price="25000"
         />
@@ -193,7 +193,7 @@
 
     <com.tradehero.th.fragments.trade.view.QuickPriceButton
         android:id="@+id/toggle50k"
-        style="@style/TH.Btn_Price_Bar"
+        style="@style/TH.BtnQuickPriceSet"
         android:text="@string/buy_sell_p50k"
         app:price="50000"
         />
