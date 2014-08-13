@@ -21,18 +21,15 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCacheNew<Search
 
     @NotNull private final UserServiceWrapper userServiceWrapper;
     @NotNull private final UserMessagingRelationshipCache userRelationCache;
-    @NotNull private final UserProfileCompactCache userProfileCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AllowableRecipientPaginatedCache(
             @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull UserMessagingRelationshipCache userRelationCache,
-            @NotNull UserProfileCompactCache userProfileCompactCache)
+            @NotNull UserMessagingRelationshipCache userRelationCache)
     {
         super(DEFAULT_MAX_SIZE);
         this.userServiceWrapper = userServiceWrapper;
         this.userRelationCache = userRelationCache;
-        this.userProfileCompactCache = userProfileCompactCache;
     }
     //</editor-fold>
 
@@ -71,7 +68,6 @@ public class AllowableRecipientPaginatedCache extends StraightDTOCacheNew<Search
         }
         UserBaseKey userBaseKey = value.user.getBaseKey();
         AllowableRecipientDTO previous = new AllowableRecipientDTO();
-        previous.user = userProfileCompactCache.put(userBaseKey, value.user);
         previous.relationship = userRelationCache.put(userBaseKey, value.relationship);
         return previous;
     }
