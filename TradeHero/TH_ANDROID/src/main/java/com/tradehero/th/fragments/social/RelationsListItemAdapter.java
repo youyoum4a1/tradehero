@@ -1,26 +1,31 @@
 package com.tradehero.th.fragments.social;
 
 import android.content.Context;
-import android.view.LayoutInflater;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
+import android.view.View;
+import android.view.ViewGroup;
+import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import org.jetbrains.annotations.NotNull;
 
-public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipientDTO, RelationsListItemView>
+public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipientDTO, RelationsListItemView>
 {
     private OnPremiumFollowRequestedListener premiumFollowRequestedListener;
 
-    public RelationsListItemAdapter(Context context, LayoutInflater inflater, int layoutResId)
+    //<editor-fold desc="Constructors">
+    public RelationsListItemAdapter(Context context, int layoutResId)
     {
-        super(context, inflater, layoutResId);
+        super(context, layoutResId);
     }
+    //</editor-fold>
 
-    @Override protected void fineTune(int position, AllowableRecipientDTO allowableRecipientDTO,
-            RelationsListItemView relationsListItemView)
+    @Override public RelationsListItemView getView(int position, View convertView, ViewGroup viewGroup)
     {
-        relationsListItemView.setPremiumFollowRequestedListener(createFollowRequestedListener());
+        RelationsListItemView prepared = super.getView(position, convertView, viewGroup);
+        prepared.setPremiumFollowRequestedListener(createFollowRequestedListener());
+        return prepared;
     }
 
     public void setPremiumFollowRequestedListener(
@@ -49,6 +54,21 @@ public class RelationsListItemAdapter extends ArrayDTOAdapter<AllowableRecipient
         @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
         {
             notifyFollowRequested(userBaseKey);
+        }
+    }
+
+    public void updateItem(
+            @NotNull UserBaseKey relationId,
+            @NotNull UserMessagingRelationshipDTO relationshipDTO)
+    {
+        AllowableRecipientDTO item;
+        for (int position = 0, size = getCount(); position < size; position++)
+        {
+            item = getItem(position);
+            if (item.user.getBaseKey().equals(relationId))
+            {
+                item.relationship = relationshipDTO;
+            }
         }
     }
 }

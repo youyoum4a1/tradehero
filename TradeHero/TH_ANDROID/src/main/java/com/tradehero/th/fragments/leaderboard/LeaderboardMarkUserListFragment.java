@@ -152,7 +152,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @Override protected int getCurrentRankLayoutResId()
     {
-        return R.layout.lbmu_item_roi_mode;
+        return R.layout.lbmu_item_own_ranking_roi_mode;
     }
 
     private void setupOwnRankingView(View userRankingHeaderView)
@@ -388,7 +388,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     private void updateListViewRow(final UserBaseKey heroId)
     {
         AdapterView list = leaderboardMarkUserListView.getRefreshableView();
-        adapterViewUtilsLazy.get().updateSingleRow(list, UserBaseDTO.class, new Predicate<UserBaseDTO>()
+        adapterViewUtilsLazy.get().updateSingleRowWhere(list, UserBaseDTO.class, new Predicate<UserBaseDTO>()
         {
             @Override public boolean apply(UserBaseDTO userBaseDTO)
             {

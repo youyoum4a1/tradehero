@@ -297,7 +297,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
         detachInfoFetcher();
         infoFetcher = new FollowerManagerInfoFetcher(createFollowerSummaryCacheRefreshListener());
-        infoFetcher.fetch(this.heroId);
+        infoFetcher.fetch(this.heroId,true);
     }
 
     private void pushTimelineFragment(int followerId)

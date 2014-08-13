@@ -23,7 +23,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -46,8 +46,6 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     @Inject UserProfileCache userProfileCache;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
-
-    public static final int FLAG_USER_NOT_RANKED = -1;
 
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
@@ -75,28 +73,29 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     {
         super.onFinishInflate();
         DaggerUtils.inject(this);
+        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
         userProfileCacheListener = createUserProfileCacheListener();
         if (!isInEditMode())
         {
             fetchUserProfile();
-        }
-        else
-        {
             display();
         }
+    }
+
+    public void onDestroyView()
+    {
+        ButterKnife.reset(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         detachUserProfileCache();
         userProfileCacheListener = null;
-        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -251,10 +250,10 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
             Bundle args = new Bundle();
             if (applicablePortfolioId != null)
             {
-                PushableTimelineFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                MeTimelineFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
-            PushableTimelineFragment.putUserBaseKey(args, userProfileDTO.getBaseKey());
-            navigator.pushFragment(PushableTimelineFragment.class, args);
+            MeTimelineFragment.putUserBaseKey(args, userProfileDTO.getBaseKey());
+            navigator.pushFragment(MeTimelineFragment.class, args);
         }
     }
 

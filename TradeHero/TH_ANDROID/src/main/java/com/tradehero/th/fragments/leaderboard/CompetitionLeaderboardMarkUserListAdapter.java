@@ -16,7 +16,6 @@ import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
@@ -215,16 +214,14 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
             {
                 ((CompetitionLeaderboardMarkUserItemView) view).setProviderDTO(providerDTO);
                 PrizeDTO prizeDTO = getPrizeDTO(getWrappedPosition(position));
-                if (prizeDTO != null)
-                {
-                    ((CompetitionLeaderboardMarkUserItemView) view).setPrizeDTO(prizeDTO);
-                }
+                //There should allow prizeDTO is null,because it has logic,prizeDTO is null means should not show PrizeInfo in viewItem.
+                ((CompetitionLeaderboardMarkUserItemView) view).setPrizeDTO(prizeDTO);
             }
             return view;
         }
     }
 
-    @Nullable public PrizeDTO getPrizeDTO(int position)
+    public PrizeDTO getPrizeDTO(int position)
     {
         return competitionLeaderboardDTO == null ? null : competitionLeaderboardDTO.getPrizeAt(position);
     }

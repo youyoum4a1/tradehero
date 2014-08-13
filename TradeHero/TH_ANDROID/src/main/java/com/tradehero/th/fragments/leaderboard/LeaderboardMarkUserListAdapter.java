@@ -23,10 +23,12 @@ public class LeaderboardMarkUserListAdapter extends
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
+    //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
     {
         super(context, inflater, loaderId, layoutResourceId);
     }
+    //</editor-fold>
 
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {

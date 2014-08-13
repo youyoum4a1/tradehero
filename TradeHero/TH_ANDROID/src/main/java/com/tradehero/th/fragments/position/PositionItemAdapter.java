@@ -64,7 +64,11 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
     protected int getItemViewType(PositionDTO item)
     {
-        if (item.isClosed() && item instanceof PositionInPeriodDTO)
+        if (item.isLocked())
+        {
+            return VIEW_TYPE_LOCKED;
+        }
+        else if (item.isClosed() && item instanceof PositionInPeriodDTO)
         {
             return VIEW_TYPE_CLOSED_IN_PERIOD;
         }
@@ -79,10 +83,6 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         else if (item.isOpen())
         {
             return VIEW_TYPE_OPEN;
-        }
-        else if (item.isLocked())
-        {
-            return VIEW_TYPE_LOCKED;
         }
         throw new IllegalArgumentException("Unhandled item " + item);
     }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PositionDTOKeyFactory
 {
@@ -15,7 +14,7 @@ public class PositionDTOKeyFactory
     }
     //</editor-fold>
 
-    @Nullable public PositionDTOKey createFrom(@NotNull Bundle args)
+    @NotNull public PositionDTOKey createFrom(@NotNull Bundle args)
     {
         if (OwnedPositionId.isOwnedPositionId(args))
         {
@@ -25,6 +24,6 @@ public class PositionDTOKeyFactory
         {
             return new OwnedLeaderboardPositionId(args);
         }
-        return null;
+        throw new IllegalArgumentException("Bundle does not contain a PositionDTOKey");
     }
 }

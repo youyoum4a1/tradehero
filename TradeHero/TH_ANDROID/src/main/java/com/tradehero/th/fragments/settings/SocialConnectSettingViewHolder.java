@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.settings;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.v4.preference.PreferenceFragment;
@@ -23,6 +25,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +38,7 @@ abstract public class SocialConnectSettingViewHolder
     @NotNull protected final CurrentUserId currentUserId;
     @NotNull protected final UserProfileCache userProfileCache;
     @NotNull protected final ProgressDialogUtil progressDialogUtil;
+    @NotNull protected final AlertDialogUtil alertDialogUtil;
     @NotNull protected final SocialServiceWrapper socialServiceWrapper;
     @Nullable protected CheckBoxPreference clickablePref;
     @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
@@ -42,17 +46,20 @@ abstract public class SocialConnectSettingViewHolder
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackConnect;
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
     @Nullable protected ProgressDialog progressDialog;
+    @Nullable protected AlertDialog unlinkConfirmDialog;
 
     //<editor-fold desc="Constructors">
     protected SocialConnectSettingViewHolder(
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper)
     {
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
         this.progressDialogUtil = progressDialogUtil;
+        this.alertDialogUtil = alertDialogUtil;
         this.socialServiceWrapper = socialServiceWrapper;
     }
     //</editor-fold>
@@ -85,6 +92,7 @@ abstract public class SocialConnectSettingViewHolder
         detachMiddleServerConnectCallback();
         detachMiddleServerDisconnectCallback();
         hideProgressDialog();
+        hideUnlinkConfirmDialog();
         this.clickablePref = null;
         super.destroyViews();
     }
@@ -131,6 +139,16 @@ abstract public class SocialConnectSettingViewHolder
         progressDialog = null;
     }
 
+    protected void hideUnlinkConfirmDialog()
+    {
+        AlertDialog unlinkConfirmDialogCopy = unlinkConfirmDialog;
+        if (unlinkConfirmDialogCopy != null)
+        {
+            unlinkConfirmDialogCopy.dismiss();
+        }
+        unlinkConfirmDialog = null;
+    }
+
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
     {
         return new SocialConnectUserProfileCacheListener();
@@ -172,19 +190,59 @@ abstract public class SocialConnectSettingViewHolder
         }
         else if (activityContext != null)
         {
-            progressDialog = progressDialogUtil.show(
-                    activityContext,
-                    getUnlinkingDialogTitle(),
-                    getUnlinkingDialogMessage());
+            popConfirmUnlinkDialog();
         }
         return false;
+    }
+
+    protected void popConfirmUnlinkDialog()
+    {
+        Context activityContext = null;
+        if (preferenceFragment != null)
+        {
+            activityContext = preferenceFragment.getActivity();
+        }
+        if (activityContext != null)
+        {
+            hideUnlinkConfirmDialog();
+            unlinkConfirmDialog = alertDialogUtil.popWithOkCancelButton(
+                    activityContext,
+                    activityContext.getString(R.string.authentication_unlink_confirm_dialog_title, getSocialNetworkName()),
+                    activityContext.getString(R.string.authentication_unlink_confirm_dialog_message, getSocialNetworkName()),
+                    R.string.authentication_unlink_confirm_dialog_button_ok,
+                    R.string.cancel,
+                    new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialogInterface, int i)
+                        {
+                            dialogInterface.dismiss();
+                            effectUnlink();
+                        }
+                    });
+        }
+    }
+
+    protected void effectUnlink()
+    {
+        Context activityContext = null;
+        if (preferenceFragment != null)
+        {
+            activityContext = preferenceFragment.getActivity();
+        }
+        if (activityContext != null)
+        {
+            progressDialog = progressDialogUtil.show(
+                    activityContext,
+                    getUnlinkingProgressDialogTitle(),
+                    getUnlinkingProgressDialogMessage());
+        }
     }
 
     @Nullable abstract protected String getSocialNetworkName();
     abstract protected int getLinkingDialogTitle();
     abstract protected int getLinkingDialogMessage();
-    abstract protected int getUnlinkingDialogTitle();
-    abstract protected int getUnlinkingDialogMessage();
+    abstract protected int getUnlinkingProgressDialogTitle();
+    abstract protected int getUnlinkingProgressDialogMessage();
 
     @NotNull protected MiddleLogInCallback createMiddleSocialConnectLogInCallback()
     {

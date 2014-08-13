@@ -61,7 +61,7 @@ public class NumericalAnimatedTextView extends TextSwitcher
             int animationDuration;
             final int animationDurationId =
                     a.getResourceId(R.styleable.AnimatedTextView_animatedDuration, 0);
-            if (animationDurationId > 0)
+            if (animationDurationId > 0 && !isInEditMode())
             {
                 animationDuration = context.getResources().getInteger(animationDurationId);
             }
@@ -79,7 +79,7 @@ public class NumericalAnimatedTextView extends TextSwitcher
             int animationInterval;
             final int animationIntervalId =
                     a.getResourceId(R.styleable.AnimatedTextView_animatedInterval, 0);
-            if (animationIntervalId > 0)
+            if (animationIntervalId > 0 && !isInEditMode())
             {
                 animationInterval = context.getResources().getInteger(animationIntervalId);
             }

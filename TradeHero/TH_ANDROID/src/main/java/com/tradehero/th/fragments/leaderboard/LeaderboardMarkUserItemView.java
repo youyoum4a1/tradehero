@@ -6,8 +6,8 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -37,6 +37,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
@@ -112,6 +113,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
+
+    @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
+
     private @Nullable DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardOwnUserRankingListener;
 
     //<editor-fold desc="Constructors">
@@ -330,8 +334,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             {
                 int imageResId = Country.getCountryLogo(R.drawable.default_image, userBaseDTO.countryCode);
                 countryLogo.setImageResource(imageResId);
-            }
-            catch (OutOfMemoryError e)
+            } catch (OutOfMemoryError e)
             {
                 Timber.e(e, null);
             }
@@ -626,8 +629,16 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         int userId = leaderboardItem.id;
 
         Bundle bundle = new Bundle();
-        thRouter.save(bundle, new UserBaseKey(userId));
-        getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+        UserBaseKey userToSee = new UserBaseKey(userId);
+        thRouter.save(bundle, userToSee);
+        if (currentUserId.toUserBaseKey().equals(userToSee))
+        {
+            getNavigator().pushFragment(MeTimelineFragment.class, bundle);
+        }
+        else
+        {
+            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+        }
     }
 
     protected void handleSuccess(UserProfileDTO userProfileDTO, Response response)
@@ -679,13 +690,24 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             {
                 LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardDTO.users.get(0);
                 display(ownLeaderboardUserDTO);
+
+                if(innerViewContainer != null)
+                {
+                    innerViewContainer.setBackgroundResource(R.drawable.basic_white_selector);
+                }
             }
             else
             {
                 // user is not ranked, disable expandable view
                 setOnClickListener(null);
-                lbmuDisplayName.setText(R.string.leaderboard_not_ranked);
+                lbmuRoi.setText(R.string.leaderboard_not_ranked);
                 lbmuPosition.setText("-");
+
+                // disable touch feedback so we don't confuse the user
+                if(innerViewContainer != null)
+                {
+                    innerViewContainer.setBackgroundResource(R.color.white);
+                }
             }
         }
 

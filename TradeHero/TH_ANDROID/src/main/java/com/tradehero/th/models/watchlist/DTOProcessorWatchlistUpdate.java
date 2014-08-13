@@ -11,11 +11,13 @@ public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositi
 {
     @NotNull private final WatchlistPositionCache watchlistPositionCache;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistUpdate(
             @NotNull WatchlistPositionCache watchlistPositionCache)
     {
         this.watchlistPositionCache = watchlistPositionCache;
     }
+    //</editor-fold>
 
     @Nullable
     @Override public WatchlistPositionDTO process(@Nullable WatchlistPositionDTO watchlistPositionDTO)

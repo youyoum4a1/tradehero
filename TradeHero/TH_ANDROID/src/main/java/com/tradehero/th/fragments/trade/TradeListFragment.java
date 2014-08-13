@@ -30,7 +30,6 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -39,7 +38,6 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
@@ -85,6 +83,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @RouteProperty("positionId") Integer routePositionId;
 
     protected PositionDTOKey positionDTOKey;
+    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> fetchPositionListener;
     protected PositionDTO positionDTO;
     protected TradeDTOList tradeDTOList;
 
@@ -98,7 +97,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         args.putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, positionDTOKey.getArgs());
     }
 
-    @Nullable private static PositionDTOKey getPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKeyFactory positionDTOKeyFactory)
+    @NotNull private static PositionDTOKey getPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKeyFactory positionDTOKeyFactory)
     {
         return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }
@@ -112,6 +111,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             putPositionDTOKey(getArguments(), new OwnedPositionId(routeUserId, routePortfolioId, routePositionId));
         }
 
+        fetchPositionListener = createPositionCacheListener();
         fetchTradesListener = createTradeListeCacheListener();
     }
 
@@ -139,12 +139,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        linkWith(getPositionDTOKey(getArguments(), positionDTOKeyFactory), true);
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.trade_list_menu, menu);
@@ -168,6 +162,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
+        linkWith(getPositionDTOKey(getArguments(), positionDTOKeyFactory), true);
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
     }
@@ -180,7 +175,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        detachFetchTradesTask();
+        detachFetchPosition();
+        detachFetchTrades();
         detachSecurityActionDialog();
         securityAlertAssistant.setOnPopulatedListener(null);
         adapter = null;
@@ -190,6 +186,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
+        fetchPositionListener = null;
         fetchTradesListener = null;
         securityAlertAssistant = null;
         super.onDestroy();
@@ -246,30 +243,49 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         return created;
     }
 
-    private void openUserProfile(UserBaseKey userId)
+    protected void detachFetchPosition()
     {
-        Bundle bundle = new Bundle();
-        thRouter.save(bundle, userId);
-
-        if (!currentUserId.toUserBaseKey().equals(userId))
-        {
-            getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-        }
+        positionCache.get().unregister(fetchPositionListener);
     }
 
-    protected void detachFetchTradesTask()
+    protected void detachFetchTrades()
     {
         tradeListCache.get().unregister(fetchTradesListener);
     }
 
-    public void linkWith(PositionDTOKey newPositionDTOKey, boolean andDisplay)
+    public void linkWith(@NotNull PositionDTOKey newPositionDTOKey, boolean andDisplay)
     {
         this.positionDTOKey = newPositionDTOKey;
-        linkWith(positionCache.get().get(newPositionDTOKey), andDisplay);
+        fetchPosition();
 
         if (andDisplay)
         {
             display();
+        }
+    }
+
+    protected void fetchPosition()
+    {
+        detachFetchPosition();
+        positionCache.get().register(positionDTOKey, fetchPositionListener);
+        positionCache.get().getOrFetchAsync(positionDTOKey);
+    }
+
+    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> createPositionCacheListener()
+    {
+        return new TradeListFragmentPositionCacheListener();
+    }
+
+    protected class TradeListFragmentPositionCacheListener implements DTOCacheNew.Listener<PositionDTOKey, PositionDTO>
+    {
+        @Override public void onDTOReceived(@NotNull PositionDTOKey key, @NotNull PositionDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull PositionDTOKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_position_list_info);
         }
     }
 
@@ -287,11 +303,32 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionDTO != null)
         {
-            detachFetchTradesTask();
+            detachFetchTrades();
             OwnedPositionId key = positionDTO.getOwnedPositionId();
             tradeListCache.get().register(key, fetchTradesListener);
             tradeListCache.get().getOrFetchAsync(key);
             displayProgress(true);
+        }
+    }
+
+    protected TradeListCache.Listener<OwnedPositionId, TradeDTOList> createTradeListeCacheListener()
+    {
+        return new GetTradesListener();
+    }
+
+    private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, TradeDTOList>
+    {
+        @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
+        {
+            displayProgress(false);
+            linkWith(tradeDTOs, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull OwnedPositionId key, @NotNull Throwable error)
+        {
+            displayProgress(false);
+            THToast.show(R.string.error_fetch_trade_list_info);
+            Timber.e("Error fetching the list of trades %s", key, error);
         }
     }
 
@@ -350,27 +387,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (progressBar != null)
         {
             progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    protected TradeListCache.Listener<OwnedPositionId, TradeDTOList> createTradeListeCacheListener()
-    {
-        return new GetTradesListener();
-    }
-
-    private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, TradeDTOList>
-    {
-        @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
-        {
-            displayProgress(false);
-            linkWith(tradeDTOs, true);
-        }
-
-        @Override public void onErrorThrown(@NotNull OwnedPositionId key, @NotNull Throwable error)
-        {
-            displayProgress(false);
-            THToast.show(R.string.error_fetch_trade_list_info);
-            Timber.e("Error fetching the list of trades %s", key, error);
         }
     }
 

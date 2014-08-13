@@ -34,8 +34,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 {
     private static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
 
-    public static final int FLAG_USER_NOT_RANKED = LeaderboardCurrentUserRankHeaderView.FLAG_USER_NOT_RANKED;
-
     @Inject LeaderboardSortHelper leaderboardSortHelper;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
@@ -102,6 +100,10 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
+        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
+        {
+            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).onDestroyView();
+        }
         mRankHeaderView = null;
         super.onDestroyView();
     }
@@ -244,10 +246,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
         {
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setApplicablePortfolioId(getApplicablePortfolioId());
+            LeaderboardCurrentUserRankHeaderView headerCopy = (LeaderboardCurrentUserRankHeaderView) mRankHeaderView;
+
+            headerCopy.setApplicablePortfolioId(getApplicablePortfolioId());
             if (currentLeaderboardUserDTO != null)
             {
-                ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).display(currentLeaderboardUserDTO);
+                headerCopy.display(currentLeaderboardUserDTO);
             }
         }
     }

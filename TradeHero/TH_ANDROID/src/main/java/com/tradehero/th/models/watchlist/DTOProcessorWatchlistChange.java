@@ -12,6 +12,7 @@ public class DTOProcessorWatchlistChange extends DTOProcessorWatchlistUpdate
     @NotNull private final UserBaseKey concernedUser;
     @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistChange(
             @NotNull WatchlistPositionCache watchlistPositionCache,
             @NotNull UserBaseKey concernedUser,
@@ -21,6 +22,7 @@ public class DTOProcessorWatchlistChange extends DTOProcessorWatchlistUpdate
         this.concernedUser = concernedUser;
         this.portfolioCompactListCache = portfolioCompactListCache;
     }
+    //</editor-fold>
 
     @Nullable
     @Override public WatchlistPositionDTO process(@Nullable WatchlistPositionDTO watchlistPositionDTO)

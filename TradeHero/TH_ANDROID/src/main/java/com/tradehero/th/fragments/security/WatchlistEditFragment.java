@@ -15,10 +15,10 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -235,6 +235,7 @@ public class WatchlistEditFragment extends DashboardFragment
         detachSecurityCompactFetchTask();
         detachMiddleCallbackUpdate();
         detachMiddleCallbackDelete();
+        dismissProgress();
         super.onDestroyView();
     }
 
@@ -264,7 +265,6 @@ public class WatchlistEditFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         securityCompactCacheFetchListener = null;
-        progressBar = null;
         super.onDestroy();
     }
 
@@ -307,6 +307,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             progressBarCopy.dismiss();
         }
+        progressBar = null;
     }
 
     private void querySecurity(@NotNull SecurityId securityId, final boolean andDisplay)
@@ -392,17 +393,8 @@ public class WatchlistEditFragment extends DashboardFragment
         @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO,
                 THResponse response)
         {
-            watchlistPositionCache.get().invalidate(watchlistPositionDTO.securityDTO.getSecurityId());
-            portfolioCompactListCacheLazy.get().invalidate(currentUserId.toUserBaseKey());
             if (isResumed())
             {
-                SecurityIdList currentUserWatchlistSecurities =
-                        userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
-                if (currentUserWatchlistSecurities != null
-                        && currentUserWatchlistSecurities.contains(securityKeyId))
-                {
-                    currentUserWatchlistSecurities.remove(securityKeyId);
-                }
                 getDashboardNavigator().popFragment();
             }
             else
@@ -421,24 +413,12 @@ public class WatchlistEditFragment extends DashboardFragment
 
         @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO, THResponse response)
         {
-            //TODO we need a cacheUtil control cache invalidate
-            watchlistPositionCache.get().put(securityKeyId, watchlistPositionDTO);
-            portfolioCompactListCacheLazy.get().invalidate(currentUserId.toUserBaseKey());
-            if (isResumed())
+            DashboardNavigator navigator = getDashboardNavigator();
+            if (navigator != null)
             {
-                SecurityIdList currentUserWatchlistSecurities =
-                        userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
-                if (currentUserWatchlistSecurities != null && !currentUserWatchlistSecurities.contains(securityKeyId))
-                {
-                    currentUserWatchlistSecurities.add(securityKeyId);
-                }
-
-                getDashboardNavigator().popFragment();
+                navigator.popFragment();
             }
-            else
-            {
-                dismissProgress();
-            }
+            dismissProgress();
         }
 
         @Override protected void failure(THException ex)
@@ -463,19 +443,13 @@ public class WatchlistEditFragment extends DashboardFragment
 
         @Override public void onDTOReceived(@NotNull SecurityId key, @NotNull SecurityCompactDTO value)
         {
-            if (progressBar != null)
-            {
-                progressBar.dismiss();
-            }
+            dismissProgress();
             linkWith(value, true);
         }
 
         @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
-            if (progressBar != null)
-            {
-                progressBar.dismiss();
-            }
+            dismissProgress();
             THToast.show(R.string.error_fetch_security_info);
             Timber.e("Failed to fetch SecurityCompact for %s", key, error);
         }

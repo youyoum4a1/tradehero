@@ -38,6 +38,7 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -619,8 +620,16 @@ public class PositionListFragment
     {
         Bundle args = new Bundle();
         thRouter.save(args, userBaseKey);
-        ((DashboardActivity) getActivity())
-                .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        if (currentUserId.toUserBaseKey().equals(userBaseKey))
+        {
+            ((DashboardActivity) getActivity())
+                    .getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
+        }
+        else
+        {
+            ((DashboardActivity) getActivity())
+                    .getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        }
     }
     //</editor-fold>
 

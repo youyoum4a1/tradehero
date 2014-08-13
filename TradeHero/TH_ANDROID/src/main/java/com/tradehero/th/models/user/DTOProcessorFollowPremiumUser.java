@@ -4,39 +4,33 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.position.GetPositionsCache;
 import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
 
-public class DTOProcessorFollowUser extends DTOProcessorUpdateUserProfile
+public class DTOProcessorFollowPremiumUser extends AbstractDTOProcessorFollowUser
 {
-    @NotNull protected final HeroListCache heroListCache;
-    @NotNull protected final GetPositionsCache getPositionsCache;
-    @NotNull protected final UserMessagingRelationshipCache userMessagingRelationshipCache;
-    @NotNull protected final UserBaseKey userToFollow;
+    @NotNull protected final AllowableRecipientPaginatedCache allowableRecipientPaginatedCache;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorFollowUser(
+    public DTOProcessorFollowPremiumUser(
             @NotNull UserProfileCache userProfileCache,
             @NotNull HeroListCache heroListCache,
             @NotNull GetPositionsCache getPositionsCache,
             @NotNull UserMessagingRelationshipCache userMessagingRelationshipCache,
+            @NotNull AllowableRecipientPaginatedCache allowableRecipientPaginatedCache,
             @NotNull UserBaseKey userToFollow)
     {
-        super(userProfileCache);
-        this.heroListCache = heroListCache;
-        this.getPositionsCache = getPositionsCache;
-        this.userMessagingRelationshipCache = userMessagingRelationshipCache;
-        this.userToFollow = userToFollow;
+        super(userProfileCache, heroListCache, getPositionsCache, userMessagingRelationshipCache, userToFollow);
+        this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
     }
     //</editor-fold>
 
     @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
-        heroListCache.invalidate(userToFollow);
-        getPositionsCache.invalidate(userToFollow);
-        userMessagingRelationshipCache.invalidate(userToFollow);
+        userMessagingRelationshipCache.markIsPremiumHero(userToFollow);
         return processed;
     }
 }

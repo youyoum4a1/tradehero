@@ -20,10 +20,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
-    @InjectView(R.id.leaderboard_prizeLayout) LinearLayout prizelayout;
-    @InjectView(R.id.leaderboard_prizeIcon) ImageView prizeIcon;
-    @InjectView(R.id.leaderboard_prizeAmount) TextView prizeAmount;
-
+    @InjectView(R.id.leaderboard_prize_container) LinearLayout prizelayout;
+    @InjectView(R.id.leaderboard_prize_icon) ImageView prizeIcon;
+    @InjectView(R.id.leaderboard_prize_amount) TextView prizeAmount;
+    @InjectView(R.id.leaderboard_user_item_country_logo) ImageView countryLogo;
     @Nullable private ProviderDTO providerDTO;
     @Nullable private PrizeDTO prizeDTO;
 
@@ -48,9 +48,13 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     {
         this.providerDTO = providerDTO;
         displayLbmuPl();
+        if(countryLogo!=null)
+        {
+            countryLogo.setVisibility(View.GONE);
+        }
     }
 
-    public void setPrizeDTO(@NotNull PrizeDTO prizeDTO)
+    public void setPrizeDTO(@Nullable PrizeDTO prizeDTO)
     {
         this.prizeDTO = prizeDTO;
         displayPrize();

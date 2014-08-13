@@ -3,6 +3,8 @@ package com.tradehero.th.persistence.competition;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
+import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
@@ -57,7 +59,10 @@ class ProviderCompactCutDTO implements DTO
     public String currencyDisplay;
     public String currencyISO;
 
-    public PortfolioId associatedPortfolioId;
+    @Nullable public PortfolioId associatedPortfolioId;
+
+    @Nullable public ProviderSpecificKnowledgeDTO specificKnowledge;
+    @Nullable public ProviderSpecificResourcesDTO specificResources;
 
     ProviderCompactCutDTO(
             @NotNull ProviderCompactDTO providerCompactDTO,
@@ -117,6 +122,9 @@ class ProviderCompactCutDTO implements DTO
         {
             this.associatedPortfolioId = null;
         }
+
+        this.specificKnowledge = providerCompactDTO.specificKnowledge;
+        this.specificResources = providerCompactDTO.specificResources;
     }
 
     @Nullable ProviderCompactDTO create(@NotNull PortfolioCompactCache portfolioCompactCache)
@@ -183,6 +191,9 @@ class ProviderCompactCutDTO implements DTO
         empty.ctaLocationTags = this.ctaLocationTags;
         empty.currencyDisplay = this.currencyDisplay;
         empty.currencyISO = this.currencyISO;
+
+        empty.specificKnowledge = specificKnowledge;
+        empty.specificResources = specificResources;
 
         return empty;
     }

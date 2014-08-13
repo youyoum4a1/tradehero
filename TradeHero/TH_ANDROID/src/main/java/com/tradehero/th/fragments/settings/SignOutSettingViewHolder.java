@@ -8,11 +8,8 @@ import android.content.DialogInterface;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THUser;
-import com.tradehero.th.models.user.auth.DisplayableCredentialsDTO;
-import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -22,13 +19,10 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
     @NotNull private final ProgressDialogUtil progressDialogUtil;
-    @NotNull private final MainCredentialsPreference mainCredentialsPreference;
-    @NotNull private final CurrentUserId currentUserId;
     @NotNull private final SessionServiceWrapper sessionServiceWrapper;
     @Nullable private ProgressDialog progressDialog;
     @Nullable private MiddleCallback<UserProfileDTO> logoutCallback;
@@ -36,13 +30,9 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
     //<editor-fold desc="Constructors">
     @Inject public SignOutSettingViewHolder(
             @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull MainCredentialsPreference mainCredentialsPreference,
-            @NotNull CurrentUserId currentUserId,
             @NotNull SessionServiceWrapper sessionServiceWrapper)
     {
         this.progressDialogUtil = progressDialogUtil;
-        this.mainCredentialsPreference = mainCredentialsPreference;
-        this.currentUserId = currentUserId;
         this.sessionServiceWrapper = sessionServiceWrapper;
     }
     //</editor-fold>
@@ -50,7 +40,6 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
-        showMainCredentials();
     }
 
     @Override protected int getStringKeyResId()
@@ -93,22 +82,6 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         }
     }
 
-    protected void showMainCredentials()
-    {
-        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
-        if (preferenceFragmentCopy != null)
-        {
-            Context activityContext = preferenceFragmentCopy.getActivity();
-            if (activityContext != null)
-            {
-                DisplayableCredentialsDTO mainCredentials = new DisplayableCredentialsDTO(
-                        activityContext,
-                        mainCredentialsPreference.getCredentials());
-                clickablePref.setSummary(mainCredentials.getTypeAndId());
-            }
-        }
-    }
-
     protected void effectSignOut()
     {
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
@@ -137,7 +110,6 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
             progressDialog.setCanceledOnTouchOutside(true);
         }
 
-        Timber.d("Before signout current user base key %s", currentUserId.toUserBaseKey());
         detachLogoutCallback();
         logoutCallback = sessionServiceWrapper.logout(createSignOutCallback(preferenceFragment.getActivity()));
     }
