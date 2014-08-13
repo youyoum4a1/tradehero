@@ -249,6 +249,7 @@
   </style>
 
   <style name="TH.Btn_Invite_Action">
+    <item name="android:background">@drawable/leaderboard_user_item_follow_action_button</item>
     <item name="android:textColor">@color/white</item>
     <item name="android:textSize">@dimen/text_medium</item>
     <item name="android:gravity">center</item>

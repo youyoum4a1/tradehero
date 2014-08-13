@@ -85,7 +85,6 @@
         android:layout_marginBottom="@dimen/common_margin_4"
         android:text="@string/invite"
         style="@style/TH.Btn_Invite_Action"
-        android:background="@drawable/yellow_rounded_button_selector"
         />
 
   </RelativeLayout>
