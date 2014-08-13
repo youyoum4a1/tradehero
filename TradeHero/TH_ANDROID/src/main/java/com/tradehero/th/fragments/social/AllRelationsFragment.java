@@ -120,7 +120,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         alertDialogUtilLazy.get()
                 .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
         detachAllowableRecipientTask();
-
         allowableRecipientPaginatedCache.register(new SearchAllowableRecipientListType(null, null, null), allowableRecipientCacheListener);
         allowableRecipientPaginatedCache.getOrFetchAsync(new SearchAllowableRecipientListType(null, null, null));
     }
@@ -186,6 +185,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
         {
             handleFollowRequested(userBaseKey);
+            allowableRecipientPaginatedCache.invalidateAll();
         }
     }
 

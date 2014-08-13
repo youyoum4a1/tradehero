@@ -131,6 +131,13 @@ public class UpdateCenterFragment extends DashboardFragment
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
+    private void fetchUserProfile(boolean forceUpdate)
+    {
+        detachUserProfileCache();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(),forceUpdate);
+    }
+
     private void detachUserProfileCache()
     {
         userProfileCache.unregister(userProfileCacheListener);
@@ -357,7 +364,7 @@ public class UpdateCenterFragment extends DashboardFragment
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                fetchUserProfile();
+                fetchUserProfile(true);
             }
         };
     }
