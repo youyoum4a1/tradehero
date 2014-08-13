@@ -22,7 +22,8 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th.persistence.leaderboard.UserOnLeaderboardCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -32,25 +33,23 @@ import timber.log.Timber;
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_LEADERBOARD_ID = BaseLeaderboardFragment.class.getName() + ".leaderboardId";
-    public static final String BUNDLE_KEY_LEADERBOARD_DEF_TITLE = BaseLeaderboardFragment.class.getName() + ".leaderboardDefTitle";
-    public static final String BUNDLE_KEY_LEADERBOARD_DEF_DESC = BaseLeaderboardFragment.class.getName() + ".leaderboardDefDesc";
-    private static final String BUNDLE_KEY_LEADERBOARD_CURRENT_RANK = BaseLeaderboardFragment.class.getName() + ".leaderboardRank";
-    private static final String BUNDLE_KEY_LEADERBOARD_ROI_VALUE_TO_BE_SHOWN = BaseLeaderboardFragment.class.getName() + ".leaderboardROIValue";
-
-    public static final int FLAG_USER_NOT_RANKED = LeaderboardCurrentUserRankHeaderView.FLAG_USER_NOT_RANKED;
 
     @Inject LeaderboardSortHelper leaderboardSortHelper;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
-    @Inject UserOnLeaderboardCache userOnLeaderboardCache;
+    @Inject LeaderboardDefCache leaderboardDefCache;
+    @Inject LeaderboardCache leaderboardCache;
 
-    protected LeaderboardDefKey leaderboardDefKey;
+    @NotNull protected LeaderboardDefKey leaderboardDefKey;
+    @Nullable protected DTOCacheNew.Listener<LeaderboardDefKey, LeaderboardDefDTO> leaderboardDefCacheListener;
+    protected LeaderboardDefDTO leaderboardDefDTO;
+    @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected UserProfileDTO currentUserProfileDTO;
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-    protected DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO> userOnLeaderboardCacheListener;
+    @Nullable protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
+    protected LeaderboardDTO leaderboardDTO;
+    @Nullable protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> userOnLeaderboardCacheListener;
+    protected LeaderboardUserDTO currentLeaderboardUserDTO;
 
-    protected int currentRank;
-    protected Double roiToBeShown;
     private View mRankHeaderView;
 
     public static void putLeaderboardDefKey(@NotNull Bundle args, @NotNull LeaderboardDefKey leaderboardDefKey)
@@ -58,53 +57,19 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         args.putInt(BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefKey.key);
     }
 
-    public static LeaderboardDefKey getLeadboardDefKey(@NotNull Bundle args)
+    @NotNull public static LeaderboardDefKey getLeadboardDefKey(@NotNull Bundle args)
     {
         return new LeaderboardDefKey(args.getInt(BUNDLE_KEY_LEADERBOARD_ID));
-    }
-
-    public static void putCurrentUserRank(@NotNull Bundle args, @Nullable Integer currentRank)
-    {
-        if (currentRank == null || currentRank == FLAG_USER_NOT_RANKED)
-        {
-            args.putInt(BUNDLE_KEY_LEADERBOARD_CURRENT_RANK, LeaderboardCurrentUserRankHeaderView.FLAG_USER_NOT_RANKED);
-        }
-        else if (currentRank > 0)
-        {
-            args.putInt(BUNDLE_KEY_LEADERBOARD_CURRENT_RANK, currentRank);
-        }
-    }
-
-    public static int getCurrentUserRank(@NotNull Bundle args)
-    {
-        return args.getInt(BUNDLE_KEY_LEADERBOARD_CURRENT_RANK, 0);
-    }
-
-    public static void putROIValueToBeShown(@NotNull Bundle args, @Nullable Double roi)
-    {
-        if (roi != null)
-        {
-            args.putDouble(BUNDLE_KEY_LEADERBOARD_ROI_VALUE_TO_BE_SHOWN, roi);
-        }
-    }
-
-    public static Double getROIValueToBeShown(@NotNull Bundle args)
-    {
-        if (args.containsKey(BUNDLE_KEY_LEADERBOARD_ROI_VALUE_TO_BE_SHOWN))
-        {
-            return args.getDouble(BUNDLE_KEY_LEADERBOARD_ROI_VALUE_TO_BE_SHOWN);
-        }
-        return null;
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         leaderboardDefKey = getLeadboardDefKey(getArguments());
+        this.leaderboardDefCacheListener = createLeaderboardDefCacheListener();
         this.userProfileCacheListener = createUserProfileListener();
+        this.leaderboardCacheListener = createLeaderboardCacheListener();
         this.userOnLeaderboardCacheListener = createUserOnLeaderboardListener();
-        this.currentRank = getCurrentUserRank(getArguments());
-        this.roiToBeShown = getROIValueToBeShown(getArguments());
     }
 
     //<editor-fold desc="ActionBar">
@@ -112,41 +77,49 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         inflater.inflate(getMenuResource(), menu);
         super.onCreateOptionsMenu(menu, inflater);
-
-        Bundle args = getArguments();
-        if (args != null)
-        {
-            String title = args.getString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE);
-            setActionBarTitle(title == null ? "" : title);
-        }
     }
     //</editor-fold>
 
     @Override public void onResume()
     {
         super.onResume();
+        fetchLeaderboardDef();
         fetchCurrentUserProfile();
+        fetchLeaderboard();
         fetchUserOnLeaderboard();
     }
 
     @Override public void onStop()
     {
+        detachLeaderboardDefCacheListener();
         detachUserProfileCache();
+        detachLeaderboardCacheListener();
         detachUserOnLeaderboardCacheListener();
         super.onStop();
     }
 
+    @Override public void onDestroyView()
+    {
+        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
+        {
+            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).onDestroyView();
+        }
+        mRankHeaderView = null;
+        super.onDestroyView();
+    }
+
     @Override public void onDestroy()
     {
+        this.leaderboardDefCacheListener = null;
         this.userProfileCacheListener = null;
+        this.leaderboardCacheListener = null;
         this.userOnLeaderboardCacheListener = null;
         super.onDestroy();
     }
 
-    @Override public void onDestroyView()
+    protected void detachLeaderboardDefCacheListener()
     {
-        mRankHeaderView = null;
-        super.onDestroyView();
+        leaderboardDefCache.unregister(leaderboardDefCacheListener);
     }
 
     protected void detachUserProfileCache()
@@ -154,9 +127,21 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         userProfileCache.unregister(userProfileCacheListener);
     }
 
+    protected void detachLeaderboardCacheListener()
+    {
+        leaderboardCache.unregister(leaderboardCacheListener);
+    }
+
     protected void detachUserOnLeaderboardCacheListener()
     {
-        userOnLeaderboardCache.unregister(userOnLeaderboardCacheListener);
+        leaderboardCache.unregister(userOnLeaderboardCacheListener);
+    }
+
+    protected void fetchLeaderboardDef()
+    {
+        detachLeaderboardDefCacheListener();
+        leaderboardDefCache.register(leaderboardDefKey, leaderboardDefCacheListener);
+        leaderboardDefCache.getOrFetchAsync(leaderboardDefKey);
     }
 
     protected void fetchCurrentUserProfile()
@@ -166,16 +151,21 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
+    protected void fetchLeaderboard()
+    {
+        detachLeaderboardCacheListener();
+        LeaderboardKey key = new LeaderboardKey(leaderboardDefKey.key);
+        leaderboardCache.register(key, leaderboardCacheListener);
+        leaderboardCache.getOrFetchAsync(key);
+    }
+
     protected void fetchUserOnLeaderboard()
     {
-        if (shouldShowUserRank())
-        {
-            detachUserOnLeaderboardCacheListener();
-            UserOnLeaderboardKey userOnLeaderboardKey =
-                    new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
-            userOnLeaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
-            userOnLeaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
-        }
+        detachUserOnLeaderboardCacheListener();
+        UserOnLeaderboardKey userOnLeaderboardKey =
+                new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
+        leaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
+        leaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
     }
 
     protected int getMenuResource()
@@ -183,16 +173,9 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return R.menu.leaderboard_menu;
     }
 
-    protected void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
-    {
-        this.currentUserProfileDTO = currentUserProfileDTO;
-    }
-
     protected void pushLeaderboardListViewFragment(@NotNull LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
-        bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
-        bundle.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
 
         switch (dto.id)
         {
@@ -208,7 +191,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                LeaderboardMarkUserListFragment.putCurrentUserRank(bundle, dto.getRank());
                 getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
@@ -217,8 +199,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected void pushFriendsFragment(LeaderboardDefDTO dto)
     {
         Bundle args = new Bundle();
-        args.putString(BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
-        args.putString(BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
 
         FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
 
@@ -250,55 +230,29 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     }
 
     /**
-     * returns true if we should show the user's current ranking.
-     *
-     * @return true if should show Current User Rank, false otherwise
-     */
-    protected final boolean shouldShowUserRank()
-    {
-        if (currentRank == 0)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Get the header view which shows the user's current rank
-     *
-     * @return {@link View View}, the header view when {@link #shouldShowUserRank shouldShowUserRank} is true, null otherwise
      */
     @Nullable protected final View inflateAndGetUserRankHeaderView()
     {
-        if (shouldShowUserRank())
+        if (mRankHeaderView == null)
         {
-            if (mRankHeaderView == null)
-            {
-                mRankHeaderView = LayoutInflater.from(getActivity()).inflate(getCurrentRankLayoutResId(), null, false);
-                initCurrentRankHeaderView();
-            }
-            return mRankHeaderView;
+            mRankHeaderView = LayoutInflater.from(getActivity()).inflate(getCurrentRankLayoutResId(), null, false);
+            initCurrentRankHeaderView();
         }
-        return null;
-    }
-
-    protected void userIsRanked(int rankZeroBased, double roiInPeriod)
-    {
-        currentRank = rankZeroBased + 1;
-        roiToBeShown = roiInPeriod;
-    }
-
-    protected void userIsNotRanked()
-    {
-        currentRank = FLAG_USER_NOT_RANKED;
+        return mRankHeaderView;
     }
 
     protected void initCurrentRankHeaderView()
     {
         if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
         {
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setRank(currentRank);
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).setRoiToBeShown(roiToBeShown);
+            LeaderboardCurrentUserRankHeaderView headerCopy = (LeaderboardCurrentUserRankHeaderView) mRankHeaderView;
+
+            headerCopy.setApplicablePortfolioId(getApplicablePortfolioId());
+            if (currentLeaderboardUserDTO != null)
+            {
+                headerCopy.display(currentLeaderboardUserDTO);
+            }
         }
     }
 
@@ -307,23 +261,36 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         throw new RuntimeException("Not implemented!");
     }
 
+    protected DTOCacheNew.Listener<LeaderboardDefKey, LeaderboardDefDTO> createLeaderboardDefCacheListener()
+    {
+        return new BaseLeaderboardFragmentLeaderboardDefCacheListener();
+    }
+
+    protected class BaseLeaderboardFragmentLeaderboardDefCacheListener implements DTOCacheNew.Listener<LeaderboardDefKey, LeaderboardDefDTO>
+    {
+        @Override public void onDTOReceived(@NotNull LeaderboardDefKey key, @NotNull LeaderboardDefDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull LeaderboardDefKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_leaderboard_def);
+        }
+    }
+
+    protected void linkWith(LeaderboardDefDTO leaderboardDefDTO, boolean andDisplay)
+    {
+        this.leaderboardDefDTO = leaderboardDefDTO;
+    }
+
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
     {
         return new BaseLeaderboardFragmentProfileCacheListener();
     }
 
-    protected DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO> createUserOnLeaderboardListener()
-    {
-        return new BaseLeaderboardFragmentUserOnLeaderboardCacheListener();
-    }
-
     protected class BaseLeaderboardFragmentProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        public BaseLeaderboardFragmentProfileCacheListener()
-        {
-            super();
-        }
-
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
             setCurrentUserProfileDTO(value);
@@ -336,31 +303,72 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected class BaseLeaderboardFragmentUserOnLeaderboardCacheListener implements DTOCacheNew.Listener<UserOnLeaderboardKey, LeaderboardDTO>
+    protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
     {
+        this.currentUserProfileDTO = currentUserProfileDTO;
+    }
 
-        @Override public void onDTOReceived(@NotNull UserOnLeaderboardKey key, @NotNull LeaderboardDTO value)
+    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createLeaderboardCacheListener()
+    {
+        return new BaseLeaderboardFragmentLeaderboardCacheListener();
+    }
+
+    protected class BaseLeaderboardFragmentLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
+    {
+        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value)
         {
-            if (value.users != null && value.users.size() == 1)
-            {
-                LeaderboardUserDTO leaderboardUserDTO = value.users.get(0);
-                if (leaderboardUserDTO.ordinalPosition >= 0)
-                {
-                    userIsRanked(leaderboardUserDTO.ordinalPosition, leaderboardUserDTO.roiInPeriod);
-                }
-            }
-            else
-            {
-                userIsNotRanked();
-            }
-            initCurrentRankHeaderView();
+            linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserOnLeaderboardKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
+        {
+            Timber.e("Failed to leaderboard", error);
+            THToast.show(R.string.error_fetch_leaderboard_info);
+        }
+    }
+
+    protected void linkWith(@Nullable LeaderboardDTO leaderboardDTO, boolean andDisplay)
+    {
+        this.leaderboardDTO = leaderboardDTO;
+        if (andDisplay)
+        {
+            if (leaderboardDTO != null)
+            {
+                setActionBarTitle(leaderboardDTO.name);
+            }
+        }
+    }
+
+    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createUserOnLeaderboardListener()
+    {
+        return new BaseLeaderboardFragmentUserOnLeaderboardCacheListener();
+    }
+
+    protected class BaseLeaderboardFragmentUserOnLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
+    {
+        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value)
+        {
+            LeaderboardUserDTO received = null;
+            if (value.users != null && value.users.size() == 1)
+            {
+                received = value.users.get(0);
+            }
+            linkWith(received, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to download current User position on leaderboard", error);
             THToast.show(R.string.error_fetch_user_on_leaderboard);
-            userIsNotRanked();
+            linkWith((LeaderboardUserDTO) null, true);
+        }
+    }
+
+    protected void linkWith(@Nullable LeaderboardUserDTO leaderboardDTO, boolean andDisplay)
+    {
+        this.currentLeaderboardUserDTO = leaderboardDTO;
+        if (andDisplay)
+        {
             initCurrentRankHeaderView();
         }
     }

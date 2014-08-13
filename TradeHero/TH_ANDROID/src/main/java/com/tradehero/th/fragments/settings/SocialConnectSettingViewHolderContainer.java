@@ -51,19 +51,19 @@ public class SocialConnectSettingViewHolderContainer implements SettingViewHolde
         switch (socialNetworkEnum)
         {
             case FB:
-                socialConnectFacebookSettingViewHolder.changeSharing(enable);
+                socialConnectFacebookSettingViewHolder.changeStatus(enable);
                 break;
             case LN:
-                socialConnectLinkedInSettingViewHolder.changeSharing(enable);
+                socialConnectLinkedInSettingViewHolder.changeStatus(enable);
                 break;
             case QQ:
-                socialConnectQQSettingViewHolder.changeSharing(enable);
+                socialConnectQQSettingViewHolder.changeStatus(enable);
                 break;
             case TW:
-                socialConnectTwitterSettingViewHolder.changeSharing(enable);
+                socialConnectTwitterSettingViewHolder.changeStatus(enable);
                 break;
             case WB:
-                socialConnectWeiboSettingViewHolder.changeSharing(enable);
+                socialConnectWeiboSettingViewHolder.changeStatus(enable);
                 break;
         }
     }

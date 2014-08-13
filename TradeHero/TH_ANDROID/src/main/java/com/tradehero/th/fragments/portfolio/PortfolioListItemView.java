@@ -21,13 +21,14 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -53,7 +54,7 @@ public class PortfolioListItemView extends RelativeLayout
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     private GetPositionsDTO getPositionsDTO;
-    private SecurityIdList watchedSecurityIds;
+    private WatchlistPositionDTOList watchedSecurityPositions;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userImageTransformation;
     @Inject CurrentUserId currentUserId;
@@ -68,7 +69,7 @@ public class PortfolioListItemView extends RelativeLayout
     private Milestone.OnCompleteListener currentUserProfileRetrievedMilestoneListener;
 
     private DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> getPositionsListener;
-    private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistListener;
+    private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistListener;
 
     //<editor-fold desc="Constructors">
     public PortfolioListItemView(Context context)
@@ -154,8 +155,16 @@ public class PortfolioListItemView extends RelativeLayout
         Bundle bundle = new Bundle();
         DashboardNavigator navigator =
                 ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-        thRouter.save(bundle, new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id));
-        navigator.pushFragment(PushableTimelineFragment.class, bundle);
+        UserBaseKey userToSee = new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id);
+        thRouter.save(bundle, userToSee);
+        if (currentUserId.toUserBaseKey().equals(userToSee))
+        {
+            navigator.pushFragment(MeTimelineFragment.class, bundle);
+        }
+        else
+        {
+            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+        }
     }
 
     protected void detachMilestone()
@@ -268,9 +277,9 @@ public class PortfolioListItemView extends RelativeLayout
         }
     }
 
-    protected void linkWith(SecurityIdList securityIdList, boolean andDisplay)
+    protected void linkWith(WatchlistPositionDTOList watchlistPositionDTOs, boolean andDisplay)
     {
-        this.watchedSecurityIds = securityIdList;
+        this.watchedSecurityPositions = watchlistPositionDTOs;
         if (andDisplay)
         {
             displayDescription();
@@ -428,19 +437,19 @@ public class PortfolioListItemView extends RelativeLayout
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createUserWatchlistCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createUserWatchlistCacheListener()
     {
         return new PortfolioListItemViewWatchedSecurityIdListListener();
     }
 
     protected class PortfolioListItemViewWatchedSecurityIdListListener
-            implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
+            implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
                     PortfolioListItemView.this.displayablePortfolioDTO;
-            if (key != null && displayablePortfolioDTOCopy != null &&
+            if (displayablePortfolioDTOCopy != null &&
                     displayablePortfolioDTOCopy.userBaseDTO != null &&
                     key.equals(displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()))
             {

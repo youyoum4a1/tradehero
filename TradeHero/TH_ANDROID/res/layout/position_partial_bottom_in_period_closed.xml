@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView
+<com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/expanding_layout"
@@ -100,4 +100,4 @@
 
   </RelativeLayout>
 
-</com.tradehero.th.fragments.position.partial.PositionPartialBottomInPeriodClosedView>
+</com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView>

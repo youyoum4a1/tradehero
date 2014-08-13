@@ -8,8 +8,6 @@
   <string name="select_endpoint">Select Api Endpoint</string>
   <string name="current_endpoint">"Current Endpoint: "</string>
   <string name="action_menu_about">About</string>
-  <string name="leaderboard_empty">Start trading now to be the first trader on this leaderboard
-  </string>
   <string name="action_search">Search</string>
   <string name="action_invite">Invite Friends</string>
   <string name="update">Update</string>
@@ -240,5 +238,4 @@
   <string name="trade_comment">Trade Comment</string>
 
   <string name="mark_as_all_read">Mark as all Read</string>
-  <string name="leaderboard_not_ranked_position"><![CDATA[>9999]]></string>
 </resources>

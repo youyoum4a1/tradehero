@@ -120,7 +120,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     {
         SecurityId securityId = new SecurityId(exchange, symbol);
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        BuySellFragment.putSecurityId(args, securityId);
         getNavigator().pushFragment(BuySellFragment.class, args);
     }
 

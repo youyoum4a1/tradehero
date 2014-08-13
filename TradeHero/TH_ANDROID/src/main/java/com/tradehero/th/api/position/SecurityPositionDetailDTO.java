@@ -15,7 +15,7 @@ public class SecurityPositionDetailDTO implements DTO
     public SecurityCompactDTO security;
     public PositionDTOCompactList positions;
     //public PositionDTOCompact position; // This is a backward compatible element. Do not add back
-    public PortfolioDTO portfolio;
+    @Deprecated public PortfolioDTO portfolio; // Does it always comes back as null
     public ProviderCompactDTOList providers;
     public int firstTradeAllTime;
 
@@ -44,12 +44,12 @@ public class SecurityPositionDetailDTO implements DTO
         return security.getSecurityId();
     }
 
-    @Nullable public OwnedPortfolioIdList getProviderAssociatedOwnedPortfolioIds(@NotNull UserBaseKey forUser)
+    @Nullable public OwnedPortfolioIdList getProviderAssociatedOwnedPortfolioIds()
     {
         if (providers == null)
         {
             return null;
         }
-        return providers.getAssociatedOwnedPortfolioIds(forUser);
+        return providers.getAssociatedOwnedPortfolioIds();
     }
 }

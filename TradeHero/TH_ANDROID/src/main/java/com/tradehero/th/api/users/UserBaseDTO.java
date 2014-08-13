@@ -33,6 +33,11 @@ public class UserBaseDTO extends ExtendedDTO
         return new UserBaseKey(id);
     }
 
+    @JsonIgnore public boolean isOfficialAccount()
+    {
+        return getBaseKey().isOfficialAccount();
+    }
+
     @JsonIgnore @Nullable public Country getCountry()
     {
         if (countryCode != null)

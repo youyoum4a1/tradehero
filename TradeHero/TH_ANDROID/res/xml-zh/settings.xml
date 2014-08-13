@@ -66,6 +66,12 @@
         />
 
     <Preference
+        android:key="@string/key_settings_location"
+        android:title="@string/settings_location"
+        android:icon="@drawable/location_settings"
+        />
+
+    <Preference
         android:key="@string/key_settings_primary_paypal"
         android:title="@string/settings_primary_paypal"
         android:icon="@drawable/settings_paypal"
@@ -86,7 +92,7 @@
         android:enabled="true"
         android:key="@string/key_settings_primary_referral_code"
         android:title="@string/settings_primary_referral_code"
-        android:icon="@drawable/default_image"
+        android:icon="@drawable/refer_friend"
         />
 
     <Preference
@@ -104,20 +110,14 @@
     <Preference
         android:key="@string/key_settings_translations_preferred_language"
         android:title="@string/settings_translations_language_preferred"
-        android:icon="@drawable/default_image"
+        android:icon="@drawable/language_settings"
       />
 
     <CheckBoxPreference
         android:key="@string/key_settings_translations_auto_translate"
         android:title="@string/settings_translations_auto_translate"
-        android:icon="@drawable/logo_bing"
+        android:icon="@drawable/default_translation"
       />
-
-    <Preference
-        android:key="@string/key_settings_location"
-        android:title="@string/settings_location"
-        android:icon="@drawable/default_image"
-        />
 
   </PreferenceCategory>
 

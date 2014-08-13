@@ -10,7 +10,6 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-// The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.
 class CompetitionLeaderboardCutDTO implements DTO
 {
     @Nullable public final LeaderboardKey leaderboardKey;

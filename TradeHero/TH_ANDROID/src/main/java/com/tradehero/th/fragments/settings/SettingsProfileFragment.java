@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -58,6 +59,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     protected Button updateButton;
     private ProfileInfoView profileView;
+    private EditText referralCodeEditText;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -94,6 +96,9 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         updateButton.setText(R.string.update);
         updateButton.setOnClickListener(this);
 
+        referralCodeEditText = (EditText) view.findViewById(R.id.authentication_sign_up_referral_code);
+        referralCodeEditText.setVisibility(View.GONE);
+
         //signupButton.setOnTouchListener(this);
     }
 
@@ -114,6 +119,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             updateButton.setOnClickListener(null);
         }
         updateButton = null;
+        referralCodeEditText = null;
         super.onDestroyView();
     }
 

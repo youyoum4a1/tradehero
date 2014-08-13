@@ -147,7 +147,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
                 return followerHeroRelationId.followerName;
             }
         }
-        return userBaseDTOUtil.getLongDisplayName(getActivity(), userFollowerDTO);
+        return userBaseDTOUtil.getShortDisplayName(getActivity(), userFollowerDTO);
     }
 
     public void display(UserFollowerDTO summaryDTO)

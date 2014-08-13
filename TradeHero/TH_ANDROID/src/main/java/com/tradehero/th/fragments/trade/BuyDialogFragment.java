@@ -4,9 +4,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class BuyDialogFragment extends AbstractTransactionDialogFragment
 {
@@ -24,13 +25,17 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
 
     @Override protected String getLabel()
     {
-        String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
-        THSignedNumber bThSignedNumber = THSignedNumber
+        THSignedNumber bThSignedNumber = THSignedMoney
                 .builder(quoteDTO.ask)
                 .withOutSign()
+                .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
                 .build();
-        String bPrice = bThSignedNumber.toString();
-        return getString(R.string.buy_sell_button_buy, display, bPrice);
+        return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
+    }
+
+    @Override @Nullable protected Double getProfitOrLoss()
+    {
+        return null;
     }
 
     @Override protected int getCashLeftLabelResId()
