@@ -211,6 +211,17 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         return R.layout.lbmu_item_competition_mode;
     }
 
+    @Override protected void setupOwnRankingView(View userRankingHeaderView)
+    {
+        if (userRankingHeaderView instanceof CompetitionLeaderboardMarkUserItemView)
+        {
+            CompetitionLeaderboardMarkUserItemView competitionLeaderboardCurrentUserRankHeaderView =
+                    (CompetitionLeaderboardMarkUserItemView) userRankingHeaderView;
+            competitionLeaderboardCurrentUserRankHeaderView.setProviderDTO(providerDTO);
+        }
+        super.setupOwnRankingView(userRankingHeaderView);
+    }
+
     @Override protected void initCurrentRankHeaderView()
     {
         super.initCurrentRankHeaderView();
