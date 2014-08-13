@@ -159,16 +159,16 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 ^ (minConsistency == null ? 0 : minConsistency.hashCode());
     }
 
-    @Override public boolean equals(PerPagedLeaderboardKey other)
+    @Override public boolean equalFields(@NotNull PerPagedLeaderboardKey other)
     {
-        return super.equals(other) && other instanceof PerPagedFilteredLeaderboardKey &&
-                equals((PerPagedFilteredLeaderboardKey) other);
+        return super.equalFields(other)
+                && other instanceof PerPagedFilteredLeaderboardKey
+                && equalFields((PerPagedFilteredLeaderboardKey) other);
     }
 
-    public boolean equals(PerPagedFilteredLeaderboardKey other)
+    public boolean equalFields(@NotNull PerPagedFilteredLeaderboardKey other)
     {
-        return other != null &&
-                super.equals(other) &&
+        return super.equalFields(other) &&
                 (winRatio == null ? other.winRatio == null : winRatio.equals(other.winRatio)) &&
                 (averageMonthlyTradeCount == null ? other.averageMonthlyTradeCount == null : averageMonthlyTradeCount.equals(other.averageMonthlyTradeCount)) &&
                 (averageHoldingDays == null ? other.averageHoldingDays == null : averageHoldingDays.equals(other.averageHoldingDays)) &&
@@ -186,40 +186,12 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 (minConsistency == null ? other.minConsistency == null : minConsistency.equals(other.minConsistency));
     }
 
-    public int compareTo(PerPagedFilteredLeaderboardKey other)
-    {
-        // It looks like it does not compare well with all the subclasses
-        if (this == other)
-        {
-            return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
-        }
-
-        int parentComp = super.compareTo(other);
-        if (parentComp != 0)
-        {
-            return parentComp;
-        }
-
-        // TODO this is very confusing
-        return (winRatio == null ? (other.winRatio == null ? 0 : 1) : winRatio.compareTo(other.winRatio)) *
-                (averageMonthlyTradeCount == null ? (other.averageMonthlyTradeCount == null ? 0 : 1) : averageMonthlyTradeCount.compareTo(
-                        other.averageMonthlyTradeCount)) *
-                (averageHoldingDays == null ? (other.averageHoldingDays == null ? 0 : 1) : averageHoldingDays.compareTo(other.averageHoldingDays)) *
-                (minSharpeRatio == null ? (other.minSharpeRatio == null ? 0 : 1) : minSharpeRatio.compareTo(other.minSharpeRatio)) *
-                (minConsistency == null ? (other.minConsistency == null ? 0 : 1) : minConsistency.compareTo(other.minConsistency));
-    }
-
     @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
-        return new PerPagedFilteredLeaderboardKey(this, key, page);
+        return new PerPagedFilteredLeaderboardKey(this, id, page);
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override public void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
         if (winRatio == null)

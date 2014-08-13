@@ -95,7 +95,7 @@ public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardU
 
     public Integer getLeaderboardId()
     {
-        return pagedLeaderboardKey.key;
+        return pagedLeaderboardKey.id;
     }
 
     public boolean isIncludeFoF()

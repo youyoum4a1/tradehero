@@ -1,46 +1,58 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.market.Country;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
+    implements DTOView<LeaderboardUserDTO>
 {
-    @InjectView(R.id.leaderboard_current_user_rank_display_name) protected TextView mDisplayName;
-    @InjectView(R.id.leaderboard_current_user_rank_profile_picture) protected ImageView mAvatar;
-    @InjectView(R.id.leaderboard_current_user_rank_position) protected TextView mCurrentRankLabel;
-    @InjectView(R.id.leaderboard_current_user_rank_roi) protected TextView mROILabel;
+    @InjectView(R.id.leaderboard_current_user_rank_display_name) protected TextView displayName;
+    @InjectView(R.id.leaderboard_current_user_rank_profile_picture) protected ImageView avatar;
+    @InjectView(R.id.leaderboard_current_user_rank_position) protected TextView currentRankLabel;
+    @InjectView(R.id.leaderboard_current_user_rank_roi) protected TextView roiLabel;
+    @InjectView(R.id.leaderboard_current_user_rank_country_logo) protected ImageView countryLogo;
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCache userProfileCache;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
-    public static final int FLAG_USER_NOT_RANKED = -1;
+    @Nullable protected OwnedPortfolioId applicablePortfolioId;
+    @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    @Nullable protected UserProfileDTO userProfileDTO;
+    @Nullable protected LeaderboardUserDTO leaderboardUserDTO;
 
-    private UserProfileDTO userProfileDTO;
-
-    protected Integer mCurrentRank;
-    protected Double mRoiSinceInception = 0.0D;
-
+    //<editor-fold desc="Constructors">
     public LeaderboardCurrentUserRankHeaderView(Context context)
     {
         super(context);
@@ -55,29 +67,88 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
     {
         super(context, attrs, defStyle);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
         DaggerUtils.inject(this);
-
-        init();
-        display();
+        ButterKnife.inject(this);
     }
 
-    private void init()
+    @Override protected void onAttachedToWindow()
     {
+        super.onAttachedToWindow();
+        if(displayName == null)
+        {
+            ButterKnife.inject(this);
+        }
+        userProfileCacheListener = createUserProfileCacheListener();
         if (!isInEditMode())
         {
-            userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            fetchUserProfile();
+            display();
+        }
+
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        detachUserProfileCache();
+        userProfileCacheListener = null;
+        ButterKnife.reset(this);
+        super.onDetachedFromWindow();
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    protected void detachUserProfileCache()
+    {
+        userProfileCache.unregister(userProfileCacheListener);
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    {
+        return new LeaderboardCurrentViewUserProfileCacheListener();
+    }
+
+    protected class LeaderboardCurrentViewUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            userProfileDTO = value;
+            display();
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_your_user_profile);
         }
     }
 
-    private void display()
+    public void setApplicablePortfolioId(@Nullable OwnedPortfolioId applicablePortfolioId)
+    {
+        this.applicablePortfolioId = applicablePortfolioId;
+    }
+
+    @Override public void display(LeaderboardUserDTO dto)
+    {
+        this.leaderboardUserDTO = dto;
+        display();
+    }
+
+    protected void display()
     {
         displayUserName();
         displayUserPhoto();
+        displayUserCountry();
+        displayRanking();
+        displayROIValue();
     }
 
     private void displayUserPhoto()
@@ -88,12 +159,33 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
                     .transform(peopleIconTransformation)
                     .fit()
                     .centerCrop()
-                    .into(mAvatar);
+                    .into(avatar);
         }
         else
         {
             loadDefaultPicture();
         }
+    }
+
+    private void displayUserCountry()
+    {
+        if (shouldDisplayCountryLogo())
+        {
+            int imageResId = R.drawable.default_image;
+            if (userProfileDTO != null)
+            {
+                imageResId = Country.getCountryLogo(R.drawable.default_image, userProfileDTO.countryCode);
+            }
+            picasso.load(imageResId)
+                    .fit()
+                    .centerInside()
+                    .into(countryLogo);
+        }
+    }
+
+    protected boolean shouldDisplayCountryLogo()
+    {
+        return true;
     }
 
     private void loadDefaultPicture()
@@ -102,64 +194,68 @@ public class LeaderboardCurrentUserRankHeaderView extends RelativeLayout
                 .transform(peopleIconTransformation)
                 .fit()
                 .centerInside()
-                .into(mAvatar);
+                .into(avatar);
     }
 
-    private void displayUserName()
+    protected void displayUserName()
     {
         if (userProfileDTO != null)
         {
-            mDisplayName.setText(userProfileDTO.displayName);
-        }
-    }
-
-    public void setRank(int rank)
-    {
-        this.mCurrentRank = rank;
-        if (isUserRanked())
-        {
-            displayUserIsRanked();
-        }
-        else
-        {
-            displayUserNotRanked();
+            displayName.setText(userProfileDTO.displayName);
         }
     }
 
     protected boolean isUserRanked()
     {
-        return mCurrentRank != null && mCurrentRank != FLAG_USER_NOT_RANKED && mCurrentRank > 0;
+        return leaderboardUserDTO != null && leaderboardUserDTO.ordinalPosition > -1;
     }
 
-    protected void displayUserIsRanked()
+    protected void displayRanking()
     {
-        mCurrentRankLabel.setText(String.valueOf(mCurrentRank));
-        //Set the ROI from the user profile cache
-        displayROIValue(mRoiSinceInception);
+        currentRankLabel.setText(getRankLabel());
     }
 
-    protected void displayUserNotRanked()
+    protected String getRankLabel()
     {
-        mCurrentRankLabel.setText("-");
-        mROILabel.setText(R.string.leaderboard_not_ranked);
-    }
-
-    public void setRoiToBeShown(@Nullable Double roiToBeShown)
-    {
-        if (roiToBeShown != null && isUserRanked())
+        if (!isUserRanked())
         {
-            displayROIValue(roiToBeShown);
+            return "-";
         }
+        if (leaderboardUserDTO.ordinalPosition >= LeaderboardMarkUserItemView.MAX_OWN_RANKING)
+        {
+            return getContext().getString(R.string.leaderboard_not_ranked_position);
+        }
+        return THSignedNumber.builder(leaderboardUserDTO.ordinalPosition + 1).build().toString();
     }
 
-    private void displayROIValue(double value)
+    protected void displayROIValue()
     {
-        THSignedNumber thRoiSinceInception = THSignedPercentage.builder()
-                .value(value * 100)
-                .build();
+        int colorResId = R.color.black;
+        String roiString = getContext().getString(R.string.leaderboard_not_ranked);
+        if (isUserRanked())
+        {
+            THSignedNumber thRoiSinceInception = THSignedPercentage.builder(leaderboardUserDTO.roiInPeriod * 100).build();
+            roiString = thRoiSinceInception.toString();
+            colorResId = thRoiSinceInception.getColorResId();
+        }
+        roiLabel.setText(roiString);
+        roiLabel.setTextColor(getResources().getColor(colorResId));
+    }
 
-        mROILabel.setText(thRoiSinceInception.toString());
-        mROILabel.setTextColor(getResources().getColor(thRoiSinceInception.getColorResId()));
+    @OnClick(R.id.leaderboard_current_user_rank_profile_picture)
+    protected void handleAvatarClicked()
+    {
+        DashboardNavigator navigator = getNavigator();
+        if (navigator != null && userProfileDTO != null)
+        {
+            Bundle args = new Bundle();
+            if (applicablePortfolioId != null)
+            {
+                PushableTimelineFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            }
+            PushableTimelineFragment.putUserBaseKey(args, userProfileDTO.getBaseKey());
+            navigator.pushFragment(PushableTimelineFragment.class, args);
+        }
     }
 
     protected DashboardNavigator getNavigator()

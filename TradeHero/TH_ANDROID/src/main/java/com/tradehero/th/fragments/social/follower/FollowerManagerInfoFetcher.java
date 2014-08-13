@@ -31,20 +31,13 @@ public class FollowerManagerInfoFetcher
 
     public void fetch(final UserBaseKey heroId)
     {
-        detachFetchTask();
-        this.followerSummaryCache.register(heroId, this.followerSummaryListener);
-        this.followerSummaryCache.getOrFetchAsync(heroId);
+        fetch(heroId,false);
     }
 
-    /**
-     *
-     * @param heroId
-     * @param followerSummaryListener
-     */
-    public void fetch(final UserBaseKey heroId,DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO> followerSummaryListener)
+    public void fetch(final UserBaseKey heroId,boolean forceUpdate)
     {
-        followerSummaryCache.unregister(followerSummaryListener);
-        followerSummaryCache.register(heroId, followerSummaryListener);
-        this.followerSummaryCache.getOrFetchAsync(heroId, true);
+        detachFetchTask();
+        this.followerSummaryCache.register(heroId, this.followerSummaryListener);
+        this.followerSummaryCache.getOrFetchAsync(heroId,forceUpdate);
     }
 }

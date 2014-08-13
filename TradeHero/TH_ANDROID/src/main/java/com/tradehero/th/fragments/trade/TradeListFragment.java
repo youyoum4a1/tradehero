@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +10,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
@@ -26,16 +31,26 @@ import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.alert.AlertCreateFragment;
+import com.tradehero.th.fragments.alert.AlertEditFragment;
+import com.tradehero.th.fragments.alert.BaseAlertEditFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
+import com.tradehero.th.fragments.security.SecurityActionListLinear;
+import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
-import com.tradehero.th.fragments.trade.view.TradeListOverlayHeaderView;
+import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +72,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject CurrentUserId currentUserId;
     @Inject PositionDTOKeyFactory positionDTOKeyFactory;
     @Inject THRouter thRouter;
+    @Inject WatchlistPositionCache watchlistPositionCache;
+    @Inject Analytics analytics;
+    @Inject SecurityAlertAssistant securityAlertAssistant;
+    SecurityActionDialogFactory securityActionDialogFactory = new SecurityActionDialogFactory(); // no inject, 65k
 
     @InjectView(android.R.id.empty) protected ProgressBar progressBar;
-    @InjectView(R.id.trade_list_header) protected TradeListOverlayHeaderView header;
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
     @RouteProperty("userId") Integer routeUserId;
@@ -67,20 +85,21 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @RouteProperty("positionId") Integer routePositionId;
 
     protected PositionDTOKey positionDTOKey;
+    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> fetchPositionListener;
     protected PositionDTO positionDTO;
     protected TradeDTOList tradeDTOList;
 
     protected TradeListItemAdapter adapter;
-    protected TradeListHeaderView.TradeListHeaderClickListener buttonListener;
 
     private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
+    private Dialog securityActionDialog;
 
     public static void putPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKey positionDTOKey)
     {
         args.putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, positionDTOKey.getArgs());
     }
 
-    @Nullable private static PositionDTOKey getPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKeyFactory positionDTOKeyFactory)
+    @NotNull private static PositionDTOKey getPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKeyFactory positionDTOKeyFactory)
     {
         return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }
@@ -94,18 +113,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             putPositionDTOKey(getArguments(), new OwnedPositionId(routeUserId, routePortfolioId, routePositionId));
         }
 
-        this.buttonListener = new TradeListHeaderView.TradeListHeaderClickListener()
-        {
-            @Override public void onBuyButtonClicked(TradeListHeaderView tradeListHeaderView)
-            {
-                pushBuySellFragment(true);
-            }
-
-            @Override public void onSellButtonClicked(TradeListHeaderView tradeListHeaderView)
-            {
-                pushBuySellFragment(false);
-            }
-        };
+        fetchPositionListener = createPositionCacheListener();
         fetchTradesListener = createTradeListeCacheListener();
     }
 
@@ -125,21 +133,65 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (view != null)
         {
             createAdapter();
-            adapter.setTradeListHeaderClickListener(this.buttonListener);
 
             if (tradeListView != null)
             {
                 tradeListView.setAdapter(adapter);
             }
-
-            registerOverlayHeaderListener();
         }
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onViewCreated(view, savedInstanceState);
+        inflater.inflate(R.menu.trade_list_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.btn_security_action:
+                if (securityAlertAssistant.isPopulated())
+                {
+                    handleActionButtonClicked();
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
         linkWith(getPositionDTOKey(getArguments(), positionDTOKeyFactory), true);
+        securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
+        securityAlertAssistant.populate();
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        setActionBarSubtitle(null);
+        super.onDestroyOptionsMenu();
+    }
+
+    @Override public void onDestroyView()
+    {
+        detachFetchPosition();
+        detachFetchTrades();
+        detachSecurityActionDialog();
+        securityAlertAssistant.setOnPopulatedListener(null);
+        adapter = null;
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        fetchPositionListener = null;
+        fetchTradesListener = null;
+        securityAlertAssistant = null;
+        super.onDestroy();
     }
 
     protected void createAdapter()
@@ -152,7 +204,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (this.positionDTO != null && this.tradeDTOList != null)
         {
             createAdapter();
-            adapter.setTradeListHeaderClickListener(this.buttonListener);
             adapter.setShownPositionDTO(positionDTO);
             adapter.setUnderlyingItems(createUnderlyingItems());
             if (tradeListView != null)
@@ -160,6 +211,28 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 tradeListView.setAdapter(adapter);
             }
         }
+    }
+
+    protected void detachSecurityActionDialog()
+    {
+        if (securityActionDialog != null)
+        {
+            android.view.Window window = securityActionDialog.getWindow();
+            if (window != null)
+            {
+                View decorView = window.getDecorView();
+                if (decorView != null)
+                {
+                    View innerView = decorView.findViewById(android.R.id.content);
+                    if (innerView instanceof SecurityActionListLinear)
+                    {
+                        ((SecurityActionListLinear) innerView).setMenuClickedListener(null);
+                    }
+                }
+            }
+            securityActionDialog.dismiss();
+        }
+        securityActionDialog = null;
     }
 
     protected List<PositionTradeDTOKey> createUnderlyingItems()
@@ -170,62 +243,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             created.add(new PositionTradeDTOKey(positionDTOKey, tradeDTO));
         }
         return created;
-    }
-
-    private void registerOverlayHeaderListener()
-    {
-        if (this.header == null)
-        {
-            return;
-        }
-
-        this.header.setListener(new TradeListOverlayHeaderView.Listener()
-        {
-            @Override public void onSecurityClicked(TradeListOverlayHeaderView headerView, OwnedPositionId ownedPositionId)
-            {
-                pushBuySellFragment(true);
-            }
-
-            @Override public void onUserClicked(TradeListOverlayHeaderView headerView, UserBaseKey userId)
-            {
-                openUserProfile(userId);
-            }
-        });
-    }
-
-    private void pushBuySellFragment(boolean isBuy)
-    {
-        if (positionDTO == null)
-        {
-            THToast.show("We have lost track of this trading position");
-        }
-        else
-        {
-            SecurityId securityId = securityIdCache.get().get(positionDTO.getSecurityIntegerId());
-            if (securityId == null)
-            {
-                THToast.show("Could not find this security");
-            }
-            else
-            {
-                Bundle args = new Bundle();
-                populateBuySellArgs(args, isBuy, securityId);
-                OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-                if (ownedPortfolioId != null)
-                {
-                    BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-                }
-
-                getDashboardNavigator().pushFragment(BuySellFragment.class, args);
-            }
-        }
-    }
-
-    protected void populateBuySellArgs(Bundle args, boolean isBuy, SecurityId securityId)
-    {
-        args.putBoolean(BuySellFragment.BUNDLE_KEY_IS_BUY, isBuy);
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
     }
 
     private void openUserProfile(UserBaseKey userId)
@@ -239,51 +256,49 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @Override public void onDetach()
+    protected void detachFetchPosition()
     {
-        setActionBarSubtitle(null);
-        super.onDetach();
+        positionCache.get().unregister(fetchPositionListener);
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        setActionBarSubtitle(null);
-        super.onDestroyOptionsMenu();
-    }
-
-    @Override public void onDestroyView()
-    {
-        detachFetchTradesTask();
-        if (adapter != null)
-        {
-            adapter.setTradeListHeaderClickListener(null);
-        }
-        adapter = null;
-        header.setListener(null);
-        ButterKnife.reset(this);
-        super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        buttonListener = null;
-        fetchTradesListener = null;
-        super.onDestroy();
-    }
-
-    protected void detachFetchTradesTask()
+    protected void detachFetchTrades()
     {
         tradeListCache.get().unregister(fetchTradesListener);
     }
 
-    public void linkWith(PositionDTOKey newPositionDTOKey, boolean andDisplay)
+    public void linkWith(@NotNull PositionDTOKey newPositionDTOKey, boolean andDisplay)
     {
         this.positionDTOKey = newPositionDTOKey;
-        linkWith(positionCache.get().get(newPositionDTOKey), andDisplay);
+        fetchPosition();
 
         if (andDisplay)
         {
             display();
+        }
+    }
+
+    protected void fetchPosition()
+    {
+        detachFetchPosition();
+        positionCache.get().register(positionDTOKey, fetchPositionListener);
+        positionCache.get().getOrFetchAsync(positionDTOKey);
+    }
+
+    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> createPositionCacheListener()
+    {
+        return new TradeListFragmentPositionCacheListener();
+    }
+
+    protected class TradeListFragmentPositionCacheListener implements DTOCacheNew.Listener<PositionDTOKey, PositionDTO>
+    {
+        @Override public void onDTOReceived(@NotNull PositionDTOKey key, @NotNull PositionDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull PositionDTOKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_position_list_info);
         }
     }
 
@@ -294,7 +309,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         fetchTrades();
         if (andDisplay)
         {
-            displayHeader();
         }
     }
 
@@ -302,79 +316,11 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionDTO != null)
         {
-            detachFetchTradesTask();
+            detachFetchTrades();
             OwnedPositionId key = positionDTO.getOwnedPositionId();
             tradeListCache.get().register(key, fetchTradesListener);
             tradeListCache.get().getOrFetchAsync(key);
             displayProgress(true);
-        }
-    }
-
-    public void linkWith(TradeDTOList tradeDTOs, boolean andDisplay)
-    {
-        this.tradeDTOList = tradeDTOs;
-        rePurposeAdapter();
-
-        if (andDisplay)
-        {
-            display();
-        }
-    }
-
-    public void display()
-    {
-        displayHeader();
-        displayActionBarTitle();
-    }
-
-    public void displayHeader()
-    {
-        if (this.header != null)
-        {
-            if (this.positionDTO != null)
-            {
-                header.bindOwnedPositionId(this.positionDTO);
-            }
-        }
-    }
-
-    public void displayActionBarTitle()
-    {
-        if (positionDTO == null || securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId)) == null)
-        {
-            setActionBarTitle(R.string.trade_list_title);
-        }
-        else
-        {
-            SecurityId securityId = securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId));
-            if (securityId == null)
-            {
-                setActionBarTitle(R.string.trade_list_title);
-            }
-            else
-            {
-                SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
-                if (securityCompactDTO == null || securityCompactDTO.name == null)
-                {
-                    setActionBarTitle(
-                            String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
-                                    securityId.getSecuritySymbol()));
-                }
-                else
-                {
-                    setActionBarTitle(securityCompactDTO.name);
-                    setActionBarSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
-                            securityId.getSecuritySymbol()));
-                }
-            }
-        }
-    }
-
-    public void displayProgress(boolean running)
-    {
-        if (progressBar != null)
-        {
-            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -397,5 +343,165 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             THToast.show(R.string.error_fetch_trade_list_info);
             Timber.e("Error fetching the list of trades %s", key, error);
         }
+    }
+
+    public void linkWith(TradeDTOList tradeDTOs, boolean andDisplay)
+    {
+        this.tradeDTOList = tradeDTOs;
+        rePurposeAdapter();
+
+        if (andDisplay)
+        {
+            display();
+        }
+    }
+
+    public void display()
+    {
+        displayActionBarTitle();
+    }
+
+    @Nullable protected SecurityId getSecurityId()
+    {
+        if (positionDTO == null)
+        {
+            return null;
+        }
+        return securityIdCache.get().get(new SecurityIntegerId(positionDTO.securityId));
+    }
+
+    public void displayActionBarTitle()
+    {
+        SecurityId securityId = getSecurityId();
+        if (securityId == null)
+        {
+            setActionBarTitle(R.string.trade_list_title);
+        }
+        else
+        {
+            SecurityCompactDTO securityCompactDTO = securityCompactCache.get().get(securityId);
+            if (securityCompactDTO == null || securityCompactDTO.name == null)
+            {
+                setActionBarTitle(
+                        String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                                securityId.getSecuritySymbol()));
+            }
+            else
+            {
+                setActionBarTitle(securityCompactDTO.name);
+                setActionBarSubtitle(String.format(getString(R.string.trade_list_title_with_security), securityId.getExchange(),
+                        securityId.getSecuritySymbol()));
+            }
+        }
+    }
+
+    public void displayProgress(boolean running)
+    {
+        if (progressBar != null)
+        {
+            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    protected void handleActionButtonClicked()
+    {
+        SecurityId securityId = getSecurityId();
+        if (securityId == null)
+        {
+            THToast.show(R.string.error_fetch_security_info);
+        }
+        detachSecurityActionDialog();
+        securityActionDialog = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+    }
+
+    protected SecurityActionListLinear.OnActionMenuClickedListener createSecurityActionMenuListener()
+    {
+        return new TradeListSecurityActionListener();
+    }
+
+    protected class TradeListSecurityActionListener implements SecurityActionListLinear.OnActionMenuClickedListener
+    {
+        @Override public void onCancelClicked()
+        {
+            dismissShareDialog();
+        }
+
+        @Override public void onAddToWatchlistRequested(@NotNull SecurityId securityId)
+        {
+            dismissShareDialog();
+            Bundle args = new Bundle();
+            WatchlistEditFragment.putSecurityId(args, securityId);
+            if (watchlistPositionCache.get(securityId) != null)
+            {
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+                WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+            }
+            else
+            {
+                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+                WatchlistEditFragment.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+            }
+            DashboardNavigator navigator = getDashboardNavigator();
+            if (navigator != null)
+            {
+                navigator.pushFragment(WatchlistEditFragment.class, args);
+            }
+        }
+
+        @Override public void onAddAlertRequested(@NotNull SecurityId securityId)
+        {
+            dismissShareDialog();
+            Bundle args = new Bundle();
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null)
+            {
+                BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            }
+            AlertId alertId = securityAlertAssistant.getAlertId(securityId);
+            DashboardNavigator navigator = getDashboardNavigator();
+            if (alertId != null)
+            {
+                AlertEditFragment.putAlertId(args, alertId);
+                if (navigator != null)
+                {
+                    navigator.pushFragment(AlertEditFragment.class, args);
+                }
+            }
+            else
+            {
+                AlertCreateFragment.putSecurityId(args, securityId);
+                if (navigator != null)
+                {
+                    navigator.pushFragment(AlertCreateFragment.class, args);
+                }
+            }
+        }
+
+        @Override public void onBuySellRequested(@NotNull SecurityId securityId)
+        {
+            dismissShareDialog();
+            Bundle args = new Bundle();
+            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null)
+            {
+                BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            }
+            BuySellFragment.putSecurityId(args, securityId);
+            DashboardNavigator navigator = getDashboardNavigator();
+            if (navigator != null)
+            {
+                navigator.pushFragment(BuySellFragment.class, args);
+            }
+        }
+    }
+
+    protected void dismissShareDialog()
+    {
+        Dialog securityActionDialogCopy = securityActionDialog;
+        if (securityActionDialogCopy != null)
+        {
+            securityActionDialogCopy.dismiss();
+        }
+        securityActionDialog = null;
     }
 }

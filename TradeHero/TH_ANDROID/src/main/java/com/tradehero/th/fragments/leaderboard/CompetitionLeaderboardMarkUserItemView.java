@@ -3,14 +3,29 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import butterknife.InjectView;
+import com.tradehero.th.R;
+import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
+import com.tradehero.th.models.number.THSignedMoney;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
-    private ProviderDTO providerDTO;
+    @InjectView(R.id.leaderboard_prize_container) LinearLayout prizelayout;
+    @InjectView(R.id.leaderboard_prize_icon) ImageView prizeIcon;
+    @InjectView(R.id.leaderboard_prize_amount) TextView prizeAmount;
+
+    @Nullable private ProviderDTO providerDTO;
+    @Nullable private PrizeDTO prizeDTO;
 
     //<editor-fold desc="Constructors">
     public CompetitionLeaderboardMarkUserItemView(Context context)
@@ -29,10 +44,31 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     }
     //</editor-fold>
 
-    public void setProviderDTO(ProviderDTO providerDTO)
+    public void setProviderDTO(@NotNull ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
         displayLbmuPl();
+    }
+
+    public void setPrizeDTO(@Nullable PrizeDTO prizeDTO)
+    {
+        this.prizeDTO = prizeDTO;
+        displayPrize();
+    }
+
+    protected void displayPrize()
+    {
+        if (prizeDTO == null)
+        {
+            prizelayout.setVisibility(View.GONE);
+        }
+        else
+        {
+            prizelayout.setVisibility(View.VISIBLE);
+            prizeAmount.setText(THSignedMoney.builder(prizeDTO.amount)
+                    .currency(prizeDTO.prizeCcy)
+                    .build().toString());
+        }
     }
 
     @Override protected String getLbmuPlCurrencyDisplay()

@@ -23,13 +23,10 @@ public class DTOProcessorSignInUpUserProfile extends DTOProcessorUpdateUserProfi
     }
     //</editor-fold>
 
-    @Override public UserProfileDTO process(UserProfileDTO userProfileDTO)
+    @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
-        if (userProfileDTO != null)
-        {
-            currentUserId.set(userProfileDTO.id);
-        }
+        currentUserId.set(userProfileDTO.id);
         dtoCacheUtil.prefetchesUponLogin(userProfileDTO);
         return processed;
     }

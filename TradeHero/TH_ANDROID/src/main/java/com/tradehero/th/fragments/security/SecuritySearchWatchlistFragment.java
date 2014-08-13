@@ -22,5 +22,4 @@ public class SecuritySearchWatchlistFragment extends SecuritySearchFragment
                 WatchlistPositionFragment.class.getName());
         getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args);
     }
-
 }

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -150,5 +151,10 @@ abstract public class DashboardFragment extends BaseFragment
             return activity.getDashboardNavigator();
         }
         return null;
+    }
+
+    public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)
+    {
+        return true;
     }
 }

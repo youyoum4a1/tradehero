@@ -37,6 +37,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.callback.MiddleLogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -49,12 +50,13 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -74,6 +76,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     private MiddleCallback<Response> middleCallbackInvite;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    private MiddleLogInCallback middleTrackbackFacebook;
     protected OnFollowRequestedListener followRequestedListener;
     private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfileDTO;
@@ -128,6 +131,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         avatar.setOnClickListener(null);
         inviteBtn.setOnClickListener(null);
+        detachTrackbackFacebook();
         detachMiddleCallbackInvite();
         super.onDetachedFromWindow();
     }
@@ -208,7 +212,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                 break;
             case R.id.leaderboard_user_item_follow:
                 THToast.show("TODO");
-                //alertDialogUtilLazy.get().showFollowDialog(getContext(), userFriendsDTO,
+                //heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userFriendsDTO,
                 //        UserProfileDTOUtil.IS_NOT_FOLLOWER,
                 //        new LeaderBoardFollowRequestedListener());
                 break;
@@ -218,18 +222,18 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     public class LeaderBoardFollowRequestedListener
             implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
         {
             freeFollow(heroId);
         }
 
-        @Override public void premiumFollowRequested(UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
         {
             follow(heroId);
         }
     }
 
-    protected void freeFollow(UserBaseKey heroId)
+    protected void freeFollow(@NotNull UserBaseKey heroId)
     {
         alertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(
                 R.string.following_this_hero));
@@ -239,12 +243,12 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                         .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow(UserBaseKey heroId)
+    protected void follow(@NotNull UserBaseKey heroId)
     {
         notifyFollowRequested(heroId);
     }
 
-    protected void notifyFollowRequested(UserBaseKey heroId)
+    protected void notifyFollowRequested(@NotNull UserBaseKey heroId)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
@@ -367,8 +371,10 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
             if (Session.getActiveSession() == null)
             {
+                detachTrackbackFacebook();
+                middleTrackbackFacebook = new MiddleLogInCallback(new TrackFacebookCallback());
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
-                        new TrackFacebookCallback());
+                        middleTrackbackFacebook);
             }
             else
             {
@@ -452,6 +458,15 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             THToast.show(new THException(retrofitError));
             getProgressDialog().hide();
         }
+    }
+
+    private void detachTrackbackFacebook()
+    {
+        if (middleTrackbackFacebook != null)
+        {
+            middleTrackbackFacebook.setInnerCallback(null);
+        }
+        middleTrackbackFacebook = null;
     }
 
     private class TrackFacebookCallback extends LogInCallback

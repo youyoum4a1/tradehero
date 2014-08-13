@@ -3,9 +3,11 @@ package com.tradehero.th.fragments.trade;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class SellDialogFragment extends AbstractTransactionDialogFragment
 {
@@ -23,13 +25,32 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
 
     @Override protected String getLabel()
     {
-        String display = securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay;
-        THSignedNumber sthSignedNumber = THSignedNumber.builder()
-                .value(quoteDTO.bid)
+        THSignedNumber sthSignedNumber = THSignedMoney
+                .builder(quoteDTO.bid)
                 .withOutSign()
+                .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
                 .build();
-        String sPrice = sthSignedNumber.toString();
-        return getString(R.string.buy_sell_button_sell, display, sPrice);
+        return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
+    }
+
+    @Override @Nullable protected Double getProfitOrLoss()
+    {
+        if (positionDTOCompactList == null || portfolioCompactDTO == null)
+        {
+            return null;
+        }
+        Double netProceeds = positionDTOCompactList.getNetSellProceedsUsd(
+                mTransactionQuantity,
+                quoteDTO,
+                getPortfolioId(),
+                true,
+                portfolioCompactDTO.getProperTxnCostUsd());
+        Double totalSpent = positionDTOCompactList.getSpentOnQuantity(mTransactionQuantity, getPortfolioId());
+        if (netProceeds == null || totalSpent == null)
+        {
+            return null;
+        }
+        return netProceeds - totalSpent;
     }
 
     @Override protected int getCashLeftLabelResId()
@@ -39,7 +60,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
 
     @Override public String getCashShareLeft()
     {
-        String cashLeftText = getResources().getString(R.string.na);
+        String shareLeftText = getResources().getString(R.string.na);
         if (quoteDTO != null)
         {
             Double priceRefCcy = getPriceCcy();
@@ -48,11 +69,14 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
                 Integer maxSellableShares = getMaxSellableShares();
                 if (maxSellableShares != null && maxSellableShares != 0)
                 {
-                    cashLeftText = String.valueOf(maxSellableShares - mTransactionQuantity);//share left
+                    shareLeftText = THSignedNumber.builder(maxSellableShares - mTransactionQuantity)
+                            .relevantDigitCount(1)
+                            .withOutSign()
+                            .build().toString();
                 }
             }
         }
-        return cashLeftText;
+        return shareLeftText;
     }
 
     @Override protected Integer getMaxValue()

@@ -1,9 +1,12 @@
 package com.tradehero.th.persistence.leaderboard;
 
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,16 +17,25 @@ import org.jetbrains.annotations.NotNull;
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
+    @NotNull private final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+
     //<editor-fold desc="Constructors">
-    @Inject public LeaderboardDefCache()
+    @Inject public LeaderboardDefCache(@NotNull Lazy<LeaderboardDefListCache> leaderboardDefListCache)
     {
         super(DEFAULT_MAX_SIZE);
+        this.leaderboardDefListCache = leaderboardDefListCache;
     }
     //</editor-fold>
 
-    @Override @NotNull public LeaderboardDefDTO fetch(@NotNull LeaderboardDefKey key) throws Throwable
+    @Override @NotNull public LeaderboardDefDTO fetch(@NotNull final LeaderboardDefKey key) throws Throwable
     {
-        throw new IllegalStateException("Cannot fetch on this cache");
+        leaderboardDefListCache.get().getOrFetchSync(new LeaderboardDefListKey());
+        LeaderboardDefDTO found = get(key);
+        if (found != null)
+        {
+            return found;
+        }
+        throw new NullPointerException("No such leaderboardDef");
     }
 
     @Contract("null -> null; !null -> !null")

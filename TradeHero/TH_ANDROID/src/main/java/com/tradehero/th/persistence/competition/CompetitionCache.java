@@ -4,7 +4,10 @@ import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.key.CompetitionId;
+import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
+import com.tradehero.th.persistence.leaderboard.LeaderboardUserCache;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,32 +19,40 @@ import org.jetbrains.annotations.Nullable;
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @NotNull private final LeaderboardDefCache leaderboardDefCache;
+    @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
+    @NotNull private final Lazy<LeaderboardDefCache> leaderboardDefCache;
+    @NotNull private final Lazy<LeaderboardUserCache> leaderboardUserCache;
 
     //<editor-fold desc="Constructors">
     @Inject public CompetitionCache(
-            @NotNull LeaderboardDefCache leaderboardDefCache)
+            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NotNull Lazy<LeaderboardDefCache> leaderboardDefCache,
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
-        this(DEFAULT_MAX_SIZE, leaderboardDefCache);
+        this(DEFAULT_MAX_SIZE, competitionServiceWrapper, leaderboardDefCache, leaderboardUserCache);
     }
 
     public CompetitionCache(
             int maxSize,
-            @NotNull LeaderboardDefCache leaderboardDefCache)
+            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NotNull Lazy<LeaderboardDefCache> leaderboardDefCache,
+            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache)
     {
         super(maxSize);
+        this.competitionServiceWrapper = competitionServiceWrapper;
         this.leaderboardDefCache = leaderboardDefCache;
+        this.leaderboardUserCache = leaderboardUserCache;
     }
     //</editor-fold>
 
     @Override @NotNull public CompetitionDTO fetch(@NotNull CompetitionId key) throws Throwable
     {
-        throw new IllegalStateException("There is no fetch on this cache");
+        return competitionServiceWrapper.getCompetition(key);
     }
 
     @Override @NotNull protected CompetitionCutDTO cutValue(@NotNull CompetitionId key, @NotNull CompetitionDTO value)
     {
-        return new CompetitionCutDTO(value, leaderboardDefCache);
+        return new CompetitionCutDTO(value, leaderboardDefCache.get(), leaderboardUserCache.get());
     }
 
     @Nullable @Override protected CompetitionDTO inflateValue(@NotNull CompetitionId key, @Nullable CompetitionCutDTO cutValue)
@@ -50,7 +61,7 @@ import org.jetbrains.annotations.Nullable;
         {
             return null;
         }
-        return cutValue.create(leaderboardDefCache);
+        return cutValue.create(leaderboardDefCache.get(), leaderboardUserCache.get());
     }
 
     @Contract("null -> null; !null -> !null") @Nullable

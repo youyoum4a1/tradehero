@@ -9,23 +9,34 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.analytics.AnalyticsEventForm;
+import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.inject.Inject;
 
 public class AdView extends RelativeLayout
-        implements DTOView<CompetitionZoneAdvertisementDTO>
+        implements DTOView<CompetitionZoneDTO>
 {
     @InjectView(R.id.banner) ImageView banner;
+    @Inject UserServiceWrapper userServiceWrapper;
+    @Inject Context context;
     private AdDTO adDTO;
+    private int providerId;
 
     @OnClick(R.id.banner) void onBannerClicked(ImageView banner)
     {
@@ -35,6 +46,7 @@ public class AdView extends RelativeLayout
             String url = adDTO.redirectUrl + String.format("&userId=%d", currentUserId.get());
             WebViewFragment.putUrl(bundle, url);
             getNavigator().pushFragment(WebViewFragment.class, bundle);
+            sendAnalytics(adDTO, "proceed");
         }
     }
 
@@ -70,7 +82,12 @@ public class AdView extends RelativeLayout
         DaggerUtils.inject(this);
     }
 
-    @Override public void display(CompetitionZoneAdvertisementDTO competitionZoneAdvertisementDTO)
+    @Override public void display(CompetitionZoneDTO competitionZoneDTO)
+    {
+        display((CompetitionZoneAdvertisementDTO) competitionZoneDTO);
+    }
+
+    public void display(CompetitionZoneAdvertisementDTO competitionZoneAdvertisementDTO)
     {
         if (competitionZoneAdvertisementDTO != null)
         {
@@ -114,12 +131,41 @@ public class AdView extends RelativeLayout
                     picasso.get().load(adDTO.bannerImageUrl)
                             .into(banner);
                 }
+
+                sendAnalytics(adDTO, "served");
             }
             else
             {
                 banner.setImageDrawable(null);
             }
         }
+    }
+
+    private void sendAnalytics(final AdDTO adDTO, final String event)
+    {
+        Thread thread = new Thread(new Runnable()
+        {
+            @Override public void run()
+            {
+                try
+                {
+                    AnalyticsEventForm analyticsEventForm = new AnalyticsEventForm(event,
+                            DateUtils.getFormattedUtcDateFromDate(context.getResources(),
+                                    new Date(System.currentTimeMillis())), adDTO.id, providerId,
+                            currentUserId.toUserBaseKey().getUserId());
+                    BatchAnalyticsEventForm batchAnalyticsEventForm = new BatchAnalyticsEventForm();
+                    batchAnalyticsEventForm.events = new ArrayList<>();
+                    batchAnalyticsEventForm.events.add(analyticsEventForm);
+                    userServiceWrapper.sendAnalytics(batchAnalyticsEventForm);
+                }
+                catch (Exception e)
+                {
+                    THToast.show(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
     }
 
     private String getResourceFileName(String url)
@@ -136,5 +182,10 @@ public class AdView extends RelativeLayout
             return fileName.replace('-', '_').toLowerCase();
         }
         return null;
+    }
+
+    public void setProviderId(int providerId)
+    {
+        this.providerId = providerId;
     }
 }

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,12 +44,12 @@ import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -66,6 +65,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdFactory;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioIdList;
@@ -80,7 +80,6 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
@@ -151,13 +150,13 @@ public class BuySellFragment extends AbstractBuySellFragment
     private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     @Inject protected SecurityAlertAssistant securityAlertAssistant;
-    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionCacheFetchListener;
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
 
     private int mQuantity = 0;
     private Bundle desiredArguments;
     //private String mPriceSelectionMethod;
 
-    protected SecurityIdList watchedList;
+    protected WatchlistPositionDTOList watchedList;
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     private int selectedPageIndex;
@@ -168,6 +167,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     private BroadcastReceiver chartImageButtonClickReceiver;
 
     @Inject Analytics analytics;
+    private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -300,6 +300,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         mBottomViewPager.setCurrentItem(selectedPageIndex);
         securityAlertAssistant.setUserBaseKey(currentUserId.toUserBaseKey());
         securityAlertAssistant.populate();
+
+        if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
+        {
+            abstractTransactionDialogFragment.populateComment();
+            abstractTransactionDialogFragment.getDialog().show();
+        }
     }
 
     @Override public void onPause()
@@ -481,7 +487,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected void linkWithWatchlist(SecurityIdList watchedList, boolean andDisplay)
+    protected void linkWithWatchlist(WatchlistPositionDTOList watchedList, boolean andDisplay)
     {
         this.watchedList = watchedList;
         if (andDisplay)
@@ -663,8 +669,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
                 else
                 {
-                    bthSignedNumber = THSignedNumber.builder()
-                            .value(quoteDTO.ask)
+                    bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
                             .withOutSign()
                             .build();
                     bPrice = bthSignedNumber.toString();
@@ -676,8 +681,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
                 else
                 {
-                    sthSignedNumber = THSignedNumber.builder()
-                            .value(quoteDTO.bid)
+                    sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
                             .withOutSign()
                             .build();
                     sPrice = sthSignedNumber.toString();
@@ -1168,7 +1172,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 }
             };
 
-            AbstractTransactionDialogFragment abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
+            abstractTransactionDialogFragment = BuyDialogFragment.newInstance(
                     securityId,
                     purchaseApplicableOwnedPortfolioId.getPortfolioIdKey(),
                     quoteDTO,
@@ -1388,16 +1392,16 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createUserWatchlistCacheListener()
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createUserWatchlistCacheListener()
     {
         return new BuySellUserWatchlistCacheListener();
     }
 
     protected class BuySellUserWatchlistCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
+            implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
         @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
+        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
             linkWithWatchlist(value, true);
         }

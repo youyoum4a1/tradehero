@@ -22,6 +22,7 @@
   <string name="settings_primary_restore_purchases">Restore Purchases</string>
   <string name="settings_primary_referral_code">Referral Code</string>
   <string name="settings_misc_sign_out">Sign Out</string>
+  <string name="settings_misc_sign_out_summary">%1$s: %2$s</string>
   <string name="settings_misc_sign_out_are_you_sure">Are you sure you want to sign out?</string>
   <string name="settings_misc_sign_out_no">No</string>
   <string name="settings_misc_sign_out_yes">Yes</string>

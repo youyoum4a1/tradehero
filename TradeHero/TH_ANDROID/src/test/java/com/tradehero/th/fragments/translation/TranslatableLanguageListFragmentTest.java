@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.translation;
 
 import android.content.Context;
+import com.tradehero.AbstractTestBase;
 import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -19,7 +20,7 @@ import org.robolectric.shadows.ShadowToast;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(RobolectricMavenTestRunner.class)
-public class TranslatableLanguageListFragmentTest
+public class TranslatableLanguageListFragmentTest extends AbstractTestBase
 {
     @Inject Context context;
     @Inject TranslationTokenCache translationTokenCache;
@@ -51,17 +52,12 @@ public class TranslatableLanguageListFragmentTest
         assertThat(latestToastText).isEqualTo(context.getString(R.string.error_incomplete_info_message));
     }
 
-    @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken() throws InterruptedException
+    @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken()
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
-
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
-        Thread.sleep(400); // TODO remove this HACK
+        runBgUiTasks(10);
 
         assertThat(listFragment.listView.getAdapter().getCount()).isGreaterThan(10);
     }

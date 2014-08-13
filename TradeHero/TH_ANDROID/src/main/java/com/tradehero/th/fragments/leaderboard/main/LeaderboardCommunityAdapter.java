@@ -16,16 +16,13 @@ public class LeaderboardCommunityAdapter extends ArrayAdapter<CommunityPageDTO>
 {
     @Inject LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory;
 
-    private final int competitionCompactViewResourceId;
     private final int leaderboardDefViewResourceId;
 
     public LeaderboardCommunityAdapter(Context context,
-            int leaderboardDefViewResourceId,
-            int competitionCompactViewResourceId)
+            int leaderboardDefViewResourceId)
     {
         super(context, 0);
         this.leaderboardDefViewResourceId = leaderboardDefViewResourceId;
-        this.competitionCompactViewResourceId = competitionCompactViewResourceId;
         DaggerUtils.inject(this);
     }
 
@@ -42,10 +39,6 @@ public class LeaderboardCommunityAdapter extends ArrayAdapter<CommunityPageDTO>
     public int getItemViewResId(int position)
     {
         CommunityPageDTO item = getItem(position);
-        if (item instanceof ProviderCommunityPageDTO)
-        {
-            return competitionCompactViewResourceId;
-        }
         if (item instanceof LeaderboardDefCommunityPageDTO)
         {
             return leaderboardDefViewResourceId;

@@ -8,7 +8,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 
-class LocationRelativeView extends RelativeLayout
+public class LocationRelativeView extends RelativeLayout
     implements DTOView<ListedLocationDTO>
 {
     private static final int BG_REGULAR = R.drawable.basic_white_selector;

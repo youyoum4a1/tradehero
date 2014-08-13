@@ -25,7 +25,7 @@ import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import com.tradehero.th.utils.THRouter;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -174,7 +174,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
                 if (currentUserId.get() != user.id)
                 {
                     Bundle bundle = new Bundle();
-                    thRouter.save(bundle, new UserBaseKey(user.id));
+                    TimelineFragment.putUserBaseKey(bundle, new UserBaseKey(user.id));
                     getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
                 }
             }
@@ -192,9 +192,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             {
                 SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
                 Bundle args = new Bundle();
-                args.putBundle(
-                        BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE,
-                        securityId.getArgs());
+                BuySellFragment.putSecurityId(args, securityId);
 
                 getNavigator().pushFragment(BuySellFragment.class, args);
             }
@@ -212,6 +210,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
     private void openWatchlistEditor()
     {
+        // TODO make it so that it needs SecurityId
         Bundle args = new Bundle();
         SecurityId securityId = getSecurityId();
         if (securityId != null)
@@ -220,12 +219,12 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             if (watchlistPositionCache.get().get(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
+                WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
             }
             else
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
+                WatchlistEditFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_add_title));
             }
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
