@@ -20,9 +20,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
-    @InjectView(R.id.leaderboard_prizeLayout) LinearLayout prizelayout;
-    @InjectView(R.id.leaderboard_prizeIcon) ImageView prizeIcon;
-    @InjectView(R.id.leaderboard_prizeAmount) TextView prizeAmount;
+    @InjectView(R.id.leaderboard_prize_container) LinearLayout prizelayout;
+    @InjectView(R.id.leaderboard_prize_icon) ImageView prizeIcon;
+    @InjectView(R.id.leaderboard_prize_amount) TextView prizeAmount;
 
     @Nullable private ProviderDTO providerDTO;
     @Nullable private PrizeDTO prizeDTO;
