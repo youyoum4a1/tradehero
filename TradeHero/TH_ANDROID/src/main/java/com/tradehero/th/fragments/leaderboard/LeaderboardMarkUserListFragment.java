@@ -153,7 +153,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return R.layout.lbmu_item_own_ranking_roi_mode;
     }
 
-    private void setupOwnRankingView(View userRankingHeaderView)
+    protected void setupOwnRankingView(View userRankingHeaderView)
     {
         if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
         {
