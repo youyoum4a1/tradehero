@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -214,6 +215,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         super.onCreate(savedInstanceState);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
+    }
+
+    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
+    {
+        Dialog d = super.onCreateDialog(savedInstanceState);
+        d.getWindow().setWindowAnimations(R.style.TH_BuySellDialogAnimation);
+        return d;
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

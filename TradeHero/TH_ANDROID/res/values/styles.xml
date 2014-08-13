@@ -394,4 +394,8 @@
     <item name="android:background">@drawable/tradehero_spinner_background_holo_light</item>
   </style>
 
+  <style name="TH.BuySellDialogAnimation" parent="android:Theme.Holo.Dialog.NoActionBar">
+    <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom_and_expand</item>
+  </style>
+
 </resources>
