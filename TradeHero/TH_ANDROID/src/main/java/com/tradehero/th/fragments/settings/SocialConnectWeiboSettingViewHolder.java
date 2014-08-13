@@ -7,6 +7,7 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -25,11 +26,12 @@ public class SocialConnectWeiboSettingViewHolder extends SocialConnectSettingVie
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper,
             @NotNull Lazy<WeiboUtils> weiboUtils)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, alertDialogUtil, socialServiceWrapper);
+        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper, alertDialogUtil, socialServiceWrapper);
         this.weiboUtils = weiboUtils;
     }
     //</editor-fold>
@@ -97,7 +99,7 @@ public class SocialConnectWeiboSettingViewHolder extends SocialConnectSettingVie
                 createSocialDisconnectCallback());
     }
 
-    @Override protected void updateSocialConnectStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
+    @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
     {
         if (clickablePref != null)
         {
