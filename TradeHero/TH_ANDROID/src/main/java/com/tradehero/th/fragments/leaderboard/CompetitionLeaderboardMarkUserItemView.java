@@ -23,7 +23,6 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     @InjectView(R.id.leaderboard_prize_container) LinearLayout prizelayout;
     @InjectView(R.id.leaderboard_prize_icon) ImageView prizeIcon;
     @InjectView(R.id.leaderboard_prize_amount) TextView prizeAmount;
-    @InjectView(R.id.leaderboard_user_item_country_logo) ImageView countryLogo;
     @Nullable private ProviderDTO providerDTO;
     @Nullable private PrizeDTO prizeDTO;
 

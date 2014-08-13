@@ -155,7 +155,8 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
             for (Iterator<SocialFriendListItemDTO> iterator = mArrayList.iterator(); iterator.hasNext();)
             {
                 SocialFriendListItemDTO dto = iterator.next();
-                if (dto.toString().contains(charSequence))
+                //if (dto.toString().contains(charSequence))
+                if(dto.toString().toLowerCase().contains(charSequence.toString().toLowerCase()))
                 {
                     mFilteredArrayList.add(dto);
                 }
