@@ -7,7 +7,6 @@ import android.widget.Filter;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -152,11 +151,11 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         {
             FilterResults filterResults = new FilterResults();
             mFilteredArrayList = new ArrayList<>();
-            for (Iterator<SocialFriendListItemDTO> iterator = mArrayList.iterator(); iterator.hasNext();)
+            int sizeList = mArrayList.size();
+            for (int i = 0; i < sizeList; i++)
             {
-                SocialFriendListItemDTO dto = iterator.next();
-                //if (dto.toString().contains(charSequence))
-                if(dto.toString().toLowerCase().contains(charSequence.toString().toLowerCase()))
+                SocialFriendListItemDTO dto = mArrayList.get(i);
+                if (dto.toString().toLowerCase().contains(charSequence.toString().toLowerCase()))
                 {
                     mFilteredArrayList.add(dto);
                 }
