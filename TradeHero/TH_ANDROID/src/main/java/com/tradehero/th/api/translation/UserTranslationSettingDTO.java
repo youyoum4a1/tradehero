@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 )
 public class UserTranslationSettingDTO implements DTO
 {
-    public static final String DEFAULT_LANGUAGE_CODE = "en";
+    public static final String DEFAULT_LANGUAGE_CODE = "zh-CHS";
     public static final boolean DEFAULT_AUTO_TRANSLATE = true;
 
     @NotNull public final String languageCode;
