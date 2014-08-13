@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
@@ -404,7 +405,14 @@ public class PeopleSearchFragment extends BasePurchaseManagerFragment
     {
         Bundle args = new Bundle();
         thRouter.save(args, userBaseKey);
-        getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        if (currentUserId.toUserBaseKey().equals(userBaseKey))
+        {
+            getDashboardNavigator().pushFragment(MeTimelineFragment.class, args);
+        }
+        else
+        {
+            getDashboardNavigator().pushFragment(PushableTimelineFragment.class, args);
+        }
     }
 
     //<editor-fold desc="Listeners">

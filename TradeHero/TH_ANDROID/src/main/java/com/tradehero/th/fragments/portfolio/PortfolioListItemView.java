@@ -28,6 +28,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -154,8 +155,16 @@ public class PortfolioListItemView extends RelativeLayout
         Bundle bundle = new Bundle();
         DashboardNavigator navigator =
                 ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
-        thRouter.save(bundle, new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id));
-        navigator.pushFragment(PushableTimelineFragment.class, bundle);
+        UserBaseKey userToSee = new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id);
+        thRouter.save(bundle, userToSee);
+        if (currentUserId.toUserBaseKey().equals(userToSee))
+        {
+            navigator.pushFragment(MeTimelineFragment.class, bundle);
+        }
+        else
+        {
+            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+        }
     }
 
     protected void detachMilestone()

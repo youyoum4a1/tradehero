@@ -30,7 +30,6 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
@@ -39,7 +38,6 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.security.SecurityActionDialogFactory;
 import com.tradehero.th.fragments.security.SecurityActionListLinear;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.alert.SecurityAlertAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.position.PositionCache;
@@ -243,17 +241,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             created.add(new PositionTradeDTOKey(positionDTOKey, tradeDTO));
         }
         return created;
-    }
-
-    private void openUserProfile(UserBaseKey userId)
-    {
-        Bundle bundle = new Bundle();
-        thRouter.save(bundle, userId);
-
-        if (!currentUserId.toUserBaseKey().equals(userId))
-        {
-            getDashboardNavigator().pushFragment(PushableTimelineFragment.class, bundle);
-        }
     }
 
     protected void detachFetchPosition()

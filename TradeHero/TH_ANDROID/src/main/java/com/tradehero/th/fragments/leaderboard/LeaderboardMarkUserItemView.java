@@ -37,6 +37,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.misc.exception.THException;
@@ -624,8 +625,16 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         int userId = leaderboardItem.id;
 
         Bundle bundle = new Bundle();
-        thRouter.save(bundle, new UserBaseKey(userId));
-        getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+        UserBaseKey userToSee = new UserBaseKey(userId);
+        thRouter.save(bundle, userToSee);
+        if (currentUserId.toUserBaseKey().equals(userToSee))
+        {
+            getNavigator().pushFragment(MeTimelineFragment.class, bundle);
+        }
+        else
+        {
+            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+        }
     }
 
     protected void handleSuccess(UserProfileDTO userProfileDTO, Response response)

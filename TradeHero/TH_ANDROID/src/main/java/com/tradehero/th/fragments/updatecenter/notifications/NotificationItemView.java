@@ -15,9 +15,11 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.notification.NotificationDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.DaggerUtils;
@@ -38,6 +40,7 @@ public class NotificationItemView
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject THRouter thRouter;
+    @Inject CurrentUserId currentUserId;
 
     private NotificationDTO notificationDTO;
 
@@ -83,8 +86,16 @@ public class NotificationItemView
         Bundle bundle = new Bundle();
         if (notificationDTO != null && notificationDTO.referencedUserId != null)
         {
-            thRouter.save(bundle, new UserBaseKey(notificationDTO.referencedUserId));
-            getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+            UserBaseKey referencedUser = new UserBaseKey(notificationDTO.referencedUserId);
+            thRouter.save(bundle, referencedUser);
+            if (currentUserId.toUserBaseKey().equals(referencedUser))
+            {
+                getNavigator().pushFragment(MeTimelineFragment.class, bundle);
+            }
+            else
+            {
+                getNavigator().pushFragment(PushableTimelineFragment.class, bundle);
+            }
         }
     }
 
