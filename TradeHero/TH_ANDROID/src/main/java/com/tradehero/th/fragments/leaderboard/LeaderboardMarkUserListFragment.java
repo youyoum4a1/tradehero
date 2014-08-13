@@ -378,7 +378,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     private void updateListViewRow(final UserBaseKey heroId)
     {
         AdapterView list = leaderboardMarkUserListView.getRefreshableView();
-        adapterViewUtilsLazy.get().updateSingleRow(list, UserBaseDTO.class, new Predicate<UserBaseDTO>()
+        adapterViewUtilsLazy.get().updateSingleRowWhere(list, UserBaseDTO.class, new Predicate<UserBaseDTO>()
         {
             @Override public boolean apply(UserBaseDTO userBaseDTO)
             {

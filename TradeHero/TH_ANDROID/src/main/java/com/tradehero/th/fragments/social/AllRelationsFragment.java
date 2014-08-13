@@ -76,8 +76,9 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @Override protected void initViews(View view)
     {
-        mRelationsListItemAdapter = new RelationsListItemAdapter(getActivity(),
-                getActivity().getLayoutInflater(), R.layout.relations_list_item);
+        mRelationsListItemAdapter = new RelationsListItemAdapter(
+                getActivity(),
+                R.layout.relations_list_item);
         mRelationsListItemAdapter.setPremiumFollowRequestedListener(
                 createFollowRequestedListener());
         mRelationsListView.setAdapter(mRelationsListItemAdapter);
@@ -108,7 +109,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListView.setAdapter(null);
         mRelationsListView.setOnItemClickListener(null);
         mRelationsListView = null;
-        mRelationsListItemAdapter.setItems(null);
+        mRelationsListItemAdapter.clear();
         mRelationsListItemAdapter.setPremiumFollowRequestedListener(null);
         mRelationsListItemAdapter = null;
         mRelationsList = null;
@@ -170,7 +171,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
             //mRelationsList = userProfileCompactCache.get(value.getData());
             mRelationsList = value.getData();
             alertDialogUtilLazy.get().dismissProgressDialog();
-            mRelationsListItemAdapter.setItems(mRelationsList);
+            mRelationsListItemAdapter.addAll(mRelationsList);
             mRelationsListItemAdapter.notifyDataSetChanged();
         }
 
@@ -214,17 +215,13 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         final UserMessagingRelationshipDTO newRelationship = userMessagingRelationshipCache.get(userFollowed);
         if (newRelationship != null)
         {
-            adapterViewUtils.get().updateSingleRow(mRelationsListView, AllowableRecipientDTO.class, new Predicate<AllowableRecipientDTO>()
+            mRelationsListItemAdapter.updateItem(userFollowed, newRelationship);
+            adapterViewUtils.get().updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class, new Predicate<AllowableRecipientDTO>()
             {
                 @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)
                 {
-                    if (allowableRecipientDTO == null
-                            || !allowableRecipientDTO.user.getBaseKey().equals(userFollowed))
-                    {
-                        return false;
-                    }
-                    allowableRecipientDTO.relationship = newRelationship;
-                    return true;
+                    return allowableRecipientDTO != null
+                            && allowableRecipientDTO.user.getBaseKey().equals(userFollowed);
                 }
             });
         }
