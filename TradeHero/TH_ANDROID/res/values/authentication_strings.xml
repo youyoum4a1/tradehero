@@ -32,7 +32,7 @@
   <string name="authentication_unlink_confirm_dialog_title">Unlink %s</string>
   <string name="authentication_unlink_confirm_dialog_message">Are you sure you want to unlink %s?</string>
   <string name="authentication_unlink_confirm_dialog_button_ok">Unlink</string>
-  <string name="authentication_unlink_fail_message">Sorry, you can't unlink the login account</string>
+  <string name="authentication_unlink_fail_message">Sorry, you can\'t unlink the login account</string>
 
   <string name="facebook">Facebook</string>
   <string name="facebook_login_in">Login with Facebook</string>
