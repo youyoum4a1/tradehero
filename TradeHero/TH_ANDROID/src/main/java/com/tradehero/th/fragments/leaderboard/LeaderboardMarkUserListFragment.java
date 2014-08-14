@@ -162,20 +162,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return R.layout.lbmu_item_own_ranking_roi_mode;
     }
 
-    protected void setupOwnRankingView(View userRankingHeaderView)
-    {
-        if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
-        {
-            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
-            if (ownRankingView.expandingLayout != null)
-            {
-                ownRankingView.expandingLayout.setVisibility(View.GONE);
-                ownRankingView.onExpand(false);
-                ownRankingView.setOnClickListener(new BaseExpandingItemListener());
-            }
-        }
-    }
-
     protected int getHeaderViewResId()
     {
         return R.layout.leaderboard_listview_header;
@@ -419,10 +405,27 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             if (currentLeaderboardUserDTO != null)
             {
                 leaderboardMarkUserItemView.display(currentLeaderboardUserDTO);
+                setupOwnRankingView(leaderboardMarkUserItemView);
+                leaderboardMarkUserItemView.setOnClickListener(new BaseExpandingItemListener());
             }
             else
             {
                 leaderboardMarkUserItemView.displayUserIsNotRanked();
+                // user is not ranked, disable expandable view
+                leaderboardMarkUserItemView.setOnClickListener(null);
+            }
+        }
+    }
+
+    protected void setupOwnRankingView(View userRankingHeaderView)
+    {
+        if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
+        {
+            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
+            if (ownRankingView.expandingLayout != null)
+            {
+                ownRankingView.expandingLayout.setVisibility(View.GONE);
+                ownRankingView.onExpand(false);
             }
         }
     }

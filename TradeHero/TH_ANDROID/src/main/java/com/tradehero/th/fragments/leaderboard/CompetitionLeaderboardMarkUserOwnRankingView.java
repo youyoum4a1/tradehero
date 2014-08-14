@@ -58,7 +58,7 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     @Override public void linkWith(@NotNull UserBaseDTO userBaseDTO)
     {
         super.linkWith(userBaseDTO);
-        if(getCurrentRank() == null)
+        if (getCurrentRank() == null)
         {
             lbmuDisplayName.setText(R.string.leaderboard_not_ranked);
         }
@@ -90,5 +90,10 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     public String getRules()
     {
         return providerUtil.getRulesPage(providerDTO.getProviderId());
+    }
+
+    @Override protected void handleOpenProfileButtonClicked()
+    {
+        openTimeline(currentUserId.get());
     }
 }

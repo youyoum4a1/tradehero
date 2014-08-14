@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th"
     android:versionName="2.3"
-    android:versionCode="173"
+    android:versionCode="174"
     android:installLocation="auto">
 
   <uses-sdk
