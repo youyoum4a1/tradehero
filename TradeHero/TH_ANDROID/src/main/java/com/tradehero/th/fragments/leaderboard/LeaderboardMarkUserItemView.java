@@ -84,15 +84,15 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     protected LeaderboardUserDTO leaderboardItem;
 
     // top view
-    @InjectView(R.id.leaderboard_user_item_display_name) TextView lbmuDisplayName;
+    @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
+    @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
-    @InjectView(R.id.leaderboard_user_item_hq) TextView lbmuHeroQuotient;
     @InjectView(R.id.leaderboard_user_item_info) ImageView lbmuPositionInfo;
 
     // expanding view
     @InjectView(R.id.lbmu_pl) TextView lbmuPl;
-    @InjectView(R.id.lbmu_roi) TextView lbmuRoi;
+    @InjectView(R.id.leaderboard_user_item_hq) TextView lbmuHeroQuotient;
     @InjectView(R.id.lbmu_comments_count) TextView lbmuCommentsCount;
     @InjectView(R.id.lbmu_benchmark_roi) TextView lbmuBenchmarkRoi;
     @InjectView(R.id.lbmu_sharpe_ratio) TextView lbmuSharpeRatio;
@@ -223,14 +223,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(leaderboardUserDTO, true);
     }
 
-    public void displayOwnRanking(LeaderboardKey leaderboardKey)
-    {
-        detachOwnRankingLeaderboardCache();
-        UserOnLeaderboardKey key = new UserOnLeaderboardKey(leaderboardKey, currentUserId.toUserBaseKey());
-        leaderboardCache.get().register(key, leaderboardOwnUserRankingListener);
-        leaderboardCache.get().getOrFetchAsync(key);
-    }
-
     private void detachOwnRankingLeaderboardCache()
     {
         leaderboardCache.get().unregister(leaderboardOwnUserRankingListener);
@@ -283,7 +275,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public void linkWith(@NotNull UserBaseDTO userBaseDTO)
     {
-        displayRanking(userBaseDTO);
+        displayRankingColor(userBaseDTO);
 
         lbmuDisplayName.setText(userBaseDTO.displayName);
 
@@ -300,7 +292,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         displayCountryLogo(userBaseDTO);
     }
 
-    private void displayRanking(@NotNull UserBaseDTO userBaseDTO)
+    private void displayRankingColor(@NotNull UserBaseDTO userBaseDTO)
     {
         if (currentUserId.get() == userBaseDTO.id)
         {
@@ -652,10 +644,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public void displayRankingPosition()
     {
-        @Nullable Integer currentRank = leaderboardItem == null ? null : (leaderboardItem.ordinalPosition + 1);
+        @Nullable Integer currentRank = getCurrentRank();
         if (currentRank == null)
         {
             // TODO decide
+            return;
         }
         else if (currentRank <= MAX_OWN_RANKING)
         {
@@ -663,8 +656,33 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
         else
         {
-            lbmuPosition.setText(R.string.leaderboard_not_ranked_position);
+            lbmuPosition.setText(R.string.leaderboard_max_ranked_position);
         }
+
+        //Add touch feedback
+        if (innerViewContainer != null)
+        {
+            innerViewContainer.setBackgroundResource(R.drawable.basic_white_selector);
+        }
+    }
+
+    @Nullable protected Integer getCurrentRank()
+    {
+        return leaderboardItem == null ? null : (leaderboardItem.ordinalPosition + 1);
+    }
+
+    protected void displayUserIsNotRanked()
+    {
+        // disable touch feedback so we don't confuse the user
+        if (innerViewContainer != null)
+        {
+            innerViewContainer.setBackgroundResource(R.color.white);
+        }
+
+        // user is not ranked, disable expandable view
+        setOnClickListener(null);
+        lbmuRoi.setText(R.string.leaderboard_not_ranked);
+        lbmuPosition.setText("-");
     }
 
     public static interface OnFollowRequestedListener
@@ -685,24 +703,10 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             {
                 LeaderboardUserDTO ownLeaderboardUserDTO = leaderboardDTO.users.get(0);
                 display(ownLeaderboardUserDTO);
-
-                if(innerViewContainer != null)
-                {
-                    innerViewContainer.setBackgroundResource(R.drawable.basic_white_selector);
-                }
             }
             else
             {
-                // user is not ranked, disable expandable view
-                setOnClickListener(null);
-                lbmuRoi.setText(R.string.leaderboard_not_ranked);
-                lbmuPosition.setText("-");
-
-                // disable touch feedback so we don't confuse the user
-                if(innerViewContainer != null)
-                {
-                    innerViewContainer.setBackgroundResource(R.color.white);
-                }
+                displayUserIsNotRanked();
             }
         }
 

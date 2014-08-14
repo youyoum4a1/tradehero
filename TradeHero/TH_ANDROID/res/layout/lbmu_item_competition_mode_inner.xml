@@ -10,44 +10,28 @@
     android:background="@drawable/basic_white_selector"
     >
 
-  <RelativeLayout
-      android:id="@+id/learderboard_head_layout"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:id="@+id/leaderboard_prize_container"
-        android:layout_alignParentRight="true"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_centerVertical="true"
-        android:visibility="gone"
-        android:layout_marginRight="10dp">
+  <TextView
+      android:id="@+id/leaderboard_prize_amount"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_gravity="center_vertical"
+      android:drawableLeft="@drawable/icn_competition_prize"
+      android:visibility="gone"
+      android:layout_marginRight="6dp"
+      android:text=""/>
 
-      <ImageView
-          android:id="@+id/leaderboard_prize_icon"
-          android:layout_width="@dimen/small_icon_w_h"
-          android:layout_height="@dimen/small_icon_w_h"
-          android:background="@drawable/icn_competition_prize"/>
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:id="@+id/leaderboard_prize_amount"
-          android:layout_gravity="center_vertical"
-          android:text=""/>
-    </LinearLayout>
-    <include layout="@layout/lbmu_item_top_view_inner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/leaderboard_prize_container"/>
-  </RelativeLayout>
+  <include
+      layout="@layout/lbmu_item_top_view_inner"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_toLeftOf="@id/leaderboard_prize_amount"/>
 
   <com.tradehero.th.fragments.leaderboard.ExpandingLayout
       android:id="@+id/expanding_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/learderboard_head_layout"
+      android:layout_below="@id/leaderboard_user_item_basic_info"
       android:orientation="vertical"
       android:padding="8dp"
       android:visibility="gone"
