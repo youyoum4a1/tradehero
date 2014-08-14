@@ -62,17 +62,6 @@
     <!-- Replace the receiver below with your package and class name -->
     <receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>
 
-    <!-- BEGIN Baidu inter-process communication -->
-    <receiver android:name="com.baidu.android.pushservice.PushServiceReceiver" android:process=":bdservice_v1">
-      <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED"/>
-        <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-        <action android:name="com.baidu.android.pushservice.action.notification.SHOW"/>
-        <action android:name="com.baidu.android.pushservice.action.media.CLICK"/>
-      </intent-filter>
-    </receiver>
-    <!--END Baidu inter-process communication-->
-
     <receiver android:name="com.mobileapptracker.Tracker" android:exported="true">
       <intent-filter>
         <action android:name="com.android.vending.INSTALL_REFERRER" />

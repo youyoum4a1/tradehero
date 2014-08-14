@@ -128,8 +128,8 @@ android {
         //region Flavours
         googleplay {
             manifest {
-                srcFile 'src/googleplay/AndroidManifest.xml'
                 srcFile 'src/samsung/AndroidManifest.xml'
+                srcFile 'src/googleplay/AndroidManifest.xml'
             }
             java {
                 srcDir 'src/googleplay/java'

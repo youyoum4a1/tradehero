@@ -49,7 +49,6 @@
             </intent-filter>
         </receiver>
         <!--END Baidu inter-process communication-->
-
         <service
             android:name="com.baidu.android.pushservice.PushService"
             android:exported="true"
