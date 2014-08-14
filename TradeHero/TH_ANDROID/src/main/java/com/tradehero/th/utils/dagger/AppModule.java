@@ -54,6 +54,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
@@ -296,6 +297,7 @@ import javax.inject.Singleton;
                         CompetitionLeaderboardMarkUserOwnRankingView.class,
                         LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
+                        LeaderboardMarkUserOwnRankingView.class,
                         FriendLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListClosedFragment.class,
