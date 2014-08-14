@@ -208,7 +208,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     @Override protected int getCurrentRankLayoutResId()
     {
-        return R.layout.lbmu_item_competition_mode;
+        return R.layout.lbmu_item_own_ranking_competition_mode;
     }
 
     @Override protected void setupOwnRankingView(View userRankingHeaderView)

@@ -6,6 +6,8 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.user.auth.LinkedinCredentialsDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -29,9 +31,10 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper,
-            @NotNull Lazy<LinkedInUtils> linkedInUtils)
+            @NotNull Lazy<LinkedInUtils> linkedInUtils,
+            @NotNull MainCredentialsPreference mainCredentialsPreference)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper, alertDialogUtil, socialServiceWrapper);
+        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper, alertDialogUtil, socialServiceWrapper, mainCredentialsPreference);
         this.linkedInUtils = linkedInUtils;
     }
     //</editor-fold>
@@ -97,11 +100,14 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
     @Override protected void effectUnlink()
     {
         super.effectUnlink();
-        detachMiddleServerDisconnectCallback();
-        middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                currentUserId.toUserBaseKey(),
-                new SocialNetworkFormDTO(SocialNetworkEnum.LN),
-                createSocialDisconnectCallback());
+        if (!checkIsLoginType(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
+        {
+            detachMiddleServerDisconnectCallback();
+            middleCallbackDisconnect = socialServiceWrapper.disconnect(
+                    currentUserId.toUserBaseKey(),
+                    new SocialNetworkFormDTO(SocialNetworkEnum.LN),
+                    createSocialDisconnectCallback());
+        }
     }
 
     @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
