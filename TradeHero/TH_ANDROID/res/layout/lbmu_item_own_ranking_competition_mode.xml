@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingTop="@dimen/leaderboard_current_user_rank_vertical_margin"
+    android:paddingBottom="@dimen/leaderboard_current_user_rank_vertical_margin"
+    android:descendantFocusability="afterDescendants"
+    android:background="@null"
+    >
+
+  <include layout="@layout/lbmu_item_competition_mode_inner"
+      android:id="@+id/lbmu_inner_view_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+</com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView>

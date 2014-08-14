@@ -387,21 +387,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         });
     }
 
-    /**
-     * http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/4.0.3_r1/android/widget/ListView.java#443
-     * this crazy way works and is the only way I found to clear ListView's recycle (reusing item view)
-     */
-
-    /**
-     * Update 22 Feb 2014: We are not using different mode for leaderboard item type anymore, Instead, filter mode feature is implemented, therefore,
-     * no need to clear listview's recycle!!!
-     */
-    @Deprecated
-    protected void invalidateCachedItemView()
-    {
-        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
-    }
-
     protected void pushFilterFragmentIn()
     {
         Bundle args = new Bundle();
