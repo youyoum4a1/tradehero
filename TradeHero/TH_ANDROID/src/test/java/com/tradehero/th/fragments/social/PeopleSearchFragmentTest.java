@@ -19,7 +19,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class PeopleSearchFragmentTest
 {
     @Inject Context context;
-    private PeopleSearchFragment peopleSearchFragment;
+    private PublicPeopleSearchFragment peopleSearchFragment;
     private DashboardNavigator dashboardNavigator;
 
     @Before public void setUp()
@@ -37,9 +37,9 @@ public class PeopleSearchFragmentTest
     @Ignore("This test will fail because the setup mocks the action bar, which then returns a null view")
     @Test public void testHintIsCorrect()
     {
-        peopleSearchFragment = dashboardNavigator.pushFragment(PeopleSearchFragment.class);
+        peopleSearchFragment = dashboardNavigator.pushFragment(PublicPeopleSearchFragment.class);
 
-        assertThat(peopleSearchFragment.mSearchTextField.getHint())
+        assertThat(peopleSearchFragment.getSearchTextField().getHint())
                 .isEqualTo(context.getString(R.string.search_social_friend_hint));
     }
     //</editor-fold>
