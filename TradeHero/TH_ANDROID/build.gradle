@@ -58,6 +58,7 @@ android {
 
         buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
         buildConfigField "String", "BUILD_TIME", "\"${project.ext.buildTime}\""
+        buildConfigField "int", "TAPSTREAM_VERSION", "0"
     }
 
     compileOptions {
@@ -92,6 +93,9 @@ android {
         }
         china {
             flavorDimension "marketSegment"
+
+            // change for different branch (baidu, tencent...)
+            buildConfigField "int", "TAPSTREAM_VERSION", "1"
             // TODO handle the different kinds
             // http://stackoverflow.com/questions/9035356/how-can-i-transform-a-properties-file-during-a-gradle-build
         }
