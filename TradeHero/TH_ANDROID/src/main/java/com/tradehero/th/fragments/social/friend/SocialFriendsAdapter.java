@@ -18,9 +18,9 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
     private int mLayoutItemResId;
     private int mLayoutHeaderResId;
     @Nullable private SocialFriendUserView.OnElementClickListener elementClickedListener;
-
-    private List<SocialFriendListItemDTO> mFilteredArrayList;
     private List<SocialFriendListItemDTO> mArrayList;
+
+
 
     //<editor-fold desc="Constructors">
     public SocialFriendsAdapter(Context context, List<SocialFriendListItemDTO> objects, int layoutItemResId, int layoutHeaderResId)
@@ -150,11 +150,12 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         protected FilterResults performFiltering(CharSequence charSequence)
         {
             FilterResults filterResults = new FilterResults();
-            mFilteredArrayList = new ArrayList<>();
-            int sizeList = mArrayList.size();
+            List<SocialFriendListItemDTO> mFilteredArrayList = new ArrayList<>();
+            List<SocialFriendListItemDTO> copyList = new ArrayList<>(mArrayList);
+            int sizeList = copyList.size();
             for (int i = 0; i < sizeList; i++)
             {
-                SocialFriendListItemDTO dto = mArrayList.get(i);
+                SocialFriendListItemDTO dto = copyList.get(i);
                 if (dto.toString().toLowerCase().contains(charSequence.toString().toLowerCase()))
                 {
                     mFilteredArrayList.add(dto);

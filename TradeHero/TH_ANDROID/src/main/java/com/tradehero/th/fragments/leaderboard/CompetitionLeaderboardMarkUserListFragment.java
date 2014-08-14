@@ -52,6 +52,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     protected THIntentPassedListener webViewTHIntentPassedListener;
     protected WebViewFragment webViewFragment;
     protected CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
+    protected CompetitionLeaderboardDTO competitionLeaderboardDTO;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
@@ -196,8 +197,10 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     {
         @Override public void onDTOReceived(@NotNull CompetitionLeaderboardId key, @NotNull final CompetitionLeaderboardDTO value)
         {
+            competitionLeaderboardDTO = value;
             competitionAdapter.setCompetitionLeaderboardDTO(value);
             competitionAdapter.notifyDataSetChanged();
+            updateCurrentRankHeaderView();
         }
 
         @Override public void onErrorThrown(@NotNull CompetitionLeaderboardId key, @NotNull Throwable error)
@@ -208,7 +211,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     @Override protected int getCurrentRankLayoutResId()
     {
-        return R.layout.lbmu_item_competition_mode;
+        return R.layout.lbmu_item_own_ranking_competition_mode;
     }
 
     @Override protected void setupOwnRankingView(View userRankingHeaderView)
@@ -222,14 +225,19 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         super.setupOwnRankingView(userRankingHeaderView);
     }
 
-    @Override protected void initCurrentRankHeaderView()
+    @Override protected void updateCurrentRankHeaderView()
     {
-        super.initCurrentRankHeaderView();
-        //CompetitionLeaderboardCurrentUserRankHeaderView competitionLeaderboardCurrentUserRankHeaderView = getCompetitionUserRankHeaderView();
-        //if (competitionLeaderboardCurrentUserRankHeaderView != null)
-        //{
-        //    competitionLeaderboardCurrentUserRankHeaderView.linkWith(providerId);
-        //}
+        super.updateCurrentRankHeaderView();
+        if (competitionLeaderboardDTO != null
+                && getRankHeaderView() != null
+                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserItemView)
+        {
+            CompetitionLeaderboardMarkUserItemView ownRankingView = (CompetitionLeaderboardMarkUserItemView) getRankHeaderView();
+            if (ownRankingView.leaderboardItem != null)
+            {
+                ownRankingView.setPrizeDTO(competitionLeaderboardDTO.getPrizeAt(ownRankingView.leaderboardItem.ordinalPosition));
+            }
+        }
     }
 
     @Override protected void saveCurrentFilterKey()
@@ -261,17 +269,6 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     @Override protected void pushFilterFragmentIn()
     {
         // Do nothing
-    }
-
-    protected CompetitionLeaderboardCurrentUserRankHeaderView getCompetitionUserRankHeaderView()
-    {
-        View header = inflateAndGetUserRankHeaderView();
-        if (header != null && header instanceof CompetitionLeaderboardCurrentUserRankHeaderView)
-        {
-            return (CompetitionLeaderboardCurrentUserRankHeaderView) header;
-        }
-
-        return null;
     }
 
     protected class CompetitionLeaderboardListWebViewTHIntentPassedListener extends CompetitionWebFragmentTHIntentPassedListener

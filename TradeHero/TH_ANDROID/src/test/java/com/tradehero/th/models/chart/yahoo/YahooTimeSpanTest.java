@@ -1,6 +1,6 @@
 package com.tradehero.th.models.chart.yahoo;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class YahooTimeSpanTest
 {
     @Before

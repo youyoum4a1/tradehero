@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.trade;
 import android.content.Context;
 import android.os.Bundle;
 import com.tradehero.AbstractTestBase;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertDTO;
@@ -29,7 +29,7 @@ import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class BuySellFragmentTest extends AbstractTestBase
 {
     @Inject Context context;

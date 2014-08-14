@@ -3,26 +3,26 @@ package com.tradehero.th.models.watchlist;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistChange
+public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistUpdate
 {
-    @NotNull private final UserBaseKey concernedUser;
-    @NotNull private final UserWatchlistPositionCache userWatchlistPositionCache;
+    @NotNull protected final UserWatchlistPositionCache userWatchlistPositionCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistCreate(
             @NotNull WatchlistPositionCache watchlistPositionCache,
             @NotNull UserBaseKey concernedUser,
-            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull PortfolioCompactCache portfolioCompactCache,
+            @NotNull PortfolioCache portfolioCache,
             @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
-        super(watchlistPositionCache, concernedUser, portfolioCompactListCache);
-        this.concernedUser = concernedUser;
+        super(concernedUser,watchlistPositionCache, portfolioCompactCache, portfolioCache);
         this.userWatchlistPositionCache = userWatchlistPositionCache;
     }
     //</editor-fold>

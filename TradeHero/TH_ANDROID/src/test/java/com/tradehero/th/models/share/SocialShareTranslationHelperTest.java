@@ -1,7 +1,7 @@
 package com.tradehero.th.models.share;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class SocialShareTranslationHelperTest
 {
     @Inject TranslationTokenCache translationTokenCache;

@@ -15,30 +15,29 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import org.jetbrains.annotations.NotNull;
-import retrofit.Callback;
 
 abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckboxSettingViewHolder
 {
-    @NotNull protected final ProgressDialogUtil progressDialogUtil;
-    @NotNull protected final UserProfileCache userProfileCache;
-    @NotNull protected final UserServiceWrapper userServiceWrapper;
     @NotNull protected final CurrentUserId currentUserId;
+    @NotNull protected final UserProfileCache userProfileCache;
+    @NotNull protected final ProgressDialogUtil progressDialogUtil;
+    @NotNull protected final UserServiceWrapper userServiceWrapper;
 
-    protected  ProgressDialog progressDialog;
+    protected ProgressDialog progressDialog;
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     protected MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
 
     //<editor-fold desc="Constructors">
     protected UserProfileCheckBoxSettingViewHolder(
-            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull CurrentUserId currentUserId)
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull UserServiceWrapper userServiceWrapper)
     {
-        this.progressDialogUtil = progressDialogUtil;
-        this.userProfileCache = userProfileCache;
-        this.userServiceWrapper = userServiceWrapper;
         this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
+        this.progressDialogUtil = progressDialogUtil;
+        this.userServiceWrapper = userServiceWrapper;
     }
     //</editor-fold>
 
@@ -110,27 +109,6 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
     }
 
     abstract protected void updateStatus(@NotNull UserProfileDTO userProfileDTO);
-
-    @Override protected boolean changeStatus(boolean enable)
-    {
-        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
-        if (preferenceFragmentCopy != null)
-        {
-            progressDialog = progressDialogUtil.show(preferenceFragmentCopy.getActivity(),
-                    R.string.settings_notifications_email_alert_title,
-                    R.string.settings_notifications_email_alert_message);
-        }
-        detachMiddleCallback();
-        middleCallbackUpdateUserProfile = updateProfile(enable);
-        return false;
-    }
-
-    abstract protected MiddleCallback<UserProfileDTO> updateProfile(boolean enable);
-
-    protected Callback<UserProfileDTO> createUserProfileCallback()
-    {
-        return new UserProfileUpdateCallback();
-    }
 
     protected class UserProfileUpdateCallback extends THCallback<UserProfileDTO>
     {

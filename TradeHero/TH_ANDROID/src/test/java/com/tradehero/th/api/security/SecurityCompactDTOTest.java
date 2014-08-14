@@ -1,12 +1,12 @@
 package com.tradehero.th.api.security;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class SecurityCompactDTOTest
 {
     public static final String EXT_KEY_EXCHANGE = "exchange";

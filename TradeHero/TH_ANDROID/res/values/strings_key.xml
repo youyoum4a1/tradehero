@@ -3,16 +3,24 @@
 
   <string name="key_preference_top_banner" translatable="false">preference_top_banner</string>
 
+  <string name="key_settings_sharing_group" translatable="false">key_settings_sharing_group</string>
   <string name="key_settings_sharing_facebook" translatable="false">key_settings_sharing_facebook</string>
+  <integer name="key_settings_sharing_facebook_order">0</integer>
   <string name="key_settings_sharing_twitter" translatable="false">key_settings_sharing_twitter</string>
+  <integer name="key_settings_sharing_twitter_order">1</integer>
   <string name="key_settings_sharing_linked_in" translatable="false">key_settings_sharing_linked_in</string>
+  <integer name="key_settings_sharing_linked_in_order">2</integer>
   <string name="key_settings_sharing_weibo" translatable="false">key_settings_sharing_weibo</string>
+  <integer name="key_settings_sharing_weibo_order">3</integer>
   <string name="key_settings_sharing_qq" translatable="false">key_settings_sharing_qq</string>
+  <integer name="key_settings_sharing_qq_order">4</integer>
+
   <string name="key_settings_primary_faq" translatable="false">key_settings_primary_faq</string>
   <string name="key_settings_misc_about" translatable="false">key_settings_misc_about</string>
   <string name="key_settings_misc_sign_out" translatable="false">key_settings_misc_sign_out</string>
   <string name="key_settings_primary_send_feedback" translatable="false">key_settings_primary_send_feedback</string>
   <string name="key_settings_primary_send_love" translatable="false">key_settings_primary_send_love</string>
+  <string name="key_settings_account_group" translatable="false">key_settings_account_group</string>
   <string name="key_settings_primary_profile" translatable="false">key_settings_primary_profile</string>
   <string name="key_settings_primary_paypal" translatable="false">key_settings_primary_paypal</string>
   <string name="key_settings_primary_alipay" translatable="false">key_settings_primary_alipay</string>

@@ -32,7 +32,7 @@ public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, W
     public void remove(@NotNull SecurityId object)
     {
         WatchlistPositionDTO item;
-        for (int position = 0, size = getCount(); position < size; position++)
+        for (int position = 0; position < getCount(); position++)
         {
             item = getItem(position);
             if (item.securityDTO.getSecurityId().equals(object))

@@ -3,6 +3,7 @@ package com.tradehero.th.persistence.watchlist;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
@@ -64,5 +65,19 @@ import org.jetbrains.annotations.Nullable;
             cached.add(get(securityId));
         }
         return cached;
+    }
+
+    public void invalidate(@NotNull UserBaseKey concernedUser)
+    {
+        WatchlistPositionDTO cached;
+        for (SecurityId key : snapshot().keySet())
+        {
+            cached = get(key);
+            if (cached != null
+                    && concernedUser.key.equals(cached.userId))
+            {
+                invalidate(key);
+            }
+        }
     }
 }

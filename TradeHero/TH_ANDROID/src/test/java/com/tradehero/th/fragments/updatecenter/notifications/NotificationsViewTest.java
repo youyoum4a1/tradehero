@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.view.LayoutInflater;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
@@ -24,7 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class NotificationsViewTest
 {
     NotificationsView notifView;

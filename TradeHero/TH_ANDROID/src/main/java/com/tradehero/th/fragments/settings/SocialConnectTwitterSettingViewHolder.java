@@ -6,7 +6,10 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
+import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -25,11 +28,13 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper,
-            @NotNull Lazy<TwitterUtils> twitterUtils)
+            @NotNull Lazy<TwitterUtils> twitterUtils,
+            @NotNull MainCredentialsPreference mainCredentialsPreference)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, alertDialogUtil, socialServiceWrapper);
+        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper, alertDialogUtil, socialServiceWrapper, mainCredentialsPreference);
         this.twitterUtils = twitterUtils;
     }
     //</editor-fold>
@@ -37,6 +42,11 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
     @Override protected int getStringKeyResId()
     {
         return R.string.key_settings_sharing_twitter;
+    }
+
+    @Override protected int getOrderIntResId()
+    {
+        return R.integer.key_settings_sharing_twitter_order;
     }
 
     @Override @Nullable protected String getSocialNetworkName()
@@ -97,11 +107,17 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
                 createSocialDisconnectCallback());
     }
 
-    @Override protected void updateSocialConnectStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
+    @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
     {
+        super.updateStatus(updatedUserProfileDTO);
         if (clickablePref != null)
         {
             clickablePref.setChecked(updatedUserProfileDTO.twLinked);
         }
+    }
+
+    @Override protected boolean isMainLogin()
+    {
+        return mainCredentialsPreference.getCredentials() instanceof TwitterCredentialsDTO;
     }
 }

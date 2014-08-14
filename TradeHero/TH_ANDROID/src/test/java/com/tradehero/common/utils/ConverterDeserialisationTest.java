@@ -1,6 +1,6 @@
 package com.tradehero.common.utils;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class ConverterDeserialisationTest
 {
     private static final String JSON_MIME_UTF8 = "application/json; charset=utf-8";

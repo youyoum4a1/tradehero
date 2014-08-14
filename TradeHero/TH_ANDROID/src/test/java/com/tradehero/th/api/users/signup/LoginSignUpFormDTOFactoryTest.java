@@ -1,6 +1,6 @@
 package com.tradehero.th.api.users.signup;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.form.UserFormTestHelper;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class LoginSignUpFormDTOFactoryTest
 {
     @Inject UserFormTestHelper userFormTestHelper;

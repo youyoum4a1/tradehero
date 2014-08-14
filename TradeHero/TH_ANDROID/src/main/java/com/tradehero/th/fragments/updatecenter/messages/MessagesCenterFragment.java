@@ -860,6 +860,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 {
                     adapter.remove(messageHeaderDTO);
                     adapter.notifyDataSetChanged();
+                    messagesView.getListView().closeOpenedItems();
                 }
             }
         }

@@ -1,6 +1,6 @@
 package com.tradehero.th.api.translation;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.util.HashSet;
@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class UserTranslationSettingDTOTest
 {
     @Inject LanguageDTOFactory languageDTOFactory;

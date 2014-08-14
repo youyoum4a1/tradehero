@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.billing.store;
 
 import com.android.internal.util.Predicate;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class StoreItemFactoryTest
 {
     @Inject StoreItemFactory storeItemFactory;

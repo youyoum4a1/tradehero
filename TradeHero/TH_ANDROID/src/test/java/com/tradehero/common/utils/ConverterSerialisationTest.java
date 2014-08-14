@@ -1,6 +1,6 @@
 package com.tradehero.common.utils;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
@@ -11,7 +11,7 @@ import retrofit.converter.Converter;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class ConverterSerialisationTest
 {
     @Inject Converter converter;
