@@ -7,6 +7,7 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.LinkedInUtils;
@@ -25,11 +26,12 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper,
             @NotNull Lazy<LinkedInUtils> linkedInUtils)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, alertDialogUtil, socialServiceWrapper);
+        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper, alertDialogUtil, socialServiceWrapper);
         this.linkedInUtils = linkedInUtils;
     }
     //</editor-fold>
@@ -37,6 +39,11 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
     @Override protected int getStringKeyResId()
     {
         return R.string.key_settings_sharing_linked_in;
+    }
+
+    @Override protected int getOrderIntResId()
+    {
+        return R.integer.key_settings_sharing_linked_in_order;
     }
 
     @Override @Nullable protected String getSocialNetworkName()
@@ -69,9 +76,9 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
         return R.string.authentication_connecting_tradehero_only;
     }
 
-    @Override protected boolean changeSharing(boolean enable)
+    @Override protected boolean changeStatus(boolean enable)
     {
-        boolean returned = super.changeSharing(enable);
+        boolean returned = super.changeStatus(enable);
         if (enable)
         {
             detachMiddleSocialConnectLogInCallback();
@@ -97,7 +104,7 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
                 createSocialDisconnectCallback());
     }
 
-    @Override protected void updateSocialConnectStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
+    @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
     {
         if (clickablePref != null)
         {

@@ -4,26 +4,22 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.v4.preference.PreferenceFragment;
-import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.JSONCredentials;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.MiddleLogInCallback;
-import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -33,19 +29,13 @@ import retrofit.Callback;
 import timber.log.Timber;
 
 abstract public class SocialConnectSettingViewHolder
-    extends BaseSettingViewHolder
+    extends UserProfileCheckBoxSettingViewHolder
 {
-    @NotNull protected final CurrentUserId currentUserId;
-    @NotNull protected final UserProfileCache userProfileCache;
-    @NotNull protected final ProgressDialogUtil progressDialogUtil;
     @NotNull protected final AlertDialogUtil alertDialogUtil;
     @NotNull protected final SocialServiceWrapper socialServiceWrapper;
-    @Nullable protected CheckBoxPreference clickablePref;
-    @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Nullable protected MiddleLogInCallback middleSocialConnectLogInCallback;
-    @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
-    @Nullable protected ProgressDialog progressDialog;
     @Nullable protected AlertDialog unlinkConfirmDialog;
 
     //<editor-fold desc="Constructors">
@@ -53,12 +43,11 @@ abstract public class SocialConnectSettingViewHolder
             @NotNull CurrentUserId currentUserId,
             @NotNull UserProfileCache userProfileCache,
             @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,
             @NotNull SocialServiceWrapper socialServiceWrapper)
     {
-        this.currentUserId = currentUserId;
-        this.userProfileCache = userProfileCache;
-        this.progressDialogUtil = progressDialogUtil;
+        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
         this.alertDialogUtil = alertDialogUtil;
         this.socialServiceWrapper = socialServiceWrapper;
     }
@@ -67,39 +56,21 @@ abstract public class SocialConnectSettingViewHolder
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
-        clickablePref = (CheckBoxPreference) preferenceFragment.findPreference(
-                preferenceFragment.getString(getStringKeyResId()));
-        if (clickablePref != null)
+        Preference clickablePrefCopy = clickablePref;
+        if (clickablePrefCopy != null)
         {
-            clickablePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    return changeSharing((boolean) newValue);
-                }
-            });
+            clickablePrefCopy.setOrder(preferenceFragment.getResources().getInteger(getOrderIntResId()));
         }
-        userProfileCacheListener = createUserProfileCacheListener();
-        fetchUserProfile();
     }
 
-    abstract protected int getStringKeyResId();
+    protected abstract int getOrderIntResId();
 
     @Override public void destroyViews()
     {
-        detachUserProfileCacheListener();
         detachMiddleSocialConnectLogInCallback();
-        detachMiddleServerConnectCallback();
         detachMiddleServerDisconnectCallback();
-        hideProgressDialog();
         hideUnlinkConfirmDialog();
-        this.clickablePref = null;
         super.destroyViews();
-    }
-
-    protected void detachUserProfileCacheListener()
-    {
-        userProfileCache.unregister(userProfileCacheListener);
     }
 
     protected void detachMiddleSocialConnectLogInCallback()
@@ -108,15 +79,6 @@ abstract public class SocialConnectSettingViewHolder
         if (callbackCopy != null)
         {
             callbackCopy.setInnerCallback(null);
-        }
-    }
-
-    protected void detachMiddleServerConnectCallback()
-    {
-        MiddleCallback<UserProfileDTO> middleCallbackConnectCopy = middleCallbackConnect;
-        if (middleCallbackConnectCopy != null)
-        {
-            middleCallbackConnectCopy.setPrimaryCallback(null);
         }
     }
 
@@ -129,16 +91,6 @@ abstract public class SocialConnectSettingViewHolder
         }
     }
 
-    protected void hideProgressDialog()
-    {
-        ProgressDialog progressDialogCopy = progressDialog;
-        if (progressDialogCopy != null)
-        {
-            progressDialogCopy.hide();
-        }
-        progressDialog = null;
-    }
-
     protected void hideUnlinkConfirmDialog()
     {
         AlertDialog unlinkConfirmDialogCopy = unlinkConfirmDialog;
@@ -149,31 +101,7 @@ abstract public class SocialConnectSettingViewHolder
         unlinkConfirmDialog = null;
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
-    {
-        return new SocialConnectUserProfileCacheListener();
-    }
-
-    protected class SocialConnectUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
-        {
-            updateSocialConnectStatus(value);
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-        }
-    }
-
-    protected void fetchUserProfile()
-    {
-        detachUserProfileCacheListener();
-        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
-    }
-
-    protected boolean changeSharing(boolean enable)
+    protected boolean changeStatus(boolean enable)
     {
         Context activityContext = null;
         if (preferenceFragment != null)
@@ -253,7 +181,7 @@ abstract public class SocialConnectSettingViewHolder
     {
         @Override public void done(UserLoginDTO user, THException ex)
         {
-            hideProgressDialog();
+            dismissProgress();
         }
 
         @Override public void onStart()
@@ -279,7 +207,7 @@ abstract public class SocialConnectSettingViewHolder
     protected void reportConnectToServer(JSONCredentials json)
     {
         detachMiddleSocialConnectLogInCallback();
-        middleCallbackConnect = socialServiceWrapper.connect(
+        middleCallbackUpdateUserProfile = socialServiceWrapper.connect(
                 currentUserId.toUserBaseKey(),
                 UserFormFactory.create(json),
                 createServerConnectCallback());
@@ -287,26 +215,7 @@ abstract public class SocialConnectSettingViewHolder
 
     protected Callback<UserProfileDTO> createServerConnectCallback()
     {
-        return new ServerLinkingCallback();
-    }
-
-    protected class ServerLinkingCallback extends THCallback<UserProfileDTO>
-    {
-        @Override protected void success(@NotNull UserProfileDTO userProfileDTO, THResponse thResponse)
-        {
-            updateSocialConnectStatus(userProfileDTO);
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            // user unlinked current authentication
-            THToast.show(ex);
-        }
-
-        @Override protected void finish()
-        {
-            hideProgressDialog();
-        }
+        return new UserProfileUpdateCallback();
     }
 
     protected Callback<UserProfileDTO> createSocialDisconnectCallback()
@@ -314,7 +223,7 @@ abstract public class SocialConnectSettingViewHolder
         return new ServerUnlinkingCallback();
     }
 
-    protected class ServerUnlinkingCallback extends ServerLinkingCallback
+    protected class ServerUnlinkingCallback extends UserProfileUpdateCallback
     {
         @Override protected void success(@NotNull UserProfileDTO userProfileDTO, THResponse thResponse)
         {
@@ -322,5 +231,4 @@ abstract public class SocialConnectSettingViewHolder
             THUser.removeCredential(getSocialNetworkName());
         }
     }
-    abstract protected void updateSocialConnectStatus(@NotNull UserProfileDTO updatedUserProfileDTO);
 }
