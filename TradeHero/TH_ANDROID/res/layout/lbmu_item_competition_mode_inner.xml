@@ -21,8 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerVertical="true"
-        android:visibility="gone"
-        android:layout_marginRight="6dp">
+        android:visibility="visible"
+        android:layout_marginRight="10dp">
 
       <ImageView
           android:id="@+id/leaderboard_prize_icon"
