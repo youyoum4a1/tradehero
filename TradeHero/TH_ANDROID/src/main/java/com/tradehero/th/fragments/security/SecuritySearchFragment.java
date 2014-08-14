@@ -66,12 +66,12 @@ public class SecuritySearchFragment extends BaseSearchFragment<
                 R.layout.search_security_item);
     }
 
-    @Override protected DTOCacheNew<SecurityListType, SecurityCompactDTOList> getSearchCache()
+    @Override protected DTOCacheNew<SecurityListType, SecurityCompactDTOList> getListCache()
     {
         return securityCompactListCache.get();
     }
 
-    @NotNull @Override public SecurityListType makeSearchDtoKey(int page)
+    @NotNull @Override public SecurityListType makePagedDtoKey(int page)
     {
         return new SearchSecurityListType(mSearchText, page, perPage);
     }
@@ -114,7 +114,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         return new SecurityIdListCacheListener();
     }
 
-    private class SecurityIdListCacheListener extends SearchCacheListener
+    private class SecurityIdListCacheListener extends ListCacheListener
     {
         @Override
         public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)

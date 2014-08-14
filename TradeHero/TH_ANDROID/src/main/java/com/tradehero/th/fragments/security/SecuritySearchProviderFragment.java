@@ -32,7 +32,7 @@ public class SecuritySearchProviderFragment extends SecuritySearchFragment
         }
     }
 
-    @Override @NotNull public SecurityListType makeSearchDtoKey(int page)
+    @Override @NotNull public SecurityListType makePagedDtoKey(int page)
     {
         return new SearchProviderSecurityListType(providerId, mSearchText, page, perPage);
 
