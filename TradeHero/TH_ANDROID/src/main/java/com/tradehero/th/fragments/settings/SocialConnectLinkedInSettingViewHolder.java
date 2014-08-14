@@ -100,21 +100,24 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
     @Override protected void effectUnlink()
     {
         super.effectUnlink();
-        if (!checkIsLoginType(LinkedinCredentialsDTO.LINKEDIN_AUTH_TYPE))
-        {
-            detachMiddleServerDisconnectCallback();
-            middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                    currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(SocialNetworkEnum.LN),
-                    createSocialDisconnectCallback());
-        }
+        detachMiddleServerDisconnectCallback();
+        middleCallbackDisconnect = socialServiceWrapper.disconnect(
+                currentUserId.toUserBaseKey(),
+                new SocialNetworkFormDTO(SocialNetworkEnum.LN),
+                createSocialDisconnectCallback());
     }
 
     @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
     {
+        super.updateStatus(updatedUserProfileDTO);
         if (clickablePref != null)
         {
             clickablePref.setChecked(updatedUserProfileDTO.liLinked);
         }
+    }
+
+    @Override protected boolean isMainLogin()
+    {
+        return mainCredentialsPreference.getCredentials() instanceof LinkedinCredentialsDTO;
     }
 }

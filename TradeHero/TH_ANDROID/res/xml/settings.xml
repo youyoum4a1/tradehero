@@ -16,30 +16,35 @@
         android:key="@string/key_settings_sharing_facebook"
         android:title="@string/facebook"
         android:icon="@drawable/settings_fb_normal"
+        android:enabled="false"
         />
 
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_twitter"
         android:title="@string/settings_sharing_twitter"
         android:icon="@drawable/settings_tweet_normal"
+        android:enabled="false"
         />
 
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_linked_in"
         android:title="@string/settings_sharing_linked_in"
         android:icon="@drawable/settings_linkedin_normal"
+        android:enabled="false"
         />
 
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_weibo"
         android:title="@string/settings_sharing_weibo"
         android:icon="@drawable/settings_weibo_normal"
+        android:enabled="false"
         />
 
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_qq"
         android:title="@string/settings_sharing_qq"
         android:icon="@drawable/settings_qq_normal"
+        android:enabled="false"
         />
 
   </PreferenceCategory>

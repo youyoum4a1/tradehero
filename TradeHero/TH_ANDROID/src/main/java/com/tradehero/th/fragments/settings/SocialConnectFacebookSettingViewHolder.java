@@ -100,21 +100,24 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
     @Override protected void effectUnlink()
     {
         super.effectUnlink();
-        if (!checkIsLoginType(FacebookCredentialsDTO.FACEBOOK_AUTH_TYPE))
-        {
-            detachMiddleServerDisconnectCallback();
-            middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                    currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(SocialNetworkEnum.FB),
-                    createSocialDisconnectCallback());
-        }
+        detachMiddleServerDisconnectCallback();
+        middleCallbackDisconnect = socialServiceWrapper.disconnect(
+                currentUserId.toUserBaseKey(),
+                new SocialNetworkFormDTO(SocialNetworkEnum.FB),
+                createSocialDisconnectCallback());
     }
 
     @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
     {
+        super.updateStatus(updatedUserProfileDTO);
         if (clickablePref != null)
         {
             clickablePref.setChecked(updatedUserProfileDTO.fbLinked);
         }
+    }
+
+    @Override protected boolean isMainLogin()
+    {
+        return mainCredentialsPreference.getCredentials() instanceof FacebookCredentialsDTO;
     }
 }
