@@ -30,6 +30,7 @@ import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABPurchaseRestorerAlertUtil;
 import com.tradehero.th.billing.request.THUIBillingRequest;
@@ -44,6 +45,7 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
+import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.prefs.FirstShowReferralCodeDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
@@ -55,9 +57,9 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
@@ -186,6 +188,14 @@ public class DashboardActivity extends SherlockFragmentActivity
         if (firstShowReferralCodeDialogPreference.get())
         {
             firstShowReferralCodeDialogPreference.set(false);
+            if (THUser.getTHAuthenticationProvider() != null)
+            {
+                if (THUser.getTHAuthenticationProvider().getAuthType().equals(EmailCredentialsDTO.EMAIL_AUTH_TYPE))
+                {
+                    //not show referral code dialog if login by email by alex
+                    return;
+                }
+            }
             UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
             if (userProfileDTO != null)
             {

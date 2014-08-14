@@ -9,11 +9,9 @@ import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.fragments.position.view.AbstractPositionView;
-import com.tradehero.th.fragments.trade.view.TradeListHeaderView;
+import com.tradehero.th.fragments.position.view.PositionView;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.widget.list.BaseListHeaderView;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +21,11 @@ public class TradeListItemAdapter
             TradeListItemAdapter.ExpandableTradeItem,
             TradeListItemView>
 {
-    public static final int ITEM_TYPE_BUTTONS = 0;
-    public static final int ITEM_TYPE_HEADER_POSITION_SUMMARY = 1;
-    public static final int ITEM_TYPE_POSITION_SUMMARY = 2;
-    public static final int ITEM_TYPE_HEADER_TRADE_HISTORY = 3;
-    public static final int ITEM_TYPE_TRADE = 4;
+    public static final int ITEM_TYPE_HEADER_POSITION_SUMMARY = 0;
+    public static final int ITEM_TYPE_POSITION_SUMMARY = 1;
+    public static final int ITEM_TYPE_HEADER_TRADE_HISTORY = 2;
+    public static final int ITEM_TYPE_TRADE = 3;
 
-    public static final int LAYOUT_RES_ID_BUTTONS = R.layout.trade_list_header;
     public static final int LAYOUT_RES_ID_ITEM_HEADER = R.layout.trade_list_item_header;
     public static final int LAYOUT_RES_ID_ITEM_TRADE = R.layout.trade_list_item;
 
@@ -42,7 +38,6 @@ public class TradeListItemAdapter
     private List<Object> objects;
 
     protected PositionDTO shownPositionDTO;
-    private WeakReference<TradeListHeaderView.TradeListHeaderClickListener> parentTradeListHeaderClickListenerWeak = new WeakReference<>(null);
 
     public TradeListItemAdapter(final Context context, final LayoutInflater inflater)
     {
@@ -72,9 +67,6 @@ public class TradeListItemAdapter
                 items.add(item);
                 ++i;
             }
-
-            itemTypesTemp.add(ITEM_TYPE_BUTTONS);
-            objectsTemp.add("Buttons");
 
             itemTypesTemp.add(ITEM_TYPE_HEADER_POSITION_SUMMARY);
             if (this.shownPositionDTO.isClosed())
@@ -115,15 +107,6 @@ public class TradeListItemAdapter
     public void setShownPositionDTO(PositionDTO positionDTO)
     {
         this.shownPositionDTO = positionDTO;
-    }
-
-    /**
-     * The listener should be strongly referenced elsewhere
-     * @param tradeListHeaderClickListener
-     */
-    public void setTradeListHeaderClickListener(TradeListHeaderView.TradeListHeaderClickListener tradeListHeaderClickListener)
-    {
-        this.parentTradeListHeaderClickListenerWeak = new WeakReference<>(tradeListHeaderClickListener);
     }
 
     @Override public int getViewTypeCount()
@@ -174,15 +157,6 @@ public class TradeListItemAdapter
 
         switch (itemType)
         {
-            case ITEM_TYPE_BUTTONS:
-                if (convertView == null)
-                {
-                    convertView = inflater.inflate(LAYOUT_RES_ID_BUTTONS, viewGroup, false);
-                }
-                ((TradeListHeaderView) convertView).setListener(parentTradeListHeaderClickListenerWeak.get());
-                ((TradeListHeaderView) convertView).bindOwnedPositionId(shownPositionDTO);
-                break;
-
             case ITEM_TYPE_HEADER_POSITION_SUMMARY:
                 if (convertView == null)
                 {
@@ -197,9 +171,9 @@ public class TradeListItemAdapter
                     convertView = inflater.inflate(getPositionLayoutResId(), viewGroup, false);
                 }
 
-                ((AbstractPositionView) convertView).linkWith(this.shownPositionDTO, false);
-                ((AbstractPositionView) convertView).linkWithHasHistoryButton(false, false);
-                ((AbstractPositionView) convertView).display();
+                ((PositionView) convertView).linkWith(this.shownPositionDTO, false);
+                ((PositionView) convertView).linkWithHasHistoryButton(false, false);
+                ((PositionView) convertView).display();
                 View buttons = convertView.findViewById(R.id.position_shortcuts);
                 if (buttons != null)
                 {
@@ -240,7 +214,6 @@ public class TradeListItemAdapter
         int itemType = getItemViewType(position);
         switch (itemType)
         {
-            case ITEM_TYPE_BUTTONS:
             case ITEM_TYPE_HEADER_POSITION_SUMMARY:
             case ITEM_TYPE_POSITION_SUMMARY:
             case ITEM_TYPE_HEADER_TRADE_HISTORY:

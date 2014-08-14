@@ -70,11 +70,15 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
         mockSecurityCompactDTO.id = sId;
         mockSecurityCompactDTO.name = "Security Name";
         PortfolioCompactDTO mockPortfolioCompactDTO = new PortfolioCompactDTO();
+        mockPortfolioCompactDTO.id = 94;
+        mockPortfolioCompactDTO.userId = 20;
         mockPortfolioCompactDTO.cashBalance = CASH_BALANCE;
         mockPortfolioCompactDTO.currencyDisplay = "US$";
         mockPortfolioCompactDTO.currencyISO = "USD";
         PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
         PortfolioDTO mockPortfolioDTO = new PortfolioDTO();
+        mockPortfolioDTO.id = 94;
+        mockPortfolioDTO.userId = 20;
         ProviderCompactDTOList mockProviderCompactsDTOList = new ProviderCompactDTOList();
         int firstTradeAllTime = 0;
 

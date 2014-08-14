@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -55,7 +56,11 @@ public class PayPalSettingViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        preferenceFragment.getNavigator().pushFragment(SettingsPayPalFragment.class);
+        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragmentCopy.getNavigator().pushFragment(SettingsPayPalFragment.class);
+        }
     }
 
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()

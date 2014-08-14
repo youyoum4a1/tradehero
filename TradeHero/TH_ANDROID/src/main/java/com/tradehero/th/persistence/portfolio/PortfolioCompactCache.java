@@ -29,6 +29,12 @@ import org.jetbrains.annotations.Nullable;
 
     @Override public PortfolioCompactDTO put(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value)
     {
+        //noinspection ConstantConditions
+        if (value.userId == null)
+        {
+            throw new NullPointerException("UserId should be set");
+        }
+
         // HACK We need to take care of the bug https://www.pivotaltracker.com/story/show/61190894
         {
             PortfolioCompactDTO current = get(key);

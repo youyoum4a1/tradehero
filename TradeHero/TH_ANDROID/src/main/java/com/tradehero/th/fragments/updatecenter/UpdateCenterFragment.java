@@ -39,11 +39,11 @@ import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
 import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.route.PreRoutable;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.utils.route.PreRoutable;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -126,9 +126,13 @@ public class UpdateCenterFragment extends DashboardFragment
 
     private void fetchUserProfile()
     {
+        fetchUserProfile(false);
+    }
+    private void fetchUserProfile(boolean forceUpdate)
+    {
         detachUserProfileCache();
         userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(),forceUpdate);
     }
 
     private void detachUserProfileCache()
@@ -357,7 +361,7 @@ public class UpdateCenterFragment extends DashboardFragment
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                fetchUserProfile();
+                fetchUserProfile(true);
             }
         };
     }

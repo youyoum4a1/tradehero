@@ -55,7 +55,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
         dashboardNavigator = activity.getDashboardNavigator();
 
-        providerId = new ProviderId(23);
+        providerId = new ProviderId(3423);
         // creating mock object for providerDTO
         ProviderDTO mockProviderDTO = new ProviderDTO();
         mockProviderDTO.id = providerId.key;
@@ -82,7 +82,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
     {
         Bundle args = new Bundle();
 
-        ProviderId providerId = new ProviderId(23);
+        ProviderId providerId = new ProviderId(3423);
         MainCompetitionFragment.putProviderId(args, providerId);
 
         MainCompetitionFragment mainCompetition = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
@@ -105,6 +105,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
     @Test public void shouldGoToWebFragmentAfterClickOnAds()
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
@@ -117,6 +118,8 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
         AbsListView competitionListView = mainCompetitionFragment.listView;
         assertThat(competitionListView).isNotNull();
+
+        Robolectric.getBackgroundScheduler().unPause();
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasksIncludingDelayedTasks();
@@ -221,6 +224,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
     private void shouldGoToCorrectWebPageAfterClickOnWizardCell(String webLink)
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
@@ -235,6 +239,8 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
+
+        Robolectric.getBackgroundScheduler().unPause();
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasksIncludingDelayedTasks();

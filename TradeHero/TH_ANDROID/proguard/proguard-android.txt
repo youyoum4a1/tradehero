@@ -119,6 +119,8 @@
 
 -keep class !com.tradehero.** { *; }
 -dontwarn com.actionbarsherlock.**
+-dontwarn java.nio.files.**
+-dontwarn okio.**
 -dontwarn com.tencent.**
 -dontwarn **.VisibleForTesting
 -dontwarn com.tradehero.route.**

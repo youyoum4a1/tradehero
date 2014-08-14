@@ -325,7 +325,7 @@ public class TrendingFragment extends SecurityListFragment
 
     @Override @NotNull public TrendingSecurityListType getSecurityListType(int page)
     {
-        return trendingFilterTypeDTO.getSecurityListType(trendingFilterTypeDTO.exchange.getApiName(), page, perPage);
+        return trendingFilterTypeDTO.getSecurityListType(page, perPage);
     }
 
     public void pushSearchIn()
@@ -403,7 +403,7 @@ public class TrendingFragment extends SecurityListFragment
         {
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId(currentUserId.toUserBaseKey()));
+            MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId());
             getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)
@@ -453,7 +453,7 @@ public class TrendingFragment extends SecurityListFragment
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityCompactDTO.getSecurityId().getArgs());
+        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
 
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
 
@@ -505,8 +505,6 @@ public class TrendingFragment extends SecurityListFragment
                 AppTiming.splashCreate - AppTiming.appCreate,
                 AppTiming.dashboardCreate - AppTiming.splashCreate,
                 AppTiming.trendingFilled - AppTiming.dashboardCreate);
-
-        //dtoCacheUtil.initialPrefetches();
     }
 
     private void refreshAdapterWithTiles(boolean refreshTileTypes)

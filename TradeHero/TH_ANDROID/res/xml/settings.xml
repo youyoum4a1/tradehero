@@ -9,6 +9,7 @@
       />
 
   <PreferenceCategory
+      android:key="@string/key_settings_sharing_group"
       android:title="@string/settings_sharing">
 
     <CheckBoxPreference
@@ -29,7 +30,6 @@
         android:icon="@drawable/settings_linkedin_normal"
         />
 
-
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_weibo"
         android:title="@string/settings_sharing_weibo"
@@ -41,6 +41,7 @@
         android:title="@string/settings_sharing_qq"
         android:icon="@drawable/settings_qq_normal"
         />
+
   </PreferenceCategory>
 
   <PreferenceCategory
@@ -67,6 +68,7 @@
   </PreferenceCategory>
 
   <PreferenceCategory
+      android:key="@string/key_settings_account_group"
       android:title="@string/setting_accounts"
       >
 

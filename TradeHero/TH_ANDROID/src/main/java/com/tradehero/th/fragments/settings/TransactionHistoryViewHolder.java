@@ -18,6 +18,10 @@ public class TransactionHistoryViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        preferenceFragment.getNavigator().pushFragment(SettingsTransactionHistoryFragment.class);
+        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragmentCopy.getNavigator().pushFragment(SettingsTransactionHistoryFragment.class);
+        }
     }
 }

@@ -2,12 +2,11 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
@@ -164,7 +163,7 @@ interface UserServiceAsync
             @Query("searchTerm") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
+            Callback<PaginatedAllowableRecipientDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User">

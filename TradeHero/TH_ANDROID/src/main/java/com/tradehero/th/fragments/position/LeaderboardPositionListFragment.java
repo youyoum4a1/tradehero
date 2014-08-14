@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.position;
 import android.os.Bundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class LeaderboardPositionListFragment
         extends PositionListFragment
@@ -37,17 +36,8 @@ public class LeaderboardPositionListFragment
 
     @Override protected void createPositionItemAdapter()
     {
+        super.createPositionItemAdapter();
         isTimeRestricted = getLeaderBoardTimeRestricted(getArguments());
-
-        if (positionItemAdapter != null)
-        {
-            positionItemAdapter.setCellListener(null);
-        }
-        positionItemAdapter = new LeaderboardPositionItemAdapter(
-                getActivity(),
-                getLayoutResIds(),
-                isTimeRestricted);
-        positionItemAdapter.setCellListener(this);
     }
 
     @Override public void onResume()

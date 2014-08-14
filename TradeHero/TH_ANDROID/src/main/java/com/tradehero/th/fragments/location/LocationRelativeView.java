@@ -9,7 +9,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 
 import butterknife.ButterKnife;
-
 public class LocationRelativeView extends RelativeLayout
     implements DTOView<ListedLocationDTO>
 {

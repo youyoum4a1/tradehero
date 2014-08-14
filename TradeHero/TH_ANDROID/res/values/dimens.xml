@@ -26,6 +26,7 @@
   <dimen name="leaderboard_user_item_action_button_margin">5dp</dimen>
   <dimen name="leaderboard_def_item_icon_container">50dp</dimen>
   <dimen name="leaderboard_def_item_icon">36dp</dimen>
+  <dimen name="lbmu_roi_mode_vertical_padding">5dp</dimen>
   <dimen name="leaderboard_current_user_rank_vertical_margin">10dp</dimen>
   <dimen name="leaderboard_current_user_rank_vertical_padding">5dp</dimen>
   <dimen name="leaderboard_timed_header_vertical_padding">5dp</dimen>
@@ -175,5 +176,10 @@
 
   <dimen name="discussion_separator_thickness">0.5dp</dimen>
   <dimen name="discussion_list_padding">60dp</dimen>
+  <dimen name="leaderboard_position_width">60dp</dimen>
+
+  <dimen name="message_read_all_button_radius">4dp</dimen>
+
+
 
 </resources>

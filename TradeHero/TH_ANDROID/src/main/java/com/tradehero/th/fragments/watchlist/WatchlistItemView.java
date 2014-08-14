@@ -24,7 +24,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
@@ -37,12 +36,11 @@ import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -53,15 +51,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId>
+public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistPositionDTO>
 {
     public static final String WATCHLIST_ITEM_DELETED = "watchlistItemDeleted";
     private static final String INTENT_KEY_DELETED_SECURITY_ID = WatchlistItemView.class.getName() + ".deletedSecurityId";
 
-    @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
-    @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
@@ -74,7 +70,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     @InjectView(R.id.position_watchlist_more) protected Button moreButton;
 
     @Nullable private WatchlistPositionDTO watchlistPositionDTO;
-    private SecurityId securityId;
     private MiddleCallbackWeakList<WatchlistPositionDTO> middleCallbackWatchlistDeletes;
 
     private PopupMenu morePopupMenu;
@@ -202,7 +197,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         {
             // Make a copy here to sever links back to the origin class.
             final private Context contextCopy = WatchlistItemView.this.getContext();
-            final private SecurityId securityIdCopy = securityId;
             final private WatchlistPositionDTO watchlistPositionDTOCopy = WatchlistItemView.this.watchlistPositionDTO;
 
             @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse thResponse)
@@ -212,7 +206,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
                     Timber.d(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id);
 
                     Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
-                    putDeletedSecurityId(itemDeletionIntent, securityIdCopy);
+                    putDeletedSecurityId(itemDeletionIntent, watchlistPositionDTO.securityDTO.getSecurityId());
                     LocalBroadcastManager.getInstance(contextCopy).sendBroadcast(itemDeletionIntent);
                 }
             }
@@ -250,16 +244,14 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         middleCallbackWatchlistDeletes.detach();
     }
 
-    @Override public void display(SecurityId securityId)
+    @Override public void display(WatchlistPositionDTO watchlistPosition)
     {
-        this.securityId = securityId;
-
-        linkWith(securityId, true);
+        linkWith(watchlistPosition, true);
     }
 
-    private void linkWith(SecurityId securityId, boolean andDisplay)
+    private void linkWith(WatchlistPositionDTO watchlistPosition, boolean andDisplay)
     {
-        watchlistPositionDTO = watchlistPositionCache.get().get(securityId);
+        this.watchlistPositionDTO = watchlistPosition;
 
         if (watchlistPositionDTO == null)
         {
@@ -269,13 +261,9 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
         if (andDisplay)
         {
             displayStockLogo();
-
             displayExchangeSymbol();
-
             displayNumberOfShares();
-
             displayCompanyName();
-
             displayLastPrice();
         }
     }
@@ -517,23 +505,23 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     {
         Bundle args = new Bundle();
         //args.putBundle(AlertCreateFragment.BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, getApplicablePortfolioId().getArgs());
-        AlertCreateFragment.putSecurityId(args, securityId);
+        AlertCreateFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
         getNavigator().pushFragment(AlertCreateFragment.class, args);
     }
 
     private void openSecurityProfile()
     {
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        BuySellFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
         getNavigator().pushFragment(BuySellFragment.class, args);
     }
 
     private void openSecurityGraph()
     {
         Bundle args = new Bundle();
-        if (securityId != null)
+        if (watchlistPositionDTO != null)
         {
-            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            args.putBundle(StockInfoFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, watchlistPositionDTO.securityDTO.getSecurityId().getArgs());
         }
         getNavigator().pushFragment(StockInfoFragment.class, args);
     }
@@ -541,9 +529,9 @@ public class WatchlistItemView extends FrameLayout implements DTOView<SecurityId
     private void openWatchlistEditor()
     {
         Bundle args = new Bundle();
-        if (securityId != null)
+        if (watchlistPositionDTO != null)
         {
-            WatchlistEditFragment.putSecurityId(args, securityId);
+            WatchlistEditFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
             DashboardFragment.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));
         }
         getNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);

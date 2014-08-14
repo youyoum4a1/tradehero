@@ -11,8 +11,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.THBillingInteractor;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,15 +19,16 @@ public class LeaderboardMarkUserListAdapter extends
                 LeaderboardUserDTO, LeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
     implements PullToRefreshBase.OnRefreshListener<ListView>
 {
-    @Inject protected THBillingInteractor userInteractor;
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
+    //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListAdapter(Context context, LayoutInflater inflater, int loaderId, int layoutResourceId)
     {
         super(context, inflater, loaderId, layoutResourceId);
     }
+    //</editor-fold>
 
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {

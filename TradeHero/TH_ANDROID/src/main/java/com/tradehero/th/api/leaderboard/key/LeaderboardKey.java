@@ -2,7 +2,7 @@ package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THJsonAdapter;
 import java.io.IOException;
 import java.util.HashSet;
@@ -12,33 +12,48 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class LeaderboardKey extends AbstractIntegerDTOKey
+public class LeaderboardKey implements DTOKey
 {
-    public static final String BUNDLE_KEY_KEY = LeaderboardKey.class.getName() + ".key";
+    public static final String BUNDLE_KEY_ID = LeaderboardKey.class.getName() + ".id";
     public static final String STRING_SET_VALUE_SEPARATOR = ":";
-    public static final String STRING_SET_LEFT_KEY = "key";
+    public static final String STRING_SET_LEFT_KEY = "id";
+
+    @NotNull public final Integer id;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardKey(Integer key)
+    public LeaderboardKey(int id)
     {
-        super(key);
+        super();
+        this.id = id;
     }
 
-    public LeaderboardKey(@NotNull Bundle args, @Nullable LeaderboardKey defaultValues)
+    public LeaderboardKey(@NotNull Bundle args)
     {
-        super(args);
+        this(args.getInt(BUNDLE_KEY_ID));
+    }
+
+    public LeaderboardKey(@NotNull Bundle args, @SuppressWarnings("UnusedParameters") @Nullable LeaderboardKey defaultValues)
+    {
+        this(args);
     }
 
     public LeaderboardKey(@NotNull Set<String> catValues, @Nullable LeaderboardKey defaultValues)
     {
-        super(findKey(catValues, defaultValues));
+        //noinspection ConstantConditions
+        this(findKey(catValues, defaultValues));
     }
     //</editor-fold>
 
-    @JsonIgnore
-    @Override public String getBundleKey()
+    @NotNull public Bundle getArgs()
     {
-        return BUNDLE_KEY_KEY;
+        Bundle args = new Bundle();
+        putParameters(args);
+        return args;
+    }
+
+    protected void putParameters(@NotNull Bundle args)
+    {
+        args.putInt(BUNDLE_KEY_ID, id);
     }
 
     @Nullable
@@ -53,12 +68,12 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
             split = catValue.split(STRING_SET_VALUE_SEPARATOR);
             if (split[0].equals(STRING_SET_LEFT_KEY))
             {
-                    return Integer.valueOf(split[1]);
+                return Integer.valueOf(split[1]);
             }
         }
         if (defaultValues != null)
         {
-            return defaultValues.key;
+            return defaultValues.id;
         }
         return null;
     }
@@ -73,7 +88,7 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
 
     public void putParameters(Set<String> catValues)
     {
-        putKey(catValues, this.key);
+        putKey(catValues, this.id);
     }
 
     public static void putKey(Set<String> catValues, Integer key)
@@ -82,6 +97,23 @@ public class LeaderboardKey extends AbstractIntegerDTOKey
         {
             catValues.add(STRING_SET_LEFT_KEY + STRING_SET_VALUE_SEPARATOR + key);
         }
+    }
+
+    @Override public int hashCode()
+    {
+        return id.hashCode();
+    }
+
+    @Override public boolean equals(@Nullable Object other)
+    {
+        return other != null
+                && other.getClass().equals(getClass())
+                && equalFields((LeaderboardKey) other);
+    }
+
+    protected boolean equalFields(@NotNull LeaderboardKey other)
+    {
+        return id.equals(other.id);
     }
 
     @Override public String toString()

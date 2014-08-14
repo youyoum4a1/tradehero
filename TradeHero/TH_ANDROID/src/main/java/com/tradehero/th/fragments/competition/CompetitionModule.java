@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.competition;
 
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardListItemView;
-import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemTradeNowView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioView;
 import dagger.Module;
@@ -15,7 +14,6 @@ import dagger.Module;
                         CompetitionZoneListItemAdapter.class,
                         CompetitionZoneListItemView.class,
                         CompetitionZoneLeaderboardListItemView.class,
-                        CompetitionZoneListItemTradeNowView.class,
                         CompetitionZonePortfolioView.class,
                         MainCompetitionFragment.class,
                         ProviderVideoListFragment.class,

@@ -34,6 +34,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
@@ -122,6 +123,7 @@ public class MessagesCenterFragment extends DashboardFragment
             Timber.d("onViewCreated don't have to fetch again");
             hideLoadingView();
             appendMessagesList(alreadyFetched);
+            setReadAllLayoutVisable();
         }
     }
 
@@ -279,7 +281,7 @@ public class MessagesCenterFragment extends DashboardFragment
     protected void pushMessageFragment(int position)
     {
         MessageHeaderDTO messageHeaderDTO = getListAdapter().getItem(position);
-        Timber.d("pushMessageFragment=%s",messageHeaderDTO);
+        Timber.d("pushMessageFragment=%s", messageHeaderDTO);
         //updateReadStatus(messageHeaderDTO);
 
         if (messageHeaderDTO != null)
@@ -303,9 +305,18 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 targetUser = messageHeaderDTO.senderUserId;
             }
-            thRouter.save(bundle, new UserBaseKey(targetUser));
-            Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s",messageHeaderDTO.recipientUserId,messageHeaderDTO.senderUserId,currentUserId.get());
-            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+            UserBaseKey targetUserKey = new UserBaseKey(targetUser);
+            thRouter.save(bundle, targetUserKey);
+            Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s", messageHeaderDTO.recipientUserId,
+                    messageHeaderDTO.senderUserId, currentUserId.get());
+            if (currentUserId.toUserBaseKey().equals(targetUserKey))
+            {
+                navigator.pushFragment(MeTimelineFragment.class, bundle);
+            }
+            else
+            {
+                navigator.pushFragment(PushableTimelineFragment.class, bundle);
+            }
         }
     }
 
@@ -337,6 +348,7 @@ public class MessagesCenterFragment extends DashboardFragment
             nextMoreRecentMessageListKey =
                     new MessageListKey(MessageListKey.FIRST_PAGE);
         }
+        setReadAllLayoutClickListener();
     }
 
     private void getOrFetchMessages()
@@ -483,7 +495,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 messageHeaderDTO.getDTOKey(),
                 messageHeaderDTO.senderUserId,
                 messageHeaderDTO.recipientUserId,
-                messageHeaderDTO.unread ? currentUserId.toUserBaseKey() : null,
+                currentUserId.toUserBaseKey(),
                 new MessageDeletionCallback(messageHeaderDTO));
     }
 
@@ -514,6 +526,7 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesView.showListView();
         appendMessagesList(value);
         saveNewPage(value);
+        setReadAllLayoutVisable();
     }
 
     private void resetContent(List<MessageHeaderDTO> value)
@@ -521,6 +534,7 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesView.showListView();
         resetMessagesList(value);
         resetSavedPage(value);
+        setReadAllLayoutVisable();
         Timber.d("resetContent");
     }
 
@@ -743,9 +757,23 @@ public class MessagesCenterFragment extends DashboardFragment
                         createMessageAsReadCallback(messageHeaderDTO)));
     }
 
+    private void reportMessageAllRead()
+    {
+        Timber.d("reportMessageAllRead...");
+        middleCallbackList.add(
+                messageServiceWrapper.get().readAllMessage(
+                        currentUserId.toUserBaseKey(),
+                        createMessageAsReadAllCallback()));
+    }
+
     @NotNull private Callback<Response> createMessageAsReadCallback(MessageHeaderDTO messageHeaderDTO)
     {
         return new MessageMarkAsReadCallback(messageHeaderDTO);
+    }
+
+    @NotNull private Callback<Response> createMessageAsReadAllCallback()
+    {
+        return new MessageMarkAsReadAllCallback();
     }
 
     private class MessageMarkAsReadCallback implements Callback<Response>
@@ -768,7 +796,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 if (messageHeaderDTO != null && messageHeaderDTO.unread)
                 {
                     messageHeaderDTO.unread = false;
-
+                    setReadAllLayoutVisable();
                     requestUpdateTabCounter();
                 }
             }
@@ -776,6 +804,25 @@ public class MessagesCenterFragment extends DashboardFragment
 
         @Override public void failure(RetrofitError retrofitError)
         {
+        }
+    }
+
+    private class MessageMarkAsReadAllCallback implements Callback<Response>
+    {
+        @Override public void success(@NotNull Response response, Response response2)
+        {
+            if (response.getStatus() == 200)
+            {
+                Timber.d("Message are reported as read all ");
+                setAllMessageRead();
+                setReadAllLayoutVisable();
+                requestUpdateTabCounter();
+            }
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+
         }
     }
 
@@ -813,6 +860,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 {
                     adapter.remove(messageHeaderDTO);
                     adapter.notifyDataSetChanged();
+                    messagesView.getListView().closeOpenedItems();
                 }
             }
         }
@@ -826,5 +874,49 @@ public class MessagesCenterFragment extends DashboardFragment
                 //adapter.markDeleted(messageId,false);
             }
         }
+    }
+
+    private void setReadAllLayoutClickListener()
+    {
+        if (messagesView != null && messagesView.readAllLayout != null)
+        {
+            messagesView.readAllLayout.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    reportMessageAllRead();
+                }
+            });
+        }
+    }
+
+    private void setReadAllLayoutVisable()
+    {
+        boolean haveUnread = false;
+        if (getListAdapter() == null) return;
+        int itemCount = getListAdapter().getCount();
+        for (int i = 0; i < itemCount; i++)
+        {
+            if (getListAdapter().getItem(i).unread)
+            {
+                haveUnread = true;
+                break;
+            }
+        }
+        if (messagesView.readAllLayout != null)
+        {
+            messagesView.readAllLayout.setVisibility(haveUnread ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void setAllMessageRead()
+    {
+        if (getListAdapter() == null) return;
+        int itemCount = getListAdapter().getCount();
+        for (int i = 0; i < itemCount; i++)
+        {
+            getListAdapter().getItem(i).unread = false;
+        }
+        getListAdapter().notifyDataSetChanged();
     }
 }
