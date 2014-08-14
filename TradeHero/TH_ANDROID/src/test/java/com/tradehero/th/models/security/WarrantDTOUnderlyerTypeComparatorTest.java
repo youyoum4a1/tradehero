@@ -1,6 +1,6 @@
 package com.tradehero.th.models.security;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WarrantDTOUnderlyerTypeComparatorTest extends WarrantDTOComparatorTestBase
 {

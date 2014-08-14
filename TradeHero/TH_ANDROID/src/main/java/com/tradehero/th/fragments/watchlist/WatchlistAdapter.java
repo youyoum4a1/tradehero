@@ -38,6 +38,7 @@ public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, W
             if (item.securityDTO.getSecurityId().equals(object))
             {
                 remove(item);
+                return;
             }
         }
     }

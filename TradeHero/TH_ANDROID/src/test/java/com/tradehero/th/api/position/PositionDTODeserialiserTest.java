@@ -2,7 +2,7 @@ package com.tradehero.th.api.position;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.BaseApiTest;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class PositionDTODeserialiserTest extends BaseApiTest
 {
     private ObjectMapper normalMapper;

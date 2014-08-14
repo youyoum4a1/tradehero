@@ -100,21 +100,24 @@ public class SocialConnectQQSettingViewHolder extends SocialConnectSettingViewHo
     @Override protected void effectUnlink()
     {
         super.effectUnlink();
-        if (!checkIsLoginType(QQCredentialsDTO.QQ_AUTH_TYPE))
-        {
-            detachMiddleServerDisconnectCallback();
-            middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                    currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(SocialNetworkEnum.QQ),
-                    createSocialDisconnectCallback());
-        }
+        detachMiddleServerDisconnectCallback();
+        middleCallbackDisconnect = socialServiceWrapper.disconnect(
+                currentUserId.toUserBaseKey(),
+                new SocialNetworkFormDTO(SocialNetworkEnum.QQ),
+                createSocialDisconnectCallback());
     }
 
     @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
     {
+        super.updateStatus(updatedUserProfileDTO);
         if (clickablePref != null)
         {
             clickablePref.setChecked(updatedUserProfileDTO.qqLinked);
         }
+    }
+
+    @Override protected boolean isMainLogin()
+    {
+        return mainCredentialsPreference.getCredentials() instanceof QQCredentialsDTO;
     }
 }

@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.billing;
 import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class StoreItemClickableTest
 {
     @Inject Context context;

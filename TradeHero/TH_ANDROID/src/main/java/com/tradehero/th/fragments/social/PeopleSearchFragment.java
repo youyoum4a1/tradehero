@@ -65,12 +65,12 @@ public class PeopleSearchFragment extends BaseSearchFragment<
                 R.layout.search_people_item);
     }
 
-    @Override protected DTOCacheNew<UserListType, UserSearchResultDTOList> getSearchCache()
+    @Override protected DTOCacheNew<UserListType, UserSearchResultDTOList> getListCache()
     {
         return userBaseKeyListCache.get();
     }
 
-    @NotNull @Override public SearchUserListType makeSearchDtoKey(int page)
+    @NotNull @Override public SearchUserListType makePagedDtoKey(int page)
     {
         return new SearchUserListType(mSearchText, page, perPage);
     }
@@ -115,7 +115,7 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         return new UserBaseKeyListCacheListener();
     }
 
-    protected class UserBaseKeyListCacheListener extends SearchCacheListener
+    protected class UserBaseKeyListCacheListener extends ListCacheListener
     {
         @Override
         public void onDTOReceived(@NotNull UserListType key, @NotNull UserSearchResultDTOList value)

@@ -2,7 +2,7 @@ package com.tradehero.th.api.translation.bing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class BingUserTranslationSettingDTOTest
 {
     @Inject @ForApp ObjectMapper objectMapper;

@@ -1,6 +1,6 @@
 package com.tradehero.th.models.portfolio;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +11,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class MenuOwnedPortfolioIdTest
 {

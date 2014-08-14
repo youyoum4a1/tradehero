@@ -219,21 +219,6 @@ public class AlertDialogUtil
     }
 
     @NotNull
-    public void popWithOkButton(@NotNull final Context context, @NotNull int resId)
-    {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder
-                .setTitle(R.string.app_name)
-                .setMessage(context.getString(resId))
-                .setIcon(R.drawable.th_app_logo)
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok, null);
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-    @NotNull
     public Dialog popTutorialContent(
             @NotNull final Context context,
             int layoutResourceId)

@@ -100,21 +100,24 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
     @Override protected void effectUnlink()
     {
         super.effectUnlink();
-        if (!checkIsLoginType(TwitterCredentialsDTO.TWITTER_AUTH_TYPE))
-        {
-            detachMiddleServerDisconnectCallback();
-            middleCallbackDisconnect = socialServiceWrapper.disconnect(
-                    currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(SocialNetworkEnum.TW),
-                    createSocialDisconnectCallback());
-        }
+        detachMiddleServerDisconnectCallback();
+        middleCallbackDisconnect = socialServiceWrapper.disconnect(
+                currentUserId.toUserBaseKey(),
+                new SocialNetworkFormDTO(SocialNetworkEnum.TW),
+                createSocialDisconnectCallback());
     }
 
     @Override protected void updateStatus(@NotNull UserProfileDTO updatedUserProfileDTO)
     {
+        super.updateStatus(updatedUserProfileDTO);
         if (clickablePref != null)
         {
             clickablePref.setChecked(updatedUserProfileDTO.twLinked);
         }
+    }
+
+    @Override protected boolean isMainLogin()
+    {
+        return mainCredentialsPreference.getCredentials() instanceof TwitterCredentialsDTO;
     }
 }

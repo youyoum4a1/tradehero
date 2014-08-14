@@ -1183,6 +1183,17 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onTransactionSuccessful(boolean isBuy)
                 {
+                    if (pushPortfolioFragmentRunnable == null)
+                    {
+                        pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
+                        {
+                            @Override
+                            public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+                            {
+                                BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
+                            }
+                        };
+                    }
                     if (pushPortfolioFragmentRunnable != null)
                     {
                         pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);

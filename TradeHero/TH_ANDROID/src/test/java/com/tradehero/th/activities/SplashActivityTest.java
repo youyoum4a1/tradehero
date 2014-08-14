@@ -3,7 +3,7 @@ package com.tradehero.th.activities;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
@@ -18,7 +18,7 @@ import org.robolectric.shadows.ShadowActivity;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class SplashActivityTest
 {
     @Inject @FirstLaunch public BooleanPreference firstLaunchPreference;

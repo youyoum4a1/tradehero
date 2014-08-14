@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.AbsListView;
 import com.tradehero.AbstractTestBase;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(shadows = ShadowWebViewNew.class)
 public class MainCompetitionFragmentTest extends AbstractTestBase
 {
