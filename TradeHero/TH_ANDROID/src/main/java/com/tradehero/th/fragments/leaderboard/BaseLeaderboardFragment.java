@@ -135,9 +135,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected void fetchLeaderboardDef()
     {
-        detachLeaderboardDefCacheListener();
-        leaderboardDefCache.register(leaderboardDefKey, leaderboardDefCacheListener);
-        leaderboardDefCache.getOrFetchAsync(leaderboardDefKey);
+        if (leaderboardDefKey.key.intValue() != 0 && leaderboardDefKey.key.intValue() != -1)
+        {
+            detachLeaderboardDefCacheListener();
+            leaderboardDefCache.register(leaderboardDefKey, leaderboardDefCacheListener);
+            leaderboardDefCache.getOrFetchAsync(leaderboardDefKey);
+        }
     }
 
     protected void fetchCurrentUserProfile()
@@ -149,19 +152,25 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected void fetchLeaderboard()
     {
-        detachLeaderboardCacheListener();
-        LeaderboardKey key = new LeaderboardKey(leaderboardDefKey.key);
-        leaderboardCache.register(key, leaderboardCacheListener);
-        leaderboardCache.getOrFetchAsync(key);
+        if (leaderboardDefKey.key.intValue() != 0 && leaderboardDefKey.key.intValue() != -1)
+        {
+            detachLeaderboardCacheListener();
+            LeaderboardKey key = new LeaderboardKey(leaderboardDefKey.key);
+            leaderboardCache.register(key, leaderboardCacheListener);
+            leaderboardCache.getOrFetchAsync(key);
+        }
     }
 
     protected void fetchUserOnLeaderboard()
     {
-        detachUserOnLeaderboardCacheListener();
-        UserOnLeaderboardKey userOnLeaderboardKey =
-                new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
-        leaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
-        leaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
+        if (leaderboardDefKey.key.intValue() != 0 && leaderboardDefKey.key.intValue() != -1)
+        {
+            detachUserOnLeaderboardCacheListener();
+            UserOnLeaderboardKey userOnLeaderboardKey =
+                    new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
+            leaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
+            leaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
+        }
     }
 
     protected int getMenuResource()
