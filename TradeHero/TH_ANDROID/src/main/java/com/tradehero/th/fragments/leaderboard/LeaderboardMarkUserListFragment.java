@@ -152,20 +152,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return R.layout.lbmu_item_own_ranking_roi_mode;
     }
 
-    protected void setupOwnRankingView(View userRankingHeaderView)
-    {
-        if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
-        {
-            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
-            if (ownRankingView.expandingLayout != null)
-            {
-                ownRankingView.expandingLayout.setVisibility(View.GONE);
-                ownRankingView.onExpand(false);
-                ownRankingView.setOnClickListener(new BaseExpandingItemListener());
-            }
-        }
-    }
-
     protected int getHeaderViewResId()
     {
         return R.layout.leaderboard_listview_header;
