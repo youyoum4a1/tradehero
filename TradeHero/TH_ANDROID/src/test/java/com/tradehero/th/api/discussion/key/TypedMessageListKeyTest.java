@@ -1,13 +1,13 @@
 package com.tradehero.th.api.discussion.key;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class TypedMessageListKeyTest extends BaseTypedMessageListKeyTest
 {
     @Test public void equalItself()

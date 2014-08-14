@@ -1,6 +1,6 @@
 package com.tradehero.th.api.watchlist;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import java.util.Date;
 import org.junit.After;
@@ -11,7 +11,7 @@ import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WatchlistPositionDTOTest extends BaseWatchlistPositionDTOTest
 {

@@ -1,6 +1,6 @@
 package com.tradehero.th.api.discussion.form;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.discussion.MessageType;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
@@ -12,7 +12,7 @@ import retrofit.mime.TypedOutput;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class MessageCreateFormDTOTest
 {
     @Inject Converter converter;

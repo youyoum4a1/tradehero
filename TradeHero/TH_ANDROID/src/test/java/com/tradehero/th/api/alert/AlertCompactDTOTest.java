@@ -1,7 +1,7 @@
 package com.tradehero.th.api.alert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.BaseApiTest;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class AlertCompactDTOTest extends BaseApiTest
 {
     @Inject @ForApp ObjectMapper normalMapper;

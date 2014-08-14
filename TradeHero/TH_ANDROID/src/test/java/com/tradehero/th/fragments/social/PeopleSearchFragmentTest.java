@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.social;
 
 import android.content.Context;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -15,11 +15,11 @@ import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class PeopleSearchFragmentTest
 {
     @Inject Context context;
-    private PeopleSearchFragment peopleSearchFragment;
+    private PublicPeopleSearchFragment peopleSearchFragment;
     private DashboardNavigator dashboardNavigator;
 
     @Before public void setUp()
@@ -37,9 +37,9 @@ public class PeopleSearchFragmentTest
     @Ignore("This test will fail because the setup mocks the action bar, which then returns a null view")
     @Test public void testHintIsCorrect()
     {
-        peopleSearchFragment = dashboardNavigator.pushFragment(PeopleSearchFragment.class);
+        peopleSearchFragment = dashboardNavigator.pushFragment(PublicPeopleSearchFragment.class);
 
-        assertThat(peopleSearchFragment.mSearchTextField.getHint())
+        assertThat(peopleSearchFragment.getSearchTextField().getHint())
                 .isEqualTo(context.getString(R.string.search_social_friend_hint));
     }
     //</editor-fold>

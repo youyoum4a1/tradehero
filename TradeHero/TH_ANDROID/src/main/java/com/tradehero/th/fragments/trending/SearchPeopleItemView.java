@@ -12,24 +12,21 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.models.graphics.ForSearchPeopleItemBackground;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DateUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBaseKey>
+public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSearchResultDTO>
 {
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject @ForSearchPeopleItemBackground Transformation backgroundTransformation;
 
     @Inject protected Picasso mPicasso;
-    @Inject protected Lazy<UserSearchResultCache> userSearchResultCache;
     private TextView userName;
     private TextView profitIndicator;
     private TextView stockPercentage;
@@ -38,8 +35,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
     private ImageView peopleBgImage;
     private final int defaultDrawable = R.drawable.superman_facebook;
 
-    private UserBaseKey userKey;
-    private UserSearchResultDTO userDTO;
+    @Nullable private UserSearchResultDTO userDTO;
 
     //<editor-fold desc="Constructors">
     public SearchPeopleItemView(Context context)
@@ -91,7 +87,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
 
     @Override protected void onDetachedFromWindow()
     {
-        this.userKey = null;
+        this.userDTO = null;
         loadDefaultImage();
         loadDefaultBackground();
         super.onDetachedFromWindow();
@@ -104,20 +100,9 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
                 (userDTO.userPicture.length() > 0);
     }
 
-    @Override public void display(UserBaseKey user)
-    {
-        this.userKey = user;
-        display(userSearchResultCache.get().get(this.userKey));
-    }
-
-    public void display(@Nullable UserSearchResultDTO userSearchResultDTO)
+    @Override public void display(@NotNull UserSearchResultDTO userSearchResultDTO)
     {
         this.userDTO = userSearchResultDTO;
-
-        if (userSearchResultDTO == null)
-        {
-            return;
-        }
 
         if (userName != null)
         {
@@ -199,7 +184,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
 
     public void loadImages()
     {
-        if (userPhoto != null)
+        if (userPhoto != null && userDTO != null)
         {
             if (isMyUrlOk())
             {
@@ -223,7 +208,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserBas
             }
         }
 
-        if (peopleBgImage != null)
+        if (peopleBgImage != null && userDTO != null)
         {
             if (isMyUrlOk())
             {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
@@ -17,6 +18,7 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.MiddleLogInCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -33,6 +35,7 @@ abstract public class SocialConnectSettingViewHolder
 {
     @NotNull protected final AlertDialogUtil alertDialogUtil;
     @NotNull protected final SocialServiceWrapper socialServiceWrapper;
+    @NotNull protected MainCredentialsPreference mainCredentialsPreference;
     @Nullable protected MiddleLogInCallback middleSocialConnectLogInCallback;
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
@@ -45,11 +48,13 @@ abstract public class SocialConnectSettingViewHolder
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,
-            @NotNull SocialServiceWrapper socialServiceWrapper)
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull MainCredentialsPreference mainCredentialsPreference)
     {
         super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
         this.alertDialogUtil = alertDialogUtil;
         this.socialServiceWrapper = socialServiceWrapper;
+        this.mainCredentialsPreference = mainCredentialsPreference;
     }
     //</editor-fold>
 
@@ -118,7 +123,19 @@ abstract public class SocialConnectSettingViewHolder
         }
         else if (activityContext != null)
         {
-            popConfirmUnlinkDialog();
+            if (isMainLogin())
+            {
+                dismissProgress();
+                alertDialogUtil.popWithNegativeButton(
+                        activityContext,
+                        R.string.app_name,
+                        R.string.authentication_unlink_fail_message,
+                        R.string.ok);
+            }
+            else
+            {
+                popConfirmUnlinkDialog();
+            }
         }
         return false;
     }
@@ -231,4 +248,24 @@ abstract public class SocialConnectSettingViewHolder
             THUser.removeCredential(getSocialNetworkName());
         }
     }
+
+    @Override protected void updateStatus(@NotNull UserProfileDTO userProfileDTO)
+    {
+        CheckBoxPreference clickablePrefCopy = clickablePref;
+        if (clickablePrefCopy != null)
+        {
+            boolean mainLogin = isMainLogin();
+            clickablePrefCopy.setEnabled(!mainLogin);
+            if (mainLogin)
+            {
+                clickablePrefCopy.setSummary(R.string.authentication_setting_is_current_login);
+            }
+            else
+            {
+                clickablePrefCopy.setSummary(null);
+            }
+        }
+    }
+
+    abstract protected boolean isMainLogin();
 }

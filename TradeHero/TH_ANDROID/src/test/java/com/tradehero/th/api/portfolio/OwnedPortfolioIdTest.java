@@ -1,6 +1,6 @@
 package com.tradehero.th.api.portfolio;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.utils.THJsonAdapter;
 import java.io.IOException;
 import org.junit.After;
@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class OwnedPortfolioIdTest extends BaseOwnedPorfolioIdTest
 {
     @Before public void setUp()

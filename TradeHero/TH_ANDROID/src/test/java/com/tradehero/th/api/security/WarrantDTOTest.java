@@ -1,6 +1,6 @@
 package com.tradehero.th.api.security;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class WarrantDTOTest
 {

@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.web;
 import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -17,7 +17,7 @@ import retrofit.Endpoint;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class THWebViewClientTest
 {
     private static final String MARKET_URL = "market://details?id=com.tradehero.th";
