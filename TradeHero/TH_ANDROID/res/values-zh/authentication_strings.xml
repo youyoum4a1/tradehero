@@ -28,6 +28,7 @@
   <string name="authentication_connecting_tradehero_only">处理中</string>
 
   <string name="authentication_unlink_confirm_dialog_title">解绑 %s</string>
+  <string name="authentication_setting_is_current_login">这是您当前登陆的账户</string>
   <string name="authentication_unlink_confirm_dialog_message">您确认要解绑 %s?</string>
   <string name="authentication_unlink_confirm_dialog_button_ok">解绑</string>
   <string name="authentication_unlink_fail_message">对不起，您不能解绑已用于登录的账户</string>
