@@ -17,6 +17,8 @@ import com.tradehero.th.misc.callback.LogInCallback;
 import com.tradehero.th.misc.callback.MiddleLogInCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.user.auth.CredentialsDTO;
+import com.tradehero.th.models.user.auth.MainCredentialsPreference;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -37,6 +39,7 @@ abstract public class SocialConnectSettingViewHolder
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
     @Nullable protected AlertDialog unlinkConfirmDialog;
+    @Nullable protected MainCredentialsPreference mainCredentialsPreference;
 
     //<editor-fold desc="Constructors">
     protected SocialConnectSettingViewHolder(
@@ -45,11 +48,13 @@ abstract public class SocialConnectSettingViewHolder
             @NotNull ProgressDialogUtil progressDialogUtil,
             @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull AlertDialogUtil alertDialogUtil,
-            @NotNull SocialServiceWrapper socialServiceWrapper)
+            @NotNull SocialServiceWrapper socialServiceWrapper,
+            @NotNull MainCredentialsPreference mainCredentialsPreference)
     {
         super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
         this.alertDialogUtil = alertDialogUtil;
         this.socialServiceWrapper = socialServiceWrapper;
+        this.mainCredentialsPreference = mainCredentialsPreference;
     }
     //</editor-fold>
 
@@ -230,5 +235,31 @@ abstract public class SocialConnectSettingViewHolder
             super.success(userProfileDTO, thResponse);
             THUser.removeCredential(getSocialNetworkName());
         }
+    }
+
+    protected boolean checkIsLoginType(String type)
+    {
+        CredentialsDTO credentialsDTO = mainCredentialsPreference.getCredentials();
+        if (credentialsDTO != null)
+        {
+            if (credentialsDTO.getAuthType().equals(type))
+            {
+                if (progressDialog != null)
+                {
+                    progressDialog.dismiss();
+                }
+                Context activityContext = null;
+                if (preferenceFragment != null)
+                {
+                    activityContext = preferenceFragment.getActivity();
+                }
+                if (activityContext != null)
+                {
+                    alertDialogUtil.popWithOkButton(activityContext, R.string.authentication_unlink_fail_message);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }
