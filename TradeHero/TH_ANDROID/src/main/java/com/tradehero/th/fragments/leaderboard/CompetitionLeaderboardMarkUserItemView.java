@@ -20,10 +20,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
-    @InjectView(R.id.leaderboard_prize_container) LinearLayout prizelayout;
-    @InjectView(R.id.leaderboard_prize_icon) ImageView prizeIcon;
     @InjectView(R.id.leaderboard_prize_amount) TextView prizeAmount;
-    @Nullable private ProviderDTO providerDTO;
+    @Nullable protected ProviderDTO providerDTO;
     @Nullable private PrizeDTO prizeDTO;
 
     //<editor-fold desc="Constructors">
@@ -63,11 +61,11 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     {
         if (prizeDTO == null)
         {
-            prizelayout.setVisibility(View.GONE);
+            prizeAmount.setVisibility(View.GONE);
         }
         else
         {
-            prizelayout.setVisibility(View.VISIBLE);
+            prizeAmount.setVisibility(View.VISIBLE);
             prizeAmount.setText(THSignedMoney.builder(prizeDTO.amount)
                     .currency(prizeDTO.prizeCcy)
                     .build().toString());

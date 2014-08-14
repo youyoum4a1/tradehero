@@ -5,6 +5,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -75,5 +76,25 @@ import org.jetbrains.annotations.Nullable;
             previous.add(get(ownedPortfolioId.getPortfolioIdKey()));
         }
         return previous;
+    }
+
+    public void invalidate(@NotNull UserBaseKey concernedUser)
+    {
+        invalidate(concernedUser, false);
+    }
+
+    public void invalidate(@NotNull UserBaseKey concernedUser, boolean onlyWatchlist)
+    {
+        PortfolioCompactDTO cached;
+        for (PortfolioId key: snapshot().keySet())
+        {
+            cached = get(key);
+            if (cached != null
+                    && cached.userId.equals(concernedUser.key)
+                    && (cached.isWatchlist || !onlyWatchlist))
+            {
+                invalidate(cached.getPortfolioId());
+            }
+        }
     }
 }

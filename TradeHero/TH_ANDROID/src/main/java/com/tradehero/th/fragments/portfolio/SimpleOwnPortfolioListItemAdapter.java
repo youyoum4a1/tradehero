@@ -7,25 +7,17 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.timeline.MainTimelineAdapter;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import javax.inject.Inject;
 import timber.log.Timber;
 
 public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
 {
     private List<Object> orderedItems;
-
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
 
     public SimpleOwnPortfolioListItemAdapter(Context context, LayoutInflater inflater, int portfolioLayoutResourceId)
@@ -50,8 +42,6 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         if (items != null)
         {
             // TODO This could be improved
-            // Here it is relying on the cache to be already filled to separate the heroes from the others.
-            UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
             SortedSet<DisplayablePortfolioDTO> ownPortfolios = new TreeSet<>(this.ownDisplayablePortfolioDTOWithinUserComparator);
 
             for (DisplayablePortfolioDTO displayablePortfolioDTO: items)

@@ -87,7 +87,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected FollowDialogCombo followDialogCombo;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
-    private LeaderboardMarkUserItemView ownRankingView;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -159,15 +158,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
         {
-            ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
+            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
             if (ownRankingView.expandingLayout != null)
             {
-                ownRankingView.display(currentLeaderboardUserDTO);
                 ownRankingView.expandingLayout.setVisibility(View.GONE);
                 ownRankingView.onExpand(false);
                 ownRankingView.setOnClickListener(new BaseExpandingItemListener());
             }
-            ownRankingView.displayOwnRanking(currentLeaderboardKey);
         }
     }
 
@@ -367,8 +364,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
             userProfileCache.put(userBaseKey, currentUserProfileDTO);
         }
-        if (ownRankingView != null)
+        if (getRankHeaderView() != null && getRankHeaderView() instanceof LeaderboardMarkUserItemView)
         {
+            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) getRankHeaderView();
             ownRankingView.linkWith(getApplicablePortfolioId());
             if (currentUserProfileDTO != null)
             {

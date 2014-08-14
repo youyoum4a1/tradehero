@@ -100,10 +100,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
-        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
-        {
-            ((LeaderboardCurrentUserRankHeaderView) mRankHeaderView).onDestroyView();
-        }
         mRankHeaderView = null;
         super.onDestroyView();
     }
@@ -237,21 +233,23 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         if (mRankHeaderView == null)
         {
             mRankHeaderView = LayoutInflater.from(getActivity()).inflate(getCurrentRankLayoutResId(), null, false);
-            initCurrentRankHeaderView();
+            updateCurrentRankHeaderView();
         }
         return mRankHeaderView;
     }
 
-    protected void initCurrentRankHeaderView()
+    protected void updateCurrentRankHeaderView()
     {
-        if (mRankHeaderView instanceof LeaderboardCurrentUserRankHeaderView)
+        if (getRankHeaderView() != null && getRankHeaderView() instanceof LeaderboardMarkUserItemView)
         {
-            LeaderboardCurrentUserRankHeaderView headerCopy = (LeaderboardCurrentUserRankHeaderView) mRankHeaderView;
-
-            headerCopy.setApplicablePortfolioId(getApplicablePortfolioId());
+            LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) getRankHeaderView();
             if (currentLeaderboardUserDTO != null)
             {
-                headerCopy.display(currentLeaderboardUserDTO);
+                leaderboardMarkUserItemView.display(currentLeaderboardUserDTO);
+            }
+            else
+            {
+                leaderboardMarkUserItemView.displayUserIsNotRanked();
             }
         }
     }
@@ -339,6 +337,11 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         }
     }
 
+    @Nullable protected View getRankHeaderView()
+    {
+        return mRankHeaderView;
+    }
+
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createUserOnLeaderboardListener()
     {
         return new BaseLeaderboardFragmentUserOnLeaderboardCacheListener();
@@ -369,7 +372,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         this.currentLeaderboardUserDTO = leaderboardDTO;
         if (andDisplay)
         {
-            initCurrentRankHeaderView();
+            updateCurrentRankHeaderView();
         }
     }
 }
