@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.social;
 
 import android.content.Context;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -15,7 +15,7 @@ import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class PeopleSearchFragmentTest
 {
     @Inject Context context;

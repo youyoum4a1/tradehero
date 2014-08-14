@@ -1,6 +1,6 @@
 package com.tradehero.th.api.portfolio;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.users.UserBaseDTO;
 import java.io.ByteArrayOutputStream;
@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class DisplayablePortfolioDTOComparableTest
 {
     @Before public void setUp() throws IOException

@@ -1,6 +1,6 @@
 package com.tradehero.th.models.leaderboard;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.CountryCodeList;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class LeaderboardDefDTOKnowledgeTest
 {
     @Inject LeaderboardDefDTOKnowledge leaderboardDefDTOKnowledge;

@@ -1,7 +1,7 @@
 package com.tradehero.th.api.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.competition.ProviderDTO;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class ProviderDTODeserialiserTest
     extends ProviderCompactDTODeserialiserTestBase<ProviderDTO>
 {

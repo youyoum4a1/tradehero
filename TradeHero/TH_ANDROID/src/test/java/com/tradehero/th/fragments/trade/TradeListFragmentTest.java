@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
 import android.os.Bundle;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -15,7 +15,7 @@ import org.robolectric.Robolectric;
 
 import static org.junit.Assume.assumeTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class TradeListFragmentTest
 {
     @Inject Context context;

@@ -1,6 +1,6 @@
 package com.tradehero.th.models.user;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 {
     @Inject CurrentUserId currentUserId;

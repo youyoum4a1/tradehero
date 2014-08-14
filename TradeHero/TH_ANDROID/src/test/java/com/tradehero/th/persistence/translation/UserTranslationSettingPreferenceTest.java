@@ -1,7 +1,7 @@
 package com.tradehero.th.persistence.translation;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class UserTranslationSettingPreferenceTest
 {
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;

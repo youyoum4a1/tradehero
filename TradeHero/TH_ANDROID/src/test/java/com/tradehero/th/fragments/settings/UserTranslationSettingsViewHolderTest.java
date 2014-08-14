@@ -4,7 +4,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradehero.AbstractTestBase;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
@@ -23,7 +23,7 @@ import org.robolectric.shadows.ShadowPreference;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
 {
     @Inject TranslationTokenCache translationTokenCache;

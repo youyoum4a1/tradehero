@@ -1,6 +1,6 @@
 package com.tradehero.th.auth;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class FacebookAuthenticationProviderTest
 {
     @Test public void testDateParsing1() throws ParseException

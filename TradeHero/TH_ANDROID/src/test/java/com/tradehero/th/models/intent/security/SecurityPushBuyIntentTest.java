@@ -2,7 +2,7 @@ package com.tradehero.th.models.intent.security;
 
 import android.net.Uri;
 import android.os.Bundle;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
@@ -18,7 +18,7 @@ import org.robolectric.Robolectric;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class SecurityPushBuyIntentTest
 {
     @Before public void setUp()

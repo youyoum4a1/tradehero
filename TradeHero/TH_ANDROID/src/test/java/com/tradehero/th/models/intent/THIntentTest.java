@@ -2,7 +2,7 @@ package com.tradehero.th.models.intent;
 
 import android.content.Intent;
 import android.net.Uri;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import org.junit.After;
 import org.junit.Before;
@@ -12,7 +12,7 @@ import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class THIntentTest
 {
     @Before public void setUp()

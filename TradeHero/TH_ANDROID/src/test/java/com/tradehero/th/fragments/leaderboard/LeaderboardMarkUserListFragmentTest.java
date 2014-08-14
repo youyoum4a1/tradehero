@@ -2,19 +2,18 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
 import com.tradehero.AbstractTestBase;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class LeaderboardMarkUserListFragmentTest extends AbstractTestBase
 {
     private DashboardNavigator dashboardNavigator;

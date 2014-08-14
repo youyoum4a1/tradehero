@@ -1,7 +1,7 @@
 package com.tradehero.th.api.translation.bing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.BaseApiTest;
 import com.tradehero.th.api.translation.TranslationToken;
@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class BingTranslationTokenTest extends BaseApiTest
 {
     @Inject @ForApp ObjectMapper normalMapper;

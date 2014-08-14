@@ -1,6 +1,6 @@
 package com.tradehero.common.utils;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import retrofit.client.Header;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class RetrofitHelperTest
 {
     private static final String HEADER_TO_SEARCH = "X-TH-CUSTOM-HEADER";
