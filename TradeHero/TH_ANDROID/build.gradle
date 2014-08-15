@@ -6,6 +6,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.+'
     }
 }
 
@@ -300,6 +301,38 @@ if (propFile.exists()) {
     android.buildTypes.release.signingConfig = null
 }
 
-tasks.withType(Compile) {
+tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
+// Fix this annoyance: https://github.com/robolectric/deckard-gradle/blob/master/README.md#required-tweaking-the-module-dependency-order-ie-classpath
+task reorderDependencyToFixJunit4Issue {
+    def file = file(project.name + ".iml")
+
+    println "reorderDependencyToFixJunit4Issue"
+    doLast {
+        println "reorderDependencyToFixJunit4Issue-doLast"
+        if (file.exists()) {
+            def parsedXml = (new XmlParser()).parse(file)
+            // find first component node which has orderEntry child
+            def targetComponent = parsedXml.component.find { it.orderEntry }
+            if (targetComponent) {
+                def androidSdk = targetComponent.find {
+                    it.@type == 'jdk' && it.@jdkType == 'Android SDK'
+                }
+                if (androidSdk && androidSdk != targetComponent.children().last()) {
+                    // reposition android sdk dependency in the iml file
+                    targetComponent.remove(androidSdk)
+                    targetComponent.append(androidSdk)
+
+                    // update iml file
+                    def writer = new StringWriter()
+                    new XmlNodePrinter(new PrintWriter(writer)).print(parsedXml)
+                    file.text = writer.toString()
+                }
+            }
+        }
+    }
+}
+
+preBuild.dependsOn(reorderDependencyToFixJunit4Issue)
