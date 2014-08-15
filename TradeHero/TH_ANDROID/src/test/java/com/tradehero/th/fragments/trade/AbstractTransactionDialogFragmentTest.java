@@ -1,10 +1,9 @@
 package com.tradehero.th.fragments.trade;
 
-import com.tradehero.AbstractTestBase;
 import android.text.Editable;
+import com.tradehero.AbstractTestBase;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -15,7 +14,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -33,7 +31,6 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
 
     @Inject UserProfileCache userProfileCache;
     @Inject SecurityCompactCache securityCompactCache;
-    @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject SecurityPositionDetailCache securityPositionDetailCache;
 
     @Inject CurrentUserId currentUserId;
@@ -69,16 +66,13 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
         SecurityCompactDTO mockSecurityCompactDTO = new SecurityCompactDTO();
         mockSecurityCompactDTO.id = sId;
         mockSecurityCompactDTO.name = "Security Name";
-        PortfolioCompactDTO mockPortfolioCompactDTO = new PortfolioCompactDTO();
-        mockPortfolioCompactDTO.id = 94;
-        mockPortfolioCompactDTO.userId = 20;
-        mockPortfolioCompactDTO.cashBalance = CASH_BALANCE;
-        mockPortfolioCompactDTO.currencyDisplay = "US$";
-        mockPortfolioCompactDTO.currencyISO = "USD";
         PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
         PortfolioDTO mockPortfolioDTO = new PortfolioDTO();
         mockPortfolioDTO.id = 94;
         mockPortfolioDTO.userId = 20;
+        mockPortfolioDTO.cashBalance = CASH_BALANCE;
+        mockPortfolioDTO.currencyDisplay = "US$";
+        mockPortfolioDTO.currencyISO = "USD";
         ProviderCompactDTOList mockProviderCompactsDTOList = new ProviderCompactDTOList();
         int firstTradeAllTime = 0;
 
@@ -91,7 +85,6 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
                         firstTradeAllTime);
 
         securityCompactCache.put(securityId, mockSecurityCompactDTO);
-        portfolioCompactCache.put(portfolioId, mockPortfolioCompactDTO);
         securityPositionDetailCache.put(securityId, mockPositionDetailDTO);
 
         activity = Robolectric.setupActivity(DashboardActivity.class);
