@@ -33,7 +33,7 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
         return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
     }
 
-    @Override @Nullable protected Double getProfitOrLoss()
+    @Override @Nullable protected Double getProfitOrLossUsd()
     {
         return null;
     }

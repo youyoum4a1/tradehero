@@ -33,24 +33,24 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
     }
 
-    @Override @Nullable protected Double getProfitOrLoss()
+    @Override @Nullable protected Double getProfitOrLossUsd()
     {
         if (positionDTOCompactList == null || portfolioCompactDTO == null)
         {
             return null;
         }
-        Double netProceeds = positionDTOCompactList.getNetSellProceedsUsd(
+        Double netProceedsUsd = positionDTOCompactList.getNetSellProceedsUsd(
                 mTransactionQuantity,
                 quoteDTO,
                 getPortfolioId(),
                 true,
                 portfolioCompactDTO.getProperTxnCostUsd());
-        Double totalSpent = positionDTOCompactList.getSpentOnQuantity(mTransactionQuantity, getPortfolioId());
-        if (netProceeds == null || totalSpent == null)
+        Double totalSpentUsd = positionDTOCompactList.getSpentOnQuantityUsd(mTransactionQuantity, getPortfolioId());
+        if (netProceedsUsd == null || totalSpentUsd == null)
         {
             return null;
         }
-        return netProceeds - totalSpent;
+        return netProceedsUsd - totalSpentUsd;
     }
 
     @Override protected int getCashLeftLabelResId()

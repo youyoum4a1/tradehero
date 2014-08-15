@@ -137,6 +137,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected QuoteDTO quoteDTO;
     protected Integer mTransactionQuantity = 0;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
+    protected boolean showProfitLossUsd = true; // false will show in RefCcy
 
     private BuySellTransactionListener buySellTransactionListener;
     protected UserProfileDTO userProfileDTO;
@@ -149,7 +150,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
 
     protected abstract String getLabel();
 
-    @Nullable protected abstract Double getProfitOrLoss();
+    @Nullable protected abstract Double getProfitOrLossUsd();  // TODO do a getProfitOrLossPortfolioCcy
 
     protected abstract int getCashLeftLabelResId();
 
@@ -489,10 +490,17 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         mSeekBar.setProgress(mTransactionQuantity);
     }
 
+    @OnClick(R.id.dialog_profit_and_loss)
+    protected void toggleProfitLossUsdRefCcy()
+    {
+        this.showProfitLossUsd = !showProfitLossUsd;
+        updateProfitLoss();
+    }
+
     private void updateProfitLoss()
     {
-        Double profitLoss = getProfitOrLoss();
-        if (profitLoss != null && mTransactionQuantity != null && mTransactionQuantity > 0)
+        Double profitLoss = showProfitLossUsd ? getProfitOrLossUsd() : getProfitOrLossUsd();
+        if (profitLoss != null && mTransactionQuantity != null && mTransactionQuantity > 0 && quoteDTO != null)
         {
             int stringResId = profitLoss < 0 ? R.string.buy_sell_sell_loss : R.string.buy_sell_sell_profit;
             mProfitLossView.setText(
@@ -500,6 +508,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
                             stringResId,
                             THSignedMoney.builder(profitLoss)
                                     .withOutSign()
+                                    .currency(showProfitLossUsd ? null : null)
                                     .build().toString()));
         }
         else
