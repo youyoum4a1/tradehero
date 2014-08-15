@@ -16,14 +16,19 @@ public class PositionDTO extends PositionDTOCompact
 {
     public int userId;
     public int securityId;
+    // This value is always in the portfolio currency
     public Double realizedPLRefCcy;
+    // This value is always in the portfolio currency
     public Double unrealizedPLRefCcy;
+    // This value is always in the portfolio currency
     public double marketValueRefCcy;
     public Date earliestTradeUtc;
     public Date latestTradeUtc;
 
+    // This value is always in the portfolio currency
     public Double sumInvestedAmountRefCcy;
 
+    // This value is always in the portfolio currency
     public double totalTransactionCostRefCcy;
 
     // if >1, then the values above relate to a collection of positions, not a single position -- see: MaskOpenPositions()
