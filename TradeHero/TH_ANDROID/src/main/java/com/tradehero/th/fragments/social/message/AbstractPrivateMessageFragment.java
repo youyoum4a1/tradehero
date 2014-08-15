@@ -232,9 +232,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     //TODO set actionBar with MessageHeaderDTO by alex
 
-
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
+        // TODO Move into DTOProcessor?
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 

@@ -5,6 +5,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.utils.SecurityUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
@@ -159,23 +160,19 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return total;
     }
 
-    public Double getSpentOnQuantityUsd(
-            @Nullable Integer shareCount,
-            @Nullable PortfolioId portfolioId)
+    @Nullable public Double getSpentOnQuantityUsd(
+            @NotNull Integer shareCount,
+            @NotNull PortfolioCompactDTO portfolioCompactDTO)
     {
-        if (shareCount == null || portfolioId == null)
-        {
-            return null;
-        }
         Double total = null;
         for (PositionDTOCompact positionDTO: this)
         {
-            if (portfolioId.key.equals(positionDTO.portfolioId)
+            if (portfolioCompactDTO.id == positionDTO.portfolioId
                     && positionDTO.averagePriceRefCcy != null
                     && positionDTO.shares != null)
             {
                 int localShareCount = Math.max(0, Math.min(shareCount, positionDTO.shares));
-                total = (total == null ? 0 : total) + positionDTO.averagePriceRefCcy * localShareCount;
+                total = (total == null ? 0 : total) + positionDTO.averagePriceRefCcy * portfolioCompactDTO.getProperRefCcyToUsdRate() * localShareCount;
                 shareCount -= localShareCount;
             }
         }
