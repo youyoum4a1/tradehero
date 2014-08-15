@@ -112,12 +112,17 @@ public class BuySellFragmentTest extends AbstractTestBase
     //<editor-fold desc="Watchlist Button">
     private void populateUserWatchlistCache()
     {
+        WatchlistPositionDTO googleWatch = new WatchlistPositionDTO();
+        googleWatch.id = 98;
+        googleWatch.userId = 123;
+        googleWatch.securityDTO = new SecurityCompactDTO();
+        googleWatch.securityDTO.id = 43;
+        googleWatch.securityDTO.exchange = "NYSE";
+        googleWatch.securityDTO.symbol = "GOOG";
+
         WatchlistPositionDTOList watchlistPositionDTOs = new WatchlistPositionDTOList();
-        WatchlistPositionDTO google = new WatchlistPositionDTO();
-        google.securityDTO = new SecurityCompactDTO();
-        google.securityDTO.exchange = "NYSE";
-        google.securityDTO.symbol = "GOOD";
-        watchlistPositionDTOs.add(google);
+        watchlistPositionDTOs.add(googleWatch);
+
         userWatchlistPositionCache.put(
                 currentUserId.toUserBaseKey(),
                 watchlistPositionDTOs);
@@ -144,13 +149,7 @@ public class BuySellFragmentTest extends AbstractTestBase
         populateUserWatchlistCache();
         buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
 
-        runBgUiTasks(10);
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
-        // TODO any better way than sleeping?
-        Thread.sleep(200); // This feels like a HACK but otherwise the test fails intermittently
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         assertThat(buySellFragment.mBtnAddWatchlist.getText()).isEqualTo("Edit in Watchlist");
     }
