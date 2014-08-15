@@ -54,11 +54,6 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-    }
-
     @Override protected TimelineItemViewHolder createViewHolder()
     {
         return new TimelineItemViewHolder<TimelineItemDTO>();
