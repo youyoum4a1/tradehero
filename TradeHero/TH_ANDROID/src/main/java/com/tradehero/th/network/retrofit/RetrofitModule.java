@@ -5,12 +5,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.annotation.ForApp;
+import com.tradehero.common.log.RetrofitErrorHandlerLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
-import com.tradehero.th.api.competition.ProviderCompactDTODeserialiserBase;
 import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTODeserialiser;
@@ -300,7 +300,11 @@ public class RetrofitModule
 
     @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
     {
-        return builder.setEndpoint(server).setRequestInterceptor(requestHeaders).build();
+        return builder
+                .setEndpoint(server)
+                .setRequestInterceptor(requestHeaders)
+                .setErrorHandler(new RetrofitErrorHandlerLogger())
+                .build();
     }
 
     //@Provides Client provideOkClient(Context context)

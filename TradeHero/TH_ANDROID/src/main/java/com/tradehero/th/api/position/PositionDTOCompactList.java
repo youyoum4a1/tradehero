@@ -109,9 +109,38 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         }
         return shareCount * bidUsd - (includeTransactionCostUsd ? txnCostUsd : 0);
     }
+
+    public Double getNetSellProceedsRefCcy(
+            @Nullable Integer shareCount,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
+            boolean includeTransactionCostUsd)
+    {
+        return getNetSellProceedsRefCcy(
+                shareCount,
+                quoteDTO,
+                portfolioId,
+                includeTransactionCostUsd,
+                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
+    }
+
+    public Double getNetSellProceedsRefCcy(
+            @Nullable Integer shareCount,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
+            boolean includeTransactionCostUsd,
+            double txnCostUsd)
+    {
+        Double netProceedsUsd = getNetSellProceedsUsd(shareCount, quoteDTO, portfolioId, includeTransactionCostUsd, txnCostUsd);
+        if (netProceedsUsd == null || quoteDTO == null || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0)
+        {
+            return null;
+        }
+        return netProceedsUsd / quoteDTO.toUSDRate;
+    }
     //</editor-fold>
 
-    public Double getTotalSpent(@Nullable PortfolioId portfolioId)
+    public Double getTotalSpentUsd(@Nullable PortfolioId portfolioId)
     {
         if (portfolioId == null)
         {
@@ -130,7 +159,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return total;
     }
 
-    public Double getSpentOnQuantity(
+    public Double getSpentOnQuantityUsd(
             @Nullable Integer shareCount,
             @Nullable PortfolioId portfolioId)
     {

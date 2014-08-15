@@ -15,8 +15,9 @@ public class PositionDTOCompact extends ExtendedDTO
     public Integer shares;
     public int portfolioId;
 
-    // This price is always in USD
+    // This price is always in the portfolio currency
     public Double averagePriceRefCcy;
+    // This is the portfolio currency
     @Nullable public String currencyDisplay;
     @Nullable public String currencyISO;
 

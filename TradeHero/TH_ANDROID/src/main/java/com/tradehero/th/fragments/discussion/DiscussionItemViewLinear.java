@@ -36,16 +36,6 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
     @Override protected void onDetachedFromWindow()
     {
         socialShareHelper.onDetach();

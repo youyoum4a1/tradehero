@@ -92,6 +92,7 @@ public class AlertViewFragmentTest
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
+        Robolectric.runUiThreadTasks();
 
         assertThat(alertViewFragment.alertUpdateMiddleCallback).isNull();
 

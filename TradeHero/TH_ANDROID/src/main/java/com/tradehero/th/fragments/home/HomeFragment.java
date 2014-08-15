@@ -268,10 +268,10 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             String messageToFacebookFriends = getActivity().getString(
                     R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            if (messageToFacebookFriends.length() > 60)
-            {
-                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-            }
+            //if (messageToFacebookFriends.length() > 60)
+            //{
+            //    messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+            //}
 
             params.putString("message", messageToFacebookFriends);
             params.putString("to", stringBuilder.toString());

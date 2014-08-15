@@ -52,7 +52,7 @@ public class TranslatableLanguageListFragmentTest extends AbstractTestBase
         assertThat(latestToastText).isEqualTo(context.getString(R.string.error_incomplete_info_message));
     }
 
-    @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken()
+    @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken() throws InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);

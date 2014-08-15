@@ -5,4 +5,5 @@
     android:layout_height="match_parent">
 
   <include layout="@layout/timeline_discussion_view"/>
+
 </FrameLayout>

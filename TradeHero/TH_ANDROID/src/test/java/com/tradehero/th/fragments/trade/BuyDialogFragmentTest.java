@@ -37,7 +37,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     @Inject Context context; //Dummy inject
 
     @Before @Override
-    public void setUp()
+    public void setUp() throws InterruptedException
     {
         super.setUp();
     }

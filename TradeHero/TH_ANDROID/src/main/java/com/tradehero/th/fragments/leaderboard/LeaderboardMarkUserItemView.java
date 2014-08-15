@@ -55,6 +55,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MarkdownTextView;
+import com.tradehero.th.widget.list.BaseExpandingItemListener;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
@@ -606,7 +607,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
     }
 
-    private void handleOpenProfileButtonClicked()
+    protected void handleOpenProfileButtonClicked()
     {
         if (leaderboardItem == null)
         {
@@ -615,6 +616,11 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
         int userId = leaderboardItem.id;
 
+        openTimeline(userId);
+    }
+
+    protected void openTimeline(int userId)
+    {
         Bundle bundle = new Bundle();
         UserBaseKey userToSee = new UserBaseKey(userId);
         thRouter.save(bundle, userToSee);
@@ -679,8 +685,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             innerViewContainer.setBackgroundResource(R.color.white);
         }
 
-        // user is not ranked, disable expandable view
-        setOnClickListener(null);
         lbmuRoi.setText(R.string.leaderboard_not_ranked);
         lbmuPosition.setText("-");
     }

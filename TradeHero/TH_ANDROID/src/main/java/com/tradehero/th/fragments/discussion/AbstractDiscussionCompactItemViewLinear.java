@@ -110,7 +110,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     private void fetchDiscussionDetail(boolean force)
     {
         detachFetchDiscussionTask();
-
         discussionCache.register(discussionKey, discussionFetchListener);
         discussionCache.getOrFetchAsync(discussionKey, force);
     }

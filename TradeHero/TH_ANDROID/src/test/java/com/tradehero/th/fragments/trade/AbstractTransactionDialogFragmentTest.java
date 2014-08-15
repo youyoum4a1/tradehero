@@ -44,7 +44,7 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
     protected DashboardActivity activity;
     protected AbstractTransactionDialogFragment abstractTransactionDialogFragment;
 
-    public void setUp()
+    public void setUp() throws InterruptedException
     {
         int sId = 92;
 
