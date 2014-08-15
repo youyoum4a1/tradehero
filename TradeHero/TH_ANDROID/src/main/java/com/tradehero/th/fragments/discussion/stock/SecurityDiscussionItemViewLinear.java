@@ -40,11 +40,6 @@ public class SecurityDiscussionItemViewLinear
         viewHolder.setDownVote(false);
     }
 
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-    }
-
     void handleActionButtonCommentCountClicked()
     {
         Bundle args = new Bundle();
