@@ -45,7 +45,7 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
                 getPortfolioId(),
                 true,
                 portfolioCompactDTO.getProperTxnCostUsd());
-        Double totalSpentUsd = positionDTOCompactList.getSpentOnQuantityUsd(mTransactionQuantity, getPortfolioId());
+        Double totalSpentUsd = positionDTOCompactList.getSpentOnQuantityUsd(mTransactionQuantity, portfolioCompactDTO);
         if (netProceedsUsd == null || totalSpentUsd == null)
         {
             return null;
