@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
+// TODO remove ExtendedDTO
 public class UserBaseDTO extends ExtendedDTO
 {
     public int id;

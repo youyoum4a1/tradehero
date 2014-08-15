@@ -764,7 +764,7 @@ import retrofit.client.Response;
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowFreeUserProcessor(userBaseKey));
-        userServiceAsync.freeFollow(userBaseKey.key, callback);
+        userServiceAsync.freeFollow(userBaseKey.key, middleCallback);
         return middleCallback;
     }
     //</editor-fold>

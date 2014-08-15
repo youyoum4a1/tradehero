@@ -2,7 +2,7 @@ package com.tradehero.th.api.security;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.compact.BondCompactDTO;
 import com.tradehero.th.api.security.compact.CoveredWarrantDTO;
@@ -43,7 +43,7 @@ import timber.log.Timber;
         @JsonSubTypes.Type(value = PreferredSecurityDTO.class, name = PreferredSecurityDTO.DTO_DESERIALISING_TYPE),
         @JsonSubTypes.Type(value = StapledSecurityDTO.class, name = StapledSecurityDTO.DTO_DESERIALISING_TYPE),
 })
-public class SecurityCompactDTO extends ExtendedDTO
+public class SecurityCompactDTO implements DTO
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
@@ -132,8 +132,6 @@ public class SecurityCompactDTO extends ExtendedDTO
         this.exchangeOpeningTimeLocal = other.exchangeOpeningTimeLocal;
         this.exchangeClosingTimeLocal = other.exchangeClosingTimeLocal;
         this.secTypeDesc = other.secTypeDesc;
-
-        this.putAll(other.getAll(), SecurityCompactDTO.class);
     }
     //</editor-fold>
 
@@ -249,7 +247,6 @@ public class SecurityCompactDTO extends ExtendedDTO
                 ", exchangeOpeningTimeLocal='" + exchangeOpeningTimeLocal + '\'' +
                 ", exchangeClosingTimeLocal='" + exchangeClosingTimeLocal + '\'' +
                 ", secTypeDesc='" + secTypeDesc + '\'' +
-                ", extras={" + formatExtras(", ").toString() + "}" +
                 '}';
     }
 }
