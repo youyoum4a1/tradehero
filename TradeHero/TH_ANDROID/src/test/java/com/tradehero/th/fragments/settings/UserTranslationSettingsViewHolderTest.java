@@ -143,7 +143,7 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
 
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
 
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         assertThat(settingsFragment.userTranslationSettingsViewHolder
                 .translationPreferredLang.getSummary().toString())

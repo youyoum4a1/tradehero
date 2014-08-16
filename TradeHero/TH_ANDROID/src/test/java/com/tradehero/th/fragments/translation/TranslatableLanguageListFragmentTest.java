@@ -57,7 +57,7 @@ public class TranslatableLanguageListFragmentTest extends AbstractTestBase
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);
 
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         assertThat(listFragment.listView.getAdapter().getCount()).isGreaterThan(10);
     }

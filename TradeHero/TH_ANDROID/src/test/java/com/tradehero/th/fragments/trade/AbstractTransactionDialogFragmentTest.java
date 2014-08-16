@@ -92,7 +92,7 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
                 = AbstractTransactionDialogFragment.newInstance(securityId, portfolioId, quoteDTO, isBuy());
         abstractTransactionDialogFragment.show(activity.getSupportFragmentManager(), "Test");
 
-        runBgUiTasks(10);
+        runBgUiTasks(3);
     }
 
     @Test

@@ -171,7 +171,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
 
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         int firstPortfolioButtonPosition = -1;
 
