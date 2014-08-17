@@ -1,17 +1,18 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.timeline.TimelineReadDTO;
-import retrofit.RetrofitError;
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
-public interface UserTimelineMarkerService
+public interface UserTimelineMarkerServiceAsync
 {
     //<editor-fold desc="Post Timeline Marker">
-    @POST("/users/{userId}/read") TimelineReadDTO postTimelineMarker(
+    @POST("/users/{userId}/read")
+    void postTimelineMarker(
             @Path("userId") int userId,
-            @Body TimelineReadDTO lastReadDTO)
-            throws RetrofitError;
+            @Body TimelineReadDTO lastReadDTO,
+            Callback<TimelineReadDTO> callback);
     //</editor-fold>
 }
