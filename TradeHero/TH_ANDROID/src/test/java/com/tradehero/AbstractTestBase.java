@@ -77,8 +77,8 @@ abstract public class AbstractTestBase
         }
         System.out.println("ClassDiscovery: Directory = " + directory);
 
-        String nonTestFullPath = fullPath.replace("-test", "");
-        String nonTestRelPath = "../" + relPath.replace("-test", "");
+        String nonTestFullPath = fullPath.replace("test-", "");
+        String nonTestRelPath = "../" + relPath.replace("test-", "");
         File nonTestDirectory = new File(nonTestFullPath);
 
         ArrayList<Class<?>> collated = getClassesForDirectory(directory, pkgname, fullPath, relPath);
