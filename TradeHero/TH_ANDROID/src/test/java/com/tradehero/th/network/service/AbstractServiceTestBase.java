@@ -2,10 +2,24 @@ package com.tradehero.th.network.service;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.AbstractTestBase;
+import com.tradehero.th.utils.DaggerUtils;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import retrofit.Callback;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 abstract public class AbstractServiceTestBase extends AbstractTestBase
 {
+    //<editor-fold desc="Get Services By Type">
     public ArrayList<Class<?>> getAllServices()
     {
         return getClassesForPackage(
@@ -14,9 +28,14 @@ abstract public class AbstractServiceTestBase extends AbstractTestBase
                 {
                     @Override public boolean apply(Class<?> aClass)
                     {
-                        return aClass.isInterface() && aClass.getSimpleName().matches("^.*Service$");
+                        return isService(aClass);
                     }
                 });
+    }
+
+    public boolean isService(Class<?> aClass)
+    {
+        return aClass.isInterface() && aClass.getSimpleName().matches("^.*Service$");
     }
 
     public ArrayList<Class<?>> getAllServiceAsyncs()
@@ -27,9 +46,14 @@ abstract public class AbstractServiceTestBase extends AbstractTestBase
                 {
                     @Override public boolean apply(Class<?> aClass)
                     {
-                        return aClass.isInterface() && aClass.getSimpleName().matches("^.*ServiceAsync$");
+                        return isServiceAsync(aClass);
                     }
                 });
+    }
+
+    public boolean isServiceAsync(@NotNull Class<?> aClass)
+    {
+        return aClass.isInterface() && aClass.getSimpleName().matches("^.*ServiceAsync$");
     }
 
     public ArrayList<Class<?>> getAllServiceWrappers()
@@ -40,8 +64,105 @@ abstract public class AbstractServiceTestBase extends AbstractTestBase
                 {
                     @Override public boolean apply(Class<?> aClass)
                     {
-                        return !aClass.isInterface() && aClass.getSimpleName().matches("^.*ServiceWrapper$");
+                        return isServiceWrapper(aClass);
                     }
                 });
+    }
+
+    public boolean isServiceWrapper(@NotNull Class<?> aClass)
+    {
+        return !aClass.isInterface() && aClass.getSimpleName().matches("^.*ServiceWrapper$");
+    }
+
+    public ArrayList<Class<?>> getAllServiceWrapperInjectors()
+    {
+        return getClassesForPackage(
+                AlertPlanService.class.getPackage(),
+                new Predicate<Class<?>>()
+                {
+                    @Override public boolean apply(Class<?> aClass)
+                    {
+                        return isServiceWrapperInjector(aClass);
+                    }
+                });
+    }
+
+    public boolean isServiceWrapperInjector(@NotNull Class<?> aClass)
+    {
+        return !aClass.isInterface() && aClass.getSimpleName().matches("^.*ServiceWrapper\\$\\$InjectAdapter$");
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Identify Methods that take Callbacks">
+    @NotNull public List<Method> getCallbackMethods(@NotNull Class<?> service)
+    {
+        List<Method> methodsWithCallback = new ArrayList<>();
+        Method [] declared = service.getDeclaredMethods();
+        for (Method method : declared)
+        {
+            if (usesCallback(method))
+            {
+                methodsWithCallback.add(method);
+            }
+        }
+        return methodsWithCallback;
+    }
+
+    public boolean usesCallback(@NotNull Method method)
+    {
+        Class<?>[] parameters = method.getParameterTypes();
+        return parameters.length > 0 &&
+                parameters[parameters.length - 1].isAssignableFrom(Callback.class);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="List @Inject programmatically">
+    public Object obtainInjectableParameter(@NotNull Class<?> anyType)
+    {
+        return DaggerUtils.getObject(anyType);
+    }
+    //</editor-fold>
+
+    public void replaceServiceAsync(Object serviceWrapper, Object withAsyncService)
+            throws IllegalAccessException
+    {
+        Field[] fields = serviceWrapper.getClass().getDeclaredFields();
+        for (Field field :fields)
+        {
+            if (isServiceAsync(field.getType()))
+            {
+                field.setAccessible(true);
+                field.set(serviceWrapper, withAsyncService);
+            }
+        }
+    }
+
+    public<T> T tieCallbackMethodsToHolder(
+            @NotNull Class<T> serviceAsyncType,
+            @NotNull final CallbackHolder holder)
+            throws InvocationTargetException, IllegalAccessException
+    {
+        T service = mock(serviceAsyncType);
+        List<Method> callbackMethods = getCallbackMethods(serviceAsyncType);
+        for (Method callbackMethod: callbackMethods)
+        {
+            Class<?>[] parameterTypes = callbackMethod.getParameterTypes();
+            Object[] parameters = new Object[parameterTypes.length];
+            for (int index = 0; index < parameterTypes.length; index++)
+            {
+                parameters[index] = any(parameterTypes[index]);
+            }
+            when(callbackMethod.invoke(service, parameters)).then(new Answer<Object>()
+            {
+                @Override public Object answer(InvocationOnMock invocation) throws Throwable
+                {
+                    Object[] args = invocation.getArguments();
+                    Callback lastArg = (Callback) args[args.length - 1];
+                    holder.callback = lastArg;
+                    return lastArg;
+                }
+            });
+        }
+        return service;
     }
 }
