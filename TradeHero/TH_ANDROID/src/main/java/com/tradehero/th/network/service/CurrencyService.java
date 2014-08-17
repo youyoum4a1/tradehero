@@ -5,7 +5,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.http.GET;
 
-interface CurrencyService
+public interface CurrencyService
 {
     //<editor-fold desc="Get Currencies">
     @GET("/currencies")

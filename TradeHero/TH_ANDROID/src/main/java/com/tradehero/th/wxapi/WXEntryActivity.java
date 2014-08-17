@@ -245,7 +245,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
         detachTrackShareMiddleCallback();
         trackShareMiddleCallback =
-                weChatServiceWrapper.trackShare(currentUserId.get(), weChatTrackShareFormDTO,
+                weChatServiceWrapper.trackShare(currentUserId.toUserBaseKey(), weChatTrackShareFormDTO,
                         new TrackShareCallback());
     }
 
