@@ -32,6 +32,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.JSONCredentials;
+import com.tradehero.th.fragments.social.friend.RequestCallback;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
@@ -268,10 +269,10 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             String messageToFacebookFriends = getActivity().getString(
                     R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            if (messageToFacebookFriends.length() > 60)
-            {
-                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-            }
+            //if (messageToFacebookFriends.length() > 60)
+            //{
+            //    messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+            //}
 
             params.putString("message", messageToFacebookFriends);
             params.putString("to", stringBuilder.toString());
@@ -405,7 +406,7 @@ public final class HomeFragment extends BaseWebViewFragment
     protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
+        socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback());
     }
 
     protected void createFriendHandler()
@@ -416,14 +417,11 @@ public final class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
+    class FollowFriendCallback extends RequestCallback<UserProfileDTO>
     {
-        final List<UserFriendsDTO> usersToFollow;
-
-        private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
+        private FollowFriendCallback()
         {
             super(getActivity());
-            this.usersToFollow = usersToFollow;
         }
 
         @Override

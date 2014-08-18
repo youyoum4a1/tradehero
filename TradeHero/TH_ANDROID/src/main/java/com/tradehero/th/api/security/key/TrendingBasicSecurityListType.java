@@ -57,7 +57,7 @@ public class TrendingBasicSecurityListType extends TrendingSecurityListType
         if (!TrendingBasicSecurityListType.class.isInstance(another))
         {
             // TODO is it very expensive?
-            return TrendingBasicSecurityListType.class.getName().compareTo(another.getClass().getName());
+            return TrendingBasicSecurityListType.class.getName().compareTo(((Object) another).getClass().getName());
         }
 
         return compareTo(TrendingBasicSecurityListType.class.cast(another));

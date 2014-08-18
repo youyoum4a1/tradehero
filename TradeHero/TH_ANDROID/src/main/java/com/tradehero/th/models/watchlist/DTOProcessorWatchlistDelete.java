@@ -1,11 +1,12 @@
 package com.tradehero.th.models.watchlist;
 
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import org.jetbrains.annotations.NotNull;
@@ -15,25 +16,31 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
 {
     @NotNull private final UserBaseKey concernedUser;
     @NotNull private final WatchlistPositionCache watchlistPositionCache;
-    @NotNull private final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull private final PortfolioCompactCache portfolioCompactCache;
+    @NotNull private final PortfolioCache portfolioCache;
     @NotNull private final UserWatchlistPositionCache userWatchlistPositionCache;
 
+    //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistDelete(
             @NotNull WatchlistPositionCache watchlistPositionCache,
             @NotNull UserBaseKey concernedUser,
-            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull PortfolioCompactCache portfolioCompactCache,
+            @NotNull PortfolioCache portfolioCache,
             @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
         super();
         this.concernedUser = concernedUser;
         this.watchlistPositionCache = watchlistPositionCache;
-        this.portfolioCompactListCache = portfolioCompactListCache;
+        this.portfolioCompactCache = portfolioCompactCache;
+        this.portfolioCache = portfolioCache;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
     }
+    //</editor-fold>
 
     @Override public WatchlistPositionDTO process(@NotNull WatchlistPositionDTO watchlistPositionDTO)
     {
-        portfolioCompactListCache.invalidate(concernedUser);
+        portfolioCompactCache.invalidate(concernedUser, true);
+        portfolioCache.invalidate(concernedUser, true);
         SecurityId deletedSecurityId = null;
         if (watchlistPositionDTO.securityDTO != null)
         {
@@ -46,12 +53,18 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
                     null);
         }
 
-        SecurityIdList currentIds = userWatchlistPositionCache.get(concernedUser);
-        if (currentIds != null)
+        WatchlistPositionDTOList cachedPositions = userWatchlistPositionCache.get(concernedUser);
+        if (cachedPositions != null && deletedSecurityId != null)
         {
-            currentIds.remove(deletedSecurityId);
+            cachedPositions.remove(deletedSecurityId);
+            userWatchlistPositionCache.put(concernedUser, cachedPositions);
+            watchlistPositionCache.invalidate(deletedSecurityId);
         }
-        watchlistPositionCache.invalidate(deletedSecurityId);
+        else
+        {
+            userWatchlistPositionCache.invalidate(concernedUser);
+            watchlistPositionCache.invalidate(concernedUser);
+        }
         return watchlistPositionDTO;
     }
 }

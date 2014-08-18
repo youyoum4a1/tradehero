@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -27,11 +28,14 @@ public class FaqViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_FAQ));
-
-        String faqUrl = preferenceFragment.getString(R.string.th_faq_url);
-        Bundle bundle = new Bundle();
-        WebViewFragment.putUrl(bundle, faqUrl);
-        preferenceFragment.getNavigator().pushFragment(WebViewFragment.class, bundle);
+        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_FAQ));
+            String faqUrl = preferenceFragmentCopy.getString(R.string.th_faq_url);
+            Bundle bundle = new Bundle();
+            WebViewFragment.putUrl(bundle, faqUrl);
+            preferenceFragmentCopy.getNavigator().pushFragment(WebViewFragment.class, bundle);
+        }
     }
 }

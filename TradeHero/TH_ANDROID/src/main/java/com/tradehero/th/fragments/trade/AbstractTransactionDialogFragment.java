@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,6 +90,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     @InjectView(R.id.vtrade_value) protected TextView mTradeValueTextView;
     @InjectView(R.id.dialog_price) protected TextView mStockPriceTextView;
     @InjectView(R.id.dialog_portfolio) protected TextView mPortfolioTextView;
+    @InjectView(R.id.dialog_profit_and_loss) protected TextView mProfitLossView;
 
     @InjectView(R.id.seek_bar) protected SeekBar mSeekBar;
 
@@ -135,6 +137,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     protected QuoteDTO quoteDTO;
     protected Integer mTransactionQuantity = 0;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
+    protected boolean showProfitLossUsd = true; // false will show in RefCcy
 
     private BuySellTransactionListener buySellTransactionListener;
     protected UserProfileDTO userProfileDTO;
@@ -146,6 +149,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     Editable unSpannedComment;
 
     protected abstract String getLabel();
+
+    @Nullable protected abstract Double getProfitOrLossUsd();  // TODO do a getProfitOrLossPortfolioCcy
 
     protected abstract int getCashLeftLabelResId();
 
@@ -265,9 +270,18 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
         mPortfolioTextView.setText(
                 getString(R.string.buy_sell_portfolio_selected_title) + " " + (portfolioCompactDTO == null ? "-" : portfolioCompactDTO.title));
 
+        updateProfitLoss();
+
         mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
         mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
         mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
+        mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent)
+            {
+                return false;
+            }
+        });
 
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
@@ -460,6 +474,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     {
         updateSeekbar();
         updateQuantityView();
+        updateProfitLoss();
         updateTradeValueAndCashShareLeft();
         updateConfirmButton();
     }
@@ -473,6 +488,33 @@ public abstract class AbstractTransactionDialogFragment extends BaseDialogFragme
     private void updateSeekbar()
     {
         mSeekBar.setProgress(mTransactionQuantity);
+    }
+
+    @OnClick(R.id.dialog_profit_and_loss)
+    protected void toggleProfitLossUsdRefCcy()
+    {
+        this.showProfitLossUsd = !showProfitLossUsd;
+        updateProfitLoss();
+    }
+
+    private void updateProfitLoss()
+    {
+        Double profitLoss = showProfitLossUsd ? getProfitOrLossUsd() : getProfitOrLossUsd();
+        if (profitLoss != null && mTransactionQuantity != null && mTransactionQuantity > 0 && quoteDTO != null)
+        {
+            int stringResId = profitLoss < 0 ? R.string.buy_sell_sell_loss : R.string.buy_sell_sell_profit;
+            mProfitLossView.setText(
+                    getString(
+                            stringResId,
+                            THSignedMoney.builder(profitLoss)
+                                    .withOutSign()
+                                    .currency(showProfitLossUsd ? null : null)
+                                    .build().toString()));
+        }
+        else
+        {
+            mProfitLossView.setText(getString(R.string.buy_sell_sell_loss, "--"));
+        }
     }
 
     private void updateTradeValueAndCashShareLeft()

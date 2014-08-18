@@ -25,29 +25,6 @@ public class CommentItemViewLinear extends DiscussionItemViewLinear<CommentKey>
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-    }
-
-    @Override protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
-    {
-        super.linkWith(abstractDiscussionDTO, andDisplay);
-        if (andDisplay)
-        {
-        }
-    }
-
     protected void openDiscussion()
     {
         if (abstractDiscussionCompactDTO != null)

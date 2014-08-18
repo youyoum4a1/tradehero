@@ -218,7 +218,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    protected SocialFriendHandler.RequestCallback createInviteCallback(List<UserFriendsDTO> usersToInvite)
+    protected RequestCallback createInviteCallback(List<UserFriendsDTO> usersToInvite)
     {
         return new InviteFriendCallback(usersToInvite);
     }
@@ -596,7 +596,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         THToast.show(R.string.invite_friend_request_error);
     }
 
-    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
+    class FollowFriendCallback extends RequestCallback<UserProfileDTO>
     {
         final List<UserFriendsDTO> usersToFollow;
 
@@ -628,7 +628,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
+    class InviteFriendCallback extends RequestCallback<Response>
     {
         List<UserFriendsDTO> usersToInvite;
 

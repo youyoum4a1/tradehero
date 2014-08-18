@@ -27,13 +27,12 @@ import timber.log.Timber;
 
 public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZoneDTO>
 {
-    public static final int ITEM_TYPE_TRADE_NOW = 0;
-    public static final int ITEM_TYPE_ADS = 1;
-    public static final int ITEM_TYPE_HEADER = 2;
-    public static final int ITEM_TYPE_PORTFOLIO = 3;
-    public static final int ITEM_TYPE_ZONE_ITEM = 4;
-    public static final int ITEM_TYPE_LEADERBOARD = 5;
-    public static final int ITEM_TYPE_LEGAL_MENTIONS = 6;
+    public static final int ITEM_TYPE_ADS = 0;
+    public static final int ITEM_TYPE_HEADER = 1;
+    public static final int ITEM_TYPE_PORTFOLIO = 2;
+    public static final int ITEM_TYPE_ZONE_ITEM = 3;
+    public static final int ITEM_TYPE_LEADERBOARD = 4;
+    public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
 
     @NotNull private final Integer[] viewTypeToResId;
     private List<Integer> orderedTypes;
@@ -51,7 +50,6 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public CompetitionZoneListItemAdapter(
             @NotNull Context context,
             int zoneItemLayoutResId,
-            int tradeNowResId,
             int adsResId,
             int headerResId,
             int portfolioResId,
@@ -61,7 +59,6 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         super(context, zoneItemLayoutResId);
 
         this.viewTypeToResId = new Integer[7];
-        this.viewTypeToResId[ITEM_TYPE_TRADE_NOW] = tradeNowResId;
         this.viewTypeToResId[ITEM_TYPE_ADS] = adsResId;
         this.viewTypeToResId[ITEM_TYPE_HEADER] = headerResId;
         this.viewTypeToResId[ITEM_TYPE_PORTFOLIO] = portfolioResId;
@@ -149,7 +146,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         {
             return orderedTypesCopy.get(size - 1);
         }
-        return ITEM_TYPE_TRADE_NOW;
+        return ITEM_TYPE_PORTFOLIO;
     }
 
     @Override public int getViewResId(int position)

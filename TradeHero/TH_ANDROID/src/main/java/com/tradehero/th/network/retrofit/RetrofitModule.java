@@ -5,12 +5,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.annotation.ForApp;
+import com.tradehero.common.log.RetrofitErrorHandlerLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
-import com.tradehero.th.api.competition.ProviderCompactDTODeserialiserBase;
 import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTODeserialiser;
@@ -32,13 +32,14 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.AlertService;
 import com.tradehero.th.network.service.CompetitionService;
+import com.tradehero.th.network.service.CurrencyService;
 import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.network.service.FollowerService;
 import com.tradehero.th.network.service.HomeService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MarketService;
 import com.tradehero.th.network.service.MessageService;
-import com.tradehero.th.network.service.NewsServiceSync;
+import com.tradehero.th.network.service.NewsService;
 import com.tradehero.th.network.service.NotificationService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.PositionService;
@@ -52,6 +53,7 @@ import com.tradehero.th.network.service.TradeService;
 import com.tradehero.th.network.service.TranslationServiceBing;
 import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
+import com.tradehero.th.network.service.UserTimelineMarkerService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.network.service.WeChatService;
@@ -78,7 +80,7 @@ import retrofit.converter.Converter;
                 SettingsAlipayFragment.class,
                 ProviderPageIntent.class,
 
-                VotePair.class
+                VotePair.class,
         },
         complete = false,
         library = true
@@ -99,6 +101,11 @@ public class RetrofitModule
     @Provides @Singleton CompetitionService provideCompetitionService(RestAdapter adapter)
     {
         return adapter.create(CompetitionService.class);
+    }
+
+    @Provides @Singleton CurrencyService provideCurrencyService(RestAdapter adapter)
+    {
+        return adapter.create(CurrencyService.class);
     }
 
     @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
@@ -126,9 +133,9 @@ public class RetrofitModule
         return adapter.create(MessageService.class);
     }
 
-    @Provides @Singleton NewsServiceSync provideNewServiceSync(RestAdapter adapter)
+    @Provides @Singleton NewsService provideNewServiceSync(RestAdapter adapter)
     {
-        return adapter.create(NewsServiceSync.class);
+        return adapter.create(NewsService.class);
     }
 
     @Provides @Singleton NotificationService provideNotificationService(RestAdapter adapter)
@@ -191,6 +198,11 @@ public class RetrofitModule
     @Provides @Singleton UserService provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserService.class);
+    }
+
+    @Provides @Singleton UserTimelineMarkerService provideUserTimelineMarkerService(RestAdapter adapter)
+    {
+        return adapter.create(UserTimelineMarkerService.class);
     }
 
     @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
@@ -300,7 +312,11 @@ public class RetrofitModule
 
     @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
     {
-        return builder.setEndpoint(server).setRequestInterceptor(requestHeaders).build();
+        return builder
+                .setEndpoint(server)
+                .setRequestInterceptor(requestHeaders)
+                .setErrorHandler(new RetrofitErrorHandlerLogger())
+                .build();
     }
 
     //@Provides Client provideOkClient(Context context)

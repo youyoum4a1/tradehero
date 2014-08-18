@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.competition;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.AbsListView;
-import com.tradehero.AbstractTestBase;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectric;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
@@ -13,6 +13,7 @@ import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
+import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -32,13 +33,11 @@ import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(shadows = ShadowWebViewNew.class)
-public class MainCompetitionFragmentTest extends AbstractTestBase
+public class MainCompetitionFragmentTest
 {
     private static final String TEST_ADS_WEB_URL = "http://www.google.com";
     private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";
@@ -55,7 +54,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         DashboardActivity activity = Robolectric.setupActivity(DashboardActivity.class);
         dashboardNavigator = activity.getDashboardNavigator();
 
-        providerId = new ProviderId(23);
+        providerId = new ProviderId(3423);
         // creating mock object for providerDTO
         ProviderDTO mockProviderDTO = new ProviderDTO();
         mockProviderDTO.id = providerId.key;
@@ -82,7 +81,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
     {
         Bundle args = new Bundle();
 
-        ProviderId providerId = new ProviderId(23);
+        ProviderId providerId = new ProviderId(3423);
         MainCompetitionFragment.putProviderId(args, providerId);
 
         MainCompetitionFragment mainCompetition = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
@@ -103,8 +102,9 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(ProviderSecurityListFragment.class);
     }
 
-    @Test public void shouldGoToWebFragmentAfterClickOnAds()
+    @Test public void shouldGoToWebFragmentAfterClickOnAds() throws InterruptedException
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
@@ -118,12 +118,9 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         AbsListView competitionListView = mainCompetitionFragment.listView;
         assertThat(competitionListView).isNotNull();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        Robolectric.getBackgroundScheduler().unPause();
+
+        THRobolectric.runBgUiTasks(3);
 
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
@@ -154,7 +151,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         assertThat(shadowWebView.getLastLoadedUrl()).isEqualTo(providerUtil.appendUserId(TEST_ADS_WEB_URL, '&'));
     }
 
-    @Test public void shouldGoToCompetitionPortfolioAfterClickOnCompetitionPortfolio()
+    @Test public void shouldGoToCompetitionPortfolioAfterClickOnCompetitionPortfolio() throws InterruptedException
     {
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
@@ -167,7 +164,7 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
 
-        runBgUiTasks(10);
+        THRobolectric.runBgUiTasks(3);
 
         int firstPortfolioButtonPosition = -1;
 
@@ -196,31 +193,32 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
 
     }
 
-    @Test public void shouldGoToTradeQuestPageAfterClickOnWizardCellWhenWizardUrlIsSetToTradeQuestUrl()
+    @Test public void shouldGoToTradeQuestPageAfterClickOnWizardCellWhenWizardUrlIsSetToTradeQuestUrl() throws InterruptedException
     {
         ProviderDTO providerDTO = providerCache.get(providerId);
         providerDTO.wizardUrl = TEST_WIZARD_WEB_URL;
+        providerCache.put(providerId, providerDTO);
         shouldGoToCorrectWebPageAfterClickOnWizardCell(TEST_WIZARD_WEB_URL);
     }
 
-    @Test public void shouldGoToProviderWizardPageAfterClickOnWizardCell()
+    @Test public void shouldGoToProviderWizardPageAfterClickOnWizardCell() throws InterruptedException
     {
         // we do not hardcoded on client anymore for generating competition url from providerId
         // but I would like to test it anyway
         ProviderDTO providerDTO = providerCache.get(providerId);
         providerDTO.wizardUrl = null;
-        ProviderDTO providerDTOWithHardcodedWizard = spy(providerDTO);
-
         // for enabling wizard cell
-        when(providerDTOWithHardcodedWizard.hasWizard()).thenReturn(true);
-        providerCache.put(providerId, providerDTOWithHardcodedWizard);
+        providerDTO.specificKnowledge = new ProviderSpecificKnowledgeDTO();
+        providerDTO.specificKnowledge.hasWizard = true;
+        providerCache.put(providerId, providerDTO);
 
         String expectedWizardPage = providerUtil.getWizardPage(providerId);
         shouldGoToCorrectWebPageAfterClickOnWizardCell(expectedWizardPage);
     }
 
-    private void shouldGoToCorrectWebPageAfterClickOnWizardCell(String webLink)
+    private void shouldGoToCorrectWebPageAfterClickOnWizardCell(String webLink) throws InterruptedException
     {
+        Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
         MainCompetitionFragment.putProviderId(args, providerId);
 
@@ -236,12 +234,9 @@ public class MainCompetitionFragmentTest extends AbstractTestBase
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        Robolectric.getBackgroundScheduler().unPause();
+
+        THRobolectric.runBgUiTasks(3);
 
         int firstWizardButtonPosition = -1;
 

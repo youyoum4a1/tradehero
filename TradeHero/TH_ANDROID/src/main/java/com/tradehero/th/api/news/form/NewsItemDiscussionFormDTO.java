@@ -2,6 +2,8 @@ package com.tradehero.th.api.news.form;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 
 public class NewsItemDiscussionFormDTO extends DiscussionFormDTO
 {
@@ -15,5 +17,10 @@ public class NewsItemDiscussionFormDTO extends DiscussionFormDTO
     @Override public DiscussionType getInReplyToType()
     {
         return TYPE;
+    }
+
+    @Override public DiscussionKey getInitiatingDiscussionKey()
+    {
+        return new NewsItemDTOKey(inReplyToId);
     }
 }

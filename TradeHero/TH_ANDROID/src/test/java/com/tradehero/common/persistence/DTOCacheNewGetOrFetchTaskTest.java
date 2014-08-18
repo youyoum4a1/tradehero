@@ -1,6 +1,6 @@
 package com.tradehero.common.persistence;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.social.HeroListCache;
 import java.util.concurrent.RejectedExecutionException;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 // TODO
 @Ignore("This unit test depend on Environment resources")
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class DTOCacheNewGetOrFetchTaskTest
 {
     @Inject HeroListCache heroListCache;

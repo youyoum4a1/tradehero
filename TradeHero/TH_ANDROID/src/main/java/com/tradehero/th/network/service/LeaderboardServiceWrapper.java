@@ -73,11 +73,18 @@ import retrofit.Callback;
     //<editor-fold desc="Get Leaderboard">
     public LeaderboardDTO getLeaderboard(@NotNull LeaderboardKey leaderboardKey)
     {
-        if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
+        if (leaderboardKey instanceof UserOnLeaderboardKey)
+        {
+            return leaderboardService.getUserOnLeaderboard(
+                    leaderboardKey.id,
+                    ((UserOnLeaderboardKey) leaderboardKey).userBaseKey.key,
+                    null);
+        }
+        else if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
         {
             SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey = (SortedPerPagedLeaderboardKey) leaderboardKey;
             return leaderboardService.getLeaderboard(
-                    sortedPerPagedLeaderboardKey.key,
+                    sortedPerPagedLeaderboardKey.id,
                     sortedPerPagedLeaderboardKey.page,
                     sortedPerPagedLeaderboardKey.perPage,
                     sortedPerPagedLeaderboardKey.sortType);
@@ -85,7 +92,7 @@ import retrofit.Callback;
         else if (leaderboardKey instanceof PerPagedFilteredLeaderboardKey)
         {
             PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey = (PerPagedFilteredLeaderboardKey) leaderboardKey;
-            return leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
+            return leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.id,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
 
@@ -105,7 +112,7 @@ import retrofit.Callback;
         {
             PerPagedLeaderboardKey perPagedLeaderboardKey = (PerPagedLeaderboardKey) leaderboardKey;
             return leaderboardService.getLeaderboard(
-                    perPagedLeaderboardKey.key,
+                    perPagedLeaderboardKey.id,
                     perPagedLeaderboardKey.page,
                     perPagedLeaderboardKey.perPage);
         }
@@ -113,11 +120,11 @@ import retrofit.Callback;
         {
             PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
             return leaderboardService.getLeaderboard(
-                    pagedLeaderboardKey.key,
+                    pagedLeaderboardKey.id,
                     pagedLeaderboardKey.page,
                     null);
         }
-        return leaderboardService.getLeaderboard(leaderboardKey.key, null, null);
+        return leaderboardService.getLeaderboard(leaderboardKey.id, null, null);
     }
 
     @NotNull public MiddleCallback<LeaderboardDTO> getLeaderboard(
@@ -125,11 +132,19 @@ import retrofit.Callback;
             @Nullable Callback<LeaderboardDTO> callback)
     {
         MiddleCallback<LeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
+        if (leaderboardKey instanceof UserOnLeaderboardKey)
+        {
+            leaderboardServiceAsync.getUserOnLeaderboard(
+                    leaderboardKey.id,
+                    ((UserOnLeaderboardKey) leaderboardKey).userBaseKey.key,
+                    null,
+                    middleCallback);
+        }
+        else if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
         {
             SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey = (SortedPerPagedLeaderboardKey) leaderboardKey;
             leaderboardServiceAsync.getLeaderboard(
-                    sortedPerPagedLeaderboardKey.key,
+                    sortedPerPagedLeaderboardKey.id,
                     sortedPerPagedLeaderboardKey.page,
                     sortedPerPagedLeaderboardKey.perPage,
                     sortedPerPagedLeaderboardKey.sortType,
@@ -138,7 +153,7 @@ import retrofit.Callback;
         else if (leaderboardKey instanceof PerPagedFilteredLeaderboardKey)
         {
             PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey = (PerPagedFilteredLeaderboardKey) leaderboardKey;
-            leaderboardServiceAsync.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.key,
+            leaderboardServiceAsync.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.id,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
 
@@ -163,7 +178,7 @@ import retrofit.Callback;
         {
             PerPagedLeaderboardKey perPagedLeaderboardKey = (PerPagedLeaderboardKey) leaderboardKey;
             leaderboardServiceAsync.getLeaderboard(
-                    perPagedLeaderboardKey.key,
+                    perPagedLeaderboardKey.id,
                     perPagedLeaderboardKey.page,
                     perPagedLeaderboardKey.perPage,
                     middleCallback);
@@ -172,14 +187,14 @@ import retrofit.Callback;
         {
             PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
             leaderboardServiceAsync.getLeaderboard(
-                    pagedLeaderboardKey.key,
+                    pagedLeaderboardKey.id,
                     pagedLeaderboardKey.page,
                     null,
                     middleCallback);
         }
         else
         {
-            leaderboardServiceAsync.getLeaderboard(leaderboardKey.key, null, null, middleCallback);
+            leaderboardServiceAsync.getLeaderboard(leaderboardKey.id, null, null, middleCallback);
         }
         return middleCallback;
     }
@@ -193,32 +208,6 @@ import retrofit.Callback;
     {
         MiddleCallback<LeaderboardFriendsDTO> middleCallback = new BaseMiddleCallback<>(callback);
         leaderboardServiceAsync.getNewFriendsLeaderboard(middleCallback);
-        return middleCallback;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get User On Leaderboard">
-    @NotNull public LeaderboardDTO getUserOnLeaderboard(
-            @NotNull UserOnLeaderboardKey userOnLeaderboardKey,
-            @Nullable LeaderboardSortType leaderboardSortType)
-    {
-        return leaderboardService.getUserOnLeaderboard(
-                userOnLeaderboardKey.leaderboardKey.key,
-                userOnLeaderboardKey.userBaseKey.key,
-                leaderboardSortType == null ? null : leaderboardSortType.getFlag());
-    }
-
-    @NotNull public MiddleCallback<LeaderboardDTO> getUserOnLeaderboard(
-            @NotNull UserOnLeaderboardKey userOnLeaderboardKey,
-            @Nullable LeaderboardSortType leaderboardSortType,
-            @Nullable Callback<LeaderboardDTO> callback)
-    {
-        MiddleCallback<LeaderboardDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        leaderboardServiceAsync.getUserOnLeaderboard(
-                userOnLeaderboardKey.leaderboardKey.key,
-                userOnLeaderboardKey.userBaseKey.key,
-                leaderboardSortType == null ? null : leaderboardSortType.getFlag(),
-                middleCallback);
         return middleCallback;
     }
     //</editor-fold>

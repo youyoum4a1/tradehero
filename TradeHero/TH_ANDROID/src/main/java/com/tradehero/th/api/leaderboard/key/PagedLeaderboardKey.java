@@ -1,7 +1,6 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.AbstractPrimitiveDTOKey;
 import java.util.Iterator;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +12,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
     public static final String STRING_SET_LEFT_PAGE = "page";
     public static final int FIRST_PAGE = 1;
 
-    public final Integer page;
+    @Nullable public final Integer page;
 
     //<editor-fold desc="Constructors">
     public PagedLeaderboardKey(Integer leaderboardKey, Integer page)
@@ -24,7 +23,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
 
     public PagedLeaderboardKey(PagedLeaderboardKey other, Integer page)
     {
-        super(other.key);
+        super(other.id);
         this.page = page;
     }
 
@@ -46,38 +45,17 @@ public class PagedLeaderboardKey extends LeaderboardKey
         return super.hashCode() ^ (page == null ? 0 : page.hashCode());
     }
 
-    @Override public boolean equals(AbstractPrimitiveDTOKey other)
+    @Override public boolean equalFields(@NotNull LeaderboardKey other)
     {
-        return super.equals(other) && other instanceof PagedLeaderboardKey &&
-                equals((PagedLeaderboardKey) other);
+        return super.equalFields(other)
+                && other instanceof PagedLeaderboardKey
+                && equalFields((PagedLeaderboardKey) other);
     }
 
-    public boolean equals(PagedLeaderboardKey other)
+    public boolean equalFields(@NotNull PagedLeaderboardKey other)
     {
-        return other != null &&
-                super.equals(other) &&
-                (page == null ? other.page == null : page.equals(other.page));
-    }
-
-    public int compareTo(PagedLeaderboardKey other)
-    {
-        if (this == other)
-        {
-            return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
-        }
-
-        int parentComp = super.compareTo(other);
-        if (parentComp != 0)
-        {
-            return parentComp;
-        }
-
-        return page.compareTo(other.page);
+        return super.equalFields(other)
+                && (page == null ? other.page == null : page.equals(other.page));
     }
 
     public PagedLeaderboardKey cloneAtPage(int page)
@@ -85,7 +63,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
         return new PagedLeaderboardKey(this, page);
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override protected void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
         if (page == null)

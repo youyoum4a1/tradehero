@@ -17,7 +17,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.googleplay.IABConstants;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -35,7 +34,6 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -58,8 +56,8 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected THIABSecurityAlertKnowledge THIABSecurityAlertKnowledge;
 
-    private Milestone.OnCompleteListener userProfileRetrievedMilestoneCompleteListener;
-    private UserProfileRetrievedMilestone userProfileRetrievedMilestone;
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected UserProfileDTO currentUserProfile;
 
     private AlertListItemAdapter alertListItemAdapter;
     private DTOCacheNew.Listener<UserBaseKey, AlertCompactDTOList> alertCompactListListener;
@@ -68,19 +66,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        userProfileRetrievedMilestoneCompleteListener = new Milestone.OnCompleteListener()
-        {
-            @Override public void onComplete(Milestone milestone)
-            {
-                displayAlertCount();
-                displayAlertCountIcon();
-            }
-
-            @Override public void onFailed(Milestone milestone, Throwable throwable)
-            {
-                THToast.show(new THException(throwable));
-            }
-        };
+        userProfileCacheListener = createUserProfileCacheListener();
         alertCompactListListener = createAlertCompactDTOListListener();
     }
 
@@ -123,12 +109,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             alertListView.addFooterView(footerView);
         }
 
-        detachUserProfileMilestone();
-        userProfileRetrievedMilestone =
-                new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
-        userProfileRetrievedMilestone.setOnCompleteListener(userProfileRetrievedMilestoneCompleteListener);
-        userProfileRetrievedMilestone.launch();
-
         displayAlertCount();
         displayAlertCountIcon();
 
@@ -159,10 +139,8 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         {
             progressAnimator.setDisplayedChildByLayoutId(currentDisplayLayoutId);
         }
-
-        detachAlertCompactListCacheFetchTask();
-        alertCompactListCache.register(currentUserId.toUserBaseKey(), alertCompactListListener);
-        alertCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        fetchUserProfile();
+        fetchAlertCompactList();
     }
 
     @Override public void onPause()
@@ -173,7 +151,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        detachUserProfileMilestone();
+        detachUserProfileCache();
         detachAlertCompactListCacheFetchTask();
 
         if (alertListView != null)
@@ -200,23 +178,33 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroy()
     {
-        userProfileRetrievedMilestoneCompleteListener = null;
+        userProfileCacheListener = null;
         alertCompactListListener = null;
         super.onDestroy();
     }
 
-    protected void detachUserProfileMilestone()
+    protected void detachUserProfileCache()
     {
-        if (userProfileRetrievedMilestone != null)
-        {
-            userProfileRetrievedMilestone.setOnCompleteListener(null);
-        }
-        userProfileRetrievedMilestone = null;
+        userProfileCache.get().unregister(userProfileCacheListener);
     }
 
     protected void detachAlertCompactListCacheFetchTask()
     {
         alertCompactListCache.unregister(alertCompactListListener);
+    }
+
+    protected void fetchUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    protected void fetchAlertCompactList()
+    {
+        detachAlertCompactListCacheFetchTask();
+        alertCompactListCache.register(currentUserId.toUserBaseKey(), alertCompactListListener);
+        alertCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
     }
 
     @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
@@ -238,7 +226,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private void displayAlertCount()
     {
-        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (currentUserProfile != null)
         {
             int count = currentUserProfile.getUserAlertPlansAlertCount();
@@ -262,7 +249,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     private void displayAlertCountIcon()
     {
-        UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (currentUserProfile != null)
         {
             int count = currentUserProfile.getUserAlertPlansAlertCount();
@@ -286,6 +272,34 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IABConstants.GOOGLE_PLAY_ACCOUNT_URL));
         getActivity().startActivity(intent);
+    }
+
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileCacheListener()
+    {
+        return new AlertManagerFragmentUserProfileCacheListener();
+    }
+
+    protected class AlertManagerFragmentUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            THToast.show(new THException(error));
+        }
+    }
+
+    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    {
+        this.currentUserProfile = userProfileDTO;
+        if (andDisplay)
+        {
+            displayAlertCount();
+            displayAlertCountIcon();
+        }
     }
 
     protected DTOCacheNew.Listener<UserBaseKey, AlertCompactDTOList> createAlertCompactDTOListListener()

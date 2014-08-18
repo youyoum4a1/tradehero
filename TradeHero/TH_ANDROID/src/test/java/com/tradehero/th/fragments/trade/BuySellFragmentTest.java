@@ -2,15 +2,16 @@ package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
 import android.os.Bundle;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.persistence.alert.AlertCache;
 import com.tradehero.th.persistence.alert.AlertCompactCache;
@@ -25,9 +26,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class BuySellFragmentTest
 {
     @Inject Context context;
@@ -64,7 +66,7 @@ public class BuySellFragmentTest
     {
         SecurityId googleId = new SecurityId("NYSE", "GOOG");
         Bundle args = new Bundle();
-        args.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, googleId.getArgs());
+        BuySellFragment.putSecurityId(args, googleId);
         return args;
     }
 
@@ -110,18 +112,27 @@ public class BuySellFragmentTest
     //<editor-fold desc="Watchlist Button">
     private void populateUserWatchlistCache()
     {
-        SecurityIdList securityIds = new SecurityIdList();
-        securityIds.add(new SecurityId("NYSE", "GOOG"));
+        WatchlistPositionDTO googleWatch = new WatchlistPositionDTO();
+        googleWatch.id = 98;
+        googleWatch.userId = 123;
+        googleWatch.securityDTO = new SecurityCompactDTO();
+        googleWatch.securityDTO.id = 43;
+        googleWatch.securityDTO.exchange = "NYSE";
+        googleWatch.securityDTO.symbol = "GOOG";
+
+        WatchlistPositionDTOList watchlistPositionDTOs = new WatchlistPositionDTOList();
+        watchlistPositionDTOs.add(googleWatch);
+
         userWatchlistPositionCache.put(
                 currentUserId.toUserBaseKey(),
-                securityIds);
+                watchlistPositionDTOs);
     }
 
     @Test public void testWhenNoWatchlistShowAddWatchlist()
     {
         userWatchlistPositionCache.put(
                 currentUserId.toUserBaseKey(),
-                new SecurityIdList());
+                new WatchlistPositionDTOList());
 
         buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();
@@ -138,12 +149,7 @@ public class BuySellFragmentTest
         populateUserWatchlistCache();
         buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
-        // TODO any better way than sleeping?
-        Thread.sleep(200); // This feels like a HACK but otherwise the test fails intermittently
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         assertThat(buySellFragment.mBtnAddWatchlist.getText()).isEqualTo("Edit in Watchlist");
     }

@@ -90,6 +90,17 @@ public class DiscussionListCacheNew extends StraightDTOCacheNew<DiscussionListKe
         }
     }
 
+    public void getOrFetchAsyncWhereSameField(@NotNull DiscussionKey originatingDiscussion)
+    {
+        for (DiscussionListKey key : snapshot().keySet())
+        {
+            if (key.equivalentFields(originatingDiscussion))
+            {
+                getOrFetchAsync(key, true);
+            }
+        }
+    }
+
     public static interface DiscussionKeyListListener extends Listener<DiscussionListKey, DiscussionKeyList>
     {
     }

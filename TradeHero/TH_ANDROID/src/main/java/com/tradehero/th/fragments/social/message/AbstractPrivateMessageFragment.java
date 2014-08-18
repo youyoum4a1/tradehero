@@ -232,9 +232,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     //TODO set actionBar with MessageHeaderDTO by alex
 
-
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
     {
+        // TODO Move into DTOProcessor?
         messageHeaderListCache.invalidateWithRecipient(correspondentId);
     }
 
@@ -269,9 +269,9 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         updateMessageCacheReadStatus(messageHeaderDTO.id);
         messageServiceWrapper.get().readMessage(
-                messageHeaderDTO.id,
-                messageHeaderDTO.senderUserId,
-                messageHeaderDTO.recipientUserId,
+                messageHeaderDTO.getDTOKey(),
+                messageHeaderDTO.getSenderId(),
+                messageHeaderDTO.getRecipientId(),
                 messageHeaderDTO.getDTOKey(),
                 currentUserId.toUserBaseKey(),
                 createMessageAsReadCallback(messageHeaderDTO.id));

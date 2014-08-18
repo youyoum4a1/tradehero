@@ -64,4 +64,9 @@ public interface MessageService
             @Path("senderUserId") int senderUserId,
             @Path("recipientUserId") int recipientUserId);
     //</editor-fold>
+
+    //<editor-fold desc="Read All Message">
+    @POST("/messages/read/-1")
+    Response readAllMessage();
+    //</editor-fold>
 }

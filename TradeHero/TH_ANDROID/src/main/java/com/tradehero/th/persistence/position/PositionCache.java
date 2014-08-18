@@ -1,10 +1,14 @@
 package com.tradehero.th.persistence.position;
 
+import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.position.PositionDTOFactory;
 import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
@@ -24,27 +28,48 @@ import org.jetbrains.annotations.Nullable;
 
     @NotNull protected final Lazy<PositionCompactIdCache> positionCompactIdCache;
     @NotNull protected final Lazy<LeaderboardPositionIdCache> positionIdCache;
+    @NotNull protected final Lazy<GetPositionsCache> getPositionsCache;
     @NotNull protected final Lazy<TradeListCache> tradeListCache;
-    @NotNull protected final PositionDTOFactory positionDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCache(
             @NotNull Lazy<PositionCompactIdCache> positionCompactIdCache,
             @NotNull Lazy<LeaderboardPositionIdCache> positionIdCache,
-            @NotNull Lazy<TradeListCache> tradeListCache,
-            @NotNull PositionDTOFactory positionDTOFactory)
+            @NotNull Lazy<GetPositionsCache> getPositionsCache,
+            @NotNull Lazy<TradeListCache> tradeListCache)
     {
         super(DEFAULT_MAX_SIZE);
         this.positionCompactIdCache = positionCompactIdCache;
         this.positionIdCache = positionIdCache;
+        this.getPositionsCache = getPositionsCache;
         this.tradeListCache = tradeListCache;
-        this.positionDTOFactory = positionDTOFactory;
     }
     //</editor-fold>
 
-    @Override @NotNull public PositionDTO fetch(@NotNull PositionDTOKey key)
+    @Override @NotNull public PositionDTO fetch(@NotNull final PositionDTOKey key) throws Throwable
     {
-        throw new IllegalStateException("You should not fetch PositionDTO individually");
+        GetPositionsDTOKey getPositionsDTOKey;
+        if (key instanceof OwnedPositionId)
+        {
+            getPositionsDTOKey = new OwnedPortfolioId(((OwnedPositionId) key).userId, ((OwnedPositionId) key).portfolioId);
+        }
+        else if (key instanceof OwnedLeaderboardPositionId)
+        {
+            getPositionsDTOKey = new LeaderboardMarkUserId(((OwnedLeaderboardPositionId) key).leaderboardMarkUserId);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled PositionDTOKey " + key);
+        }
+        GetPositionsDTO getPositionsDTO = getPositionsCache.get().getOrFetchSync(getPositionsDTOKey);
+        //noinspection ConstantConditions
+        return getPositionsDTO.positions.findFirstWhere(new Predicate<PositionDTO>()
+        {
+            @Override public boolean apply(PositionDTO positionDTO)
+            {
+                return positionDTO.getPositionDTOKey().equals(key);
+            }
+        });
     }
 
     @Nullable
@@ -68,7 +93,7 @@ import org.jetbrains.annotations.Nullable;
         }
         invalidateMatchingTrades(key);
 
-        return super.put(key, positionDTOFactory.clonePerType(value));
+        return super.put(key, value);
     }
 
     @Override public void invalidate(@NotNull PositionDTOKey key)

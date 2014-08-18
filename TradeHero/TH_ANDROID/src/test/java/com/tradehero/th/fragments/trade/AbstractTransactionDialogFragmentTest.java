@@ -1,10 +1,8 @@
 package com.tradehero.th.fragments.trade;
 
-import com.tradehero.AbstractTestBase;
 import android.text.Editable;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -15,7 +13,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -23,17 +20,17 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public abstract class AbstractTransactionDialogFragmentTest extends AbstractTestBase
+public abstract class AbstractTransactionDialogFragmentTest
 {
     protected static final int CASH_BALANCE = 100000;
 
     @Inject UserProfileCache userProfileCache;
     @Inject SecurityCompactCache securityCompactCache;
-    @Inject PortfolioCompactCache portfolioCompactCache;
     @Inject SecurityPositionDetailCache securityPositionDetailCache;
 
     @Inject CurrentUserId currentUserId;
@@ -44,7 +41,7 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
     protected DashboardActivity activity;
     protected AbstractTransactionDialogFragment abstractTransactionDialogFragment;
 
-    public void setUp()
+    public void setUp() throws InterruptedException
     {
         int sId = 92;
 
@@ -69,12 +66,13 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
         SecurityCompactDTO mockSecurityCompactDTO = new SecurityCompactDTO();
         mockSecurityCompactDTO.id = sId;
         mockSecurityCompactDTO.name = "Security Name";
-        PortfolioCompactDTO mockPortfolioCompactDTO = new PortfolioCompactDTO();
-        mockPortfolioCompactDTO.cashBalance = CASH_BALANCE;
-        mockPortfolioCompactDTO.currencyDisplay = "US$";
-        mockPortfolioCompactDTO.currencyISO = "USD";
         PositionDTOCompactList mockPositionsDTOCompactList = new PositionDTOCompactList();
         PortfolioDTO mockPortfolioDTO = new PortfolioDTO();
+        mockPortfolioDTO.id = 94;
+        mockPortfolioDTO.userId = 20;
+        mockPortfolioDTO.cashBalance = CASH_BALANCE;
+        mockPortfolioDTO.currencyDisplay = "US$";
+        mockPortfolioDTO.currencyISO = "USD";
         ProviderCompactDTOList mockProviderCompactsDTOList = new ProviderCompactDTOList();
         int firstTradeAllTime = 0;
 
@@ -87,7 +85,6 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
                         firstTradeAllTime);
 
         securityCompactCache.put(securityId, mockSecurityCompactDTO);
-        portfolioCompactCache.put(portfolioId, mockPortfolioCompactDTO);
         securityPositionDetailCache.put(securityId, mockPositionDetailDTO);
 
         activity = Robolectric.setupActivity(DashboardActivity.class);
@@ -95,7 +92,7 @@ public abstract class AbstractTransactionDialogFragmentTest extends AbstractTest
                 = AbstractTransactionDialogFragment.newInstance(securityId, portfolioId, quoteDTO, isBuy());
         abstractTransactionDialogFragment.show(activity.getSupportFragmentManager(), "Test");
 
-        runBgUiTasks(10);
+        runBgUiTasks(3);
     }
 
     @Test

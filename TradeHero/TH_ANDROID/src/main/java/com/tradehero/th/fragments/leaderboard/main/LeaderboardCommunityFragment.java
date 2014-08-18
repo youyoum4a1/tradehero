@@ -16,10 +16,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
@@ -28,43 +25,49 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
+import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.persistence.competition.ProviderListCache;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
 @Routable("providers")
-public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
+public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         implements WithTutorial, View.OnClickListener
 {
     @Inject Lazy<LeaderboardDefListCache> leaderboardDefListCache;
-    @Inject Lazy<ProviderListCache> providerListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
     @Inject Analytics analytics;
     @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
+    @Inject UserProfileCache userProfileCache;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(android.R.id.list) StickyListHeadersListView leaderboardDefListView;
@@ -73,16 +76,16 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     private BaseWebViewFragment webFragment;
     private LeaderboardCommunityAdapter leaderboardDefListAdapter;
     private int currentDisplayedChildLayoutId;
-    private ProviderDTOList providerDTOs;
     protected DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList> leaderboardDefListFetchListener;
-    private DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> providerListFetchListener;
+    @Nullable protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
+    protected UserProfileDTO currentUserProfileDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.thIntentPassedListener = new LeaderboardCommunityTHIntentPassedListener();
         leaderboardDefListFetchListener = createDefKeyListListener();
-        providerListFetchListener = createProviderIdListListener();
+        this.userProfileCacheListener = createUserProfileListener();
     }
 
     @Override
@@ -112,6 +115,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onResume()
     {
         super.onResume();
+        fetchCurrentUserProfile();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
 
         // We came back into view so we have to forget the web fragment
@@ -121,7 +125,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     @Override public void onStop()
     {
         detachLeaderboardDefListCacheFetchTask();
-        detachProviderListFetchTask();
+        detachUserProfileCache();
         currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
         leaderboardDefListView.setOnItemClickListener(null);
         super.onStop();
@@ -129,7 +133,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
-        providerListFetchListener = null;
         leaderboardDefListFetchListener = null;
         this.thIntentPassedListener = null;
         detachWebFragment();
@@ -170,19 +173,42 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         this.webFragment = null;
     }
 
+    protected void detachUserProfileCache()
+    {
+        userProfileCache.unregister(userProfileCacheListener);
+    }
+
+    protected void fetchCurrentUserProfile()
+    {
+        detachUserProfileCache();
+        userProfileCache.register(currentUserId.toUserBaseKey(), userProfileCacheListener);
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
     //<editor-fold desc="Data Fetching">
-    @Override protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
+    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileListener()
     {
         return new LeaderboardCommunityUserProfileCacheListener();
     }
 
-    protected class LeaderboardCommunityUserProfileCacheListener extends BaseLeaderboardFragmentProfileCacheListener
+    protected class LeaderboardCommunityUserProfileCacheListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
-            super.onDTOReceived(key, value);
+            setCurrentUserProfileDTO(value);
             loadLeaderboardData();
         }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        {
+            Timber.e("Failed to download current UserProfile", error);
+            THToast.show(R.string.error_fetch_your_user_profile);
+        }
+    }
+
+    protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
+    {
+        this.currentUserProfileDTO = currentUserProfileDTO;
     }
 
     private void detachLeaderboardDefListCacheFetchTask()
@@ -190,16 +216,9 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         leaderboardDefListCache.get().unregister(leaderboardDefListFetchListener);
     }
 
-    private void detachProviderListFetchTask()
-    {
-        providerListCache.get().unregister(providerListFetchListener);
-    }
-
     private void loadLeaderboardData()
     {
-        // get the data
         fetchLeaderboardDefList();
-        //fetchProviderIdList(); //feature2.3.0 remove provider list in this fragment
     }
 
     private void fetchLeaderboardDefList()
@@ -227,34 +246,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             Timber.e(error, "Error fetching the leaderboard def key list %s", key);
         }
     }
-
-    private void fetchProviderIdList()
-    {
-        detachProviderListFetchTask();
-        providerListCache.get().register(new ProviderListKey(), providerListFetchListener);
-        providerListCache.get().getOrFetchAsync(new ProviderListKey());
-    }
-
-    protected DTOCacheNew.Listener<ProviderListKey, ProviderDTOList> createProviderIdListListener()
-    {
-        return new LeaderboardCommunityProviderListListener();
-    }
-
-    protected class LeaderboardCommunityProviderListListener implements DTOCacheNew.Listener<ProviderListKey, ProviderDTOList>
-    {
-        @Override public void onDTOReceived(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
-        {
-            providerDTOs = value;
-            recreateAdapter();
-        }
-
-        @Override public void onErrorThrown(@NotNull ProviderListKey key, @NotNull Throwable error)
-        {
-            handleFailToReceiveLeaderboardDefKeyList();
-            THToast.show(getString(R.string.error_fetch_provider_info_list));
-            Timber.e("Failed retrieving the list of competition providers", error);
-        }
-    }
     //</editor-fold>
 
     protected AdapterView.OnItemClickListener createItemClickListener()
@@ -270,10 +261,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             if (item instanceof LeaderboardDefCommunityPageDTO)
             {
                 handleLeaderboardItemClicked(((LeaderboardDefCommunityPageDTO) item).leaderboardDefDTO);
-            }
-            else if (item instanceof ProviderCommunityPageDTO)
-            {
-                handleCompetitionItemClicked(((ProviderCommunityPageDTO) item).providerDTO);
             }
             else
             {
@@ -326,13 +313,6 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             leaderboardDefListAdapter.clear();
         }
         leaderboardDefListAdapter = createAdapter();
-        if (providerDTOs != null)
-        {
-            for (@NotNull ProviderDTO providerDTO : providerDTOs)
-            {
-                leaderboardDefListAdapter.add(new ProviderCommunityPageDTO(providerDTO));
-            }
-        }
         leaderboardDefListAdapter.addAll(communityPageDTOFactory.collectFromCaches(currentUserProfileDTO.countryCode));
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
     }
@@ -341,8 +321,7 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
     {
         return new LeaderboardCommunityAdapter(
                 getActivity(),
-                R.layout.leaderboard_definition_item_view_community,
-                R.layout.leaderboard_competition_item_view);
+                R.layout.leaderboard_definition_item_view_community);
     }
 
     /**
@@ -374,11 +353,11 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_DrillDown));
             if (drillDownLeaderboardDefDTO instanceof SectorContainerLeaderboardDefDTO)
             {
-                pushLeaderboardDefSector();
+                pushLeaderboardDefSector(drillDownLeaderboardDefDTO);
             }
             else if (drillDownLeaderboardDefDTO instanceof ExchangeContainerLeaderboardDefDTO)
             {
-                pushLeaderboardDefExchange();
+                pushLeaderboardDefExchange(drillDownLeaderboardDefDTO);
             }
             else
             {
@@ -392,53 +371,104 @@ public class LeaderboardCommunityFragment extends BaseLeaderboardFragment
         }
     }
 
-    private void handleCompetitionItemClicked(ProviderDTO providerDTO)
+    protected void pushLeaderboardListViewFragment(@NotNull LeaderboardDefDTO dto)
     {
-        if (providerDTO != null && providerDTO.isUserEnrolled)
+        Bundle bundle = new Bundle(getArguments());
+
+        switch (dto.id)
         {
-            Bundle args = new Bundle();
-            MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            getDashboardNavigator().pushFragment(MainCompetitionFragment.class, args);
-        }
-        else if (providerDTO != null)
-        {
-            // HACK Just in case the user eventually enrolls
-            portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
-            Bundle args = new Bundle();
-            CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                    providerDTO.getProviderId(),
-                    currentUserId.toUserBaseKey()));
-            CompetitionWebViewFragment.putIsOptionMenuVisible(args, true);
-            webFragment = getDashboardNavigator().pushFragment(CompetitionWebViewFragment.class, args);
-            webFragment.setThIntentPassedListener(thIntentPassedListener);
+            case LeaderboardDefKeyKnowledge.FRIEND_ID:
+                pushFriendsFragment(dto);
+                break;
+            case LeaderboardDefKeyKnowledge.HERO_ID:
+                pushHeroFragment();
+                break;
+            case LeaderboardDefKeyKnowledge.FOLLOWER_ID:
+                pushFollowerFragment();
+                break;
+            default:
+                Timber.d("LeaderboardMarkUserListFragment %s", bundle);
+                LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
+                getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                break;
         }
     }
 
-    private void pushLeaderboardDefSector()
+    protected void pushFriendsFragment(LeaderboardDefDTO dto)
+    {
+        Bundle args = new Bundle();
+        FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
+        }
+    }
+
+    protected void pushHeroFragment()
+    {
+        Bundle bundle = new Bundle();
+        HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+        if (applicablePortfolio != null)
+        {
+            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
+        }
+        getDashboardNavigator().pushFragment(HeroManagerFragment.class, bundle);
+    }
+
+    protected void pushFollowerFragment()
+    {
+        Bundle bundle = new Bundle();
+        FollowerManagerFragment.putHeroId(bundle, currentUserId.toUserBaseKey());
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+        if (applicablePortfolio != null)
+        {
+            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
+        }
+        getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
+    }
+
+    private void pushLeaderboardDefSector(LeaderboardDefDTO leaderboardDefDTOSector)
     {
         Bundle bundle = new Bundle(getArguments());
         (new SectorLeaderboardDefListKey()).putParameters(bundle);
-        bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_sector));
-        getDashboardNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
+        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOSector.getLeaderboardDefKey());
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
+        }
     }
 
-    private void pushLeaderboardDefExchange()
+    private void pushLeaderboardDefExchange(LeaderboardDefDTO leaderboardDefDTOExchange)
     {
         Bundle bundle = new Bundle(getArguments());
         (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
-        bundle.putString(LeaderboardDefListFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_exchange));
-        getDashboardNavigator().pushFragment(LeaderboardDefListFragment.class, bundle);
+        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
+        }
     }
 
     private void pushSearchFragment()
     {
-        getDashboardNavigator().pushFragment(PeopleSearchFragment.class, null);
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(PeopleSearchFragment.class, null);
+        }
     }
 
     private void pushInvitationFragment()
     {
-        getDashboardNavigator().pushFragment(FriendsInvitationFragment.class);
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(FriendsInvitationFragment.class);
+        }
     }
-
     //</editor-fold>
 }

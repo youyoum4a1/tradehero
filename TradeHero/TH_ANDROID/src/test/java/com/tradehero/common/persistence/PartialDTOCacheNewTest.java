@@ -1,6 +1,6 @@
 package com.tradehero.common.persistence;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
@@ -14,7 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class PartialDTOCacheNewTest
 {
     private TestStraightDTOCacheNew<UserBaseKey, ExpirableDTO> cache;

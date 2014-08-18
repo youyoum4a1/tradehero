@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,16 +23,16 @@ import retrofit.client.Response;
         this.weChatServiceAsync = weChatServiceAsync;
     }
 
-    public Response trackShare(int userId, WeChatTrackShareFormDTO weChatTrackShareFormDTO)
+    public Response trackShare(UserBaseKey userId, WeChatTrackShareFormDTO weChatTrackShareFormDTO)
     {
-        return weChatService.trackShare(userId, weChatTrackShareFormDTO);
+        return weChatService.trackShare(userId.key, weChatTrackShareFormDTO);
     }
 
-    public BaseMiddleCallback<Response> trackShare(int userId, WeChatTrackShareFormDTO weChatTrackShareFormDTO,
+    public BaseMiddleCallback<Response> trackShare(UserBaseKey userId, WeChatTrackShareFormDTO weChatTrackShareFormDTO,
             Callback<Response> callback)
     {
         BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
-        weChatServiceAsync.trackShare(userId, weChatTrackShareFormDTO, middleCallback);
+        weChatServiceAsync.trackShare(userId.key, weChatTrackShareFormDTO, middleCallback);
         return middleCallback;
     }
 }

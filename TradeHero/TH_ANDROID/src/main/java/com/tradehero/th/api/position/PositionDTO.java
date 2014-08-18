@@ -1,7 +1,6 @@
 package com.tradehero.th.api.position;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -16,14 +15,19 @@ public class PositionDTO extends PositionDTOCompact
 {
     public int userId;
     public int securityId;
+    // This value is always in the portfolio currency
     public Double realizedPLRefCcy;
+    // This value is always in the portfolio currency
     public Double unrealizedPLRefCcy;
+    // This value is always in the portfolio currency
     public double marketValueRefCcy;
     public Date earliestTradeUtc;
     public Date latestTradeUtc;
 
+    // This value is always in the portfolio currency
     public Double sumInvestedAmountRefCcy;
 
+    // This value is always in the portfolio currency
     public double totalTransactionCostRefCcy;
 
     // if >1, then the values above relate to a collection of positions, not a single position -- see: MaskOpenPositions()
@@ -33,21 +37,6 @@ public class PositionDTO extends PositionDTOCompact
     public PositionDTO()
     {
         super();
-    }
-
-    public <ExtendedDTOType extends ExtendedDTO> PositionDTO(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
-    {
-        super(other, myClass);
-    }
-
-    public <PositionDTOCompactType extends PositionDTOCompact> PositionDTO(PositionDTOCompactType other, Class<? extends PositionDTOCompact> myClass)
-    {
-        super(other, myClass);
-    }
-
-    public <PositionDTOType extends PositionDTO> PositionDTO(PositionDTOType other, Class<? extends PositionDTO> myClass)
-    {
-        super(other, myClass);
     }
     //</editor-fold>
 
@@ -164,7 +153,6 @@ public class PositionDTO extends PositionDTOCompact
                 ", sumInvestedAmountRefCcy=" + sumInvestedAmountRefCcy +
                 ", totalTransactionCostRefCcy=" + totalTransactionCostRefCcy +
                 ", aggregateCount=" + aggregateCount +
-                ", extras={" + formatExtras(", ").toString() + "}" +
                 '}';
     }
 }

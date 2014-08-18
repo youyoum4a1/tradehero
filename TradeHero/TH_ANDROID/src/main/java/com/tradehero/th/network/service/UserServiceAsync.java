@@ -2,12 +2,11 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
@@ -22,7 +21,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
+import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
@@ -164,7 +163,7 @@ interface UserServiceAsync
             @Query("searchTerm") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
-            Callback<PaginatedDTO<AllowableRecipientDTO>> callback);
+            Callback<PaginatedAllowableRecipientDTO> callback);
     //</editor-fold>
 
     //<editor-fold desc="Get User">
@@ -225,7 +224,7 @@ interface UserServiceAsync
     //</editor-fold>
 
     @POST("/users/BatchFollow/free")
-    void followBatchFree(@Body FollowFriendsForm followFriendsForm, Callback<UserProfileDTO> callback);
+    void followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO, Callback<UserProfileDTO> callback);
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends")

@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.security;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import javax.inject.Inject;
@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class SecurityCompactListCacheTest
 {
     @Inject SecurityCompactListCache securityCompactListCache;

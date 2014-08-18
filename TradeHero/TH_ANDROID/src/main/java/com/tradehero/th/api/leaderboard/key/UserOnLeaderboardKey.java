@@ -1,50 +1,44 @@
 package com.tradehero.th.api.leaderboard.key;
 
-import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class UserOnLeaderboardKey implements DTOKey
+public class UserOnLeaderboardKey extends LeaderboardKey
 {
-    @NotNull public final LeaderboardKey leaderboardKey;
     @NotNull public final UserBaseKey userBaseKey;
 
     //<editor-fold desc="Constructors">
+    public UserOnLeaderboardKey(int leaderboardId, int userId)
+    {
+        super(leaderboardId);
+        this.userBaseKey = new UserBaseKey(userId);
+    }
+
     public UserOnLeaderboardKey(
             @NotNull LeaderboardKey leaderboardKey,
             @NotNull UserBaseKey userBaseKey)
     {
-        this.leaderboardKey = leaderboardKey;
+        super(leaderboardKey.id);
         this.userBaseKey = userBaseKey;
     }
     //</editor-fold>
 
     @Override public int hashCode()
     {
-        return leaderboardKey.hashCode() ^ userBaseKey.hashCode();
+        return super.hashCode() ^
+                userBaseKey.hashCode();
     }
 
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    @Override public boolean equals(@Nullable Object other)
+    @Override protected boolean equalFields(@NotNull LeaderboardKey other)
     {
-        if (other == this)
-        {
-            return true;
-        }
-        return other != null
-                && equalClass(other)
+        return super.equalFields(other)
+                && other instanceof UserOnLeaderboardKey
                 && equalFields((UserOnLeaderboardKey) other);
-    }
-
-    protected boolean equalClass(@NotNull Object other)
-    {
-        return other.getClass().equals(getClass());
     }
 
     protected boolean equalFields(@NotNull UserOnLeaderboardKey other)
     {
-        return leaderboardKey.equals(other.leaderboardKey)
+        return super.equalFields(other)
                 && userBaseKey.equals(other.userBaseKey);
     }
 }

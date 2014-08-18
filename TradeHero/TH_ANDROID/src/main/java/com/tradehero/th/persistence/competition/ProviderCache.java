@@ -1,13 +1,13 @@
 package com.tradehero.th.persistence.competition;
 
 import com.android.internal.util.Predicate;
-import com.tradehero.common.persistence.StraightDTOCacheNew;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,23 +17,23 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Singleton public class ProviderCache extends StraightDTOCacheNew<ProviderId, ProviderDTO>
+@Singleton public class ProviderCache extends StraightCutDTOCacheNew<ProviderId, ProviderDTO, ProviderCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
     @NotNull private final Lazy<ProviderListCache> providerListCache;
-    @NotNull private final CurrentUserId currentUserId;
+    @NotNull private final Lazy<PortfolioCompactCache> portfolioCompactCache;
     @NotNull private final WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderCache(
             @NotNull Lazy<ProviderListCache> providerListCache,
-            @NotNull CurrentUserId currentUserId,
+            @NotNull Lazy<PortfolioCompactCache> portfolioCompactCache,
             @NotNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory)
     {
         super(DEFAULT_MAX_SIZE);
         this.providerListCache = providerListCache;
-        this.currentUserId = currentUserId;
+        this.portfolioCompactCache = portfolioCompactCache;
         this.warrantSpecificKnowledgeFactory = warrantSpecificKnowledgeFactory;
     }
     //</editor-fold>
@@ -61,6 +61,20 @@ import org.jetbrains.annotations.Nullable;
     {
         warrantSpecificKnowledgeFactory.add(value);
         return super.put(key, value);
+    }
+
+    @NotNull @Override protected ProviderCutDTO cutValue(@NotNull ProviderId key, @NotNull ProviderDTO value)
+    {
+        return new ProviderCutDTO(value, portfolioCompactCache.get());
+    }
+
+    @Nullable @Override protected ProviderDTO inflateValue(@NotNull ProviderId key, @Nullable ProviderCutDTO cutValue)
+    {
+        if (cutValue == null)
+        {
+            return null;
+        }
+        return cutValue.create(portfolioCompactCache.get());
     }
 
     @Contract("null -> null; !null -> !null") @Nullable

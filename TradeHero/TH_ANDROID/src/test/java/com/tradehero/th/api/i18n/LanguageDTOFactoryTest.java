@@ -1,13 +1,13 @@
 package com.tradehero.th.api.i18n;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class LanguageDTOFactoryTest
 {
     @Inject LanguageDTOFactory languageDTOFactory;

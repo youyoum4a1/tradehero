@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Deprecated
@@ -35,46 +36,25 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         return super.hashCode() ^ (sortType == null ? 0 : sortType.hashCode());
     }
 
-    @Override public boolean equals(PerPagedLeaderboardKey other)
+    @Override public boolean equalFields(@NotNull PerPagedLeaderboardKey other)
     {
-        return super.equals(other) && other instanceof SortedPerPagedLeaderboardKey &&
-                equals((SortedPerPagedLeaderboardKey) other);
+        return super.equalFields(other)
+                && other instanceof SortedPerPagedLeaderboardKey
+                && equalFields((SortedPerPagedLeaderboardKey) other);
     }
 
-    public boolean equals(SortedPerPagedLeaderboardKey other)
+    public boolean equalFields(@NotNull SortedPerPagedLeaderboardKey other)
     {
-        return other != null &&
-                super.equals(other) &&
+        return super.equalFields(other) &&
                 (sortType == null ? other.sortType == null : sortType.equals(other.sortType));
-    }
-
-    public int compareTo(SortedPerPagedLeaderboardKey other)
-    {
-        if (this == other)
-        {
-            return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
-        }
-
-        int parentComp = super.compareTo(other);
-        if (parentComp != 0)
-        {
-            return parentComp;
-        }
-
-        return sortType.compareTo(other.sortType);
     }
 
     @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
-        return new SortedPerPagedLeaderboardKey(this, key, page);
+        return new SortedPerPagedLeaderboardKey(this, id, page);
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override public void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
         if (sortType == null)

@@ -18,10 +18,6 @@ class LeaderboardCommunityTypeFactory
     @NotNull
     public LeaderboardCommunityType createFrom(@NotNull CommunityPageDTO communityPageDTO)
     {
-        if (communityPageDTO instanceof ProviderCommunityPageDTO)
-        {
-            return LeaderboardCommunityType.Competition;
-        }
         if (communityPageDTO instanceof LeaderboardDefCommunityPageDTO)
         {
             LeaderboardDefDTO leaderboardDefDTO = ((LeaderboardDefCommunityPageDTO) communityPageDTO).leaderboardDefDTO;

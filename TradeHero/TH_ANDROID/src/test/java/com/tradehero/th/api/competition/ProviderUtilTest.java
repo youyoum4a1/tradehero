@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.CurrentUserId;
 import javax.inject.Inject;
 import org.junit.After;
@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class ProviderUtilTest
 {
     private static final String TEST_URL = "http://www.tradehero.mobi";

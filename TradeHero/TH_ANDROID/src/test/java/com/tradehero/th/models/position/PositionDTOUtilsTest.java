@@ -2,14 +2,14 @@ package com.tradehero.th.models.position;
 
 import android.content.Context;
 import android.widget.TextView;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class PositionDTOUtilsTest
 {
     @Inject Context context;

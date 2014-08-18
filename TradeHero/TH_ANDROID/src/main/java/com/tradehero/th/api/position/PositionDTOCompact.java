@@ -1,7 +1,7 @@
 package com.tradehero.th.api.position;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +9,15 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PositionDTOCompact extends ExtendedDTO
+public class PositionDTOCompact implements DTO
 {
     public int id;
     public Integer shares;
     public int portfolioId;
 
-    // This price is always in USD
+    // This price is always in the portfolio currency
     public Double averagePriceRefCcy;
+    // This is the portfolio currency
     @Nullable public String currencyDisplay;
     @Nullable public String currencyISO;
 
@@ -24,17 +25,6 @@ public class PositionDTOCompact extends ExtendedDTO
     public PositionDTOCompact()
     {
         super();
-    }
-
-    public <ExtendedDTOType extends ExtendedDTO> PositionDTOCompact(ExtendedDTOType other, Class<? extends ExtendedDTO> myClass)
-    {
-        super(other, myClass);
-    }
-
-    public<PositionDTOCompactType extends PositionDTOCompact> PositionDTOCompact(PositionDTOCompactType other,
-            Class<? extends PositionDTOCompact> myClass)
-    {
-        super(other, myClass);
     }
     //</editor-fold>
 
@@ -100,7 +90,6 @@ public class PositionDTOCompact extends ExtendedDTO
                 ", averagePriceRefCcy=" + averagePriceRefCcy +
                 ", currencyDisplay=" + currencyDisplay +
                 ", currencyISO=" + currencyISO +
-                ", extras={" + formatExtras(", ").toString() + "}" +
                 '}';
     }
 }

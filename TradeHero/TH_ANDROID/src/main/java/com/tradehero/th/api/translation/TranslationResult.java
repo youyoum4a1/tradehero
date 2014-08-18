@@ -1,20 +1,14 @@
 package com.tradehero.th.api.translation;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
-import com.tradehero.th.api.ExtendedDTO;
 
-public class TranslationResult extends ExtendedDTO
+public class TranslationResult implements DTO
 {
     //<editor-fold desc="Constructors">
     public TranslationResult()
     {
         super();
-    }
-
-    public <ExtendedDTOType extends ExtendedDTO> TranslationResult(ExtendedDTOType other,
-            Class<? extends ExtendedDTO> myClass)
-    {
-        super(other, myClass);
     }
     //</editor-fold>
 

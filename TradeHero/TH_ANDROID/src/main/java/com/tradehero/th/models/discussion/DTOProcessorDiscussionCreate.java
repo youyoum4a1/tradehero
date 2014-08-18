@@ -11,9 +11,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
 {
-    @NotNull private final DiscussionCache discussionCache;
-    @NotNull private final UserMessagingRelationshipCache userMessagingRelationshipCache;
-    @Nullable private final DiscussionKey stubKey;
+    @NotNull protected final DiscussionCache discussionCache;
+    @NotNull protected final UserMessagingRelationshipCache userMessagingRelationshipCache;
+    @Nullable protected final DiscussionKey stubKey;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorDiscussionCreate(
@@ -31,7 +31,7 @@ public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
 
     @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
     {
-        DiscussionDTO processed = super.process(discussionDTO);
+        @Nullable DiscussionDTO processed = super.process(discussionDTO);
         if (stubKey != null)
         {
             discussionCache.invalidate(stubKey);

@@ -1,6 +1,6 @@
 package com.tradehero.th.models.user;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserProfileDTO;
 import org.junit.After;
 import org.junit.Before;
@@ -12,7 +12,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class SimplePremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 {
     private SimplePremiumFollowUserAssistant assistant;

@@ -42,6 +42,11 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
         this.medias = medias;
     }
 
+    public SecurityMediaDTOList getMedias()
+    {
+        return medias;
+    }
+
     public SecurityIdList getMediaSecurityIds()
     {
         if (medias == null)

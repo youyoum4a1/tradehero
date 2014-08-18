@@ -1,21 +1,21 @@
 package com.tradehero.th.api.leaderboard.def;
 
-import com.tradehero.th.api.ExtendedDTO;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.CountryCodeList;
 import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
+import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 
-public class LeaderboardDefDTO extends ExtendedDTO
+public class LeaderboardDefDTO implements DTO
 {
     public int id;
     public String name;
@@ -148,32 +148,6 @@ public class LeaderboardDefDTO extends ExtendedDTO
     public String getPeriodEndString()
     {
         return toUtcRestricted != null ? toUtcRestricted.toString() : null;
-    }
-
-    public Integer getRank()
-    {
-        LeaderboardSortType currentSortType = (LeaderboardSortType) get(LeaderboardSortType.SORT_TYPE_KEY);
-        if (currentSortType == null)
-        {
-            currentSortType = getDefaultSortType();
-        }
-
-        if (sortTypes == null)
-        {
-            return null;
-        }
-
-        for (LeaderboardSortTypeDTO sortTypeDTO: sortTypes)
-        {
-            if (sortTypeDTO.sortTypeId == currentSortType.getServerFlag())
-            {
-                if (sortTypeDTO.userRankingOrdinalPosition != null)
-                {
-                    return sortTypeDTO.userRankingOrdinalPosition + 1;
-                }
-            }
-        }
-        return null;
     }
 
     public Boolean isWithinUtcRestricted()

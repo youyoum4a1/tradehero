@@ -36,7 +36,7 @@ public class MenuOwnedPortfolioIdFactory
         {
             menus.add(createMainPortfolioMenu(forUser));
         }
-        MenuOwnedPortfolioIdList providerMenus = createProviderPortfolioMenus(forUser, securityPositionDetailDTO);
+        MenuOwnedPortfolioIdList providerMenus = createProviderPortfolioMenus(securityPositionDetailDTO);
         if (providerMenus != null)
         {
             menus.addAll(providerMenus);
@@ -71,7 +71,6 @@ public class MenuOwnedPortfolioIdFactory
     }
 
     @Nullable public MenuOwnedPortfolioIdList createProviderPortfolioMenus(
-            @NotNull UserBaseKey forUser,
             @Nullable SecurityPositionDetailDTO securityPositionDetailDTO)
     {
         if (securityPositionDetailDTO == null)
@@ -79,6 +78,6 @@ public class MenuOwnedPortfolioIdFactory
             return null;
         }
 
-        return createPortfolioMenus(securityPositionDetailDTO.getProviderAssociatedOwnedPortfolioIds(forUser));
+        return createPortfolioMenus(securityPositionDetailDTO.getProviderAssociatedOwnedPortfolioIds());
     }
 }

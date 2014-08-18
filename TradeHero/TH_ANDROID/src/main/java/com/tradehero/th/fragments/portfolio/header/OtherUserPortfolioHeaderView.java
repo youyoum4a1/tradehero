@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -38,6 +38,7 @@ import retrofit.client.Response;
 
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
+    @InjectView(R.id.header_portfolio_following_container) RelativeLayout followContainer;
     @InjectView(R.id.portfolio_person_container) View userViewContainer;
     @InjectView(R.id.portfolio_header_avatar) ImageView userImageView;
     @InjectView(R.id.header_portfolio_username) TextView usernameTextView;
@@ -221,7 +222,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         configureFollowItemsVisibility();
     }
 
-    @Override public void linkWith(PortfolioDTO portfolioDTO)
+    @Override public void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
         // Nothing to do
     }
@@ -256,7 +257,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     public void configureFollowItemsVisibility()
     {
         UserProfileDTO currentUser = this.userCache.get(currentUserId.toUserBaseKey());
-        if (this.userProfileDTO == null)
+        if (this.userProfileDTO == null || isCurrentUserID(this.userProfileDTO.id))
         {
             this.followingImageView.setVisibility(GONE);
             this.followButton.setVisibility(GONE);
@@ -272,6 +273,16 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             this.followingImageView.setVisibility(GONE);
             this.followButton.setVisibility(VISIBLE);
         }
+    }
+
+    public boolean isCurrentUserID(int userId)
+    {
+        UserProfileDTO currentUser = this.userCache.get(currentUserId.toUserBaseKey());
+        if(currentUser!=null)
+        {
+            return currentUser.id == userId;
+        }
+        return false;
     }
 
     /**

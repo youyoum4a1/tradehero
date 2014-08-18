@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments;
 
 import android.support.v4.app.Fragment;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import org.fest.util.VisibleForTesting;
 import org.junit.After;
@@ -12,7 +12,7 @@ import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class DashboardNavigatorTest
 {
     private DashboardNavigator dashboardNavigator;
