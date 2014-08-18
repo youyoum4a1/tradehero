@@ -1,8 +1,7 @@
 package com.tradehero.th.fragments.translation;
 
 import android.content.Context;
-import com.tradehero.AbstractTestBase;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
@@ -17,10 +16,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowToast;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
-public class TranslatableLanguageListFragmentTest extends AbstractTestBase
+@RunWith(THRobolectricTestRunner.class)
+public class TranslatableLanguageListFragmentTest
 {
     @Inject Context context;
     @Inject TranslationTokenCache translationTokenCache;
@@ -39,25 +39,24 @@ public class TranslatableLanguageListFragmentTest extends AbstractTestBase
         listFragment = null;
     }
 
-    @Test public void shouldToastErrorOnStartUpBecauseNoTokenService()
+    @Test public void shouldToastErrorOnStartUpBecauseNoTokenService() throws InterruptedException
     {
         ShadowToast.reset();
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);
         assertThat(listFragment).isNotNull();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         String latestToastText = ShadowToast.getTextOfLatestToast();
         assertThat(latestToastText).isEqualTo(context.getString(R.string.error_incomplete_info_message));
     }
 
-    @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken()
+    @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken() throws InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);
 
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         assertThat(listFragment.listView.getAdapter().getCount()).isGreaterThan(10);
     }

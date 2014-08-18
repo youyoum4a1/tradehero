@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class SampleTest
 {
     @Inject @FacebookAppId String facebookAppId;

@@ -44,46 +44,25 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         return super.hashCode() ^ (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equals(PagedLeaderboardKey other)
+    @Override public boolean equalFields(@NotNull PagedLeaderboardKey other)
     {
-        return super.equals(other) && other instanceof PerPagedLeaderboardKey &&
-                equals((PerPagedLeaderboardKey) other);
+        return super.equalFields(other)
+                && other instanceof PerPagedLeaderboardKey &&
+                equalFields((PerPagedLeaderboardKey) other);
     }
 
-    public boolean equals(PerPagedLeaderboardKey other)
+    public boolean equalFields(@NotNull PerPagedLeaderboardKey other)
     {
-        return other != null &&
-                super.equals(other) &&
+        return super.equalFields(other) &&
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
-    }
-
-    public int compareTo(PerPagedLeaderboardKey other)
-    {
-        if (this == other)
-        {
-            return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
-        }
-
-        int parentComp = super.compareTo(other);
-        if (parentComp != 0)
-        {
-            return parentComp;
-        }
-
-        return perPage.compareTo(other.perPage);
     }
 
     @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
-        return new PerPagedLeaderboardKey(this, key, page);
+        return new PerPagedLeaderboardKey(this, id, page);
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override public void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
         if (perPage == null)

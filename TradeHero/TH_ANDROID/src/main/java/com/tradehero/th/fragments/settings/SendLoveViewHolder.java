@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.settings;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
@@ -28,27 +30,35 @@ public class SendLoveViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         final String appName = Constants.PLAYSTORE_APP_ID;
         try
         {
-            preferenceFragment.startActivity(
-                    new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
+            if (preferenceFragmentCopy != null)
+            {
+                preferenceFragmentCopy.startActivity(
+                        new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appName)));
+            }
         }
         catch (android.content.ActivityNotFoundException anfe)
         {
             try
             {
-                preferenceFragment.startActivity(new Intent(Intent.ACTION_VIEW,
+                preferenceFragmentCopy.startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://play.google.com/store/apps/details?id=" + appName)));
             }
             catch (Exception e)
             {
                 Timber.e(e, "Cannot send to Google Play store");
-                alertDialogUtil.popWithNegativeButton(
-                        preferenceFragment.getActivity(),
-                        R.string.webview_error_no_browser_for_intent_title,
-                        R.string.webview_error_no_browser_for_intent_description,
-                        R.string.cancel);
+                Context activityContext = preferenceFragmentCopy.getActivity();
+                if (activityContext != null)
+                {
+                    alertDialogUtil.popWithNegativeButton(
+                            activityContext,
+                            R.string.webview_error_no_browser_for_intent_title,
+                            R.string.webview_error_no_browser_for_intent_description,
+                            R.string.cancel);
+                }
             }
         }
     }

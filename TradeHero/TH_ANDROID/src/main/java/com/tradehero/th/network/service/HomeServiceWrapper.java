@@ -26,15 +26,18 @@ public class HomeServiceWrapper
     //<editor-fold desc="Get Home Page Content">
     public Response getHomePageContent(@NotNull UserBaseKey userBaseKey)
     {
-        return homeService.getHomePageContent(userBaseKey.key,
+        return homeService.getHomePageContent(
+                userBaseKey.key,
                 Constants.USE_BETA_HOME_PAGE ? true : null);
     }
 
     public MiddleCallback<Response> getHomePageContent(@NotNull UserBaseKey userBaseKey, @Nullable Callback<Response> callback)
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
-        homeServiceAsync.getHomePageContent(userBaseKey.key, middleCallback,
-                Constants.USE_BETA_HOME_PAGE ? true : null);
+        homeServiceAsync.getHomePageContent(
+                userBaseKey.key,
+                Constants.USE_BETA_HOME_PAGE ? true : null,
+                middleCallback);
         return middleCallback;
     }
     //</editor-fold>

@@ -34,6 +34,7 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
+import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
@@ -304,10 +305,18 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 targetUser = messageHeaderDTO.senderUserId;
             }
-            thRouter.save(bundle, new UserBaseKey(targetUser));
+            UserBaseKey targetUserKey = new UserBaseKey(targetUser);
+            thRouter.save(bundle, targetUserKey);
             Timber.d("messageHeaderDTO recipientUserId:%s,senderUserId:%s,currentUserId%s", messageHeaderDTO.recipientUserId,
                     messageHeaderDTO.senderUserId, currentUserId.get());
-            navigator.pushFragment(PushableTimelineFragment.class, bundle);
+            if (currentUserId.toUserBaseKey().equals(targetUserKey))
+            {
+                navigator.pushFragment(MeTimelineFragment.class, bundle);
+            }
+            else
+            {
+                navigator.pushFragment(PushableTimelineFragment.class, bundle);
+            }
         }
     }
 
@@ -484,9 +493,9 @@ public class MessagesCenterFragment extends DashboardFragment
         unsetDeletionMiddleCallback();
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
                 messageHeaderDTO.getDTOKey(),
-                messageHeaderDTO.senderUserId,
-                messageHeaderDTO.recipientUserId,
-                messageHeaderDTO.unread ? currentUserId.toUserBaseKey() : null,
+                messageHeaderDTO.getSenderId(),
+                messageHeaderDTO.getRecipientId(),
+                currentUserId.toUserBaseKey(),
                 new MessageDeletionCallback(messageHeaderDTO));
     }
 
@@ -740,9 +749,9 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         middleCallbackList.add(
                 messageServiceWrapper.get().readMessage(
-                        messageHeaderDTO.id,
-                        messageHeaderDTO.senderUserId,
-                        messageHeaderDTO.recipientUserId,
+                        messageHeaderDTO.getDTOKey(),
+                        messageHeaderDTO.getSenderId(),
+                        messageHeaderDTO.getRecipientId(),
                         messageHeaderDTO.getDTOKey(),
                         currentUserId.toUserBaseKey(),
                         createMessageAsReadCallback(messageHeaderDTO)));
@@ -851,6 +860,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 {
                     adapter.remove(messageHeaderDTO);
                     adapter.notifyDataSetChanged();
+                    messagesView.getListView().closeOpenedItems();
                 }
             }
         }

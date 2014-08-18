@@ -8,6 +8,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
@@ -96,6 +97,6 @@ public class SecurityPushBuyIntent extends THIntent
     @Override public void populate(Bundle bundle)
     {
         super.populate(bundle);
-        bundle.putBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, getSecurityId().getArgs());
+        AbstractBuySellFragment.putSecurityId(bundle, getSecurityId());
     }
 }

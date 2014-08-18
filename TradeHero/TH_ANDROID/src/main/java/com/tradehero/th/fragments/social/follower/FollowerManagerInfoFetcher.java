@@ -31,8 +31,13 @@ public class FollowerManagerInfoFetcher
 
     public void fetch(final UserBaseKey heroId)
     {
+        fetch(heroId,false);
+    }
+
+    public void fetch(final UserBaseKey heroId,boolean forceUpdate)
+    {
         detachFetchTask();
         this.followerSummaryCache.register(heroId, this.followerSummaryListener);
-        this.followerSummaryCache.getOrFetchAsync(heroId);
+        this.followerSummaryCache.getOrFetchAsync(heroId,forceUpdate);
     }
 }

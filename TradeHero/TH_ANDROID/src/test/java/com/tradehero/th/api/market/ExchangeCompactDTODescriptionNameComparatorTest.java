@@ -1,6 +1,6 @@
 package com.tradehero.th.api.market;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class ExchangeCompactDTODescriptionNameComparatorTest
 {

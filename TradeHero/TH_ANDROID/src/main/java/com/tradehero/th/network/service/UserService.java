@@ -1,13 +1,13 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
+import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
@@ -22,7 +22,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
+import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -139,7 +139,7 @@ public interface UserService
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
-    @GET("/users/allowableRecipients") PaginatedDTO<AllowableRecipientDTO> searchAllowableRecipients(
+    @GET("/users/allowableRecipients") PaginatedAllowableRecipientDTO searchAllowableRecipients(
             @Query("searchTerm") String searchString,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
@@ -190,7 +190,7 @@ public interface UserService
             @Query("q") String query);
     //</editor-fold>
 
-    @POST("/users/BatchFollow/free") Response followBatchFree(@Body FollowFriendsForm followFriendsForm);
+    @POST("/users/BatchFollow/free") Response followBatchFree(@Body BatchFollowFormDTO batchFollowFormDTO);
 
     //<editor-fold desc="Invite Friends">
     @POST("/users/{userId}/inviteFriends") Response inviteFriends(
@@ -238,5 +238,11 @@ public interface UserService
     Response updateReferralCode(
             @Path("userId") int userId,
             @Body UpdateReferralCodeDTO updateReferralCodeDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Send Analytics">
+    @POST("/analytics")
+    Response sendAnalytics(
+            @Body BatchAnalyticsEventForm batchAnalyticsEventForm);
     //</editor-fold>
 }

@@ -76,7 +76,7 @@ abstract public class ProviderSecurityListType extends SecurityListType
         if (!ProviderSecurityListType.class.isInstance(another))
         {
             // TODO is it very expensive?
-            return ProviderSecurityListType.class.getName().compareTo(another.getClass().getName());
+            return ProviderSecurityListType.class.getName().compareTo(((Object) another).getClass().getName());
         }
 
         return compareTo(ProviderSecurityListType.class.cast(another));

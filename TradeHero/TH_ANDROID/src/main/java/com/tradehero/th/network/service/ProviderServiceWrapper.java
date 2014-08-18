@@ -128,7 +128,7 @@ import retrofit.Callback;
         }
         else
         {
-            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
         }
         return received;
     }
@@ -166,7 +166,7 @@ import retrofit.Callback;
         }
         else
         {
-            throw new IllegalArgumentException("Unhandled type " + key.getClass().getName());
+            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
         }
         return middleCallback;
     }

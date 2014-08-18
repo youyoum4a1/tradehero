@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.translation;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class TranslatableLanguageItemLinearViewTest
 {
     @Inject Context context;

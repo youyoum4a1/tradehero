@@ -6,7 +6,6 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import retrofit.client.Response;
 
 public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
@@ -20,7 +19,7 @@ public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
             @NotNull UserProfileCache userProfileCache,
             @NotNull MessageHeaderListCache messageHeaderListCache,
             @NotNull MessageHeaderId messageHeaderId,
-            @Nullable UserBaseKey readerId)
+            @NotNull UserBaseKey readerId)
     {
         super(messageHeaderCache, userProfileCache, messageHeaderId, readerId);
         this.messageHeaderListCache = messageHeaderListCache;

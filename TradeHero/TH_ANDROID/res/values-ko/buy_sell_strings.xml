@@ -17,8 +17,8 @@
   <string name="buy_sell_p10k">$10,000</string>
   <string name="buy_sell_p25k">$25,000</string>
   <string name="buy_sell_p50k">$50,000</string>
-  <string name="buy_sell_button_buy">%1$s %2$s에 매수</string>
-  <string name="buy_sell_button_sell">%1$s %2$s에 매도</string>
+  <string name="buy_sell_button_buy">%1$s %2$s 에 매수</string>
+  <string name="buy_sell_button_sell">%1$s %2$s 에 매도</string>
   <string name="buy_sell_button_cannot_buy">-</string>
   <string name="buy_sell_button_cannot_sell">-</string>
   <string name="buy_sell_confirm_share_public">공개</string>

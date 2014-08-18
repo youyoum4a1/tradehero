@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
@@ -31,27 +33,39 @@ public class ResetHelpScreensViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         resetHelpScreen.delete();
         if (progressDialog == null)
         {
-            progressDialog = progressDialogUtil.show(preferenceFragment.getActivity(),
-                    preferenceFragment.getString(R.string.settings_misc_reset_help_screen),
-                    "");
+            if (preferenceFragmentCopy != null)
+            {
+                Context activityContext = preferenceFragmentCopy.getActivity();
+                if (activityContext != null)
+                {
+                    progressDialog = progressDialogUtil.show(
+                            activityContext,
+                            preferenceFragmentCopy.getString(R.string.settings_misc_reset_help_screen),
+                            "");
+                }
+            }
         }
         else
         {
             progressDialog.show();
         }
-        preferenceFragment.getView().postDelayed(new Runnable()
+        if (preferenceFragmentCopy != null)
         {
-            @Override public void run()
+            preferenceFragmentCopy.getView().postDelayed(new Runnable()
             {
-                ProgressDialog progressDialogCopy = progressDialog;
-                if (progressDialogCopy != null)
+                @Override public void run()
                 {
-                    progressDialogCopy.hide();
+                    ProgressDialog progressDialogCopy = progressDialog;
+                    if (progressDialogCopy != null)
+                    {
+                        progressDialogCopy.hide();
+                    }
                 }
-            }
-        }, 500);
+            }, 500);
+        }
     }
 }

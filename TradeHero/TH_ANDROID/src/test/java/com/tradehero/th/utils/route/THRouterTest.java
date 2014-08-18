@@ -3,7 +3,7 @@ package com.tradehero.th.utils.route;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.webkit.WebView;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -31,7 +31,6 @@ import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
@@ -49,7 +48,7 @@ import org.robolectric.shadows.ShadowWebViewNew;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 @Config(shadows = ShadowWebViewNew.class)
 public class THRouterTest
 {

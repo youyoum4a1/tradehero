@@ -3,8 +3,7 @@ package com.tradehero.th.fragments.settings;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tradehero.AbstractTestBase;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
@@ -21,10 +20,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowPreference;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
-public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
+@RunWith(THRobolectricTestRunner.class)
+public class UserTranslationSettingsViewHolderTest
 {
     @Inject TranslationTokenCache translationTokenCache;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
@@ -105,7 +105,7 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
     //</editor-fold>
 
     //<editor-fold desc="Auto is checked or not">
-    @Test public void autoIsCheckedIfPrefTrue() throws JsonProcessingException
+    @Test public void autoIsCheckedIfPrefTrue() throws JsonProcessingException, InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("en", true));
@@ -113,6 +113,8 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
 
         Robolectric.runBackgroundTasks();
+        Thread.sleep(200);
+        Robolectric.runUiThreadTasks();
         Robolectric.runUiThreadTasks();
 
         assertThat(settingsFragment.userTranslationSettingsViewHolder.translationAuto.isChecked()).isTrue();
@@ -127,20 +129,21 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
+        Robolectric.runUiThreadTasks();
 
         assertThat(settingsFragment.userTranslationSettingsViewHolder.translationAuto.isChecked()).isFalse();
     }
     //</editor-fold>
 
     //<editor-fold desc="Preferred language label">
-    @Test public void preferredPicksLanguage() throws JsonProcessingException
+    @Test public void preferredPicksLanguage() throws JsonProcessingException, InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", false));
 
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
 
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         assertThat(settingsFragment.userTranslationSettingsViewHolder
                 .translationPreferredLang.getSummary().toString())

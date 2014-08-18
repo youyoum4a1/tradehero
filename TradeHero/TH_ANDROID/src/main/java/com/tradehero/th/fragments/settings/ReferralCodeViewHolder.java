@@ -18,6 +18,10 @@ public class ReferralCodeViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        preferenceFragment.getNavigator().pushFragment(SettingsReferralCodeFragment.class);
+        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragmentCopy.getNavigator().pushFragment(SettingsReferralCodeFragment.class);
+        }
     }
 }

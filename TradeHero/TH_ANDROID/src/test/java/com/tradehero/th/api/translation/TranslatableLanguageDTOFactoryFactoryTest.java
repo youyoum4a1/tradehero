@@ -1,6 +1,6 @@
 package com.tradehero.th.api.translation;
 
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingLanguageDTOFactory;
@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class TranslatableLanguageDTOFactoryFactoryTest
 {
     @Inject TranslationTokenCache translationTokenCache;

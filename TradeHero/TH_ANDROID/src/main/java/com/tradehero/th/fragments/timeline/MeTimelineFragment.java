@@ -13,13 +13,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 @Routable({
         "user/me", "profiles/me"
@@ -35,13 +33,11 @@ public class MeTimelineFragment extends TimelineFragment
     {
         super.onCreate(savedInstanceState);
         thRouter.save(getArguments(), currentUserId.toUserBaseKey());
-        Timber.d("MeTimelineFragment onCreate");
     }
 
     @Override public void onResume()
     {
         super.onResume();
-
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
     }
 
@@ -67,11 +63,6 @@ public class MeTimelineFragment extends TimelineFragment
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override protected void createUserProfileRetrievedMilestone()
-    {
-        userProfileRetrievedMilestone = new UserProfileRetrievedMilestone(currentUserId.toUserBaseKey());
     }
 
     @Override public int getTutorialLayout()

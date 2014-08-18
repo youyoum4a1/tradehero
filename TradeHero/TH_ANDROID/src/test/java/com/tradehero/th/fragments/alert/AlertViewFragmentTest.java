@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.alert.AlertDTO;
@@ -23,9 +23,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class AlertViewFragmentTest
 {
     @Inject @ForApp ObjectMapper mapper;
@@ -69,29 +70,25 @@ public class AlertViewFragmentTest
         userProfileCache.invalidateAll();
     }
 
-    @Test public void launchWillPopulateFromCache()
+    @Test public void launchWillPopulateFromCache() throws InterruptedException
     {
         Bundle args = new Bundle();
         AlertViewFragment.putAlertId(args, cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()));
         AlertViewFragment alertViewFragment = dashboardNavigator.pushFragment(AlertViewFragment.class, args);
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         assertThat(cachedAlertDTO).isNotNull();
         assertThat(alertViewFragment.alertDTO).isNotNull();
         assertThat(alertViewFragment.alertDTO.id).isEqualTo(cachedAlertDTO.id);
     }
 
-    @Test public void clickOnOffWillSetMiddleCallback()
-    {
+    @Test public void clickOnOffWillSetMiddleCallback() throws InterruptedException {
         Bundle args = new Bundle();
         AlertViewFragment.putAlertId(args, cachedAlertDTO.getAlertId(currentUserId.toUserBaseKey()));
         AlertViewFragment alertViewFragment = dashboardNavigator.pushFragment(AlertViewFragment.class, args);
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         assertThat(alertViewFragment.alertUpdateMiddleCallback).isNull();
 

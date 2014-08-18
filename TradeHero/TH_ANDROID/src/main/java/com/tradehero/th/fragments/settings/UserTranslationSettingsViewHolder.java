@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.settings;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
+import android.support.v4.preference.PreferenceFragment;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -26,12 +27,12 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
     @NotNull private final LanguageDTOFactory languageDTOFactory;
     @NotNull private final UserTranslationSettingPreference userTranslationSettingPreference;
     @NotNull private final TranslationTokenCache translationTokenCache;
-    private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
-    protected UserTranslationSettingDTO userTranslationSettingDTO;
+    @Nullable private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
+    @Nullable protected UserTranslationSettingDTO userTranslationSettingDTO;
 
-    protected PreferenceCategory translationContainer;
-    protected Preference translationPreferredLang;
-    protected CheckBoxPreference translationAuto;
+    @Nullable protected PreferenceCategory translationContainer;
+    @Nullable protected Preference translationPreferredLang;
+    @Nullable protected CheckBoxPreference translationAuto;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTranslationSettingsViewHolder(
@@ -150,8 +151,10 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
         this.userTranslationSettingDTO = userTranslationSettingDTO;
         if (userTranslationSettingDTO != null)
         {
+            //noinspection ConstantConditions
             translationContainer.setEnabled(true);
             linkWith(languageDTOFactory.createFromCode(userTranslationSettingDTO.languageCode));
+            //noinspection ConstantConditions
             translationAuto.setChecked(userTranslationSettingDTO.autoTranslate);
             translationAuto.setSummary(userTranslationSettingDTO.getProviderStringResId());
         }
@@ -159,12 +162,20 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
 
     protected void linkWith(@NotNull LanguageDTO languageDTO)
     {
-        String lang = preferenceFragment.getString(
-                R.string.translation_preferred_language_summary,
-                languageDTO.code,
-                languageDTO.name,
-                languageDTO.nameInOwnLang);
-        translationPreferredLang.setSummary(lang);
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            String lang = preferenceFragmentCopy.getString(
+                    R.string.translation_preferred_language_summary,
+                    languageDTO.code,
+                    languageDTO.name,
+                    languageDTO.nameInOwnLang);
+            Preference translationPreferredLangCopy = translationPreferredLang;
+            if (translationPreferredLangCopy != null)
+            {
+                translationPreferredLangCopy.setSummary(lang);
+            }
+        }
     }
 
     protected void handleAutoTranslateClicked(boolean newValue)
@@ -186,6 +197,10 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
 
     protected void handlePreferredLanguageClicked()
     {
-        preferenceFragment.getNavigator().pushFragment(TranslatableLanguageListFragment.class);
+        DashboardPreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragmentCopy.getNavigator().pushFragment(TranslatableLanguageListFragment.class);
+        }
     }
 }

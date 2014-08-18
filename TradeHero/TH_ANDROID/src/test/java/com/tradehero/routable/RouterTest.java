@@ -2,8 +2,8 @@ package com.tradehero.routable;
 
 import android.app.Activity;
 import android.content.Intent;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.route.Router;
-import com.tradehero.RobolectricMavenTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.robolectric.shadows.ShadowActivity;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class RouterTest
 {
     private Router router;

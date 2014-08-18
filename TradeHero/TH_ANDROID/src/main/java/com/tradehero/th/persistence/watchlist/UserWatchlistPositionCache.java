@@ -1,19 +1,18 @@
 package com.tradehero.th.persistence.watchlist;
 
-import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.api.watchlist.key.PerPagedWatchlistKey;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Singleton public class UserWatchlistPositionCache extends StraightDTOCacheNew<UserBaseKey, SecurityIdList>
+@Singleton public class UserWatchlistPositionCache extends StraightCutDTOCacheNew<UserBaseKey, WatchlistPositionDTOList, SecurityIdList>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
     private static final int DEFAULT_WATCHLIST_FETCH_SIZE = 100;
@@ -38,25 +37,28 @@ import org.jetbrains.annotations.NotNull;
         return new PerPagedWatchlistKey(1, DEFAULT_WATCHLIST_FETCH_SIZE);
     }
 
-    @Override @NotNull public SecurityIdList fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NotNull public WatchlistPositionDTOList fetch(@NotNull UserBaseKey key) throws Throwable
     {
-        return putInternal(
-                watchlistServiceWrapper.get().getAllByUser(createUniqueKey()));
+        return watchlistServiceWrapper.get().getAllByUser(createUniqueKey());
     }
 
-    @NotNull private SecurityIdList putInternal(@NotNull  List<WatchlistPositionDTO> watchlistPositionDTOs)
+    @NotNull @Override protected SecurityIdList cutValue(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
     {
-        SecurityIdList securityIds = new SecurityIdList();
-        watchlistPositionCache.get().invalidateAll();
-        for (@NotNull WatchlistPositionDTO watchlistPositionDTO : watchlistPositionDTOs)
+        watchlistPositionCache.get().put(value);
+        return value.getSecurityIds();
+    }
+
+    @Nullable @Override protected WatchlistPositionDTOList inflateValue(@NotNull UserBaseKey key, @Nullable SecurityIdList cutValue)
+    {
+        if (cutValue == null)
         {
-            if (watchlistPositionDTO.securityDTO != null)
-            {
-                SecurityId securityId = watchlistPositionDTO.securityDTO.getSecurityId();
-                watchlistPositionCache.get().put(securityId, watchlistPositionDTO);
-                securityIds.add(securityId);
-            }
+            return null;
         }
-        return securityIds;
+        WatchlistPositionDTOList inflated = watchlistPositionCache.get().get(cutValue);
+        if (inflated.hasNullItem())
+        {
+            return null;
+        }
+        return inflated;
     }
 }

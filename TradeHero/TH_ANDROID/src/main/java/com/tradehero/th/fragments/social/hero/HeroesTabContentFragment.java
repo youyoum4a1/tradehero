@@ -21,7 +21,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -265,8 +264,16 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
             @Override public void onUserFollowFailed(UserBaseKey userFollowed, Throwable error)
             {
-                Timber.e(error, "onUserFollowFailed error");
-                THToast.show(getString(R.string.manage_heroes_unfollow_failed));
+                //TODO offical accounts, do not unfollow
+                if (userFollowed.isOfficialAccount())
+                {
+                    THToast.show(getString(R.string.manage_heroes_unfollow_official_accounts_failed));
+                }
+                else
+                {
+                    Timber.e(error, "onUserFollowFailed error");
+                    THToast.show(getString(R.string.manage_heroes_unfollow_failed));
+                }
             }
         };
     }
@@ -340,13 +347,10 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         if (dto != null)
         {
             LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-            bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, dto.name);
-            bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_DESC, dto.desc);
         }
         else
         {
             LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID));
-            bundle.putString(BaseLeaderboardFragment.BUNDLE_KEY_LEADERBOARD_DEF_TITLE, getString(R.string.leaderboard_community_leaderboards));
         }
         getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
     }

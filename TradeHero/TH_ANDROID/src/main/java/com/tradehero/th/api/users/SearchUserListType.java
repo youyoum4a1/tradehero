@@ -1,6 +1,9 @@
 package com.tradehero.th.api.users;
 
+import com.tradehero.common.api.PagedDTOKey;
+
 public class SearchUserListType extends UserListType
+    implements PagedDTOKey
 {
     //<editor-fold desc="Fields">
     public final String searchString;
@@ -16,6 +19,11 @@ public class SearchUserListType extends UserListType
         this.perPage = perPage;
     }
     //</editor-fold>
+
+    @Override public Integer getPage()
+    {
+        return page;
+    }
 
     @Override public int hashCode()
     {
@@ -45,7 +53,7 @@ public class SearchUserListType extends UserListType
         }
         if (!(other instanceof SearchUserListType))
         {
-            return SearchUserListType.class.getName().compareTo(other.getClass().getName());
+            return SearchUserListType.class.getName().compareTo(((Object) other).getClass().getName());
         }
 
         SearchUserListType searchUserListType = (SearchUserListType) other;

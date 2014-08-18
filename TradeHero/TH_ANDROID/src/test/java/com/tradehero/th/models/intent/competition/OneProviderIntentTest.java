@@ -2,7 +2,7 @@ package com.tradehero.th.models.intent.competition;
 
 import android.net.Uri;
 import android.os.Bundle;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
@@ -17,7 +17,7 @@ import org.robolectric.Robolectric;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class OneProviderIntentTest
 {
     @Before public void setUp()

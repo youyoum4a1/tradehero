@@ -1,10 +1,11 @@
 package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.view.LayoutInflater;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class NotificationsViewTest
 {
     NotificationsView notifView;
@@ -38,14 +39,16 @@ public class NotificationsViewTest
     @Test public void testMarkAsReadNotCrash()
     {
         notifView.notificationServiceWrapper = mock(NotificationServiceWrapper.class);
-        when(notifView.notificationServiceWrapper.markAsRead(any(NotificationKey.class), any(Callback.class)))
+        //noinspection unchecked
+        when(notifView.notificationServiceWrapper.markAsRead(any(UserBaseKey.class), any(NotificationKey.class), any(Callback.class)))
         .then(new Answer<BaseMiddleCallback<Response>>()
         {
             @Override public BaseMiddleCallback<Response> answer(InvocationOnMock invocation) throws Throwable
             {
                 Object[] args = invocation.getArguments();
                 Response successResponse = new Response("http://whatever", 200, "Good", new ArrayList<Header>(), null);
-                ((Callback) args[1]).success(successResponse, null);
+                //noinspection unchecked
+                ((Callback) args[2]).success(successResponse, null);
                 return null;
             }
         });

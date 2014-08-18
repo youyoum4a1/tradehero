@@ -1,7 +1,7 @@
 package com.tradehero.th.api.social;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.BaseApiTest;
@@ -18,7 +18,7 @@ import retrofit.mime.TypedString;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class UserFriendsDTODeserialiserTest extends BaseApiTest
 {
     @Inject @ForApp ObjectMapper objectMapper;

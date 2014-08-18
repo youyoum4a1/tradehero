@@ -5,6 +5,9 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.utils.SecurityUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
 
 public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
 {
@@ -15,7 +18,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
     //</editor-fold>
 
-    public Integer getShareCountIn(PortfolioId portfolioId)
+    public Integer getShareCountIn(@Nullable PortfolioId portfolioId)
     {
         if (portfolioId == null || portfolioId.key == null)
         {
@@ -33,7 +36,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return sum;
     }
 
-    //<editor-fold desc="Max Net Sell Proceeds USD">
+    //<editor-fold desc="Net Sell Proceeds USD">
     /**
      * If it returns a negative number it means it will eat into the cash available.
      * @param quoteDTO
@@ -42,8 +45,8 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
      * @return
      */
     public Double getMaxNetSellProceedsUsd(
-            QuoteDTO quoteDTO,
-            PortfolioId portfolioId,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
             boolean includeTransactionCostUsd)
     {
         return getMaxNetSellProceedsUsd(
@@ -62,24 +65,123 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
      * @return
      */
     public Double getMaxNetSellProceedsUsd(
-            QuoteDTO quoteDTO,
-            PortfolioId portfolioId,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
             boolean includeTransactionCostUsd,
             double txnCostUsd)
     {
-        if (quoteDTO == null || portfolioId == null || portfolioId.key == null)
+        return getNetSellProceedsUsd(
+                getShareCountIn(portfolioId),
+                quoteDTO,
+                portfolioId,
+                includeTransactionCostUsd,
+                txnCostUsd);
+    }
+
+    public Double getNetSellProceedsUsd(
+            @Nullable Integer shareCount,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
+            boolean includeTransactionCostUsd)
+    {
+        return getNetSellProceedsUsd(
+                shareCount,
+                quoteDTO,
+                portfolioId,
+                includeTransactionCostUsd,
+                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
+    }
+
+    public Double getNetSellProceedsUsd(
+            @Nullable Integer shareCount,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
+            boolean includeTransactionCostUsd,
+            double txnCostUsd)
+    {
+        if (shareCount == null || quoteDTO == null || portfolioId == null || portfolioId.key == null)
         {
             return null;
         }
         Double bidUsd = quoteDTO.getBidUSD();
-        Integer shareCount = getShareCountIn(portfolioId);
-        if (bidUsd == null || shareCount == null)
+        if (bidUsd == null)
         {
             return null;
         }
         return shareCount * bidUsd - (includeTransactionCostUsd ? txnCostUsd : 0);
     }
+
+    public Double getNetSellProceedsRefCcy(
+            @Nullable Integer shareCount,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
+            boolean includeTransactionCostUsd)
+    {
+        return getNetSellProceedsRefCcy(
+                shareCount,
+                quoteDTO,
+                portfolioId,
+                includeTransactionCostUsd,
+                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
+    }
+
+    public Double getNetSellProceedsRefCcy(
+            @Nullable Integer shareCount,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
+            boolean includeTransactionCostUsd,
+            double txnCostUsd)
+    {
+        Double netProceedsUsd = getNetSellProceedsUsd(shareCount, quoteDTO, portfolioId, includeTransactionCostUsd, txnCostUsd);
+        if (netProceedsUsd == null || quoteDTO == null || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0)
+        {
+            return null;
+        }
+        return netProceedsUsd / quoteDTO.toUSDRate;
+    }
     //</editor-fold>
+
+    public Double getTotalSpentUsd(@Nullable PortfolioId portfolioId)
+    {
+        if (portfolioId == null)
+        {
+            return null;
+        }
+        Double total = null;
+        for (PositionDTOCompact positionDTO: this)
+        {
+            if (portfolioId.key.equals(positionDTO.portfolioId)
+                    && positionDTO.averagePriceRefCcy != null
+                    && positionDTO.shares != null)
+            {
+                total = (total == null ? 0 : total) + positionDTO.averagePriceRefCcy * positionDTO.shares;
+            }
+        }
+        return total;
+    }
+
+    @Nullable public Double getSpentOnQuantityUsd(
+            @NotNull Integer shareCount,
+            @NotNull PortfolioCompactDTO portfolioCompactDTO)
+    {
+        Double total = null;
+        for (PositionDTOCompact positionDTO: this)
+        {
+            if (portfolioCompactDTO.id == positionDTO.portfolioId
+                    && positionDTO.averagePriceRefCcy != null
+                    && positionDTO.shares != null)
+            {
+                int localShareCount = Math.max(0, Math.min(shareCount, positionDTO.shares));
+                total = (total == null ? 0 : total) + positionDTO.averagePriceRefCcy * portfolioCompactDTO.getProperRefCcyToUsdRate() * localShareCount;
+                shareCount -= localShareCount;
+            }
+        }
+        if (shareCount != 0)
+        {
+            Timber.e(new IllegalArgumentException("Got wrong number of shares passed"), "Just reporting");
+        }
+        return total;
+    }
 
     //<editor-fold desc="Max Sellable Shares">
     public Integer getMaxSellableShares(

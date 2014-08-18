@@ -28,9 +28,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIdList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
@@ -59,8 +60,8 @@ public class WatchlistPositionFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
 
-    private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionFetchListener;
-    private DTOCacheNew.Listener<UserBaseKey, SecurityIdList> userWatchlistPositionRefreshListener;
+    private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
+    private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionRefreshListener;
     private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
 
     @InjectView(R.id.watchlist_position_list_header) WatchlistPortfolioHeaderView watchlistPortfolioHeaderView;
@@ -125,6 +126,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                         SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
                         adapter.remove(deletedSecurityId);
+                        adapter.notifyDataSetChanged();
                         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Delete));
                         watchlistListView.closeOpenedItems();
                     }
@@ -185,7 +187,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         detachUserWatchlistFetchTask();
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
-        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), false);
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -306,13 +308,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         portfolioCache.getOrFetchAsync(shownPortfolioId);
     }
 
-    private void display()
-    {
-        displayProgress(false);
-        displayHeader();
-        displayWatchlist(new SecurityIdList(userWatchlistPositionCache.get(currentUserId.toUserBaseKey())));
-    }
-
     private void displayHeader()
     {
         if (watchlistPortfolioHeaderView != null)
@@ -323,10 +318,10 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
     }
 
-    private void displayWatchlist(SecurityIdList securityIds)
+    private void displayWatchlist(WatchlistPositionDTOList watchlistPositionDTOs)
     {
         WatchlistAdapter newAdapter = createWatchlistAdapter();
-        newAdapter.addAll(securityIds);
+        newAdapter.addAll(watchlistPositionDTOs);
         watchlistPositionListView.setAdapter(newAdapter);
         watchListAdapter = newAdapter;
         watchlistPositionListView.onRefreshComplete();
@@ -337,15 +332,11 @@ public class WatchlistPositionFragment extends DashboardFragment
         // TODO discover why sometimes we would get a mismatch
         if (position < watchListAdapter.getCount())
         {
-            SecurityId securityId = (SecurityId) watchListAdapter.getItem(position);
+            WatchlistPositionDTO watchlistPositionDTO = (WatchlistPositionDTO) watchListAdapter.getItem(position);
             Bundle args = new Bundle();
-            if (securityId != null)
+            if (watchlistPositionDTO != null)
             {
-                WatchlistEditFragment.putSecurityId(args, securityId);
-                if (watchlistPositionCache.get(securityId) != null)
-                {
-                    DashboardFragment.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
-                }
+                WatchlistEditFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
             }
             getDashboardNavigator().pushFragment(WatchlistEditFragment.class, args, Navigator.PUSH_UP_FROM_BOTTOM, null);
         }
@@ -369,14 +360,14 @@ public class WatchlistPositionFragment extends DashboardFragment
         return new WatchlistPositionFragmentSwipeListViewListener();
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createWatchlistListener()
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createWatchlistListener()
     {
         return new WatchlistPositionFragmentSecurityIdListCacheListener();
     }
 
-    protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
+    protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
             displayWatchlist(value);
         }
@@ -388,14 +379,14 @@ public class WatchlistPositionFragment extends DashboardFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, SecurityIdList> createRefreshWatchlistListener()
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createRefreshWatchlistListener()
     {
         return new RefreshWatchlisListener();
     }
 
-    protected class RefreshWatchlisListener implements DTOCacheNew.Listener<UserBaseKey, SecurityIdList>
+    protected class RefreshWatchlisListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull SecurityIdList value)
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
             watchlistPositionListView.onRefreshComplete();
             displayWatchlist(value);

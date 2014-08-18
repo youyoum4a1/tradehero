@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/leaderboard_user_item_position"
-        android:layout_width="50dp"
+        android:layout_width="@dimen/leaderboard_position_width"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textSize="@dimen/leaderboard_position_text_size"

@@ -37,6 +37,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.callback.MiddleLogInCallback;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
@@ -49,10 +50,10 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -75,6 +76,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     private MiddleCallback<Response> middleCallbackInvite;
     private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
     private MiddleCallback<UserProfileDTO> middleCallbackConnect;
+    private MiddleLogInCallback middleTrackbackFacebook;
     protected OnFollowRequestedListener followRequestedListener;
     private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfileDTO;
@@ -129,6 +131,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         avatar.setOnClickListener(null);
         inviteBtn.setOnClickListener(null);
+        detachTrackbackFacebook();
         detachMiddleCallbackInvite();
         super.onDetachedFromWindow();
     }
@@ -368,8 +371,10 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
             if (Session.getActiveSession() == null)
             {
+                detachTrackbackFacebook();
+                middleTrackbackFacebook = new MiddleLogInCallback(new TrackFacebookCallback());
                 facebookUtils.get().logIn(currentActivityHolderLazy.get().getCurrentActivity(),
-                        new TrackFacebookCallback());
+                        middleTrackbackFacebook);
             }
             else
             {
@@ -389,10 +394,10 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             Bundle params = new Bundle();
             String messageToFacebookFriends = getContext().getString(
                     R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            if (messageToFacebookFriends.length() > 60)
-            {
-                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-            }
+            //if (messageToFacebookFriends.length() > 60)
+            //{
+            //    messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+            //}
 
             params.putString("message", messageToFacebookFriends);
             params.putString("to", stringBuilder.toString());
@@ -453,6 +458,15 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             THToast.show(new THException(retrofitError));
             getProgressDialog().hide();
         }
+    }
+
+    private void detachTrackbackFacebook()
+    {
+        if (middleTrackbackFacebook != null)
+        {
+            middleTrackbackFacebook.setInnerCallback(null);
+        }
+        middleTrackbackFacebook = null;
     }
 
     private class TrackFacebookCallback extends LogInCallback

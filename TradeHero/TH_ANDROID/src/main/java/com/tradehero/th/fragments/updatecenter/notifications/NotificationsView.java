@@ -260,6 +260,7 @@ public class NotificationsView extends BetterViewAnimator
     {
         middleCallbacks.add(
                 notificationServiceWrapper.markAsRead(
+                        currentUserId.toUserBaseKey(),
                         new NotificationKey(pushId),
                         createMarkNotificationAsReadCallback()));
     }
@@ -268,6 +269,7 @@ public class NotificationsView extends BetterViewAnimator
     {
         middleCallbacks.add(
                 notificationServiceWrapper.markAsReadAll(
+                        currentUserId.toUserBaseKey(),
                         createMarkNotificationAsReadAllCallback()));
     }
 

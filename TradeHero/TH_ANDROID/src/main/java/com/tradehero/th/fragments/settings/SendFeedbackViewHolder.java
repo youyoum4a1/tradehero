@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.content.Intent;
+import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
@@ -39,14 +40,22 @@ public class SendFeedbackViewHolder extends OneSettingViewHolder
 
     @Override protected void handlePrefClicked()
     {
-        preferenceFragment.startActivity(
-                Intent.createChooser(VersionUtils.getSupportEmailIntent(preferenceFragment.getSherlockActivity()),
-                        ""));
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragmentCopy.startActivity(
+                    Intent.createChooser(VersionUtils.getSupportEmailIntent(preferenceFragmentCopy.getSherlockActivity()),
+                            ""));
+        }
     }
 
     private void handleSendFeedbackLongClicked()
     {
-        preferenceFragment.startActivity(Intent.createChooser(
-                VersionUtils.getSupportEmailIntent(preferenceFragment.getSherlockActivity(), true), ""));
+        PreferenceFragment preferenceFragmentCopy = preferenceFragment;
+        if (preferenceFragmentCopy != null)
+        {
+            preferenceFragmentCopy.startActivity(Intent.createChooser(
+                    VersionUtils.getSupportEmailIntent(preferenceFragmentCopy.getSherlockActivity(), true), ""));
+        }
     }
 }

@@ -48,6 +48,11 @@ abstract public class TrendingFilterTypeDTO
     }
     //</editor-fold>
 
+    @NotNull public TrendingSecurityListType getSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
+    {
+        return getSecurityListType(exchange.getApiName(), page, perPage);
+    }
+
     @NotNull abstract public TrendingFilterTypeDTO getPrevious();
     @NotNull abstract public TrendingFilterTypeDTO getNext();
     @NotNull abstract public TrendingSecurityListType getSecurityListType(@Nullable String usableExchangeName, @Nullable Integer page, @Nullable Integer perPage);

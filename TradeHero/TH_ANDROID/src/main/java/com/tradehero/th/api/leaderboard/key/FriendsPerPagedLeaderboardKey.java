@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
@@ -34,46 +35,25 @@ public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         return super.hashCode() ^ (includeFoF == null ? 0 : includeFoF.hashCode());
     }
 
-    @Override public boolean equals(PerPagedLeaderboardKey other)
+    @Override public boolean equalFields(@NotNull PerPagedLeaderboardKey other)
     {
-        return super.equals(other) && other instanceof FriendsPerPagedLeaderboardKey &&
-                equals((FriendsPerPagedLeaderboardKey) other);
+        return super.equalFields(other)
+                && other instanceof FriendsPerPagedLeaderboardKey
+                && equalFields((FriendsPerPagedLeaderboardKey) other);
     }
 
-    public boolean equals(FriendsPerPagedLeaderboardKey other)
+    public boolean equalFields(@NotNull FriendsPerPagedLeaderboardKey other)
     {
-        return other != null &&
-                super.equals(other) &&
+        return super.equalFields(other) &&
                 (includeFoF == null ? other.includeFoF == null : includeFoF.equals(other.includeFoF));
-    }
-
-    public int compareTo(FriendsPerPagedLeaderboardKey other)
-    {
-        if (this == other)
-        {
-            return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
-        }
-
-        int parentComp = super.compareTo(other);
-        if (parentComp != 0)
-        {
-            return parentComp;
-        }
-
-        return includeFoF.compareTo(other.includeFoF);
     }
 
     @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
-        return new FriendsPerPagedLeaderboardKey(this, key, page);
+        return new FriendsPerPagedLeaderboardKey(this, id, page);
     }
 
-    @Override public void putParameters(Bundle args)
+    @Override public void putParameters(@NotNull Bundle args)
     {
         super.putParameters(args);
         if (includeFoF == null)

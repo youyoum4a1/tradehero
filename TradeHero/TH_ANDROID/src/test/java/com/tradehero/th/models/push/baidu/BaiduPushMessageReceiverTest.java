@@ -4,7 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -29,7 +29,7 @@ import static com.tradehero.util.TestUtil.getResourceAsByteArray;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class BaiduPushMessageReceiverTest
 {
     private static final String[] NOTIFICATION_TEST_MESSAGES = new String[] {

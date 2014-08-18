@@ -2,7 +2,7 @@ package com.tradehero.th.models.intent.security;
 
 import android.net.Uri;
 import android.os.Bundle;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
@@ -18,7 +18,7 @@ import org.robolectric.Robolectric;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class SecurityPushBuyIntentTest
 {
     @Before public void setUp()
@@ -104,8 +104,8 @@ public class SecurityPushBuyIntentTest
         SecurityPushBuyIntent intent = new SecurityPushBuyIntent(used, securityId);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(2, bundle.getBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE).size());
-        assertTrue(securityId.equals(new SecurityId(bundle.getBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE))));
+        assertEquals(2, bundle.getBundle("com.tradehero.th.fragments.trade.AbstractBuySellFragment.securityId").size());
+        assertTrue(securityId.equals(new SecurityId(bundle.getBundle("com.tradehero.th.fragments.trade.AbstractBuySellFragment.securityId"))));
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -118,7 +118,7 @@ public class SecurityPushBuyIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(2, bundle.getBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE).size());
-        assertTrue(securityId.equals(new SecurityId(bundle.getBundle(BuySellFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE))));
+        assertEquals(2, bundle.getBundle("com.tradehero.th.fragments.trade.AbstractBuySellFragment.securityId").size());
+        assertTrue(securityId.equals(new SecurityId(bundle.getBundle("com.tradehero.th.fragments.trade.AbstractBuySellFragment.securityId"))));
     }
 }

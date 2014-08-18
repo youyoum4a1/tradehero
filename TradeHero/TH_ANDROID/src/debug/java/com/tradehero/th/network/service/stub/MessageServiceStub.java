@@ -96,11 +96,16 @@ public class MessageServiceStub implements MessageService
     @Override public Response deleteMessage(int commentId, int senderUserId,
             int recipientUserId)
     {
-        return null;
+        throw new RuntimeException("Not implemented");
     }
 
     @Override public Response readMessage(int commentId, int senderUserId,
             int recipientUserId)
+    {
+        throw new RuntimeException("Not implemented");
+    }
+
+    @Override public Response readAllMessage()
     {
         throw new RuntimeException("Not implemented");
     }

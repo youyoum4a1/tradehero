@@ -1,7 +1,7 @@
 package com.tradehero.th.models.push.baidu;
 
 import android.content.Intent;
-import com.tradehero.RobolectricMavenTestRunner;
+import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -17,7 +17,7 @@ import org.robolectric.shadows.ShadowActivity;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.robolectric.Robolectric.shadowOf;
 
-@RunWith(RobolectricMavenTestRunner.class)
+@RunWith(THRobolectricTestRunner.class)
 public class BaiduIntentReceiverTest
 {
     private DashboardActivity activity;
