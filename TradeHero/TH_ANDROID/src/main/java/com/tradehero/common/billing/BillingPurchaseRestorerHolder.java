@@ -7,9 +7,8 @@ public interface BillingPurchaseRestorerHolder<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>,
         BillingExceptionType extends BillingException>
+    extends RequestCodeHolder
 {
-    boolean isUnusedRequestCode(int requestCode);
-    void forgetRequestCode(int requestCode);
     BillingPurchaseRestorer.OnPurchaseRestorerListener<
             ProductIdentifierType,
             OrderIdType,
@@ -20,5 +19,4 @@ public interface BillingPurchaseRestorerHolder<
             OrderIdType,
             ProductPurchaseType,
             BillingExceptionType> purchaseFetchedListener);
-    void onDestroy();
 }

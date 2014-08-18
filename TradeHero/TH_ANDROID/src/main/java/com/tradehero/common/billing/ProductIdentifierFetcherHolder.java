@@ -7,11 +7,9 @@ public interface ProductIdentifierFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>,
         BillingExceptionType extends BillingException>
+    extends RequestCodeHolder
 {
-    boolean isUnusedRequestCode(int requestCode);
-    void forgetRequestCode(int requestCode);
     ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierFetchedListener(int requestCode);
     void registerProductIdentifierFetchedListener(int requestCode, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener);
     void launchProductIdentifierFetchSequence(int requestCode);
-    void onDestroy();
 }
