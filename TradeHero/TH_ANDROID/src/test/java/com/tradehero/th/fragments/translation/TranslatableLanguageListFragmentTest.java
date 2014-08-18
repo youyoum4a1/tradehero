@@ -39,14 +39,13 @@ public class TranslatableLanguageListFragmentTest extends AbstractTestBase
         listFragment = null;
     }
 
-    @Test public void shouldToastErrorOnStartUpBecauseNoTokenService()
+    @Test public void shouldToastErrorOnStartUpBecauseNoTokenService() throws InterruptedException
     {
         ShadowToast.reset();
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);
         assertThat(listFragment).isNotNull();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasks();
+        runBgUiTasks(3);
 
         String latestToastText = ShadowToast.getTextOfLatestToast();
         assertThat(latestToastText).isEqualTo(context.getString(R.string.error_incomplete_info_message));

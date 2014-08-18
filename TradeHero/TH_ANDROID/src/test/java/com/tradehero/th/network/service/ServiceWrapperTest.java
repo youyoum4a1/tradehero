@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import retrofit.Callback;
 import timber.log.Timber;
 
+import static com.tradehero.th.api.ValidMocker.mockValidParameter;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
