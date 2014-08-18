@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
