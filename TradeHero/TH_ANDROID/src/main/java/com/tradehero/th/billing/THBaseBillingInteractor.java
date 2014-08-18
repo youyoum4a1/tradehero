@@ -27,13 +27,12 @@ import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class THBaseBillingInteractor<
@@ -98,10 +97,11 @@ abstract public class THBaseBillingInteractor<
     public static final int MAX_RANDOM_RETRIES = 50;
     public static final int ACTION_RESET_PORTFOLIO = 1;
 
-    @Inject protected CurrentActivityHolder currentActivityHolder;
-    @Inject protected CurrentUserId currentUserId;
-    @Inject protected UserProfileCache userProfileCache;
-    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull protected final CurrentActivityHolder currentActivityHolder;
+    @NotNull protected final CurrentUserId currentUserId;
+    @NotNull protected final UserProfileCache userProfileCache;
+    @NotNull protected final PortfolioCompactListCache portfolioCompactListCache;
+    @NotNull protected final ProgressDialogUtil progressDialogUtil;
 
     protected THBillingInitialMilestone THBillingInitialMilestone;
     protected Milestone.OnCompleteListener billingInitialMilestoneListener;
@@ -109,14 +109,23 @@ abstract public class THBaseBillingInteractor<
 
     protected Map<Integer, THUIBillingRequestType> uiBillingRequests;
 
-    @Inject protected ProgressDialogUtil progressDialogUtil;
     protected ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
-    public THBaseBillingInteractor()
+    protected THBaseBillingInteractor(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull ProgressDialogUtil progressDialogUtil)
     {
         super();
-        DaggerUtils.inject(this);
+        this.currentActivityHolder = currentActivityHolder;
+        this.currentUserId = currentUserId;
+        this.userProfileCache = userProfileCache;
+        this.portfolioCompactListCache = portfolioCompactListCache;
+        this.progressDialogUtil = progressDialogUtil;
+
         requestsToLaunchOnBillingInitialMilestoneComplete = new LinkedList<>();
         uiBillingRequests = new HashMap<>();
 

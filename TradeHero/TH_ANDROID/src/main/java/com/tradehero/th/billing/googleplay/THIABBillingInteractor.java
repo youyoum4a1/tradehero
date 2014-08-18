@@ -20,6 +20,8 @@ import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exception.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
@@ -31,13 +33,18 @@ import com.tradehero.th.fragments.billing.googleplay.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.googleplay.THIABStoreProductDetailView;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class THIABBillingInteractor
+@Singleton public class THIABBillingInteractor
     extends
         THBaseBillingInteractor<
                 IABSKUListKey,
@@ -57,18 +64,34 @@ public class THIABBillingInteractor
 {
     public static final String BUNDLE_KEY_ACTION = THIABBillingInteractor.class.getName() + ".action";
 
-    @Inject THIABProductDetailCache thiabProductDetailCache;
-    @Inject THIABLogicHolder billingActor;
-    @Inject THIABAlertDialogUtil thIABAlertDialogUtil;
-    @Inject UserProfileDTOUtil userProfileDTOUtil;
-
-    @Inject protected HeroListCache heroListCache;
-    @Inject protected UserService userService;
+    @NotNull protected final THIABProductDetailCache thiabProductDetailCache;
+    @NotNull protected final THIABLogicHolder billingActor;
+    @NotNull protected final THIABAlertDialogUtil thIABAlertDialogUtil;
+    @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
+    @NotNull protected final HeroListCache heroListCache;
+    @NotNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
-    @Inject public THIABBillingInteractor()
+    @Inject public THIABBillingInteractor(
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull THIABProductDetailCache thiabProductDetailCache,
+            @NotNull THIABLogicHolder billingActor,
+            @NotNull THIABAlertDialogUtil thIABAlertDialogUtil,
+            @NotNull UserProfileDTOUtil userProfileDTOUtil,
+            @NotNull HeroListCache heroListCache,
+            @NotNull UserService userService)
     {
-        super();
+        super(currentActivityHolder, currentUserId, userProfileCache, portfolioCompactListCache, progressDialogUtil);
+        this.thiabProductDetailCache = thiabProductDetailCache;
+        this.billingActor = billingActor;
+        this.thIABAlertDialogUtil = thIABAlertDialogUtil;
+        this.userProfileDTOUtil = userProfileDTOUtil;
+        this.heroListCache = heroListCache;
+        this.userService = userService;
     }
     //</editor-fold>
 
@@ -78,12 +101,6 @@ public class THIABBillingInteractor
     }
 
     //<editor-fold desc="Life Cycle">
-    public void onDestroy()
-    {
-        billingActor = null;
-        super.onDestroy();
-    }
-
     @Override protected void cleanRequest(THUIIABBillingRequest uiBillingRequest)
     {
         super.cleanRequest(uiBillingRequest);

@@ -41,7 +41,6 @@ import javax.inject.Singleton;
                 THBaseIABPurchaseReporterHolder.class,
                 THIABPurchaseFetchMilestone.class,
                 IABSKUListRetrievedAsyncMilestone.class,
-                THIABBillingInteractor.class,
         },
         staticInjections = {
         },
@@ -106,7 +105,7 @@ public class GooglePlayBillingModule
         return billingInteractor;
     }
 
-    @Provides THBillingInteractor provideTHBillingInteractor(THIABBillingInteractor thiabInteractor)
+    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THIABBillingInteractor thiabInteractor)
     {
         return thiabInteractor;
     }

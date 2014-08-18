@@ -12,6 +12,8 @@ import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.billing.samsung.exception.SamsungPaymentCancelledException;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CurrentActivityHolder;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
@@ -22,15 +24,19 @@ import com.tradehero.th.fragments.billing.samsung.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.samsung.THSamsungStoreProductDetailView;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.social.HeroListCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 /**
  * It expects its Activity to implement THSamsungInteractor.
- * Created with IntelliJ IDEA. User: xavier Date: 11/11/13 Time: 11:05 AM To change this template use File | Settings | File Templates. */
+ * */
 public class THSamsungBillingInteractor
     extends
         THBaseBillingInteractor<
@@ -51,25 +57,30 @@ public class THSamsungBillingInteractor
 {
     public static final String BUNDLE_KEY_ACTION = THSamsungBillingInteractor.class.getName() + ".action";
 
-    THSamsungProductDetailCache thiabProductDetailCache;
-    THSamsungLogicHolder billingActor;
-    THSamsungAlertDialogUtil thSamsungAlertDialogUtil;
-    UserProfileDTOUtil userProfileDTOUtil;
-    LocalyticsSession localyticsSession;
-    HeroListCache heroListCache;
-    UserService userService;
+    @NotNull protected final THSamsungProductDetailCache thiabProductDetailCache;
+    @NotNull protected final THSamsungLogicHolder billingActor;
+    @NotNull protected final THSamsungAlertDialogUtil thSamsungAlertDialogUtil;
+    @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
+    @NotNull protected final LocalyticsSession localyticsSession;
+    @NotNull protected final HeroListCache heroListCache;
+    @NotNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungBillingInteractor(
-            THSamsungProductDetailCache thiabProductDetailCache,
-            THSamsungLogicHolder billingActor,
-            THSamsungAlertDialogUtil thSamsungAlertDialogUtil,
-            UserProfileDTOUtil userProfileDTOUtil,
-            LocalyticsSession localyticsSession,
-            HeroListCache heroListCache,
-            UserService userService)
+            @NotNull CurrentActivityHolder currentActivityHolder,
+            @NotNull CurrentUserId currentUserId,
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull PortfolioCompactListCache portfolioCompactListCache,
+            @NotNull ProgressDialogUtil progressDialogUtil,
+            @NotNull THSamsungProductDetailCache thiabProductDetailCache,
+            @NotNull THSamsungLogicHolder billingActor,
+            @NotNull THSamsungAlertDialogUtil thSamsungAlertDialogUtil,
+            @NotNull UserProfileDTOUtil userProfileDTOUtil,
+            @NotNull LocalyticsSession localyticsSession,
+            @NotNull HeroListCache heroListCache,
+            @NotNull UserService userService)
     {
-        super();
+        super(currentActivityHolder, currentUserId, userProfileCache, portfolioCompactListCache, progressDialogUtil);
         this.thiabProductDetailCache = thiabProductDetailCache;
         this.billingActor = billingActor;
         this.thSamsungAlertDialogUtil = thSamsungAlertDialogUtil;
@@ -88,7 +99,6 @@ public class THSamsungBillingInteractor
     //<editor-fold desc="Life Cycle">
     public void onDestroy()
     {
-        billingActor = null;
         super.onDestroy();
     }
     //</editor-fold>

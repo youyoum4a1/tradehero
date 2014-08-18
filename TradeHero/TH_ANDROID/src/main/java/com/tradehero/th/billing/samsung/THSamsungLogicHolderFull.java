@@ -26,9 +26,9 @@ import com.tradehero.th.utils.dagger.ForUIThread;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/8/13 Time: 12:32 PM To change this template use File | Settings | File Templates. */
 public class THSamsungLogicHolderFull
     extends THBaseBillingLogicHolder<
         SamsungSKUListKey,
@@ -43,19 +43,20 @@ public class THSamsungLogicHolderFull
         SamsungException>
     implements THSamsungLogicHolder
 {
-    public static final String TAG = THSamsungLogicHolderFull.class.getSimpleName();
+    @NotNull protected final SamsungSKUListCache samsungSkuListCache;
+    @NotNull protected final THSamsungProductDetailCache thskuDetailCache;
+    @NotNull protected final THSamsungGroupItemCache groupItemCache;
+    @NotNull protected final Handler uiHandler;
 
-    private SamsungSKUListCache samsungSkuListCache;
-    private THSamsungProductDetailCache thskuDetailCache;
-    private THSamsungGroupItemCache groupItemCache;
-    protected Handler uiHandler;
-
-    @Inject public THSamsungLogicHolderFull(UserProfileCache userProfileCache,
-            UserServiceWrapper userServiceWrapper,
-            HeroListCache heroListCache, SamsungSKUListCache samsungSkuListCache,
-            THSamsungProductDetailCache thskuDetailCache,
-            THSamsungGroupItemCache groupItemCache,
-            @ForUIThread Handler uiHandler)
+    //<editor-fold desc="Constructors">
+    @Inject public THSamsungLogicHolderFull(
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull HeroListCache heroListCache,
+            @NotNull SamsungSKUListCache samsungSkuListCache,
+            @NotNull THSamsungProductDetailCache thskuDetailCache,
+            @NotNull THSamsungGroupItemCache groupItemCache,
+            @NotNull @ForUIThread Handler uiHandler)
     {
         super(userProfileCache, userServiceWrapper, heroListCache);
         this.samsungSkuListCache = samsungSkuListCache;
@@ -63,6 +64,7 @@ public class THSamsungLogicHolderFull
         this.groupItemCache = groupItemCache;
         this.uiHandler = uiHandler;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
     @Override protected THSamsungProductIdentifierFetcherHolder createProductIdentifierFetcherHolder()

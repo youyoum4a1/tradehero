@@ -10,6 +10,7 @@ import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class THBaseBillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -57,13 +58,15 @@ abstract public class THBaseBillingLogicHolder<
     protected THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>
             purchaseReporterHolder;
 
-    protected UserProfileCache userProfileCache;
-    protected UserServiceWrapper userServiceWrapper;
-    protected HeroListCache heroListCache;
+    @NotNull protected final UserProfileCache userProfileCache;
+    @NotNull protected final UserServiceWrapper userServiceWrapper;
+    @NotNull protected final HeroListCache heroListCache;
 
-    public THBaseBillingLogicHolder(UserProfileCache userProfileCache,
-            UserServiceWrapper userServiceWrapper,
-            HeroListCache heroListCache)
+    //<editor-fold desc="Constructors">
+    public THBaseBillingLogicHolder(
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull HeroListCache heroListCache)
     {
         super();
         this.userProfileCache = userProfileCache;
@@ -71,6 +74,7 @@ abstract public class THBaseBillingLogicHolder<
         this.heroListCache = heroListCache;
         purchaseReporterHolder = createPurchaseReporterHolder();
     }
+    //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
     @Override public void onDestroy()

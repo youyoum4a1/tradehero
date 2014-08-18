@@ -29,6 +29,7 @@ import com.tradehero.th.persistence.social.HeroListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 class THIABLogicHolderFull
@@ -50,8 +51,12 @@ class THIABLogicHolderFull
 
     protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
 
-    @Inject public THIABLogicHolderFull(UserProfileCache userProfileCache, UserServiceWrapper userServiceWrapper,
-            HeroListCache heroListCache, IABSKUListCache iabskuListCache, THIABProductDetailCache thskuDetailCache)
+    @Inject public THIABLogicHolderFull(
+            @NotNull UserProfileCache userProfileCache,
+            @NotNull UserServiceWrapper userServiceWrapper,
+            @NotNull HeroListCache heroListCache,
+            @NotNull IABSKUListCache iabskuListCache,
+            @NotNull THIABProductDetailCache thskuDetailCache)
     {
         super(userProfileCache, userServiceWrapper, heroListCache);
         this.iabskuListCache = iabskuListCache;

@@ -49,6 +49,7 @@ abstract public class BaseBillingLogicHolder<
     protected BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder;
     protected BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder;
 
+    //<editor-fold desc="Constructors">
     public BaseBillingLogicHolder()
     {
         super();
@@ -60,6 +61,7 @@ abstract public class BaseBillingLogicHolder<
         purchaseFetcherHolder = createPurchaseFetcherHolder();
         purchaserHolder = createPurchaserHolder();
     }
+    //</editor-fold>
 
     //<editor-fold desc="Life Cycle">
     abstract protected BillingAvailableTesterHolder<BillingExceptionType> createBillingAvailableTesterHolder();
