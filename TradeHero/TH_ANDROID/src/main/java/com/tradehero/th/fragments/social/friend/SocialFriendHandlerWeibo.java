@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.friend;
 
-import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -8,6 +7,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.client.Response;
 
 public class SocialFriendHandlerWeibo extends SocialFriendHandler
@@ -19,10 +19,11 @@ public class SocialFriendHandlerWeibo extends SocialFriendHandler
     }
     //</editor-fold>
 
-    public MiddleCallback<Response> inviteWeiboFriends(String msg, @NotNull UserBaseKey userKey/*, List<UserFriendsDTO> users*/, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteWeiboFriends(
+            @NotNull String msg,
+            @NotNull UserBaseKey userKey,
+            @Nullable RequestCallback<Response> callback)
     {
-        InviteFormDTO inviteFormDTO = new InviteFormWeiboDTO(msg);
-        //inviteFormDTO.addAll(users);
-        return inviteFriends(userKey, inviteFormDTO, callback);
+        return inviteFriends(userKey, new InviteFormWeiboDTO(msg), callback);
     }
 }

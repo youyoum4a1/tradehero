@@ -34,6 +34,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -74,7 +75,6 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
 
     public static class FacebookRequestCallback extends RequestCallback
     {
-
         public FacebookRequestCallback(Context context)
         {
             super(context);
@@ -102,7 +102,10 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     }
 
     @Override
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, @NotNull List<UserFriendsDTO> users, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteFriends(
+            @NotNull UserBaseKey userKey,
+            @NotNull List<UserFriendsDTO> users,
+            @Nullable RequestCallback<Response> callback)
     {
         this.userBaseKey = userKey;
         this.users = users;

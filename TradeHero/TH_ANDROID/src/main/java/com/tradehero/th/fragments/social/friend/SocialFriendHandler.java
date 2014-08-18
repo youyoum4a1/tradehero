@@ -11,11 +11,11 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -33,21 +33,21 @@ import retrofit.client.Response;
 
     public static class RequestCallback<T> implements Callback<T>
     {
-        private ProgressDialog dialog;
-        private Context context;
+        @Nullable private ProgressDialog dialog;
+        @NotNull private Context context;
 
-        public RequestCallback(Context context)
+        public RequestCallback(@NotNull Context context)
         {
             this.context = context;
         }
 
-        private void showDialog(Context context)
+        private void showDialog(@NotNull Context context)
         {
             if (dialog == null)
             {
                 dialog = new ProgressDialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             }
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.show();
         }
 
@@ -82,33 +82,20 @@ import retrofit.client.Response;
         }
     }
 
-    public MiddleCallback<UserProfileDTO> followFriends(List<UserFriendsDTO> users, RequestCallback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> followFriends(@NotNull List<UserFriendsDTO> users, @Nullable RequestCallback<UserProfileDTO> callback)
     {
         if (callback != null)
         {
             callback.onRequestStart();
         }
-        MiddleCallback<UserProfileDTO> middleCallback = null;
-        if (users.size() > 1)
-        {
-            FollowFriendsForm followFriendsForm = new FollowFriendsForm();
-            followFriendsForm.userIds = new ArrayList<>();
-            for (int i = 0, j = users.size(); i < j; i++)
-            {
-                followFriendsForm.userIds.add(users.get(i).thUserId);
-            }
-            middleCallback = userService.get().followBatchFree(followFriendsForm, callback);
-        }
-        else if (users.size() == 1)
-        {
-            UserFriendsDTO userFriendsDTO = users.get(0);
-            middleCallback = userService.get().freeFollow(new UserBaseKey(userFriendsDTO.thUserId), callback);
-        }
-        return middleCallback;
+        return userService.get().followBatchFree(new BatchFollowFormDTO(users), callback);
     }
 
     // TODO
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, @NotNull List<UserFriendsDTO> users, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteFriends(
+            @NotNull UserBaseKey userKey,
+            @NotNull List<UserFriendsDTO> users,
+            @Nullable RequestCallback<Response> callback)
     {
 
         InviteFormUserDTO inviteFormDTO = new InviteFormUserDTO();
@@ -116,7 +103,10 @@ import retrofit.client.Response;
         return inviteFriends(userKey, inviteFormDTO, callback);
     }
 
-    public MiddleCallback<Response> inviteFriends(UserBaseKey userKey, InviteFormDTO inviteFormDTO, RequestCallback<Response> callback)
+    public MiddleCallback<Response> inviteFriends(
+            @NotNull UserBaseKey userKey,
+            @NotNull InviteFormDTO inviteFormDTO,
+            @Nullable RequestCallback<Response> callback)
     {
         if (callback != null)
         {

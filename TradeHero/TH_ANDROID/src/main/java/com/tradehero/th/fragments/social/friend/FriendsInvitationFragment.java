@@ -15,7 +15,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -66,7 +65,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     SocialFriendHandler socialFriendHandler;
     SocialFriendHandlerFacebook socialFriendHandlerFacebook;
     @Inject Lazy<UserProfileCache> userProfileCache;
-    @Inject Lazy<ResideMenu> resideMenuLazy;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject Lazy<SocialSharer> socialSharerLazy;
