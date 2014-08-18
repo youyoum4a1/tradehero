@@ -2,6 +2,7 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public interface BillingInventoryFetcherHolder<
         ProductIdentifierType extends ProductIdentifier,
@@ -9,7 +10,7 @@ public interface BillingInventoryFetcherHolder<
         BillingExceptionType extends BillingException>
     extends RequestCodeHolder
 {
-    BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode);
-    void registerInventoryFetchedListener(int requestCode, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener);
+    @Nullable BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> getInventoryFetchedListener(int requestCode);
+    void registerInventoryFetchedListener(int requestCode, @Nullable BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener);
     void launchInventoryFetchSequence(int requestCode, List<ProductIdentifierType> allIds);
 }

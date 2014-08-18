@@ -45,7 +45,7 @@ public class IABServiceConnector implements ServiceConnection
         checkNotDisposed();
         checkNotSetup();
 
-        Timber.d("Starting in-app billing setup for this %s", getClass().getSimpleName());
+        Timber.d("Starting in-app billing setup for this %s", ((Object) this).getClass().getSimpleName());
 
         bindBillingServiceIfAvailable();
     }
@@ -93,7 +93,7 @@ public class IABServiceConnector implements ServiceConnection
      */
     public void onDestroy()
     {
-        Timber.d("Disposing this %s", getClass().getSimpleName());
+        Timber.d("Disposing this %s", ((Object) this).getClass().getSimpleName());
         setupDone = false;
         CurrentActivityHolder holderCopy = currentActivityHolder;
         if (holderCopy != null)

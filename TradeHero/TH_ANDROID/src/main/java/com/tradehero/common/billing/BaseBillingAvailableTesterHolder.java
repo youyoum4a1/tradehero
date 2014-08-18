@@ -3,6 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseBillingAvailableTesterHolder<BillingExceptionType extends BillingException>
@@ -30,12 +31,12 @@ abstract public class BaseBillingAvailableTesterHolder<BillingExceptionType exte
      * @param billingAvailableListener
      * @return
      */
-    @Override public void registerBillingAvailableListener(int requestCode, BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
+    @Override public void registerBillingAvailableListener(int requestCode, @Nullable BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
     {
         parentBillingAvailableListener.put(requestCode, billingAvailableListener);
     }
 
-    @Override public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
+    @Override @Nullable public BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener(int requestCode)
     {
         return parentBillingAvailableListener.get(requestCode);
     }

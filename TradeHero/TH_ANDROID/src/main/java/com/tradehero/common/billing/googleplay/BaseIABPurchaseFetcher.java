@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import org.json.JSONException;
 import timber.log.Timber;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 3:31 PM To change this template use File | Settings | File Templates. */
 abstract public class BaseIABPurchaseFetcher<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,

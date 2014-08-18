@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
+import com.tradehero.common.billing.RequestCodeActor;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
 public interface IABPurchaseConsumer<
@@ -7,8 +8,8 @@ public interface IABPurchaseConsumer<
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>,
         IABExceptionType extends IABException>
+        extends RequestCodeActor
 {
-    int getRequestCode();
     OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> getConsumptionFinishedListener();
     void setConsumptionFinishedListener(OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> consumptionListener);
     void consume(int requestCode, IABPurchaseType purchase);

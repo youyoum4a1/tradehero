@@ -2,9 +2,6 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-/**
- * Created by xavier on 3/19/14.
- */
 public class BaseIABBillingAvailableTester
         extends IABServiceConnector
         implements IABBillingAvailableTester<IABException>
