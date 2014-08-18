@@ -5,11 +5,9 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.billing.samsung.THSamsungOrderId;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-/**
- * Created by xavier on 3/27/14.
- */
-public class THSamsungPurchaseCache
+@Singleton public class THSamsungPurchaseCache
     extends SamsungPurchaseCache<
         SamsungSKU,
         THSamsungOrderId,
@@ -17,8 +15,10 @@ public class THSamsungPurchaseCache
 {
     public static final int MAX_SIZE = 300;
 
+    //<editor-fold desc="Constructors">
     @Inject public THSamsungPurchaseCache()
     {
         super(MAX_SIZE);
     }
+    //</editor-fold>
 }

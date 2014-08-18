@@ -4,23 +4,21 @@ import android.content.Context;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.samsung.BaseSamsungPurchaseFetcher;
-import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
+import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.billing.SamsungPurchaseInProcessDTO;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCache;
 import com.tradehero.th.utils.DaggerUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import javax.inject.Inject;
 import timber.log.Timber;
 
-import java.util.*;
-import javax.inject.Inject;
-
-/**
- * Created by xavier on 3/27/14.
- */
 public class THBaseSamsungPurchaseFetcher
     extends BaseSamsungPurchaseFetcher<
             SamsungSKU,

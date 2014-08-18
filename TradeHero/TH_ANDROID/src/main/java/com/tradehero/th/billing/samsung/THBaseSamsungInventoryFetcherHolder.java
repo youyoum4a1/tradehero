@@ -7,9 +7,6 @@ import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public class THBaseSamsungInventoryFetcherHolder
     extends BaseSamsungInventoryFetcherHolder<
         SamsungSKU,

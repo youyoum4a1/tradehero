@@ -12,10 +12,12 @@ public class THBaseIABInventoryFetcherHolder
         THBaseIABInventoryFetcher>
     implements THIABInventoryFetcherHolder
 {
+    //<editor-fold desc="Constructors">
     public THBaseIABInventoryFetcherHolder()
     {
         super();
     }
+    //</editor-fold>
 
     @Override protected THBaseIABInventoryFetcher createInventoryFetcher()
     {

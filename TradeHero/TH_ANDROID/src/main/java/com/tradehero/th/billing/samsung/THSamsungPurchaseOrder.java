@@ -5,9 +5,6 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public class THSamsungPurchaseOrder
     implements SamsungPurchaseOrder<SamsungSKU>,
         THPurchaseOrder<SamsungSKU>

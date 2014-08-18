@@ -11,10 +11,12 @@ class THBaseIABPurchaseFetcherHolder
         THBaseIABPurchaseFetcher>
     implements THIABPurchaseFetcherHolder
 {
+    //<editor-fold desc="Constructors">
     public THBaseIABPurchaseFetcherHolder()
     {
         super();
     }
+    //</editor-fold>
 
     @Override protected THBaseIABPurchaseFetcher createPurchaseFetcher()
     {

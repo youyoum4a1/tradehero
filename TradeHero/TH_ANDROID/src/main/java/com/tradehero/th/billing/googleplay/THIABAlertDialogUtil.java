@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
@@ -32,15 +33,21 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         THIABStoreProductDetailView,
         THIABSKUDetailAdapter>
 {
-    protected THIABPurchaseCache thiabPurchaseCache;
-    protected GooglePlayUtils googlePlayUtils;
+    @NotNull protected THIABPurchaseCache thiabPurchaseCache;
+    @NotNull protected GooglePlayUtils googlePlayUtils;
 
-    @Inject public THIABAlertDialogUtil(Analytics analytics, ActivityUtil activityUtil, THIABPurchaseCache thiabPurchaseCache, GooglePlayUtils googlePlayUtils)
+    //<editor-fold desc="Constructors">
+    @Inject public THIABAlertDialogUtil(
+            @NotNull Analytics analytics,
+            @NotNull ActivityUtil activityUtil,
+            @NotNull THIABPurchaseCache thiabPurchaseCache,
+            @NotNull GooglePlayUtils googlePlayUtils)
     {
         super(analytics, activityUtil);
         this.thiabPurchaseCache = thiabPurchaseCache;
         this.googlePlayUtils = googlePlayUtils;
     }
+    //</editor-fold>
 
     public AlertDialog popVerificationFailed(final Context context)
     {

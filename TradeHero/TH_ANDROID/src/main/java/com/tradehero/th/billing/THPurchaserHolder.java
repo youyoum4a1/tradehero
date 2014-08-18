@@ -4,9 +4,6 @@ import com.tradehero.common.billing.BillingPurchaserHolder;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.exception.BillingException;
 
-/**
- * Created by xavier on 3/28/14.
- */
 public interface THPurchaserHolder<
         ProductIdentifierType extends ProductIdentifier,
         THPurchaseOrderType extends THPurchaseOrder<ProductIdentifierType>,

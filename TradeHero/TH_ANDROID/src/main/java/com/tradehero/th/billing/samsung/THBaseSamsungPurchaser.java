@@ -17,9 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public class THBaseSamsungPurchaser
     extends BaseSamsungPurchaser<
         SamsungSKU,

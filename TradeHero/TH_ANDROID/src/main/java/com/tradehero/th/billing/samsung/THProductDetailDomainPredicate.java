@@ -5,9 +5,6 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public class THProductDetailDomainPredicate<
         ProductIdentifierType extends ProductIdentifier,
         THProductDetailType extends THProductDetail<ProductIdentifierType>>

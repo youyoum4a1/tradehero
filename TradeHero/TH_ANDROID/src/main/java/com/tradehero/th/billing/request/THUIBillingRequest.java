@@ -51,10 +51,12 @@ public class THUIBillingRequest<
     public OnFollowResultListener followResultListener;
     public UserBaseKey userToFollow;
 
+    //<editor-fold desc="Constructors">
     public THUIBillingRequest()
     {
         super();
     }
+    //</editor-fold>
 
     public void onDestroy()
     {

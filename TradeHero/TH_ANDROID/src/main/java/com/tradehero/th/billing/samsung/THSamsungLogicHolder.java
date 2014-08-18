@@ -8,9 +8,6 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.billing.THBillingLogicHolder;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public interface THSamsungLogicHolder
     extends SamsungLogicHolder<
         SamsungSKUListKey,
@@ -38,6 +35,5 @@ public interface THSamsungLogicHolder
         THSamsungPurchaseFetcherHolder,
         THSamsungPurchaserHolder,
         THSamsungPurchaseReporterHolder
-
 {
 }

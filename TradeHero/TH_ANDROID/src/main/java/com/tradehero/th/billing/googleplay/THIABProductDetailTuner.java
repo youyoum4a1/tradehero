@@ -8,10 +8,12 @@ import timber.log.Timber;
 
 public class THIABProductDetailTuner implements THProductDetailTuner<IABSKU, THIABProductDetail>
 {
+    //<editor-fold desc="Constructors">
     public THIABProductDetailTuner()
     {
         super();
     }
+    //</editor-fold>
 
     @Override public void fineTune(THIABProductDetail productDetails)
     {

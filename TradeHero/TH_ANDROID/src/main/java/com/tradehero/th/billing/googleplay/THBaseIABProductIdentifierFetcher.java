@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/5/13 Time: 4:58 PM To change this template use File | Settings | File Templates. */
 public class THBaseIABProductIdentifierFetcher
     extends BaseProductIdentifierFetcher<
         IABSKUListKey,
@@ -18,10 +17,9 @@ public class THBaseIABProductIdentifierFetcher
         IABException>
     implements THIABProductIdentifierFetcher
 {
-    public static final String TAG = THBaseIABProductIdentifierFetcher.class.getSimpleName();
-
     protected Map<IABSKUListKey, IABSKUList> availableProductIdentifiers;
 
+    //<editor-fold desc="Constructors">
     public THBaseIABProductIdentifierFetcher()
     {
         super();
@@ -47,6 +45,7 @@ public class THBaseIABProductIdentifierFetcher
         availableProductIdentifiers.put(IABSKUListKey.getInApp(), inAppIABSKUs);
         availableProductIdentifiers.put(IABSKUListKey.getSubs(), subsIABSKUs);
     }
+    //</editor-fold>
 
     @Override public void fetchProductIdentifiers(int requestCode)
     {

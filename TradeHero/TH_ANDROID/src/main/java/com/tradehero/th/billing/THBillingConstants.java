@@ -1,8 +1,5 @@
 package com.tradehero.th.billing;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public interface THBillingConstants
 {
     public static final int UNHANDLED_DOMAIN = -2000;

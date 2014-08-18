@@ -12,9 +12,6 @@ import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 3/13/14.
- */
 public class THUISamsungRequest
     extends THUIBillingRequest<
         SamsungSKUListKey,

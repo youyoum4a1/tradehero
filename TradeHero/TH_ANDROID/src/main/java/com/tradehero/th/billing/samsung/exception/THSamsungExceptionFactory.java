@@ -6,9 +6,6 @@ import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 3/21/14.
- */
 public class THSamsungExceptionFactory extends SamsungExceptionFactory
 {
     @Inject public THSamsungExceptionFactory()

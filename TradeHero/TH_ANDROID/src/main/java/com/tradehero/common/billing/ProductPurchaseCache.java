@@ -13,11 +13,13 @@ abstract public class ProductPurchaseCache<
 {
     protected final ArrayList<OrderIdType> keys;
 
+    //<editor-fold desc="Constructors">
     public ProductPurchaseCache(int maxSize)
     {
         super(maxSize);
         keys = new ArrayList<>();
     }
+    //</editor-fold>
 
     @Override public ProductPurchaseType put(OrderIdType key, ProductPurchaseType value)
     {

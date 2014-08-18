@@ -7,6 +7,7 @@ public class IABPurchaseReportRetrofitException extends IABOneResponseValueExcep
 {
     public static final int VALID_RESPONSE = THIABExceptionConstants.PURCHASE_REPORT_RETROFIT_ERROR;
 
+    //<editor-fold desc="Constructors">
     public IABPurchaseReportRetrofitException(IABResult r)
     {
         super(r);
@@ -36,6 +37,7 @@ public class IABPurchaseReportRetrofitException extends IABOneResponseValueExcep
     {
         super(cause.getMessage(), cause);
     }
+    //</editor-fold>
 
     @Override protected int getOnlyValidResponse()
     {

@@ -10,10 +10,12 @@ public class THIABOrderId
         extends IABOrderId
         implements THOrderId
 {
+    //<editor-fold desc="Constructors">
     public THIABOrderId(String orderId)
     {
         super(orderId);
     }
+    //</editor-fold>
 
     public void setDeveloperPayload(OwnedPortfolioId ownedPortfolioId) throws IOException
     {

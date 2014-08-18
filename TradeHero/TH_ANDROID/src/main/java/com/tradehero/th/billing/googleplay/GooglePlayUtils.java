@@ -18,10 +18,12 @@ class GooglePlayUtils
         THIABOrderId,
         THIABPurchase>
 {
+    //<editor-fold desc="Constructors">
     @Inject public GooglePlayUtils()
     {
         super();
     }
+    //</editor-fold>
 
     @Override public String getStoreName()
     {

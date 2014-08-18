@@ -6,18 +6,17 @@ import com.tradehero.common.billing.samsung.persistence.SamsungGroupItemCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/**
- * Created by xavier on 4/1/14.
- */
 @Singleton public class THSamsungGroupItemCache
         extends SamsungGroupItemCache<SamsungSKU, SamsungSKUList>
 {
     public static int MAX_SIZE = 5;
 
+    //<editor-fold desc="Constructors">
     @Inject public THSamsungGroupItemCache()
     {
         super(MAX_SIZE);
     }
+    //</editor-fold>
 
     @Override protected SamsungSKUList createEmptyValue()
     {

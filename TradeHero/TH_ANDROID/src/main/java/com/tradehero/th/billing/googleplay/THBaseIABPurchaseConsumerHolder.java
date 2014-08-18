@@ -11,10 +11,12 @@ class THBaseIABPurchaseConsumerHolder
         THBaseIABPurchaseConsumer>
     implements THIABPurchaseConsumerHolder
 {
+    //<editor-fold desc="Constructors">
     public THBaseIABPurchaseConsumerHolder()
     {
         super();
     }
+    //</editor-fold>
 
     @Override protected THBaseIABPurchaseConsumer createPurchaseConsumer()
     {

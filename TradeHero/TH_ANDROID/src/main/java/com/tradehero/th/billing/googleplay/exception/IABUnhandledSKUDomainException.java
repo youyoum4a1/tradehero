@@ -7,6 +7,7 @@ public class IABUnhandledSKUDomainException extends IABOneResponseValueException
 {
     public static final int VALID_RESPONSE = THIABExceptionConstants.UNHANDLED_DOMAIN;
 
+    //<editor-fold desc="Constructors">
     public IABUnhandledSKUDomainException(IABResult r)
     {
         super(r);
@@ -26,6 +27,7 @@ public class IABUnhandledSKUDomainException extends IABOneResponseValueException
     {
         super(VALID_RESPONSE, message, cause);
     }
+    //</editor-fold>
 
     @Override protected int getOnlyValidResponse()
     {

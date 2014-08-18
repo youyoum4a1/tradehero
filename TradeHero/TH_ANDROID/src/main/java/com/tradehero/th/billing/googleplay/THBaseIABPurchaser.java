@@ -8,7 +8,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import org.json.JSONException;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/7/13 Time: 12:35 PM To change this template use File | Settings | File Templates. */
 public class THBaseIABPurchaser
         extends BaseIABPurchaser<
                 IABSKU,

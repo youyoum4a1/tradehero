@@ -23,9 +23,6 @@ import dagger.Provides;
 import javax.inject.Singleton;
 import java.util.HashSet;
 
-/**
- * Created by xavier on 2/11/14.
- */
 @Module(
         injects = {
                 THBaseSamsungBillingAvailableTester.class,

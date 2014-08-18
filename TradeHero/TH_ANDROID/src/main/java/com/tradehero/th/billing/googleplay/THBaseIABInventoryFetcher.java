@@ -11,10 +11,12 @@ class THBaseIABInventoryFetcher
                         THIABProductDetail>
     implements THIABInventoryFetcher
 {
+    //<editor-fold desc="Constructors">
     public THBaseIABInventoryFetcher()
     {
         super();
     }
+    //</editor-fold>
 
     @Override protected THIABProductDetail createSKUDetails(IABSKUListKey itemType, String json) throws JSONException
     {

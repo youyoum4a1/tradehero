@@ -32,7 +32,6 @@ import timber.log.Timber;
 import javax.inject.Inject;
 import java.io.IOException;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:20 PM To change this template use File | Settings | File Templates. */
 public class THBaseSamsungPurchaseReporter
         extends THBasePurchaseReporter<
         SamsungSKU,

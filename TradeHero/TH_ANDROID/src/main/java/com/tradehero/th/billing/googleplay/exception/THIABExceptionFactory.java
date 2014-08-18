@@ -6,10 +6,12 @@ import javax.inject.Inject;
 
 public class THIABExceptionFactory extends IABExceptionFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public THIABExceptionFactory()
     {
         super();
     }
+    //</editor-fold>
 
     @Override public IABException create(int responseStatus, String message)
     {

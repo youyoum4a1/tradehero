@@ -3,12 +3,11 @@ package com.tradehero.th.billing.samsung.exception;
 import com.tradehero.common.billing.samsung.exception.SamsungOneCodeException;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 
-/** Created with IntelliJ IDEA. User: xavier Date: 11/18/13 Time: 12:52 PM To change this template use File | Settings | File Templates. */
 public class SamsungMissingApplicablePortfolioIdException extends SamsungOneCodeException
 {
-    public static final String TAG = SamsungMissingApplicablePortfolioIdException.class.getSimpleName();
     public static final int VALID_RESPONSE = THSamsungConstants.MISSING_APPLICABLE_PORTFOLIO_ID;
 
+    //<editor-fold desc="Constructors">
     public SamsungMissingApplicablePortfolioIdException()
     {
         super(VALID_RESPONSE);
@@ -29,6 +28,7 @@ public class SamsungMissingApplicablePortfolioIdException extends SamsungOneCode
     {
         super(VALID_RESPONSE, cause);
     }
+    //</editor-fold>
 
     @Override protected int getOnlyValidErrorCode()
     {

@@ -51,6 +51,7 @@ class THIABLogicHolderFull
 
     protected IABPurchaseConsumerHolder<IABSKU, THIABOrderId, THIABPurchase, IABException> purchaseConsumerHolder;
 
+    //<editor-fold desc="Constructors">
     @Inject public THIABLogicHolderFull(
             @NotNull UserProfileCache userProfileCache,
             @NotNull UserServiceWrapper userServiceWrapper,
@@ -63,6 +64,7 @@ class THIABLogicHolderFull
         this.thskuDetailCache = thskuDetailCache;
         purchaseConsumerHolder = createPurchaseConsumeHolder();
     }
+    //</editor-fold>
 
      //<editor-fold desc="Life Cycle">
     @Override public void onDestroy()

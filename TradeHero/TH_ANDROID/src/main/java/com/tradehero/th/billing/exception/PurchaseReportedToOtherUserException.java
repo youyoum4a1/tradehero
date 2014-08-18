@@ -2,6 +2,7 @@ package com.tradehero.th.billing.exception;
 
 public class PurchaseReportedToOtherUserException extends RuntimeException
 {
+    //<editor-fold desc="Constructors">
     public PurchaseReportedToOtherUserException()
     {
         super();
@@ -21,4 +22,5 @@ public class PurchaseReportedToOtherUserException extends RuntimeException
     {
         super(throwable);
     }
+    //</editor-fold>
 }

@@ -5,9 +5,6 @@ import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 
-/**
- * Created by xavier on 2/11/14.
- */
 public class SamsungPurchaseCache<
             SamsungSKUType extends SamsungSKU,
             SamsungOrderIdType extends SamsungOrderId,
@@ -17,12 +14,12 @@ public class SamsungPurchaseCache<
         SamsungOrderIdType,
         SamsungPurchaseType>
 {
-    public static final String TAG = SamsungPurchaseCache.class.getSimpleName();
-
+    //<editor-fold desc="Constructors">
     public SamsungPurchaseCache(int maxSize)
     {
         super(maxSize);
     }
+    //</editor-fold>
 
     @Override protected SamsungPurchaseType fetch(SamsungOrderIdType key) throws Throwable
     {

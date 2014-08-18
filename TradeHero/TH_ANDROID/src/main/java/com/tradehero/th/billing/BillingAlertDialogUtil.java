@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,
@@ -39,15 +40,19 @@ abstract public class BillingAlertDialogUtil<
                 ProductDetailViewType>>
         extends AlertDialogUtil
 {
-    public final ActivityUtil activityUtil;
-    private final Analytics analytics;
+    @NotNull public final ActivityUtil activityUtil;
+    @NotNull private final Analytics analytics;
 
-    public BillingAlertDialogUtil(Analytics analytics, ActivityUtil activityUtil)
+    //<editor-fold desc="Constructors">
+    public BillingAlertDialogUtil(
+            @NotNull Analytics analytics,
+            @NotNull ActivityUtil activityUtil)
     {
         super();
         this.analytics = analytics;
         this.activityUtil = activityUtil;
     }
+    //</editor-fold>
 
     public AlertDialog popWaitWhileLoading(final Context context)
     {

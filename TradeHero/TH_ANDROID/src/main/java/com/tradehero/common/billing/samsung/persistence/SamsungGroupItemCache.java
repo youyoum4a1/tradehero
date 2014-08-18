@@ -7,18 +7,17 @@ import com.tradehero.common.persistence.StraightDTOCache;
 import java.util.Collection;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 4/1/14.
- */
 abstract public class SamsungGroupItemCache<
         SamsungSKUType extends SamsungSKU,
         SamsungSKUListType extends BaseSamsungSKUList<SamsungSKUType>>
     extends StraightDTOCache<SamsungItemGroup, SamsungSKUListType>
 {
+    //<editor-fold desc="Constructors">
     public SamsungGroupItemCache(int maxSize)
     {
         super(maxSize);
     }
+    //</editor-fold>
 
     @Override protected SamsungSKUListType fetch(SamsungItemGroup key) throws Throwable
     {

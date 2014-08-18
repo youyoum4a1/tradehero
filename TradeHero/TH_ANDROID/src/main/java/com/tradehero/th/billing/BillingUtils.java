@@ -10,19 +10,18 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.List;
 
-/**
- * Created by xavier on 3/28/14.
- */
 abstract public class BillingUtils<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailType extends ProductDetail<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
 {
+    //<editor-fold desc="Constructors">
     public BillingUtils()
     {
         super();
     }
+    //</editor-fold>
 
     abstract public String getStoreName();
 

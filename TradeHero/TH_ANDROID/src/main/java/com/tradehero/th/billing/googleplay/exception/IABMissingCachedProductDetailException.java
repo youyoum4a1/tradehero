@@ -7,6 +7,7 @@ public class IABMissingCachedProductDetailException extends IABOneResponseValueE
 {
     public static final int VALID_RESPONSE = THIABExceptionConstants.MISSING_CACHED_DETAIL;
 
+    //<editor-fold desc="Constructors">
     public IABMissingCachedProductDetailException(IABResult r)
     {
         super(r);
@@ -26,6 +27,7 @@ public class IABMissingCachedProductDetailException extends IABOneResponseValueE
     {
         super(VALID_RESPONSE, message, cause);
     }
+    //</editor-fold>
 
     @Override protected int getOnlyValidResponse()
     {

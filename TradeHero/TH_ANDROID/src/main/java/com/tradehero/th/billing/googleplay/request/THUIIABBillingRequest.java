@@ -36,8 +36,10 @@ public class THUIIABBillingRequest
             THIABPurchase,
             IABException> consumptionFinishedListener;
 
+    //<editor-fold desc="Constructors">
     @Inject public THUIIABBillingRequest()
     {
         super();
     }
+    //</editor-fold>
 }

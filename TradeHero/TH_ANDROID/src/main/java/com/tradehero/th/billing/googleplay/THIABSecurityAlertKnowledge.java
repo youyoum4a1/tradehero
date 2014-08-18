@@ -8,9 +8,11 @@ import javax.inject.Singleton;
 
 @Singleton public class THIABSecurityAlertKnowledge
 {
+    //<editor-fold desc="Constructors">
     @Inject public THIABSecurityAlertKnowledge()
     {
     }
+    //</editor-fold>
 
     public int getStockAlertIcon(int count)
     {

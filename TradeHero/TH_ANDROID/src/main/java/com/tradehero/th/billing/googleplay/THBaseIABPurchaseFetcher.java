@@ -14,8 +14,6 @@ public class THBaseIABPurchaseFetcher
         THIABPurchase>
     implements THIABPurchaseFetcher
 {
-    public static final String TAG = THBaseIABPurchaseFetcher.class.getSimpleName();
-
     @Inject protected THIABPurchaseCache thiabPurchaseCache;
 
     //<editor-fold desc="Constructors">

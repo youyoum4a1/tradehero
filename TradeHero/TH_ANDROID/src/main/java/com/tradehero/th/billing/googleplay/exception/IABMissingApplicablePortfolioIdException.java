@@ -7,6 +7,7 @@ public class IABMissingApplicablePortfolioIdException extends IABOneResponseValu
 {
     public static final int VALID_RESPONSE = THIABExceptionConstants.MISSING_APPLICABLE_PORTFOLIO_ID;
 
+    //<editor-fold desc="Constructors">
     public IABMissingApplicablePortfolioIdException(IABResult r)
     {
         super(r);
@@ -26,6 +27,7 @@ public class IABMissingApplicablePortfolioIdException extends IABOneResponseValu
     {
         super(VALID_RESPONSE, message, cause);
     }
+    //</editor-fold>
 
     @Override protected int getOnlyValidResponse()
     {

@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public class THBaseSamsungInventoryFetcher
     extends BaseSamsungInventoryFetcher<
         SamsungSKU,

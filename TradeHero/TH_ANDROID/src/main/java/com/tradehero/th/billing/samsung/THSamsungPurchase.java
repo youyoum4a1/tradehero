@@ -10,9 +10,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THProductPurchase;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public class THSamsungPurchase
     extends SamsungPurchase<
         SamsungSKU,
