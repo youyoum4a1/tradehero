@@ -281,6 +281,12 @@
       <groupId>com.squareup.retrofit</groupId>
       <artifactId>retrofit</artifactId>
       <version>1.6.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
