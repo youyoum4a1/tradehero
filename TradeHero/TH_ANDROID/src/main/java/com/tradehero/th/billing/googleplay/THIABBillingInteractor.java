@@ -112,35 +112,39 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
-    @Override protected THIABBillingRequestFull createEmptyBillingRequest(THUIIABBillingRequest uiBillingRequest)
+    @Override protected THIABBillingRequestFull createBillingRequest(
+            @NotNull THUIIABBillingRequest uiBillingRequest)
     {
-        // TODO populate with ui request
-        return THIABBillingRequestFull.builder().build();
+        THIABBillingRequestFull.Builder<?> builder = THIABBillingRequestFull.builder();
+        populateBillingRequestBuilder(builder, uiBillingRequest);
+        return builder.build();
     }
 
-    @Override protected void populateBillingRequest(THIABBillingRequestFull request, THUIIABBillingRequest uiBillingRequest)
+    protected void populateBillingRequestBuilder(
+            @NotNull THIABBillingRequestFull.Builder<?> builder,
+            @NotNull THUIIABBillingRequest uiBillingRequest)
     {
-        super.populateBillingRequest(request, uiBillingRequest);
+        super.populateBillingRequestBuilder(builder, uiBillingRequest);
 
         if (uiBillingRequest.domainToPresent != null)
         {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
+            builder.testBillingAvailable(true)
+                    .fetchProductIdentifiers(true)
+                    .fetchInventory(true);
         }
         else if (uiBillingRequest.restorePurchase)
         {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
-            request.fetchPurchase = true;
-            request.restorePurchase = true;
+            builder.testBillingAvailable(true)
+                    .fetchProductIdentifiers(true)
+                    .fetchInventory(true)
+                    .fetchPurchase(true)
+                    .restorePurchase(true);
         }
         else if (uiBillingRequest.fetchInventory)
         {
-            request.testBillingAvailable = true;
-            request.fetchProductIdentifiers = true;
-            request.fetchInventory = true;
+            builder.testBillingAvailable(true)
+                    .fetchProductIdentifiers(true)
+                    .fetchInventory(true);
         }
     }
     //</editor-fold>

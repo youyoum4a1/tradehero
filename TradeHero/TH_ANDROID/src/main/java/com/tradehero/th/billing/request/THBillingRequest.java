@@ -109,19 +109,14 @@ public class THBillingRequest<
         }
 
         public void purchaseToReport(
-                boolean reportPurchase,
                 ProductPurchaseType purchaseToReport)
         {
-            this.reportPurchase(reportPurchase);
             this.purchaseToReport = purchaseToReport;
         }
 
         public void purchaseReportedListener(
-                boolean reportPurchase,
-                ProductPurchaseType purchaseToReport,
                 THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseReportedListener)
         {
-            this.purchaseToReport(reportPurchase, purchaseToReport);
             this.purchaseReportedListener = purchaseReportedListener;
         }
         //</editor-fold>

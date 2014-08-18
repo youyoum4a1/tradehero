@@ -264,28 +264,33 @@ abstract public class THBaseBillingInteractor<
         }
     }
 
-    protected THBillingRequestType createBillingRequest(THUIBillingRequestType uiBillingRequest)
-    {
-        THBillingRequestType billingRequest = createEmptyBillingRequest(uiBillingRequest);
-        populateBillingRequest(billingRequest, uiBillingRequest);
-        return billingRequest;
-    }
+    abstract protected THBillingRequestType createBillingRequest(
+            @NotNull THUIBillingRequestType uiBillingRequest);
 
-    abstract protected THBillingRequestType createEmptyBillingRequest(THUIBillingRequestType uiBillingRequest);
-
-    protected void populateBillingRequest(THBillingRequestType request, THUIBillingRequestType uiBillingRequest)
+    protected void populateBillingRequestBuilder(
+            @NotNull THBillingRequest.Builder<ProductIdentifierListKeyType,
+                    ProductIdentifierType,
+                    ProductIdentifierListType,
+                    THProductDetailType,
+                    THPurchaseOrderType,
+                    THOrderIdType,
+                    THProductPurchaseType,
+                    BillingExceptionType,
+                    ?> builder,
+            @NotNull THUIBillingRequestType uiBillingRequest)
     {
-        request.testBillingAvailable = uiBillingRequest.billingAvailable;
-        request.billingAvailableListener = createBillingAvailableListener();
-        request.fetchProductIdentifiers = uiBillingRequest.fetchProductIdentifiers;
-        request.productIdentifierFetchedListener = createProductIdentifierFetchedListener();
-        request.fetchInventory = uiBillingRequest.fetchInventory;
-        request.inventoryFetchedListener = createInventoryFetchedListener();
-        request.fetchPurchase = uiBillingRequest.fetchPurchase;
-        request.purchaseFetchedListener = createPurchaseFetchedListener();
-        request.purchaseRestorerListener = createPurchaseRestorerFinishedListener();
-        request.purchaseFinishedListener = createPurchaseFinishedListener();
-        request.purchaseReportedListener = createPurchaseReportedListener();
+        builder
+                .testBillingAvailable(uiBillingRequest.billingAvailable)
+                .billingAvailableListener(createBillingAvailableListener())
+                .fetchInventory(uiBillingRequest.fetchProductIdentifiers)
+                .productIdentifierFetchedListener(createProductIdentifierFetchedListener())
+                .fetchInventory(uiBillingRequest.fetchInventory)
+                .inventoryFetchedListener(createInventoryFetchedListener())
+                .fetchPurchase(uiBillingRequest.fetchPurchase)
+                .purchaseFetchedListener(createPurchaseFetchedListener())
+                .purchaseRestorerListener(createPurchaseRestorerFinishedListener())
+                .purchaseFinishedListener(createPurchaseFinishedListener())
+                .purchaseReportedListener(createPurchaseReportedListener());
     }
     //</editor-fold>
 

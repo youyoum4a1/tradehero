@@ -104,7 +104,6 @@ public class THSamsungBillingInteractor
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
-
     @Override public int run(THUISamsungRequest uiBillingRequest)
     {
         // Here we disable the initial restore
@@ -119,32 +118,35 @@ public class THSamsungBillingInteractor
         }
     }
 
-    @Override protected THSamsungRequestFull createEmptyBillingRequest(THUISamsungRequest uiBillingRequest)
+    @Override protected THSamsungRequestFull createBillingRequest(
+            @NotNull THUISamsungRequest uiBillingRequest)
     {
-        // TODO populate with ui request
-        return THSamsungRequestFull.builder().build();
+        THSamsungRequestFull.Builder<?> builder = THSamsungRequestFull.builder();
+        populateBillingRequestBuilder(builder, uiBillingRequest);
+        return builder.build();
     }
 
-    @Override protected void populateBillingRequest(THSamsungRequestFull request, THUISamsungRequest uiBillingRequest)
+    protected void populateBillingRequestBuilder(
+            @NotNull THSamsungRequestFull.Builder<?> builder,
+            @NotNull THUISamsungRequest uiBillingRequest)
     {
-        super.populateBillingRequest(request, uiBillingRequest);
-
+        super.populateBillingRequestBuilder(builder, uiBillingRequest);
         if (uiBillingRequest.domainToPresent != null)
         {
-            request.testBillingAvailable = true;
-            request.fetchInventory = true;
+            builder.testBillingAvailable(true)
+                    .fetchInventory(true);
         }
         else if (uiBillingRequest.restorePurchase)
         {
-            request.testBillingAvailable = true;
-            request.fetchInventory = true;
-            request.fetchPurchase = true;
-            request.restorePurchase = true;
+            builder.testBillingAvailable(true)
+                    .fetchInventory(true)
+                    .fetchPurchase(true)
+                    .restorePurchase(true);
         }
         else if (uiBillingRequest.fetchInventory)
         {
-            request.testBillingAvailable = true;
-            request.fetchInventory = true;
+            builder.testBillingAvailable(true)
+                    .fetchInventory(true);
         }
     }
     //</editor-fold>

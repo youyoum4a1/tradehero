@@ -150,11 +150,9 @@ public class BillingRequest<
             return self();
         }
 
-        public BuilderType setBillingAvailableListener(
-                boolean testBillingAvailable,
+        public BuilderType billingAvailableListener(
                 @Nullable BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType> billingAvailableListener)
         {
-            this.testBillingAvailable(testBillingAvailable);
             this.billingAvailableListener = billingAvailableListener;
             return self();
         }
@@ -174,11 +172,9 @@ public class BillingRequest<
             return self();
         }
 
-        public BuilderType setProductIdentifierFetchedListener(
-                boolean fetchProductIdentifiers,
+        public BuilderType productIdentifierFetchedListener(
                 @Nullable ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener)
         {
-            this.fetchProductIdentifiers(fetchProductIdentifiers);
             this.productIdentifierFetchedListener = productIdentifierFetchedListener;
             return self();
         }
@@ -199,20 +195,15 @@ public class BillingRequest<
         }
 
         public BuilderType productIdentifiersForInventory(
-                boolean fetchInventory,
                 List<ProductIdentifierType> productIdentifiersForInventory)
         {
-            this.fetchInventory(fetchInventory);
             this.productIdentifiersForInventory = productIdentifiersForInventory;
             return self();
         }
 
         public BuilderType inventoryFetchedListener(
-                boolean fetchInventory,
-                List<ProductIdentifierType> productIdentifiersForInventory,
                 BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetchedListener)
         {
-            this.productIdentifiersForInventory(fetchInventory, productIdentifiersForInventory);
             this.inventoryFetchedListener = inventoryFetchedListener;
             return self();
         }
@@ -233,10 +224,8 @@ public class BillingRequest<
         }
 
         public BuilderType purchaseFetchedListener(
-                boolean fetchPurchase,
                 BillingPurchaseFetcher.OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetchedListener)
         {
-            this.fetchPurchase(fetchPurchase);
             this.purchaseFetchedListener = purchaseFetchedListener;
             return self();
         }
@@ -253,10 +242,8 @@ public class BillingRequest<
         }
 
         public BuilderType purchaseRestorerListener(
-                boolean restorePurchase,
                 BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseRestorerListener)
         {
-            this.restorePurchase(restorePurchase);
             this.purchaseRestorerListener = purchaseRestorerListener;
             return self();
         }
@@ -279,20 +266,15 @@ public class BillingRequest<
         }
 
         public BuilderType purchaseOrder(
-                boolean doPurchase,
                 PurchaseOrderType purchaseOrder)
         {
-            this.doPurchase(doPurchase);
             this.purchaseOrder = purchaseOrder;
             return self();
         }
 
         public BuilderType purchaseFinishedListener(
-                boolean doPurchase,
-                PurchaseOrderType purchaseOrder,
                 BillingPurchaser.OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener)
         {
-            this.purchaseOrder(doPurchase, purchaseOrder);
             this.purchaseFinishedListener = purchaseFinishedListener;
             return self();
         }
