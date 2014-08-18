@@ -4,7 +4,6 @@ import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +12,7 @@ import retrofit.client.Response;
 public class SocialFriendHandlerWeibo extends SocialFriendHandler
 {
     //<editor-fold desc="Constructors">
-    @Inject public SocialFriendHandlerWeibo(@NotNull Lazy<UserServiceWrapper> userService)
+    @Inject public SocialFriendHandlerWeibo(@NotNull UserServiceWrapper userService)
     {
         super(userService);
     }

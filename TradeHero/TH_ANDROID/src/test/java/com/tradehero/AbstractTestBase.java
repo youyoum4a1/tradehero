@@ -76,7 +76,7 @@ abstract public class AbstractTestBase
         }
     }
 
-    public ArrayList<Class<?>> getClassesForPackage( @NotNull Package pkg, @NotNull Predicate<Class<?>> thatMatch)
+    public ArrayList<Class<?>> getClassesForPackage(@NotNull Package pkg, @NotNull Predicate<Class<?>> thatMatch)
     {
         ArrayList<Class<?>> classes = getClassesForPackage(pkg);
         ArrayList<Class<?>> matched = new ArrayList<>();
@@ -207,10 +207,11 @@ abstract public class AbstractTestBase
         }
         if (type.equals(UserListType.class))
         {
+            Integer perPage = random.nextBoolean() ? 2 : null;
             return new SearchUserListType(
                     "a",
-                    random.nextBoolean() ? 1 : null,
-                    random.nextBoolean() ? 2 : null);
+                    perPage != null || random.nextBoolean() ? 1 : null,
+                    perPage);
         }
         if (type.equals(FriendsListKey.class))
         {
@@ -238,11 +239,12 @@ abstract public class AbstractTestBase
         }
         if (type.equals(CompetitionLeaderboardId.class))
         {
+            Integer perPage = random.nextBoolean() ? 4 : null;
            return new CompetitionLeaderboardId(
                    1,
                    2,
-                   random.nextBoolean() ? 3 : null,
-                   random.nextBoolean() ? 4 : null);
+                   perPage != null || random.nextBoolean() ? 3 : null,
+                   perPage);
         }
         if (type.equals(SecurityIntegerId.class))
         {
@@ -259,10 +261,11 @@ abstract public class AbstractTestBase
         }
         if (type.equals(LeaderboardMarkUserId.class))
         {
+            Integer perPage = random.nextBoolean() ? 3 : null;
             return new PerPagedLeaderboardMarkUserId(
                     1,
-                    random.nextBoolean() ? 2 : null,
-                    random.nextBoolean() ? 3 : null);
+                    perPage != null || random.nextBoolean() ? 2 : null,
+                    perPage);
         }
 
         if (type.equals(ExchangeIntegerId.class))
@@ -323,18 +326,20 @@ abstract public class AbstractTestBase
         }
         if (type.equals(NewsItemListRegionalKey.class))
         {
+            Integer perPage = random.nextBoolean() ? 2 : null;
             return new NewsItemListRegionalKey(
                     "a",
                     "b",
-                    random.nextBoolean() ? 1 : null,
-                    random.nextBoolean() ? 2 : null);
+                    perPage != null || random.nextBoolean() ? 1 : null,
+                    perPage);
         }
         if (type.equals(NewsItemListSecurityKey.class))
         {
+            Integer perPage = random.nextBoolean() ? 2 : null;
             return new NewsItemListSecurityKey(
                     (SecurityIntegerId) mockValidParameter(SecurityIntegerId.class),
-                    random.nextBoolean() ? 1 : null,
-                    random.nextBoolean() ? 2 : null);
+                    perPage != null || random.nextBoolean() ? 1 : null,
+                    perPage);
         }
         if (type.equals(NewsItemListKey.class))
         {

@@ -427,7 +427,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         socialFriendsAdapter.addAll(socialFriendListItemDTOs);
     }
 
-    class FollowFriendCallback extends SocialFriendHandler.RequestCallback<UserProfileDTO>
+    class FollowFriendCallback extends RequestCallback<UserProfileDTO>
     {
         final List<UserFriendsDTO> usersToFollow;
 
@@ -461,7 +461,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    class InviteFriendCallback extends SocialFriendHandler.RequestCallback<Response>
+    class InviteFriendCallback extends RequestCallback<Response>
     {
         final List<UserFriendsDTO> usersToInvite;
 

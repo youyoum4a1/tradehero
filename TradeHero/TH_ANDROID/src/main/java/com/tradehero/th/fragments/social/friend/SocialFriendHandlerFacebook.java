@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
@@ -30,12 +29,10 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
@@ -45,7 +42,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
 
     @NotNull final ProgressDialogUtil dialogUtil;
-    @NotNull final Lazy<FacebookUtils> facebookUtils;
+    @NotNull final FacebookUtils facebookUtils;
     @NotNull final SocialServiceWrapper socialServiceWrapper;
     @NotNull final UserProfileCache userProfileCache;
     @NotNull private final CurrentActivityHolder currentActivityHolder;
@@ -57,14 +54,14 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
 
     //<editor-fold desc="Constructors">
     @Inject public SocialFriendHandlerFacebook(
-            @NotNull Lazy<UserServiceWrapper> userService,
+            @NotNull UserServiceWrapper userServiceWrapper,
             @NotNull ProgressDialogUtil dialogUtil,
-            @NotNull Lazy<FacebookUtils> facebookUtils,
+            @NotNull FacebookUtils facebookUtils,
             @NotNull SocialServiceWrapper socialServiceWrapper,
             @NotNull UserProfileCache userProfileCache,
             @NotNull CurrentActivityHolder currentActivityHolder)
     {
-        super(userService);
+        super(userServiceWrapper);
         this.dialogUtil = dialogUtil;
         this.facebookUtils = facebookUtils;
         this.socialServiceWrapper = socialServiceWrapper;
@@ -72,34 +69,6 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         this.currentActivityHolder = currentActivityHolder;
     }
     //</editor-fold>
-
-    public static class FacebookRequestCallback extends RequestCallback
-    {
-        public FacebookRequestCallback(Context context)
-        {
-            super(context);
-        }
-
-        @Override
-        public final void success(Object data, Response response)
-        {
-            this.success();
-        }
-
-        public void success()
-        {
-        }
-
-        public void failure()
-        {
-        }
-
-        @Override
-        public final void failure(RetrofitError retrofitError)
-        {
-            this.failure();
-        }
-    }
 
     @Override
     public MiddleCallback<Response> inviteFriends(
@@ -155,7 +124,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                 progressDialog = dialogUtil.show(currentActivityHolder.getCurrentContext(), null, null);
             }
         };
-        facebookUtils.get().logIn(currentActivityHolder.getCurrentActivity(), socialNetworkCallback);
+        facebookUtils.logIn(currentActivityHolder.getCurrentActivity(), socialNetworkCallback);
     }
 
     private class SocialLinkingCallback extends THCallback<UserProfileDTO>

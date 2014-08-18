@@ -14,6 +14,12 @@ public class InviteFormUserDTO extends InviteFormMessageDTO
         super("");
         users = new ArrayList<>();
     }
+
+    public InviteFormUserDTO(@NotNull List<? extends UserFriendsDTO> userFriendsDTOs)
+    {
+        this();
+        addAll(userFriendsDTOs);
+    }
     //</editor-fold>
 
     public void addAll(@NotNull List<? extends UserFriendsDTO> userFriendsDTOs)
