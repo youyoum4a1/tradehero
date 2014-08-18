@@ -121,7 +121,8 @@ public class THSamsungBillingInteractor
 
     @Override protected THSamsungRequestFull createEmptyBillingRequest(THUISamsungRequest uiBillingRequest)
     {
-        return new THSamsungRequestFull();
+        // TODO populate with ui request
+        return THSamsungRequestFull.builder().build();
     }
 
     @Override protected void populateBillingRequest(THSamsungRequestFull request, THUISamsungRequest uiBillingRequest)
@@ -272,7 +273,7 @@ public class THSamsungBillingInteractor
 
     @Override protected THSamsungRequestFull createEmptyBillingRequest()
     {
-        return new THSamsungRequestFull();
+        return THSamsungRequestFull.builder().build();
     }
 
     @Override protected void populatePurchaseBillingRequest(int requestCode, THSamsungRequestFull request, SamsungSKU productIdentifier)

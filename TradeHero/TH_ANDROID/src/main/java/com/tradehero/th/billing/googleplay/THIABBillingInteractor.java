@@ -114,7 +114,8 @@ import timber.log.Timber;
     //<editor-fold desc="Request Handling">
     @Override protected THIABBillingRequestFull createEmptyBillingRequest(THUIIABBillingRequest uiBillingRequest)
     {
-        return new THIABBillingRequestFull();
+        // TODO populate with ui request
+        return THIABBillingRequestFull.builder().build();
     }
 
     @Override protected void populateBillingRequest(THIABBillingRequestFull request, THUIIABBillingRequest uiBillingRequest)
@@ -276,7 +277,7 @@ import timber.log.Timber;
 
     @Override protected THIABBillingRequestFull createEmptyBillingRequest()
     {
-        return new THIABBillingRequestFull();
+        return THIABBillingRequestFull.builder().build();
     }
 
     @Override protected void populatePurchaseBillingRequest(int requestCode, THIABBillingRequestFull request, IABSKU productIdentifier)

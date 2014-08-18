@@ -11,10 +11,8 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.billing.THProductPurchase;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.request.THBillingRequest;
+import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by xavier on 3/27/14.
- */
 public class THSamsungRequest<
         SamsungSKUListKeyType extends SamsungSKUListKey,
         SamsungSKUType extends SamsungSKU,
@@ -26,7 +24,7 @@ public class THSamsungRequest<
         THSamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>
                 & THProductPurchase<SamsungSKUType, SamsungOrderIdType>,
         SamsungExceptionType extends SamsungException>
-    extends THBillingRequest<
+        extends THBillingRequest<
         SamsungSKUListKeyType,
         SamsungSKUType,
         SamsungSKUListType,
@@ -36,8 +34,19 @@ public class THSamsungRequest<
         THSamsungPurchaseType,
         SamsungExceptionType>
 {
-    protected THSamsungRequest()
+    //<editor-fold desc="Constructors">
+    protected THSamsungRequest(@NotNull Builder<
+            SamsungSKUListKeyType,
+            SamsungSKUType,
+            SamsungSKUListType,
+            SamsungProductDetailType,
+            THSamsungPurchaseOrderType,
+            SamsungOrderIdType,
+            THSamsungPurchaseType,
+            SamsungExceptionType,
+            ?> builder)
     {
-        super();
+        super(builder);
     }
+    //</editor-fold>
 }
