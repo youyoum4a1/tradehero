@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.competition;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.AbsListView;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.AdDTO;
@@ -40,7 +39,7 @@ import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(shadows = ShadowWebViewNew.class)
-public class MainCompetitionFragmentTest extends AbstractTestBase
+public class MainCompetitionFragmentTest
 {
     private static final String TEST_ADS_WEB_URL = "http://www.google.com";
     private static final String TEST_WIZARD_WEB_URL = "http://www.apple.com";

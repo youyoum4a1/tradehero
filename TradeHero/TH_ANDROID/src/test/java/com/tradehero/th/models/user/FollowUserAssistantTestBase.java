@@ -1,6 +1,5 @@
 package com.tradehero.th.models.user;
 
-import com.tradehero.AbstractTestBase;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -13,7 +12,7 @@ import retrofit.RetrofitError;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-abstract public class FollowUserAssistantTestBase extends AbstractTestBase
+abstract public class FollowUserAssistantTestBase
 {
     protected UserBaseKey heroId;
     protected SimplePremiumFollowUserAssistant.OnUserFollowedListener listener;

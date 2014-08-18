@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.translation;
 
 import android.content.Context;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -21,7 +20,7 @@ import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
-public class TranslatableLanguageListFragmentTest extends AbstractTestBase
+public class TranslatableLanguageListFragmentTest
 {
     @Inject Context context;
     @Inject TranslationTokenCache translationTokenCache;

@@ -1,8 +1,8 @@
 package com.tradehero.th.network.service;
 
 import com.android.internal.util.Predicate;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.util.TestUtil;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,12 +17,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-abstract public class AbstractServiceTestBase extends AbstractTestBase
+abstract public class AbstractServiceTestBase
 {
     //<editor-fold desc="Get Services By Type">
     public ArrayList<Class<?>> getAllServices()
     {
-        return getClassesForPackage(
+        return TestUtil.getClassesForPackage(
                 AlertPlanService.class.getPackage(),
                 new Predicate<Class<?>>()
                 {
@@ -40,7 +40,7 @@ abstract public class AbstractServiceTestBase extends AbstractTestBase
 
     public ArrayList<Class<?>> getAllServiceAsyncs()
     {
-        return getClassesForPackage(
+        return TestUtil.getClassesForPackage(
                 AlertPlanService.class.getPackage(),
                 new Predicate<Class<?>>()
                 {
@@ -58,7 +58,7 @@ abstract public class AbstractServiceTestBase extends AbstractTestBase
 
     public ArrayList<Class<?>> getAllServiceWrappers()
     {
-        return getClassesForPackage(
+        return TestUtil.getClassesForPackage(
                 AlertPlanService.class.getPackage(),
                 new Predicate<Class<?>>()
                 {
@@ -76,7 +76,7 @@ abstract public class AbstractServiceTestBase extends AbstractTestBase
 
     public ArrayList<Class<?>> getAllServiceWrapperInjectors()
     {
-        return getClassesForPackage(
+        return TestUtil.getClassesForPackage(
                 AlertPlanService.class.getPackage(),
                 new Predicate<Class<?>>()
                 {

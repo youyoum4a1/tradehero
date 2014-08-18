@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.settings;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
@@ -25,7 +24,7 @@ import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
-public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
+public class UserTranslationSettingsViewHolderTest
 {
     @Inject TranslationTokenCache translationTokenCache;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
 import android.text.Editable;
-import com.tradehero.AbstractTestBase;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -26,7 +25,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public abstract class AbstractTransactionDialogFragmentTest extends AbstractTestBase
+public abstract class AbstractTransactionDialogFragmentTest
 {
     protected static final int CASH_BALANCE = 100000;
 
