@@ -87,8 +87,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
         }
     }
 
-    abstract protected void handleCommentPosted(DiscussionDTO discussionDTO);
-
     protected PostCommentView.CommentPostedListener createCommentPostedListener()
     {
         return new AbstractDiscussionCommentPostedListener();
@@ -106,4 +104,6 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
             // Nothing to do
         }
     }
+
+    abstract protected void handleCommentPosted(DiscussionDTO discussionDTO);
 }

@@ -27,12 +27,6 @@ public class WarrantDTO extends SecurityCompactDTO
         super();
     }
 
-    public WarrantDTO(SecurityCompactDTO other)
-    {
-        super(other);
-        this.putAll(other.getAll(), WarrantDTO.class);
-    }
-
     public WarrantDTO(WarrantDTO other)
     {
         super(other);
@@ -44,7 +38,6 @@ public class WarrantDTO extends SecurityCompactDTO
         this.underlyingName = other.underlyingName;
         this.externalAppURL = other.externalAppURL;
         this.fallbackExternalURL = other.fallbackExternalURL;
-        this.putAll(other.getAll(), WarrantDTO.class);
     }
     //</editor-fold>
 
@@ -102,7 +95,6 @@ public class WarrantDTO extends SecurityCompactDTO
                 ", underlyingName='" + underlyingName + '\'' +
                 ", externalAppURL='" + externalAppURL + '\'' +
                 ", fallbackExternalURL='" + fallbackExternalURL + '\'' +
-                ", extras={" + formatExtras(", ").toString() + "}" +
                 '}';
     }
 }

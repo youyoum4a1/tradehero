@@ -126,6 +126,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                         SwipeListView watchlistListView = watchlistPositionListView.getRefreshableView();
                         WatchlistAdapter adapter = (WatchlistAdapter) watchlistListView.getAdapter();
                         adapter.remove(deletedSecurityId);
+                        adapter.notifyDataSetChanged();
                         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Delete));
                         watchlistListView.closeOpenedItems();
                     }

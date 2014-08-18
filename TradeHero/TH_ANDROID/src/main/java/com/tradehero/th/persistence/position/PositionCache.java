@@ -9,7 +9,6 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.position.PositionDTOFactory;
 import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
@@ -31,22 +30,19 @@ import org.jetbrains.annotations.Nullable;
     @NotNull protected final Lazy<LeaderboardPositionIdCache> positionIdCache;
     @NotNull protected final Lazy<GetPositionsCache> getPositionsCache;
     @NotNull protected final Lazy<TradeListCache> tradeListCache;
-    @NotNull protected final PositionDTOFactory positionDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCache(
             @NotNull Lazy<PositionCompactIdCache> positionCompactIdCache,
             @NotNull Lazy<LeaderboardPositionIdCache> positionIdCache,
             @NotNull Lazy<GetPositionsCache> getPositionsCache,
-            @NotNull Lazy<TradeListCache> tradeListCache,
-            @NotNull PositionDTOFactory positionDTOFactory)
+            @NotNull Lazy<TradeListCache> tradeListCache)
     {
         super(DEFAULT_MAX_SIZE);
         this.positionCompactIdCache = positionCompactIdCache;
         this.positionIdCache = positionIdCache;
         this.getPositionsCache = getPositionsCache;
         this.tradeListCache = tradeListCache;
-        this.positionDTOFactory = positionDTOFactory;
     }
     //</editor-fold>
 
@@ -97,7 +93,7 @@ import org.jetbrains.annotations.Nullable;
         }
         invalidateMatchingTrades(key);
 
-        return super.put(key, positionDTOFactory.clonePerType(value));
+        return super.put(key, value);
     }
 
     @Override public void invalidate(@NotNull PositionDTOKey key)

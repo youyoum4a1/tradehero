@@ -192,7 +192,6 @@ public class DiscussionView extends FrameLayout
 
     @Override public void display(DiscussionKey discussionKey)
     {
-        discussionListCache.invalidateAllPagesFor(discussionKey);
         linkWith(discussionKey, true);
     }
 
@@ -227,8 +226,6 @@ public class DiscussionView extends FrameLayout
 
     protected void initialFetchDiscussion(boolean force)
     {
-        discussionListAdapter = createDiscussionListAdapter();
-        discussionList.setAdapter(discussionListAdapter);
         discussionListCache.unregister(this);
         this.startingDiscussionListKey = createStartingDiscussionListKey();
         if (startingDiscussionListKey != null)
@@ -373,30 +370,15 @@ public class DiscussionView extends FrameLayout
      */
     protected void addComment(DiscussionDTO newDiscussion)
     {
-        DiscussionKey newDiscussionKey = newDiscussion.getDiscussionKey();
-        updateCommentCount();
+        if (discussionKey != null)
+        {
+            displayTopicView();
+        }
 
         if (discussionListAdapter != null)
         {
-            discussionCache.put(newDiscussionKey, newDiscussion);
             discussionListAdapter.appendTail(newDiscussion);
             discussionListAdapter.notifyDataSetChanged();
-        }
-        discussionListCache.invalidateAllPagesFor(discussionKey);
-    }
-
-    private void updateCommentCount()
-    {
-        // TODO review in light of the stubKey
-        if (discussionKey != null)
-        {
-            AbstractDiscussionCompactDTO discussionDTO = discussionCache.get(discussionKey);
-            if (discussionDTO != null)
-            {
-                discussionDTO.commentCount = discussionListAdapter.getCount();
-                //++discussionDTO.commentCount;
-                displayTopicView();
-            }
         }
     }
 

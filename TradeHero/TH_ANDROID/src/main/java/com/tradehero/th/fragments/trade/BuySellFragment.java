@@ -1182,6 +1182,17 @@ public class BuySellFragment extends AbstractBuySellFragment
             {
                 @Override public void onTransactionSuccessful(boolean isBuy)
                 {
+                    if (pushPortfolioFragmentRunnable == null)
+                    {
+                        pushPortfolioFragmentRunnable = new PushPortfolioFragmentRunnable()
+                        {
+                            @Override
+                            public void pushPortfolioFragment(SecurityPositionDetailDTO securityPositionDetailDTO)
+                            {
+                                BuySellFragment.this.pushPortfolioFragment(securityPositionDetailDTO);
+                            }
+                        };
+                    }
                     if (pushPortfolioFragmentRunnable != null)
                     {
                         pushPortfolioFragmentRunnable.pushPortfolioFragment(securityPositionDetailDTO);
@@ -1219,13 +1230,13 @@ public class BuySellFragment extends AbstractBuySellFragment
             if (isTransactionTypeBuy)
             {
                 weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
-                        + securityCompactDTO.name + " " + mQuantity + getString(
+                        + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.ask;
             }
             else
             {
                 weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
-                        + securityCompactDTO.name + " " + mQuantity + getString(
+                        + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
             socialSharerLazy.get().share(weChatDTO); // TODO proper callback?

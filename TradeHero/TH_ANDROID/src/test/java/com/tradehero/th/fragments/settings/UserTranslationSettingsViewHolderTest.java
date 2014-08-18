@@ -105,7 +105,7 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
     //</editor-fold>
 
     //<editor-fold desc="Auto is checked or not">
-    @Test public void autoIsCheckedIfPrefTrue() throws JsonProcessingException
+    @Test public void autoIsCheckedIfPrefTrue() throws JsonProcessingException, InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("en", true));
@@ -113,6 +113,8 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
 
         Robolectric.runBackgroundTasks();
+        Thread.sleep(200);
+        Robolectric.runUiThreadTasks();
         Robolectric.runUiThreadTasks();
 
         assertThat(settingsFragment.userTranslationSettingsViewHolder.translationAuto.isChecked()).isTrue();
@@ -127,20 +129,21 @@ public class UserTranslationSettingsViewHolderTest extends AbstractTestBase
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
+        Robolectric.runUiThreadTasks();
 
         assertThat(settingsFragment.userTranslationSettingsViewHolder.translationAuto.isChecked()).isFalse();
     }
     //</editor-fold>
 
     //<editor-fold desc="Preferred language label">
-    @Test public void preferredPicksLanguage() throws JsonProcessingException
+    @Test public void preferredPicksLanguage() throws JsonProcessingException, InterruptedException
     {
         translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", false));
 
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
 
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         assertThat(settingsFragment.userTranslationSettingsViewHolder
                 .translationPreferredLang.getSummary().toString())

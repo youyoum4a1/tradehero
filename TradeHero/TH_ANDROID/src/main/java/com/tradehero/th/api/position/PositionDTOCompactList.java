@@ -5,6 +5,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.utils.SecurityUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
@@ -109,9 +110,38 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         }
         return shareCount * bidUsd - (includeTransactionCostUsd ? txnCostUsd : 0);
     }
+
+    public Double getNetSellProceedsRefCcy(
+            @Nullable Integer shareCount,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
+            boolean includeTransactionCostUsd)
+    {
+        return getNetSellProceedsRefCcy(
+                shareCount,
+                quoteDTO,
+                portfolioId,
+                includeTransactionCostUsd,
+                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
+    }
+
+    public Double getNetSellProceedsRefCcy(
+            @Nullable Integer shareCount,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioId portfolioId,
+            boolean includeTransactionCostUsd,
+            double txnCostUsd)
+    {
+        Double netProceedsUsd = getNetSellProceedsUsd(shareCount, quoteDTO, portfolioId, includeTransactionCostUsd, txnCostUsd);
+        if (netProceedsUsd == null || quoteDTO == null || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0)
+        {
+            return null;
+        }
+        return netProceedsUsd / quoteDTO.toUSDRate;
+    }
     //</editor-fold>
 
-    public Double getTotalSpent(@Nullable PortfolioId portfolioId)
+    public Double getTotalSpentUsd(@Nullable PortfolioId portfolioId)
     {
         if (portfolioId == null)
         {
@@ -130,23 +160,19 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return total;
     }
 
-    public Double getSpentOnQuantity(
-            @Nullable Integer shareCount,
-            @Nullable PortfolioId portfolioId)
+    @Nullable public Double getSpentOnQuantityUsd(
+            @NotNull Integer shareCount,
+            @NotNull PortfolioCompactDTO portfolioCompactDTO)
     {
-        if (shareCount == null || portfolioId == null)
-        {
-            return null;
-        }
         Double total = null;
         for (PositionDTOCompact positionDTO: this)
         {
-            if (portfolioId.key.equals(positionDTO.portfolioId)
+            if (portfolioCompactDTO.id == positionDTO.portfolioId
                     && positionDTO.averagePriceRefCcy != null
                     && positionDTO.shares != null)
             {
                 int localShareCount = Math.max(0, Math.min(shareCount, positionDTO.shares));
-                total = (total == null ? 0 : total) + positionDTO.averagePriceRefCcy * localShareCount;
+                total = (total == null ? 0 : total) + positionDTO.averagePriceRefCcy * portfolioCompactDTO.getProperRefCcyToUsdRate() * localShareCount;
                 shareCount -= localShareCount;
             }
         }

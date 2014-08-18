@@ -2,6 +2,8 @@ package com.tradehero.th.api.timeline.form;
 
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 
 public class TimelineItemCommentFormDTO extends DiscussionFormDTO
 {
@@ -15,5 +17,10 @@ public class TimelineItemCommentFormDTO extends DiscussionFormDTO
     @Override public DiscussionType getInReplyToType()
     {
         return TYPE;
+    }
+
+    @Override public DiscussionKey getInitiatingDiscussionKey()
+    {
+        return new TimelineItemDTOKey(inReplyToId);
     }
 }

@@ -26,6 +26,7 @@ public class PublishableFormDTO
 
     public boolean isPublic;
 
+    //<editor-fold desc="Constructors">
     public PublishableFormDTO()
     {
     }
@@ -42,6 +43,7 @@ public class PublishableFormDTO
         this.geo_long = geo_long;
         isPublic = aPublic;
     }
+    //</editor-fold>
 
     public Map<String, String> toStringMap()
     {

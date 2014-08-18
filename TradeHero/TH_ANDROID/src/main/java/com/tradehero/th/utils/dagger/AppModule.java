@@ -38,14 +38,12 @@ import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
 import com.tradehero.th.fragments.leaderboard.BaseLeaderboardFragment;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardCurrentUserRankHeaderView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardTimedHeader;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardCurrentUserRankHeaderView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardFriendsItemView;
@@ -54,8 +52,10 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListAdapter;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListView;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserLoader;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
+import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserOwnRankingView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
@@ -285,7 +285,6 @@ import javax.inject.Singleton;
                         LeaderboardCommunityFragment.class,
                         PeopleSearchFragment.class,
                         LeaderboardDefListFragment.class,
-                        LeaderboardCurrentUserRankHeaderView.class,
                         LeaderboardDefView.class,
                         CommunityLeaderboardDefView.class,
                         LeaderboardMarkUserLoader.class,
@@ -293,9 +292,10 @@ import javax.inject.Singleton;
                         BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
                         CompetitionLeaderboardMarkUserItemView.class,
-                        CompetitionLeaderboardCurrentUserRankHeaderView.class,
+                        CompetitionLeaderboardMarkUserOwnRankingView.class,
                         LeaderboardMarkUserListAdapter.class,
                         LeaderboardMarkUserListView.class,
+                        LeaderboardMarkUserOwnRankingView.class,
                         FriendLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListFragment.class,
                         CompetitionLeaderboardMarkUserListClosedFragment.class,

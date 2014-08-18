@@ -118,7 +118,6 @@ public class PositionInPeriodDTO extends PositionDTO
                 ", marketValueEndPeriodRefCcy=" + marketValueEndPeriodRefCcy +
                 ", sum_salesInPeriodRefCcy=" + sum_salesInPeriodRefCcy +
                 ", sum_purchasesInPeriodRefCcy=" + sum_purchasesInPeriodRefCcy +
-                ", extras={" + formatExtras(", ").toString() + "}" +
                 '}';
     }
 }

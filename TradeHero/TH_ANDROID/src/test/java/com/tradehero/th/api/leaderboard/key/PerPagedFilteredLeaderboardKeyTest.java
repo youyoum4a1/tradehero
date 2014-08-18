@@ -33,7 +33,7 @@ public class PerPagedFilteredLeaderboardKeyTest extends BasePerPagedFilteredLead
         assertEquals(8, set.size());
         Iterator<String> iterator = set.iterator();
         String value = iterator.next();
-        assertEquals("key:1", value);
+        assertEquals("id:1", value);
         value = iterator.next();
         assertEquals("page:2", value);
         value = iterator.next();
@@ -58,7 +58,7 @@ public class PerPagedFilteredLeaderboardKeyTest extends BasePerPagedFilteredLead
         assertEquals(7, set.size());
         Iterator<String> iterator = set.iterator();
         String value = iterator.next();
-        assertEquals("key:1", value);
+        assertEquals("id:1", value);
         value = iterator.next();
         assertEquals("page:2", value);
         value = iterator.next();

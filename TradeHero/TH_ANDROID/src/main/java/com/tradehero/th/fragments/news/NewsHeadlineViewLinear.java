@@ -42,21 +42,6 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     }
     //</editor-fold>
 
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-    }
-
     @Override protected NewsItemCompactViewHolder createViewHolder()
     {
         return new NewsItemCompactViewHolder<NewsItemCompactDTO>();

@@ -642,10 +642,10 @@ public class InviteFriendFragment extends DashboardFragment
         {
             Bundle params = new Bundle();
             String messageToFacebookFriends = getString(R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
-            {
-                messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
-            }
+            //if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
+            //{
+            //    messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
+            //}
 
             params.putString("message", messageToFacebookFriends);
             params.putString("to", stringBuilder.toString());

@@ -50,10 +50,10 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.FacebookUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -394,10 +394,10 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             Bundle params = new Bundle();
             String messageToFacebookFriends = getContext().getString(
                     R.string.invite_friend_facebook_tradehero_refer_friend_message, userProfileDTO.referralCode);
-            if (messageToFacebookFriends.length() > 60)
-            {
-                messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
-            }
+            //if (messageToFacebookFriends.length() > 60)
+            //{
+            //    messageToFacebookFriends = messageToFacebookFriends.substring(0, 60);
+            //}
 
             params.putString("message", messageToFacebookFriends);
             params.putString("to", stringBuilder.toString());

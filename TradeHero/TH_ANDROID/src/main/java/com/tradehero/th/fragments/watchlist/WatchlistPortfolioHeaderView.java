@@ -21,12 +21,11 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class WatchlistPortfolioHeaderView extends LinearLayout
         implements DTOView<UserBaseKey>
@@ -38,22 +37,25 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     private WatchlistHeaderItem valuation;
     private TextView marking;
     private WatchlistPositionDTOList watchlistPositionDTOs;
-    private UserBaseKey userBaseKey;
-    private PortfolioCompactDTO portfolioCompactDTO;
+    @Nullable private UserBaseKey userBaseKey;
+    @Nullable private PortfolioCompactDTO portfolioCompactDTO;
     private SimpleDateFormat markingDateFormat;
     private BroadcastReceiver watchlistItemDeletedReceiver;
 
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public WatchlistPortfolioHeaderView(Context context)
     {
         super(context);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public WatchlistPortfolioHeaderView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public WatchlistPortfolioHeaderView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
@@ -108,7 +110,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         markingDateFormat = new SimpleDateFormat(getResources().getString(R.string.watchlist_marking_date_format));
     }
 
-    @Override public void display(UserBaseKey userBaseKey)
+    @Override public void display(@NotNull UserBaseKey userBaseKey)
     {
         linkWith(userBaseKey, true);
     }
@@ -129,7 +131,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    private void linkWith(UserBaseKey userBaseKey, boolean andDisplay)
+    private void linkWith(@NotNull UserBaseKey userBaseKey, boolean andDisplay)
     {
         this.userBaseKey = userBaseKey;
         watchlistPositionDTOs = userWatchlistPositionCache.get().get(this.userBaseKey);
@@ -163,21 +165,6 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         gainLoss.invalidate();
     }
 
-    private double getPercentageGain()
-    {
-        double totalInvested = getTotalInvested();
-        if (totalInvested != 0.0)
-        {
-            double gainPercentage = (getTotalValue() - totalInvested) * 100 / totalInvested;
-            if (gainPercentage < -100.0)
-            {
-                gainPercentage = -100.0;
-            }
-            return gainPercentage;
-        }
-        return 0.0;
-    }
-
     private void displayValuation()
     {
         valuation.setFirstValue(formatDisplayValue(getTotalValue()));
@@ -187,7 +174,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
 
     private String formatDisplayValue(double value)
     {
-        return String.format("%s %s", SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY, new DecimalFormat("#,###").format(value));
+        return THSignedMoney.builder(value).build().toString();
     }
 
     private double getAbsoluteGain()
@@ -254,7 +241,10 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
         {
             @Override public void onReceive(Context context, Intent intent)
             {
-                display(userBaseKey);
+                if (userBaseKey != null)
+                {
+                    display(userBaseKey);
+                }
             }
         };
     }

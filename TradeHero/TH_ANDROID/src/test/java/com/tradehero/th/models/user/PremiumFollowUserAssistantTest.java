@@ -181,7 +181,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
 
-    @Test public void followWithEnoughCCWillCallService()
+    @Test public void followWithEnoughCCWillCallService() throws InterruptedException
     {
         assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
         // Prepare cache
@@ -192,12 +192,12 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(userServiceWrapper, times(1)).follow(heroId, assistant);
     }
 
-    @Test public void followWithEnoughCCAndServiceFailedWillNotify()
+    @Test public void followWithEnoughCCAndServiceFailedWillNotify() throws InterruptedException
     {
         assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
@@ -210,12 +210,12 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
 
-    @Test public void followWithEnoughCCAndServiceSuccessWillNotify()
+    @Test public void followWithEnoughCCAndServiceSuccessWillNotify() throws InterruptedException
     {
         assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
@@ -228,12 +228,12 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, expected);
     }
 
-    @Test public void followWithNotEnoughCCWillCallInteractor()
+    @Test public void followWithNotEnoughCCWillCallInteractor() throws InterruptedException
     {
         assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
         // Prepare cache
@@ -245,7 +245,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         makeBillingInteractorSaveRequest(13);
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         //noinspection unchecked
         verify(billingInteractor, times(1)).run(any(THUIBillingRequest.class));
@@ -270,7 +270,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
 
     }
 
-    @Test public void followWithNotEnoughCCAndBoughtSuccessWillCallService()
+    @Test public void followWithNotEnoughCCAndBoughtSuccessWillCallService() throws InterruptedException
     {
         assistant = new PremiumFollowUserAssistant(heroId, null, applicablePortfolioId);
         // Prepare cache
@@ -285,13 +285,13 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(userServiceWrapper, times(1)).follow(heroId, assistant);
     }
 
     // This is very long but here to test that no listener /callback is lost in the process
-    @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowFailedWillNotifyListener()
+    @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowFailedWillNotifyListener() throws InterruptedException
     {
         assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
@@ -308,13 +308,13 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, retrofitError);
     }
 
     // This is very long but here to test that no listener /callback is lost in the process
-    @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowSuccessWillNotifyListener()
+    @Test public void followWithNotEnoughCCAndBoughtSuccessAndServiceFollowSuccessWillNotifyListener() throws InterruptedException
     {
         assistant = new PremiumFollowUserAssistant(heroId, listener, applicablePortfolioId);
         // Prepare cache
@@ -331,7 +331,7 @@ public class PremiumFollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.userServiceWrapper = userServiceWrapper;
 
         assistant.launchFollow();
-        runBgUiTasks(10);
+        runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, myProfileAfterFollow);
     }

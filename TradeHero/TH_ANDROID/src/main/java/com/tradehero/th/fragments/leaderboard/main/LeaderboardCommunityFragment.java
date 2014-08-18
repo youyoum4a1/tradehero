@@ -353,11 +353,11 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_DrillDown));
             if (drillDownLeaderboardDefDTO instanceof SectorContainerLeaderboardDefDTO)
             {
-                pushLeaderboardDefSector();
+                pushLeaderboardDefSector(drillDownLeaderboardDefDTO);
             }
             else if (drillDownLeaderboardDefDTO instanceof ExchangeContainerLeaderboardDefDTO)
             {
-                pushLeaderboardDefExchange();
+                pushLeaderboardDefExchange(drillDownLeaderboardDefDTO);
             }
             else
             {
@@ -397,10 +397,12 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     protected void pushFriendsFragment(LeaderboardDefDTO dto)
     {
         Bundle args = new Bundle();
-
         FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
-
-        getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
+        DashboardNavigator navigator = getDashboardNavigator();
+        if (navigator != null)
+        {
+            navigator.pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
+        }
     }
 
     protected void pushHeroFragment()
@@ -427,10 +429,11 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         getDashboardNavigator().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
-    private void pushLeaderboardDefSector()
+    private void pushLeaderboardDefSector(LeaderboardDefDTO leaderboardDefDTOSector)
     {
         Bundle bundle = new Bundle(getArguments());
         (new SectorLeaderboardDefListKey()).putParameters(bundle);
+        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOSector.getLeaderboardDefKey());
         DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {
@@ -438,10 +441,11 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void pushLeaderboardDefExchange()
+    private void pushLeaderboardDefExchange(LeaderboardDefDTO leaderboardDefDTOExchange)
     {
         Bundle bundle = new Bundle(getArguments());
         (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
+        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
         DashboardNavigator navigator = getDashboardNavigator();
         if (navigator != null)
         {

@@ -5,7 +5,10 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.users.UserBaseKey;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -15,10 +18,14 @@ import org.jetbrains.annotations.Nullable;
 {
     public static final int DEFAULT_MAX_SIZE = 200;
 
+    // Giant HACK to survive invalidation #77003578
+    private final Map<PortfolioId, Double> txnCostUsds;
+
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactCache()
     {
         super(DEFAULT_MAX_SIZE);
+        this.txnCostUsds = new HashMap<>();
     }
     //</editor-fold>
 
@@ -41,6 +48,18 @@ import org.jetbrains.annotations.Nullable;
             if (current != null && current.providerId != null)
             {
                 value.providerId = current.providerId;
+            }
+        }
+        // HACK We need to do this while the txnCostUsd may not always be passed
+        {
+            Double txnCostUsd = txnCostUsds.get(key);
+            if (value.txnCostUsd != null)
+            {
+                txnCostUsds.put(key, value.txnCostUsd);
+            }
+            else if (txnCostUsd != null)
+            {
+                value.txnCostUsd = txnCostUsd;
             }
         }
 
@@ -75,5 +94,25 @@ import org.jetbrains.annotations.Nullable;
             previous.add(get(ownedPortfolioId.getPortfolioIdKey()));
         }
         return previous;
+    }
+
+    public void invalidate(@NotNull UserBaseKey concernedUser)
+    {
+        invalidate(concernedUser, false);
+    }
+
+    public void invalidate(@NotNull UserBaseKey concernedUser, boolean onlyWatchlist)
+    {
+        PortfolioCompactDTO cached;
+        for (PortfolioId key: snapshot().keySet())
+        {
+            cached = get(key);
+            if (cached != null
+                    && cached.userId.equals(concernedUser.key)
+                    && (cached.isWatchlist || !onlyWatchlist))
+            {
+                invalidate(cached.getPortfolioId());
+            }
+        }
     }
 }
