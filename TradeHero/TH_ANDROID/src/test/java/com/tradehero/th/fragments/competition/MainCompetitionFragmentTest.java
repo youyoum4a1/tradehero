@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.competition;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.AbsListView;
+import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.AdDTO;
@@ -31,10 +32,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
 
-import static com.tradehero.THRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(THRobolectricTestRunner.class)
@@ -104,7 +102,7 @@ public class MainCompetitionFragmentTest
         assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(ProviderSecurityListFragment.class);
     }
 
-    @Test public void shouldGoToWebFragmentAfterClickOnAds()
+    @Test public void shouldGoToWebFragmentAfterClickOnAds() throws InterruptedException
     {
         Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
@@ -122,12 +120,7 @@ public class MainCompetitionFragmentTest
 
         Robolectric.getBackgroundScheduler().unPause();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        THRobolectric.runBgUiTasks(3);
 
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
@@ -171,7 +164,7 @@ public class MainCompetitionFragmentTest
         CompetitionZoneListItemAdapter competitionListAdapter = (CompetitionZoneListItemAdapter) competitionListView.getAdapter();
         assertThat(competitionListAdapter).isNotNull();
 
-        runBgUiTasks(3);
+        THRobolectric.runBgUiTasks(3);
 
         int firstPortfolioButtonPosition = -1;
 
@@ -200,7 +193,7 @@ public class MainCompetitionFragmentTest
 
     }
 
-    @Test public void shouldGoToTradeQuestPageAfterClickOnWizardCellWhenWizardUrlIsSetToTradeQuestUrl()
+    @Test public void shouldGoToTradeQuestPageAfterClickOnWizardCellWhenWizardUrlIsSetToTradeQuestUrl() throws InterruptedException
     {
         ProviderDTO providerDTO = providerCache.get(providerId);
         providerDTO.wizardUrl = TEST_WIZARD_WEB_URL;
@@ -208,7 +201,7 @@ public class MainCompetitionFragmentTest
         shouldGoToCorrectWebPageAfterClickOnWizardCell(TEST_WIZARD_WEB_URL);
     }
 
-    @Test public void shouldGoToProviderWizardPageAfterClickOnWizardCell()
+    @Test public void shouldGoToProviderWizardPageAfterClickOnWizardCell() throws InterruptedException
     {
         // we do not hardcoded on client anymore for generating competition url from providerId
         // but I would like to test it anyway
@@ -223,7 +216,7 @@ public class MainCompetitionFragmentTest
         shouldGoToCorrectWebPageAfterClickOnWizardCell(expectedWizardPage);
     }
 
-    private void shouldGoToCorrectWebPageAfterClickOnWizardCell(String webLink)
+    private void shouldGoToCorrectWebPageAfterClickOnWizardCell(String webLink) throws InterruptedException
     {
         Robolectric.getBackgroundScheduler().pause();
         Bundle args = new Bundle();
@@ -243,12 +236,7 @@ public class MainCompetitionFragmentTest
 
         Robolectric.getBackgroundScheduler().unPause();
 
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
-        Robolectric.runBackgroundTasks();
-        Robolectric.runUiThreadTasksIncludingDelayedTasks();
+        THRobolectric.runBgUiTasks(3);
 
         int firstWizardButtonPosition = -1;
 
