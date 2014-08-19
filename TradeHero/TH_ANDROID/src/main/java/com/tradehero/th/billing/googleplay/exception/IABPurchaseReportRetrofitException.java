@@ -8,29 +8,9 @@ public class IABPurchaseReportRetrofitException extends IABOneResponseValueExcep
     public static final int VALID_RESPONSE = THIABExceptionConstants.PURCHASE_REPORT_RETROFIT_ERROR;
 
     //<editor-fold desc="Constructors">
-    public IABPurchaseReportRetrofitException(IABResult r)
-    {
-        super(r);
-    }
-
-    public IABPurchaseReportRetrofitException(IABResult r, Exception cause)
-    {
-        super(r, cause);
-    }
-
     public IABPurchaseReportRetrofitException(String message)
     {
         super(VALID_RESPONSE, message);
-    }
-
-    public IABPurchaseReportRetrofitException(String message, Exception cause)
-    {
-        super(VALID_RESPONSE, message, cause);
-    }
-
-    public IABPurchaseReportRetrofitException(String message, Throwable cause)
-    {
-        super(message, cause);
     }
 
     public IABPurchaseReportRetrofitException(Throwable cause)

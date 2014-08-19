@@ -8,25 +8,9 @@ public class SamsungMissingApplicablePortfolioIdException extends SamsungOneCode
     public static final int VALID_RESPONSE = THSamsungConstants.MISSING_APPLICABLE_PORTFOLIO_ID;
 
     //<editor-fold desc="Constructors">
-    public SamsungMissingApplicablePortfolioIdException()
-    {
-        super(VALID_RESPONSE);
-    }
-
     public SamsungMissingApplicablePortfolioIdException(String message)
     {
         super(VALID_RESPONSE, message);
-    }
-
-    public SamsungMissingApplicablePortfolioIdException(String message,
-            Throwable cause)
-    {
-        super(VALID_RESPONSE, message, cause);
-    }
-
-    public SamsungMissingApplicablePortfolioIdException(Throwable cause)
-    {
-        super(VALID_RESPONSE, cause);
     }
     //</editor-fold>
 

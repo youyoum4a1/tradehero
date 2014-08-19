@@ -8,24 +8,9 @@ public class IABMissingApplicablePortfolioIdException extends IABOneResponseValu
     public static final int VALID_RESPONSE = THIABExceptionConstants.MISSING_APPLICABLE_PORTFOLIO_ID;
 
     //<editor-fold desc="Constructors">
-    public IABMissingApplicablePortfolioIdException(IABResult r)
-    {
-        super(r);
-    }
-
-    public IABMissingApplicablePortfolioIdException(IABResult r, Exception cause)
-    {
-        super(r, cause);
-    }
-
     public IABMissingApplicablePortfolioIdException(String message)
     {
         super(VALID_RESPONSE, message);
-    }
-
-    public IABMissingApplicablePortfolioIdException(String message, Exception cause)
-    {
-        super(VALID_RESPONSE, message, cause);
     }
     //</editor-fold>
 

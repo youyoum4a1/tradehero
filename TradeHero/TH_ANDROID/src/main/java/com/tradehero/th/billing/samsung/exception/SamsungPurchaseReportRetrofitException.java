@@ -8,19 +8,9 @@ public class SamsungPurchaseReportRetrofitException extends SamsungOneCodeExcept
     public static final int VALID_RESPONSE = THSamsungConstants.PURCHASE_REPORT_RETROFIT_ERROR;
 
     //<editor-fold desc="Constructors">
-    public SamsungPurchaseReportRetrofitException()
-    {
-        super(VALID_RESPONSE);
-    }
-
     public SamsungPurchaseReportRetrofitException(String message)
     {
         super(VALID_RESPONSE, message);
-    }
-
-    public SamsungPurchaseReportRetrofitException(String message, Throwable cause)
-    {
-        super(VALID_RESPONSE, message, cause);
     }
 
     public SamsungPurchaseReportRetrofitException(Throwable cause)
