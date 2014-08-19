@@ -6,11 +6,11 @@ import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
-import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
-import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseCache;
-import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.common.billing.googleplay.request.UIIABBillingRequest;
+import com.tradehero.common.billing.request.BillingRequest;
+import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THBillingLogicHolder;
@@ -115,6 +115,7 @@ public class GooglePlayBillingModule
         return THIABAlertDialogUtil;
     }
 
+    //<editor-fold desc="Caches">
     @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(IABSKUListCache iabskuListCache)
     {
         return iabskuListCache;
@@ -134,6 +135,7 @@ public class GooglePlayBillingModule
     {
         return purchaseCache;
     }
+    //</editor-fold>
 
     @Provides BillingExceptionFactory provideBillingExceptionFactory(IABExceptionFactory exceptionFactory)
     {
@@ -165,17 +167,37 @@ public class GooglePlayBillingModule
         return billingInteractor;
     }
 
-    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THIABBillingInteractor thiabInteractor)
+    @Provides @Singleton THBillingInteractor provideTHBillingInteractor(THIABInteractor thiabInteractor)
     {
         return thiabInteractor;
     }
 
-    @Provides THBillingRequest provideBillingRequest(THIABBillingRequestFull request)
+    @Provides @Singleton THIABInteractor provideTHIABInteractor(THIABBillingInteractor thiabInteractor)
+    {
+        return thiabInteractor;
+    }
+
+    @Provides BillingRequest provideBillingRequest(THBillingRequest request)
     {
         return request;
     }
 
-    @Provides THUIBillingRequest provideUIBillingRequest(THUIIABBillingRequest request)
+    @Provides THBillingRequest provideTHBillingRequest(THIABBillingRequestFull request)
+    {
+        return request;
+    }
+
+    @Provides UIBillingRequest provideUIBillingRequest(THUIBillingRequest request)
+    {
+        return request;
+    }
+
+    @Provides UIIABBillingRequest provideUIIABBillingRequest(THUIIABBillingRequest request)
+    {
+        return request;
+    }
+
+    @Provides THUIBillingRequest provideTHUIBillingRequest(THUIIABBillingRequest request)
     {
         return request;
     }
