@@ -1,21 +1,24 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class ProductIdentifierListCache<
             ProductIdentifierType extends ProductIdentifier,
             ProductIdentifierListKeyType extends ProductIdentifierListKey,
             ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>>
-        extends StraightDTOCache<ProductIdentifierListKeyType, ProductIdentifierListType>
+        extends StraightDTOCacheNew<ProductIdentifierListKeyType, ProductIdentifierListType>
 {
+    //<editor-fold desc="Constructors">
     public ProductIdentifierListCache(int maxSize)
     {
         super(maxSize);
     }
+    //</editor-fold>
 
-    @Override protected ProductIdentifierListType fetch(ProductIdentifierListKeyType key) throws Throwable
+    @Override @NotNull public ProductIdentifierListType fetch(@NotNull ProductIdentifierListKeyType key) throws Throwable
     {
         throw new IllegalArgumentException("Do not fetch on this cache");
     }
@@ -31,8 +34,9 @@ abstract public class ProductIdentifierListCache<
         }
     }
 
-    @Override public ProductIdentifierListType put(ProductIdentifierListKeyType key,
-            ProductIdentifierListType value)
+    @Override public ProductIdentifierListType put(
+            @NotNull ProductIdentifierListKeyType key,
+            @NotNull ProductIdentifierListType value)
     {
         Timber.d("Put %s", key);
         return super.put(key, value);

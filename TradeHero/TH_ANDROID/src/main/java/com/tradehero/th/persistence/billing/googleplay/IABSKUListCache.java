@@ -11,10 +11,12 @@ import javax.inject.Singleton;
 {
     public static final int MAX_SIZE = 5;
 
+    //<editor-fold desc="Constructors">
     @Inject public IABSKUListCache()
     {
         super(MAX_SIZE);
     }
+    //</editor-fold>
 
     @Override public IABSKUListKey getKeyForAll()
     {

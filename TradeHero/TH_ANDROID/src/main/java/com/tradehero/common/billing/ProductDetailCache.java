@@ -1,47 +1,47 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 abstract public class ProductDetailCache<
             ProductIdentifierType extends ProductIdentifier,
             ProductDetailsType extends ProductDetail<ProductIdentifierType>,
             ProductTunerType extends ProductDetailTuner<ProductIdentifierType, ProductDetailsType>>
-        extends StraightDTOCache<ProductIdentifierType, ProductDetailsType>
+        extends StraightDTOCacheNew<ProductIdentifierType, ProductDetailsType>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
     public static int latest = 0;
 
-    protected ProductTunerType detailsTuner;
+    @NotNull protected final ProductTunerType detailsTuner;
     protected int me = latest++;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailCache()
+    public ProductDetailCache(@NotNull ProductTunerType detailsTuner)
     {
-        this(DEFAULT_MAX_SIZE);
+        this(DEFAULT_MAX_SIZE, detailsTuner);
     }
 
-    public ProductDetailCache(int defaultMaxSize)
+    public ProductDetailCache(int defaultMaxSize, @NotNull ProductTunerType detailsTuner)
     {
         super(defaultMaxSize);
-        createDetailsTuner();
+        this.detailsTuner = detailsTuner;
     }
     //</editor-fold>
 
-    abstract protected void createDetailsTuner();
-
-    @Override public ProductDetailsType get(ProductIdentifierType key)
+    @Override @Nullable public ProductDetailsType get(@NotNull ProductIdentifierType key)
     {
         Timber.d("get me %d", me);
         return super.get(key);
     }
 
-    @Override public ProductDetailsType put(ProductIdentifierType key, ProductDetailsType value)
+    @Override @Nullable public ProductDetailsType put(@NotNull ProductIdentifierType key, @NotNull ProductDetailsType value)
     {
         Timber.d("put me %d", me);
         detailsTuner.fineTune(value);

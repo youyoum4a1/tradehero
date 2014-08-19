@@ -7,7 +7,6 @@ import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
-import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABPurchaseCache;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
@@ -29,17 +28,6 @@ import javax.inject.Singleton;
 
 @Module(
         injects = {
-                IABServiceConnector.class,
-                BaseIABBillingAvailableTester.class,
-                BaseIABInventoryFetcher.class,
-                THBaseIABPurchaseFetcher.class,
-                THBaseIABInventoryFetcher.class,
-                THBaseIABPurchaser.class,
-                THBaseIABPurchaseReporter.class,
-                THIABLogicHolderFull.class,
-                THBaseIABInventoryFetcherHolder.class,
-                THBaseIABPurchaseReporterHolder.class,
-                THIABPurchaseFetchMilestone.class,
                 IABSKUListRetrievedAsyncMilestone.class,
         },
         staticInjections = {
