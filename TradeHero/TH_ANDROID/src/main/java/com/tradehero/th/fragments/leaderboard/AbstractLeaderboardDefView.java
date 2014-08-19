@@ -9,25 +9,18 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class AbstractLeaderboardDefView extends RelativeLayout
 {
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected Lazy<UserProfileCache> userProfileCache;
     @Inject protected LeaderboardDefDTOKnowledge leaderboardDefDTOKnowledge;
 
     @InjectView(R.id.leaderboard_def_item_icon_container) View leaderboardDefIconContainer;
@@ -39,7 +32,6 @@ public class AbstractLeaderboardDefView extends RelativeLayout
     @InjectView(R.id.leaderboard_def_item_desc) TextView leaderboardDefDesc;
 
     protected LeaderboardDefDTO dto;
-    private DTOCache.GetOrFetchTask<UserBaseKey, UserProfileDTO> userProfileRequestTask;
 
     //<editor-fold desc="Constructors">
     public AbstractLeaderboardDefView(Context context)
@@ -63,34 +55,6 @@ public class AbstractLeaderboardDefView extends RelativeLayout
         super.onFinishInflate();
         DaggerUtils.inject(this);
         ButterKnife.inject(this);
-    }
-
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-
-        if (currentUserId != null)
-        {
-            // TODO this is just for getting leaderboard ranking of current user, which is already done by getting user rank from DefDTO, see
-            // method @updateRankTitle
-            //userProfileRequestTask = userProfileCache.get().getOrFetch(currentUserId.get(), false, userProfileListener);
-            //userProfileRequestTask.execute();
-        }
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-        detachUserProfileTask();
-    }
-
-    private void detachUserProfileTask()
-    {
-        if (userProfileRequestTask != null)
-        {
-            userProfileRequestTask.setListener(null);
-        }
-        userProfileRequestTask = null;
     }
 
     protected void linkWith(LeaderboardDefDTO dto, boolean andDisplay)

@@ -57,10 +57,10 @@ public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
     {
         HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();
 
-        for (THSamsungPurchase key : thSamsungPurchaseCache.getValues())
+        for (THSamsungPurchase value : thSamsungPurchaseCache.getValues())
         {
-            Timber.d("Disabling %s", key);
-            enabledItems.put(key.getProductIdentifier(), false);
+            Timber.d("Disabling %s", value);
+            enabledItems.put(value.getProductIdentifier(), false);
         }
 
         if (enabledItems.size() == 0)

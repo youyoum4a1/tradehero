@@ -8,11 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -52,8 +50,6 @@ public class StockInfoFragment extends DashboardFragment
     private DTOCacheNew.Listener<SecurityId, SecurityCompactDTO> compactCacheListener;
 
     protected PaginatedDTO<NewsItemDTO> newsHeadlineList;
-    private DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheListener;
-    private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
 
     private MenuItem marketCloseIcon;
 
@@ -156,12 +152,6 @@ public class StockInfoFragment extends DashboardFragment
     {
         detachSecurityCompactCache();
 
-        if (yahooNewsCacheFetchTask != null)
-        {
-            yahooNewsCacheFetchTask.setListener(null);
-            yahooNewsCacheFetchTask.cancel(false);
-        }
-        yahooNewsCacheFetchTask = null;
         super.onPause();
     }
 

@@ -3,14 +3,15 @@ package com.tradehero.common.billing.samsung.persistence;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.persistence.StraightDTOCache;
+import com.tradehero.common.persistence.StraightDTOCacheNew;
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 abstract public class SamsungGroupItemCache<
         SamsungSKUType extends SamsungSKU,
         SamsungSKUListType extends BaseSamsungSKUList<SamsungSKUType>>
-    extends StraightDTOCache<SamsungItemGroup, SamsungSKUListType>
+    extends StraightDTOCacheNew<SamsungItemGroup, SamsungSKUListType>
 {
     //<editor-fold desc="Constructors">
     public SamsungGroupItemCache(int maxSize)
@@ -19,7 +20,7 @@ abstract public class SamsungGroupItemCache<
     }
     //</editor-fold>
 
-    @Override protected SamsungSKUListType fetch(SamsungItemGroup key) throws Throwable
+    @Override @NotNull public SamsungSKUListType fetch(@NotNull SamsungItemGroup key) throws Throwable
     {
         throw new IllegalArgumentException("Cannot fetch on this cache");
     }

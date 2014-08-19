@@ -4,6 +4,7 @@ import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import org.jetbrains.annotations.NotNull;
 
 public class SamsungPurchaseCache<
             SamsungSKUType extends SamsungSKU,
@@ -21,7 +22,7 @@ public class SamsungPurchaseCache<
     }
     //</editor-fold>
 
-    @Override protected SamsungPurchaseType fetch(SamsungOrderIdType key) throws Throwable
+    @Override @NotNull public SamsungPurchaseType fetch(@NotNull SamsungOrderIdType key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch on this cache");
     }
