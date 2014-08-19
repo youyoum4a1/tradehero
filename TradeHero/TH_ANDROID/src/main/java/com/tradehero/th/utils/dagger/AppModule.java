@@ -8,12 +8,12 @@ import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.activities.GuideActivity;
+import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.achievement.AchievementDialogFragment;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.alert.AlertEditFragment;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
@@ -194,6 +194,7 @@ import javax.inject.Singleton;
                 ActivityModule.class,
                 BillingModule.class,
                 PushModule.class,
+                AchievementModule.class,
         },
         injects =
                 {
@@ -383,8 +384,7 @@ import javax.inject.Singleton;
                         HomeWebView.class,
                         GuideActivity.class,
 
-                        UserLevelProgressBar.class,
-                        AchievementDialogFragment.class,
+                        ObjectMapperWrapper.class,
 
 
                 },

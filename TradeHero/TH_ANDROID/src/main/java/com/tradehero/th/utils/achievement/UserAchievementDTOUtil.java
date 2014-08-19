@@ -1,5 +1,7 @@
 package com.tradehero.th.utils.achievement;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.th.api.achievement.AchievementsDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.achievement.UserAchievementId;
@@ -10,12 +12,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class UserAchievementDTOUtil
 {
-    @NotNull private final UserAchievementCache userAchievementCache;
+    public static final String INTENT_ACTION_NAME = "com.tradehero.th.achievement.ALERT";
+    public static final String KEY_ACHIEVEMENT_NODE = "achievements";
 
-    @Inject public UserAchievementDTOUtil(UserAchievementCache userAchievementCache)
+    @NotNull private final UserAchievementCache userAchievementCache;
+    @NotNull private final LocalBroadcastManager localBroadcastManager;
+
+    @Inject public UserAchievementDTOUtil(UserAchievementCache userAchievementCache, LocalBroadcastManager localBroadcastManager)
     {
         super();
         this.userAchievementCache = userAchievementCache;
+        this.localBroadcastManager = localBroadcastManager;
     }
 
     public boolean shouldShow(UserAchievementId userAchievementId)
@@ -35,7 +42,7 @@ public class UserAchievementDTOUtil
     @Nullable public UserAchievementDTO pop(UserAchievementId userAchievementId)
     {
         UserAchievementDTO userAchievementDTO = userAchievementCache.get(userAchievementId);
-        if(userAchievementDTO != null)
+        if (userAchievementDTO != null)
         {
             userAchievementCache.invalidate(userAchievementId);
         }
@@ -50,6 +57,14 @@ public class UserAchievementDTOUtil
     public void remove(UserAchievementId userAchievementId)
     {
         userAchievementCache.invalidate(userAchievementId);
+    }
+
+    public void put(UserAchievementDTO userAchievementDTO)
+    {
+        userAchievementCache.put(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
+        Intent i = new Intent(INTENT_ACTION_NAME);
+        i.putExtra(UserAchievementDTO.class.getName(), userAchievementDTO.getUserAchievementId().getArgs());
+        localBroadcastManager.sendBroadcastSync(i);
     }
 
     public static UserAchievementDTO dummy()
