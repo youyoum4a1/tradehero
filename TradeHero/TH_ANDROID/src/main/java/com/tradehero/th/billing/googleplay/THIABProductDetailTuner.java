@@ -4,12 +4,13 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetailTuner;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class THIABProductDetailTuner implements THProductDetailTuner<IABSKU, THIABProductDetail>
 {
     //<editor-fold desc="Constructors">
-    public THIABProductDetailTuner()
+    @Inject public THIABProductDetailTuner()
     {
         super();
     }
