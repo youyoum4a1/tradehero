@@ -3,9 +3,6 @@ package com.tradehero.common.billing.samsung;
 import com.tradehero.common.persistence.DTOKey;
 import timber.log.Timber;
 
-/**
- * Created by xavier on 4/1/14.
- */
 public class SamsungItemGroup implements DTOKey
 {
     public final String groupId;
